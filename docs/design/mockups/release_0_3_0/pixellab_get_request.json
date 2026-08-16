@@ -1,0 +1,10 @@
+{
+  "tool": "create_image_pro",
+  "source_id": "375fde3b-7e30-4c15-acf3-76083e15c71c",
+  "source_sha256": "b8b6b10fecf50b30b2c395225613dff39c6efa9aabcbaf6cac4b736033ae03b2",
+  "source_dimensions": [
+    512,
+    512
+  ],
+  "note": "The accepted empty-frame source was composited only inside declared content zones; no source text or pseudo-text was retained."
+}

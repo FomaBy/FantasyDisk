@@ -4,6 +4,7 @@ extends SceneTree
 # runtime coverage. Class paths are weapon-scoped; Guild effects remain account-
 # wide and keep their established ids/behavior.
 
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
@@ -38,6 +39,23 @@ func _initialize() -> void:
 func _fail(msg: String) -> void:
 	push_error(msg)
 	quit(1)
+
+
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает true при консистентной
+# паре (иначе вызывает _fail и возвращает false).
+func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String) -> bool:
+	if not container.has(raw_key):
+		_fail("FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key])
+		return false
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		_fail("FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
+		return false
+	return true
 
 
 func _test_schema6_tree_data_integrity() -> void:
@@ -1180,6 +1198,9 @@ func _test_semantic_keystone_runtime_835() -> void:
 	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers", true)
 	var shadow_params := shadow.get("derived_parameters") as Dictionary
 	shadow_params["dodge"] = 0.0
+	shadow_params["raw_dodge"] = 0.0
+	if not _assert_raw_pair(shadow_params, "dodge", "raw_dodge"):
+		return
 	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0, true)
 	shadow.set("health", shadow.get("max_health"))
 	if float(shadow.get("_assassin_crit_shadow_cooldown_left")) > 0.0:
@@ -1226,6 +1247,9 @@ func _test_semantic_keystone_runtime_835() -> void:
 	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0}, "berserk", "sword", true)
 	var plain_params := plain.get("derived_parameters") as Dictionary
 	plain_params["dodge"] = 0.0
+	plain_params["raw_dodge"] = 0.0
+	if not _assert_raw_pair(plain_params, "dodge", "raw_dodge"):
+		return
 	plain.set("health", plain.get("max_health"))
 	bastion.set("health", bastion.get("max_health"))
 	bastion.set("velocity", Vector2.ZERO)
@@ -1237,6 +1261,9 @@ func _test_semantic_keystone_runtime_835() -> void:
 	# intentional runtime dodge only after that recalculation.
 	var bastion_params := bastion.get("derived_parameters") as Dictionary
 	bastion_params["dodge"] = 0.0
+	bastion_params["raw_dodge"] = 0.0
+	if not _assert_raw_pair(bastion_params, "dodge", "raw_dodge"):
+		return
 	if float(plain.call("_current_dodge_chance")) > 0.0 or float(bastion.call("_current_dodge_chance")) > 0.0:
 		_fail("SCRUM-1028 Bastion defense comparison must neutralize random dodge on both fixtures.")
 		return
@@ -1555,7 +1582,11 @@ func _test_death_save_capstone() -> void:
 	player.call("apply_meta_skill_modifiers", Meta.skill_modifiers(state))
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	derived["defense"] = 0.0
+	derived["raw_defense"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge") or not _assert_raw_pair(derived, "defense", "raw_defense"):
+		return
 	derived["absorb"] = 0.0
 	player.set("health", 5.0)
 	player.set("_damage_invulnerability_left", 0.0)

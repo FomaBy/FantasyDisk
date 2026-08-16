@@ -115,7 +115,32 @@ static func make_tooltip_content(for_text: String, anchor: Control = null) -> Co
 	box.add_child(title)
 	if body_text != "":
 		var body := make_tooltip_label(body_text, "GlobalTooltipBodyLabel", DEFAULT_FONT_SIZE, BODY_COLOR, width_scale)
-		box.add_child(body)
+		# FAN-1927: длинная русская копия скроллится, а не растёт за вьюпорт и не
+		# режется ellipsis'ом — тело выше лимита получает ScrollContainer.
+		var max_body_height := 420.0
+		if anchor != null and is_instance_valid(anchor) and anchor.is_inside_tree():
+			max_body_height = maxf(180.0, anchor.get_viewport_rect().size.y * 0.42)
+		var wrap_width := wrap_width_for_text(body_text, DEFAULT_FONT_SIZE, width_scale)
+		var measure_width := wrap_width if wrap_width > 0.0 else DEFAULT_MAX_WIDTH * width_scale
+		var measure_font := ThemeDB.fallback_font
+		var body_height := 0.0
+		if measure_font != null:
+			body_height = measure_font.get_multiline_string_size(
+				body_text, HORIZONTAL_ALIGNMENT_LEFT, measure_width, DEFAULT_FONT_SIZE).y
+		if body_height > max_body_height:
+			var body_scroll := ScrollContainer.new()
+			body_scroll.name = "GlobalTooltipBodyScroll"
+			body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+			body_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+			body_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			body_scroll.custom_minimum_size = Vector2(measure_width + 12.0, max_body_height)
+			body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			body.custom_minimum_size = Vector2(measure_width, 0.0)
+			body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			body_scroll.add_child(body)
+			box.add_child(body_scroll)
+		else:
+			box.add_child(body)
 
 	if anchor != null:
 		box.tree_entered.connect(func() -> void:

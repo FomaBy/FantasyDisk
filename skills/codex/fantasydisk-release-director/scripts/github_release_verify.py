@@ -16,6 +16,12 @@ import urllib.request
 from pathlib import Path
 
 
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
+
 DEFAULT_REPOSITORY = "FomaBy/FantasyDisk-Releases"
 EXPECTED_ROOT_PATHS = {"README.md"}
 README_FORBIDDEN_MARKERS = {
@@ -30,7 +36,6 @@ README_FORBIDDEN_MARKERS = {
     "api_key",
     ".gd",
 }
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 USER_AGENT = "FantasyDisk-Public-Release-Verify/1.0"
 
 
@@ -74,12 +79,20 @@ def _sha256_download(url: str) -> tuple[int, str]:
     return size, digest.hexdigest()
 
 
-def _checksums(payload: str) -> dict[str, str]:
+def _checksums(payload: str, expected_names: set[str]) -> dict[str, str]:
     parsed: dict[str, str] = {}
     for line in payload.splitlines():
-        parts = line.strip().split(maxsplit=1)
-        if len(parts) == 2 and re.fullmatch(r"[0-9a-fA-F]{64}", parts[0]):
-            parsed[parts[1].lstrip(" *")] = parts[0].lower()
+        match = re.fullmatch(r"([0-9a-fA-F]{64}) ([ *])(.+)", line)
+        if match is None:
+            raise PublicVerificationError("SHA256SUMS contains a malformed entry")
+        digest, _marker, name = match.groups()
+        if name not in expected_names:
+            raise PublicVerificationError(f"SHA256SUMS contains an unexpected entry: {name}")
+        if name in parsed:
+            raise PublicVerificationError(f"SHA256SUMS contains a duplicate entry: {name}")
+        parsed[name] = digest.lower()
+    if set(parsed) != expected_names:
+        raise PublicVerificationError("SHA256SUMS must verify both platform installers")
     return parsed
 
 
@@ -123,6 +136,8 @@ def _verify_public_tree(repository: str) -> None:
 
 
 def verify_public_distribution(repository: str, version: str, local_release: Path) -> dict:
+    if not is_valid_release_version(version):
+        raise PublicVerificationError("release version must use X.Y.Z or X.Y.Z.R")
     _verify_public_tree(repository)
     tag = f"v{version}"
     api = f"https://api.github.com/repos/{repository}"
@@ -137,13 +152,37 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
         f"fantasydisk_{version.replace('.', '')}_announcement.png",
         "update-manifest.json",
     }
-    assets = {
-        str(asset.get("name", "")): str(asset.get("browser_download_url", ""))
-        for asset in latest.get("assets", [])
-        if isinstance(asset, dict)
-    }
-    if set(assets) != names or not all(assets.values()):
-        raise PublicVerificationError("public release asset allowlist mismatch")
+    raw_assets = latest.get("assets")
+    if not isinstance(raw_assets, list):
+        raise PublicVerificationError("public release assets must be a list of asset objects")
+    assets: dict[str, str] = {}
+    for entry in raw_assets:
+        if not isinstance(entry, dict):
+            raise PublicVerificationError("public release asset entry is not an object")
+        name = entry.get("name")
+        url = entry.get("browser_download_url")
+        if not isinstance(name, str) or not isinstance(url, str):
+            raise PublicVerificationError(
+                "public release asset entry must have non-empty string name and browser_download_url"
+            )
+        name = name.strip()
+        url = url.strip()
+        if not name or not url:
+            raise PublicVerificationError(
+                "public release asset entry must have non-empty string name and browser_download_url"
+            )
+        if name not in names:
+            raise PublicVerificationError(f"public release contains an unexpected asset: {name}")
+        if name in assets:
+            raise PublicVerificationError(f"public release contains a duplicate asset name: {name}")
+        if url != f"https://github.com/{repository}/releases/download/{tag}/{name}":
+            raise PublicVerificationError(
+                f"public release asset URL is not the canonical HTTPS release download URL: {name}"
+            )
+        assets[name] = url
+    if set(assets) != names:
+        missing = sorted(names - set(assets))
+        raise PublicVerificationError(f"public release is missing required assets: {missing}")
     manifest_url = f"https://github.com/{repository}/releases/latest/download/update-manifest.json"
     try:
         manifest = json.loads(_request(manifest_url).decode("utf-8"))
@@ -154,7 +193,13 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
     release_url = f"https://github.com/{repository}/releases/tag/{tag}"
     if manifest.get("release_url") != release_url:
         raise PublicVerificationError("latest public update manifest has an untrusted release URL")
-    sums = _checksums(_request(assets["SHA256SUMS.txt"]).decode("utf-8"))
+    installer_names = {
+        f"FantasyDisk-{version}-macos.dmg",
+        f"FantasyDisk-{version}-windows-setup.exe",
+    }
+    sums = _checksums(
+        _request(assets["SHA256SUMS.txt"]).decode("utf-8"), installer_names
+    )
     verified: dict[str, dict[str, int | str]] = {}
     for platform, name in (("macos", f"FantasyDisk-{version}-macos.dmg"), ("windows", f"FantasyDisk-{version}-windows-setup.exe")):
         asset = manifest.get("assets", {}).get(platform)
@@ -186,52 +231,16 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
     }
 
 
-def prune_previous_releases(repository: str, version: str) -> None:
-    result = subprocess.run(
-        ["gh", "release", "list", "--repo", repository, "--limit", "100", "--json", "tagName"],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if result.returncode:
-        raise PublicVerificationError("cannot list public distribution releases for cleanup")
-    releases = json.loads(result.stdout)
-    keep = f"v{version}"
-    for release in releases:
-        tag = str(release.get("tagName", ""))
-        if tag and tag != keep:
-            deleted = subprocess.run(
-                ["gh", "release", "delete", tag, "--repo", repository, "--cleanup-tag", "--yes"],
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            if deleted.returncode:
-                raise PublicVerificationError(f"cannot remove stale public distribution release {tag}")
-    remaining = subprocess.run(
-        ["gh", "release", "list", "--repo", repository, "--limit", "100", "--json", "tagName"],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if remaining.returncode or {item.get("tagName") for item in json.loads(remaining.stdout)} != {keep}:
-        raise PublicVerificationError("public distribution cleanup did not leave exactly one stable release")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", required=True)
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--local-release", required=True, type=Path)
-    parser.add_argument("--prune-previous", action="store_true")
     args = parser.parse_args()
-    if not SEMVER_RE.fullmatch(args.version):
-        parser.error("--version must be strict SemVer X.Y.Z")
+    if not is_valid_release_version(args.version):
+        parser.error("--version must use X.Y.Z or X.Y.Z.R")
     try:
         report = verify_public_distribution(args.repository, args.version, args.local_release.resolve())
-        if args.prune_previous:
-            prune_previous_releases(args.repository, args.version)
-            report["pruned_previous_releases"] = True
         print(json.dumps(report, ensure_ascii=False, sort_keys=True))
     except (OSError, PublicVerificationError, json.JSONDecodeError) as exc:
         parser.error(str(exc))

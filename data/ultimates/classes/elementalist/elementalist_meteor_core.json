@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "class_id": "elementalist",
+  "weapon_id": "elementalist_meteor_core",
+  "profile_id": "weapon_ultimate.profile.elementalist.elementalist_meteor_core",
+  "executor_id": "weapon_ultimate.executor.elementalist.elementalist_meteor_core",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "aimed_delayed_crater", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.elementalist.elementalist_meteor_core",
+    "params": {
+      "max_range": 800.0,
+      "impact_radius": 360.0,
+      "crowd_cap": 20,
+      "meteor_drop_at": 2.45,
+      "impact_at": 2.75,
+      "crater_pulses": 5,
+      "crater_interval": 0.85,
+      "cooling_at": 8.1,
+      "lifetime": 8.9,
+      "impact_damage": 10.0,
+      "crater_damage": 1.0,
+      "gravity_pull": 260.0,
+      "crater_duration": 4.8,
+      "crater_slow": 0.55,
+      "normal_execute_max_health": 900.0,
+      "epic_displacement": 0.25,
+      "epic_duration": 0.40,
+      "boss_displacement": 0.0,
+      "boss_duration": 0.20
+    }
+  },
+  "total_boss_cap": 0.10,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}

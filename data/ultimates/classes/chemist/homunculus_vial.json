@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "class_id": "chemist",
+  "weapon_id": "homunculus_vial",
+  "profile_id": "weapon_ultimate.profile.chemist.homunculus_vial",
+  "executor_id": "weapon_ultimate.executor.chemist.homunculus_vial",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "self_origin",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "legacy_charge",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.chemist.homunculus_vial",
+    "params": {
+      "summon_group": "allies",
+      "avatar_scene": "res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+      "fuse_at": 0.9,
+      "taunt_radius": 420.0,
+      "taunt_force": 340.0,
+      "beat_count": 3,
+      "beat_interval": 0.85,
+      "stomp_radius": 300.0,
+      "damage": 1.5,
+      "wave_radius": 240.0,
+      "wave_toxin_bonus": 0.22,
+      "wave_stack_cap": 4,
+      "target_limit": 14,
+      "recover_at": 4.2,
+      "control_policy": {
+        "normal": {
+          "displacement_multiplier": 1.0,
+          "duration_multiplier": 1.0,
+          "allow_movement_lock": false,
+          "allow_execute": true
+        },
+        "epic": {
+          "displacement_multiplier": 0.25,
+          "duration_multiplier": 0.5,
+          "allow_movement_lock": false,
+          "allow_execute": false
+        },
+        "boss": {
+          "displacement_multiplier": 0.25,
+          "duration_multiplier": 0.25,
+          "allow_movement_lock": false,
+          "allow_execute": false
+        }
+      },
+      "taunt_status": {
+        "duration": 1.2,
+        "speed_multiplier": 0.8
+      }
+    }
+  },
+  "total_boss_cap": 0.1,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}

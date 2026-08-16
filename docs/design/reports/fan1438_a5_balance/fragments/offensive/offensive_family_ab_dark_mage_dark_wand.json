@@ -1,0 +1,32 @@
+{
+	"measurement": {
+		"disabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 191071.967,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 1258,
+			"ledger_damage": 19107.1967,
+			"trigger_resolutions": 0,
+			"unique_target_count": 10
+		},
+		"enabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 195134.84300000002,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 1298,
+			"ledger_damage": 19513.4843,
+			"trigger_resolutions": 40,
+			"unique_target_count": 10
+		},
+		"formula_expected_dpm": 4854.5999999999995
+	},
+	"pair": "dark_mage/dark_wand"
+}

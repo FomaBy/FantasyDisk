@@ -10,17 +10,20 @@ import argparse
 import configparser
 import json
 import os
-import re
 import subprocess
 import sys
+from pathlib import Path
 
 
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
 
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 
 def ensure_telegram_release_version(version: str) -> None:
-    if not SEMVER_RE.fullmatch(version):
-        sys.exit("Версия должна иметь формат X.Y.Z")
+    if not is_valid_release_version(version):
+        sys.exit("Версия должна иметь формат X.Y.Z или X.Y.Z.R")
 
 
 def verify_local_release(root: str, version: str) -> str:
@@ -147,7 +150,7 @@ def main() -> None:
         return
 
     if not args.version:
-        sys.exit("Укажи --version X.Y.Z (или --list-chats / --test)")
+        sys.exit("Укажи --version X.Y.Z или X.Y.Z.R (или --list-chats / --test)")
     ensure_telegram_release_version(args.version)
     rel = verify_local_release(root, args.version)
     poster, build_files = _release_files(rel, args.version)

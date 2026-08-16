@@ -1,0 +1,145 @@
+{
+  "ok": true,
+  "case": "short",
+  "source_template": "source_template.svg",
+  "export_profile": "fantasydisk-release-notes-square-v1",
+  "planning_gate": {
+    "decision": "ready_for_image",
+    "ok": true,
+    "report": "ui_plan.report.json"
+  },
+  "content": {
+    "game_title": "FANTASYDISK",
+    "version": "v0.2.4",
+    "release_date": "2026-07-17",
+    "key_changes": "КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ\n• Публичный каталог обновлений доступен без входа в GitHub.\n• Проверенные macOS и Windows пакеты получают одну общую карточку релиза.",
+    "fixed_bugs": "ИСПРАВЛЕННЫЕ ОШИБКИ\n• Клиент больше не принимает неполный набор файлов релиза.\n• Повторная проверка установщика сохраняет причину ошибки."
+  },
+  "render": {
+    "ok": true,
+    "zones": [
+      {
+        "id": "game_title",
+        "rect": [
+          110,
+          125,
+          330,
+          125
+        ],
+        "ok": true,
+        "kind": "text",
+        "font_size": 44,
+        "lines": [
+          "FANTASYDISK"
+        ],
+        "text_bbox": [
+          118,
+          168,
+          313,
+          40
+        ]
+      },
+      {
+        "id": "version",
+        "rect": [
+          510,
+          125,
+          330,
+          125
+        ],
+        "ok": true,
+        "kind": "text",
+        "font_size": 44,
+        "lines": [
+          "v0.2.4"
+        ],
+        "text_bbox": [
+          612,
+          167,
+          126,
+          41
+        ]
+      },
+      {
+        "id": "release_date",
+        "rect": [
+          910,
+          125,
+          330,
+          125
+        ],
+        "ok": true,
+        "kind": "text",
+        "font_size": 32,
+        "lines": [
+          "2026-07-17"
+        ],
+        "text_bbox": [
+          989,
+          173,
+          172,
+          29
+        ]
+      },
+      {
+        "id": "key_changes",
+        "rect": [
+          125,
+          575,
+          500,
+          425
+        ],
+        "ok": true,
+        "kind": "text",
+        "font_size": 24,
+        "lines": [
+          "КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ",
+          "• Публичный каталог обновлений доступен",
+          "без входа в GitHub.",
+          "• Проверенные macOS и Windows пакеты",
+          "получают одну общую карточку релиза."
+        ],
+        "text_bbox": [
+          125,
+          575,
+          484,
+          168
+        ]
+      },
+      {
+        "id": "fixed_bugs",
+        "rect": [
+          725,
+          575,
+          500,
+          425
+        ],
+        "ok": true,
+        "kind": "text",
+        "font_size": 24,
+        "lines": [
+          "ИСПРАВЛЕННЫЕ ОШИБКИ",
+          "• Клиент больше не принимает неполный",
+          "набор файлов релиза.",
+          "• Повторная проверка установщика",
+          "сохраняет причину ошибки."
+        ],
+        "text_bbox": [
+          725,
+          575,
+          466,
+          168
+        ]
+      }
+    ]
+  },
+  "validation_errors": [],
+  "publishable_image": "final/final.png",
+  "publishable_image_count": 1,
+  "qa_artifacts": [
+    "qa/final.debug.png",
+    "qa/layout.guide.png",
+    "ui_plan.report.json",
+    "qa/render_report.json"
+  ]
+}

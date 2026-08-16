@@ -20,8 +20,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-993 Shop gold shell test passed at 1280x720, 1920x1080, 2560x1440 and live resize.")
-	quit()
+	_finish("SCRUM-993 Shop gold shell test passed at 1280x720, 1920x1080, 2560x1440 and live resize.")
 
 
 func _validate_target(viewport_size: Vector2i, money: int) -> void:

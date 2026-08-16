@@ -7,6 +7,7 @@ extends SceneTree
 # changes a live weapon cadence/radius/pierce count, changes incoming damage, or
 # applies/ticks a real status effect in a headless SceneTree mini-arena.
 
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
@@ -306,7 +307,7 @@ func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
 		_cleanup_player(player)
 		return
 	var cold_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
-	_disable_random_damage_avoidance(player)
+	_disable_random_damage_avoidance(player, errors)
 	var hp_before := float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_cold_test")
 	var cold_taken := hp_before - float(player.get("health"))
@@ -321,7 +322,7 @@ func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
 	if not bool(player.get("_reactor_heat_active")) or float((player.get("run_modifiers") as Dictionary).get("reactor_heat_active", 0.0)) < 0.99:
 		errors.append("Reactor runtime update did not expose the charged hot state (heat %.3f)." % float(player.get("_reactor_heat")))
 	var hot_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
-	_disable_random_damage_avoidance(player)
+	_disable_random_damage_avoidance(player, errors)
 	hp_before = float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_test")
 	var hot_taken := hp_before - float(player.get("health"))
@@ -421,24 +422,36 @@ func _test_drain_extra_target(holder: Node2D, errors: Array) -> void:
 
 
 func _test_cloud_detonation(holder: Node2D, errors: Array) -> void:
-	var player := await _make_player(holder, "chemist", {"cloud_detonation_radius_mult": 0.45})
-	var weapon := await _make_weapon(player, {"attack_mode": "aoe_projectile", "weapon_id": "acid_flask", "damage": 80.0, "aoe_radius": 100.0, "pool_element": "poison", "leaves_pool": true, "combo_clouds": true})
-	player.call("_apply_weapon_scaling", weapon)
+	if not await _test_cloud_detonation_case(holder, true):
+		errors.append("Cloud detonation radius keystone did not reach a farther real enemy.")
+	if await _test_cloud_detonation_case(holder, false):
+		errors.append("Cloud detonation radius mutation still reached the farther real enemy.")
+
+
+func _test_cloud_detonation_case(holder: Node2D, enabled: bool) -> bool:
+	var player := await _make_player(holder, "chemist", {"cloud_detonation_radius_mult": 0.45 if enabled else 0.0}, true)
+	# The custom weapon below is a real ClassWeapon runtime object. Mirror the
+	# production acid_flask capability so Player._apply_weapon_scaling() owns the
+	# radius mutation instead of the fixture bypassing that path.
+	var fixture_config: Dictionary = player.get("weapon_config")
+	fixture_config["geometry_capabilities"] = ["aoe_radius"]
+	player.set("weapon_config", fixture_config)
+	var weapon := await _make_weapon(player, {"attack_mode": "aoe_projectile", "weapon_id": "acid_flask", "damage": 80.0, "aoe_radius": 100.0, "pool_element": "poison", "leaves_pool": true, "combo_clouds": true}, true)
 	var old_cloud := Node2D.new()
 	var new_cloud := Node2D.new()
 	holder.add_child(old_cloud)
 	holder.add_child(new_cloud)
 	old_cloud.global_position = player.global_position + Vector2(160.0, 0.0)
 	new_cloud.global_position = player.global_position + Vector2(170.0, 0.0)
-	var far_enemy := await _make_enemy(holder, player.global_position + Vector2(305.0, 0.0), 1000.0)
+	var far_enemy := await _make_enemy(holder, player.global_position + Vector2(305.0, 0.0), 1000.0, true)
 	weapon.call("_trigger_chemist_combo", new_cloud, old_cloud, 20.0)
-	if float(far_enemy.get("health")) >= 999.0:
-		errors.append("Cloud detonation radius keystone did not reach a farther real enemy.")
+	var reached := float(far_enemy.get("health")) < 999.0
 	_cleanup_player(player)
 	old_cloud.queue_free()
 	new_cloud.queue_free()
 	far_enemy.queue_free()
 	await process_frame
+	return reached
 
 
 func _test_pet_buff(holder: Node2D, errors: Array) -> void:
@@ -565,9 +578,28 @@ func _cleanup_player(player: Node) -> void:
 		player.queue_free()
 
 
-func _disable_random_damage_avoidance(player: Node) -> void:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _disable_random_damage_avoidance(player: Node, errors: Array) -> void:
 	var params: Dictionary = player.get("derived_parameters")
 	params["dodge"] = 0.0
+	params["raw_dodge"] = 0.0
+	var defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if defect != "":
+		errors.append(defect)
 	player.set("derived_parameters", params)
 	player.set("_damage_invulnerability_left", 0.0)
 

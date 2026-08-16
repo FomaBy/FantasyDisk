@@ -1,0 +1,148 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/chakrams.png" id="1_chakrams"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_eight_moons"]
+resource_name = "ultimate"
+length = 7.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Orbit:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.4, 1.4, 11.4, 14.2, 15.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Orbit:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.18, 0.18), Vector2(0.55, 0.55), Vector2(0.85, 0.85), Vector2(2.15, 2.15), Vector2(0.55, 0.55), Vector2(0.08, 0.08)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ReturnCrescents:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 4.8, 5.5, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.6, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_eight_moons"]
+_data = {"ultimate": SubResource("Animation_eight_moons")}
+
+[node name="AssassinChakramsEightMoons" type="Node2D"]
+metadata/ultimate_id = "assassin/chakrams"
+metadata/silhouette = "eight silver moon-discs in a compass orbit"
+metadata/motion_path = "tight orbit expands to eight radial arcs then crescent return stack"
+metadata/impact_language = "eight-way disc launch and returning crescent cut"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 24
+
+[node name="WindupMoon" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.62, 0.36, 1, 0.34)
+polygon = PackedVector2Array(0, -96, 44, -44, 96, 0, 44, 44, 0, 96, -44, 44, -96, 0, -44, -44)
+
+[node name="OrbitGuide" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(96, 0, 83, 48, 48, 83, 0, 96, -48, 83, -83, 48, -96, 0, -83, -48, -48, -83, 0, -96, 48, -83, 83, -48, 96, 0)
+width = 4.0
+default_color = Color(0.64, 0.38, 1, 0.6)
+closed = true
+antialiased = true
+
+[node name="Orbit" type="Node2D" parent="."]
+
+[node name="MoonOne" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(70, 0)
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.96)
+
+[node name="MoonTwo" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(49, 49)
+rotation = 0.78
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.9)
+
+[node name="MoonThree" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(0, 70)
+rotation = 1.57
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.84)
+
+[node name="MoonFour" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(-49, 49)
+rotation = 2.35
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.78)
+
+[node name="MoonFive" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(-70, 0)
+rotation = 3.14
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.72)
+
+[node name="MoonSix" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(-49, -49)
+rotation = 3.92
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.78)
+
+[node name="MoonSeven" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(0, -70)
+rotation = 4.71
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.84)
+
+[node name="MoonEight" type="Sprite2D" parent="Orbit"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_chakrams")
+position = Vector2(49, -49)
+rotation = 5.49
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.82, 0.65, 1, 0.9)
+
+[node name="ReturnCrescents" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-174, 64, -116, -18, -42, 0, 0, 46, 42, 0, 116, -18, 174, 64)
+width = 15.0
+default_color = Color(0.94, 0.82, 1, 0.92)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_eight_moons")}
+autoplay = "ultimate"

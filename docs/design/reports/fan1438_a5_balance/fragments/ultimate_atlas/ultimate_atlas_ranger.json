@@ -1,0 +1,258 @@
+{
+	"class_id": "ranger",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 9,
+			"activation_timing_seconds": [
+				0.0,
+				7.233300000000001,
+				14.8833,
+				21.9667,
+				29.3333,
+				36.1333,
+				43.783300000000004,
+				50.8667,
+				58.5167
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 0
+			},
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.3372,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 10.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 159835.70320000002,
+				"hits": 15450
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			},
+			"zero_direct_damage": {
+				"activation_count": 9,
+				"class_id": "ranger",
+				"fixture_precondition": "No static dummy was selected inside the aimed trap.",
+				"kind": "activation_completed_without_applied_damage",
+				"provenance_event_count": 0,
+				"reason_code": "trap_had_no_applied_target",
+				"runtime_path": "hunter_trap.snap/close_net",
+				"scenario": "class_atlas50"
+			}
+		},
+		"class_constellation": {
+			"activation_count": 9,
+			"activation_timing_seconds": [
+				1.85,
+				8.3667,
+				16.0167,
+				23.383300000000002,
+				30.183300000000003,
+				37.550000000000004,
+				44.9167,
+				52.0,
+				59.650000000000006
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 0
+			},
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.3372,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 10.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 159835.70320000002,
+				"hits": 15450
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			},
+			"zero_direct_damage": {
+				"activation_count": 9,
+				"class_id": "ranger",
+				"fixture_precondition": "No static dummy was selected inside the aimed trap.",
+				"kind": "activation_completed_without_applied_damage",
+				"provenance_event_count": 0,
+				"reason_code": "trap_had_no_applied_target",
+				"runtime_path": "hunter_trap.snap/close_net",
+				"scenario": "class_constellation"
+			}
+		},
+		"no_meta": {
+			"activation_count": 8,
+			"activation_timing_seconds": [
+				1.6500000000000001,
+				9.450000000000001,
+				16.650000000000002,
+				24.450000000000003,
+				32.25,
+				39.75,
+				47.25,
+				54.45
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 0
+			},
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.283,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 9.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 93823.8704,
+				"hits": 8780
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			},
+			"zero_direct_damage": {
+				"activation_count": 8,
+				"class_id": "ranger",
+				"fixture_precondition": "No static dummy was selected inside the aimed trap.",
+				"kind": "activation_completed_without_applied_damage",
+				"provenance_event_count": 0,
+				"reason_code": "trap_had_no_applied_target",
+				"runtime_path": "hunter_trap.snap/close_net",
+				"scenario": "no_meta"
+			}
+		}
+	}
+}

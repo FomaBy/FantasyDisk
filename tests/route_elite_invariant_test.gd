@@ -179,8 +179,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Route elite invariant passed: elite nodes always start elite combat across %d seeds (icon exclusivity, altar protection, activation, reward flow, legacy alias, event UI intact)." % GENERATION_SEEDS.size())
-	quit()
+	_finish("Route elite invariant passed: elite nodes always start elite combat across %d seeds (icon exclusivity, altar protection, activation, reward flow, legacy alias, event UI intact)." % GENERATION_SEEDS.size())
 
 
 func _stub_node(node_type: String, row: int, branch: int) -> Dictionary:

@@ -49,50 +49,54 @@ const VALUE_NEUTRAL := Color(0.914, 0.863, 0.655, 1.0)
 const VALUE_EFFECTIVE := Color(1.0, 0.863, 0.361, 1.0)
 
 # SCRUM-890 вариант Б: «Боевые параметры» = ровно 4 секции в сетке 2×2.
-# Выживаемость/саммоны-производные ушли из досье (плотность по мокапу Б);
-# ключевые цифры выживания видны в HUD, полные — в кодексе.
+# Ключевые цифры выживания — в блоке «Выживание»; полные — в кодексе.
+# FAN-1887/FAN-1927: секции показывают ТОЛЬКО канонические оси реестра
+# (ProgressionData.ATTRIBUTE_REGISTRY через AttributeContract.class_axes_snapshot)
+# под каноническими id/названиями и в каноническом порядке; derived-алиасы
+# (damage/magic_damage/crit_damage_multiplier/vampiric_amount/...) больше не
+# являются player-facing id досье. Оси блока «Выживание» (max_health, defense,
+# dodge, regeneration) живут в своём блоке; остальные 12 идут порядком реестра.
 const DERIVED_GROUPS := [
 	{
-		"id": "physical_damage",
-		"title": "Физический урон",
-		"stats": ["damage", "attack_speed", "crit_chance", "crit_damage_multiplier", "knockback_power"],
+		"id": "damage_axes",
+		"title": "Урон",
+		"stats": ["damage_flat", "damage", "attack_speed"],
 		"accent": Color(0.95, 0.38, 0.22, 1.0),
 	},
 	{
-		"id": "magic_damage",
-		"title": "Магия",
-		"stats": ["magic_damage", "aoe_radius", "projectile_speed", "attack_range", "range_multiplier"],
-		"accent": Color(0.55, 0.42, 1.0, 1.0),
-	},
-	{
-		"id": "support_control",
-		"title": "Поддержка / Контроль",
-		"stats": ["aura_radius", "buff_power", "knockback_distance"],
+		"id": "mobility_area",
+		"title": "Область / мобильность",
+		"stats": ["move_speed", "aoe_radius", "pickup_radius"],
 		"accent": Color(0.30, 0.86, 1.0, 1.0),
 	},
 	{
-		"id": "dot_poison",
-		"title": "Яд / периодический урон",
-		"stats": ["dot_damage", "dot_speed"],
+		"id": "crit_dot",
+		"title": "Крит / периодический урон",
+		"stats": ["crit_chance", "crit_damage", "dot_damage"],
+		"accent": Color(0.55, 0.42, 1.0, 1.0),
+	},
+	{
+		"id": "summon_sustain",
+		"title": "Призыв / вампиризм / ультимейт",
+		"stats": ["summon_amount", "vampiric", "ultimate_power"],
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
 	},
 ]
+# Механические сокращения канонических названий для узких чипов; полное
+# каноническое название — в тултипе чипа.
 const DERIVED_COMPACT_LABELS := {
-	"damage": "Урон",
+	"damage_flat": "Доб. урона",
+	"damage": "Ув. урона",
 	"attack_speed": "Скор. атаки",
-	"crit_chance": "Шанс крит.",
-	"crit_damage_multiplier": "Сила крита",
-	"knockback_power": "Сила отт.",
-	"magic_damage": "Маг. урон",
-	"aoe_radius": "Ширина",
-	"projectile_speed": "Скор. снар.",
-	"attack_range": "Дальность",
-	"range_multiplier": "Дальн. ×",
-	"aura_radius": "Радиус а.",
-	"buff_power": "Сила бафа",
-	"knockback_distance": "Отталк.",
-	"dot_damage": "Период. ур.",
-	"dot_speed": "Частота",
+	"move_speed": "Скор. движ.",
+	"aoe_radius": "Область",
+	"pickup_radius": "Подбор",
+	"crit_chance": "Шанс крита",
+	"crit_damage": "Сила крита",
+	"dot_damage": "Период. урон",
+	"summon_amount": "Сила призыва",
+	"vampiric": "Вампиризм",
+	"ultimate_power": "Ультимейт",
 }
 const BASE_TIGHT_LABELS := {
 	"strength": "Сила", "agility": "Ловк.", "intelligence": "Инт.",
@@ -103,21 +107,22 @@ const SURVIVAL_TIGHT_LABELS := {
 	"health_point": "ОЗ", "defense": "Защ.", "dodge": "Увор.",
 	"regeneration": "Реген.", "summon_amount": "Приз.",
 }
+# FAN-1927: те же механические сокращения, но канонических axis id реестра.
 const DERIVED_TIGHT_LABELS := {
-	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "К×", "knockback_power": "Отт.",
-	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
-	"attack_range": "Дал.", "range_multiplier": "Д×", "aura_radius": "Аура",
-	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
-	"dot_speed": "Част.",
+	"damage_flat": "Д. ур.", "damage": "У. ур.", "attack_speed": "Скор.",
+	"crit_chance": "Крит", "crit_damage": "К×",
+	"aoe_radius": "Обл.", "ultimate_power": "Ульт",
+	"move_speed": "Движ.", "pickup_radius": "Подб.",
+	"dot_damage": "Пер.", "summon_amount": "Приз.",
+	"vampiric": "Вамп.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
-	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
-	"crit_damage_multiplier": "К×", "knockback_power": "От.",
-	"magic_damage": "М", "aoe_radius": "Ш", "projectile_speed": "Сн.",
-	"attack_range": "Д", "range_multiplier": "Д×", "aura_radius": "А",
-	"buff_power": "Б", "knockback_distance": "От.", "dot_damage": "П",
-	"dot_speed": "Ч",
+	"damage_flat": "Д+", "damage": "Д%", "attack_speed": "Ск.",
+	"crit_chance": "Кр.", "crit_damage": "К×",
+	"aoe_radius": "О", "ultimate_power": "У",
+	"move_speed": "Дв.", "pickup_radius": "Пд.",
+	"dot_damage": "П", "summon_amount": "Пр.",
+	"vampiric": "В",
 }
 const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 const TOOLTIP_SCROLL_STEP := 88
@@ -433,11 +438,11 @@ func _build_header(parent: Control, s: float) -> void:
 	summary_inset.add_child(_header_summary)
 	_dossier_header.add_child(summary_inset)
 
-
 func _build_action_footer(parent: Control) -> void:
 	_button_box = GridContainer.new()
 	_button_box.name = "PauseControlButtons"
 	_button_box.columns = 4
+	_button_box.mouse_filter = Control.MOUSE_FILTER_PASS
 	_button_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_button_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	parent.add_child(_button_box)
@@ -707,15 +712,24 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_focus_tooltip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_focus_tooltip_scroll.focus_mode = Control.FOCUS_NONE
-	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_focus_tooltip.add_child(_focus_tooltip_scroll)
-
+	var content_margin := MarginContainer.new()
+	content_margin.name = "DossierFocusTooltipContentMargin"
+	content_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_margin.add_theme_constant_override("margin_left", 3)
+	content_margin.add_theme_constant_override("margin_right", 3)
+	content_margin.add_theme_constant_override("margin_top", 2)
+	content_margin.add_theme_constant_override("margin_bottom", 2)
+	content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_focus_tooltip_scroll.add_child(content_margin)
 	_focus_tooltip_label = Label.new()
 	_focus_tooltip_label.name = "DossierFocusTooltipLabel"
 	_focus_tooltip_label.custom_minimum_size = Vector2(380.0, 0.0)
 	_focus_tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_focus_tooltip_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	_focus_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_focus_tooltip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
 		SemanticTypography.ROLE_TOOLTIP,
@@ -724,9 +738,7 @@ func _build_focus_tooltip(parent: Control) -> void:
 		SemanticTypography.role_max(SemanticTypography.ROLE_TOOLTIP)
 	))
 	_focus_tooltip_label.add_theme_color_override("font_color", COLOR_BODY)
-	_focus_tooltip_scroll.add_child(_focus_tooltip_label)
-
-
+	content_margin.add_child(_focus_tooltip_label)
 func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
 	var margin_x := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.x / ATLAS_FRAME_SOURCE_SIZE.x)
 	var margin_y := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.y / ATLAS_FRAME_SOURCE_SIZE.y)
@@ -1026,16 +1038,11 @@ func _position_focus_tooltip() -> void:
 		_focus_tooltip.visible = false
 		return
 	var viewport_size := get_viewport_rect().size
-	var inner_rect: Rect2 = _responsive_contract(viewport_size)["inner_rect"]
-	var tooltip_size := Vector2(minf(430.0, inner_rect.size.x), minf(288.0, inner_rect.size.y))
+	var body_rect: Rect2 = _responsive_contract(viewport_size)["body_rect"]
+	var tooltip_size := Vector2(minf(430.0, body_rect.size.x), minf(288.0, body_rect.size.y))
 	_focus_tooltip.size = tooltip_size
-	var anchor_rect := _focus_tooltip_anchor.get_global_rect()
-	var candidate := Vector2(anchor_rect.end.x + 12.0, anchor_rect.position.y)
-	if candidate.x + tooltip_size.x > inner_rect.end.x:
-		candidate.x = anchor_rect.position.x - tooltip_size.x - 12.0
-	candidate.x = clampf(candidate.x, inner_rect.position.x, inner_rect.end.x - tooltip_size.x)
-	candidate.y = clampf(candidate.y, inner_rect.position.y, inner_rect.end.y - tooltip_size.y)
-	_focus_tooltip.position = candidate
+	# Declared body disclosure zone, above the action band and inside the frame.
+	_focus_tooltip.position = body_rect.end - tooltip_size
 
 
 func _show_focus_tooltip(anchor: Control) -> void:
@@ -1520,9 +1527,12 @@ func _refresh_stats() -> void:
 	for entry in base_entries:
 		_base_stats_grid.add_child(_make_basic_stat_row(entry))
 
+	# FAN-1927: чипы боевых секций — канонические оси реестра (единый view-model
+	# AttributeContract), а не сырые derived-параметры.
+	var axis_entries_by_id := _canonical_axis_entries()
 	var derived_entries_by_id := _entries_by_id(sections.get("derived", []))
 	for group in DERIVED_GROUPS:
-		_derived_groups_container.add_child(_make_derived_group(group, derived_entries_by_id))
+		_derived_groups_container.add_child(_make_derived_group(group, axis_entries_by_id))
 	_refresh_survival_rows(derived_entries_by_id)
 	_refresh_arsenal()
 	_refresh_equipment()
@@ -1644,7 +1654,7 @@ func _equipment_artifact_tooltip(artifact: Dictionary) -> String:
 		lines.append("%s (%s)" % [title, EQUIPMENT_TIER_LABELS[tier]])
 	else:
 		lines.append(title)
-	var description := str(definition.get("description", ""))
+	var description := str(artifact.get("description", definition.get("description", "")))
 	if description != "":
 		lines.append(description)
 	return "\n".join(lines)
@@ -1682,7 +1692,9 @@ func _refresh_equipment() -> void:
 		chip.custom_minimum_size = Vector2(0, 40.0)
 		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
 		chip.mouse_filter = Control.MOUSE_FILTER_STOP
-		chip.tooltip_text = _equipment_artifact_tooltip(artifact)
+		chip.set_meta(DOSSIER_TOOLTIP_META, _equipment_artifact_tooltip(artifact))
+		chip.tooltip_text = ""
+		_wire_stat_focus(chip, _derived_focus_targets)
 		_equipment_flow.add_child(chip)
 
 		var line := HBoxContainer.new()
@@ -1745,9 +1757,8 @@ func _refresh_survival_rows(entries_by_id: Dictionary) -> void:
 			if current_hp != null and max_hp != null:
 				value_override = "%d/%d" % [int(round(clampf(float(current_hp), 0.0, float(max_hp)))), int(round(float(max_hp)))]
 		_survival_stats_container.add_child(_make_survival_stat_row(entry, display_name, value_override))
-	var weapon: Dictionary = ProgressionData.weapon(str(_player.get("character_id")), str(_player.get("weapon_id")))
-	if ProgressionData.weapon_archetype(weapon) == "summon" and entries_by_id.has("summon_amount"):
-		_survival_stats_container.add_child(_make_survival_stat_row(entries_by_id["summon_amount"], "Призывы"))
+	# FAN-1927: отдельный ряд «Призывы» убран — каноническая ось «Сила призыва»
+	# живёт в секции «Призыв / вампиризм / ультимейт» с фактическим runtime-парком.
 
 
 # Мини-ряд выживания: иконка 24 (реестр → 35) + имя + значение, высота ~40;
@@ -1825,6 +1836,19 @@ func _entries_by_id(entries: Array) -> Dictionary:
 		var stat_entry: Dictionary = entry
 		result[str(stat_entry.get("id", ""))] = stat_entry
 	return result
+
+
+# FAN-1927: канонические chip-entries досье — единый view-model
+# (AttributeContract.axis_chip_entries), weapon-aware канал/парк/капы.
+func _canonical_axis_entries() -> Dictionary:
+	if _player == null or not is_instance_valid(_player):
+		return {}
+	var character_id := str(_player.get("character_id"))
+	return AttributeContract.axis_chip_entries(
+		character_id,
+		_player.get("stats") if _player.get("stats") is Dictionary else {},
+		_player.get("run_modifiers") if _player.get("run_modifiers") is Dictionary else {},
+		ProgressionData.weapon(character_id, str(_player.get("weapon_id"))))
 
 
 # Плотный chip-ряд базового стата: иконка + имя + ★ (main-атрибут) + значение.
@@ -1998,7 +2022,7 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	line.add_theme_constant_override("separation", 2 if compact else 4)
 	chip.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(stat_id, Vector2(18, 18) if compact else Vector2(28, 28))
+	var icon := UIIconRegistry.make_icon(str(entry.get("icon_id", stat_id)), Vector2(18, 18) if compact else Vector2(28, 28))
 	icon.name = "DerivedStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
@@ -2076,20 +2100,24 @@ func _derived_stat_row_style(is_hovered: bool) -> StyleBoxFlat:
 
 
 func _compact_value_text(entry: Dictionary) -> String:
+	# FAN-1927: канонические оси несут готовый value_text единого view-model —
+	# локальное форматирование остаётся только для legacy derived-entries.
+	if str(entry.get("value_text", "")) != "":
+		return str(entry.get("value_text", ""))
 	var raw_value: Variant = entry.get("value", null)
 	if raw_value == null:
 		return "N/A"
 	var value := float(raw_value)
 	var stat_id := str(entry.get("id", ""))
-	if stat_id in ["crit_chance", "dodge", "defense", "vampiric_chance", "range_multiplier"]:
+	if stat_id in ["crit_chance", "dodge", "defense", "vampiric_chance"]:
 		return "%d%%" % int(round(value * 100.0))
-	if stat_id in ["crit_damage_multiplier", "ultimate_multiplier", "buff_power"]:
+	if stat_id in ["crit_damage_multiplier", "ultimate_multiplier"]:
 		return ("×%.2f" % value).replace(".", ",")
 	if stat_id in ["attack_speed", "dot_speed", "regeneration"]:
 		return ("%.2f/с" % value).replace(".", ",")
 	if str(entry.get("type", "derived")) == "base" and is_equal_approx(value, roundf(value)):
 		return str(int(round(value)))
-	if stat_id in ["attack_range", "aoe_radius", "aura_radius", "projectile_speed", "knockback_distance", "knockback_power", "move_speed", "pickup_radius"]:
+	if stat_id in ["aoe_radius", "knockback_power", "move_speed", "pickup_radius"]:
 		return str(int(round(value)))
 	return ("%.1f" % value).replace(".", ",")
 
@@ -2150,8 +2178,12 @@ func _value_color(entry: Dictionary) -> Color:
 
 	var stat_id := str(entry.get("id", ""))
 	match stat_id:
-		"damage", "magic_damage":
+		# FAN-1927: канонические axis id (damage_flat — фактический канал урона,
+		# damage — набранный процент оси) + legacy derived id блока «Выживание».
+		"damage_flat", "magic_damage":
 			return VALUE_HIGH if value >= 15.0 else VALUE_EFFECTIVE
+		"damage":
+			return VALUE_HIGH if value >= 50.0 else VALUE_EFFECTIVE
 		"attack_speed":
 			return VALUE_HIGH if value >= 1.2 else VALUE_EFFECTIVE
 		"health_point":
@@ -2161,7 +2193,7 @@ func _value_color(entry: Dictionary) -> Color:
 				return VALUE_HIGH
 			if value <= 0.06:
 				return VALUE_LOW
-		"attack_range", "aoe_radius", "pickup_radius":
+		"aoe_radius", "pickup_radius":
 			return VALUE_HIGH if value >= 250.0 else VALUE_EFFECTIVE
 
 	return VALUE_NEUTRAL

@@ -17,6 +17,9 @@ const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const UltimateHostScript := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const UltimateRegistryScript := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const UltimateResolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
@@ -73,6 +76,54 @@ const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
 const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
+# FAN-2054: телеграфируемый ультимейт бьёт не в кадре активации, а к объявленному
+# им сроку. Запас покрывает джиттер headless-кадра, потолок отсекает декларацию,
+# которая «объявила» задержку длиннее любого разумного каста.
+const ULTIMATE_TIMING_GRACE_SECONDS := 1.0
+const ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS := 30.0
+const ULTIMATE_FIXTURE_CLASS := "chemist"
+const ULTIMATE_FIXTURE_WEAPON := "blast_powder"
+# Отложенная детонация: первый тик только на 0.2s, весь каст живёт 0.6s.
+const ULTIMATE_DELAYED_FIXTURE := {
+	"strategy_id": "status_zone",
+	"params": {
+		"radius": 600.0,
+		"damage": 1.0,
+		"duration": 0.6,
+		"interval": 0.2,
+		"follow_host": false,
+		"status_id": "",
+		"status": {},
+	},
+}
+const ULTIMATE_IMMEDIATE_FIXTURE := {
+	"strategy_id": "burst",
+	"params": {"radius": 600.0, "damage": 1.0, "target_limit": 0},
+}
+const ULTIMATE_MALFORMED_FIXTURES := [
+	{
+		"strategy_id": "status_zone",
+		"params": {
+			"radius": 600.0,
+			"damage": 1.0,
+			"duration": 0.6,
+			"interval": -1.0,
+			"follow_host": false,
+			"status_id": "",
+			"status": {},
+		},
+	},
+	{
+		"strategy_id": "__missing_executor_family__",
+		"params": {"radius": 600.0, "damage": 1.0, "target_limit": 0},
+	},
+]
+
+# FAN-1700: липкий флаг провала. quit() в Godot отложенный (выполняется в конце
+# кадра), поэтому после _fail() код продолжает работать и успешный quit() затирает
+# уже запрошенный код 1. Флаг переживает любой порядок выполнения и проверяется
+# в _finish() до печати «passed».
+var _failure_reported := false
 
 func _initialize() -> void:
 	if not _test_no_space_number_duplicate_artifacts():
@@ -380,11 +431,15 @@ func _initialize() -> void:
 		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected SCRUM-851 line bar + concise tooltip for stat %s." % stat_id)
 			return
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "" or not guidance.text.contains(":"):
 			_fail("Expected SCRUM-798 build guidance section %s." % relevance)
 			return
+	# FAN-1887: рейл «Слабые атрибуты» удалён из Hero Select.
+	if main.find_child("HS4BuildGuidance_weak", true, false) != null:
+		_fail("Expected the removed weak-attributes rail to be absent (FAN-1887).")
+		return
 	var v4_choose := main.find_child("HS4ChooseButton", true, false) as Button
 	if v4_choose == null:
 		_fail("Expected hero select v4 to expose a choose button.")
@@ -693,6 +748,9 @@ func _initialize() -> void:
 	# Dodge делает проверки урона недетерминированными; для damage-блока обнуляем уворот.
 	var damage_test_derived: Dictionary = player.get("derived_parameters")
 	damage_test_derived["dodge"] = 0.0
+	damage_test_derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(damage_test_derived, "dodge", "raw_dodge"):
+		return
 	player.set("derived_parameters", damage_test_derived)
 
 	var hp_before_contact := float(player.get("health"))
@@ -1261,7 +1319,8 @@ func _initialize() -> void:
 		return
 	var escape_panel := pause_menu.find_child("EscapeStatsPanelFrame", true, false) as PanelContainer
 	var resume_button := pause_menu.find_child("PauseResumeButton", true, false) as Button
-	var physical_group := pause_menu.find_child("DerivedStatGroup_physical_damage", true, false) as PanelContainer
+	# FAN-1927: секции боевых параметров канонические (damage_axes = урон-оси реестра).
+	var physical_group := pause_menu.find_child("DerivedStatGroup_damage_axes", true, false) as PanelContainer
 	if escape_panel == null or resume_button == null or physical_group == null:
 		_fail("Expected pause stats menu to expose Design kit hook nodes.")
 		return
@@ -1318,7 +1377,7 @@ func _initialize() -> void:
 	if strength_row_style.bg_color.a < 0.55 or damage_chip_style.bg_color.a < 0.55 or physical_group_style.bg_color.a < 0.8:
 		_fail("Expected readable chip alphas (rows >=0.55, sections >=0.8).")
 		return
-	if physical_group.find_child("DerivedGroupMarker_physical_damage", true, false) == null:
+	if physical_group.find_child("DerivedGroupMarker_damage_axes", true, false) == null:
 		_fail("Expected the section header to keep its colored accent marker (SCRUM-890).")
 		return
 	var stats_hint := pause_menu.find_child("DerivedStatsHint", true, false) as Label
@@ -1364,13 +1423,13 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
-	# SCRUM-890 вариант Б + доработка: 8 базовых + 15 производных в 4 секциях
-	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
-	# SCRUM-898: секция «Поддержка / Контроль» потеряла sound_wave_damage (16 → 15).
+	# SCRUM-890 вариант Б + FAN-1887/FAN-1927: 8 базовых + 10 канонических осей
+	# реестра в 4 секциях (dot_damage и summon_amount ineligible для berserk+sword)
+	# + 4 ряда «Выживания»; derived-алиасы и внутренние оси не рисуются.
 	var stat_icons := pause_menu.find_children("BaseStatIcon_*", "Control", true, false)
 	stat_icons.append_array(pause_menu.find_children("SurvivalStatIcon_*", "Control", true, false))
 	stat_icons.append_array(pause_menu.find_children("DerivedStatIcon_*", "Control", true, false))
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 19:
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 14:
 		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
@@ -1526,8 +1585,7 @@ func _initialize() -> void:
 	await _test_new_boss_roster(main_scene)
 	await _test_secret_boss_after_final_act_flow(main_scene)
 
-	print("Runtime smoke test passed.")
-	quit()
+	_finish("Runtime smoke test passed.")
 
 
 func _test_glossary_terms(main: Node) -> void:
@@ -4096,7 +4154,13 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		_fail("Expected elite combat restart to spawn an elite enemy.")
 		return
 	killed_elite.call("take_damage", 1.0e9)  # достоверный сигнал died -> _elite_defeated=true
-	await process_frame
+	# The elite death owns a 0.3s ignore-time-scale hit-stop. Let its restore
+	# callback complete before this fixture tears down and starts another fight;
+	# otherwise Engine.time_scale=0.34 leaks into later timed runtime oracles.
+	await create_timer(0.31, true, false, true).timeout
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected elite flow hit-stop to restore time_scale before the next fight.")
+		return
 	if not bool(elite_main.combat.get("_elite_defeated")):
 		_fail("Expected killing the elite to mark _elite_defeated on the combat director.")
 		return
@@ -4420,15 +4484,31 @@ func _test_unique_class_identity_patterns() -> void:
 	var ranger_params: Dictionary = ranger.get("derived_parameters")
 	ranger_params["crit_chance"] = 0.0
 	ranger.set("derived_parameters", ranger_params)
-	ranger_weapon.set("_charge_time", 0.0)
-	ranger_weapon.set("_current_charge_multiplier", 1.0)
-	var base_shot := float(ranger_weapon.call("_rolled_damage", ranger))
-	ranger_weapon.set("_charge_time", float(ranger_weapon.get("charge_seconds")))
-	ranger_weapon.set("_current_charge_multiplier", float(ranger_weapon.call("_charge_multiplier")))
-	var charged_shot := float(ranger_weapon.call("_rolled_damage", ranger))
-	if charged_shot <= base_shot * 1.2:
-		_fail("Expected Ranger charged stance shot to deal meaningfully more damage.")
+	var ranger_enemy := enemy_scene.instantiate()
+	holder.add_child(ranger_enemy)
+	ranger_enemy.set("max_health", 100000.0)
+	ranger_enemy.set("health", 100000.0)
+	ranger_enemy.global_position = ranger.global_position + Vector2(140, 0)
+	await process_frame
+	var partial_damage := 0.0
+	var full_charge_damage := 0.0
+	for cast_index in range(12):
+		var health_before := float(ranger_enemy.get("health"))
+		ranger_weapon.call("_process", float(ranger_weapon.get("fire_interval")))
+		var dealt := health_before - float(ranger_enemy.get("health"))
+		if float(ranger_weapon.get("_charge_time")) > 0.001 and partial_damage <= 0.0:
+			partial_damage = dealt
+		elif float(ranger_weapon.get("_charge_time")) <= 0.001 and partial_damage > 0.0:
+			full_charge_damage = dealt
+			break
+	if full_charge_damage <= partial_damage * 1.2:
+		_fail("Expected Ranger production auto-fire to preserve partial stance charge through one stronger full release.")
 		return
+	ranger_weapon.call("_process", float(ranger_weapon.get("fire_interval")))
+	if float(ranger_weapon.get("_charge_time")) <= 0.001:
+		_fail("Expected Ranger full release to restart, not retain, the stance cycle.")
+		return
+	ranger_enemy.remove_from_group("enemies")
 
 	var doctor := player_scene.instantiate()
 	holder.add_child(doctor)
@@ -4478,6 +4558,21 @@ func _test_unique_class_identity_patterns() -> void:
 	if get_nodes_in_group("chemist_clouds").size() > 0:
 		_fail("Expected Chemist blast powder explosion to leave no pools.")
 		return
+	# FAN-2238: продакшен-путь каста пыли (полёт + прилёт) остаётся pool-free и
+	# без реагентного следа, пока финал созвездия не куплен.
+	var chemist_natural_hp_before := float(chemist_enemy.get("health"))
+	chemist_weapon.call("_attack")
+	await create_timer(0.6).timeout
+	if float(chemist_enemy.get("health")) >= chemist_natural_hp_before:
+		_fail("Expected Chemist blast powder natural cast/travel/impact to damage enemies.")
+		return
+	if get_nodes_in_group("chemist_clouds").size() > 0:
+		_fail("Expected Chemist blast powder natural cast to leave no pools.")
+		return
+	for chemist_effect in get_nodes_in_group("player_weapon_effects"):
+		if (chemist_effect as Node).name == "PowderReagentTrace":
+			_fail("Expected base Chemist blast powder to leave no reagent trace without its constellation final.")
+			return
 	var chemist_acid := player_scene.instantiate()
 	holder.add_child(chemist_acid)
 	chemist_acid.global_position = Vector2(1150, 700)
@@ -4523,8 +4618,12 @@ func _test_unique_class_identity_patterns() -> void:
 	knight_weapon.set_process(false)
 	var knight_parameters: Dictionary = knight.get("derived_parameters")
 	knight_parameters["dodge"] = 0.0
+	knight_parameters["raw_dodge"] = 0.0
 	knight_parameters["defense"] = 0.0
+	knight_parameters["raw_defense"] = 0.0
 	knight_parameters["absorb"] = 0.0
+	if not _assert_raw_pair(knight_parameters, "dodge", "raw_dodge") or not _assert_raw_pair(knight_parameters, "defense", "raw_defense"):
+		return
 	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
 	holder.add_child(knight_enemy)
@@ -4730,25 +4829,43 @@ func _test_universal_attribute_interpretations() -> void:
 		_fail("Expected universal magic/DoT interpretations to damage the hit target.")
 		return
 
-	var leadership_hp_before := float(enemy.get("health"))
+	# FAN-1893: универсальный Leadership-echo УДАЛЁН — высокий summon_amount у
+	# класса без реальных призывов больше не конвертируется в synthetic-урон.
+	# Исполняемая проверка инертности: глушим универсальные magic/DoT-каналы и
+	# бьём серию хитов — здоровье цели не меняется (старый echo сработал бы
+	# минимум раз на 6 хитов при summon_amount 18).
+	var echoless: Dictionary = universal_player.get("derived_parameters")
+	echoless["magic_damage"] = 0.0
+	echoless["dot_damage"] = 0.0
+	echoless["summon_amount"] = 18.0
+	universal_player.set("derived_parameters", echoless)
+	# Свежая цель: на первой ещё тикает универсальный DoT из фазы выше.
+	var echo_probe_enemy := enemy_scene.instantiate()
+	holder.add_child(echo_probe_enemy)
+	echo_probe_enemy.set("max_health", 100000.0)
+	echo_probe_enemy.set("health", 100000.0)
+	echo_probe_enemy.global_position = universal_player.global_position + Vector2(-90, 0)
+	await process_frame
+	var leadership_hp_before := float(echo_probe_enemy.get("health"))
 	for hit_index in range(6):
-		universal_player.call("on_weapon_hit", enemy, 12.0)
+		universal_player.call("on_weapon_hit", echo_probe_enemy, 12.0)
 		await process_frame
-	if float(enemy.get("health")) >= leadership_hp_before:
-		_fail("Expected leadership interpretation to trigger echo weapon damage.")
+	await create_timer(0.4).timeout
+	if float(echo_probe_enemy.get("health")) < leadership_hp_before:
+		_fail("Removed universal leadership echo must not deal damage for non-summon classes.")
 		return
 
-	# FAN-1034: пул берсерка после ревизии атрибутов — мёртвые оси
-	# (projectile_speed/knockback/сектор) удалены, buff_power/magic_focus гейтнуты
-	# affinity, дот-темп и вампиризм-пара приезжают внутри объединённых карт.
+	# FAN-1034/FAN-1887: пул берсерка после канонизации реестра — мёртвые оси
+	# (projectile_speed/knockback/сектор) и снятые с реестра выборы
+	# (magic_focus/range/buff_power/absorb) отсутствуют; optional-оси класса
+	# (dot_damage/summon_amount у берсерка) отфильтрованы строго; вампиризм-пара
+	# приезжает внутри объединённой карты, плоский урон — отдельной осью.
 	var rewards := ProgressionData.level_up_rewards("berserk")
 	var derived_icons_seen := {}
 	var mod_display := {
-		"dot_damage_flat": "dot_damage",
-		"dot_speed_flat": "dot_speed",
-		"aoe_radius_multiplier": "aura_radius",
-		"summon_bonus": "summon_amount",
-		"absorb_flat": "absorb",
+		"damage_flat": "damage",
+		# FAN-1891: единая область атаки — иконка оси радиуса теперь aoe_radius.
+		"aoe_radius_multiplier": "aoe_radius",
 		"regeneration_flat": "regeneration",
 		"vampiric_amount_flat": "vampiric_amount",
 		"vampiric_chance_flat": "vampiric_chance",
@@ -4760,16 +4877,21 @@ func _test_universal_attribute_interpretations() -> void:
 			var icon_id := str(mod_display.get(str(modifier_id), ""))
 			if icon_id != "":
 				derived_icons_seen[icon_id] = true
-	for icon_id in ["dot_damage", "dot_speed", "aura_radius", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+	for icon_id in ["damage", "aoe_radius", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
 		if not derived_icons_seen.has(icon_id):
 			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
 			return
 		if not UIIconRegistry.has_texture(icon_id):
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
 			return
-	for gated_reward in rewards:
-		if str(gated_reward.get("id", "")) in ["buff_power_up", "magic_focus_up"]:
-			_fail("Expected %s to be affinity-gated away from berserk (FAN-1034)." % str(gated_reward.get("id", "")))
+	for removed_id in ["buff_power_up", "magic_focus_up", "range_up", "absorb_up"]:
+		for gated_reward in rewards:
+			if str(gated_reward.get("id", "")) == removed_id:
+				_fail("Expected removed axis card %s to be absent (FAN-1887)." % removed_id)
+				return
+	for reward in rewards:
+		if ProgressionData.reward_is_optional(reward, "berserk"):
+			_fail("Expected optional axis %s to be excluded from berserk pool offers (FAN-1887)." % str(reward.get("attr", "")))
 			return
 
 	holder.queue_free()
@@ -4897,7 +5019,13 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		return
 	var elite_xp := int(elite_enemy.get("reward_xp"))
 	elite_enemy.take_damage(999999.0)
-	await process_frame
+	# This reward fixture also produces a real elite death hit-stop. Its owner
+	# must survive through restoration before the following timed test begins.
+	await create_timer(0.31, true, false, true).timeout
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected elite reward hit-stop to restore time_scale before teardown.")
+		drop_main.queue_free()
+		return
 	var found_elite_xp_pickup := false
 	var found_elite_money_pickup := false
 	for pickup in get_nodes_in_group("pickups"):
@@ -4918,7 +5046,44 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		await _assert_elite_reward_panel_centered(main_scene, viewport_size)
 
 
+## FAN-2054: одна точная ready-пара поверх замороженного канонического каталога.
+## Повторяет ровно тот контракт реестра, который читает рантайм, поэтому generic
+## ready-путь исполняется без правок production-данных.
+class ReadyUltimateRegistry extends RefCounted:
+	const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+
+	var _canonical_pairs: Dictionary = {}
+	var _profiles: Dictionary = {}
+
+	func _init(canonical_pairs: Dictionary) -> void:
+		_canonical_pairs = canonical_pairs
+
+	func admit(profile: Dictionary) -> void:
+		var key := Resolver.profile_key(
+			str(profile.get("class_id", "")), str(profile.get("weapon_id", ""))
+		)
+		_profiles[key] = profile.duplicate(true)
+
+	func resolution_source(class_id: String, weapon_id: String, _allow_legacy := true) -> String:
+		var key := Resolver.profile_key(class_id, weapon_id)
+		if not _canonical_pairs.has(key):
+			return Resolver.SOURCE_INVALID_PAIR
+		var profile: Dictionary = _profiles.get(key, {})
+		return Resolver.SOURCE_WEAPON_PROFILE \
+			if str(profile.get("implementation_state", "")) == "ready" \
+			else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
+
+	func catalog_profile_for(class_id: String, weapon_id: String) -> Dictionary:
+		return (_profiles.get(Resolver.profile_key(class_id, weapon_id), {}) as Dictionary).duplicate(true)
+
+
 func _test_ultimate_framework() -> void:
+	if paused or absf(Engine.time_scale - 1.0) > 0.001:
+		_fail(
+			"Expected nominal global timing before ultimate framework (paused=%s, time_scale=%.3f)."
+			% [str(paused), Engine.time_scale]
+		)
+		return
 	var holder := Node2D.new()
 	holder.name = "UltimateFrameworkScene"
 	root.add_child(holder)
@@ -4931,10 +5096,25 @@ func _test_ultimate_framework() -> void:
 		player.global_position = Vector2(900, 700)
 		await process_frame
 		var weapon_ids := ProgressionData.weapon_ids(character_id)
-		player.call("configure_character", character_id, str(weapon_ids[0]))
+		var weapon_id := str(weapon_ids[0])
+		player.call("configure_character", character_id, weapon_id)
 		var parameters: Dictionary = player.get("derived_parameters")
 		parameters["ultimate_multiplier"] = 1.5
 		player.set("derived_parameters", parameters)
+		var ready_profile := {}
+		if str(UltimateHostScript.shared_registry().resolution_source(character_id, weapon_id)) \
+				== UltimateResolver.SOURCE_WEAPON_PROFILE:
+			ready_profile = UltimateHostScript.shared_registry().catalog_profile_for(character_id, weapon_id)
+		var target_origin: Vector2 = player.global_position
+		var target_direction := Vector2.RIGHT
+		var has_aim_contract := false
+		var executor = ready_profile.get("executor")
+		var executor_params = (executor as Dictionary).get("params") if executor is Dictionary else null
+		if executor_params is Dictionary and (executor_params as Dictionary).has("max_range"):
+			var max_range := float((executor_params as Dictionary)["max_range"])
+			target_origin = player.call("attack_aim_position", max_range)
+			target_direction = player.call("attack_aim_direction", Vector2.RIGHT, max_range)
+			has_aim_contract = true
 		var enemies := []
 		for index in range(3):
 			var enemy := enemy_scene.instantiate()
@@ -4942,12 +5122,20 @@ func _test_ultimate_framework() -> void:
 			enemy.add_to_group("enemies")
 			enemy.set("max_health", 100000.0)
 			enemy.set("health", 100000.0)
-			enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+			if has_aim_contract and index == 0:
+				enemy.global_position = target_origin
+			else:
+				enemy.global_position = player.global_position \
+					+ target_direction * float(110 + index * 45)
+			if has_aim_contract:
+				enemy.set_process(false)
+				enemy.set_physics_process(false)
 			enemies.append(enemy)
 		await process_frame
 		var hp_before := 0.0
 		for enemy in enemies:
 			hp_before += float(enemy.get("health"))
+		var baseline := _ultimate_baseline(player, enemies)
 		player.set("ultimate_charge", 100.0)
 		if not bool(player.call("ultimate_ready")):
 			_fail("Expected %s ultimate to be ready at full charge." % character_id)
@@ -4958,29 +5146,413 @@ func _test_ultimate_framework() -> void:
 		if float(player.get("ultimate_charge")) > 0.01:
 			_fail("Expected %s ultimate to reset charge after activation." % character_id)
 			return
+		var activation = _ultimate_active_activation(player)
+		var same_frame_effect := _ultimate_has_observable_effect(player, enemies, baseline, activation)
 		await process_frame
 		if character_id == "berserk":
 			player.call("on_weapon_hit", enemies[0], 20.0)
 			await process_frame
-		var hp_after := 0.0
-		for enemy in enemies:
-			if is_instance_valid(enemy):
-				hp_after += float(enemy.get("health"))
-		if character_id == "druid":
-			if get_nodes_in_group("allies").is_empty():
-				_fail("Expected Druid ultimate to summon temporary allies.")
+		# FAN-2054: пока ни один поставляемый профиль не `ready`, каждая пара
+		# уходит в legacy-ветку с прежним оракулом. Как только пакет оружия
+		# станет исполнимым, его берёт тот же generic-контракт, который ниже
+		# исполняется на инъецированной ready-паре, — без class/weapon-развилок.
+		if not ready_profile.is_empty():
+			await _assert_ready_ultimate_runtime(
+				player,
+				enemies,
+				baseline,
+				activation,
+				same_frame_effect,
+				ready_profile
+			)
+			if _failure_reported:
 				return
-		elif hp_after >= hp_before:
-			_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
-			return
+		else:
+			var hp_after := 0.0
+			for enemy in enemies:
+				if is_instance_valid(enemy):
+					hp_after += float(enemy.get("health"))
+			if character_id == "druid":
+				if get_nodes_in_group("allies").is_empty():
+					_fail("Expected Druid ultimate to summon temporary allies.")
+					return
+			elif hp_after >= hp_before:
+				_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
+				return
 		player.queue_free()
 		for enemy in enemies:
 			if is_instance_valid(enemy):
 				enemy.queue_free()
 		await process_frame
+	await _test_ready_weapon_ultimate_fixtures(holder, player_scene, enemy_scene)
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+## FAN-2054: поставляемый каталог ещё не содержит ни одного исполнимого пакета,
+## поэтому generic-контракт телеграфа доказывается здесь — на инъецированной
+## точной ready-паре Chemist `blast_powder`. Смоук обязан принять объявленную
+## задержку удара и остаться fail-closed на immediate, malformed и legacy путях.
+func _test_ready_weapon_ultimate_fixtures(
+	holder: Node2D,
+	player_scene: PackedScene,
+	enemy_scene: PackedScene
+) -> void:
+	for timing_case in [
+		{
+			"params": {
+				"windup_delay": 0.52,
+				"strip_count": 5,
+				"strip_interval": 0.16,
+				"final_delay": 0.24,
+				"recovery_tail": 4.0,
+				"stun_duration": 1.4,
+			},
+			"expected": 0.52,
+			"expected_lifecycle": 4.0,
+		},
+		{
+			"params": {
+				"deploy_delay": 0.68,
+				"pulse_count": 4,
+				"pulse_interval": 0.27,
+				"overload_delay": 0.45,
+				"recovery_tail": 4.06,
+				"feedback_duration": 2.0,
+			},
+			"expected": 0.68,
+			"expected_lifecycle": 4.06,
+		},
+		{
+			"params": {"impact_at": 0.70, "interval": 0.10, "duration": 0.30},
+			"expected": 0.70,
+			"expected_lifecycle": 0.70,
+		},
+	]:
+		var declared := _ultimate_declared_timing({
+			"executor": {"strategy_id": "fixture", "params": timing_case["params"]},
+		})
+		if not bool(declared.get("valid", false)) \
+				or not is_equal_approx(float(declared.get("impact_window", 0.0)), float(timing_case["expected"])) \
+				or not is_equal_approx(float(declared.get("lifecycle_window", 0.0)), float(timing_case["expected_lifecycle"])):
+			_fail("Expected semantic first-impact timing to ignore smaller cadence/final/recovery fields: %s" % str(timing_case))
+			return
+
+	for malformed in [
+		{},
+		{"executor": {"strategy_id": "status_zone", "params": {"interval": "soon"}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"interval": -0.2}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"duration": INF}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"duration": 31.0}}},
+		{"executor": {"strategy_id": "status_zone"}},
+	]:
+		if bool(_ultimate_declared_timing(malformed).get("valid", true)):
+			_fail("Expected runtime smoke to reject malformed declared ultimate timing: %s" % str(malformed))
+			return
+
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(900, 700)
+	await process_frame
+	player.call("configure_character", ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON)
+	var parameters: Dictionary = player.get("derived_parameters")
+	parameters["ultimate_multiplier"] = 1.5
+	player.set("derived_parameters", parameters)
+	# Пока смоук ждёт объявленный impact, проходит много кадров, и обычная
+	# автоатака оружия успела бы сойти за «эффект ультимейта». Бой замораживается,
+	# а живой каст отчитывается собственным ledger — см. _ultimate_has_observable_effect.
+	player.set_process(false)
+	player.set_physics_process(false)
+	var enemies := []
+	for index in range(3):
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.add_to_group("enemies")
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+		enemy.set_process(false)
+		enemy.set_physics_process(false)
+		enemies.append(enemy)
+	await process_frame
+
+	var pairs: Dictionary = UltimateRegistryScript.new(
+		ProgressionData.WEAPONS_BY_CLASS
+	).canonical_pairs_for_tests()
+
+	# 1. Отложенный ready-пакет: в кадре активации эффекта ещё нет, он приходит
+	#    к объявленному impact и после этого каст полностью убирает за собой.
+	var delayed := _inject_ready_ultimate_profile(player, pairs, ULTIMATE_DELAYED_FIXTURE)
+	if str(delayed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
+		_fail("Expected the injected delayed %s package to resolve from its weapon profile." % ULTIMATE_FIXTURE_WEAPON)
+		return
+	var baseline := _ultimate_baseline(player, enemies)
+	player.set("ultimate_charge", 100.0)
+	if not bool(player.call("activate_ultimate")):
+		_fail("Expected the delayed ready ultimate to be taken by the generic runtime.")
+		return
+	var activation = _ultimate_active_activation(player)
+	if activation == null:
+		_fail("Expected the delayed ready ultimate to stay live until its declared impact.")
+		return
+	if _ultimate_has_observable_effect(player, enemies, baseline, activation):
+		_fail("Expected the delayed ready ultimate to telegraph instead of hitting on the activation frame.")
+		return
+	await _assert_ready_ultimate_runtime(
+		player, enemies, baseline, activation, false, delayed.get("profile", {}) as Dictionary
+	)
+	if _failure_reported:
+		return
+
+	# 2. Immediate-семейство остаётся прежним: эффект в кадре активации и ни
+	#    одного живого каста после него.
+	var immediate := _inject_ready_ultimate_profile(player, pairs, ULTIMATE_IMMEDIATE_FIXTURE)
+	baseline = _ultimate_baseline(player, enemies)
+	player.set("ultimate_charge", 100.0)
+	if not bool(player.call("activate_ultimate")):
+		_fail("Expected the immediate ready ultimate to be taken by the generic runtime.")
+		return
+	var immediate_activation = _ultimate_active_activation(player)
+	await _assert_ready_ultimate_runtime(
+		player,
+		enemies,
+		baseline,
+		immediate_activation,
+		_ultimate_has_observable_effect(player, enemies, baseline, immediate_activation),
+		immediate.get("profile", {}) as Dictionary
+	)
+	if _failure_reported:
+		return
+
+	# 3. Ready-декларация, которую рантайм не может исполнить (битый тайминг или
+	#    несуществующее семейство эффекта), обязана завершиться fail-closed без
+	#    списания заряда и без неявного перехода на legacy-ультимейт.
+	for fixture in ULTIMATE_MALFORMED_FIXTURES:
+		var malformed := _inject_ready_ultimate_profile(player, pairs, fixture as Dictionary)
+		if str(malformed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
+			_fail("Expected the malformed ready fixture to be admitted as data before the runtime refuses it.")
+			return
+		if UltimateHostScript.for_player(player).controller().activate(
+				ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON):
+			_fail("Expected the generic runtime to refuse a malformed ready declaration: %s" % str(fixture))
+			return
+		baseline = _ultimate_baseline(player, enemies)
+		player.set("ultimate_charge", 100.0)
+		if bool(player.call("activate_ultimate")):
+			_fail("Expected a malformed ready declaration to fail closed: %s" % str(fixture))
+			return
+		if _ultimate_active_activation(player) != null or bool(player.get("_ultimate_active")):
+			_fail("Expected a malformed ready declaration to refuse the generic cast: %s" % str(fixture))
+			return
+		if not is_equal_approx(float(player.get("ultimate_charge")), 100.0):
+			_fail("Expected a malformed ready declaration to preserve ultimate charge: %s" % str(fixture))
+			return
+		await process_frame
+		if _ultimate_has_observable_effect(player, enemies, baseline, null):
+			_fail("Expected a malformed ready declaration to avoid legacy side effects: %s" % str(fixture))
+			return
+
+	var declared := _ultimate_declared_timing(delayed.get("profile", {}) as Dictionary)
+	print(
+		"Ready weapon ultimate fixtures passed (%s/%s weapon_profile: delayed impact %.2fs, lifecycle %.2fs, immediate same-frame, %d malformed refusals)."
+		% [
+			ULTIMATE_FIXTURE_CLASS,
+			ULTIMATE_FIXTURE_WEAPON,
+			float(declared.get("impact_window", 0.0)),
+			float(declared.get("lifecycle_window", 0.0)),
+			ULTIMATE_MALFORMED_FIXTURES.size(),
+		]
+	)
+
+	player.queue_free()
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			enemy.queue_free()
+	await process_frame
+
+
+## Подменяет каталог хоста одной точной ready-парой. Возвращает объявленный
+## профиль и источник, который рантайм увидит для этой пары.
+func _inject_ready_ultimate_profile(
+	player: Node,
+	canonical_pairs: Dictionary,
+	executor: Dictionary
+) -> Dictionary:
+	var profile := {
+		"class_id": ULTIMATE_FIXTURE_CLASS,
+		"weapon_id": ULTIMATE_FIXTURE_WEAPON,
+		"implementation_state": "ready",
+		"total_boss_cap": 0.25,
+		"executor": executor.duplicate(true),
+	}
+	var registry := ReadyUltimateRegistry.new(canonical_pairs)
+	registry.admit(profile)
+	UltimateHostScript.for_player(player).use_registry(registry)
+	return {
+		"profile": profile,
+		"source": registry.resolution_source(ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON),
+	}
+
+
+func _ultimate_baseline(player: Node, enemies: Array) -> Dictionary:
+	var health := {}
+	for enemy in enemies:
+		if enemy is Node and is_instance_valid(enemy):
+			health[(enemy as Node).get_instance_id()] = float((enemy as Node).get("health"))
+	return {
+		"health": health,
+		"allies": get_nodes_in_group("allies").size(),
+		"modifiers": (player.get("run_modifiers") as Dictionary).duplicate(true),
+	}
+
+
+func _ultimate_active_activation(player: Node):
+	var host := player.get_node_or_null(UltimateHostScript.NODE_NAME)
+	if host == null or not host.has_method("controller"):
+		return null
+	var controller = host.controller()
+	return controller.active_activation() if controller != null else null
+
+
+func _ultimate_has_observable_effect(
+	player: Node,
+	enemies: Array,
+	baseline: Dictionary,
+	activation
+) -> bool:
+	# Живой каст отчитывается собственным ledger: за время ожидания объявленного
+	# impact мировая дельта HP уже не доказывает, что ударил именно ультимейт.
+	if activation != null:
+		if float(activation.get("applied_total")) > 0.01:
+			return true
+	else:
+		var health: Dictionary = baseline.get("health", {})
+		for enemy in enemies:
+			if enemy == null or not is_instance_valid(enemy):
+				continue
+			if float(enemy.get("health")) < float(health.get(enemy.get_instance_id(), INF)) - 0.01:
+				return true
+	if get_nodes_in_group("allies").size() > int(baseline.get("allies", 0)):
+		return true
+	return (player.get("run_modifiers") as Dictionary) != (baseline.get("modifiers", {}) as Dictionary)
+
+
+## Окно, которое профиль объявил сам: явный impact или начальная фаза
+## задаёт первый эффект, а самый долгий timing — крайний срок уборки после
+## первого эффекта. Всё, что не число, не конечно, не положительно или длиннее
+## потолка каста, считается битым.
+func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
+	var executor = profile.get("executor")
+	if not executor is Dictionary:
+		return {"valid": false, "reason": "missing executor binding"}
+	var params = (executor as Dictionary).get("params")
+	if not params is Dictionary:
+		return {"valid": false, "reason": "missing executor params"}
+	var fallback_impact := INF
+	var phase_impact := INF
+	var explicit_impact := INF
+	var lifecycle := 0.0
+	for raw_key in (params as Dictionary).keys():
+		var key := str(raw_key).to_lower()
+		if not _is_ultimate_timing_key(key):
+			continue
+		var value = (params as Dictionary)[raw_key]
+		if value is bool or not (value is int or value is float) or not is_finite(float(value)):
+			return {"valid": false, "reason": "malformed timing field %s" % key}
+		var seconds := float(value)
+		if seconds <= 0.0 or seconds > ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS:
+			return {"valid": false, "reason": "out-of-bounds timing field %s" % key}
+		fallback_impact = minf(fallback_impact, seconds)
+		if _is_ultimate_first_impact_key(key):
+			phase_impact = minf(phase_impact, seconds)
+		elif key in ["first_impact_at", "first_impact_delay", "impact_at", "impact_delay"]:
+			explicit_impact = minf(explicit_impact, seconds)
+		lifecycle = maxf(lifecycle, seconds)
+	if not is_finite(fallback_impact):
+		return {"valid": true, "has_timing": false, "impact_window": 0.0, "lifecycle_window": 0.0}
+	var impact := explicit_impact if is_finite(explicit_impact) else phase_impact
+	if not is_finite(impact):
+		impact = fallback_impact
+	return {
+		"valid": true,
+		"has_timing": true,
+		"impact_window": impact,
+		"lifecycle_window": lifecycle,
+	}
+
+
+func _is_ultimate_first_impact_key(key: String) -> bool:
+	return key in [
+		"windup_delay",
+		"deploy_delay",
+		"arm_delay",
+		"release_delay",
+		"lock_delay",
+		"active_delay",
+		"hatch_delay",
+		"analysis_first_delay",
+	]
+
+
+func _is_ultimate_timing_key(key: String) -> bool:
+	return key in ["delay", "duration", "interval", "lifetime"] \
+		or key.ends_with("_at") or key.ends_with("_delay") or key.ends_with("_duration") \
+		or key.ends_with("_interval") or key.ends_with("_lifetime") or key.ends_with("_tail")
+
+
+## Generic-оракул исполнимого ультимейта оружия: immediate-семейство обязано
+## показать эффект в кадре активации, телеграфируемое — к объявленному impact,
+## и оба обязаны не оставить после себя ни живого каста, ни active-флага.
+func _assert_ready_ultimate_runtime(
+	player: Node,
+	enemies: Array,
+	baseline: Dictionary,
+	activation,
+	same_frame_effect: bool,
+	profile: Dictionary
+) -> void:
+	var pair := "%s/%s" % [str(profile.get("class_id", "")), str(profile.get("weapon_id", ""))]
+	if str(profile.get("implementation_state", "")) != "ready":
+		_fail("Expected executable %s ultimate profile to declare a ready state." % pair)
+		return
+	var timing := _ultimate_declared_timing(profile)
+	if not bool(timing.get("valid", false)):
+		_fail("Expected %s ultimate to declare valid timing: %s" % [pair, str(timing.get("reason", ""))])
+		return
+	var host := player.get_node_or_null(UltimateHostScript.NODE_NAME)
+	var controller = host.controller() if host != null and host.has_method("controller") else null
+	if activation == null:
+		if not same_frame_effect \
+				and not _ultimate_has_observable_effect(player, enemies, baseline, null):
+			_fail("Expected immediate %s ultimate to have an observable effect." % pair)
+			return
+		if controller != null and controller.is_active():
+			_fail("Immediate %s ultimate left an active generic cast." % pair)
+			return
+		if bool(player.get("_ultimate_active")):
+			_fail("Immediate %s ultimate left orphan active state on the player." % pair)
+		return
+	if not bool(timing.get("has_timing", false)):
+		_fail("Expected delayed %s ultimate to declare its impact timing." % pair)
+		return
+	var impact_window := float(timing.get("impact_window", 0.0))
+	var lifecycle_window := float(timing.get("lifecycle_window", 0.0))
+	var effect_seen := same_frame_effect
+	var impact_deadline := Time.get_ticks_msec() \
+		+ int(ceil((impact_window + ULTIMATE_TIMING_GRACE_SECONDS) * 1000.0))
+	while not effect_seen and Time.get_ticks_msec() < impact_deadline:
+		await process_frame
+		effect_seen = _ultimate_has_observable_effect(player, enemies, baseline, activation)
+	if not effect_seen:
+		_fail("Expected delayed %s ultimate to reach its declared %.2fs impact." % [pair, impact_window])
+		return
+	var cleanup_deadline := Time.get_ticks_msec() \
+		+ int(ceil((lifecycle_window + ULTIMATE_TIMING_GRACE_SECONDS) * 1000.0))
+	while controller != null and controller.is_active() and Time.get_ticks_msec() < cleanup_deadline:
+		await process_frame
+	if controller == null or controller.is_active() or bool(player.get("_ultimate_active")):
+		_fail("Expected delayed %s ultimate to clean up within its declared %.2fs lifecycle." % [pair, lifecycle_window])
 
 
 func _test_run_damage_dealt_metric(main_scene: PackedScene) -> void:
@@ -5112,7 +5684,17 @@ func _test_no_auto_player_movement_from_crit_or_dodge() -> void:
 		_fail("Expected critical weapon hooks to preserve player-controlled position.")
 		return
 
-	assassin.set("derived_parameters", {"dodge": 1.0, "defense": 0.0})
+	# Максимальный уворот через СЫРОЙ рейтинг: 2.0 упирается в кап 0.55 — ровно
+	# тот же шанс, что давал legacy-процент 1.0 после клампа в _current_dodge_chance.
+	var max_dodge_parameters := {
+		"raw_dodge": 2.0,
+		"dodge": ProgressionData.effective_dodge(2.0),
+		"raw_defense": 0.0,
+		"defense": 0.0,
+	}
+	if not _assert_raw_pair(max_dodge_parameters, "dodge", "raw_dodge") or not _assert_raw_pair(max_dodge_parameters, "defense", "raw_defense"):
+		return
+	assassin.set("derived_parameters", max_dodge_parameters)
 	var dodge_position_before: Vector2 = assassin.global_position
 	assassin.call("take_damage", 12.0)
 	await process_frame
@@ -5760,7 +6342,7 @@ func _test_full_attribute_wiring() -> void:
 	var stats: Dictionary = ProgressionData.base_stats("berserk")
 	var weapon: Dictionary = ProgressionData.weapon("berserk", "sword")
 	var base: Dictionary = ProgressionData.derived_parameters(stats, {}, weapon)
-	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_distance", "range_multiplier", "ultimate_multiplier"]:
+	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_power", "attack_range", "ultimate_multiplier"]:
 		if not base.has(parameter_id):
 			_fail("Expected derived parameters to include %s." % parameter_id)
 			return
@@ -5772,14 +6354,37 @@ func _test_full_attribute_wiring() -> void:
 	if boosted["absorb"] <= base["absorb"] or boosted["regeneration"] <= base["regeneration"]:
 		_fail("Expected endurance/knowledge to raise absorb and regeneration.")
 		return
-	if boosted["knockback_distance"] <= base["knockback_distance"] or boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
-		_fail("Expected endurance/energy to raise knockback distance and ultimate multiplier.")
+	if boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
+		_fail("Expected endurance/energy to raise the ultimate multiplier.")
 		return
-	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
-	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
+	# FAN-1891: knockback_distance снят — отталкивание считается как
+	# (отталкивание оружия + Сила × 4) и растёт ТОЛЬКО от Силы.
+	if absf(float(boosted["knockback_power"]) - float(base["knockback_power"])) > 0.001:
+		_fail("Expected knockback power to ignore endurance/knowledge/energy (FAN-1891).")
+		return
+	var strong_stats: Dictionary = stats.duplicate(true)
+	strong_stats["strength"] = strong_stats["strength"] + 4.0
+	var strong: Dictionary = ProgressionData.derived_parameters(strong_stats, {}, weapon)
+	if strong["knockback_power"] <= base["knockback_power"]:
+		_fail("Expected strength to raise knockback power (weapon base + Strength).")
+		return
+	# FAN-1891: дальность цели config-only — рост статов её не двигает.
+	if absf(float(boosted["attack_range"]) - float(weapon.get("attack_range", 240.0))) > 0.001 \
+			or absf(float(strong["attack_range"]) - float(base["attack_range"])) > 0.001:
+		_fail("Expected attack range to stay config-only under stat growth.")
+		return
+	# FAN-2286: do not accidentally preserve the old 0.48x result from Berserk's
+	# base Knowledge=4. A different Knowledge value and the diminishing-tail
+	# branch prove that the live formula, rather than a dead multiplier, is used.
+	var vamp_stats: Dictionary = stats.duplicate(true)
+	vamp_stats["knowledge"] = 11.0
+	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 5.0}
+	var vamp: Dictionary = ProgressionData.derived_parameters(vamp_stats, vamp_mods, weapon)
+	var expected_vamp_raw := 5.0 * (0.40 + 11.0 / 50.0)
+	var expected_vamp_amount := 1.5 + sqrt(expected_vamp_raw - 1.5)
 	if absf(float(vamp["vampiric_chance"]) - ProgressionData.VAMPIRIC_CHANCE_CAP) > 0.001 \
-			or absf(float(vamp["vampiric_amount"]) - 2.0 * ProgressionData.VAMPIRIC_BASE_HEAL_MULTIPLIER) > 0.001:
-		_fail("Expected vampiric rewards to use SCRUM-255 nerfed chance/amount caps.")
+			or absf(float(vamp["vampiric_amount"]) - expected_vamp_amount) > 0.001:
+		_fail("Expected vampiric rewards to use the Knowledge-scaled diminishing formula.")
 		return
 	var berserk_priorities: Array = ProgressionData.attribute_priorities("berserk")
 	var mage_priorities: Array = ProgressionData.attribute_priorities("dark_mage")
@@ -5866,8 +6471,8 @@ func _test_attribute_weapon_synergy_matrix() -> void:
 		"crit_chance", "crit_damage_multiplier", "move_speed", "dodge",
 		"defense", "health_point", "attack_range", "aoe_radius",
 		"pickup_radius", "dot_damage", "dot_speed", "projectile_speed",
-		"aura_radius", "buff_power", "knockback_power", "summon_amount",
-		"absorb", "regeneration", "knockback_distance", "ultimate_multiplier",
+		"aura_radius", "knockback_power", "summon_amount",
+		"absorb", "regeneration", "ultimate_multiplier",
 	]
 	for archetype in required_archetypes:
 		var rep: Dictionary = representatives[archetype]
@@ -6785,33 +7390,23 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
-	# 2. FAN-1034: magic focus гейтнут class_affinity на маг-классы — у Берсерка
-	# ось magic_damage мертва (ни одно его оружие не читает magic-канал), карта-
-	# пустышка исключена из его пула. Маг-классам карта остаётся, канал изолирован
-	# (проверяем изоляцию на статах берсерка как и раньше).
-	for reward in ProgressionData.level_up_rewards("berserk"):
-		if str(reward.get("id")) == "magic_focus_up":
-			_fail("Expected magic focus upgrade to be affinity-gated away from berserk (dead axis, FAN-1034).")
-			return
-	var mage_magic_focus_reward: Dictionary = {}
-	for reward in ProgressionData.level_up_rewards("dark_mage"):
-		if str(reward.get("id")) == "magic_focus_up":
-			mage_magic_focus_reward = reward
-	if mage_magic_focus_reward.is_empty():
-		_fail("Expected magic focus upgrade to stay in the dark mage level-up pool.")
-		return
-	var magic_focus_mods: Dictionary = mage_magic_focus_reward.get("mods", {}) as Dictionary
-	if float(magic_focus_mods.get("magic_damage_multiplier", 1.0)) <= 1.0:
-		_fail("Expected magic focus to map to the isolated magic damage multiplier.")
-		return
+	# 2. FAN-1887: ось «Магический фокус» снята с player-facing реестра — карты
+	# magic_focus_up нет ни у одного класса. Внутренний канал magic_damage_multiplier
+	# живёт (артефакты/мета) и остаётся изолированным от физического канала.
+	for probe_class in ["berserk", "dark_mage"]:
+		for reward in ProgressionData.level_up_rewards(probe_class):
+			if str(reward.get("id")) == "magic_focus_up":
+				_fail("Expected removed magic_focus_up card to be absent from %s pool (FAN-1887)." % probe_class)
+				return
+	var magic_focus_mods := {"magic_damage_multiplier": 1.14}
 	var berserk_weapon: Dictionary = ProgressionData.weapon("berserk", "hammer")
 	var berserk_base_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), {}, berserk_weapon)
 	var berserk_magic_focus_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), magic_focus_mods, berserk_weapon)
 	if absf(float(berserk_magic_focus_damage.get("damage", 0.0)) - float(berserk_base_damage.get("damage", 0.0))) > 0.0001:
-		_fail("Expected magic focus not to increase Berserk physical hammer damage.")
+		_fail("Expected magic damage multiplier not to increase Berserk physical hammer damage.")
 		return
 	if float(berserk_magic_focus_damage.get("magic_damage", 0.0)) <= float(berserk_base_damage.get("magic_damage", 0.0)):
-		_fail("Expected magic focus to increase only the magic damage channel.")
+		_fail("Expected magic damage multiplier to increase only the magic damage channel.")
 		return
 	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):
@@ -7301,6 +7896,9 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	var enemy_hp_before := float(thorn_enemy.get("health"))
 	var derived: Dictionary = t3_player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		return
 	t3_player.set("derived_parameters", derived)
 	t3_player.set("_damage_invulnerability_left", 0.0)
 	t3_player.call("take_damage", 10.0)
@@ -8016,8 +8614,11 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_data.characters().size() != ProgressionData.character_ids().size():
 		_fail("Expected codex to cover all playable characters.")
 		return
-	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != StatFormulas.DERIVED_STAT_ORDER.size():
-		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), StatFormulas.DERIVED_STAT_ORDER.size(), characteristics.size(), attributes.size()])
+	# FAN-1887/FAN-1927: «Атрибуты» кодекса — канонические оси реестра
+	# ProgressionData.ATTRIBUTE_REGISTRY (16), а не derived-алиасы и не полный
+	# внутренний DERIVED_STAT_ORDER.
+	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != ProgressionData.ATTRIBUTE_REGISTRY.size():
+		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), ProgressionData.ATTRIBUTE_REGISTRY.size(), characteristics.size(), attributes.size()])
 		return
 	if codex_data.stats() != characteristics + attributes:
 		_fail("Expected compatibility stats projection to preserve characteristics + attributes order.")
@@ -8825,7 +9426,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	if first_thumb_rect.size.x < hero_slot_floor or first_thumb_rect.size.y < hero_slot_floor:
 		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guidance := hero_main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven Hero Select build guidance %s at %s." % [relevance, context])
@@ -9028,7 +9629,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	var player: Node = hud_main.get("current_player")
 	if player != null:
 		player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
-		player.call("apply_reward", {"kind": "artifact", "id": "hawk_eye", "title": "Ястребиный глаз", "mods": {"range_multiplier": 1.12}})
+		player.call("apply_reward", {"kind": "artifact", "id": "hawk_eye", "title": "Ястребиный глаз", "mods": {"aoe_radius_multiplier": 1.12}})
 	hud_main.set("_last_hud_snapshot", {})
 	hud_main.ui._update_hud()
 	await process_frame
@@ -9195,11 +9796,32 @@ func _collect_label_text(node: Node) -> String:
 	return "\n".join(parts)
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Наследники (runtime_smoke_
+# combat_test.gd, runtime_smoke_triggered_artifacts_test.gd) переиспользуют
+# через extends. Возвращает true при консистентной паре (иначе _fail + false).
+func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String) -> bool:
+	if not container.has(raw_key):
+		_fail("FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key])
+		return false
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		_fail("FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
+		return false
+	return true
+
+
 func _fail(message: String, evidence_path := "") -> void:
 	# SCRUM-722: единая точка отказа умбрелла-смоука и фокус-сьютов. Каждый провал
 	# называет сломанную систему/экран (message) и оставляет детерминированный артефакт-
 	# улику build/qa/runtime_smoke_last_failure.md с путём к доп. evidence (если передан).
 	# Вызывается ТОЛЬКО на провале — зелёный прогон сюда не заходит, поведение не меняет.
+	# FAN-1700: флаг ставится ПЕРВЫМ, до любых операций с диском, — заявленный провал
+	# не должен зависеть ни от порядка await, ни от того, стоит ли return после _fail().
+	_failure_reported = true
 	push_error(message)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	if not DirAccess.dir_exists_absolute(qa_dir):
@@ -9210,6 +9832,18 @@ func _fail(message: String, evidence_path := "") -> void:
 			message, evidence_path if evidence_path != "" else "(см. контекст push_error в логе выше)"])
 		crumb.close()
 	quit(1)
+
+
+func _finish(passed_message: String) -> void:
+	# FAN-1700: единственный успешный выход набора. Отложенный quit(1) из _fail()
+	# затирается успешным quit(), поэтому провал переспрашивается здесь по флагу:
+	# набор, который уже сообщил о провале, не может напечатать «passed» и выйти нулём.
+	# Наследники (tests/runtime_smoke_*.gd и др.) могут завершаться так же.
+	if _failure_reported:
+		quit(1)
+		return
+	print(passed_message)
+	quit()
 
 
 func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:
@@ -9272,6 +9906,9 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	# Dodge делает одиночный удар недетерминированным; для теста смерти обнуляем уворот.
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		return
 	player.set("derived_parameters", derived)
 	var run_modifiers: Dictionary = player.get("run_modifiers")
 	run_modifiers["death_save"] = 0.0

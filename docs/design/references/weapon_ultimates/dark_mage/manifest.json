@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1478",
+  "class_id": "dark_mage",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "frozen_profiles": "data/ultimates/schema/v1/classes/dark_mage.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "phase_id_bindings": {
+      "windup": "windup",
+      "release": "execute",
+      "active": "active",
+      "recovery": "recover",
+      "cancel": "cleanup"
+    },
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "new_pixellab_assets": [],
+    "pixel_lab": "not used; no new isolated raster source or frame was created, so there are no PixelLab IDs to record",
+    "historical_source_note": "The accepted attack-VFX PNGs were generated under an explicit 2026-06-30 user override with OpenAI gpt-image-2. Their source prompts and alpha-cleanup records remain in docs/design/references/weapon_attack_animations/<weapon_id>/prompt_notes.md.",
+    "reused_sources": {
+      "dark_book": {
+        "source_reference": "docs/design/references/weapon_attack_animations/dark_book/vfx_weapon_dark_book_source.png",
+        "source_notes": "docs/design/references/weapon_attack_animations/dark_book/prompt_notes.md",
+        "weapon_runtime_path": "assets/sprites/weapons/dark_book.png",
+        "weapon_sha256": "39f10fff41f2f1540628d771aeb704d4fa230321075552eda0b697ee49b681c2",
+        "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_book.png",
+        "vfx_sha256": "d7d81e18cc3e23284c0b94e3b7b49bbe0f29ab13daf7b007c0f85d1a32cb0bdf",
+        "runtime_scene": "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+        "modified": false
+      },
+      "cursed_skull": {
+        "source_reference": "docs/design/references/weapon_attack_animations/cursed_skull/vfx_weapon_cursed_skull_source.png",
+        "source_notes": "docs/design/references/weapon_attack_animations/cursed_skull/prompt_notes.md",
+        "weapon_runtime_path": "assets/sprites/weapons/cursed_skull.png",
+        "weapon_sha256": "c6a76bcf7d07f80e362028ba3712a652e850281ddc90fce8944a13ec9c0c6684",
+        "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
+        "vfx_sha256": "d37034e6331672799dc4f3f74efa6565e7088eca08dc9a2d22c78868b50327e1",
+        "runtime_scene": "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+        "modified": false
+      },
+      "dark_wand": {
+        "source_reference": "docs/design/references/weapon_attack_animations/dark_wand/vfx_weapon_dark_wand_source.png",
+        "source_notes": "docs/design/references/weapon_attack_animations/dark_wand/prompt_notes.md",
+        "weapon_runtime_path": "assets/sprites/weapons/dark_wand.png",
+        "weapon_sha256": "703b9dfc3f1b56fbc5dcadf0c94c550d645f7e2fd3055ffe326f33338481e168",
+        "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_wand.png",
+        "vfx_sha256": "596df9001a5a10c1e79546dad74c0013f77258409401d398f8c0ca1903a88507",
+        "runtime_scene": "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+        "modified": false
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "dark_book",
+      "title": "Зеркало Бездны",
+      "scene_path": "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+      "silhouette": "open grimoire split by a vertical black mirror with opposed enemy shadows",
+      "motion_path": "mirror plane unfolds; original and reflection separate across its axis",
+      "timing_rhythm": "measured open and hold, then one synchronized paired blast",
+      "impact_language": "simultaneous original/reflection violet lens detonation",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 1.05,
+        "recovery": 4.55,
+        "cancel": 5.2
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.dark_mage.dark_book.windup",
+        "release": "weapon_ultimate.phase.dark_mage.dark_book.execute",
+        "active": "weapon_ultimate.phase.dark_mage.dark_book.active",
+        "recovery": "weapon_ultimate.phase.dark_mage.dark_book.recover",
+        "cancel": "weapon_ultimate.phase.dark_mage.dark_book.cleanup"
+      },
+      "channels": {
+        "animation": "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+        "vfx": "assets/sprites/effects/vfx_weapon_dark_book.png",
+        "sfx": "assets/audio/sfx/sfx_artifact_reveal.ogg"
+      },
+      "pivot": [0.5, 0.56],
+      "performance": {
+        "max_visual_nodes": 7,
+        "crowd_cap": 12,
+        "mechanics_note": "target count, reflection kills, and recursion guards remain owned by FAN-1479",
+        "runtime_enforcement_owner": "FAN-1541"
+      }
+    },
+    {
+      "weapon_id": "cursed_skull",
+      "title": "Корона Проклятых",
+      "scene_path": "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+      "silhouette": "giant raised skull crown with three hanging curse chains",
+      "motion_path": "crown ascends while soul wisps relay between chained targets",
+      "timing_rhythm": "slow coronation, sustained transfers, then one harvest bite",
+      "impact_language": "descending crown jaw harvests all remaining chain marks",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.35,
+        "recovery": 5.55,
+        "cancel": 6.35
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.dark_mage.cursed_skull.windup",
+        "release": "weapon_ultimate.phase.dark_mage.cursed_skull.execute",
+        "active": "weapon_ultimate.phase.dark_mage.cursed_skull.active",
+        "recovery": "weapon_ultimate.phase.dark_mage.cursed_skull.recover",
+        "cancel": "weapon_ultimate.phase.dark_mage.cursed_skull.cleanup"
+      },
+      "channels": {
+        "animation": "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+        "vfx": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
+        "sfx": "assets/audio/sfx/sfx_boss_phase.ogg"
+      },
+      "pivot": [0.5, 0.72],
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 14,
+        "mechanics_note": "curse strength, output reduction, transfer, and harvest values remain owned by FAN-1479",
+        "runtime_enforcement_owner": "FAN-1541"
+      }
+    },
+    {
+      "weapon_id": "dark_wand",
+      "title": "Нить Исчезновения",
+      "scene_path": "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+      "silhouette": "one aimed zigzag void thread with three branch nodes",
+      "motion_path": "wand draws a forward spine, then filaments branch through distinct targets",
+      "timing_rhythm": "instant draw, accelerating node pulses, then silent simultaneous collapse",
+      "impact_language": "all chain nodes contract into thin black afterimages at once",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.28,
+        "active": 0.62,
+        "recovery": 3.25,
+        "cancel": 3.85
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.dark_mage.dark_wand.windup",
+        "release": "weapon_ultimate.phase.dark_mage.dark_wand.execute",
+        "active": "weapon_ultimate.phase.dark_mage.dark_wand.active",
+        "recovery": "weapon_ultimate.phase.dark_mage.dark_wand.recover",
+        "cancel": "weapon_ultimate.phase.dark_mage.dark_wand.cleanup"
+      },
+      "channels": {
+        "animation": "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+        "vfx": "assets/sprites/effects/vfx_weapon_dark_wand.png",
+        "sfx": "assets/audio/sfx/sfx_hit_magic.ogg"
+      },
+      "pivot": [0.18, 0.55],
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 10,
+        "mechanics_note": "target marking, per-target ramp, and collapse damage remain owned by FAN-1479",
+        "runtime_enforcement_owner": "FAN-1541"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/dark_mage_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd"
+  }
+}

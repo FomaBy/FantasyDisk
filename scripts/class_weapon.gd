@@ -136,6 +136,15 @@ const ATTACK_MODE_EXECUTORS := {
 @export var beam_count := 1
 @export var beam_fan_degrees := 12.0
 @export var projectile_count := 1
+# FAN-1893: явная capability оружия — числом реальных снарядов управляет
+# generic-ось run_modifiers.extra_projectile ТОЛЬКО при real_projectile_count > 0
+# (см. _extra_projectiles). Обычное оружие добавляет снаряд к своему выстрелу,
+# а каждая активная «Часовая турель» — к собственному залпу, без роста парка.
+# 0 (fail-closed дефолт) = ловушки/тики/звенья/ширина/рикошеты снарядами не
+# считаются и «+1 снаряд» не потребляют. FAN-2247:
+# player-facing source отсутствует — active reward/config/source не выдаёт
+# run_modifiers.extra_projectile; прямой probe/injected value не является наградой.
+@export var real_projectile_count := 0
 @export var burst_interval := 0.08
 @export var grenade_delay := 0.42
 @export var brace_duration := 0.34
@@ -354,6 +363,11 @@ var _constellation_mirror_casts: Dictionary = {}
 var _constellation_local_state: Dictionary = {}
 var _constellation_shatter_volley_token := 0
 var _constellation_shatter_volleys: Dictionary = {}
+# FAN-2238: пыль без облака заряжает КАЖДЫЙ бросок одним реагентом и чередует их
+# между бросками; след последнего взрыва живёт короткое окно, чтобы соседний
+# взрыв несовместимого реагента дал ровно одну финальную реакцию.
+var _powder_reagent_cast := 0
+var _powder_reagent_trace: Node2D = null
 
 # SCRUM-915/916/918: константы редизайна кита Робота.
 # Импульс knockback гасится врагом с постоянным замедлением 2400 px/s^2
@@ -382,7 +396,6 @@ const PRESS_ELITE_BOSS_COMPRESSION_FACTOR := 0.25
 const REACTOR_VENT_COUNT := 4
 const REACTOR_ROTATION_STEP_DEG := 6.0
 const REACTOR_VENT_DAMAGE_RATIO := 0.42
-const REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS := 0.14
 # SCRUM-900 plague_dart: реестр живых зараз этого оружия (enemy_id → Tween).
 # Дедуп повторного заражения (рефреш), spread-исключение и кап plague_max_infected.
 var _plague_tweens := {}
@@ -462,6 +475,7 @@ func configure_weapon(config: Dictionary) -> void:
 	beam_count = int(config.get("beam_count", beam_count))
 	beam_fan_degrees = float(config.get("beam_fan_degrees", beam_fan_degrees))
 	projectile_count = int(config.get("projectile_count", projectile_count))
+	real_projectile_count = maxi(int(config.get("real_projectile_count", 0)), 0)
 	burst_interval = float(config.get("burst_interval", burst_interval))
 	grenade_delay = float(config.get("grenade_delay", grenade_delay))
 	brace_duration = float(config.get("brace_duration", brace_duration))
@@ -636,6 +650,8 @@ func _attack() -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation(_primary_action_animation_for_mode(), direction)
+	if owner_node.has_method("record_weapon_cast"):
+		owner_node.call("record_weapon_cast", weapon_id, attack_mode, _event_action_animation_for_mode(), _estimated_windup_duration())
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
 	# SCRUM-603: лечение-от-атаки идёт через per-second бюджет (capped), как drain.
@@ -645,8 +661,9 @@ func _attack() -> void:
 		owner_node.heal_percent(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	_current_charge_multiplier = _charge_multiplier()
+	var full_charge_release := charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0)
 	_execute_attack_mode(owner_node, target, direction)
-	if charge_seconds > 0.0:
+	if full_charge_release:
 		_charge_time = 0.0
 	_current_charge_multiplier = 1.0
 	_maybe_fire_rhythm_echo(owner_node, target, direction)
@@ -955,14 +972,18 @@ func _exec_engineer_pressure_mines(owner_node: Node2D, _target: Node2D, directio
 
 
 func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	# FAN-2238: один бросок несёт ОДИН реагент, соседние броски — разные. Пара
+	# снарядов одного каста поэтому не реагирует сама с собой (same-reagent), а
+	# несовместимый соседний взрыв даёт реакцию (см. _mark_powder_reagent_impact).
+	_powder_reagent_cast = (_powder_reagent_cast + 1) % 2
 	var targets := _find_closest_enemies(owner_node, maxi(projectile_count + _extra_projectiles(), 1))
 	if targets.is_empty():
-		_launch_aoe_projectile(owner_node, null, direction)
+		_launch_aoe_projectile(owner_node, null, direction, _powder_reagent_cast)
 		return
 	for target_node in targets:
 		var to_target: Vector2 = target_node.global_position - owner_node.global_position
 		var aim := direction if to_target.length_squared() <= 0.001 else to_target.normalized()
-		_launch_aoe_projectile(owner_node, target_node, aim)
+		_launch_aoe_projectile(owner_node, target_node, aim, _powder_reagent_cast)
 
 
 func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
@@ -1242,7 +1263,12 @@ func _find_combo_cloud(pool_position: Vector2) -> Node2D:
 	return null
 
 
-func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
+## `direct_share` — доля БАЗОВОЙ смешанной вспышки. Пул-канал (встреча двух луж)
+## существует и без созвездия, поэтому платит полную долю; реагентная пара пыли
+## (FAN-2238) базового аналога не имеет и приходит с 0.0 — там весь урон реакции
+## равен объявленному в манифесте `combo_damage_ratio` финала, и без финала
+## оружие не получает ничего.
+func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float, direct_share := 1.0) -> void:
 	if bool(new_cloud.get_meta("constellation_powder_reacted", false)) or bool(old_cloud.get_meta("constellation_powder_reacted", false)):
 		return
 	new_cloud.set_meta("constellation_powder_reacted", true)
@@ -1251,18 +1277,71 @@ func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: f
 	var combo_radius := aoe_radius * 1.05
 	var combo_damage := maxf(damage, tick_damage * 5.5) * pool_direct_damage_multiplier
 	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
-	_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
+	if direct_share > 0.0:
+		_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage * direct_share, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 	var combo_target := TARGET_QUERY.nearest(self, combo_position, combo_radius)
 	var reaction := _constellation_event("cross_reagent", combo_target, 0.0)
 	if bool(reaction.get("triggered", false)):
 		_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage * _constellation_result_param(reaction, "combo_damage_ratio", 0.48), POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 
 
+# FAN-2238: окно жизни реагентного следа взрыва. Больше базового fire_interval
+# пыли (0.62) — соседние броски успевают встретиться, но пауза в стрельбе след
+# гасит. Это темп продакшен-оружия, а не балансный кап финала: манифестные капы
+# (reactions_per_cloud / combo_damage_ratio / same_reagent_reaction) живут в
+# schema-6 и читаются из профиля.
+const POWDER_REAGENT_TRACE_SECONDS := 0.9
+
+
+## FAN-2238: продакшен-вход финала «Несовместимые реагенты». Взрывная пыль давно
+## идёт прямым AoE без луж, поэтому облачный вход `_spawn_damage_pool` для неё
+## мёртв — реакцию поднимает РЕАЛЬНЫЙ прилёт снаряда. Каждый взрыв оставляет
+## короткий инертный след своего реагента (не `chemist_clouds`, без тиков, DoT и
+## статусов), и соседний взрыв другого реагента внутри следа расходует пару на
+## одну реакцию (`reactions_per_cloud` = 1 через латч `_trigger_chemist_combo`).
+## Без купленного финала след не создаётся вовсе.
+func _mark_powder_reagent_impact(impact_position: Vector2, reagent: int) -> void:
+	var profile := _constellation_profile("powder_cross_reagent_combo")
+	if profile.is_empty():
+		return
+	var params: Dictionary = profile.get("params", {})
+	var previous := _powder_reagent_trace
+	var trace := _spawn_powder_reagent_trace(impact_position, reagent)
+	_powder_reagent_trace = trace
+	if previous == null or not is_instance_valid(previous):
+		return
+	if Time.get_ticks_msec() > int(previous.get_meta("powder_reagent_until_msec", 0)):
+		return
+	var cross_reagent := int(previous.get_meta("powder_reagent", reagent)) != reagent
+	if not cross_reagent and not bool(params.get("same_reagent_reaction", false)):
+		return
+	if previous.global_position.distance_squared_to(impact_position) > pow(aoe_radius, 2.0):
+		return
+	_trigger_chemist_combo(trace, previous, 0.0, 0.0)
+	_release_effect(previous)
+	_release_effect(trace)
+	_powder_reagent_trace = null
+
+
+func _spawn_powder_reagent_trace(trace_position: Vector2, reagent: int) -> Node2D:
+	var trace := Node2D.new()
+	trace.name = "PowderReagentTrace"
+	trace.set_meta("powder_reagent", reagent)
+	trace.set_meta("powder_reagent_until_msec", Time.get_ticks_msec() + int(POWDER_REAGENT_TRACE_SECONDS * 1000.0))
+	_register_effect(trace)
+	_projectile_parent().add_child(trace)
+	trace.global_position = trace_position
+	var expiry := trace.create_tween()
+	expiry.tween_interval(POWDER_REAGENT_TRACE_SECONDS)
+	expiry.tween_callback(Callable(self, "_release_effect").bind(trace))
+	return trace
+
+
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
 	return TARGET_QUERY.nearest_many(self, owner_node.global_position, attack_range, count)
 
 
-func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2, reagent := 0) -> void:
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		target_position = target.global_position
@@ -1285,6 +1364,9 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, current_weapon.call("_projectile_impact_color"))
+			# FAN-2238: реагентный след ставит РЕАЛЬНЫЙ прилёт снаряда; без финала
+			# созвездия вызов сразу выходит и базовое оружие не меняется.
+			current_weapon.call("_mark_powder_reagent_impact", target_position, reagent)
 			# SCRUM-941: старый хук «Зеркальной страницы» удалён — dark_book ушёл
 			# с aoe_projectile на dark_mirror_blast (зеркало теперь база оружия,
 			# артефакт репозиционирован в book_mirror_echo).
@@ -1356,7 +1438,9 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 	var chain: Array = [first_target]
 	var used := {first_target.get_instance_id(): true}
 	var hop_origin: Vector2 = first_target.global_position
-	var chain_limit := maxi(chain_targets + _extra_projectiles() + int(_owner_mod("wand_extra_chain")), 1)
+	# FAN-1893: прыжки цепи — не снаряды; generic «+1 снаряд» цепь не удлиняет
+	# (длину растит только классовый артефакт wand_extra_chain).
+	var chain_limit := maxi(chain_targets + int(_owner_mod("wand_extra_chain")), 1)
 	for hop_index in range(chain_limit - 1):
 		var next_target := _find_nearest_enemy_from(hop_origin, chain_hop_range, used)
 		if next_target == null:
@@ -1512,7 +1596,10 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 func _fire_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var primary_targets: Array = []
 	if target != null:
-		primary_targets = _find_closest_enemies(owner_node, maxi(1 + _extra_projectiles(), 1))
+		# FAN-1893: единица атаки книги — зеркальная ПАРА (2 сферы); «+1 снаряд»
+		# дал бы сразу две, поэтому generic-ось книгой не потребляется
+		# (real_projectile_count 0) и пара всегда одна.
+		primary_targets = _find_closest_enemies(owner_node, 1)
 	var target_positions: Array[Vector2] = []
 	if primary_targets.is_empty():
 		var aim_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 360.0)
@@ -1646,8 +1733,8 @@ func _resolve_dark_mirror_echo(blast_position: Vector2, echo_damage: float) -> v
 
 func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 	# Веер из beam_count лучей с шагом beam_fan_degrees, центрированный на цели.
-	# «Ядро Расщепления» (tier 3): extra_projectile добавляет луч/снаряд.
-	var count := maxi(beam_count + _extra_projectiles(), 1)
+	# FAN-1893: луч — не снаряд; generic «+1 снаряд» веер лучей не расширяет.
+	var count := maxi(beam_count, 1)
 	_emit_weapon_animation_event(owner_node, "channel", 0.16, direction, {"beam_count": count})
 	for beam_index in range(count):
 		var fan_offset := 0.0
@@ -1657,7 +1744,8 @@ func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
-	var count := maxi(beam_count + _extra_projectiles(), 1)
+	# FAN-1893: луч — не снаряд; generic «+1 снаряд» веер лучей не расширяет.
+	var count := maxi(beam_count, 1)
 	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(maxi(dot_ticks, 1)) * 0.04), direction, {"beam_count": count, "dot_ticks": dot_ticks})
 	for beam_index in range(count):
 		var fan_offset := 0.0
@@ -2156,11 +2244,9 @@ func _end_plague_infection(enemy_id: int) -> void:
 func _fire_saw_sector(owner_node: Node2D, direction: Vector2) -> void:
 	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
 	_register_effect(slash)
-	var params_raw = owner_node.get("derived_parameters")
-	var params: Dictionary = params_raw if params_raw is Dictionary else {}
-	# Ширина дуги растёт от секторных улучшений (+«Зубья костяной пилы»).
+	# cone_degrees уже масштабирован Player единым множителем области атаки.
 	var cone_effective := clampf(
-		cone_degrees * maxf(float(params.get("sector_multiplier", 1.0)), 0.1) * (1.0 + _owner_mod("saw_arc_width_mult")),
+		cone_degrees * (1.0 + _owner_mod("saw_arc_width_mult")),
 		20.0, 360.0)
 	var half_angle := deg_to_rad(cone_effective * 0.5)
 	var candidates := []
@@ -2480,8 +2566,10 @@ const HUNTER_TRAP_ACTIVE_CAP := 6
 
 func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "deploy", 0.6, direction, {"check_interval": pool_tick_interval})
-	# «Капканщик» (trap_extra_count) и «Ядро Расщепления» (extra_projectile):
-	# дополнительные капканы одним броском, веером поперёк направления.
+	# FAN-1893: дополнительные капканы одним броском (веером поперёк направления)
+	# даёт только семантический мета-ключ trap_extra_count («Капканщик»);
+	# generic extra_projectile здесь инертен (real_projectile_count 0), поэтому
+	# _extra_projectiles() возвращает лишь семантическую добавку.
 	var extra_traps := maxi(_extra_projectiles(), 0)
 	var center := owner_node.global_position + direction * minf(attack_range, 180.0)
 	var side := direction.orthogonal().normalized()
@@ -2607,9 +2695,11 @@ func _retire_excess_hunter_traps(new_trap: Node2D) -> void:
 
 # SCRUM-936 «Аркебуза»: одна быстрая взрывная пуля — видимый снаряд летит далеко
 # в цель и взрывается малым AoE (полный урон в центре, falloff к краю зоны).
-# extra_projectile (артефакты «Ядро Расщепления» и т.п.) добавляет пули по
-# следующим ближайшим целям. Trait «Двойное действие» даёт второй независимый
-# выстрел через _maybe_fire_action_echo (без рекурсии).
+# Внутренний capability seam extra_projectile при injected value добавляет пули
+# по следующим ближайшим целям. FAN-2247: player-facing source отсутствует —
+# ни один active artifact/reward/config сейчас не выдаёт этот ключ. Trait
+# «Двойное действие» даёт второй независимый выстрел через _maybe_fire_action_echo
+# (без рекурсии).
 func _fire_arquebus_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var count := maxi(1 + _extra_projectiles(), 1)
 	var targets := _find_closest_enemies(owner_node, count)
@@ -2895,8 +2985,9 @@ func _find_bayonet_shot_target(owner_node: Node2D) -> Node2D:
 # зеркалит эти же числа в комментариях.
 
 # «Кошель Рикошета»: жёсткий кап длины цепи. База 6 прыжков (projectile_count),
-# прогрессия (extra_projectile / артефакт «Счастливая монета») добирает до 8 —
-# цепь конечна и не становится лучшим полнокартным клиром (полоса AC 5..8).
+# артефакт «Счастливая монета» (coin_extra_bounces) добирает до 8; FAN-1893:
+# generic extra_projectile цепь не удлиняет. Цепь конечна и не становится
+# лучшим полнокартным клиром (полоса AC 5..8).
 const COIN_CHAIN_HARD_CAP := 8
 
 # «Отравленный Кинжал»: базовый удар фантома в долях ролла и позиционный пейофф.
@@ -2932,9 +3023,11 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 	var chain_targets := [current_target]
 	var used := {current_target.get_instance_id(): true}
 	var search_origin := current_target.global_position
-	# SCRUM-961 «Счастливая монета» / extra_projectile: цепь скачет дольше, но
-	# SCRUM-897 капит длину COIN_CHAIN_HARD_CAP — рикошет конечен по AC.
-	var chain_count := clampi(projectile_count + _extra_projectiles() + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
+	# FAN-1893: прыжки рикошета — не снаряды; цепь удлиняет только классовый
+	# артефакт coin_extra_bounces (SCRUM-961 «Счастливая монета»), generic
+	# extra_projectile инертен. SCRUM-897 капит длину COIN_CHAIN_HARD_CAP —
+	# рикошет конечен по AC.
+	var chain_count := clampi(projectile_count + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
 	for chain_index in range(chain_count - 1):
 		var next_target := _find_nearest_enemy_from(search_origin, attack_range * 0.65, used)
 		if next_target == null:
@@ -3534,8 +3627,7 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 	var target_id := locked_target.get_instance_id() if (locked_target != null and is_instance_valid(locked_target)) else 0
 	var lock_tween := create_tween()
 	lock_tween.tween_interval(maxf(grenade_delay, 0.08))
-	var fully_charged := charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0)
-	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id(), fully_charged))
+	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id()))
 
 
 # SCRUM-931: разрешение выстрела винтовки — тяжёлый хит по дальней цели +
@@ -3543,7 +3635,7 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 # совпадал с budget-моделью 1.34 + endpoint) + терминальный взрыв на конце линии
 # + ближний самоподрыв. Trait «Дальний расчёт» скейлит каждый _damage_enemy по
 # дистанции владелец→жертва в этот момент (AC: отложенная атака честна).
-func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int, fully_charged := false) -> void:
+func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int) -> void:
 	var current_owner := instance_from_id(owner_id) as Node2D
 	if _effects_shutdown or current_owner == null or not is_instance_valid(current_owner):
 		_release_effect_by_id(telegraph_id)
@@ -3567,10 +3659,9 @@ func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, teleg
 		pierced[locked.get_instance_id()] = true
 		rifle_hit *= _consume_constellation_target_mark(locked, "weakpoint", 1.0)
 		_damage_enemy(locked, rifle_hit)
-		if fully_charged and is_instance_valid(locked):
-			var weakpoint := _constellation_event("hit", locked, 0.0, {"constellation_consumer_event": true})
-			if bool(weakpoint.get("triggered", false)):
-				_arm_constellation_target_mark(locked, "weakpoint", _constellation_result_param(weakpoint, "weakpoint_seconds", 4.0), _constellation_result_param(weakpoint, "bonus_damage_cap", 0.30))
+		var weakpoint := _constellation_event("hit", locked, 0.0, {"constellation_consumer_event": true})
+		if bool(weakpoint.get("triggered", false)):
+			_arm_constellation_target_mark(locked, "weakpoint", _constellation_result_param(weakpoint, "weakpoint_seconds", 4.0), _constellation_result_param(weakpoint, "bonus_damage_cap", 0.30))
 	# Overpenetration: попутчики на линии (не первичная цель) ловят falloff-долю.
 	for hit in _enemies_in_corridor(start, shot_aim, beam_width * 0.72, start.distance_to(endpoint)):
 		var pierce_node := hit["node"] as Node2D
@@ -4343,7 +4434,10 @@ func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
 			_call_take_damage(pulse_enemy, damage_value * pulse_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "reactor_vent_cycle_pulse"})
 			var away := pulse_enemy.global_position - owner_node.global_position
 			_push_enemy_scaled(pulse_enemy, away.normalized() if away.length_squared() > 0.001 else Vector2.RIGHT, pulse_knockback / maxf(knockback, 1.0))
-	var vent_width := beam_width * (1.0 + REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS * float(maxi(_extra_projectiles(), 0)))
+	# FAN-1893: ширина лопасти — не число снарядов; generic «+1 снаряд» вентили
+	# не расширяет (перегруженная width-интерпретация удалена), направлений
+	# всегда ровно REACTOR_VENT_COUNT.
+	var vent_width := beam_width
 	var base_phase := _reactor_vent_phase
 	_reactor_vent_phase = fmod(_reactor_vent_phase + deg_to_rad(REACTOR_ROTATION_STEP_DEG), TAU)
 	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius * 0.62, visual_color, true)
@@ -4735,10 +4829,21 @@ func _extra_projectiles() -> int:
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return 0
-	var mods = owner_node.get("run_modifiers")
+	# FAN-1893: generic-ось «+1 снаряд» потребляется ТОЛЬКО оружием с явной
+	# capability real_projectile_count > 0 — тогда каждый пункт добавляет ровно
+	# один реальный снаряд боевого пути. У обычного оружия это его выстрел;
+	# engineer_sentry_link читает шов из try_fire каждой активной турели, поэтому
+	# один пункт добавляет по снаряду к каждому её залпу, но не меняет парк,
+	# cadence, damage или summon scaling. Для остальных оружий generic-ключ
+	# инертен (перегруженные интерпретации «лишняя ловушка/тик/звено/ширина»
+	# удалены); семантические мета-ключи (trap_extra_count и т.п.) остаются.
+	# FAN-2247: player-facing source отсутствует; direct probes и injected/future
+	# values проверяют runtime seam, но не означают доступную игроку награду.
 	var generic_extra := 0
-	if mods is Dictionary:
-		generic_extra = int((mods as Dictionary).get("extra_projectile", 0.0))
+	if real_projectile_count > 0:
+		var mods = owner_node.get("run_modifiers")
+		if mods is Dictionary:
+			generic_extra = maxi(int((mods as Dictionary).get("extra_projectile", 0.0)), 0)
 	var semantic_extra := 0
 	if owner_node.has_method("meta_extra_projectiles"):
 		semantic_extra = int(owner_node.call("meta_extra_projectiles", _meta_context()))
@@ -5034,6 +5139,8 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
 		var owner_node := _owner_node()
 		var hit_context := _meta_context({"damage_type": hit_type})
+		if owner_node != null and owner_node.has_method("telemetry_context_for_hit"):
+			hit_context = owner_node.call("telemetry_context_for_hit", hit_context)
 		var is_critical := _last_attack_crit and apply_unique_melee_effects
 		hit_context["critical"] = is_critical
 		var final_amount := amount
@@ -5051,7 +5158,10 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 				final_amount *= infected_multiplier
 			# SCRUM-930 «Дальний расчёт»: урон оружия Снайпера растёт с дистанцией
 			final_amount *= _class_distance_trait_multiplier(owner_node, enemy as Node2D)
-		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
+		var hit_feedback := {"critical": is_critical, "damage_type": hit_type}
+		if owner_node != null and owner_node.has_method("telemetry_feedback_for_hit"):
+			hit_feedback = owner_node.call("telemetry_feedback_for_hit", hit_context, hit_feedback)
+		_call_take_damage(enemy, final_amount, hit_feedback)
 		_apply_constellation_symbiote_share(enemy, owner_node, final_amount, hit_type)
 		_apply_constellation_prey_distribution(enemy, owner_node, final_amount, hit_type)
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
@@ -5206,8 +5316,8 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	var tick_damage := float(parameters.get("dot_damage", max(1.0, direct_damage * 0.22)))
 	# SCRUM-894: крит-снапшот яда (dot_crit_snapshot_ratio > 0, Ядовитая струна) —
 	# критовый прямой удар усиливает тики долей крит-множителя, зафиксированного
-	# на момент каста (_last_attack_crit из _rolled_damage). Множитель уже зажат
-	# CRIT_DAMAGE_CAP в derived_parameters — runaway исключён.
+	# на момент каста (_last_attack_crit из _rolled_damage). Выше raw 2.75
+	# множитель использует убывающий sqrt-tail без верхнего потолка.
 	if dot_crit_snapshot_ratio > 0.0 and _last_attack_crit:
 		tick_damage *= 1.0 + maxf(float(parameters.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0) * clampf(dot_crit_snapshot_ratio, 0.0, 1.0)
 	var tick_speed: float = max(float(parameters.get("dot_speed", 1.0)), 0.2)
@@ -5381,6 +5491,20 @@ const ACID_CHARGE_PERSIST_SECONDS := 999999.0
 # SCRUM-961 «Кислотный катализатор»: артефакт поднимает кап зарядов на цель.
 const ACID_CHARGE_ARTIFACT_CAP_BONUS := 3
 
+
+# Existing acid charges outlive their pools, so weapon cadence changes must
+# retime their stored intervals in place instead of re-applying/resetting them.
+func refresh_persistent_status_cadence() -> void:
+	if not pool_contact_charges or not is_inside_tree():
+		return
+	var owner_node := _owner_node()
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	var owner_id := owner_node.get_instance_id()
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy is Node and is_instance_valid(enemy):
+			StatusEffects.retime_dot_statuses(enemy as Node, ACID_CHARGE_STATUS_PREFIX, owner_id, pool_charge_tick_interval)
+
 # SCRUM-944: контактные статусы луж. Кислотная колба (pool_contact_charges):
 func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) -> void:
 	var acid_charges := pool_contact_charges and source_pool != null and is_instance_valid(source_pool)
@@ -5416,6 +5540,7 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 		if not StatusEffects.has_status(enemy_node, charge_status_id) \
 				and previous_stack_count < charge_cap:
 			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
+				"source_id": owner_id,
 				"duration": ACID_CHARGE_PERSIST_SECONDS,
 				"dot_damage": per_target_tick,
 				"dot_interval": pool_charge_tick_interval,
@@ -5562,6 +5687,10 @@ func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
 		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		var owner_node := _owner_node()
+		if str(tagged.get("telemetry_provenance_id", "")) == "" and owner_node != null and owner_node.has_method("telemetry_context_for_hit") and owner_node.has_method("telemetry_feedback_for_hit"):
+			var telemetry_context: Dictionary = owner_node.call("telemetry_context_for_hit", {"weapon_id": weapon_id, "attack_mode": attack_mode, "damage_type": str(tagged.get("damage_type", _weapon_damage_type()))})
+			tagged = owner_node.call("telemetry_feedback_for_hit", telemetry_context, tagged)
 		# SCRUM-1007: весь урон классового оружия — урон ИГРОКА. Метка едет в
 		# feedback убившего хита (enemy._record_kill_attribution) и служит
 		# атрибуцией он-килл trait'ов; лишний ключ для остальных читателей шумом
@@ -5816,6 +5945,7 @@ func _deploy_visual_texture() -> Texture2D:
 func _register_effect(effect: Node) -> void:
 	if effect == null:
 		return
+	effect.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_effects_shutdown = false
 	effect.set_meta("weapon_owner_id", get_instance_id())
 	effect.add_to_group("player_weapon_effects")

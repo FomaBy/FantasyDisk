@@ -31,7 +31,9 @@ extends SceneTree
 #     - после КАЖДОЙ атаки паттерн +6° по часовой (fire_interval шаг не меняет —
 #       скорость атаки ускоряет только частоту шагов); 15 атак = 90° = период;
 #     - пер-вентильный урон = ролл x REACTOR_VENT_DAMAGE_RATIO (0.42);
-#     - extra_projectile расширяет лопасти, но направлений остаётся 4;
+#     - FAN-1893: generic extra_projectile для реактора полностью инертен
+#       (real_projectile_count 0; прежний width-бонус +14%/снаряд удалён) —
+#       ширина лопасти всегда beam_width, направлений ровно 4;
 #     - свежий инстанс оружия стартует с фазы 0 (нет застарелого состояния).
 #
 # Запуск: Godot --headless --path . --script res://tests/robot_kit_test.gd
@@ -212,7 +214,22 @@ func _take_hit(player: Node, amount: float, source := "") -> float:
 	return before - float(player.get("health"))
 
 
-func _make_real_player(character_id: String, weapon_id: String) -> Node:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _make_real_player(character_id: String, weapon_id: String, errors: Array) -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	root.add_child(player)
 	(player as Node2D).global_position = Vector2(2600, 2600)
@@ -225,16 +242,21 @@ func _make_real_player(character_id: String, weapon_id: String) -> Node:
 	# post-mitigation вход равен сырому amount.
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	derived["defense"] = 0.0
+	derived["raw_defense"] = 0.0
 	derived["absorb"] = 0.0
 	derived["regeneration"] = 0.0
+	for defect in [_raw_pair_defect(derived, "dodge", "raw_dodge"), _raw_pair_defect(derived, "defense", "raw_defense")]:
+		if defect != "":
+			errors.append(defect)
 	player.set("run_modifiers", {})
 	player.set("health", 400.0)
 	return player
 
 
 func _test_armored_hull_trait(errors: Array) -> void:
-	var robot := _make_real_player("robot", "robot_reactor_core")
+	var robot := _make_real_player("robot", "robot_reactor_core", errors)
 	await process_frame
 
 	# AC: 100 post-mitigation → 80; 5 → 4 (большой и малый удар).
@@ -245,16 +267,29 @@ func _test_armored_hull_trait(errors: Array) -> void:
 	if absf(small_hit - 4.0) > EPS:
 		errors.append("robot must take exactly 4 of a 5 post-mitigation hit (got %.3f)" % small_hit)
 
-	# AC: множитель — ПОСЛЕ absorb/defense. Субтрактивный absorb различает
-	# порядок: 100 → max(100-20, 42) x (1-0.5) x 0.8 = 32; «x0.8 сначала»
-	# дал бы (80-20) x 0.5 = 30.
+	# AC: множитель — ПОСЛЕ absorb/defense. Митигацию задаём СЫРЫМ рейтингом и
+	# гоним через ту же кривую, что рантайм: effective_defense(0.5) ≈ 0.392.
+	# Субтрактивный absorb различает порядок: 100 → max(100-20, 42) x
+	# (1-0.392) x 0.8 ≈ 38.90; «x0.8 сначала» дал бы max(80-20, 33.6) x
+	# (1-0.392) ≈ 36.47.
 	var derived: Dictionary = robot.get("derived_parameters")
-	derived["defense"] = 0.5
+	var raw_defense := 0.5
+	derived["raw_defense"] = raw_defense
+	derived["defense"] = PD.effective_defense(raw_defense)
+	var armored_raw_defect := _raw_pair_defect(derived, "defense", "raw_defense")
+	if armored_raw_defect != "":
+		errors.append(armored_raw_defect)
 	derived["absorb"] = 20.0
 	var ordered_hit := _take_hit(robot, 100.0)
-	if absf(ordered_hit - 32.0) > EPS:
-		errors.append("trait must be the LAST multiplier after absorb+defense (got %.3f, want 32)" % ordered_hit)
+	var absorb_pass := maxf(100.0 - 20.0, 100.0 * PD.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
+	var expected_ordered_hit := absorb_pass * (1.0 - PD.effective_defense(raw_defense)) * 0.8
+	if absf(ordered_hit - expected_ordered_hit) > EPS:
+		errors.append("trait must be the LAST multiplier after absorb+effective_defense(raw) (got %.3f, want %.3f)" % [ordered_hit, expected_ordered_hit])
+	derived["raw_defense"] = 0.0
 	derived["defense"] = 0.0
+	var reset_raw_defect := _raw_pair_defect(derived, "defense", "raw_defense")
+	if reset_raw_defect != "":
+		errors.append(reset_raw_defect)
 	derived["absorb"] = 0.0
 
 	# AC: тиковые/хазардные источники (всё, что идёт через take_damage) тоже x0.8.
@@ -263,7 +298,7 @@ func _test_armored_hull_trait(errors: Array) -> void:
 		errors.append("tick/hazard-style incoming damage must also be reduced (got %.3f, want 8)" % dot_hit)
 
 	# AC: другие классы не затронуты.
-	var soldier := _make_real_player("soldier", "soldier_rifle")
+	var soldier := _make_real_player("soldier", "soldier_rifle", errors)
 	await process_frame
 	var soldier_hit := _take_hit(soldier, 100.0)
 	if absf(soldier_hit - 100.0) > EPS:
@@ -279,7 +314,7 @@ func _test_armored_hull_trait(errors: Array) -> void:
 	var dodge_ev_mitigation := 1.0 - (1.0 - PD.SURVIVABILITY_DODGE_CAP) * deterministic_pass
 	if deterministic_mitigation >= 0.98 or dodge_ev_mitigation >= 0.98:
 		errors.append("robot worst-case mitigation breaches the 0.98 immunity gate (det %.4f, dodge-EV %.4f)" % [deterministic_mitigation, dodge_ev_mitigation])
-	print("SCRUM-914 evidence: 100->%.1f, 5->%.1f, absorb20+def50 100->%.1f, dot10->%.1f, soldier 100->%.1f; worst-case mitigation det %.2f%%, dodge-EV %.2f%% (< 98%%)." % [
+	print("SCRUM-914 evidence: 100->%.1f, 5->%.1f, absorb20+raw_def0.5 100->%.1f, dot10->%.1f, soldier 100->%.1f; worst-case mitigation det %.2f%%, dodge-EV %.2f%% (< 98%%)." % [
 		big_hit, small_hit, ordered_hit, dot_hit, soldier_hit,
 		deterministic_mitigation * 100.0, dodge_ev_mitigation * 100.0])
 
@@ -510,12 +545,17 @@ func _test_reactor_rotating_fan(errors: Array) -> void:
 func _test_reactor_blade_width_and_reset(errors: Array) -> void:
 	var holder := _new_scene("Scrum918ReactorBlades")
 	var owner := _new_owner(holder)
-	# extra_projectile расширяет лопасти, но направлений остаётся ровно 4.
+	# FAN-1893: generic extra_projectile для реактора полностью инертен
+	# (real_projectile_count 0; прежний width-бонус +14%/снаряд удалён).
 	owner.run_modifiers = {"extra_projectile": 2.0}
 	var weapon := _new_weapon(owner, "robot", "robot_reactor_core")
 	if absf(float(weapon.get("_reactor_vent_phase"))) > 0.0001:
 		errors.append("re-attached reactor must reset rotation state to 0")
 	var axis := _reactor_axis_enemies(holder, owner, 250.0)
+	# Дискриминирующая проба удалённого бонуса: side 55 лежит ВНЕ базовой
+	# полулопасти (beam_width 96 / 2 = 48), но ВНУТРИ удалённой расширенной
+	# (96 x (1 + 0.14 x 2) / 2 = 61.4) — вернись бонус, этот враг получил бы хит.
+	var removed_bonus_probe := _new_enemy(holder, owner.global_position + Vector2(250, 55))
 	var diagonal := _new_enemy(holder, owner.global_position + Vector2(85, 85))
 	await process_frame
 
@@ -526,14 +566,16 @@ func _test_reactor_blade_width_and_reset(errors: Array) -> void:
 		var axis_enemy := axis[key] as MockEnemy
 		total_hits += axis_enemy.hit_count
 		if axis_enemy.hit_count != 1:
-			errors.append("with extra projectiles the %s vent must still hit exactly once (got %d)" % [str(key), axis_enemy.hit_count])
+			errors.append("under extra_projectile the %s vent must still hit exactly once (got %d)" % [str(key), axis_enemy.hit_count])
 		elif absf(axis_enemy.total_damage - 100.0 * ClassWeapon.REACTOR_VENT_DAMAGE_RATIO) > 0.5:
-			errors.append("extra projectiles must not inflate per-vent damage (got %.2f)" % axis_enemy.total_damage)
+			errors.append("extra_projectile must not inflate per-vent damage (got %.2f)" % axis_enemy.total_damage)
 	if total_hits != 4:
-		errors.append("exactly four vents per attack, extra projectiles only widen blades (hits %d)" % total_hits)
-	# Ширина: бонус +14%/снаряд НЕ дотягивается до диагонали (85 > 96*1.28/2).
+		errors.append("exactly four base-width vents per attack, extra_projectile is fully inert (hits %d)" % total_hits)
+	if removed_bonus_probe.hit_count != 0:
+		errors.append("reactor blade width must ignore extra_projectile: the side-55 enemy sits outside the base 48px half-blade and only the REMOVED +14%%/projectile bonus would reach it (hits %d)" % removed_bonus_probe.hit_count)
+	# Лопасти остаются лопастями: диагональ 85/85 вне любой ширины — веер не круг.
 	if diagonal.hit_count != 0:
-		errors.append("widened blades must still be blades, not a circle (diagonal hits %d)" % diagonal.hit_count)
+		errors.append("blades must stay blades, not a circle (diagonal hits %d)" % diagonal.hit_count)
 	await _cleanup(holder)
 
 

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<style>.s{fill:#c6d5df}.note{fill:#87cdf3}.warn{fill:#f0b270}</style>
+<rect x="0" y="0" width="2560" height="1440" fill="#0a0b12"/>
+<rect x="113" y="124" width="2333" height="1192" rx="16" fill="#17141a" stroke="#bd9149" stroke-width="3"/>
+<rect x="267" y="225" width="2026" height="990" rx="10" fill="#11131a" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="1017" y="274" font-family="Arial, sans-serif" font-size="31" font-weight="bold" fill="#f3e4b2">ДОКАЧКА · 2560×1440</text>
+<text class="note" x="291" y="274" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#87cdf3">Золото: 480</text>
+<rect x="470" y="398" width="1620" height="540" rx="10" fill="#17141a" stroke="#65bde7" stroke-width="2"/>
+<rect x="470" y="398" width="460" height="540" rx="10" fill="#211e26" stroke="#bd9149" stroke-width="3"/>
+<text class="base" x="506" y="461" font-family="Arial, sans-serif" font-size="27" font-weight="bold" fill="#f3e4b2">Сила +1</text>
+<text class="s" x="506" y="509" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#c6d5df">Физический урон</text>
+<text class="base" x="506" y="562" font-family="Arial, sans-serif" font-size="25" font-weight="normal" fill="#f3e4b2">84 → 92</text>
+<rect x="506" y="587" width="388" height="42" rx="6" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="514" y="613" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#c6d5df">реально: +8 урона</text>
+<rect x="1050" y="398" width="460" height="540" rx="10" fill="#211e26" stroke="#bd9149" stroke-width="3"/>
+<text class="base" x="1086" y="461" font-family="Arial, sans-serif" font-size="27" font-weight="bold" fill="#f3e4b2">Ловкость +1</text>
+<text class="s" x="1086" y="509" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#c6d5df">Критический шанс</text>
+<text class="base" x="1086" y="562" font-family="Arial, sans-serif" font-size="25" font-weight="normal" fill="#f3e4b2">36% → 36.5%</text>
+<rect x="1086" y="587" width="388" height="42" rx="6" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="1094" y="613" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#c6d5df">реально: +0.5 п.п.</text>
+<rect x="1630" y="398" width="460" height="540" rx="10" fill="#211e26" stroke="#bd9149" stroke-width="3"/>
+<text class="base" x="1666" y="461" font-family="Arial, sans-serif" font-size="27" font-weight="bold" fill="#f3e4b2">Выносливость +1</text>
+<text class="s" x="1666" y="509" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#c6d5df">Максимальное здоровье</text>
+<text class="base" x="1666" y="562" font-family="Arial, sans-serif" font-size="25" font-weight="normal" fill="#f3e4b2">102 → 110 HP</text>
+<rect x="1666" y="587" width="388" height="42" rx="6" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="1674" y="613" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#c6d5df">реально: +8 HP</text>
+<rect x="600" y="950" width="1360" height="120" rx="8" fill="#253543" stroke="#65bde7" stroke-width="2"/>
+<text class="warn" x="636" y="973" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#f0b270">cap_reached / zero delta: удалено до CTA</text>
+<text class="note" x="636" y="995" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#87cdf3">После eligibility-filter остаются только полезные предложения; ряд центрируется заново, а длинное пояснение открывается в</text>
+<text class="note" x="636" y="1024" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#87cdf3">прокрутке без обрезки.</text>
+<rect x="1946" y="956" width="4" height="108" rx="2" fill="#111820" stroke="#65bde7" stroke-width="1"/>
+<rect x="1946" y="977" width="4" height="36" rx="2" fill="#87cdf3" stroke="none" stroke-width="0"/>
+<rect x="650" y="1092" width="1260" height="88" rx="8" fill="#25262c" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="860" y="1137" font-family="Arial, sans-serif" font-size="23" font-weight="bold" fill="#f3e4b2">Обновить предложения</text>
+<text class="s" x="1490" y="1137" font-family="Arial, sans-serif" font-size="23" font-weight="bold" fill="#c6d5df">Пропустить</text>
+</svg>

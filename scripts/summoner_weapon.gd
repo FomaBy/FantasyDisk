@@ -246,7 +246,10 @@ func _summon(play_cast_animation := true) -> bool:
 	ally.set("owner_node", owner_node)
 	ally.set("command_mode", command_mode)
 	var angle := randf() * TAU
-	ally.global_position = owner_node.global_position + Vector2.RIGHT.rotated(angle) * 48.0
+	var spawn_direction := Vector2.RIGHT.rotated(angle)
+	ally.global_position = owner_node.global_position + spawn_direction * 48.0
+	if ally.has_method("set_guard_formation_direction"):
+		ally.call("set_guard_formation_direction", spawn_direction)
 	var profile := _summon_profile(owner_node, roster_entry)
 	# SCRUM-961 «Зов волков»: ближние (melee) духи рвут сильнее (+20% урона).
 	if pack_bias and (selected_visual_id == "druid_beast" or str(roster_entry.get("attack_kind", "")) == "melee"):
@@ -328,7 +331,13 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
 	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
 	var summon_crowd_scale := 1.0 + minf(level_progress * 0.275, 5.20)
-	var summon_radius := summon_aoe_radius * constellation_geometry * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
+	# FAN-2451: derive from the immutable pre-scaling base (not the live, already
+	# weapon-scaled summon_aoe_radius) so this multiplies constellation_geometry
+	# exactly once even when the weapon-level scaling in player.gd's
+	# geometry_capabilities branch never ran (e.g. this weapon was never routed
+	# through equip_weapon, so weapon_config lacks its geometry capability list).
+	var base_summon_radius := float(get_meta("base_summon_aoe_radius", summon_aoe_radius))
+	var summon_radius := base_summon_radius * constellation_geometry * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
 	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	var run_modifiers_raw = owner_node.get("run_modifiers")
@@ -350,14 +359,18 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# оружия относительно базы 420) и бьют одиночным магическим снарядом — их
 	# splash-покрытие выключено (melee-звери остаются AoE-осью стаи).
 	var attack_kind := str(roster_entry.get("attack_kind", "melee"))
-	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * constellation_geometry * 0.18, 24.0)
+	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0)
+	if weapon_id == "summon_amulet":
+		profile_attack_range = maxf(_druid_summon_engagement_range(parameters, stats) * constellation_geometry * 0.18, 24.0)
 	# SCRUM-902: дальние духи бьют РЕЖЕ, но ТЯЖЕЛЕЕ (×RANGED_CADENCE_SCALE к
 	# интервалу И к урону хита) — per-body DPS семьи равен melee-темпу, поэтому
 	# budget-зеркало (_budget_summon_dps) остаётся композиционно-взвешенным по
 	# семьям без отдельной модели темпа.
 	var cadence_scale := 1.0
 	if attack_kind == "ranged":
-		profile_attack_range = maxf(summon_ranged_range * constellation_geometry * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		profile_attack_range = maxf(summon_ranged_range * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		if weapon_id == "summon_amulet":
+			profile_attack_range = maxf(summon_ranged_range * constellation_geometry * (_druid_summon_engagement_range(parameters, stats) / maxf(attack_range, 1.0)), 120.0)
 		cadence_scale = RANGED_CADENCE_SCALE
 	var profile := {
 		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult * cadence_scale, 1.0),
@@ -388,6 +401,18 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 			profile["constellation_intercept_ratio"] = clampf(float(final_params.get("intercept_ratio", 0.30)), 0.0, 0.80)
 			profile["constellation_death_burst_ratio"] = clampf(float(final_params.get("death_burst_damage_ratio", 0.42)), 0.0, 1.0)
 	return profile
+
+
+# FAN-2429: FAN-2171 moved shared-area scaling to the live weapon. Summon attack
+# reach is profile-owned, so retain its existing stat contribution here; splash
+# geometry remains on the weapon and is still applied exactly once.
+func _druid_summon_engagement_range(parameters: Dictionary, stats: Dictionary) -> float:
+	var leadership := float(parameters.get("leadership", stats.get("leadership", 0.0)))
+	return float(parameters.get("attack_range", attack_range)) \
+		+ float(stats.get("perception", 0.0)) * 2.5 \
+		+ float(stats.get("intelligence", 0.0)) * 0.35 \
+		+ float(stats.get("endurance", 0.0)) * 0.25 \
+		+ leadership * 0.35
 
 
 # SCRUM-961 «Гомункул-реактор»: второй особый гомункул — неуязвимый реактор.
@@ -537,7 +562,10 @@ func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 	tank.set("owner_node", owner_node)
 	owner_node.set_meta(HOMUNCULUS_TANK_OWNER_META, tank.get_instance_id())
 	tank.set("command_mode", command_mode)
-	tank.global_position = owner_node.global_position + Vector2.RIGHT.rotated(randf() * TAU) * 48.0
+	var spawn_direction := Vector2.RIGHT.rotated(randf() * TAU)
+	tank.global_position = owner_node.global_position + spawn_direction * 48.0
+	if tank.has_method("set_guard_formation_direction"):
+		tank.call("set_guard_formation_direction", spawn_direction)
 	var profile := _summon_profile(owner_node)
 	# Танк-фантазия: РОВНО 4x max HP Химика (summon_health_multiplier=4.0) ×
 	# мета-артефакты (homunculus_power_mult / «Гомункул-танк»); leadership-bulk
@@ -660,8 +688,6 @@ func _selected_ally_visual_id() -> String:
 			return pair_tank_visual_id
 		"summon_amulet":
 			return "druid_beast" if randf() < 0.5 else "druid_pack_spirit"
-		"leadership_echo":
-			return "leadership_echo"
 	return "druid_beast"
 
 

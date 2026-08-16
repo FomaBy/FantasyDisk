@@ -1,0 +1,183 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_rifle.png" id="1_rifle"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_suppressive_order"]
+resource_name = "ultimate"
+length = 5.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WarBanner:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.55, 1.1, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.85, 0.7, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("RifleGhostLeft:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.02, 0.24, 0.16, 0.16, 0.95]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("RifleGhostCenter:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.94, 0.0, -0.06, -0.06, 0.88]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("RifleGhostRight:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-1.02, -0.24, -0.16, -0.16, -0.95]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("VolleyLane:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.55, 0.8, 3.2, 4.9, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.55, 0.55, 0.2, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("MuzzleFlashWave:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.8, 1.5, 1.58, 1.9, 2.6, 2.68, 3, 3.7, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, -252)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("MuzzleFlashWave:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.78, 0.8, 1.5, 1.58, 1.88, 1.9, 2.6, 2.68, 2.98, 3, 3.7, 4.9, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.8, 0.0, 0.0, 1.0, 0.8, 0.0, 0.0, 1.0, 0.8, 0.0, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("SmokeRecall:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 4.6, 4.9, 5.3, 5.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.8, 0.4, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_suppressive_order"]
+_data = {"ultimate": SubResource("Animation_suppressive_order")}
+
+[node name="SoldierRifleSuppressiveOrder" type="Node2D"]
+metadata/ultimate_id = "soldier/soldier_rifle"
+metadata/silhouette = "spectral_rifle_rank_behind_a_raised_war_banner"
+metadata/motion_path = "three_aimed_volleys_sweeping_one_straight_arena_crossing_lane"
+metadata/impact_language = "three_muzzle_flash_waves_then_smoke_recall"
+metadata/max_visual_nodes = 8
+metadata/crowd_cap = 22
+metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved volley art."
+
+[node name="WarBanner" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.94, 0.78, 0.32, 0.34)
+polygon = PackedVector2Array(-6, 44, -6, -84, 54, -66, -6, -48)
+modulate = Color(1, 1, 1, 0)
+
+[node name="FiringLine" type="Line2D" parent="."]
+points = PackedVector2Array(-150, 44, -76, 38, 0, 36, 76, 38, 150, 44)
+width = 8.0
+default_color = Color(0.62, 0.72, 0.58, 0.5)
+antialiased = true
+
+[node name="VolleyLane" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 16, 0, -252)
+width = 96.0
+default_color = Color(0.86, 0.9, 0.66, 0.32)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="RifleGhostLeft" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_rifle")
+position = Vector2(-95, 22)
+rotation = 1.02
+scale = Vector2(0.36, 0.36)
+modulate = Color(0.78, 0.94, 0.72, 0.72)
+
+[node name="RifleGhostCenter" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_rifle")
+position = Vector2(0, 10)
+rotation = 0.94
+scale = Vector2(0.4, 0.4)
+modulate = Color(0.84, 0.98, 0.78, 0.86)
+
+[node name="RifleGhostRight" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_rifle")
+position = Vector2(95, 22)
+rotation = -1.02
+scale = Vector2(0.36, 0.36)
+modulate = Color(0.78, 0.94, 0.72, 0.72)
+
+[node name="MuzzleFlashWave" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-72, 0, -36, -10, 0, -14, 36, -10, 72, 0)
+width = 26.0
+default_color = Color(1, 0.93, 0.6, 0.94)
+antialiased = true
+position = Vector2(0, 16)
+modulate = Color(1, 1, 1, 0)
+
+[node name="SmokeRecall" type="Line2D" parent="."]
+points = PackedVector2Array(-140, 62, -84, 48, -28, 64, 28, 46, 84, 62, 140, 50)
+width = 16.0
+default_color = Color(0.46, 0.48, 0.44, 0.5)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_suppressive_order")}
+autoplay = "ultimate"

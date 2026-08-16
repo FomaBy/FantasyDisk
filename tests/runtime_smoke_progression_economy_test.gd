@@ -35,8 +35,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Runtime progression/economy smoke suite passed.")
-	quit()
+	_finish("Runtime progression/economy smoke suite passed.")
 
 
 func _test_event_ev_risk_reward_invariant() -> void:

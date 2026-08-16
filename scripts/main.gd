@@ -296,27 +296,21 @@ const LEVEL_UP_TOAST_SCENE := preload("res://scenes/LevelUpToast.tscn")
 const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const LEVEL_UP_MOD_DISPLAY := {
-	"damage_multiplier": "damage",
+	"damage_flat": "damage", "damage_multiplier": "damage",
 	"magic_damage_multiplier": "magic_damage",
 	"attack_speed_multiplier": "attack_speed",
 	"max_health_flat": "health_point",
 	"move_speed_multiplier": "move_speed",
-	"sector_multiplier": "aoe_radius",
-	"aoe_radius_multiplier": "aura_radius",
+	"aoe_radius_multiplier": "aoe_radius",
 	"pickup_radius_flat": "pickup_radius",
 	"defense_flat": "defense",
-	"range_multiplier": "attack_range",
 	"crit_chance_flat": "crit_chance",
 	"crit_damage_flat": "crit_damage_multiplier",
 	"knockback_multiplier": "knockback_power",
 	"dodge_flat": "dodge",
 	"dot_damage_flat": "dot_damage",
-	"dot_speed_flat": "dot_speed",
-	"projectile_speed_flat": "projectile_speed",
-	"aura_radius_flat": "aura_radius",
-	"buff_power_flat": "buff_power",
+	# FAN-2249: extra_projectile («+1 снаряд») сюда НЕ маппится — это не ось призыва.
 	"summon_bonus": "summon_amount",
-	"extra_projectile": "summon_amount",
 	"absorb_flat": "absorb",
 	"regeneration_flat": "regeneration",
 	"vampiric_amount_flat": "vampiric_amount",
@@ -404,6 +398,7 @@ var selected_start_boon_id := ""
 # (реальный флаг живет в settings.cfg: lore_intro_seen и зависит от профиля).
 var force_skip_lore_intro := false
 var current_act := 1
+var encounter_feature_state := {}
 var route_stage := 0
 var combat_active := false
 var boss_combat_active := false
@@ -493,6 +488,7 @@ const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
+const ENCOUNTER_CONFIG := preload("res://scripts/encounters/encounter_config.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
 const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
@@ -500,6 +496,7 @@ const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
 var ui
 var route
 var combat
+var combat_world_pause := preload("res://scripts/combat_world_pause.gd").new()
 var dev_console: CanvasLayer = null
 var update_manager = null
 var meta_state := {}
@@ -551,6 +548,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	combat_world_pause.attach(self, get_tree(), Callable(self, "_is_gameplay_paused"))
 	rng.randomize()
 	_load_meta_progression()
 	_load_game_settings()
@@ -748,10 +746,9 @@ func run_sandbox_multiplier(key: String) -> float:
 
 
 func begin_new_run_session() -> void:
+	encounter_feature_state = ENCOUNTER_CONFIG.empty_act_state(current_act)
 	capture_run_sandbox_snapshot()
 	reset_run_metrics()
-
-
 # SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
 # на старте нового забега. НЕ входят в _run_autosave_state — не персистятся и не текут
 # из загруженного autosave (после «Продолжить» метрики считаются с нуля за новый прогон).
@@ -855,6 +852,7 @@ func _run_autosave_state() -> Dictionary:
 		"selected_ascension_level": selected_ascension_level,
 		"run_act_count": ACT_COUNT,
 		"current_act": current_act,
+		"encounter_feature_state": ENCOUNTER_CONFIG.normalize_act_state(encounter_feature_state, current_act),
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
 		"route_selected_indices": route_selected_indices.duplicate(true),
@@ -881,10 +879,15 @@ func _run_autosave_state() -> Dictionary:
 		"shop_reentry_route_stage": shop_reentry_route_stage,
 		"shop_reentry_branch_index": shop_reentry_branch_index,
 	}
-
-
 func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 	var migrated := state.duplicate(true)
+	var snapshot := _autosave_dictionary(migrated.get("run_player_snapshot", {}))
+	if snapshot.has("run_modifiers"):
+		# FAN-2232: санитизируем только присутствующий optional-ключ (битый тип
+		# падает в {}); отсутствующий run_modifiers не создаётся, иначе legacy
+		# build identity перестаёт быть byte-equivalent исходному снапшоту.
+		snapshot["run_modifiers"] = PROGRESSION_DATA.sanitize_run_modifiers(_autosave_dictionary(snapshot.get("run_modifiers", {})))
+		migrated["run_player_snapshot"] = snapshot
 	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
 	if saved_act > ACT_COUNT:
 		# Legacy three-act saves resume at the equivalent final Act 2 checkpoint.
@@ -894,10 +897,10 @@ func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 		migrated["current_act"] = ACT_COUNT
 	else:
 		migrated["current_act"] = clampi(saved_act, 1, ACT_COUNT)
+	migrated["encounter_feature_state"] = ENCOUNTER_CONFIG.normalize_act_state(
+		migrated.get("encounter_feature_state", null), int(migrated["current_act"]))
 	migrated["run_act_count"] = ACT_COUNT
 	return migrated
-
-
 func _apply_run_autosave_state(state: Dictionary) -> void:
 	var normalized_state := migrate_run_autosave_state(state)
 	combat_active = false
@@ -912,6 +915,8 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(normalized_state.get("selected_start_boon_id", "")))
 	selected_ascension_level = int(normalized_state.get("selected_ascension_level", 0))
 	current_act = int(normalized_state.get("current_act", 1))
+	encounter_feature_state = ENCOUNTER_CONFIG.normalize_act_state(
+		normalized_state.get("encounter_feature_state", null), current_act)
 	route_stage = maxi(0, int(normalized_state.get("route_stage", 0)))
 	route_nodes = _autosave_array(normalized_state.get("route_nodes", []))
 	if route_nodes.is_empty():
@@ -926,7 +931,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_seed = int(normalized_state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(normalized_state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(normalized_state.get("pending_level_ups", 0)))
-	level_up_offer = _autosave_array(normalized_state.get("level_up_offer", []))
+	level_up_offer = AttributeContract.sanitize_level_up_offer(_autosave_array(normalized_state.get("level_up_offer", [])), selected_character_id, _autosave_dictionary(run_player_snapshot.get("stats", {})), _autosave_dictionary(run_player_snapshot.get("run_modifiers", {})), PROGRESSION_DATA.weapon(selected_character_id, selected_weapon_id))  # FAN-1887/FAN-1927: legacy/capped/no-op/ineligible показы сбрасываются context-aware санитайзером и регенерируются
 	attribute_offer = _autosave_array(normalized_state.get("attribute_offer", []))
 	attribute_rerolls_left = maxi(0, int(normalized_state.get("attribute_rerolls_left", 0)))
 	used_event_ids = _autosave_array(normalized_state.get("used_event_ids", []))
@@ -943,14 +948,10 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	shop_reentry_pending = bool(normalized_state.get("shop_reentry_pending", false))
 	shop_reentry_route_stage = int(normalized_state.get("shop_reentry_route_stage", -1))
 	shop_reentry_branch_index = int(normalized_state.get("shop_reentry_branch_index", -1))
-
-
 func _autosave_array(value: Variant) -> Array:
 	if value is Array:
 		return (value as Array).duplicate(true)
 	return []
-
-
 func _autosave_dictionary(value: Variant) -> Dictionary:
 	if value is Dictionary:
 		return (value as Dictionary).duplicate(true)
@@ -1012,6 +1013,7 @@ func advance_to_next_act() -> bool:
 	if current_act >= ACT_COUNT:
 		return false
 	current_act += 1
+	encounter_feature_state = ENCOUNTER_CONFIG.empty_act_state(current_act)
 	# SCRUM-873: отхил на переходе акта. Игрок между узлами живёт в
 	# run_player_snapshot (снят в _end_combat ДО этого вызова) — лечим снапшот,
 	# HP «переезжает» в первый бой нового акта через _restore_player_snapshot.
@@ -1413,6 +1415,7 @@ func _clamp_arena_point(world_position: Vector2, margin := 32.0) -> Vector2:
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
+		combat_world_pause.enforce()
 		return
 
 	if not combat_active:
@@ -1492,23 +1495,12 @@ func _clear_all_game_pauses() -> void:
 
 
 func _freeze_gameplay_state() -> void:
-	_zero_velocity(current_player)
-	for group_name in ["enemies", "bosses", "summoned_enemies", "projectiles", "enemy_projectiles", "allies", "pickups", "player_weapons", "player_weapon_effects"]:
-		for node in get_tree().get_nodes_in_group(group_name):
-			_zero_velocity(node)
+	combat_world_pause.enforce()
 
 	if current_player != null and is_instance_valid(current_player):
 		var camera := current_player.get_node_or_null("Camera2D")
 		if camera != null and camera.has_method("reset_smoothing"):
 			camera.call("reset_smoothing")
-
-
-func _zero_velocity(node: Node) -> void:
-	if node == null or not is_instance_valid(node):
-		return
-	if node.get("velocity") != null:
-		node.set("velocity", Vector2.ZERO)
-
 
 func _play_sfx(sfx_id: String) -> void:
 	var audio := get_node_or_null("/root/AudioManager")

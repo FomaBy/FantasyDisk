@@ -38,6 +38,11 @@ func _neutralize_mitigation(player: Node2D) -> void:
 	dp["dodge"] = 0.0
 	dp["defense"] = 0.0
 	dp["absorb"] = 0.0
+	# Принятый контракт защиты/уворота считает митигацию из СЫРЫХ рейтингов, поэтому
+	# обнуляем и их: effective_defense(0) == effective_dodge(0) == 0 на любой кривой,
+	# а голый процент без raw-рейтинга оставил бы классовую защиту живой.
+	dp["raw_dodge"] = 0.0
+	dp["raw_defense"] = 0.0
 	player.set("derived_parameters", dp)
 	# Снимаем i-frames и любые рантайм-щиты от прошлого тика.
 	player.set("_damage_invulnerability_left", 0.0)

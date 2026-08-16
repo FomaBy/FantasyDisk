@@ -1,0 +1,238 @@
+{
+	"class_id": "knight",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 64
+			},
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.9443,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 11.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 184879.3782,
+				"hits": 11792
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 365,
+						"hits": 10
+					},
+					"holy_flail_pull": {
+						"damage": 11708.528400000001,
+						"first_frame": 96,
+						"hits": 54
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				3.1500000000000004
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 64
+			},
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.9443,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 11.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 185872.6538,
+				"hits": 11792
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 554,
+						"hits": 10
+					},
+					"holy_flail_pull": {
+						"damage": 11708.528400000001,
+						"first_frame": 285,
+						"hits": 54
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				4.1333
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 64
+			},
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.8986,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 10.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 119995.5681,
+				"hits": 10890
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 613,
+						"hits": 10
+					},
+					"holy_flail_pull": {
+						"damage": 11708.528400000001,
+						"first_frame": 344,
+						"hits": 54
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64
+			}
+		}
+	}
+}

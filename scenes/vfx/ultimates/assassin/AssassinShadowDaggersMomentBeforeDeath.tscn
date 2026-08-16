@@ -1,0 +1,116 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/shadow_daggers.png" id="1_daggers"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_moment_before_death"]
+resource_name = "ultimate"
+length = 5.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Afterimages:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 22), Vector2(0, 8), Vector2(0, 0), Vector2(0, -10), Vector2(0, 0), Vector2(0, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FreezeMarks:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.75, 0.75), Vector2(1, 1), Vector2(1.2, 1.2), Vector2(0.55, 0.55), Vector2(0.08, 0.08)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FinalReveal:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 3.5, 3.85, 4.3, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.42, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_moment_before_death"]
+_data = {"ultimate": SubResource("Animation_moment_before_death")}
+
+[node name="AssassinShadowDaggersMomentBeforeDeath" type="Node2D"]
+metadata/ultimate_id = "assassin/shadow_daggers"
+metadata/silhouette = "four black-violet dagger afterimages around frozen marks"
+metadata/motion_path = "local freeze marks then sequential backstab passes across the target"
+metadata/impact_language = "simultaneous crimson slash reveal"
+metadata/max_visual_nodes = 9
+metadata/crowd_cap = 20
+
+[node name="LocalDesaturation" type="Polygon2D" parent="."]
+color = Color(0.04, 0.03, 0.07, 0.62)
+polygon = PackedVector2Array(-218, -118, 218, -118, 218, 118, -218, 118)
+
+[node name="FreezeMarks" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(90, 0, 78, 45, 45, 78, 0, 90, -45, 78, -78, 45, -90, 0, -78, -45, -45, -78, 0, -90, 45, -78, 78, -45, 90, 0)
+width = 7.0
+default_color = Color(0.56, 0.22, 0.96, 0.8)
+closed = true
+antialiased = true
+
+[node name="Afterimages" type="Node2D" parent="."]
+
+[node name="BackstabOne" type="Sprite2D" parent="Afterimages"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_daggers")
+position = Vector2(-132, -34)
+rotation = -0.52
+scale = Vector2(0.34, 0.34)
+modulate = Color(0.46, 0.12, 0.86, 0.72)
+
+[node name="BackstabTwo" type="Sprite2D" parent="Afterimages"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_daggers")
+position = Vector2(130, -20)
+rotation = 0.58
+scale = Vector2(0.34, 0.34)
+modulate = Color(0.62, 0.18, 1, 0.82)
+
+[node name="BackstabThree" type="Sprite2D" parent="Afterimages"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_daggers")
+position = Vector2(-96, 76)
+rotation = -1.02
+scale = Vector2(0.29, 0.29)
+modulate = Color(0.38, 0.08, 0.72, 0.66)
+
+[node name="BackstabFour" type="Sprite2D" parent="Afterimages"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_daggers")
+position = Vector2(100, 72)
+rotation = 1.12
+scale = Vector2(0.29, 0.29)
+modulate = Color(0.72, 0.26, 1, 0.76)
+
+[node name="FinalReveal" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-176, 82, -44, -58, 0, 0, 44, 58, 176, -82, -138, -60, 0, 0, 138, 60)
+width = 17.0
+default_color = Color(1, 0.08, 0.17, 0.94)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_moment_before_death")}
+autoplay = "ultimate"

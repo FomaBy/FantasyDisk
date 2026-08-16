@@ -92,14 +92,32 @@ func apply_knockback(_impulse: Vector2) -> void:
 	return gd
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd.
+func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String) -> void:
+	if not container.has(raw_key):
+		_errors.append("FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key])
+		return
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		_errors.append("FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
+
+
 # Нейтрализация митигаций/регена — изолируем проверяемый эффект молитвы.
 func _neutralize_player(player: Node2D) -> void:
 	var dp: Dictionary = player.get("derived_parameters")
 	dp["dodge"] = 0.0
+	dp["raw_dodge"] = 0.0
 	dp["dodge_chance"] = 0.0
 	dp["defense"] = 0.0
+	dp["raw_defense"] = 0.0
 	dp["absorb"] = 0.0
 	dp["regeneration"] = 0.0
+	_assert_raw_pair(dp, "dodge", "raw_dodge")
+	_assert_raw_pair(dp, "defense", "raw_defense")
 	player.set("derived_parameters", dp)
 	player.set("_damage_invulnerability_left", 0.0)
 

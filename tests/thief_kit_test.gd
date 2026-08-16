@@ -487,6 +487,21 @@ func _test_smoke_bomb_detonation_and_cloud(errors: Array) -> void:
 	await _cleanup(holder)
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
 func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	var holder := _new_scene("Scrum897SmokePlayerDodge")
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
@@ -507,13 +522,23 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 		equipped.set_process(false)
 		equipped.set("_cooldown", 1.0e9)
 
-	# Тяжёлый dodge-билд: базовый шанс упирается в обычный кап 0.55.
+	# Тяжёлый, но ДОСТИЖИМЫЙ сырой рейтинг уворота. Берём его ОТ КРИВОЙ через
+	# обратную функцию, а не константой: базовый шанс 0.46 строго ниже асимптоты
+	# 0.55 (оракул проверяет саму кривую, а не потолок) и при этом вместе с
+	# бонусом дыма 0.47 гарантированно упирается в кап дыма 0.90. Жёсткий raw
+	# ломался бы при любой смене коэффициента diminish.
 	var params: Dictionary = player.get("derived_parameters")
-	params["dodge"] = 0.80
+	var heavy_dodge := 0.46
+	var heavy_raw_dodge := PD.raw_dodge_for_effective(heavy_dodge)
+	params["raw_dodge"] = heavy_raw_dodge
+	params["dodge"] = heavy_dodge
+	var heavy_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if heavy_raw_defect != "":
+		errors.append(heavy_raw_defect)
 	player.set("derived_parameters", params)
-	if absf(float(player.call("_current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("дым: базовый шанс вне облака %.2f != капа %.2f" % [float(player.call("_current_dodge_chance")), PD.SURVIVABILITY_DODGE_CAP])
-	# В облаке: 0.55 + 0.35 (+0.12 артефакт) режется капом дыма 0.90 — «почти
+	if absf(float(player.call("_current_dodge_chance")) - heavy_dodge) > EPS:
+		errors.append("дым: базовый шанс вне облака %.3f != effective_dodge(%.2f)=%.3f" % [float(player.call("_current_dodge_chance")), heavy_raw_dodge, heavy_dodge])
+	# В облаке: 0.504 + 0.35 (+0.12 артефакт) режется капом дыма 0.90 — «почти
 	# неуязвим в дыму», но не бессмертен.
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 5.0, 0.47)
 	if absf(float(player.call("smoke_cloud_dodge_bonus")) - 0.47) > EPS:
@@ -525,21 +550,27 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	player_node.global_position = inside_position + Vector2(4000.0, 0.0)
 	if float(player.call("smoke_cloud_dodge_bonus")) > EPS:
 		errors.append("дым: бонус действует вне облака")
-	if absf(float(player.call("_current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("дым: шанс вне облака %.2f != обычного капа" % float(player.call("_current_dodge_chance")))
+	if absf(float(player.call("_current_dodge_chance")) - heavy_dodge) > EPS:
+		errors.append("дым: шанс вне облака %.3f != effective_dodge(%.2f)" % [float(player.call("_current_dodge_chance")), heavy_raw_dodge])
 	player_node.global_position = inside_position
 	# Перекрывающиеся облака НЕ стакаются: берётся максимальный бонус (0.47).
-	params["dodge"] = 0.20
+	var modest_raw_dodge := 0.20
+	var modest_dodge := PD.effective_dodge(modest_raw_dodge)
+	params["raw_dodge"] = modest_raw_dodge
+	params["dodge"] = modest_dodge
+	var modest_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if modest_raw_defect != "":
+		errors.append(modest_raw_defect)
 	player.set("derived_parameters", params)
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 5.0, 0.35)
-	if absf(float(player.call("_current_dodge_chance")) - 0.67) > EPS:
-		errors.append("дым: перекрытие облаков дало %.2f, ожидалось 0.67 (0.20 + max(0.47, 0.35))" % float(player.call("_current_dodge_chance")))
-	# Скромный билд в одиночном облаке: 0.20 + 0.35 = 0.55 — до капа дыма далеко.
+	if absf(float(player.call("_current_dodge_chance")) - (modest_dodge + 0.47)) > EPS:
+		errors.append("дым: перекрытие облаков дало %.3f, ожидалось %.3f (база + max(0.47, 0.35))" % [float(player.call("_current_dodge_chance")), modest_dodge + 0.47])
+	# Скромный билд в одиночном облаке: база + 0.35 — до капа дыма далеко.
 	var solo_position := inside_position + Vector2(2400.0, 0.0)
 	player_node.global_position = solo_position
 	player.call("register_smoke_cloud", solo_position, 170.0, 5.0, 0.35)
-	if absf(float(player.call("_current_dodge_chance")) - 0.55) > EPS:
-		errors.append("дым: скромный билд в облаке %.2f != 0.55 (0.20 + 0.35)" % float(player.call("_current_dodge_chance")))
+	if absf(float(player.call("_current_dodge_chance")) - (modest_dodge + 0.35)) > EPS:
+		errors.append("дым: скромный билд в облаке %.3f != %.3f (база + 0.35)" % [float(player.call("_current_dodge_chance")), modest_dodge + 0.35])
 	# Истечение: короткое облако умирает — бонус пропадает по таймеру.
 	player_node.global_position = inside_position + Vector2(8000.0, 0.0)
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 0.25, 0.35)

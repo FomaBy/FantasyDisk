@@ -2,6 +2,7 @@ extends RefCounted
 
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+const EncounterAdapter := preload("res://scripts/encounters/encounter_adapter.gd")
 
 # Генерация маршрута и full-screen экран маршрутной карты:
 # узлы, связи, скролл/пан, активация encounter-ов.
@@ -554,7 +555,7 @@ func _generate_route() -> Array:
 		route.append(branches)
 	_place_required_shop_nodes(route)
 	_place_chest_line_rows(route)
-	_place_altar_node(route)
+	_place_altar_node(route); _place_combat_variety_slice(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
 	return route
@@ -1062,7 +1063,7 @@ func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> St
 	match node_type:
 		"battle":
 			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
-			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
+			lines.append(("Особый бой: тактическая цепочка\n" if preload("res://scripts/encounters/encounter_config.gd").slice_id_for_route_node(route_node) != "" else "") + "Угроза: " + _wave_threat_hint(route_node, node_seed))
 		"elite_battle":
 			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
 			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
@@ -1110,6 +1111,12 @@ func _node_predicted_stage(route_node: Dictionary) -> int:
 
 func _wave_threat_hint(route_node: Dictionary, node_seed: int) -> String:
 	var pred_stage := _node_predicted_stage(route_node)
+	var node_type := str(route_node.get("type", "battle"))
+	var projection := EncounterAdapter.project_spawn_plan(game, node_seed, pred_stage,
+		"battle" if node_type == "battle" else node_type, preload("res://scripts/encounters/encounter_config.gd").slice_id_for_route_node(route_node))
+	if not projection.is_empty():
+		var prefix := "лёгкая волна, " if pred_stage <= 0 else ""
+		return prefix + "в составе — " + _enemy_archetype_name(str(projection["threat_scene"]))
 	# Спец-архетипы с весом как в бою (стрелки/маги/плевалы растут с глубиной); рядовые/бегуны/кусачи — фон.
 	var background_kinds := ["res://scenes/Enemy.tscn", "res://scenes/EnemyRunner.tscn", "res://scenes/EnemyBiter.tscn"]
 	var ranged_kinds := ["res://scenes/EnemyShooter.tscn", "res://scenes/EnemyMage.tscn", "res://scenes/EnemySpitter.tscn"]
@@ -1554,3 +1561,14 @@ func _map_node_button_style(background: Color, _border: Color) -> StyleBox:
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(8)
 	return style
+
+
+func _place_combat_variety_slice(route: Array) -> void:
+	var position := preload("res://scripts/encounters/encounter_config.gd").slice_route_position(route, int(game.current_act))
+	if position.is_empty():
+		return
+	var row := int(position["row"])
+	var branch := int(position["branch"])
+	var route_node: Dictionary = route[row][branch]
+	route_node["encounter_slice_id"] = str(position["slice_id"])
+	route[row][branch] = route_node

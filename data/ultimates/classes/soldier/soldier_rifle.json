@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "class_id": "soldier",
+  "weapon_id": "soldier_rifle",
+  "profile_id": "weapon_ultimate.profile.soldier.soldier_rifle",
+  "executor_id": "weapon_ultimate.executor.soldier.soldier_rifle",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "aimed_dense_corridor",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "ultimate_charge_ledger",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.soldier.soldier_rifle",
+    "params": {
+      "max_range": 960.0,
+      "search_radius": 280.0,
+      "cluster_radius": 135.0,
+      "corridor_half_width": 90.0,
+      "target_limit": 3,
+      "volley_count": 3,
+      "volley_interval": 1.35,
+      "damage": 33.5,
+      "lifetime": 5.6
+    }
+  },
+  "total_boss_cap": 0.09,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}

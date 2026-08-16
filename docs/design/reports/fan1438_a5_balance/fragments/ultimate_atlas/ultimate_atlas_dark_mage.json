@@ -1,0 +1,238 @@
+{
+	"class_id": "dark_mage",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 50
+			},
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 23.576,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 15.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 23446.9353,
+				"hits": 5966
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 50,
+						"hits": 40
+					},
+					"crown_harvest": {
+						"damage": 1921.0030000000002,
+						"first_frame": 332,
+						"hits": 10
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				4.7833000000000006
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 50
+			},
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 23.576,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 15.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 23446.9353,
+				"hits": 5966
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 337,
+						"hits": 40
+					},
+					"crown_harvest": {
+						"damage": 1921.0030000000002,
+						"first_frame": 619,
+						"hits": 10
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				4.9667
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 50
+			},
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 22.151300000000003,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 14.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 23422.275100000003,
+				"hits": 5960
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 348,
+						"hits": 40
+					},
+					"crown_harvest": {
+						"damage": 1921.0030000000002,
+						"first_frame": 630,
+						"hits": 10
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50
+			}
+		}
+	}
+}

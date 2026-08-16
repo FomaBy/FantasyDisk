@@ -1,6 +1,12 @@
 # Артефакты 0.2.1 — финальная матрица (SCRUM-959)
 
-Контракт для реализации: SCRUM-960 (универсальный пул), SCRUM-961 (классовые), SCRUM-962 (иконки), SCRUM-963 (UI/локализация), SCRUM-964 (QA). Источник данных: `scripts/progression_data_content.gd` (`ARTIFACTS`). Итог изначальной поставки: **32 семьи + 37 сохранённых + 85 классовых = 154 артефакта**; удалялось 17 легаси-id. **FAN-1038** убрал 3 семьи мёртвых осей (`battle_fan` / `ram_horn` / `falcon_feather`) → **29 семей, 151 артефакт** в `ARTIFACTS`; 154 icon-PNG остаются на диске (3 осиротели, см. §2/§5).
+> **Current override (FAN-1891, 2026-08-03):** historical rows below that name
+> `range_multiplier`, `sector_multiplier`, `projectile_speed_flat`,
+> `aura_radius_flat`, or `buff_power_flat` are superseded. Live artifacts use
+> only the unified attack-area and shared `% damage` sources described in
+> `combat.md`; obsolete keys are removed during save restoration.
+
+Контракт для реализации: SCRUM-960 (универсальный пул), SCRUM-961 (классовые), SCRUM-962 (иконки), SCRUM-963 (UI/локализация), SCRUM-964 (QA). Источник данных: `scripts/progression_data_content.gd` (`ARTIFACTS`). Итог изначальной поставки: **32 семьи + 37 сохранённых + 85 классовых = 154 артефакта**; удалялось 17 легаси-id. **FAN-1038** убрал 3 семьи мёртвых осей (`battle_fan` / `ram_horn` / `falcon_feather`), затем общий cadence-контракт убрал отдельную dot-speed семью `plague_metronome` → **28 семей, 150 артефактов** в `ARTIFACTS`; 154 icon-PNG остаются на диске (4 осиротели, см. §2/§5).
 
 ---
 
@@ -111,14 +117,15 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 ---
 
-## 2. Универсальные семьи (29)
+## 2. Универсальные семьи (28)
 
 > FAN-1038 (follow-up FAN-1034): убраны семьи мёртвых осей `battle_fan`
 > (`sector_multiplier`, no-op для 46/51 оружий), `ram_horn` (`knockback_multiplier`,
 > боссы/элитки displacement-immune) и `falcon_feather` (`projectile_speed_flat`,
 > только косметика задержки импакта). Derived-механики живут дальше (их кормят
 > статы/мета); удалены только предметы-ловушки из `ARTIFACTS`. Их 3 icon-PNG
-> остаются на диске осиротевшими ассетами (см. §5).
+> остаются на диске осиротевшими ассетами; четвёртый — удалённый из selectable
+> данных `plague_metronome` (см. §5).
 
 ### 2.1 Базовые статы (8 семей; stats: +2/+4/+7)
 
@@ -133,7 +140,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `stone_heart` | Каменное сердце | `endurance` | stone_heart | REUSE |
 | `banner_seed` | Семя знамени | `leadership` | banner_seed | REUSE |
 
-### 2.2 Производные атрибуты (21 семья)
+### 2.2 Производные атрибуты (20 семей)
 
 Ключ эффекта = ключ level-up карточки атрибута (сверено с `LEVEL_UP_REWARDS` и `_default_run_modifiers`/потребителями). У `vampiric_amount` двойной ключ — как у карточки.
 
@@ -149,11 +156,10 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `sharp_talisman` | Острый талисман | crit_chance | `crit_chance_flat` | +0.10 / +0.18 / +0.30 | sharp_talisman | REUSE |
 | `executioner_edge` | Грань палача | crit_damage | `crit_damage_flat` | +0.10 / +0.18 / +0.30 | — | NEW: broad executioner axe blade fragment, notched edge |
 | `ghost_ribbon` | Лента призрака | dodge | `dodge_flat` | +0.10 / +0.18 / +0.30 | — | NEW: translucent spectral silk ribbon, drifting curl |
-| `wide_sigil` | Дальняя печать | range | `range_multiplier` | 1.10 / 1.18 / 1.30 | wide_sigil | REUSE |
+| `wide_sigil` | Печать области | aoe_radius | `aoe_radius_multiplier` | 1.10 / 1.18 / 1.30 | wide_sigil | REUSE |
 | `venom_vial` | Флакон отравы | dot_damage | `dot_damage_flat` | +2 / +4 / +6 | — | NEW: cracked vial dripping thick green venom |
-| `plague_metronome` | Чумной метроном | dot_speed | `dot_speed_flat` | +0.2 / +0.3 / +0.5 | — | NEW: bone metronome, swinging pendulum, sickly green aura |
 | `wide_halo` | Широкий нимб | aura_radius | `aoe_radius_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: golden ring halo, expanding concentric glow |
-| `war_banner` | Боевое знамя | buff_power | `buff_power_flat` | +0.10 / +0.18 / +0.30 | — | NEW: tattered crimson war banner on broken pole |
+| `war_banner` | Боевое знамя | damage | `damage_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: tattered crimson war banner on broken pole |
 | `summoners_bell` | Колокольчик призывателя | summon_amount | `summon_bonus` | +1.5 / +2.5 / +4 | summoners_bell | REUSE |
 | `aegis_shard` | Осколок эгиды | absorb | `absorb_flat` | +3 / +5 / +8 | — | NEW: glowing shield shard, faceted protective crystal |
 | `troll_blood` | Кровь тролля | regeneration | `regeneration_flat` | +1.0 / +1.6 / +2.6 | — | NEW: thick flask of regenerating troll blood, bubbling |
@@ -161,7 +167,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `thirsty_ruby` | Жаждущий рубин | vampiric_chance | `vampiric_chance_flat` | +0.10 / +0.18 / +0.30 | — | NEW: deep red ruby with blood drop core |
 | `overcharge_rune` | Руна перегрузки | ultimate_power | `ultimate_flat` | +0.10 / +0.18 / +0.30 | — | NEW: crackling runestone, overloaded energy fissures |
 
-Верификация ключей: `damage/magic_damage/attack_speed/move_speed/max_health/sector/aoe_radius/range/knockback_multiplier`, `defense/crit_chance/crit_damage/dodge/pickup_radius/max_health_flat` — дефолты `player.gd:194`; `dot_damage_flat`/`dot_speed_flat` (`progression_data.gd:1189-1190`), `projectile_speed_flat` (:1186), `buff_power_flat` (:1188), `summon_bonus` (`player.gd:2419`), `absorb_flat` (:1182), `regeneration_flat` (:1183), `vampiric_*` (:1268-1269, `player.gd:1405`), `ultimate_flat` (:1274).
+Верификация ключей: `damage/magic_damage/attack_speed/move_speed/max_health/aoe_radius/knockback_multiplier`, `defense/crit_chance/crit_damage/dodge/pickup_radius/max_health_flat` — дефолты `player.gd`; `dot_damage_flat`, `summon_bonus`, `absorb_flat`, `regeneration_flat`, `vampiric_*`, `ultimate_flat` — в canonical runtime. Отдельного selectable `dot_speed_flat` нет: периодика использует общий нормализованный cadence. Пять player-facing defensive choices — `max_health`, `defense`, `dodge`, `regeneration`, `vampiric`; `absorb_flat` может прийти от артефакта, но `absorb` остаётся внутренним расчётным параметром, не шестой картой выбора.
 
 ---
 
@@ -189,7 +195,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 | id | Название | T | Механика | Реализация | Balance note | Icon (style notes) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `perfect_edge` | Идеальная грань | 2 | Шанс и урон крита растут, не ломая 100%-крит идентичность Ассасина. | mods `crit_chance_flat: 0.15` EXISTS, `crit_damage_flat: 0.25` EXISTS | Кап-безопасно by construction: `effective_crit_chance` (diminish 0.45, кап 0.55, `progression_data.gd:539`) и `CRIT_DAMAGE_CAP 2.75`. | flawless obsidian dagger blade, razor edge glint |
+| `perfect_edge` | Идеальная грань | 2 | Шанс и урон крита растут, не ломая 100%-крит идентичность Ассасина. | mods `crit_chance_flat: 0.15` EXISTS, `crit_damage_flat: 0.25` EXISTS | Ассасин сохраняет cap шанса 100%; сила крита выше raw 2.75 продолжает расти через убывающий sqrt-tail без потолка. | flawless obsidian dagger blade, razor edge glint |
 | `shadow_twin` | Теневой двойник | 3 | Криты повторяют малый теневой росчерк у цели — двойник добивает область. | active, trigger `on_crit`; mods `crit_shadow_echo_damage: 0.45` NEW — хук `player.gd:691 trigger_assassin_crit_shadow`: существующий burst (сейчас только VFX) при ключе >0 наносит 45% derived damage по `crit_shadow_burst_radius` | Кулдаун бурста уже энерго-зависимый (0.25-0.55с, `player.gd:700`) — анти-runaway встроен. | dark mirrored twin daggers, splitting shadow silhouette |
 | `venom_spool` | Ядовитая катушка | 2 | DoT-стаки Ядовитой струны живут дольше; игра от крита/уворота вознаграждается. | mods `venom_dot_extra_ticks: 2.0` NEW — хук `class_weapon.gd` (dot_beam/venom_wire: `dot_ticks` 4→+2); `dodge_flat: 0.05` EXISTS | +50% длительности DoT линии; уворот-бонус мал (кап уворота общий). | spool of dripping green poison wire, coiled |
 | `evasion_shroud` | Покров уклонения | 2 | Аура уклонения плотнее и шире; успешный уворот разгоняет рывок Теневых кинжалов. | mods `dodge_flat: 0.08` EXISTS, `dodge_rush_bonus: 0.25` EXISTS (`player.gd:815` — спидбуст после уворота, как phantom_step) | Стакается с phantom_step (0.4) до +65% спидбуста — приемлемо, окно 2с. | flowing hooded shroud, translucent violet evasive wisps |
@@ -241,7 +247,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | --- | --- | --- | --- | --- | --- | --- |
 | `surgical_oath` | Хирургическая клятва | 2 | Чужой сустейн по-прежнему запрещён, зато лечение от оружия усилено и пропускает больше в секунду. | mods `healing_multiplier: 1.20` EXISTS, `drain_heal_per_second_cap: 2.0` EXISTS (`player.gd:1530` — поднимает бюджет drain-хила) | Doctor-гейт `DOCTOR_FORBIDDEN_SUSTAIN_*` (`progression_data.gd:169-195`) не трогается — артефакт качает только weapon-drain канал. | surgeon oath scroll, scalpel seal wax |
 | `bonesaw_teeth` | Зубья костяной пилы | 2 | Костяная пила режет шире и возвращает больше здоровья с урона. | mods `saw_arc_width_mult: 0.30` NEW, `saw_heal_ratio_bonus: 0.08` NEW — хук `class_weapon.gd` (stab_flurry/bone_saw: `wave_width` +30%, `heal_percent_of_damage` 0.18→0.26) | Требует ближнего риска (range 190) — сустейн оправдан. | jagged bone saw blade, serrated bloody teeth |
-| `plague_carrier` | Чумной носитель | 3 | Чума расползается: смерть заражённого передаёт DoT соседям, тики идут чаще. | mods `dot_death_spread_duration: 2.2` EXISTS (`player.gd:2207 _apply_dot_death_spread`), `dot_speed_flat: 0.25` EXISTS | Спред уже анти-runaway (радиус 0.72×aoe, extend-режим). | plague doctor mask, green miasma wisps |
+| `plague_carrier` | Чумной носитель | 3 | Смерть заражённого передаёт чуму соседям. | mods `dot_death_spread_duration: 2.2` EXISTS (`player.gd _apply_dot_death_spread`) | Спред уже анти-runaway (радиус 0.72×aoe, extend-режим); cadence не меняет. | plague doctor mask, green miasma wisps |
 | `restorative_vapor` | Восстановительный пар | 3 | Зелье оставляет короткую паровую зону: жжёт врагов и подлечивает Доктора. | mods `restore_vapor_power: 1.0` NEW — хук `class_weapon.gd` (drain_link/restore_potion: по завершении связи — пар 1.4с у цели, тик 28% урона связи, 20% урона пара → `apply_drain_heal`) | Хил идёт через drain-бюджет (`_drain_heal_budget`) — капы сустейна соблюдены. | steaming restorative flask, healing vapor cloud |
 | `triage_protocol` | Протокол триажа | 2 | Падение ниже 30% HP заряжает следующий лечащий импульс оружия; с перезарядкой. | active, trigger `on_low_hp`; mods `triage_heal_burst: 1.5` NEW — хук `player.gd` (`_update_low_hp_state` + `apply_drain_heal`: примированный хил ×2.5, затем КД 12с) | Одноразовый спасательный бурст, не постоянный отхил. | triage tag card, red cross stamp, worn edges |
 
@@ -249,11 +255,11 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 | id | Название | T | Механика | Реализация | Balance note | Icon (style notes) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `spirit_pack_banner` | Знамя духовной стаи | 2 | Аура урона сильнее кормит и духов, и самого Друида. | mods `buff_power_flat: 0.20` EXISTS, `pet_damage_mult: 0.15` EXISTS (`summoner_weapon.gd:176`) | Двухканальный (стая+ауры), но оба канала мягкие. | carved spirit banner totem, wolf pack markings |
+| `spirit_pack_banner` | Знамя духовной стаи | 2 | Общий урон сильнее кормит и духов, и самого Друида. | mods `damage_multiplier: 1.20`, `pet_damage_mult: 0.15` EXISTS (`summoner_weapon.gd:176`) | Двухканальный (стая+ауры), но оба канала мягкие. | carved spirit banner totem, wolf pack markings |
 | `wolf_call` | Зов волков | 3 | Зов приводит лишних физических волков; ближние духи рвут сильнее. | mods `summon_bonus: 2.0` EXISTS, `pack_wolf_bias: 1.0` NEW — хук `summoner_weapon.gd` (состав стаи: приоритет melee-зверей, melee-духи +20% урона) | Кап стаи растёт от summon_amount как сейчас (floor/4) — bias не ломает лимит. | howling wolf head carving, moon backdrop |
 | `blue_totem` | Голубой тотем | 2 | Тотем воронов пульсирует злее — ставка на магических духов и вороньи снаряды. | mods `raven_pulse_bonus: 0.25` NEW — хук `class_weapon.gd`/`summoner_weapon.gd` (raven_totem: урон пульса +25%, `amp_pulse_interval` −15%); `sound_damage_multiplier: 1.10` EXISTS | Зеркало wolf_call для второй ветки билда (тотем/дальний). | blue painted raven totem, glowing feathers |
-| `briar_seal` | Печать терновника | 2 | Терновые зоны сильнее замедляют и тикают стабильнее, оставаясь прозрачными. | mods `briar_slow_power: 0.20` NEW — хук `class_weapon.gd` (briar pool tick: slow 20%, 1.2с); `dot_speed_flat: 0.25` EXISTS. Виз. контракт: альфа зоны не выше текущей (читаемость поля) | Контроль-зона; slow не стакается (refresh). | thorned bramble seal ring, green wax stamp |
-| `pack_alpha` | Альфа стаи | 3 | Радиус и сила аур растут — игра строится вокруг стаи. | mods `aura_radius_flat: 40.0` EXISTS (`progression_data.gd:1187`), `buff_power_flat: 0.15` EXISTS, `summon_bonus: 1.5` EXISTS | Капстоун-агрегатор трёх summon-осей; каждая добавка умеренная. | alpha wolf pelt mantle, dominant stance emblem |
+| `briar_seal` | Печать терновника | 2 | Терновые зоны сильнее замедляют, оставаясь прозрачными. | mods `briar_slow_power: 0.20` — хук `class_weapon.gd` (briar pool tick: slow 20%, 1.2с). Виз. контракт: альфа зоны не выше текущей | Контроль-зона; slow не стакается (refresh), cadence не меняет. | thorned bramble seal ring, green wax stamp |
+| `pack_alpha` | Альфа стаи | 3 | Область атак и аур, общий урон и сила призыва растут вместе. | mods `aoe_radius_multiplier: 1.20`, `damage_multiplier: 1.15`, `summon_bonus: 1.5` | Капстоун-агрегатор трёх summon-осей; каждая добавка умеренная. | alpha wolf pelt mantle, dominant stance emblem |
 
 ### 4.8 Engineer — Мастерская приказов (sentry_wrench / repair_drone / pressure_mines)
 
@@ -271,7 +277,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | --- | --- | --- | --- | --- | --- | --- |
 | `impact_string` | Ударная тетива | 2 | Попадания лука отбрасывают врагов от Рейнджера заметно сильнее. | mods `knockback_multiplier: 1.35` EXISTS | Дистанц-контроль в русле stance-идентичности; элитки/боссы имеют свои сопротивления. | taut reinforced bowstring, impact shockwave |
 | `moon_splitter` | Лунный расщепитель | 3 | Болт Лунного арбалета ветвится с первой цели в четыре соседних. | mods `moon_split_targets: 4.0` NEW — хук `class_weapon.gd` (beam/moon_crossbow: при первом пробитии — 4 под-луча в ближайшие цели, 45% урона) | Превращает снайперский болт в crowd-ответ; под-лучи не ветвятся дальше. | crescent moon crossbow bolt, splitting light shards |
-| `storm_piercer` | Грозовой пробойник | 2 | Грозовой лук бьёт дальше и пробивает строй глубже — линия-коридор. | mods `charged_shot_extra_pierce: 2.0` EXISTS (`player.gd:1024`, is_charged), `range_multiplier: 1.15` EXISTS | Оба ключа уже в контракте заряжаемых выстрелов Рейнджера. | storm-charged arrowhead, piercing lightning line |
+| `storm_piercer` | Грозовой пробойник | 2 | Грозовой лук шире бьёт и пробивает строй глубже — линия-коридор. | mods `charged_shot_extra_pierce: 2.0`, `aoe_radius_multiplier: 1.15` | Оба ключа уже в контракте заряжаемых выстрелов Рейнджера. | storm-charged arrowhead, piercing lightning line |
 | `root_snare` | Корневой капкан | 3 | Капканы вечны до срабатывания: жертву укореняет, затем она истекает кровью. | mods `trap_root_mode: 1.0` NEW — хук `class_weapon.gd` (trap/hunter_trap: жизнь → до срабатывания (кап 4 живых); при срабатывании root 1.1с (`StatusEffects` speed 0.25) + bleed 3 тика по `dot_damage`) | Совместим с `trap_extra_count` (instant-arm, `player.gd:1031`). | gnarled root snare trap, thorned jaws |
 | `hunters_mark` | Метка охотника | 2 | Отброшенные и обездвиженные враги получают дополнительный физический урон. | mods `hunter_mark_bonus: 0.25` NEW — хук `player.gd meta_damage_multiplier` (ranger-атаки: если у цели статус root/staggered или активный нокбэк — +25% урона) | Синергия с impact_string/root_snare — комбо-ось класса. | glowing hunter rune mark, antler sigil |
 
@@ -279,7 +285,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 | id | Название | T | Механика | Реализация | Balance note | Icon (style notes) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `armor_protocol` | Бронепротокол | 2 | Броня-идентичность усилена: часть каждого удара просто игнорируется. | mods `absorb_flat: 5.0` EXISTS, `defense_flat: 0.08` EXISTS | Защита клампится `SURVIVABILITY_DEFENSE_CAP 0.62`; absorb пропускает мин. долю удара (`player.gd:652`) — «финальный игнор» кап-безопасен. | riveted armor protocol plate, hazard chevrons |
+| `armor_protocol` | Бронепротокол | 2 | Броня-идентичность усилена: часть каждого удара просто игнорируется. | mods `absorb_flat: 5.0` EXISTS, `defense_flat: 0.08` EXISTS | Defense следует строгой асимптоте <`SURVIVABILITY_DEFENSE_CAP 0.62`; внутренний absorb пропускает ≥42% удара — «финальный игнор» безопасен. | riveted armor protocol plate, hazard chevrons |
 | `anchor_core` | Ядро якоря | 2 | Магнитный якорь шире и надёжнее стягивает обычных врагов в центр. | mods `magnet_radius_mult: 0.25` EXISTS (`player.gd:1047`), `anchor_pull_power: 0.35` NEW — хук `class_weapon.gd` (robot_magnetic_anchor: сила стягивания +35% для non-elite/non-boss) | Элитки/боссы прямо исключены — по драфту. | magnetized anchor core sphere, iron filings orbit |
 | `press_calibrator` | Калибратор пресса | 2 | Коридор Пресса шире и прижимает врагов к осевой линии. | mods `press_corridor_bonus: 1.0` NEW — хук `class_weapon.gd` (robot_compression_line: ширина коридора +30%, поперечный нокбэк к осевой) | Компрессия = сетап под AoE, урон пресса не растёт. | hydraulic calibrator gauge, pressure pistons |
 | `reactor_chronometer` | Реакторный хронометр | 3 | Четырёхсторонний реакторный цикл идёт плавно и разгоняется от скорости атаки. | mods `reactor_smooth_rotation: 1.0` NEW — хук `class_weapon.gd` (robot_reactor_vent: выбросы последовательной ротацией, цикл масштабируется от attack_speed без потери выбросов); `attack_speed_multiplier: 1.10` EXISTS | Убирает «мертвые сектора» вентов — равномерное покрытие круга. | ticking reactor chronometer, rotating vent dial |
@@ -291,7 +297,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | --- | --- | --- | --- | --- | --- | --- |
 | `rebound_plate` | Отбойная пластина | 2 | Отбрасывание ударов по обычным и мини-элитным врагам заметно сильнее. | mods `knockback_multiplier: 1.40` EXISTS | Элитки/боссы имеют собственные сопротивления нокбэку — эффект по рядовым, как в драфте. | dented rebound shield plate, kinetic ripple |
 | `triple_thrust` | Тройной укол | 3 | Копьё колет трижды: левый, центральный и правый быстрые уколы. | mods `spear_triple_thrust: 1.0` NEW — хук `berserk_weapon.gd` (strip/long_spear: выпад = 3 полосы — центр 100%, боковые 55% под ±14°) | Закрывает слабость узкой полосы 90px против веера врагов. | three spearheads fanned, quick thrust lines |
-| `tower_slam` | Башенный удар | 2 | Конус Башенного щита шире, отталкивание масштабируется. | mods `sector_multiplier: 1.20` EXISTS, `knockback_multiplier: 1.20` EXISTS | sector_multiplier честно расширяет sweep-конус 95° щита. | tower shield slamming ground, stone shockwave |
+| `tower_slam` | Башенный удар | 2 | Область Башенного щита шире, отталкивание масштабируется. | mods `aoe_radius_multiplier: 1.20`, `knockback_multiplier: 1.20` | Общая область честно расширяет sweep-конус 95° щита. | tower shield slamming ground, stone shockwave |
 | `holy_chain` | Святая цепь | 3 | Спираль Кистеня с каждым кастом раскручивается наружу от Рыцаря. | mods `flail_spiral_growth: 1.0` NEW — хук `berserk_weapon.gd` (circle/holy_flail: последовательные касты +12% радиуса за каст, кап +36%, сброс после 3с простоя) | Ramp-механика: пик требует непрерывного боя. | blessed flail chain spiral, radiant links |
 | `vanguard_oath` | Авангардная клятва | 2 | Оборонная идентичность крепче: в стойке Рыцарь держит удар ещё лучше. | mods `bastion_defense_bonus: 0.10` EXISTS (`player.gd:647`, действует при `_stance_active` — неподвижность ≥0.8с), `defense_flat: 0.05` EXISTS | Боссы/элитки не затрагиваются некорректно: чистая самозащита, без taunt-части. | vanguard oath gauntlet, raised fist seal |
 
@@ -313,7 +319,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `deadeye_round` | Патрон мертвого глаза | 3 | Винтовка предпочитает дальнюю цель, а в конце линии гремит терминальный взрыв. | mods `deadeye_terminal_blast: 0.45` NEW — хук `class_weapon.gd` (sniper_lockshot: приоритет самой дальней цели в радиусе; взрыв 45% урона в конце линии) | Синергия с longshot_scope — задумана как пара т3. | engraved deadeye bullet, skull eye casing |
 | `spotter_mark` | Метка наводчика | 2 | Отложенная зона наводчика ложится быстрее и бьёт плотнее. | mods `spotter_fast_mark: 1.0` NEW — хук `class_weapon.gd` (sniper_kill_zone: телеграф −35%, +1 удар серии (4→5)) | Меньше «промахов зоной» по бегущим — комфорт-ось. | spotter binoculars, marked target zone glow |
 | `shatter_drum` | Барабан осколков | 2 | Осколочные патроны дают больше осколков по ближайшим траекториям. | mods `shatter_extra_splits: 2.0` NEW — хук `class_weapon.gd` (sniper_split_round: `split_count` 3→5) | Осколки наследуют falloff 0.55 — прирост контролируем. | revolver drum of shattered rounds, splintered tips |
-| `clean_line` | Чистая линия | 2 | Снаряды быстрее, линия длиннее — класс ощущается хирургически точным. | mods `projectile_speed_flat: 120.0` EXISTS, `range_multiplier: 1.12` EXISTS | Комфорт/точность, без прямого DPS. | perfectly straight tracer line, polished barrel |
+| `clean_line` | Чистая линия | 2 | Скорость атаки и область линии растут вместе. | mods `attack_speed_multiplier: 1.12`, `aoe_radius_multiplier: 1.12` | Больше темпа и контролируемой площади. | perfectly straight tracer line, polished barrel |
 
 ### 4.14 Soldier — Тактическая линия огня (rifle / grenade / bayonet)
 
@@ -330,10 +336,10 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | id | Название | T | Механика | Реализация | Balance note | Icon (style notes) |
 | --- | --- | --- | --- | --- | --- | --- |
 | `chain_wand` | Цепная палочка | 2 | Цепь палочки прыгает на одну цель дальше, бурсты +15%. | mods `wand_extra_chain: 1.0, wand_burst_bonus: 0.15` (SCRUM-939: цепь и бурсты теперь база dark_chain_burst; артефакт удлиняет цепь и усиливает бурсты) | Бурсты не порождают новые рикошеты — без каскада. | crooked dark wand, chained spark orbs |
-| `curse_font` | Купель проклятий | 2 | Проклятый череп тикает чаще и больнее — чистый урон проклятия. | mods `dot_damage_flat: 3.0` EXISTS, `dot_speed_flat: 0.35` EXISTS | Прямой прокач DoT-канала (dot_ticks 5 у черепа). | dark baptismal font, swirling curse liquid |
+| `curse_font` | Купель проклятий | 2 | Проклятый череп тикает больнее — чистый урон проклятия. | mods `dot_damage_flat: 3.0` EXISTS | Прямой прокач damage-оси DoT; cadence не меняет. | dark baptismal font, swirling curse liquid |
 | `mirror_page` | Зеркальная страница | 3 | Оба взрыва Книги тьмы отдаются эхом (45%) через мгновение. | mods `book_mirror_echo: 0.45` (SCRUM-941: зеркало теперь база dark_mirror_blast; артефакт добавляет эхо-взрыв, эхо не зеркалится и не эхоится) | Эхо без каскада — фикс-доля от исходного взрыва. | torn grimoire page, mirrored ink explosion |
 | `void_hunger` | Голод пустоты | 3 | Проклятые смерти голодны: DoT перекидывается на соседей погибшего. | mods `dot_death_spread_duration: 2.5` EXISTS (`player.gd:2207`) | Ключ уже анти-runaway (extend, радиус 0.72×aoe); стакается с plague_carrier доктрины нет — классы разные. | black hole maw, devouring void tendrils |
-| `black_bargain` | Черная сделка | 2 | Сильная тёмная сделка: проклятия и DoT много сильнее, но здоровье платит цену. | mods `dot_damage_flat: 4.0` EXISTS, `dot_speed_flat: 0.25` EXISTS, `max_health_multiplier: 0.85` EXISTS | Трейдофф в духе cursed_crown; −15% HP ощутим на 60 базовых HP мага. | black contract scroll, blood signature seal |
+| `black_bargain` | Черная сделка | 2 | Сильная тёмная сделка: проклятия и DoT бьют сильнее, но здоровье платит цену. | mods `dot_damage_flat: 4.0` EXISTS, `max_health_multiplier: 0.85` EXISTS | Трейдофф в духе cursed_crown; −15% HP ощутим на 60 базовых HP мага, cadence не меняет. | black contract scroll, blood signature seal |
 
 ### 4.16 Chemist — Алхимическая цепь (blast_powder / acid_flask / homunculus_vial)
 
@@ -378,7 +384,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | **REUSE** | **54** | 17 мигрированных (8 стат + 9 атрибут-доноров) + 37 сохранённых |
 | **DELETE** | **17** | blood_sigil, void_ink, echo_pick, jagged_blade, heavy_grip, war_belt, warriors_rage, dark_crystal, ash_page, skull_resonator, ink_candle, copper_string, broken_pick, loud_amp, bass_cable, split_core, swift_ink |
 
-Итог на диске после 962: **154 PNG** (сейчас 71). Style_notes каждого NEW — в таблицах §2.2/§4. Общий стиль: D&D + Dark Fantasy Dragon game icon, isolated object, transparent background, no text/letters/frames/panels; классовые — намёк на класс силуэтом/материалом; читаемость на 32/40/64px; после генерации — alpha-cleanup (border-connected flood-fill) и contact sheet + readability-отчёт в `docs/design/previews/` / `docs/design/reports/`.
+Итог на диске после 962: **154 PNG** для 150 selectable артефактов; четыре orphan-иконки не являются источниками наград. Style_notes каждого NEW — в таблицах §2.2/§4. Общий стиль: D&D + Dark Fantasy Dragon game icon, isolated object, transparent background, no text/letters/frames/panels; классовые — намёк на класс силуэтом/материалом; читаемость на 32/40/64px; после генерации — alpha-cleanup (border-connected flood-fill) и contact sheet + readability-отчёт в `docs/design/previews/` / `docs/design/reports/`.
 
 ---
 
@@ -428,7 +434,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 1. **Классовые киты сопоставимы.** Неформальная сумма тиров пятёрки = 12 у всех 17 классов (16×{2,2,2,3,3}, chemist {1,2,3,3,3}). Харнесс-проверка: полный кит из 5 классовых артефактов даёт классу +15…+45% эффективного DPS-бюджета и не выбивает TTD/выживаемость из коридоров `balance_harness`/`live_combat_harness` (сценарии с триггерными — через live-харнесс, не CSV).
 2. **Семьи не ломают level-up экономику.** Целевое соотношение к level-up карточке: т1 ≈ 0.65–0.85×, т2 ≈ 1.0–1.4×, т3 ≈ 2×. Артефакт стоит золота/слота выбора — паритет т2 с бесплатной карточкой уровня допустим.
-3. **Кап-ограниченные атрибуты** — первые кандидаты пост-тюнинга: `vampiric_chance` (кап 0.20 — т2/т3 упираются, `VAMPIRIC_CHANCE_CAP`), `crit_chance` (diminish 0.45 + кап 0.55 — эффективный т3 ≈ +21%), `defense` (кап 0.62), `crit_damage` (т1-т3 ниже карточки 0.35 — осознанно, карточка щедрая). Единое правило Jira сохраняется как старт; отклонения фиксирует харнесс-отчёт 964.
+3. **Кап-ограниченные атрибуты** — первые кандидаты пост-тюнинга: `vampiric_chance` (cap 0.20 — т2/т3 упираются, `VAMPIRIC_CHANCE_CAP`), `crit_chance` (diminish 0.45 + live-Agility cap 55%→75%; у Ассасина 100%), `defense` (strict asymptote <0.62). У `crit_damage` верхнего потолка нет: после raw 2.75 действует убывающий sqrt-tail. Единое правило Jira сохраняется как старт; отклонения фиксирует харнесс-отчёт 964.
 4. **Дубль-каскады запрещены:** duplicate_hit (кап 0.65), take_hit_pulse (кламп 1.0), spread-DoT (extend, без рекурсии), взрывы рикошетов/зеркал не порождают новые взрывы.
 5. **Экономика редкости:** доля т3 в офферах ≈ 8% (reward/shop), растёт глубиной у элиток (depth-weight) — распределение роллов семей сверить с фактическими весами `TIER_WEIGHTS` на выборке ≥1000 роллов (dev-консоль `~`).
 

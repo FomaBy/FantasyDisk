@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<style>.s{fill:#c6d5df}.note{fill:#87cdf3}.warn{fill:#f0b270}</style>
+<rect x="0" y="0" width="1280" height="720" fill="#0a0b12"/>
+<text class="base" x="388" y="89" font-family="Arial, sans-serif" font-size="21" font-weight="bold" fill="#f3e4b2">LEVEL UP · 1280×720</text>
+<text class="note" x="388" y="99" font-family="Arial, sans-serif" font-size="9" font-weight="normal" fill="#87cdf3">authored cards · normal + filtered + capped + long-copy</text>
+<rect x="180" y="129" width="920" height="29" rx="5" fill="#25262c" stroke="#737984" stroke-width="1" stroke-dasharray="8 6"/>
+<text class="s" x="202" y="145" font-family="Arial, sans-serif" font-size="10" font-weight="normal" fill="#c6d5df">class_ineligible / zero_effective_delta: отфильтровано до раскладки; пустого слота нет</text>
+<rect x="180" y="169" width="920" height="327" rx="8" fill="#17141a" stroke="#65bde7" stroke-width="1"/>
+<rect x="180" y="169" width="291" height="327" rx="8" fill="#211e26" stroke="#bd9149" stroke-width="2"/>
+<ellipse cx="218" cy="207" rx="16" ry="16" fill="#5a4934" stroke="#bd9149" stroke-width="1"/>
+<text class="base" x="202" y="250" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#f3e4b2">Добавление урона</text>
+<text class="s" x="202" y="275" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">Магический урон</text>
+<text class="base" x="202" y="341" font-family="Arial, sans-serif" font-size="13" font-weight="normal" fill="#f3e4b2">84 → 92</text>
+<rect x="212" y="359" width="227" height="23" rx="5" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="219" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">реально: +8 урона</text>
+<rect x="495" y="169" width="291" height="327" rx="8" fill="#211e26" stroke="#bd9149" stroke-width="2"/>
+<ellipse cx="533" cy="207" rx="16" ry="16" fill="#5a4934" stroke="#bd9149" stroke-width="1"/>
+<text class="base" x="517" y="250" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#f3e4b2">Шанс крита</text>
+<text class="s" x="517" y="275" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">Критический удар срабатывает чаще</text>
+<text class="base" x="517" y="341" font-family="Arial, sans-serif" font-size="13" font-weight="normal" fill="#f3e4b2">34% → 39%</text>
+<rect x="527" y="359" width="227" height="23" rx="5" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="534" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">реально: +5 п.п.</text>
+<rect x="527" y="400" width="227" height="19" rx="3" fill="#412826" stroke="none" stroke-width="0"/>
+<text class="warn" x="532" y="414" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#f0b270">сейчас 34% · максимум 62%</text>
+<rect x="809" y="169" width="291" height="327" rx="8" fill="#211e26" stroke="#bd9149" stroke-width="2"/>
+<ellipse cx="847" cy="207" rx="16" ry="16" fill="#5a4934" stroke="#bd9149" stroke-width="1"/>
+<text class="base" x="831" y="250" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#f3e4b2">Регенерация</text>
+<text class="s" x="831" y="275" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">Восстанавливаете HP со временем</text>
+<text class="base" x="831" y="341" font-family="Arial, sans-serif" font-size="13" font-weight="normal" fill="#f3e4b2">1.6 → 2.9 HP/с</text>
+<rect x="841" y="359" width="227" height="23" rx="5" fill="#214334" stroke="#70d99a" stroke-width="1"/>
+<text class="s" x="848" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#c6d5df">реально: +1.3 HP/с</text>
+<rect x="340" y="513" width="600" height="127" rx="7" fill="#253543" stroke="#65bde7" stroke-width="1"/>
+<text class="note" x="362" y="540" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#87cdf3">Длинное объяснение: увеличение области атаки расширяет радиусы аур, ширину лучей, секторные</text>
+<text class="note" x="362" y="557" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#87cdf3">атаки и взрывы; весь русский текст переносится и остаётся доступен в прокрутке без многоточия.</text>
+<rect x="929" y="519" width="4" height="115" rx="2" fill="#111820" stroke="#65bde7" stroke-width="1"/>
+<rect x="929" y="542" width="4" height="38" rx="2" fill="#87cdf3" stroke="none" stroke-width="0"/>
+<rect x="507" y="652" width="267" height="43" rx="7" fill="#211e26" stroke="#bd9149" stroke-width="1"/>
+<text class="base" x="574" y="678" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#f3e4b2">Продолжить</text>
+</svg>

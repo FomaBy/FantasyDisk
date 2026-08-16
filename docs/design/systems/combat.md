@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-07-14 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-08-11 (FAN-2320 pause-world contract)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -76,16 +76,30 @@
 - Held-weapon visual placement (SCRUM-455): `Player/VisualRoot/WeaponSocket` is a runtime orbit anchor, not a body-center/hand overlap point. It sits on a 104px orbit toward the active aim/attack direction and renders behind the hero body (`z_index=-8`, attached weapon/root visual normalized to relative `z_index=0`) so weapon art reads as circling/held around the character without covering the playable sprite. Damage, cooldowns, hit shapes and targeting stay data-driven and unchanged.
 - Attack VFX calmness (SCRUM-457/SCRUM-854/FAN-1079): shared `AttackVfx` helpers apply `_calmed_color()` to additive flashes/beams/slashes, cap alpha, slightly narrow beam visuals, slow projectile/skull trail ghosting, and reduce dust/note particle counts. Every weapon signature is now a compact `64..100px` release cue that travels `54px` from the character instead of scaling or positioning itself like a painted damage-zone plate. The dedicated non-additive `WeaponSignatureBody` stays at alpha `0.60`; glow/rim layers remain restrained. Berserk axe and Knight long-spear/holy-flail attacks expose only their weapon/projectile/slash/spiral effects and no exact `Polygon2D` damage overlay. This is visual-only: damage radii, hit corridors, cooldowns, timings and targeting remain authoritative in weapon logic.
 
+### Attack area and control contract (FAN-1891)
+
+- `aoe_radius_multiplier` is the sole generic attack-area upgrade. Each weapon declares its supported dimensions in `geometry_capabilities`; the same multiplier scales each declared radius, width, sweep, or cone exactly once.
+- `attack_range` (target reach) and `projectile_speed` are internal weapon configuration. Character stats, level-up rewards, artifacts, shop items, meta nodes, and legacy modifier keys cannot change them.
+- Support effects use the one `support_multiplier` derived from the shared general `% damage` multiplier. There is no separate buff-power reward source.
+- Knockback starts from weapon configuration and is monotonic in Strength only. Endurance and Leadership do not add knockback; elite/boss resistance and control caps are unchanged.
+- Save migration removes obsolete `range_multiplier`, `sector_multiplier`, `projectile_speed_flat`, `aura_radius_flat`, and `buff_power_flat` before restoring a run or an old level-up offer.
+
 ## Damage And Feedback
 
-- У игрока есть HP, defense и dodge.
+- У игрока есть HP, defense и dodge. Пять player-facing defensive choices —
+  max health, defense, dodge, regeneration и vampiric; absorb остаётся внутренним
+  расчётным слоем и не является отдельной картой выбора.
 - SCRUM-894: итоговый шанс уворота считает `Player.current_dodge_chance()`:
-  derived dodge (кап `SURVIVABILITY_DODGE_CAP` 55%) плюс, только для Ассасина,
+  derived dodge следует strict-asymptote `SURVIVABILITY_DODGE_CAP` <55%; только для Ассасина
   ситуативный бонус «Теневой завесы» — самоцентричной ауры уворота, активной
-  лишь пока враг находится внутри derived `aura_radius` (величина =
-  `veil_dodge_bonus × buff_power`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
+  лишь пока враг находится внутри объявленной области ауры (величина =
+  `veil_dodge_bonus × support_multiplier`, кап `veil_dodge_cap`; combined raw всё равно даёт <55%,
   бессмертия нет). Крит-шанс игрока капится per-class
-  (`ProgressionData.class_crit_profile`): Ассасин — 100%, остальные — 55%.
+  (`ProgressionData.class_crit_profile`): у обычных классов cap от живой Ловкости
+  растёт с 55% при Agility 0 до первых 75% при Agility 100, Ассасин остаётся на
+  100%. Крит-множитель не имеет hard cap:
+  после raw 2.75 работает непрерывный diminishing tail
+  `2.75 + sqrt(raw - 2.75)`.
 - Враги наносят contact damage по `contact_range`, который подгоняется под видимый размер спрайта.
 - При любом уроне по игроку HUD показывает `DamageFlashOverlay`: alpha peak ~0.20, fade ~0.32с, без стакания до непрозрачности, пауза-aware.
 - SCRUM-497 добавляет visual-only боевой feedback над целями: каждый hit по `Enemy`
@@ -146,13 +160,28 @@
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
 - Гитарист (SCRUM-899) — магический кастер с деплой-геймплеем: `riff_strip` (узкая передняя полоса постоянной ширины, частые низко-средние магические хиты, все цели в полосе без pierce-капа), большой кайт-`pulse` баса и амп-турели `amp` (Лидерство = число+uptime ампов, summon_amount = темп пульса, урон — magic_damage владельца); trait «Разогрев» (SCRUM-1006) копит +2 п.п./сек магического урона без полученных ударов (кап +20%, сброс при квалифицированном ударе). Друид использует pulse / deployable totem; Рейнджер использует deploy trap.
 - Друидский `druid_beast` summon использует `AllyMinion/AnimatedBody` с готовым `SpriteFrames`: `move` loop при движении/ожидании, `attack` one-shot при фактическом ударе и `flip_h` вправо по движению/атаке. Остальные ally visuals остаются статичными `Sprite2D` через fallback `Body`.
-- Мобильные summons получают групповые команды от `SummonerWeapon`: цели выбираются в leash radius вокруг владельца, назначенный burst damage учитывается как overkill pressure, поэтому несколько союзников расходятся по слабым врагам вместо погони всей стаей за одной целью. Если старая `command_target` ушла за leash radius, `AllyMinion` сбрасывает ее и возвращается к локальной цели/guard behavior.
+- Мобильные summons получают групповые команды от `SummonerWeapon`: цели выбираются в leash radius вокруг владельца, назначенный burst damage учитывается как overkill pressure, поэтому несколько союзников расходятся по слабым врагам вместо погони всей стаей за одной целью. Если старая `command_target` ушла за leash radius, `AllyMinion` сбрасывает ее и возвращается к локальной цели/guard behavior. Направление guard-строя фиксируется из детерминированного spawn-вектора каждого призыва; это относится и к танку постоянной пары `chemist/homunculus_vial`, который использует единственный вектор для стартовой позиции в 48 px и targetless guard-точки владельца в 56 px без дополнительного RNG. transient `ObjectID` используется только как opaque identity и не участвует в геометрии, порядке или тайминге боя.
 - Удар `AllyMinion` наносит основной цели полный урон один раз, затем бьет соседних врагов в data-driven малом splash radius (`summon_aoe_radius`, обычно 72-78 px) с `summon_aoe_damage_multiplier`, без повторного урона primary target.
 - SCRUM-854/864/SCRUM-875/SCRUM-880: Berserk `sweep` damage remains an outward wedge from the character, but sword/axe attacks no longer show the exact sector overlay during the animation. Their visible crescent slash is rotated 180 degrees while targeting, damage geometry, cooldowns and balance stay unchanged. SCRUM-880 makes the `axe` visual read as a broad 180-degree, 250px cleave by widening only the VFX lateral scale and adding the actual two-handed axe sprite into the weapon-signature layer. Chemist/Druid-style ground pools keep up to 6 active pools per weapon owner and expire by their own `pool_duration`; Engineer pressure mines are persistent hazards that tick each `pool_tick_interval` while enemies remain inside and clean up only at lifetime end.
 - SCRUM-854: mobile summon weapons prefill about half of the current `max_summons` at battle start (`ceil(max_summons / 2)`), then fill the rest through normal summon cadence. Summon command/counting is scoped by owner+weapon metadata so different summon sources do not consume each other's caps.
 - SCRUM-859/SCRUM-906/FAN-1075: ClassWeapon deploys may define `deploy_role` and `max_summons_cap`. Guitarist amp is `stage_pulse`, Druid raven totem is `support_totem`, Engineer sentry is `turret_dps`, the orbital drone is `orbit_drone` (2 enlarged drones by default — FAN-1101 scales body/contact +50% to 0.36 / 66 px — opposite on a 121 px ring, cap 6), and pressure mines are `mine_grid`; sentry shots remember already-hit targets during one cycle, then retarget only after exhausting the local pool, with a small capped splash around the primary target.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
+
+### FAN-1893: ось «+1 снаряд» (extra_projectile) — правила потребления
+
+Generic-ключ `run_modifiers.extra_projectile` потребляется единственным швом `ClassWeapon._extra_projectiles()` и ТОЛЬКО оружием с явной capability `real_projectile_count > 0` в конфиге; каждый пункт добавляет ровно один дополнительный реальный снаряд боевого пути. Для обычного оружия это один снаряд его выстрела; у `engineer_sentry_link` каждый активный Sentry читает шов в собственном `try_fire`, поэтому один пункт добавляет по снаряду к залпу каждой стреляющей турели без изменения числа турелей, капа, cooldown, damage или summon scaling. Документированные правила target/damage/falloff по режимам:
+
+| Режим (capability-оружия) | Цель доп. снаряда | Урон/falloff |
+| --- | --- | --- |
+| `aoe_projectile` (`restore_potion`, `blast_powder`, `acid_flask`, `briar_staff`) | следующая ближайшая ОТДЕЛЬНАЯ цель (`_find_closest_enemies`) | полный ролл на каждый снаряд; спад только радиальный внутри взрыва |
+| `arquebus_shot` (`soldier_rifle`) | следующая ближайшая отдельная цель | полный ролл; спад радиальный в осколочной зоне (`damage_falloff`) |
+| `plague_dart` (`plague_syringe`) | сосед первичной цели в `plague_spread_radius`, без повторов | полный ролл каждого дротика + штатная зараза |
+| `sniper_split_round` (`sniper_shatter_rounds`) | round-robin по ближним, не более 2 пуль на одну цель за залп | единый ролл залпа, без per-index спада; лишние пули уходят веером без урона |
+| `storm_pierce_cone` (`storm_longbow`) | +1 стрела в веере `cone_degrees`; общий дедуп по телам | спад только по глубине пирса `pierce_damage_falloff^depth` |
+| `engineer_sentry_link` (`engineer_sentry_wrench`, залп каждой активной турели) | следующая ближайшая отдельная цель собственного залпа | `damage_falloff^index` на доп. снаряды; каждый тратит заряд магазина; +1 даёт +1 на каждую стреляющую турель |
+
+Перегруженные интерпретации generic-ключа УДАЛЕНЫ и доказаны инертными исполняемыми negative-probes (`tests/fan1893_capability_contract_test.gd`): прыжки цепи палочки (`wand_extra_chain` — отдельный артефакт), прыжки рикошета монеты (`coin_extra_bounces`), капканы (`trap_extra_count` — семантический мета-ключ, работает), мины (`mine_extra_count`), тики квадрата стихий (`elemental_orb_extra_count`), веер лучей (`beam`/`dot_beam`), зеркальная пара `dark_book` (единица атаки — пара из двух сфер) и melee-удары. Ширина вентилей реактора закрыта дискриминирующей пробой `tests/robot_kit_test.gd::_test_reactor_blade_width_and_reset`: враг на боковом смещении 55 px лежит вне базовой полулопасти (`beam_width` 96 / 2 = 48), но внутри удалённого бонуса +14%/снаряд (96 × 1.28 / 2 ≈ 61.4 при extra=2) и обязан получить ноль хитов — возврат бонуса роняет именно эту проверку. Универсальный Leadership-echo (`player._trigger_leadership_echo`) удалён — см. `characters_weapons.md`.
 
 ## Status Effects / Auras
 
@@ -194,6 +223,14 @@
   × 0.5с = 5с: течёт во время паралича и продолжается после его конца.
   Отброса на триггере капкана нет — паралич держит жертву; trait-отброс
   «Сторожевого лука» распространяется только на лучные хиты (SCRUM-909).
+- FAN-2237: общий цикл заряда Рейнджера накапливается только стоя, частичный
+  auto-fire его не сбрасывает, а единственный истинный full release сбрасывает
+  ровно один цикл; движение декрементирует накопление. У `moon_crossbow`
+  constellation-final помечает на 4с только primary-цель полного release:
+  следующий primary-hit этой же цели получает +28% ровно раз. Другая цель,
+  отсутствие цели и истечение метку не расходуют и не превращают в постоянный
+  бонус; `storm_longbow` и `hunter_trap` используют тот же контракт
+  snapshot/full-release.
 - Knight block/counter uses weapon passive data on `Player.take_damage()`:
   incoming damage reduction, incoming-scaled retaliation, `counter_radius`,
   `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.
@@ -213,10 +250,10 @@
   `Player._smoke_clouds` (`register_smoke_cloud`/`smoke_cloud_dodge_bonus`).
   Бонус уклонения действует ТОЛЬКО пока герой стоит внутри живого облака;
   перекрытия не стакаются (берётся максимум). Ролл уворота
-  `Player._current_dodge_chance()`: базовый dodge капится
-  `SURVIVABILITY_DODGE_CAP` 0.55, бонус облака добавляется поверх с суммарным
-  капом `SMOKE_CLOUD_DODGE_CAP` 0.90 — «почти неуязвим в дыму при тяжёлом
-  dodge-билде», вне облака кап обычный. Облако урона не наносит; единственное
+  `Player._current_dodge_chance()`: базовый dodge следует строгой асимптоте
+  `SURVIVABILITY_DODGE_CAP` <0.55, бонус облака добавляется поверх с суммарным
+  достижимым cap `SMOKE_CLOUD_DODGE_CAP` 0.90 — «почти неуязвим в дыму при тяжёлом
+  dodge-билде», вне облака действует ordinary asymptote. Облако урона не наносит; единственное
   дамажащее событие дыма — AoE-взрыв на детонации.
 - Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 
@@ -274,8 +311,9 @@
 
 ## Pause
 
-- Причины паузы: `escape_menu`, `level_up`.
-- При паузе `get_tree().paused = true`, UI продолжает работать, gameplay objects/tweens заморожены.
+- Причины паузы включают `escape_menu`, `level_up` и `feedback`; это set, поэтому мир продолжает стоять, пока не снята последняя причина.
+- `Main` — control plane с `PROCESS_MODE_ALWAYS`, но combat-world contract fail-closed переводит canonical группы `player`, enemies/bosses/summons, projectiles, hazards/telegraphs, pools, pickups, allies, weapons, persistent effects/devices и их descendants в `PROCESS_MODE_PAUSABLE`. Это замораживает transforms, physics, status/DoT, cooldown/lifetime timers и node-bound tweens без catch-up при resume.
+- Новый gameplay node, уже состоящий в canonical группе при добавлении в дерево во время паузы, нормализуется после `_ready()` до первого process frame. UI/input/audio control plane остаётся active и не входит в allowlist gameplay-групп.
 - Level-up всегда ставит бой на паузу до выбора награды.
 - Dev console (`scripts/dev_console.gd`, SCRUM-845) не является gameplay pause reason: открытая консоль остаётся live overlay, перехватывает командный ввод, но не замораживает бой, таймер, движение игрока или врагов.
 
@@ -292,6 +330,7 @@
 - Weapon integrity gate (SCRUM-277): `tests/weapon_integrity_test.gd` проверяет все 51 оружие 17 классов от `ProgressionData.weapon_ids()` до реальной scene/equipped visual, чтобы сцена не показывала чужой proxy-спрайт или пассивный item вместо выбранного оружия.
 - Status/aura smoke: `tests/status_effects_aura_test.gd`.
 - VFX smoke: `tests/attack_vfx_smoke_test.gd`, `tests/hazard_vfx_smoke_test.gd`.
+- Pause-world regression: `tests/combat_world_pause_test.gd` проверяет player/enemy/boss, оба типа projectile, Chemist pool, elite/boss hazard telegraphs и persistent weapon effect: freeze/resume, stacked reasons, control-plane allowlist и fail-closed ingress oracle.
 - Снаряды: `tests/projectile_smoke_test.gd`, `tests/enemy_projectile_smoke_test.gd`.
 - SCRUM-1066: player projectile art resolves through
   `ProjectileVisualRegistry` from the accepted SCRUM-1065 manifest. All 20
@@ -361,3 +400,19 @@ Censer создаёт один cast-scoped absorb на 18% одного удар
 absorb не может запустить retaliation. Reactor на четвёртом cast применяет
 настоящий pulse knockback 110, а Acid rearm-ится только после падения живых
 стаков ниже пяти.
+
+FAN-2238 — `powder_cross_reagent_combo` (`chemist/blast_powder`). Пыль после
+SCRUM-943 летит прямым AoE без луж, поэтому облачный вход `_spawn_damage_pool`
+для неё мёртв, и финал поднимает РЕАЛЬНЫЙ прилёт снаряда. Каждый бросок заряжен
+одним реагентом, соседние броски чередуются; взрыв оставляет инертный след
+`PowderReagentTrace` на `POWDER_REAGENT_TRACE_SECONDS` (0.9с — длиннее базового
+`fire_interval` 0.62с). Он не входит в `chemist_clouds`, не тикает, не вешает
+статусов и не наносит урона. Соседний взрыв ДРУГОГО реагента внутри `aoe_radius`
+живого следа расходует пару и платит один раз: латч `constellation_powder_reacted`
+держит манифестный `reactions_per_cloud` = 1, а весь урон реакции равен
+`combo_damage_ratio` (0.48) — базовой доли у пыли нет (`direct_share` 0.0), в
+отличие от пул-канала встречи двух луж. Без купленного финала след не создаётся
+вовсе, поэтому урон, каденс, число снарядов и pool-free контракт базового оружия
+не меняются. Негативные контроли (тот же реагент, истёкшее окно, одиночный
+прилёт, чужой владелец/оружие, некупленный финал) закреплены в
+`tests/constellation_schema6_live_runtime_test.gd` натуральными кастами.

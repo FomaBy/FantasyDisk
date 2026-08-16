@@ -6,6 +6,10 @@ const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
 signal died(enemy: Node2D)
+# Read-only combat-observation seam for deterministic harnesses. Emitted after
+# the canonical mitigation path has calculated and applied the HP loss; it does
+# not participate in damage, death, rewards, or gameplay state.
+signal damage_applied(target: Node2D, attempted_amount: float, applied_amount: float, feedback: Dictionary)
 # Фазы уникальной атаки элитки для Animator: windup -> strike -> recover -> idle.
 signal elite_attack_phase_changed(attack_id: String, phase: String)
 
@@ -580,7 +584,11 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
 		_apply_elite_reflect_thorns(amount)
+	var health_before := health
 	health -= final_amount
+	# FAN-1539: observe the authoritative, overkill-capped HP delta; gameplay below keeps final_amount.
+	var canonical_applied_amount := maxf(health_before - maxf(health, 0.0), 0.0)
+	damage_applied.emit(self, amount, canonical_applied_amount, feedback_data.duplicate(true))
 	_update_health_bar()
 	# SCRUM-502: репортим нанесённый врагу урон в агрегатор забега (экран итогов).
 	# enemy.take_damage(...) — единая точка схода ВСЕХ источников урона по врагу
@@ -919,14 +927,20 @@ func _update_elite_hazard(delta: float, player: Node2D) -> void:
 	_elite_hazard_cooldown = 4.6
 
 
+func _new_combat_hazard(name: String) -> Node2D:
+	var hazard := Node2D.new()
+	hazard.name = name
+	hazard.process_mode = Node.PROCESS_MODE_PAUSABLE
+	hazard.add_to_group("enemy_hazards")
+	return hazard
+
+
 func _spawn_elite_hazard(target_position: Vector2) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
 	var hazard_damage := elite_hazard_damage
-	var hazard := Node2D.new()
-	hazard.name = "ElitePoisonZone"
-	hazard.add_to_group("enemy_hazards")
+	var hazard := _new_combat_hazard("ElitePoisonZone")
 	hazard.global_position = _clamp_to_arena(target_position, 92.0)
 	hazard.z_index = 8
 	parent.add_child(hazard)
@@ -1294,9 +1308,7 @@ func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: f
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var telegraph := Node2D.new()
-	telegraph.name = "EliteAttackTelegraph"
-	telegraph.add_to_group("enemy_hazards")
+	var telegraph := _new_combat_hazard("EliteAttackTelegraph")
 	telegraph.z_index = 7
 	parent.add_child(telegraph)
 	telegraph.global_position = target_position
@@ -1328,9 +1340,7 @@ func _spawn_shockwave_ring(origin: Vector2, radius: float) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var ring := Node2D.new()
-	ring.name = "EliteShockwave"
-	ring.add_to_group("enemy_hazards")
+	var ring := _new_combat_hazard("EliteShockwave")
 	ring.z_index = 9
 	parent.add_child(ring)
 	ring.global_position = origin
@@ -1354,9 +1364,7 @@ func _spawn_shadow_trail(from_position: Vector2, to_position: Vector2, duration:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var trail := Node2D.new()
-	trail.name = "EliteShadowTrail"
-	trail.add_to_group("enemy_hazards")
+	var trail := _new_combat_hazard("EliteShadowTrail")
 	trail.z_index = 6
 	parent.add_child(trail)
 	trail.global_position = (from_position + to_position) * 0.5
@@ -1377,9 +1385,7 @@ func _spawn_poison_lob(target_position: Vector2, travel_time: float, damage: flo
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var lob := Node2D.new()
-	lob.name = "ElitePoisonLob"
-	lob.add_to_group("enemy_hazards")
+	var lob := _new_combat_hazard("ElitePoisonLob")
 	lob.z_index = 12
 	parent.add_child(lob)
 	lob.global_position = global_position
@@ -1403,9 +1409,7 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var puddle := Node2D.new()
-	puddle.name = "ElitePoisonPuddle"
-	puddle.add_to_group("enemy_hazards")
+	var puddle := _new_combat_hazard("ElitePoisonPuddle")
 	# SCRUM-553: наземная декаль — лужа под всеми сущностями (z≈0), над фоном(-100)/бордером(-20)
 	# арены. Абсолютный слой, чтобы не зависеть от z родителя (current_scene/root).
 	puddle.z_as_relative = false

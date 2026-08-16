@@ -1,8 +1,8 @@
 {
   "generated_by": "tools/generate_scrum1068_runtime_manifest.py",
   "source_path": "res://docs/design/data/scrum1067_weapon_finals_manifest.json",
-  "source_sha256": "6da4ddfc2650b62fdf4e719b4025a436858c7396d2b8639721d099900373696e",
-  "projection_sha256": "3995976404824052b9da0dc14b3be4dcb2ae55d134d1aadc3d4a0202fe1d2f03",
+  "source_sha256": "31593d47783eac018212b67bb16699af00ed45658672deb66c9d55622ce6acf0",
+  "projection_sha256": "42802bc7c86616d7259fabf2cd1d4f31ec55ec0dacba8365373d5586ac467dec",
   "schema_id": "fantasydisk.constellation_3x6.design.v1",
   "runtime_schema_version": 6,
   "source_issue": "SCRUM-1067",
@@ -8416,7 +8416,7 @@
               "mechanic_id": "powder_cross_reagent_combo",
               "effect_profile": {
                 "effect_key": "powder_cross_reagent_combo",
-                "hook": "the next different reagent touching the powder cloud triggers one combo reaction",
+                "hook": "the next neighboring Blast Powder impact or blast with a different reagent triggers one combo reaction",
                 "params": {
                   "reactions_per_cloud": 1,
                   "combo_damage_ratio": 0.48,

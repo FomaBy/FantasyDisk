@@ -101,7 +101,11 @@ class LocalReleaseTests(unittest.TestCase):
 
     def _git(self, *args: str) -> str:
         return subprocess.run(
-            ["git", *args], cwd=self.repo, check=True, text=True, capture_output=True
+            ["git", *args],
+            cwd=self.repo,
+            check=True,
+            encoding="utf-8",
+            capture_output=True,
         ).stdout.strip()
 
     def _materialize(self, macos_channel: str = "signed"):
@@ -123,9 +127,37 @@ class LocalReleaseTests(unittest.TestCase):
             macos_channel=macos_channel,
         )
 
+    def _candidate(self) -> local_release.CandidateProvenance:
+        (self.repo / "source.txt").write_text("candidate source\n", encoding="utf-8")
+        self._git("add", "source.txt")
+        self._git("commit", "-m", "candidate fixture")
+        candidate = local_release.CandidateProvenance(
+            repository="https://github.com/FomaBy/FantasyDisk.git",
+            ref="refs/heads/release-candidate",
+            commit=self._git("rev-parse", "HEAD"),
+            tree=self._git("rev-parse", "HEAD^{tree}"),
+        )
+        (self.source_release / "CANDIDATE_PROVENANCE.json").write_text(
+            json.dumps(
+                {
+                    "repository": candidate.repository,
+                    "ref": candidate.ref,
+                    "commit": candidate.commit,
+                    "tree": candidate.tree,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return candidate
+
     def test_materializes_exact_tag_and_verifies_stable_godot_project(self) -> None:
         destination, manifest = self._materialize()
         current = local_release._update_current_project(destination.parent, "9.8.7")
+        self.assertEqual(
+            local_release._update_current_project(destination.parent, "9.8.7"), current
+        )
         local_release._register_godot(self.projects_file, current)
         verified = local_release.verify_local_release(
             version="9.8.7",
@@ -136,7 +168,11 @@ class LocalReleaseTests(unittest.TestCase):
 
         self.assertEqual(verified["tag_commit"], self._git("rev-parse", "v9.8.7^{commit}"))
         self.assertEqual(manifest["version"], "9.8.7")
-        self.assertEqual(os.readlink(current), "v9.8.7/godot-project")
+        self.assertTrue(local_release._is_project_pointer(current))
+        self.assertEqual(
+            local_release._project_pointer_target(destination.parent, current, "9.8.7"),
+            (destination / "godot-project").resolve(),
+        )
         self.assertEqual(
             local_release._project_version(current / "project.godot"), "9.8.7"
         )
@@ -171,6 +207,113 @@ class LocalReleaseTests(unittest.TestCase):
                     dry_run=True,
                 )
 
+    def test_existing_tag_manifest_without_inventory_remains_verifiable(self) -> None:
+        destination, _manifest = self._materialize()
+        current = local_release._update_current_project(destination.parent, "9.8.7")
+        local_release._register_godot(self.projects_file, current)
+        manifest_path = destination / "LOCAL_RELEASE.json"
+        legacy = json.loads(manifest_path.read_text(encoding="utf-8"))
+        legacy.pop("package_inventory")
+        manifest_path.write_text(json.dumps(legacy) + "\n", encoding="utf-8")
+        self._verify()
+
+    def test_materializes_untagged_candidate_and_matches_tag_only_after_promotion(self) -> None:
+        candidate = self._candidate()
+        with mock.patch.object(local_release.platform, "system", return_value="Linux"):
+            destination, manifest = local_release.materialize_package(
+                version="9.8.7",
+                repo_root=self.repo,
+                source_release=self.source_release,
+                config=self.config,
+                candidate=candidate,
+            )
+        self.assertNotIn("tag", manifest)
+        self.assertNotIn("tag_commit", manifest)
+        self.assertEqual(
+            manifest["candidate"],
+            {
+                "repository": candidate.repository,
+                "ref": candidate.ref,
+                "commit": candidate.commit,
+                "tree": candidate.tree,
+            },
+        )
+        self.assertEqual(
+            manifest["package_inventory"]["CANDIDATE_PROVENANCE.json"],
+            {
+                "sha256": hashlib.sha256(
+                    (destination / "CANDIDATE_PROVENANCE.json").read_bytes()
+                ).hexdigest(),
+                "size": (destination / "CANDIDATE_PROVENANCE.json").stat().st_size,
+            },
+        )
+        current = local_release._update_current_project(destination.parent, "9.8.7")
+        local_release._register_godot(self.projects_file, current)
+        local_release.verify_local_release(
+            version="9.8.7",
+            repo_root=self.repo,
+            config=self.config,
+            require_app=False,
+            require_tag_match=False,
+        )
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "candidate provenance"):
+            self._verify()
+
+        self._git("tag", "-d", "v9.8.7")
+        self._git("tag", "-a", "v9.8.7", "-m", "candidate promotion", candidate.commit)
+        verified = self._verify()
+        self.assertEqual(verified["candidate"]["commit"], candidate.commit)
+
+    def test_candidate_provenance_is_complete_safe_and_prebuilt(self) -> None:
+        candidate = self._candidate()
+        (self.source_release / "CANDIDATE_PROVENANCE.json").unlink()
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "pre-build provenance"):
+            with mock.patch.object(local_release.platform, "system", return_value="Linux"):
+                local_release.materialize_package(
+                    version="9.8.7",
+                    repo_root=self.repo,
+                    source_release=self.source_release,
+                    config=self.config,
+                    candidate=candidate,
+                )
+        provenance = self.source_release / "CANDIDATE_PROVENANCE.json"
+        provenance.write_text("{}\n", encoding="utf-8")
+        original_is_symlink = Path.is_symlink
+        # materialize_package resolves source_release, so match the provenance
+        # file by its real path: on macOS the temporary root itself lives behind
+        # the /tmp -> /private/tmp symlink and a raw comparison never fires.
+        resolved_provenance = provenance.resolve()
+        with mock.patch.object(
+            Path,
+            "is_symlink",
+            lambda path: path.resolve() == resolved_provenance or original_is_symlink(path),
+        ):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "unsafe pre-build provenance"):
+                with mock.patch.object(local_release.platform, "system", return_value="Linux"):
+                    local_release.materialize_package(
+                        version="9.8.7",
+                        repo_root=self.repo,
+                        source_release=self.source_release,
+                        config=self.config,
+                        candidate=candidate,
+                    )
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "full 40-hex SHA"):
+            local_release._candidate_provenance(
+                candidate.repository, candidate.ref, candidate.commit[:-1], candidate.tree
+            )
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "refs/heads"):
+            local_release._candidate_provenance(
+                candidate.repository, "refs/tags/v9.8.7", candidate.commit, candidate.tree
+            )
+
+    def test_release_version_parser_supports_hotfix_component(self) -> None:
+        self.assertEqual(local_release._version_key("0.2.3"), (0, 2, 3, 0))
+        self.assertEqual(local_release._version_key("0.2.3.1"), (0, 2, 3, 1))
+        self.assertLess(local_release._version_key("0.2.3"), local_release._version_key("0.2.3.1"))
+        self.assertLess(local_release._version_key("0.2.3.1"), local_release._version_key("0.2.4"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "X.Y.Z or X.Y.Z.R"):
+            local_release._version_key("0.2.3.1.1")
+
     def test_requires_poster_and_distinct_installer_checksums(self) -> None:
         poster = self.source_release / "fantasydisk_987_announcement.png"
         poster.unlink()
@@ -190,8 +333,50 @@ class LocalReleaseTests(unittest.TestCase):
         releases = self.local_root / "releases"
         releases.mkdir()
         (releases / "current-project").mkdir()
-        with self.assertRaisesRegex(local_release.LocalReleaseError, "not a symlink"):
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "not a supported pointer"):
             local_release._update_current_project(releases, "9.8.7")
+
+    def test_refuses_out_of_root_and_stale_current_project_pointers(self) -> None:
+        releases = self.local_root / "releases"
+        target = releases / "v9.8.7" / "godot-project"
+        target.mkdir(parents=True)
+        current = releases / "current-project"
+        outside = self.root / "outside-project"
+        outside.mkdir()
+        local_release._create_project_pointer(
+            current, outside.resolve(), os.path.relpath(outside, releases)
+        )
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "unsafe|unexpected"):
+            local_release._update_current_project(releases, "9.8.7")
+        local_release._remove_project_pointer(current)
+
+        stale_target = self.root / "stale-project"
+        stale_target.mkdir()
+        local_release._create_project_pointer(
+            current, stale_target.resolve(), os.path.relpath(stale_target, releases)
+        )
+        stale_target.rmdir()
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "stale"):
+            local_release._update_current_project(releases, "9.8.7")
+        local_release._remove_project_pointer(current)
+
+    def test_refuses_malformed_current_project_reparse_point(self) -> None:
+        releases = self.local_root / "releases"
+        target = releases / "v9.8.7" / "godot-project"
+        target.mkdir(parents=True)
+        current = local_release._update_current_project(releases, "9.8.7")
+        path_type = type(current)
+        resolve = path_type.resolve
+
+        def malformed(path: Path, strict: bool = False) -> Path:
+            if path == current:
+                raise OSError("malformed reparse point")
+            return resolve(path, strict=strict)
+
+        with mock.patch.object(path_type, "resolve", malformed):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "malformed"):
+                local_release._project_pointer_target(releases, current, "9.8.7")
+        local_release._remove_project_pointer(current)
 
     def test_registration_upgrades_existing_favorite_false(self) -> None:
         current = self.local_root / "releases" / "current-project"
@@ -244,7 +429,7 @@ class LocalReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(local_release.LocalReleaseError, "macOS channel"):
             local_release.resolve_macos_channel("notarized")
 
-    def test_unsigned_channel_skips_only_signature_checks_for_macos_app(self) -> None:
+    def test_macos_verifier_checks_mapped_short_and_build_versions(self) -> None:
         app = self.root / "FantasyDisk.app"
         (app / "Contents" / "MacOS").mkdir(parents=True)
         plist = app / "Contents" / "Info.plist"
@@ -254,18 +439,50 @@ class LocalReleaseTests(unittest.TestCase):
             b' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
             b'<plist version="1.0"><dict>'
             b"<key>CFBundleShortVersionString</key><string>9.8.7</string>"
+            b"<key>CFBundleVersion</key><string>10.8.71</string>"
+            b"<key>CFBundleExecutable</key><string>FantasyDisk</string>"
             b"</dict></plist>\n"
         )
+        executable = app / "Contents" / "MacOS" / "FantasyDisk"
+        executable.write_bytes(b"fixture")
+        executable.chmod(0o755)
         with mock.patch.object(local_release, "_run") as run_mock:
-            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=False)
-        self.assertEqual(run_mock.call_args_list, [])
-        with mock.patch.object(local_release, "_run") as run_mock:
-            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=True)
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
         tools = [call.args[0][0] for call in run_mock.call_args_list]
-        self.assertEqual(tools, ["codesign", "xcrun", "spctl"])
-        # The version gate stays mandatory in both channels.
-        with self.assertRaisesRegex(local_release.LocalReleaseError, "expected 1.0.0"):
-            local_release.verify_macos_app(app, "1.0.0", launch_smoke=False, signed=False)
+        self.assertEqual(tools, ["lipo", "codesign"])
+        self.assertEqual(
+            run_mock.call_args_list[0].args[0],
+            ["lipo", executable, "-verify_arch", "x86_64", "arm64"],
+        )
+        with mock.patch.object(local_release, "_run") as run_mock:
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=True)
+        tools = [call.args[0][0] for call in run_mock.call_args_list]
+        self.assertEqual(tools, ["lipo", "codesign", "xcrun", "spctl"])
+        with mock.patch.object(local_release, "_run") as run_mock:
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=True, signed=False)
+        self.assertEqual(
+            run_mock.call_args_list[-1].args[0],
+            ["open", "-n", "-W", app, "--args", "--headless", "--quit-after", "2"],
+        )
+        plist.write_bytes(plist.read_bytes().replace(b"FantasyDisk", b"MissingDisk"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "CFBundleExecutable"):
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
+        plist.write_bytes(plist.read_bytes().replace(b"MissingDisk", b"FantasyDisk"))
+        # The version gate stays mandatory in both channels and rejects a direct
+        # four-component CFBundleVersion replacement.
+        plist.write_bytes(plist.read_bytes().replace(b"10.8.71", b"9.8.7.1"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "build=10.8.71"):
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
+
+    def test_macos_verifier_can_use_immutable_tag_export_metadata(self) -> None:
+        project = self.root / "tag-project"
+        project.mkdir()
+        (project / "export_presets.cfg").write_text(
+            'application/short_version="0.2.4"\napplication/version="0.2.4"\n',
+            encoding="utf-8",
+        )
+        expected = local_release._macos_bundle_versions_from_project(project)
+        self.assertEqual(expected, local_release.MacOSBundleVersions("0.2.4", "0.2.4"))
 
     def test_build_script_macos_channel_is_fail_closed(self) -> None:
         script_path = ROOT / "tools" / "build_release.sh"
@@ -273,6 +490,9 @@ class LocalReleaseTests(unittest.TestCase):
         self.assertIn('MACOS_CHANNEL="${FANTASYDISK_MACOS_CHANNEL:-signed}"', script)
         self.assertIn('--macos-channel "${MACOS_CHANNEL}"', script)
         self.assertIn("MACOS_UPDATE_CHANNEL", script)
+
+        if os.name == "nt":
+            return
 
         base_env = {
             key: value
@@ -286,7 +506,7 @@ class LocalReleaseTests(unittest.TestCase):
                 ["bash", str(script_path), "9.9.9"],
                 cwd=ROOT,
                 env={**base_env, **extra_env},
-                text=True,
+                encoding="utf-8",
                 capture_output=True,
             )
 
@@ -303,6 +523,36 @@ class LocalReleaseTests(unittest.TestCase):
         invalid = run_script({"FANTASYDISK_MACOS_CHANNEL": "adhoc"})
         self.assertEqual(invalid.returncode, 2)
         self.assertIn("must be 'signed' or 'unsigned'", invalid.stdout)
+
+        malformed_candidate = subprocess.run(
+            [
+                "bash", str(script_path), "9.9.9",
+                "--candidate-repository", os.fspath(self.repo),
+                "--candidate-ref", "refs/heads/release-candidate",
+                "--candidate-sha", "not-a-sha",
+            ],
+            cwd=ROOT,
+            env={**base_env, "FANTASYDISK_MACOS_CHANNEL": "unsigned"},
+            encoding="utf-8",
+            capture_output=True,
+        )
+        self.assertEqual(malformed_candidate.returncode, 2)
+        self.assertIn("candidate SHA must be a full 40-hex commit", malformed_candidate.stdout)
+
+        mismatched_remote_ref = subprocess.run(
+            [
+                "bash", str(script_path), "9.9.9",
+                "--candidate-repository", os.fspath(self.repo),
+                "--candidate-ref", "refs/heads/missing-candidate",
+                "--candidate-sha", "a" * 40,
+            ],
+            cwd=ROOT,
+            env={**base_env, "FANTASYDISK_MACOS_CHANNEL": "unsigned"},
+            encoding="utf-8",
+            capture_output=True,
+        )
+        self.assertEqual(mismatched_remote_ref.returncode, 2)
+        self.assertIn("candidate remote ref cannot be resolved exactly", mismatched_remote_ref.stdout)
 
     def test_config_never_infers_or_accepts_multica_worktree(self) -> None:
         (self.repo / "release_webhook.cfg").write_text("[release]\n", encoding="utf-8")

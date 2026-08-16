@@ -1,0 +1,4547 @@
+{
+ "schema": "fan1641.a5-oracle-lineage.v1",
+ "issue_id": "FAN-1641",
+ "source_issue": "FAN-1575",
+ "description": "Fail-closed, lineage-aware A5 numeric/event parity contract. The historical f09 numeric oracle is immutable in tests/fixtures/a5_f09_oracle.json.gz; the current integration base is the FAN-1575 atomic-landing base fda9971b. Divergence from f09 is systemic (FAN-2126 structural ruling, PM 2026-08-04): the enumerated accepted deltas below carry the full set, causally attributed to the shared offensive-scaling reworks.",
+ "projection": {
+  "pair_count": 51,
+  "cell_count": 204,
+  "row_level": 20,
+  "row_scenario": "class_constellation",
+  "fields": [
+   "live_solo_dpm_mean",
+   "live_crowd_dpm_mean",
+   "solo_variance_dpm2",
+   "crowd_variance_dpm2"
+  ],
+  "canonical_row_format": "%s|%.2f|%.2f|%.2f|%.2f\\n"
+ },
+ "historical_oracle": {
+  "label": "f09",
+  "commit": "f09f21ece5ae744ffc1b917d724d5e581404fae4",
+  "tree": "955d7b987b697f8922edeacfea291b4351516773",
+  "commit_timestamp": "2026-07-23T04:47:57+03:00",
+  "raw_decoded_sha256": "cd02e0cc9a99f8b6de8cb28684b5b56e740753b675819dbb231bca30a00e9004",
+  "dataset_digest_sha256": "4da51328110cdebab0c02b1f81b8428ea4e50f5622f81686066fafeb0534c8a5",
+  "projection_sha256": "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe7530a8ef20f911a54d5efd1",
+  "telemetry_sample_key_count": 309,
+  "telemetry_sample_keys_sha256": "715745ebc13721811d8b354476af58300423ab21b6ede059210a23e8df990525",
+  "published_matrix": [
+   {
+    "pair": "berserk/sword",
+    "live_solo_dpm_mean": 11363.9,
+    "live_crowd_dpm_mean": 118968.05,
+    "solo_variance_dpm2": 411265.69,
+    "crowd_variance_dpm2": 11280529.82
+   },
+   {
+    "pair": "berserk/axe",
+    "live_solo_dpm_mean": 14345.74,
+    "live_crowd_dpm_mean": 295340.25,
+    "solo_variance_dpm2": 383495.33,
+    "crowd_variance_dpm2": 36525342.7
+   },
+   {
+    "pair": "berserk/hammer",
+    "live_solo_dpm_mean": 19294.02,
+    "live_crowd_dpm_mean": 145981.36000000002,
+    "solo_variance_dpm2": 329384.17,
+    "crowd_variance_dpm2": 17741702.17
+   },
+   {
+    "pair": "soldier/soldier_rifle",
+    "live_solo_dpm_mean": 13212.09,
+    "live_crowd_dpm_mean": 112701.97,
+    "solo_variance_dpm2": 960596.01,
+    "crowd_variance_dpm2": 145736805.62
+   },
+   {
+    "pair": "soldier/soldier_grenade",
+    "live_solo_dpm_mean": 43786.21,
+    "live_crowd_dpm_mean": 421349.8,
+    "solo_variance_dpm2": 3024364.46,
+    "crowd_variance_dpm2": 693811930.9
+   },
+   {
+    "pair": "soldier/soldier_bayonet",
+    "live_solo_dpm_mean": 25967.8,
+    "live_crowd_dpm_mean": 220311.51,
+    "solo_variance_dpm2": 3654023.4,
+    "crowd_variance_dpm2": 177215733.82
+   },
+   {
+    "pair": "thief/thief_coin_pouch",
+    "live_solo_dpm_mean": 17924.760000000002,
+    "live_crowd_dpm_mean": 84777.15000000001,
+    "solo_variance_dpm2": 757213.23,
+    "crowd_variance_dpm2": 30644417.35
+   },
+   {
+    "pair": "thief/thief_shadow_cloak",
+    "live_solo_dpm_mean": 35499.06,
+    "live_crowd_dpm_mean": 105923.69,
+    "solo_variance_dpm2": 9043071.41,
+    "crowd_variance_dpm2": 32169995.86
+   },
+   {
+    "pair": "thief/thief_smoke_bomb",
+    "live_solo_dpm_mean": 23376.82,
+    "live_crowd_dpm_mean": 253080.37,
+    "solo_variance_dpm2": 1612519.02,
+    "crowd_variance_dpm2": 567943.1
+   },
+   {
+    "pair": "elementalist/elementalist_orb_ring",
+    "live_solo_dpm_mean": 21103.18,
+    "live_crowd_dpm_mean": 258382.3,
+    "solo_variance_dpm2": 94937.93,
+    "crowd_variance_dpm2": 7959846.54
+   },
+   {
+    "pair": "elementalist/elementalist_prism_focus",
+    "live_solo_dpm_mean": 51218.11,
+    "live_crowd_dpm_mean": 753143.58,
+    "solo_variance_dpm2": 16250170.32,
+    "crowd_variance_dpm2": 396430797.72
+   },
+   {
+    "pair": "elementalist/elementalist_meteor_core",
+    "live_solo_dpm_mean": 46355.42,
+    "live_crowd_dpm_mean": 526517.97,
+    "solo_variance_dpm2": 329028.43,
+    "crowd_variance_dpm2": 203181932.56
+   },
+   {
+    "pair": "sniper/sniper_deadeye_rifle",
+    "live_solo_dpm_mean": 45595.7,
+    "live_crowd_dpm_mean": 248735.91,
+    "solo_variance_dpm2": 19670732.93,
+    "crowd_variance_dpm2": 390542572.62
+   },
+   {
+    "pair": "sniper/sniper_spotter_scope",
+    "live_solo_dpm_mean": 30182.88,
+    "live_crowd_dpm_mean": 244986.06,
+    "solo_variance_dpm2": 0.0,
+    "crowd_variance_dpm2": 396248437.88
+   },
+   {
+    "pair": "sniper/sniper_shatter_rounds",
+    "live_solo_dpm_mean": 16755.510000000002,
+    "live_crowd_dpm_mean": 65426.73,
+    "solo_variance_dpm2": 205335.86,
+    "crowd_variance_dpm2": 763736.17
+   },
+   {
+    "pair": "priest/priest_reliquary",
+    "live_solo_dpm_mean": 38788.5,
+    "live_crowd_dpm_mean": 720477.1,
+    "solo_variance_dpm2": 1459457.29,
+    "crowd_variance_dpm2": 90169837.81
+   },
+   {
+    "pair": "priest/priest_censer",
+    "live_solo_dpm_mean": 12026.98,
+    "live_crowd_dpm_mean": 146293.34,
+    "solo_variance_dpm2": 166276.37,
+    "crowd_variance_dpm2": 34561347.63
+   },
+   {
+    "pair": "priest/priest_chime",
+    "live_solo_dpm_mean": 15168.52,
+    "live_crowd_dpm_mean": 242031.42,
+    "solo_variance_dpm2": 71374.47,
+    "crowd_variance_dpm2": 64237820.52
+   },
+   {
+    "pair": "biologist/biologist_spore_lens",
+    "live_solo_dpm_mean": 29005.59,
+    "live_crowd_dpm_mean": 394210.06,
+    "solo_variance_dpm2": 130407.65,
+    "crowd_variance_dpm2": 49549491.94
+   },
+   {
+    "pair": "biologist/biologist_sample_injector",
+    "live_solo_dpm_mean": 51445.41,
+    "live_crowd_dpm_mean": 523990.43,
+    "solo_variance_dpm2": 4245124.54,
+    "crowd_variance_dpm2": 445534577.14
+   },
+   {
+    "pair": "biologist/biologist_symbiote_seed",
+    "live_solo_dpm_mean": 15947.69,
+    "live_crowd_dpm_mean": 256791.42,
+    "solo_variance_dpm2": 1607646.48,
+    "crowd_variance_dpm2": 6334986.96
+   },
+   {
+    "pair": "robot/robot_magnetic_anchor",
+    "live_solo_dpm_mean": 15872.49,
+    "live_crowd_dpm_mean": 184688.53,
+    "solo_variance_dpm2": 906056.5,
+    "crowd_variance_dpm2": 84285986.95
+   },
+   {
+    "pair": "robot/robot_hydraulic_press",
+    "live_solo_dpm_mean": 20068.89,
+    "live_crowd_dpm_mean": 263171.19,
+    "solo_variance_dpm2": 109786.2,
+    "crowd_variance_dpm2": 144279975.96
+   },
+   {
+    "pair": "robot/robot_reactor_core",
+    "live_solo_dpm_mean": 7557.35,
+    "live_crowd_dpm_mean": 123297.77,
+    "solo_variance_dpm2": 91494.15,
+    "crowd_variance_dpm2": 8634018.26
+   },
+   {
+    "pair": "engineer/engineer_sentry_wrench",
+    "live_solo_dpm_mean": 45907.77,
+    "live_crowd_dpm_mean": 51900.29,
+    "solo_variance_dpm2": 154724.22,
+    "crowd_variance_dpm2": 830668.1900000001
+   },
+   {
+    "pair": "engineer/engineer_repair_drone",
+    "live_solo_dpm_mean": 9559.26,
+    "live_crowd_dpm_mean": 70222.49,
+    "solo_variance_dpm2": 75949.85,
+    "crowd_variance_dpm2": 3265754.98
+   },
+   {
+    "pair": "engineer/engineer_pressure_mines",
+    "live_solo_dpm_mean": 11.97,
+    "live_crowd_dpm_mean": 57966.91,
+    "solo_variance_dpm2": 95.45,
+    "crowd_variance_dpm2": 6696754455.690001
+   },
+   {
+    "pair": "dark_mage/dark_book",
+    "live_solo_dpm_mean": 47537.3,
+    "live_crowd_dpm_mean": 606342.3200000001,
+    "solo_variance_dpm2": 0.0,
+    "crowd_variance_dpm2": 23174018.32
+   },
+   {
+    "pair": "dark_mage/cursed_skull",
+    "live_solo_dpm_mean": 4204.32,
+    "live_crowd_dpm_mean": 23514.15,
+    "solo_variance_dpm2": 0.0,
+    "crowd_variance_dpm2": 0.0
+   },
+   {
+    "pair": "dark_mage/dark_wand",
+    "live_solo_dpm_mean": 21884.62,
+    "live_crowd_dpm_mean": 204747.72,
+    "solo_variance_dpm2": 2311312.09,
+    "crowd_variance_dpm2": 34382508.6
+   },
+   {
+    "pair": "guitarist/electric_guitar",
+    "live_solo_dpm_mean": 48765.33,
+    "live_crowd_dpm_mean": 720700.53,
+    "solo_variance_dpm2": 550964.75,
+    "crowd_variance_dpm2": 19332817.55
+   },
+   {
+    "pair": "guitarist/bass_guitar",
+    "live_solo_dpm_mean": 14198.62,
+    "live_crowd_dpm_mean": 229782.97,
+    "solo_variance_dpm2": 14754.96,
+    "crowd_variance_dpm2": 30051227.61
+   },
+   {
+    "pair": "guitarist/sound_amp",
+    "live_solo_dpm_mean": 41983.28,
+    "live_crowd_dpm_mean": 632731.36,
+    "solo_variance_dpm2": 2158548.64,
+    "crowd_variance_dpm2": 9615704.85
+   },
+   {
+    "pair": "assassin/chakrams",
+    "live_solo_dpm_mean": 26185.24,
+    "live_crowd_dpm_mean": 281437.96,
+    "solo_variance_dpm2": 0.0,
+    "crowd_variance_dpm2": 42059245.8
+   },
+   {
+    "pair": "assassin/shadow_daggers",
+    "live_solo_dpm_mean": 27550.88,
+    "live_crowd_dpm_mean": 80033.49,
+    "solo_variance_dpm2": 1238613.18,
+    "crowd_variance_dpm2": 0.0
+   },
+   {
+    "pair": "assassin/venom_wire",
+    "live_solo_dpm_mean": 27171.31,
+    "live_crowd_dpm_mean": 130851.9,
+    "solo_variance_dpm2": 1281740.98,
+    "crowd_variance_dpm2": 15984643.69
+   },
+   {
+    "pair": "ranger/moon_crossbow",
+    "live_solo_dpm_mean": 26147.7,
+    "live_crowd_dpm_mean": 139174.52,
+    "solo_variance_dpm2": 7749208.390000001,
+    "crowd_variance_dpm2": 75120009.15
+   },
+   {
+    "pair": "ranger/storm_longbow",
+    "live_solo_dpm_mean": 31521.63,
+    "live_crowd_dpm_mean": 249081.46,
+    "solo_variance_dpm2": 4978208.82,
+    "crowd_variance_dpm2": 61792805.51
+   },
+   {
+    "pair": "ranger/hunter_trap",
+    "live_solo_dpm_mean": 8547.28,
+    "live_crowd_dpm_mean": 131384.95,
+    "solo_variance_dpm2": 87681.13,
+    "crowd_variance_dpm2": 24161943.63
+   },
+   {
+    "pair": "doctor/restore_potion",
+    "live_solo_dpm_mean": 14780.56,
+    "live_crowd_dpm_mean": 136355.63,
+    "solo_variance_dpm2": 238827.69,
+    "crowd_variance_dpm2": 1105378.88
+   },
+   {
+    "pair": "doctor/plague_syringe",
+    "live_solo_dpm_mean": 10841.77,
+    "live_crowd_dpm_mean": 20071.75,
+    "solo_variance_dpm2": 46989.23,
+    "crowd_variance_dpm2": 104943.6
+   },
+   {
+    "pair": "doctor/bone_saw",
+    "live_solo_dpm_mean": 40663.39,
+    "live_crowd_dpm_mean": 446253.35,
+    "solo_variance_dpm2": 1685712.72,
+    "crowd_variance_dpm2": 28591264.53
+   },
+   {
+    "pair": "chemist/blast_powder",
+    "live_solo_dpm_mean": 34872.31,
+    "live_crowd_dpm_mean": 275146.53,
+    "solo_variance_dpm2": 2928034.32,
+    "crowd_variance_dpm2": 7115129.46
+   },
+   {
+    "pair": "chemist/acid_flask",
+    "live_solo_dpm_mean": 6945.66,
+    "live_crowd_dpm_mean": 61435.11,
+    "solo_variance_dpm2": 22.09,
+    "crowd_variance_dpm2": 504.9
+   },
+   {
+    "pair": "chemist/homunculus_vial",
+    "live_solo_dpm_mean": 11709.72,
+    "live_crowd_dpm_mean": 103397.26,
+    "solo_variance_dpm2": 0.0,
+    "crowd_variance_dpm2": 0.0
+   },
+   {
+    "pair": "knight/long_spear",
+    "live_solo_dpm_mean": 14140.81,
+    "live_crowd_dpm_mean": 136168.85,
+    "solo_variance_dpm2": 219126.97,
+    "crowd_variance_dpm2": 9644378.69
+   },
+   {
+    "pair": "knight/tower_shield",
+    "live_solo_dpm_mean": 16279.26,
+    "live_crowd_dpm_mean": 158012.86000000002,
+    "solo_variance_dpm2": 549021.72,
+    "crowd_variance_dpm2": 5725539.7
+   },
+   {
+    "pair": "knight/holy_flail",
+    "live_solo_dpm_mean": 9623.66,
+    "live_crowd_dpm_mean": 184870.14,
+    "solo_variance_dpm2": 39144.62,
+    "crowd_variance_dpm2": 29487289.25
+   },
+   {
+    "pair": "druid/summon_amulet",
+    "live_solo_dpm_mean": 68101.14,
+    "live_crowd_dpm_mean": 361323.76,
+    "solo_variance_dpm2": 45635023.84,
+    "crowd_variance_dpm2": 36494237500.62
+   },
+   {
+    "pair": "druid/briar_staff",
+    "live_solo_dpm_mean": 28510.06,
+    "live_crowd_dpm_mean": 247810.39,
+    "solo_variance_dpm2": 18716.98,
+    "crowd_variance_dpm2": 183175.44
+   },
+   {
+    "pair": "druid/raven_totem",
+    "live_solo_dpm_mean": 15638.82,
+    "live_crowd_dpm_mean": 115086.41,
+    "solo_variance_dpm2": 234623.98,
+    "crowd_variance_dpm2": 31543948.96
+   }
+  ]
+ },
+ "historical_integration_base": {
+  "label": "ec15444e",
+  "commit": "ec15444e1a30acfe9aeaee3dab6f7e46f1b4f46e",
+  "tree": "57a248d408a4661e63c70ce6b5925d88dfbd7a97",
+  "subject": "FAN-1545 Restore secondary-kill gameplay attribution; keep A5 telemetry"
+ },
+ "current_integration_base": {
+  "label": "fda9971b",
+  "commit": "fda9971bbe39b39088926c99d929cd147f3a5e65",
+  "tree": "7795fa80e1094b183954d36218f60bfc1b9a93eb",
+  "projection_sha256": "a85a35d0430d5d520c2b0643870b762dff9285f00ae0b2b214b3ff96d01ef7cb",
+  "telemetry_full": {
+   "telemetry_schema": "fan1511.runtime-telemetry.v2",
+   "sample_count": 309,
+   "full_sha256": "c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a",
+   "sample_digests": {
+    "assassin/chakrams|143801|sustain_pack|sustain|10": "c2dc0cbb3b2afece7163b79d8aed287f08a01fc153e0b103422902aeda11a6cd",
+    "assassin/chakrams|143801|sustain_solo|sustain|1": "b8d0dbe02bef59d07ae59a0432505c0b61ca8bc5da90a331de891f7078ae4ea3",
+    "assassin/chakrams|143802|sustain_pack|sustain|10": "826d6565be7a728c85480934f50df1c5d1ef2e2ecf845a97b994bb0401362f4a",
+    "assassin/chakrams|143802|sustain_solo|sustain|1": "c82665a9594c11d93dbbbaac2ad74f4daca730155424185d43ff6967d3691ff9",
+    "assassin/chakrams|143803|sustain_pack|sustain|10": "17a40f90b7f02fd7df7f54d4040c1787e7d9d775ea3a990ad6cf70fbb0d26b59",
+    "assassin/chakrams|143803|sustain_solo|sustain|1": "e24f746a306bfc66379cac7bd63edff1b633803f1ed306fe0be7151656772b70",
+    "assassin/shadow_daggers|143801|sustain_pack|sustain|10": "ddc3af425014ec8edaa6543af352ff1a6db063fa1fd7ae1692832d1d07a75124",
+    "assassin/shadow_daggers|143801|sustain_solo|sustain|1": "db6f8c6d5fe2b10d0b6a5d21c88c830658ad28ec7ab4eb1d2a674bfb9010a173",
+    "assassin/shadow_daggers|143802|sustain_pack|sustain|10": "4ef808573b57c87736965f47b02c4a32583e64fbdfeab5cdb74c8829907e6fed",
+    "assassin/shadow_daggers|143802|sustain_solo|sustain|1": "bdadf990e2013cedf4a20de798464f20e67f613e7b930dc871987d3b4136b9fe",
+    "assassin/shadow_daggers|143803|sustain_pack|sustain|10": "1d1fbe63dcebec6ca425db13b6e5dccf8e46701b67e70d6baca98a64097ac2af",
+    "assassin/shadow_daggers|143803|sustain_solo|sustain|1": "8e30a43476cb066bee603e95333d7636a9f9b32ce1da891ea08a62a836c1a1ed",
+    "assassin/venom_wire|143801|sustain_pack|sustain|10": "fc7f82db81c846ec9b856fc0a9cd19563f1e5e6697d512588b3d140cccd9847f",
+    "assassin/venom_wire|143801|sustain_solo|sustain|1": "a96b399e11fb3e0b69372b45ea65f812e1c8dbe133f3aaf4cd7984032a5c3abb",
+    "assassin/venom_wire|143802|sustain_pack|sustain|10": "800d46b03d996fc78ab0e4bcce15c4bee9510977167e72ff646f4cfb7944b2e7",
+    "assassin/venom_wire|143802|sustain_solo|sustain|1": "6748bbe2645efceb70e0f30bb2af32a6ff950543c5bd44803d8a74cb3506a6b5",
+    "assassin/venom_wire|143803|sustain_pack|sustain|10": "484c53a51819a2c68f969ebcdb94310474257a8b2763eccb2646e4b5d590f693",
+    "assassin/venom_wire|143803|sustain_solo|sustain|1": "d4b916a66230edd797f1dbdf24c597653e72c8d1fa326413d36f055ff77a5b38",
+    "berserk/axe|143801|sustain_pack|sustain|10": "5ad3d075e0edb7f0810ff1963097caf546afc540e1689f1b1d10c15f57a8a2ee",
+    "berserk/axe|143801|sustain_solo|sustain|1": "510cfe967a7c79e834297c84d2829e92a44a240c3a504ba84c72e1d0e1fa9d1e",
+    "berserk/axe|143802|sustain_pack|sustain|10": "b494cfc4917b2bec5972187121d2e697e5f88010eff0ce5db893f49058fb6f6d",
+    "berserk/axe|143802|sustain_solo|sustain|1": "51eec492897dd55bdb7aa7b9631937bf193d701d181813e69441896d7479c2dc",
+    "berserk/axe|143803|sustain_pack|sustain|10": "ec74fff7309d08609933dfb9d53fc761e0807b6c7f57a0faacdcbc491605712c",
+    "berserk/axe|143803|sustain_solo|sustain|1": "0b4039af0ca0066ea79f21af829d78966ea22c123f78cf8be218d94fd63bd4f7",
+    "berserk/hammer|143801|sustain_pack|sustain|10": "38fa68d813382f218b873bb0e4eafdea93383d4c084908969fcd66711bbba8a2",
+    "berserk/hammer|143801|sustain_solo|sustain|1": "1a54450721b9a98ab28ec4fd317a590a9490b9159d33f80d1e40d57157382426",
+    "berserk/hammer|143802|sustain_pack|sustain|10": "1c9ec2e491e044ae66a97645ea9aef826695e8cd730ba4d8c0c362af29822d3c",
+    "berserk/hammer|143802|sustain_solo|sustain|1": "4a47240bda37322a4423035fd78e84498aebca085a398cd2dba9b73f9d0a5742",
+    "berserk/hammer|143803|sustain_pack|sustain|10": "9b1c32cb07f7f9d4ef73d554a5e30bf4fcf735d13f32d99167a254c2ea4d35f7",
+    "berserk/hammer|143803|sustain_solo|sustain|1": "3e5274d1586eecdcbaa56e5a2ccd97b6045daa0df9a5a254e2da39930924ddf0",
+    "berserk/sword|143801|sustain_pack|sustain|10": "a12b3f14c25dbc560b0a418a127b64b06b15948aa8cac3aa156c35533001b8dd",
+    "berserk/sword|143801|sustain_solo|sustain|1": "3394105df17909941225e5c6a1e9697f80fbe10a9d3df311ebdf54fe6427a647",
+    "berserk/sword|143802|sustain_pack|sustain|10": "771df02f902a095366a6af7532a93a248520574791d4faf13209286143dcd27a",
+    "berserk/sword|143802|sustain_solo|sustain|1": "5217bf2cc1f042e2fd47009d7f0c9c443f0e8d9e101b2526093d2967181b0456",
+    "berserk/sword|143803|sustain_pack|sustain|10": "cee9ca88b448a92ee6d875fef4b728fa2b84d07d7dfa7f6da2fd5f1b735ae274",
+    "berserk/sword|143803|sustain_solo|sustain|1": "49f9cc00471d3b29161d73652efb9c3d97d9ad0d63310574e6fff7a677c2064b",
+    "berserk/sword|1511001|representative_incoming_hit|incoming_hit|1": "0b59dd8059889feeb60381b23102a226ee2ea2f2da6f02f526a9cf0ac9568f3b",
+    "berserk/sword|1511001|representative_mortal|mortal|1": "3e67bdbbbdafebdb60e4ef78b1f992bce31793baca641b12146487ad7d85ec0e",
+    "berserk/sword|1511001|representative_offensive|offensive|1": "7aabbcb15a63526a52a21c96ba66c652be6c7af6441814544ccfad93b62b4369",
+    "biologist/biologist_sample_injector|143801|sustain_pack|sustain|10": "50f9b9e619c3264d1a6a91d2c72efa1efe6c11016a932470b237cd50458c10d8",
+    "biologist/biologist_sample_injector|143801|sustain_solo|sustain|1": "79afb83bacd29438bdca9972e79ea199b4d3668843ea255d611d58a10fbd08b7",
+    "biologist/biologist_sample_injector|143802|sustain_pack|sustain|10": "a92bc843d9ae0554c87f37d3c6d66af3bf294b2fa91eba48eecd736317a1c26f",
+    "biologist/biologist_sample_injector|143802|sustain_solo|sustain|1": "1bb9727ac95d4a01bfbf0c88394b6cf781425abf3be8a7bb309ca0d6c39c7e87",
+    "biologist/biologist_sample_injector|143803|sustain_pack|sustain|10": "d31aac1b8451bbe855b9f62b5a22867201bcdb2c09209a5007e3e0dbf88bf0f4",
+    "biologist/biologist_sample_injector|143803|sustain_solo|sustain|1": "88890c37926172cf01fed40e37ec422ce91d2f89373c9303e3f8f3643b2c47d7",
+    "biologist/biologist_spore_lens|143801|sustain_pack|sustain|10": "77c3d6149d743fcb2387e2b50aef57404fb0a8c9ed106c222ba6cb743b8e4723",
+    "biologist/biologist_spore_lens|143801|sustain_solo|sustain|1": "d8819e8cb47b78927dd92618f8f91024e07471843717e79a81383eba26c64dba",
+    "biologist/biologist_spore_lens|143802|sustain_pack|sustain|10": "15e52ee7402eac921af744805fd23947b0286e94a54fcaea6c09c0a4fdbc359b",
+    "biologist/biologist_spore_lens|143802|sustain_solo|sustain|1": "5e7712c220a9b442175a65efe1526e04c1e16ec52fda457a148817b42b11073c",
+    "biologist/biologist_spore_lens|143803|sustain_pack|sustain|10": "76167961c34629f9dfe9796025084db0b31e4e3bbd7e04e0ca85ff3e344545ac",
+    "biologist/biologist_spore_lens|143803|sustain_solo|sustain|1": "8dcf9c503ba52e61f6eebde3368f82dc0b4cc5ce6f8d445c657e811dd6ffe507",
+    "biologist/biologist_symbiote_seed|143801|sustain_pack|sustain|10": "9ca7b4c48978e078701e7daceaa09031bad91ac407823993de82cc42140b7513",
+    "biologist/biologist_symbiote_seed|143801|sustain_solo|sustain|1": "1e2a53d98659b4744793dc39d9208f70e7189879226476670fcb5ee245451e26",
+    "biologist/biologist_symbiote_seed|143802|sustain_pack|sustain|10": "502c5905a2a1d021886f07ab691a16b976d9e9d79555595ef4aa8d52ddcb4983",
+    "biologist/biologist_symbiote_seed|143802|sustain_solo|sustain|1": "08807fa749a30d46e137079b500b173770b286d74aee49b91143c70ee2a32b7d",
+    "biologist/biologist_symbiote_seed|143803|sustain_pack|sustain|10": "ecbdc326f3abfb27c7b6631f5ed2da8f8ff0e5042ec91432e21ae7d29d112a98",
+    "biologist/biologist_symbiote_seed|143803|sustain_solo|sustain|1": "a2e6ca5240a386c601d91dcde53b18e9d30f73c67bbbbe41db503e9f47d9d7fd",
+    "chemist/acid_flask|143801|sustain_pack|sustain|10": "926820d77e51e02ba1973d963b9ad794113479cb0bc119eb9983050e089dddf5",
+    "chemist/acid_flask|143801|sustain_solo|sustain|1": "f0b0203625e6bf374e89c675191dbe508f64051d6ff6a680533261c1947f6edf",
+    "chemist/acid_flask|143802|sustain_pack|sustain|10": "bb7071d063b06059238572b8fdf45aa6126fe59c956f8c3b241176ffc580908b",
+    "chemist/acid_flask|143802|sustain_solo|sustain|1": "393a5f07ea57d7dbf8d4dfb66f73a75677918ce9cba13792ff485ed7f00afa6a",
+    "chemist/acid_flask|143803|sustain_pack|sustain|10": "8f9b4d371c435a7d371a9291d4600b957778610c502c0fc6df282a375d0de384",
+    "chemist/acid_flask|143803|sustain_solo|sustain|1": "7f6c81e796c5c21d309d56f76a0608358634142743c5db385cb30136a55e6b59",
+    "chemist/blast_powder|143801|sustain_pack|sustain|10": "bb1e6ce81f3099a9085d246ceafbdf3cd04c46c52ac55d0f74f58127d5f50e4b",
+    "chemist/blast_powder|143801|sustain_solo|sustain|1": "ec1997913a32146b56c94f93002352fe9db22ca0bf641b3eea533cf7a681fd49",
+    "chemist/blast_powder|143802|sustain_pack|sustain|10": "21a9e08bd9dc4e48518955a477085e584340959b0de322aa07e82ce09001373a",
+    "chemist/blast_powder|143802|sustain_solo|sustain|1": "2c3028e34cf262633ccb2ef126dafaf270fc2cebe6a06d6601b27c6d5e9f6928",
+    "chemist/blast_powder|143803|sustain_pack|sustain|10": "def372c97b9cdab7ad8c1ee752462746cd392178c74691a0ad2eb3b43e227cff",
+    "chemist/blast_powder|143803|sustain_solo|sustain|1": "80d759b13743c0d9b6d2ed9500f8fecc1017da7059df00062a6f3b638ee95984",
+    "chemist/homunculus_vial|143801|sustain_pack|sustain|10": "d04c09e5de717265044ab05be39689e5157ba766720266b3f50cfcc46f4f900b",
+    "chemist/homunculus_vial|143801|sustain_solo|sustain|1": "aded50c7a81c2c025573b2ae5d370ec052470aa374b863c99dcdb39d2525a360",
+    "chemist/homunculus_vial|143802|sustain_pack|sustain|10": "85811f106723d1e108fc3ede0fa9ffa46d48958fd6dec8b8c67c7f7a9bdffd88",
+    "chemist/homunculus_vial|143802|sustain_solo|sustain|1": "fd8bb207b260fe3104a6f805b3d223f49308547164c69b3a58ede00925bbee79",
+    "chemist/homunculus_vial|143803|sustain_pack|sustain|10": "0275878f32e4abb820ecd089ac6567a640b883671cdc5140c76c574cbe626f61",
+    "chemist/homunculus_vial|143803|sustain_solo|sustain|1": "23a0aea1c5aca52cc07d1fd85d837efe97458ed9776112b800eeef99508d0685",
+    "dark_mage/cursed_skull|143801|sustain_pack|sustain|10": "aff98303a85f4202016db4a78cf50f616386c6586eda6e88cb1813ecb10fe9a7",
+    "dark_mage/cursed_skull|143801|sustain_solo|sustain|1": "a721d295cd6d6ffcf0ac67b6e3b8dab81a233509ded4c949b5c4b010f4137922",
+    "dark_mage/cursed_skull|143802|sustain_pack|sustain|10": "77974eb23e5f2afd7c625d6578253bb947cceedabce495ac661e62925e3ea1e3",
+    "dark_mage/cursed_skull|143802|sustain_solo|sustain|1": "2f2b1de0d245294a6e8cca64ebf749ec4edc36e36b8e17efd69229cf96b6e874",
+    "dark_mage/cursed_skull|143803|sustain_pack|sustain|10": "943316c464594285bc0a19720e3057046176fe9c5eb2e3a9351c7c08e8894479",
+    "dark_mage/cursed_skull|143803|sustain_solo|sustain|1": "8c0e1d09101313c9af16ba317b4b6cf6f88dbdb4ac36e188d4de47a4f1855de8",
+    "dark_mage/dark_book|143801|sustain_pack|sustain|10": "249255edeadbb04b8a818a9e6cd012cd3a94e692181ca7b99340bdea428bf041",
+    "dark_mage/dark_book|143801|sustain_solo|sustain|1": "386dd382241e4b4abd536162daa9670e0498db86582897205baaeb222527415c",
+    "dark_mage/dark_book|143802|sustain_pack|sustain|10": "d09fa8ec2aa503f8b237cb676907e6281556bbdd4f33f4b50be10f37b6a685ca",
+    "dark_mage/dark_book|143802|sustain_solo|sustain|1": "c4c442ce89a1ef396946e01cf210aeb3187191b8da433bf3a6e9e536631b9a54",
+    "dark_mage/dark_book|143803|sustain_pack|sustain|10": "5c19ffd6921985ebf2b5eeb344fbe2d9f6fe35e603d289d85184aaca68d49e83",
+    "dark_mage/dark_book|143803|sustain_solo|sustain|1": "ef5c793202cb73d135bf8c1c447681b5816cbf119e20357d764fe8873d5b9f26",
+    "dark_mage/dark_wand|143801|sustain_pack|sustain|10": "654d8ea272247dbfa3d5ed2afdf216025572608c9b0019ab7c2fc44c61d051aa",
+    "dark_mage/dark_wand|143801|sustain_solo|sustain|1": "b1bad65bba364f3ede7d658491dc34068abddfc36fc1fde78763c984f85453d8",
+    "dark_mage/dark_wand|143802|sustain_pack|sustain|10": "d35800092c2978a406edd786b78e3395e2aa6cad34b804618c41a083dad93995",
+    "dark_mage/dark_wand|143802|sustain_solo|sustain|1": "09d1ce80142b51fcddd4e1bb4619c5c529a3d6efbc55adc61bdbc018d64c1226",
+    "dark_mage/dark_wand|143803|sustain_pack|sustain|10": "db537f84a7ec93a9a41fb21808b6a9db89a5c0ed5db42bd33b668a0e1aef35f2",
+    "dark_mage/dark_wand|143803|sustain_solo|sustain|1": "ed12cf95bb8a64534b848f8196060ab0d18acbf0c3a37c78f71a6d2c7b5c0aa4",
+    "doctor/bone_saw|143801|sustain_pack|sustain|10": "cebbed4de31e103cb47a3a829c2436508463230952e4ffa711d41099e32723fe",
+    "doctor/bone_saw|143801|sustain_solo|sustain|1": "ce8523b3cf066ef45a051d6375ace02e26ad1fedbe9a39ce5022c83585c3fd5f",
+    "doctor/bone_saw|143802|sustain_pack|sustain|10": "2e3b02d10a4dffad9498a886338b2e48696f6129be85b8c17c60343e5d42e3b2",
+    "doctor/bone_saw|143802|sustain_solo|sustain|1": "c1c7ecce988fd5ec316488c8d316d8fb40f59c682bc168547ad4ed83e629308e",
+    "doctor/bone_saw|143803|sustain_pack|sustain|10": "1fae34e0c31e3bd4c41330492a2b0cee1c58cfb95d0629b267543c34d3d53122",
+    "doctor/bone_saw|143803|sustain_solo|sustain|1": "bb23b79306ed6d2c1effda00286b321927fc8ab40c6f71922885d89a758a4a28",
+    "doctor/plague_syringe|143801|sustain_pack|sustain|10": "146bd340de7f438ffd7c320547c0818e563598cc43f614f48f1a174a6624fd7a",
+    "doctor/plague_syringe|143801|sustain_solo|sustain|1": "7bc6217a14f3a2a1a23aa0ce3362c5a09cd4e59ec532a7c5b3d579c9bc38b44f",
+    "doctor/plague_syringe|143802|sustain_pack|sustain|10": "c366abbab22d322469c5a38c3dd6d1d0d34c577b80c73d1279565e50c9b85b9b",
+    "doctor/plague_syringe|143802|sustain_solo|sustain|1": "7fec6b607a7d6bcfda3159de6d707610c73d23354004ad46f0c69852a9bc27a3",
+    "doctor/plague_syringe|143803|sustain_pack|sustain|10": "77a8418a15c30afeba7923a782d9012eec905b53d12e844b277fae95fa78404b",
+    "doctor/plague_syringe|143803|sustain_solo|sustain|1": "426839230fcc9a467e1f431c5b3e987ceda6218f64908c33d4dfbbd684de42b7",
+    "doctor/restore_potion|143801|sustain_pack|sustain|10": "825a170a13104df1bc59a3cbc668f8ba925767dc9a567c6e7d4e2200cbde37fc",
+    "doctor/restore_potion|143801|sustain_solo|sustain|1": "385369aaacb240738b08a787c6dbb9bf02d919565ae1e89f4f0a9af5bf34f4f8",
+    "doctor/restore_potion|143802|sustain_pack|sustain|10": "9071dc71c7e94803b3e76c7985dc4a620e8fd1a4b8c4b7a3c30402308399e622",
+    "doctor/restore_potion|143802|sustain_solo|sustain|1": "b03f56f3233f1bf833fb1e42e38ed6c868418f8cf199860e39a59ce74dba5b9f",
+    "doctor/restore_potion|143803|sustain_pack|sustain|10": "4f5d55afb90793fc1e2b0271318da78ff4e2c7f3be344e0823f4210c6ba0152c",
+    "doctor/restore_potion|143803|sustain_solo|sustain|1": "164297f8929a00cf90e256b18e49b5c81aa2eaf50238c7d4ff68d3dbd398ea80",
+    "druid/briar_staff|143801|sustain_pack|sustain|10": "29ae1baebc9908c5f71e54058aa6c78f9e1e32e2f5ccea6b1a68ed617adc6b36",
+    "druid/briar_staff|143801|sustain_solo|sustain|1": "7af843853a300a7438baecbb7243a30b34887146e7f30007d3c0de2cba7b8e9b",
+    "druid/briar_staff|143802|sustain_pack|sustain|10": "2595cf8df3518766945b132215956e2069c7b5ccf6d6bcf523be04c786b48034",
+    "druid/briar_staff|143802|sustain_solo|sustain|1": "01c29c949e358d0cac0a9448921bd50561790b566a2297a1737ef6e30986c7f4",
+    "druid/briar_staff|143803|sustain_pack|sustain|10": "f2c1a2187affbf541215f66f88227de2634eac2973a4cda078937b57a16e044f",
+    "druid/briar_staff|143803|sustain_solo|sustain|1": "92c037a63ae4b5fb0445a60d5b479b2fe306c8f6ec94da4d6bc3d0e6aa30b790",
+    "druid/raven_totem|143801|sustain_pack|sustain|10": "57b9ad8107dcb1e74f7e3fb474caea37c1a77db043bf1b6c09a699d2efe358b9",
+    "druid/raven_totem|143801|sustain_solo|sustain|1": "8d0ac8589910545719476f3f8d4c6c9f7d2f05b872faeea87a08913a7d959280",
+    "druid/raven_totem|143802|sustain_pack|sustain|10": "ba15ee9cc7998bc2de41523c21b2caed497d4d6e5c8d9b9a70badaebf163f092",
+    "druid/raven_totem|143802|sustain_solo|sustain|1": "56348ac6fc4270fdea6b83621291d09228cdd37db7985e794c2bfdff3f1c2d6f",
+    "druid/raven_totem|143803|sustain_pack|sustain|10": "054258436ae9bcef4c2c5e9c6b001891002a592348ba003cd00415cb19b4984f",
+    "druid/raven_totem|143803|sustain_solo|sustain|1": "8765d5f6b1beb10d3528c1f867cd9a29e95446333fb460d517bfbd0621e9a6e7",
+    "druid/summon_amulet|143801|sustain_pack|sustain|10": "c9a1160125bb7feae20252400df93c9d9eead6b7a97a4686954407c6ca9f5fcf",
+    "druid/summon_amulet|143801|sustain_solo|sustain|1": "f1dc38ec0014f401b56cea463e53047545965f44e0e3585e027c19fb51003084",
+    "druid/summon_amulet|143802|sustain_pack|sustain|10": "2a16713fb60a301bda7b0098651c1216e5d8eb4e5ee7c195a42ec63a7adad824",
+    "druid/summon_amulet|143802|sustain_solo|sustain|1": "1b8735265f4856f669bfca1f18bfc8ee4bf801fde8cf73313cc09669466649e5",
+    "druid/summon_amulet|143803|sustain_pack|sustain|10": "84f41d65eb5ca91814a2ad6a97a74bb62d8153f684f28a85d4d62b7af1279594",
+    "druid/summon_amulet|143803|sustain_solo|sustain|1": "2696fa955d82c7a989cc38a46ff1827cdc132e45a6050982ae4288f17269f347",
+    "elementalist/elementalist_meteor_core|143801|sustain_pack|sustain|10": "abf4ce9993de7d858a68ec9ec1edc6b8977d6778fd241ddb183128c12e830f65",
+    "elementalist/elementalist_meteor_core|143801|sustain_solo|sustain|1": "663df3539a609235cfd245f320edd35a4a96acf13a07444c8984ac576dc01979",
+    "elementalist/elementalist_meteor_core|143802|sustain_pack|sustain|10": "bc91bee53d8c588e916644cdfd3c8d14cc3b86b125f18941d14465935669fe5e",
+    "elementalist/elementalist_meteor_core|143802|sustain_solo|sustain|1": "fc295bdc66d2fbb62c69f91c54da326306fcb2ffdffed202dd57b22cb247584f",
+    "elementalist/elementalist_meteor_core|143803|sustain_pack|sustain|10": "bc499ee867d9b4d2ead52d8c5611e4eed572c7c624c74fc1f177fd3b3338b56d",
+    "elementalist/elementalist_meteor_core|143803|sustain_solo|sustain|1": "f18966cccc2ecad0ec58b72a38c0513684749299534c07e1e4cbe207663331e6",
+    "elementalist/elementalist_orb_ring|143801|sustain_pack|sustain|10": "15b28ffb9fdffbce8bb54639c23cfa659fb9b2d81414ab890b0c3070651cdb08",
+    "elementalist/elementalist_orb_ring|143801|sustain_solo|sustain|1": "c3b46ac85dcb16063f3b5a708a3e5a58424db0f4d4422a4936172b8441fcfaa6",
+    "elementalist/elementalist_orb_ring|143802|sustain_pack|sustain|10": "c0ed51126621c33f81bdf61ab3243fe86c494202339929fa5c8366bc643f39e6",
+    "elementalist/elementalist_orb_ring|143802|sustain_solo|sustain|1": "bb5a72667522344afffd1167dddbda859d837d4548f82e1f8b3fe4597db321eb",
+    "elementalist/elementalist_orb_ring|143803|sustain_pack|sustain|10": "ea0dcd294bf030fd616cb5e58c6651750daab323052a1385a155f6e65366f64c",
+    "elementalist/elementalist_orb_ring|143803|sustain_solo|sustain|1": "ab82b21ccd1f58a2308a9253489ebaea68c701e078b64464ac26b66255ff4949",
+    "elementalist/elementalist_prism_focus|143801|sustain_pack|sustain|10": "88cb53f0738fa2ba30f11bfe03ff0e402bd65e4277b99946d488bf4de4788822",
+    "elementalist/elementalist_prism_focus|143801|sustain_solo|sustain|1": "e3a320544e14d68315dcb658daf0e978fceee6ea4dbe1cfc87e21af48f4aa879",
+    "elementalist/elementalist_prism_focus|143802|sustain_pack|sustain|10": "397e856dcbf93b06dd12d203587008dd5c729c0f4544cd8dde7142cac692fa2b",
+    "elementalist/elementalist_prism_focus|143802|sustain_solo|sustain|1": "b30e9e25007f38ca1be35e427783d3ce96789a56b2b93896b6e371ad3382e81e",
+    "elementalist/elementalist_prism_focus|143803|sustain_pack|sustain|10": "9f1f859d1c9e44e471aba6faff79004826dbb0c98e4ce4e3cb2761f3d5e2924a",
+    "elementalist/elementalist_prism_focus|143803|sustain_solo|sustain|1": "c41fb9ec012f57b1f77563423fe27d8607be46b57713733f4dceb077a2b4902b",
+    "engineer/engineer_pressure_mines|143801|sustain_pack|sustain|10": "d7ae665906692fc9581d97b42a5bbce8b546630951503cb26b54a25cb49c5e5e",
+    "engineer/engineer_pressure_mines|143801|sustain_solo|sustain|1": "4535870bf899ef1fd5376bd461c7745d3a933fc67d78767272fd72bb27f03ea9",
+    "engineer/engineer_pressure_mines|143802|sustain_pack|sustain|10": "a3b251a12150927202653d6d25c5a5965c5c7114427b07bc8e5cd6ca1d6eee3f",
+    "engineer/engineer_pressure_mines|143802|sustain_solo|sustain|1": "3a73fe4c185de38cdd685ff055b3e1eeec0c83a6ce53aa90da8cd66374f397d0",
+    "engineer/engineer_pressure_mines|143803|sustain_pack|sustain|10": "995f83734c6df06f80a55443e7041e57c581b1717487b17b8971bda1e9f80ec9",
+    "engineer/engineer_pressure_mines|143803|sustain_solo|sustain|1": "b6147f95ededca6650b6f1acfd58f29d58dfbe2f95325fb74cc24f07495fd921",
+    "engineer/engineer_repair_drone|143801|sustain_pack|sustain|10": "1a44d3588d65fe9dda8bf9a4f1044b58fd48a1b6f2fc0d89ce1ee80d4a5186a4",
+    "engineer/engineer_repair_drone|143801|sustain_solo|sustain|1": "da4685c7a8e3cfc4bcba4e32cefed9aee37771dfacce7c18defe5d887a1d98a3",
+    "engineer/engineer_repair_drone|143802|sustain_pack|sustain|10": "e3a5ac085533df9294d68ed51ec0016600b5e3979879e24532d3b28b71e00a12",
+    "engineer/engineer_repair_drone|143802|sustain_solo|sustain|1": "cdddc089d0d25f424a176050ba496e746fc6bd51c94f20202a2f318f50938137",
+    "engineer/engineer_repair_drone|143803|sustain_pack|sustain|10": "bce0b3daac38973943c7df901c64a66f38bd5a4d9351a758946183f550a3fd75",
+    "engineer/engineer_repair_drone|143803|sustain_solo|sustain|1": "c7b3887f81cfd175481cc6caa999825e7e88f1c9c9e0b9a4f08febc09f9af8a6",
+    "engineer/engineer_sentry_wrench|143801|sustain_pack|sustain|10": "bc488af52912e6777e1fd23c36259c0a967893aee438633788e9986b79cc04c7",
+    "engineer/engineer_sentry_wrench|143801|sustain_solo|sustain|1": "204ebedd155aaf9b253e76d3c35f47d7ff52915dbaa6c22ba64d34324d74a656",
+    "engineer/engineer_sentry_wrench|143802|sustain_pack|sustain|10": "c42efb953d6fc39cf1731ac1566ee3ec78465c2c8caf7864384dbfdcd10a819d",
+    "engineer/engineer_sentry_wrench|143802|sustain_solo|sustain|1": "b99334e169c3069a82c6c0ecc4d58ade9b67c670ae15edad99111efada077c22",
+    "engineer/engineer_sentry_wrench|143803|sustain_pack|sustain|10": "7196d9ab5638f77bba8b751b85f38b7701c47cd27581f1dac37aa17f7ba78141",
+    "engineer/engineer_sentry_wrench|143803|sustain_solo|sustain|1": "216049c488ca389e69bc1631ea5db6c7bc91924242d13f01c5d07d11e16420cb",
+    "guitarist/bass_guitar|143801|sustain_pack|sustain|10": "0e2d1e9ed690e16379cd9ba1b4180cb1affc9101a24a8b6096be8dc7cc0b22e1",
+    "guitarist/bass_guitar|143801|sustain_solo|sustain|1": "f56552f8506dae8175d241b9d05fb7f024da5052945605e44f1e96a412feabb8",
+    "guitarist/bass_guitar|143802|sustain_pack|sustain|10": "062a95ed1d1e47c614e3ea9153087825e40612d72413a1777bb8165eb89a166c",
+    "guitarist/bass_guitar|143802|sustain_solo|sustain|1": "3b3044d49f723837a70092f74f59e343f643d8f331b4f3e0452c3715d5cbddca",
+    "guitarist/bass_guitar|143803|sustain_pack|sustain|10": "54aa6ebc9ceccf3ffed2d3d9db941a0d1faa6db2b14780db63e6260ef3b76586",
+    "guitarist/bass_guitar|143803|sustain_solo|sustain|1": "b94f1f0adcc3821fbb4d1dafb0f1bcf63845ae75c154f51b9af6d3bd61a9e4b3",
+    "guitarist/electric_guitar|143801|sustain_pack|sustain|10": "0b1e461fcc82e134f77f92dbb0b0ff5ee62a76ffa5f67f8d68e9d16ce23c4fc3",
+    "guitarist/electric_guitar|143801|sustain_solo|sustain|1": "e5a257dd5f1b0c88915cf275f030f832835ae82d3fe35f9d92e3486db461802b",
+    "guitarist/electric_guitar|143802|sustain_pack|sustain|10": "6da850f6118e1ed0156575d26504a3642172e80dd964a7e916b716bfbf36f96a",
+    "guitarist/electric_guitar|143802|sustain_solo|sustain|1": "ac065b0ef3b650c5b78f54f9fc82148963b442e3acb1b93f9c1353dfa5326b6f",
+    "guitarist/electric_guitar|143803|sustain_pack|sustain|10": "b13c378adf5592f6a2f263b6c26cfaec74724b0996f25c9d51b0e637f16a08d2",
+    "guitarist/electric_guitar|143803|sustain_solo|sustain|1": "f082da02bffd905a91830b816599b7bb14df83b1583fbb8c5e2970dd679857cc",
+    "guitarist/sound_amp|143801|sustain_pack|sustain|10": "9c9aee233e11e9c3d4696b39eb4c769a1c36c43c96fa0c5ae8dc8d614c493bf3",
+    "guitarist/sound_amp|143801|sustain_solo|sustain|1": "e45a69d78f569b5c96ae18b30f221cd123404c9ed1b63052d44df5b262da1f8c",
+    "guitarist/sound_amp|143802|sustain_pack|sustain|10": "445533938ca8df2b0856f255e833b090bde1b3311dba23e25ffc273f704fa464",
+    "guitarist/sound_amp|143802|sustain_solo|sustain|1": "dc0155f3013d628178f39c0add068b21a8f86ee779a782ff18b19d26ea0beac1",
+    "guitarist/sound_amp|143803|sustain_pack|sustain|10": "0f4c6691956efe92cf3d86d3e2798ac2d822e43ba404e1c5df4e811c68a2d1ed",
+    "guitarist/sound_amp|143803|sustain_solo|sustain|1": "0b7ba2e3b2ee6338cf42bb920703dce12e28a163d54f0cd2ef7e7665fe73c9eb",
+    "knight/holy_flail|143801|sustain_pack|sustain|10": "c3bd4c19495e8676feb879478f8d0e820c2e364f802817d6d1bf82cee33dc41b",
+    "knight/holy_flail|143801|sustain_solo|sustain|1": "23d64f98c59f57c67ce28619b73f2a747ccbb039e97bf3b9b3c0d89711d878aa",
+    "knight/holy_flail|143802|sustain_pack|sustain|10": "dd3bbe9ac541bd9673a17e1d1c1ae30c13e2bb33b90188d484e380284b5425fe",
+    "knight/holy_flail|143802|sustain_solo|sustain|1": "cd1f4c887c861b14430e001e6ab3d0d9bda58e056506bb1a17c7b8a58c389480",
+    "knight/holy_flail|143803|sustain_pack|sustain|10": "1391d0307c7ff6fb026e9e3554f2047db3b7acb70754ed546f9ea47e04948746",
+    "knight/holy_flail|143803|sustain_solo|sustain|1": "5cb713a45721356224d29d45001550d8d1175e23edda4f2b0bfc107d67127e6a",
+    "knight/long_spear|143801|sustain_pack|sustain|10": "dec46c6f6b2901f77b57953dc23fdaa6c276e12951ad03a3e7c8cb42035bd1bb",
+    "knight/long_spear|143801|sustain_solo|sustain|1": "f0d5b0a205ef3cdb8dc1329bb49df8ba2d890db207467b627a7d4b7f9fcfd020",
+    "knight/long_spear|143802|sustain_pack|sustain|10": "a2abfaef2be041bf9548c54b4809979131cb523385788c10de9e8e7fba199055",
+    "knight/long_spear|143802|sustain_solo|sustain|1": "a42434f86dde5b2240f414b366f0423652f1a28e09376ddf3dc47645702ae1be",
+    "knight/long_spear|143803|sustain_pack|sustain|10": "b0a2bfd6293290e2392b1c52af55746b60dad2d22d11e3b39932575943aa596f",
+    "knight/long_spear|143803|sustain_solo|sustain|1": "a8a4aca60193575c19cece02c33c989ca2582bc495f345a0d58c9bd9a696097a",
+    "knight/tower_shield|143801|sustain_pack|sustain|10": "3d39d142074ff00bb2416dfc4b356188d8fb32704a2870ac7c2bdd28bafb2f7c",
+    "knight/tower_shield|143801|sustain_solo|sustain|1": "9f80a19dcb8ff36c6f78bc726fe009cf65d191d4f05970d07003fa8b2d66b09c",
+    "knight/tower_shield|143802|sustain_pack|sustain|10": "a8886ecb653a07f4a2317e47a9d24df6db3776df876850af3afa1432956706f5",
+    "knight/tower_shield|143802|sustain_solo|sustain|1": "32f421199d722be7dd24c4edf94d7d62a65f115c6ebf9728a3a835d92a48768c",
+    "knight/tower_shield|143803|sustain_pack|sustain|10": "1d63d1a315d92f98138e7b1f4146c99ea00669290728124391745d6b830d704e",
+    "knight/tower_shield|143803|sustain_solo|sustain|1": "ddb54d45dfa1b3e895eb99d9d7fb7a8a328f570be8e841ed0d9d9230168d8038",
+    "priest/priest_censer|143801|sustain_pack|sustain|10": "6c8e50990f21551787b80547e2562ff582bfcedf91c376534657b6523ec6b46e",
+    "priest/priest_censer|143801|sustain_solo|sustain|1": "eb2f0ed87a14cb432b308cea3854b5bd06df5fdeeb0fdaa7204d35e466674ebf",
+    "priest/priest_censer|143802|sustain_pack|sustain|10": "c0b21eb945175a783b976b855acec3d1f711bbb1ccd0361441491a4736643dee",
+    "priest/priest_censer|143802|sustain_solo|sustain|1": "16e35b43e264eddbedf35d9c27d65264e63ddf91920887ffb72cf9e3acced6ab",
+    "priest/priest_censer|143803|sustain_pack|sustain|10": "ce0085e6a79d3eb61ecc97618a3030c1f7c82cc3892f9738f2ebea24164fb3aa",
+    "priest/priest_censer|143803|sustain_solo|sustain|1": "b57b4c098ebf009ffbdf167d5f218d9d628445d3298df1b4751d94cce0669ea7",
+    "priest/priest_chime|143801|sustain_pack|sustain|10": "e542a015b97a214ce387f17d9a00c7f4036f795e90e30efa4689e52fdeeaad3d",
+    "priest/priest_chime|143801|sustain_solo|sustain|1": "961866c0256286363430d7fa41869311b04d6450802c8818c8e3cebe52281178",
+    "priest/priest_chime|143802|sustain_pack|sustain|10": "dd078216d9dad1d8e60f4a23114656a6e14cc59fab144559ee105247f0f3988b",
+    "priest/priest_chime|143802|sustain_solo|sustain|1": "cb76ac1ebbf9a7fd858f3ea6530b7299d4bb3e2d04dffd20efeb5dddfc065fa7",
+    "priest/priest_chime|143803|sustain_pack|sustain|10": "b0f2d22708d080c1314fd867b86355e61c5e20bcc27f1b2f3237bfa3b6c11805",
+    "priest/priest_chime|143803|sustain_solo|sustain|1": "0974fa4277e27403ffe3abd0459511e076aef19be045723c99b38397d77c8393",
+    "priest/priest_reliquary|143801|sustain_pack|sustain|10": "e5659a3e7267f0e9eb4a386592ae7ec36ece017d5f9db5d60d7ba362dcc15cd3",
+    "priest/priest_reliquary|143801|sustain_solo|sustain|1": "568ecb24573a3fd8a10df3c025d6e58d3441488704ca11ba4adab96642714f12",
+    "priest/priest_reliquary|143802|sustain_pack|sustain|10": "70101c2b4e49fed2a5dc34af9d584ffcbd48a66793093f2ca99735500e4e9edd",
+    "priest/priest_reliquary|143802|sustain_solo|sustain|1": "c819f906fff1991e0db191c2046332ac45109923b8862cb14ccb573a9d1aa660",
+    "priest/priest_reliquary|143803|sustain_pack|sustain|10": "1bf9e0748fe532464d6612b94e1e02996aa1fd760a0962f80a34b4c28d49eff4",
+    "priest/priest_reliquary|143803|sustain_solo|sustain|1": "4fc5e26ff6f375cbc8edfb7d234baa5dd2c21f645e4ffe925a579a5bfaad4d2f",
+    "ranger/hunter_trap|143801|sustain_pack|sustain|10": "5b34888f07c37c67378c2f79d3f33d0fef4cc3d563ff9653e8adb663ca0c5203",
+    "ranger/hunter_trap|143801|sustain_solo|sustain|1": "070563fdfa94e82f8b697c3c58f2631efba45cd35562afc28d99198c3de0112f",
+    "ranger/hunter_trap|143802|sustain_pack|sustain|10": "aa78dbf5925ba72a2dd6118adbd630756084aed8d47bfacd11fba8f48bfa8745",
+    "ranger/hunter_trap|143802|sustain_solo|sustain|1": "787a754a8d7f218e70d9bd7edd1061aeb961e6ad0e04fcc28321a709add9e5c9",
+    "ranger/hunter_trap|143803|sustain_pack|sustain|10": "b7521b6afecb08a281428c3dabae7d84ca95eb215e0125a6f36c83c83cfce2f9",
+    "ranger/hunter_trap|143803|sustain_solo|sustain|1": "1c497acbe019d73fc8251542d293f19b16b1913baeafe5b6c5f4effd7e1762b0",
+    "ranger/moon_crossbow|143801|sustain_pack|sustain|10": "fcece5bbb52d21486f78b90f1c7ae06598cebf35ddda2896b92deaecd1a71f71",
+    "ranger/moon_crossbow|143801|sustain_solo|sustain|1": "dcb25b7ae4a0311c6bf454873a056f4b9be84e20e3885a700b4657d3b1764100",
+    "ranger/moon_crossbow|143802|sustain_pack|sustain|10": "8a67a1428565a8c39dbb22091e228787c55425b85d0e00c16d4259448baeec81",
+    "ranger/moon_crossbow|143802|sustain_solo|sustain|1": "943462de8ed2647278f317cb938022358518a01424fecdd2d7984450e61f7ded",
+    "ranger/moon_crossbow|143803|sustain_pack|sustain|10": "6fc641318255bde662b4fa8776088a6e462c87221bde5ba8b312b3391563d379",
+    "ranger/moon_crossbow|143803|sustain_solo|sustain|1": "a55516f7dac4c5a43437e96918024cde641c7127726b2b8452c48e59be33c904",
+    "ranger/storm_longbow|143801|sustain_pack|sustain|10": "5b0169a947ac8e48d66a1f37ae55637ae9c4e2803f94162afd3f079abcb23457",
+    "ranger/storm_longbow|143801|sustain_solo|sustain|1": "c0b5f70c3688d9868d9cd6437e6d13e28c07539671b008c3af51b77c71e08e8d",
+    "ranger/storm_longbow|143802|sustain_pack|sustain|10": "3d2418d37098ca6bc13d54db8242a7b76fb0a3d0e6bef4289b0c69b00bebb289",
+    "ranger/storm_longbow|143802|sustain_solo|sustain|1": "f7b7f5b27b2e9b6a87f45550531f8541ff6c54c6d0b1bc523641e9e68e441378",
+    "ranger/storm_longbow|143803|sustain_pack|sustain|10": "affcd215fff0a5e9d6b35d6c771894f556639460c85dd75c10f7ffedc13a3f39",
+    "ranger/storm_longbow|143803|sustain_solo|sustain|1": "9fa0525d559726f84dfe23ef6904d67009546e733568269a81983e5aa7c4517b",
+    "robot/robot_hydraulic_press|143801|sustain_pack|sustain|10": "cd35cb07f333bcf5490d6c32f496527c234c1c7e71de8f3ffbdb7cfe36fd99c4",
+    "robot/robot_hydraulic_press|143801|sustain_solo|sustain|1": "223d42abb0406af55ba85327ce1c0d4cf67c48fbf612837b9d25035816376c76",
+    "robot/robot_hydraulic_press|143802|sustain_pack|sustain|10": "bead5b976f1dc70a43f03daaa895bf66d2cd875caed93430b117500c4cd034c3",
+    "robot/robot_hydraulic_press|143802|sustain_solo|sustain|1": "bd2858830a87164e9bea1cafedbbcf3ad8bac45b0cda2aedfbf108072c9cdcdd",
+    "robot/robot_hydraulic_press|143803|sustain_pack|sustain|10": "51810e93210eebe84d0c6bed4aca9a4e89f3f8418a05520dc88d892efdd0e63b",
+    "robot/robot_hydraulic_press|143803|sustain_solo|sustain|1": "f928d08533135bf8da73197f024dc97ac8eb5a5b7ad6f1a76a8cdf25c372de8d",
+    "robot/robot_magnetic_anchor|143801|sustain_pack|sustain|10": "2fa8a4e25f5f5c991159ad89f5f93102cdcf56e126eb8a716fbe4f48fa9755b0",
+    "robot/robot_magnetic_anchor|143801|sustain_solo|sustain|1": "89b8167ea9444e6a86b658b94af5c8e8a64ab3d080f8b9decadfb398f83bdb76",
+    "robot/robot_magnetic_anchor|143802|sustain_pack|sustain|10": "a80c7c0d073a9f0894bd487da2b731e8eea72776c968bd76a0b51947ebf76706",
+    "robot/robot_magnetic_anchor|143802|sustain_solo|sustain|1": "1b29bc50020251fdd7f0a3ff8ee54b2020781cbe320075017265653df296cf04",
+    "robot/robot_magnetic_anchor|143803|sustain_pack|sustain|10": "bd3ea60211819be3299eb720b2347744d6f4479139dc2b96694abfee507c8b05",
+    "robot/robot_magnetic_anchor|143803|sustain_solo|sustain|1": "51950427e75cb75c4bafa38f7437d5d9edd674e0135677ce5458c65e26dbfacf",
+    "robot/robot_reactor_core|143801|sustain_pack|sustain|10": "6a0cacf4ed1b8c69830e0abc39dc5f00af86d55d404f6d8a564c9c7f61b04f2a",
+    "robot/robot_reactor_core|143801|sustain_solo|sustain|1": "c11b2b26f39d0475385d88326187166749cb0f9b8397a65d9af9de8d6172bff1",
+    "robot/robot_reactor_core|143802|sustain_pack|sustain|10": "9fef915452dc0f7f4d6b1352ad3c47747c300084118408c3e0a1bef407001128",
+    "robot/robot_reactor_core|143802|sustain_solo|sustain|1": "00607aea529040ac52e489c5cc84022516ea6138e50f458e82683a0b8a2c5840",
+    "robot/robot_reactor_core|143803|sustain_pack|sustain|10": "a12154382d8f1c5660ae040bc78a0f49a5cfe1b1bb5cf7cd6e67bdd42f9bd8e1",
+    "robot/robot_reactor_core|143803|sustain_solo|sustain|1": "3773d0f4a188bfbeaa12548f86cf5b678266d62eb0965ccfd94d29b920872ef3",
+    "sniper/sniper_deadeye_rifle|143801|sustain_pack|sustain|10": "394da988c77ad5813265802c8dd7b88b5472f3b4a973aa310625bd85458fe132",
+    "sniper/sniper_deadeye_rifle|143801|sustain_solo|sustain|1": "41f4712bfea8c38260429b07bbbe99287a27861be2198730efa0333f4e5453e7",
+    "sniper/sniper_deadeye_rifle|143802|sustain_pack|sustain|10": "255bcf596e4b7502d793fb47b2c2fb49d8e8ccfd7f105c53833dc92671d9bb54",
+    "sniper/sniper_deadeye_rifle|143802|sustain_solo|sustain|1": "928c4ce72c6428fa24d8851f02dc59aa809c6a3c020cb47e5b7c361759391e05",
+    "sniper/sniper_deadeye_rifle|143803|sustain_pack|sustain|10": "f07f2628c2213a82120d9a130f1e82c58535f61f5c8d984f98a0a51bd05f1974",
+    "sniper/sniper_deadeye_rifle|143803|sustain_solo|sustain|1": "fc5d0c63fb0767ea7a3f21c970ac5e207d3b52b6345a839450d14fe69f2e3f56",
+    "sniper/sniper_shatter_rounds|143801|sustain_pack|sustain|10": "82d6bc01352f1c78786025944e90c0654a6c98d5aac744d5eb313ca026932247",
+    "sniper/sniper_shatter_rounds|143801|sustain_solo|sustain|1": "dad659c63ae788d03858b3e1e2cf85957d9eea2a4b05ec1e1fbb061c45c0a696",
+    "sniper/sniper_shatter_rounds|143802|sustain_pack|sustain|10": "a531dfda8f999ef5e4865c7a512585bbd7b53ed8daaf367f8ca72f0a7acef6fe",
+    "sniper/sniper_shatter_rounds|143802|sustain_solo|sustain|1": "2928a509f33024d6ffdcc6939fa5a48f49434ea7fa1b6ac8e3456751a3111477",
+    "sniper/sniper_shatter_rounds|143803|sustain_pack|sustain|10": "cba204468a1ba7d2954ffac96aa4ddc8d6a9b8c95875455d8d1a912e23e1c633",
+    "sniper/sniper_shatter_rounds|143803|sustain_solo|sustain|1": "662b6e3aece1e4d72a8ae5fad268dcd700e86de1e7a55113dc16181f6259061a",
+    "sniper/sniper_spotter_scope|143801|sustain_pack|sustain|10": "0f61cb14cf22f01d1a795b3591d31039b1d6c708f6339ac003abf4b67433d75d",
+    "sniper/sniper_spotter_scope|143801|sustain_solo|sustain|1": "ea372ce918d2482720733b24b45bce6e806c109c408d15c8872d9a6d88f51eb0",
+    "sniper/sniper_spotter_scope|143802|sustain_pack|sustain|10": "ea87c2c70db9a42980048f48112220af5e7254c1196e32e31b0b2ae3e1a3b888",
+    "sniper/sniper_spotter_scope|143802|sustain_solo|sustain|1": "9588dff470abf3e5a265323829c8cfdb021e2f0e67589efb81bba3d3faa99e16",
+    "sniper/sniper_spotter_scope|143803|sustain_pack|sustain|10": "11aecf72325a2a8f4b73e2d8b44463ba2aa815d7b72a6bed912fd3ce3ea0782f",
+    "sniper/sniper_spotter_scope|143803|sustain_solo|sustain|1": "973290bb654730e91feaa0e7176ac53dec3ea325b7a5cf5a8f1c3ddb5ffbc3d1",
+    "soldier/soldier_bayonet|143801|sustain_pack|sustain|10": "a2a939fdbaa4ce3596002edb1e72e8e14875d79d013172d33911fd225be4e711",
+    "soldier/soldier_bayonet|143801|sustain_solo|sustain|1": "0c3c74ba48b55d143e879ac04cdb0bbdddcb67bd37923c2ec2f73cdaedaa23af",
+    "soldier/soldier_bayonet|143802|sustain_pack|sustain|10": "c00f79743e72e821f9e61917e12cdd9baee079e9230f628fcc8799556915c749",
+    "soldier/soldier_bayonet|143802|sustain_solo|sustain|1": "72982f23b609f99c72aa001f8a6f91e399322c3203aef2293b08584efe88d293",
+    "soldier/soldier_bayonet|143803|sustain_pack|sustain|10": "54e921aad422657155f1b406aa2027c77a3b2fc08853a19393f1c3e534c1def0",
+    "soldier/soldier_bayonet|143803|sustain_solo|sustain|1": "7706c3c0c2801499b85913447d35c8376951cdf954042d84880db01bd464f27a",
+    "soldier/soldier_grenade|143801|sustain_pack|sustain|10": "71dc48d9f07ada4aab2024bdf2b678fbebae03dc97bca6e4d6831bf7c125a760",
+    "soldier/soldier_grenade|143801|sustain_solo|sustain|1": "0b247c8453b74224141afd725e87926e9a6800e32852e9236d2c77e2aef7ef18",
+    "soldier/soldier_grenade|143802|sustain_pack|sustain|10": "2237fb59c798d89a933ecc68b69244b1e7cc7c28d92287c81f88d1e0429809a6",
+    "soldier/soldier_grenade|143802|sustain_solo|sustain|1": "f25a5d670c596921519b7865d33a86efd309ba87b28512d4491171ef6f50b99d",
+    "soldier/soldier_grenade|143803|sustain_pack|sustain|10": "c3e003af0d71d1dcd9f276ae3a7ac58c570ba88ddf36c23cc73c6710e4fa934b",
+    "soldier/soldier_grenade|143803|sustain_solo|sustain|1": "2ba46a69ae9cfce2d5da38a87ab745448e43371ff68e859fcd376614ece0d895",
+    "soldier/soldier_rifle|143801|sustain_pack|sustain|10": "6ba14238b39b5104acc13774ba2cf419699ceb1ed027112ceb99cd9a0e4d50d5",
+    "soldier/soldier_rifle|143801|sustain_solo|sustain|1": "1a0bf89a563b62c333377f5f1312d99668f8b702078fbef97882ddcc7f5063e9",
+    "soldier/soldier_rifle|143802|sustain_pack|sustain|10": "9c7babd51c62f5cebca26686ec5cab732bb35ac3daae69af752ff6f805e4851c",
+    "soldier/soldier_rifle|143802|sustain_solo|sustain|1": "9ae619e1cf02e8cc68c060b569aba2ee30234f3f8ccfdcc5847183cf5ce12fe7",
+    "soldier/soldier_rifle|143803|sustain_pack|sustain|10": "de8d92b639db3a2b73e3025a5d40b5bb4eefa4eaf0e0bb448b6aeb2275091417",
+    "soldier/soldier_rifle|143803|sustain_solo|sustain|1": "f8664c595e130743eaeed7c88c8384118f906143f7f6c24b986e83bb133b2550",
+    "thief/thief_coin_pouch|143801|sustain_pack|sustain|10": "1d000a2413295399f95b81c7890cf4245e29354707702e0fae5c84154fbde79c",
+    "thief/thief_coin_pouch|143801|sustain_solo|sustain|1": "1d253abb348e0a69ec87e8ac74ef0612b39e4d03a5a4d781729205ae0d4f54db",
+    "thief/thief_coin_pouch|143802|sustain_pack|sustain|10": "2b20c218812ac76925ee3da262bb7f45a3943cc8018862d0d36bc614a8484b25",
+    "thief/thief_coin_pouch|143802|sustain_solo|sustain|1": "2b99701b8d1c6486638f5416244351957706d151e92509bd692f30e5d698b813",
+    "thief/thief_coin_pouch|143803|sustain_pack|sustain|10": "2400b7ffb5c8162076829409e48ccdf325eabe23ded710d6d8b3d9bb44ff84f6",
+    "thief/thief_coin_pouch|143803|sustain_solo|sustain|1": "14cf1701ba88ed6bf319216ee2ec6175acb82add1401c648d339d610e3475a69",
+    "thief/thief_shadow_cloak|143801|sustain_pack|sustain|10": "e3e51119d3e569dac85e655810866b06980119f8b3df97fe9a91424f0b8a3e52",
+    "thief/thief_shadow_cloak|143801|sustain_solo|sustain|1": "35529183033df05bbee2fe0f0246d4d978f343e79b71eb2606e6f746263df675",
+    "thief/thief_shadow_cloak|143802|sustain_pack|sustain|10": "956c98093fcc210ddd154feffe707138a942826387f4f8db9510cc88c0c76697",
+    "thief/thief_shadow_cloak|143802|sustain_solo|sustain|1": "4c9fd807956edd535df8e4fc54bd27eda076e13d7e703e5a6446bd0a21c8d112",
+    "thief/thief_shadow_cloak|143803|sustain_pack|sustain|10": "f6d032f430cf55ba8d16a14c62b48037680a022410b7dd690ae4d443823c3b21",
+    "thief/thief_shadow_cloak|143803|sustain_solo|sustain|1": "a13a5ff9ee1513ccbaa91b0ac1ae7f8323e92b5e8bb523d41a3377129b8dd243",
+    "thief/thief_smoke_bomb|143801|sustain_pack|sustain|10": "00396224392e45f9e58703433365fb08490f053217bd80b020fcd16535ecb623",
+    "thief/thief_smoke_bomb|143801|sustain_solo|sustain|1": "4381575c93f85dc6a5ac590ef1d7e305d4e68e38116166e1f633f2fe550e4ad9",
+    "thief/thief_smoke_bomb|143802|sustain_pack|sustain|10": "5ff481e042d464b22a906660bb0adffe8d08d69c9bf26dcbe27880434e239905",
+    "thief/thief_smoke_bomb|143802|sustain_solo|sustain|1": "e2705f2a1e96ad2b5c20d0c19e8391908cf67e08c76c968a7eac4b99807794f7",
+    "thief/thief_smoke_bomb|143803|sustain_pack|sustain|10": "625d17499efe6e855face98ad133942999408611b64cdd13c92db624c4282730",
+    "thief/thief_smoke_bomb|143803|sustain_solo|sustain|1": "dde72faf9fbaf7f957c264f3020ade85d30273f49b0f2541a272b8d543cc68f6"
+   }
+  }
+ },
+ "accepted_projection_deltas": [
+  {
+   "pair": "berserk/sword",
+   "field": "live_solo_dpm_mean",
+   "from": 11363.9,
+   "to": 11546.67,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/sword",
+   "field": "live_crowd_dpm_mean",
+   "from": 118968.05,
+   "to": 118910.48,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/sword",
+   "field": "solo_variance_dpm2",
+   "from": 411265.69,
+   "to": 58752.91,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/sword",
+   "field": "crowd_variance_dpm2",
+   "from": 11280529.82,
+   "to": 3760186.37,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/axe",
+   "field": "live_solo_dpm_mean",
+   "from": 14345.74,
+   "to": 14574.0,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/axe",
+   "field": "live_crowd_dpm_mean",
+   "from": 295340.25,
+   "to": 293263.85,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/axe",
+   "field": "solo_variance_dpm2",
+   "from": 383495.33,
+   "to": 95870.74,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/axe",
+   "field": "crowd_variance_dpm2",
+   "from": 36525342.7,
+   "to": 35019173.29,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/hammer",
+   "field": "live_solo_dpm_mean",
+   "from": 19294.02,
+   "to": 19547.03,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/hammer",
+   "field": "live_crowd_dpm_mean",
+   "from": 145981.36,
+   "to": 140611.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/hammer",
+   "field": "solo_variance_dpm2",
+   "from": 329384.17,
+   "to": 789787.69,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "berserk/hammer",
+   "field": "crowd_variance_dpm2",
+   "from": 17741702.17,
+   "to": 9087029.38,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_rifle",
+   "field": "live_solo_dpm_mean",
+   "from": 13212.09,
+   "to": 12566.39,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_rifle",
+   "field": "live_crowd_dpm_mean",
+   "from": 112701.97,
+   "to": 117635.11,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_rifle",
+   "field": "solo_variance_dpm2",
+   "from": 960596.01,
+   "to": 3598419.3,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_rifle",
+   "field": "crowd_variance_dpm2",
+   "from": 145736805.62,
+   "to": 86683548.16,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_grenade",
+   "field": "live_solo_dpm_mean",
+   "from": 43786.21,
+   "to": 46329.2,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_grenade",
+   "field": "live_crowd_dpm_mean",
+   "from": 421349.8,
+   "to": 437983.31,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_grenade",
+   "field": "solo_variance_dpm2",
+   "from": 3024364.46,
+   "to": 12922515.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_grenade",
+   "field": "crowd_variance_dpm2",
+   "from": 693811930.9,
+   "to": 1787965409.24,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_bayonet",
+   "field": "live_solo_dpm_mean",
+   "from": 25967.8,
+   "to": 23289.29,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_bayonet",
+   "field": "live_crowd_dpm_mean",
+   "from": 220311.51,
+   "to": 217645.62,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_bayonet",
+   "field": "solo_variance_dpm2",
+   "from": 3654023.4,
+   "to": 263702.79,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "soldier/soldier_bayonet",
+   "field": "crowd_variance_dpm2",
+   "from": 177215733.82,
+   "to": 62034368.92,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_coin_pouch",
+   "field": "live_solo_dpm_mean",
+   "from": 17924.76,
+   "to": 17214.26,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_coin_pouch",
+   "field": "solo_variance_dpm2",
+   "from": 757213.23,
+   "to": 820310.6,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_coin_pouch",
+   "field": "crowd_variance_dpm2",
+   "from": 30644417.35,
+   "to": 4377761.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_shadow_cloak",
+   "field": "live_solo_dpm_mean",
+   "from": 35499.06,
+   "to": 36253.21,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_shadow_cloak",
+   "field": "live_crowd_dpm_mean",
+   "from": 105923.69,
+   "to": 105826.94,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_shadow_cloak",
+   "field": "solo_variance_dpm2",
+   "from": 9043071.41,
+   "to": 3500566.16,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_shadow_cloak",
+   "field": "crowd_variance_dpm2",
+   "from": 32169995.86,
+   "to": 17322244.0,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_smoke_bomb",
+   "field": "live_solo_dpm_mean",
+   "from": 23376.82,
+   "to": 23069.93,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_smoke_bomb",
+   "field": "live_crowd_dpm_mean",
+   "from": 253080.37,
+   "to": 243386.97,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_smoke_bomb",
+   "field": "solo_variance_dpm2",
+   "from": 1612519.02,
+   "to": 1240840.04,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "thief/thief_smoke_bomb",
+   "field": "crowd_variance_dpm2",
+   "from": 567943.1,
+   "to": 13056876.36,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_orb_ring",
+   "field": "live_solo_dpm_mean",
+   "from": 21103.18,
+   "to": 22178.99,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_orb_ring",
+   "field": "live_crowd_dpm_mean",
+   "from": 258382.3,
+   "to": 262366.69,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_orb_ring",
+   "field": "solo_variance_dpm2",
+   "from": 94937.93,
+   "to": 44626.56,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_orb_ring",
+   "field": "crowd_variance_dpm2",
+   "from": 7959846.54,
+   "to": 206806.66,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_prism_focus",
+   "field": "live_solo_dpm_mean",
+   "from": 51218.11,
+   "to": 46281.58,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_prism_focus",
+   "field": "solo_variance_dpm2",
+   "from": 16250170.32,
+   "to": 267775.2,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_meteor_core",
+   "field": "live_solo_dpm_mean",
+   "from": 46355.42,
+   "to": 45772.73,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_meteor_core",
+   "field": "live_crowd_dpm_mean",
+   "from": 526517.97,
+   "to": 548811.28,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_meteor_core",
+   "field": "solo_variance_dpm2",
+   "from": 329028.43,
+   "to": 3552131.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "elementalist/elementalist_meteor_core",
+   "field": "crowd_variance_dpm2",
+   "from": 203181932.56,
+   "to": 753952198.08,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_deadeye_rifle",
+   "field": "live_solo_dpm_mean",
+   "from": 45595.7,
+   "to": 46784.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_deadeye_rifle",
+   "field": "live_crowd_dpm_mean",
+   "from": 248735.91,
+   "to": 229370.24,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_deadeye_rifle",
+   "field": "solo_variance_dpm2",
+   "from": 19670732.93,
+   "to": 5099828.56,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_deadeye_rifle",
+   "field": "crowd_variance_dpm2",
+   "from": 390542572.62,
+   "to": 267213293.16,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_spotter_scope",
+   "field": "live_solo_dpm_mean",
+   "from": 30182.88,
+   "to": 31544.36,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_spotter_scope",
+   "field": "live_crowd_dpm_mean",
+   "from": 244986.06,
+   "to": 229212.34,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_spotter_scope",
+   "field": "solo_variance_dpm2",
+   "from": 0.0,
+   "to": 3606314.94,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_shatter_rounds",
+   "field": "live_solo_dpm_mean",
+   "from": 16755.51,
+   "to": 17556.56,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_shatter_rounds",
+   "field": "live_crowd_dpm_mean",
+   "from": 65426.73,
+   "to": 63563.55,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_shatter_rounds",
+   "field": "solo_variance_dpm2",
+   "from": 205335.86,
+   "to": 616020.92,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "sniper/sniper_shatter_rounds",
+   "field": "crowd_variance_dpm2",
+   "from": 763736.17,
+   "to": 763718.69,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_reliquary",
+   "field": "live_solo_dpm_mean",
+   "from": 38788.5,
+   "to": 37240.93,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_reliquary",
+   "field": "live_crowd_dpm_mean",
+   "from": 720477.1,
+   "to": 724650.37,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_reliquary",
+   "field": "solo_variance_dpm2",
+   "from": 1459457.29,
+   "to": 2166842.88,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_reliquary",
+   "field": "crowd_variance_dpm2",
+   "from": 90169837.81,
+   "to": 13899027.86,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_censer",
+   "field": "live_solo_dpm_mean",
+   "from": 12026.98,
+   "to": 13740.86,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_censer",
+   "field": "live_crowd_dpm_mean",
+   "from": 146293.34,
+   "to": 147331.8,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_censer",
+   "field": "solo_variance_dpm2",
+   "from": 166276.37,
+   "to": 1163960.48,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_censer",
+   "field": "crowd_variance_dpm2",
+   "from": 34561347.63,
+   "to": 20160818.41,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_chime",
+   "field": "live_solo_dpm_mean",
+   "from": 15168.52,
+   "to": 15184.67,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_chime",
+   "field": "live_crowd_dpm_mean",
+   "from": 242031.42,
+   "to": 253527.68,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "priest/priest_chime",
+   "field": "crowd_variance_dpm2",
+   "from": 64237820.52,
+   "to": 21412553.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_spore_lens",
+   "field": "live_solo_dpm_mean",
+   "from": 29005.59,
+   "to": 26210.54,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_spore_lens",
+   "field": "live_crowd_dpm_mean",
+   "from": 394210.06,
+   "to": 293915.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_spore_lens",
+   "field": "solo_variance_dpm2",
+   "from": 130407.65,
+   "to": 732325.18,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_spore_lens",
+   "field": "crowd_variance_dpm2",
+   "from": 49549491.94,
+   "to": 99455343.65,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_sample_injector",
+   "field": "live_solo_dpm_mean",
+   "from": 51445.41,
+   "to": 41635.96,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_sample_injector",
+   "field": "live_crowd_dpm_mean",
+   "from": 523990.43,
+   "to": 385058.2,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_sample_injector",
+   "field": "solo_variance_dpm2",
+   "from": 4245124.54,
+   "to": 689331.67,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_sample_injector",
+   "field": "crowd_variance_dpm2",
+   "from": 445534577.14,
+   "to": 148280303.16,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_symbiote_seed",
+   "field": "live_solo_dpm_mean",
+   "from": 15947.69,
+   "to": 17354.28,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_symbiote_seed",
+   "field": "live_crowd_dpm_mean",
+   "from": 256791.42,
+   "to": 211872.38,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_symbiote_seed",
+   "field": "solo_variance_dpm2",
+   "from": 1607646.48,
+   "to": 60240.79,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "biologist/biologist_symbiote_seed",
+   "field": "crowd_variance_dpm2",
+   "from": 6334986.96,
+   "to": 64658324.28,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_magnetic_anchor",
+   "field": "live_solo_dpm_mean",
+   "from": 15872.49,
+   "to": 16882.1,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_magnetic_anchor",
+   "field": "live_crowd_dpm_mean",
+   "from": 184688.53,
+   "to": 197672.06,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_magnetic_anchor",
+   "field": "solo_variance_dpm2",
+   "from": 906056.5,
+   "to": 1585609.82,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_magnetic_anchor",
+   "field": "crowd_variance_dpm2",
+   "from": 84285986.95,
+   "to": 0.0,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_hydraulic_press",
+   "field": "live_solo_dpm_mean",
+   "from": 20068.89,
+   "to": 20247.81,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_hydraulic_press",
+   "field": "live_crowd_dpm_mean",
+   "from": 263171.19,
+   "to": 264960.34,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_hydraulic_press",
+   "field": "solo_variance_dpm2",
+   "from": 109786.2,
+   "to": 769900.95,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_hydraulic_press",
+   "field": "crowd_variance_dpm2",
+   "from": 144279975.96,
+   "to": 1129331.29,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_reactor_core",
+   "field": "live_solo_dpm_mean",
+   "from": 7557.35,
+   "to": 8069.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_reactor_core",
+   "field": "live_crowd_dpm_mean",
+   "from": 123297.77,
+   "to": 122522.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_reactor_core",
+   "field": "solo_variance_dpm2",
+   "from": 91494.15,
+   "to": 116779.39,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "robot/robot_reactor_core",
+   "field": "crowd_variance_dpm2",
+   "from": 8634018.26,
+   "to": 5787633.06,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_sentry_wrench",
+   "field": "live_solo_dpm_mean",
+   "from": 45907.77,
+   "to": 46004.56,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_sentry_wrench",
+   "field": "live_crowd_dpm_mean",
+   "from": 51900.29,
+   "to": 53011.17,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_sentry_wrench",
+   "field": "solo_variance_dpm2",
+   "from": 154724.22,
+   "to": 1840960.51,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_sentry_wrench",
+   "field": "crowd_variance_dpm2",
+   "from": 830668.19,
+   "to": 1165536.16,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_repair_drone",
+   "field": "live_solo_dpm_mean",
+   "from": 9559.26,
+   "to": 9937.03,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_repair_drone",
+   "field": "live_crowd_dpm_mean",
+   "from": 70222.49,
+   "to": 69772.91,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_repair_drone",
+   "field": "solo_variance_dpm2",
+   "from": 75949.85,
+   "to": 227843.93,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_repair_drone",
+   "field": "crowd_variance_dpm2",
+   "from": 3265754.98,
+   "to": 5544188.25,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_pressure_mines",
+   "field": "live_solo_dpm_mean",
+   "from": 11.97,
+   "to": 0.0,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_pressure_mines",
+   "field": "live_crowd_dpm_mean",
+   "from": 57966.91,
+   "to": 79.8,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_pressure_mines",
+   "field": "solo_variance_dpm2",
+   "from": 95.45,
+   "to": 0.0,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "engineer/engineer_pressure_mines",
+   "field": "crowd_variance_dpm2",
+   "from": 6696754455.69,
+   "to": 12735.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_book",
+   "field": "live_solo_dpm_mean",
+   "from": 47537.3,
+   "to": 44973.74,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_book",
+   "field": "live_crowd_dpm_mean",
+   "from": 606342.32,
+   "to": 618134.02,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_book",
+   "field": "solo_variance_dpm2",
+   "from": 0.0,
+   "to": 268241.13,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_book",
+   "field": "crowd_variance_dpm2",
+   "from": 23174018.32,
+   "to": 92696073.29,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_wand",
+   "field": "live_solo_dpm_mean",
+   "from": 21884.62,
+   "to": 21716.72,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_wand",
+   "field": "live_crowd_dpm_mean",
+   "from": 204747.72,
+   "to": 195075.96,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_wand",
+   "field": "solo_variance_dpm2",
+   "from": 2311312.09,
+   "to": 1099457.1,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "dark_mage/dark_wand",
+   "field": "crowd_variance_dpm2",
+   "from": 34382508.6,
+   "to": 19020937.69,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/electric_guitar",
+   "field": "live_solo_dpm_mean",
+   "from": 48765.33,
+   "to": 46319.31,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/electric_guitar",
+   "field": "live_crowd_dpm_mean",
+   "from": 720700.53,
+   "to": 714621.59,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/electric_guitar",
+   "field": "solo_variance_dpm2",
+   "from": 550964.75,
+   "to": 1269813.46,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/electric_guitar",
+   "field": "crowd_variance_dpm2",
+   "from": 19332817.55,
+   "to": 19247348.35,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/bass_guitar",
+   "field": "live_solo_dpm_mean",
+   "from": 14198.62,
+   "to": 14330.52,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/bass_guitar",
+   "field": "live_crowd_dpm_mean",
+   "from": 229782.97,
+   "to": 226815.73,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/bass_guitar",
+   "field": "solo_variance_dpm2",
+   "from": 14754.96,
+   "to": 2961.54,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/bass_guitar",
+   "field": "crowd_variance_dpm2",
+   "from": 30051227.61,
+   "to": 29678197.97,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/sound_amp",
+   "field": "live_solo_dpm_mean",
+   "from": 41983.28,
+   "to": 52281.64,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/sound_amp",
+   "field": "live_crowd_dpm_mean",
+   "from": 632731.36,
+   "to": 790428.73,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/sound_amp",
+   "field": "solo_variance_dpm2",
+   "from": 2158548.64,
+   "to": 5011150.87,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "guitarist/sound_amp",
+   "field": "crowd_variance_dpm2",
+   "from": 9615704.85,
+   "to": 49906312.51,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/chakrams",
+   "field": "live_solo_dpm_mean",
+   "from": 26185.24,
+   "to": 25510.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/chakrams",
+   "field": "live_crowd_dpm_mean",
+   "from": 281437.96,
+   "to": 289653.43,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/chakrams",
+   "field": "crowd_variance_dpm2",
+   "from": 42059245.8,
+   "to": 205762098.25,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/shadow_daggers",
+   "field": "live_solo_dpm_mean",
+   "from": 27550.88,
+   "to": 26896.09,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/shadow_daggers",
+   "field": "live_crowd_dpm_mean",
+   "from": 80033.49,
+   "to": 83307.43,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/shadow_daggers",
+   "field": "solo_variance_dpm2",
+   "from": 1238613.18,
+   "to": 95277.17,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/shadow_daggers",
+   "field": "crowd_variance_dpm2",
+   "from": 0.0,
+   "to": 11147451.89,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/venom_wire",
+   "field": "live_solo_dpm_mean",
+   "from": 27171.31,
+   "to": 27806.69,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/venom_wire",
+   "field": "live_crowd_dpm_mean",
+   "from": 130851.9,
+   "to": 127541.92,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/venom_wire",
+   "field": "solo_variance_dpm2",
+   "from": 1281740.98,
+   "to": 735923.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "assassin/venom_wire",
+   "field": "crowd_variance_dpm2",
+   "from": 15984643.69,
+   "to": 1490206.15,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/moon_crossbow",
+   "field": "live_solo_dpm_mean",
+   "from": 26147.7,
+   "to": 25585.3,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/moon_crossbow",
+   "field": "live_crowd_dpm_mean",
+   "from": 139174.52,
+   "to": 133550.51,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/moon_crossbow",
+   "field": "solo_variance_dpm2",
+   "from": 7749208.39,
+   "to": 1423320.58,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/moon_crossbow",
+   "field": "crowd_variance_dpm2",
+   "from": 75120009.15,
+   "to": 27675806.21,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/hunter_trap",
+   "field": "live_solo_dpm_mean",
+   "from": 8547.28,
+   "to": 9803.84,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/hunter_trap",
+   "field": "live_crowd_dpm_mean",
+   "from": 131384.95,
+   "to": 155991.03,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "ranger/hunter_trap",
+   "field": "crowd_variance_dpm2",
+   "from": 24161943.63,
+   "to": 24162041.94,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/restore_potion",
+   "field": "live_solo_dpm_mean",
+   "from": 14780.56,
+   "to": 14607.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/restore_potion",
+   "field": "live_crowd_dpm_mean",
+   "from": 136355.63,
+   "to": 135512.65,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/restore_potion",
+   "field": "solo_variance_dpm2",
+   "from": 238827.69,
+   "to": 537362.3,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/restore_potion",
+   "field": "crowd_variance_dpm2",
+   "from": 1105378.88,
+   "to": 157910.86,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/plague_syringe",
+   "field": "live_solo_dpm_mean",
+   "from": 10841.77,
+   "to": 11914.72,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/plague_syringe",
+   "field": "live_crowd_dpm_mean",
+   "from": 20071.75,
+   "to": 28147.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/plague_syringe",
+   "field": "crowd_variance_dpm2",
+   "from": 104943.6,
+   "to": 1882795.62,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/bone_saw",
+   "field": "live_solo_dpm_mean",
+   "from": 40663.39,
+   "to": 40051.34,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "doctor/bone_saw",
+   "field": "solo_variance_dpm2",
+   "from": 1685712.72,
+   "to": 1311116.6,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/blast_powder",
+   "field": "live_solo_dpm_mean",
+   "from": 34872.31,
+   "to": 35806.81,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/blast_powder",
+   "field": "live_crowd_dpm_mean",
+   "from": 275146.53,
+   "to": 274401.21,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/blast_powder",
+   "field": "solo_variance_dpm2",
+   "from": 2928034.32,
+   "to": 1405457.67,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/blast_powder",
+   "field": "crowd_variance_dpm2",
+   "from": 7115129.46,
+   "to": 36168677.12,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/acid_flask",
+   "field": "live_solo_dpm_mean",
+   "from": 6945.66,
+   "to": 13673.24,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/acid_flask",
+   "field": "live_crowd_dpm_mean",
+   "from": 61435.11,
+   "to": 77797.99,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "chemist/acid_flask",
+   "field": "crowd_variance_dpm2",
+   "from": 504.9,
+   "to": 216.38,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/long_spear",
+   "field": "live_solo_dpm_mean",
+   "from": 14140.81,
+   "to": 14369.19,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/long_spear",
+   "field": "live_crowd_dpm_mean",
+   "from": 136168.85,
+   "to": 133646.65,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/long_spear",
+   "field": "solo_variance_dpm2",
+   "from": 219126.97,
+   "to": 1247845.38,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/long_spear",
+   "field": "crowd_variance_dpm2",
+   "from": 9644378.69,
+   "to": 8461524.68,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/tower_shield",
+   "field": "live_solo_dpm_mean",
+   "from": 16279.26,
+   "to": 15537.84,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/tower_shield",
+   "field": "live_crowd_dpm_mean",
+   "from": 158012.86,
+   "to": 156815.74,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/tower_shield",
+   "field": "solo_variance_dpm2",
+   "from": 549021.72,
+   "to": 631246.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/tower_shield",
+   "field": "crowd_variance_dpm2",
+   "from": 5725539.7,
+   "to": 7137339.7,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/holy_flail",
+   "field": "live_solo_dpm_mean",
+   "from": 9623.66,
+   "to": 9479.97,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/holy_flail",
+   "field": "live_crowd_dpm_mean",
+   "from": 184870.14,
+   "to": 182595.18,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/holy_flail",
+   "field": "solo_variance_dpm2",
+   "from": 39144.62,
+   "to": 627723.44,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "knight/holy_flail",
+   "field": "crowd_variance_dpm2",
+   "from": 29487289.25,
+   "to": 14948739.65,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/summon_amulet",
+   "field": "live_crowd_dpm_mean",
+   "from": 361323.76,
+   "to": 394715.33,
+   "cause_issues": [
+    "FAN-1585",
+    "FAN-1596"
+   ]
+  },
+  {
+   "pair": "druid/summon_amulet",
+   "field": "solo_variance_dpm2",
+   "from": 45635023.84,
+   "to": 51498851.11,
+   "cause_issues": [
+    "FAN-1585",
+    "FAN-1596"
+   ]
+  },
+  {
+   "pair": "druid/summon_amulet",
+   "field": "crowd_variance_dpm2",
+   "from": 36494237500.62,
+   "to": 36324029697.05,
+   "cause_issues": [
+    "FAN-1585",
+    "FAN-1596"
+   ]
+  },
+  {
+   "pair": "druid/briar_staff",
+   "field": "live_solo_dpm_mean",
+   "from": 28510.06,
+   "to": 47021.48,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/briar_staff",
+   "field": "live_crowd_dpm_mean",
+   "from": 247810.39,
+   "to": 438716.29,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/briar_staff",
+   "field": "solo_variance_dpm2",
+   "from": 18716.98,
+   "to": 56154.78,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/briar_staff",
+   "field": "crowd_variance_dpm2",
+   "from": 183175.44,
+   "to": 427402.14,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/raven_totem",
+   "field": "live_solo_dpm_mean",
+   "from": 15638.82,
+   "to": 31487.85,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/raven_totem",
+   "field": "live_crowd_dpm_mean",
+   "from": 115086.41,
+   "to": 226153.84,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/raven_totem",
+   "field": "solo_variance_dpm2",
+   "from": 234623.98,
+   "to": 706877.38,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  },
+  {
+   "pair": "druid/raven_totem",
+   "field": "crowd_variance_dpm2",
+   "from": 31543948.96,
+   "to": 15386398.5,
+   "cause_issues": [
+    "FAN-1887",
+    "FAN-1889",
+    "FAN-1985",
+    "FAN-1995"
+   ]
+  }
+ ],
+ "invariant_projection_cells": [
+  {
+   "pair": "dark_mage/cursed_skull",
+   "field": "live_solo_dpm_mean",
+   "value": 4204.32
+  },
+  {
+   "pair": "dark_mage/cursed_skull",
+   "field": "live_crowd_dpm_mean",
+   "value": 23514.15
+  },
+  {
+   "pair": "dark_mage/cursed_skull",
+   "field": "solo_variance_dpm2",
+   "value": 0.0
+  },
+  {
+   "pair": "dark_mage/cursed_skull",
+   "field": "crowd_variance_dpm2",
+   "value": 0.0
+  },
+  {
+   "pair": "ranger/storm_longbow",
+   "field": "live_solo_dpm_mean",
+   "value": 31521.63
+  },
+  {
+   "pair": "ranger/storm_longbow",
+   "field": "live_crowd_dpm_mean",
+   "value": 249081.46
+  },
+  {
+   "pair": "ranger/storm_longbow",
+   "field": "solo_variance_dpm2",
+   "value": 4978208.82
+  },
+  {
+   "pair": "ranger/storm_longbow",
+   "field": "crowd_variance_dpm2",
+   "value": 61792805.51
+  },
+  {
+   "pair": "chemist/homunculus_vial",
+   "field": "live_solo_dpm_mean",
+   "value": 11709.72
+  },
+  {
+   "pair": "chemist/homunculus_vial",
+   "field": "live_crowd_dpm_mean",
+   "value": 103397.26
+  },
+  {
+   "pair": "chemist/homunculus_vial",
+   "field": "solo_variance_dpm2",
+   "value": 0.0
+  },
+  {
+   "pair": "chemist/homunculus_vial",
+   "field": "crowd_variance_dpm2",
+   "value": 0.0
+  },
+  {
+   "pair": "druid/summon_amulet",
+   "field": "live_solo_dpm_mean",
+   "value": 68101.14
+  }
+ ],
+ "equal_cell_count": 24,
+ "changed_cell_count": 180,
+ "historical_inventory": {
+  "range": "ec15444e1a30acfe9aeaee3dab6f7e46f1b4f46e..fda9971bbe39b39088926c99d929cd147f3a5e65",
+  "commit_count": 246,
+  "gameplay_commit_count": 75,
+  "measurement_contract_commit_count": 12,
+  "gameplay_causal_files": [
+   "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+   "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+   "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+   "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+   "scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
+   "scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+   "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+   "scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+   "scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
+   "scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
+   "scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd",
+   "scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd.uid",
+   "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+   "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+   "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+   "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+   "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+   "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+   "scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+   "scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+   "scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+   "scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd",
+   "scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd.uid",
+   "scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd",
+   "scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd.uid",
+   "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
+   "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
+   "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+   "scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
+   "scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
+   "scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
+   "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
+   "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+   "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_contact_sheet.gd",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_presentation_pack.gd",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_presentation_pack.gd.uid",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd.uid",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd",
+   "scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd.uid",
+   "scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
+   "scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
+   "scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
+   "scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn",
+   "scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+   "scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn",
+   "scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+   "scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn",
+   "scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+   "scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
+   "scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
+   "scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd.uid",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_presentation_pack.gd",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_presentation_pack.gd.uid",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_timeline_scene.gd",
+   "scenes/vfx/ultimates/ranger/ranger_ultimate_timeline_scene.gd.uid",
+   "scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
+   "scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
+   "scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn",
+   "scenes/vfx/ultimates/robot/robot_ultimate_presentation_pack.gd",
+   "scenes/vfx/ultimates/robot/robot_ultimate_presentation_pack.gd.uid",
+   "scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd",
+   "scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd.uid",
+   "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
+   "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+   "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
+   "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+   "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
+   "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+   "scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd",
+   "scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd.uid",
+   "scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+   "scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+   "scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+   "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+   "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+   "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+   "scenes/vfx/ultimates/thief/thief_ultimate_contact_sheet.gd",
+   "scenes/vfx/ultimates/thief/thief_ultimate_contact_sheet.gd.uid",
+   "scenes/vfx/ultimates/thief/thief_ultimate_presentation_pack.gd",
+   "scenes/vfx/ultimates/thief/thief_ultimate_presentation_pack.gd.uid",
+   "scenes/vfx/ultimates/thief/thief_ultimate_timeline_scene.gd",
+   "scenes/vfx/ultimates/thief/thief_ultimate_timeline_scene.gd.uid",
+   "scripts/ally_minion.gd",
+   "scripts/attribute_contract.gd",
+   "scripts/attribute_contract.gd.uid",
+   "scripts/class_weapon.gd",
+   "scripts/codex_data.gd",
+   "scripts/combat_director.gd",
+   "scripts/encounters/encounter_adapter.gd",
+   "scripts/encounters/encounter_adapter.gd.uid",
+   "scripts/encounters/encounter_beat_director.gd",
+   "scripts/encounters/encounter_beat_director.gd.uid",
+   "scripts/encounters/encounter_config.gd",
+   "scripts/encounters/encounter_config.gd.uid",
+   "scripts/encounters/encounter_context.gd",
+   "scripts/encounters/encounter_context.gd.uid",
+   "scripts/encounters/encounter_feature.gd",
+   "scripts/encounters/encounter_feature.gd.uid",
+   "scripts/encounters/encounter_metrics.gd",
+   "scripts/encounters/encounter_metrics.gd.uid",
+   "scripts/encounters/features/captains/captain_catalog.gd",
+   "scripts/encounters/features/captains/captain_catalog.gd.uid",
+   "scripts/encounters/features/captains/captain_feature.gd",
+   "scripts/encounters/features/captains/captain_feature.gd.uid",
+   "scripts/encounters/features/decks/deck_feature.gd",
+   "scripts/encounters/features/decks/deck_feature.gd.uid",
+   "scripts/encounters/features/early_clear/early_clear_feature.gd",
+   "scripts/encounters/features/early_clear/early_clear_feature.gd.uid",
+   "scripts/encounters/features/early_clear/early_clear_rewards.gd",
+   "scripts/encounters/features/early_clear/early_clear_rewards.gd.uid",
+   "scripts/encounters/features/early_clear/encounter_objective_state.gd",
+   "scripts/encounters/features/early_clear/encounter_objective_state.gd.uid",
+   "scripts/encounters/features/marked_target_feature.gd",
+   "scripts/encounters/features/marked_target_feature.gd.uid",
+   "scripts/glossary.gd",
+   "scripts/input/aim_controller.gd",
+   "scripts/input/aim_controller.gd.uid",
+   "scripts/input_device_manager.gd",
+   "scripts/level_up_advisor.gd",
+   "scripts/main.gd",
+   "scripts/meta_progression_tree_data.gd",
+   "scripts/pause_stats_menu.gd",
+   "scripts/player.gd",
+   "scripts/progression_data.gd",
+   "scripts/progression_data_balance.gd",
+   "scripts/progression_data_characters.gd",
+   "scripts/progression_data_content.gd",
+   "scripts/progression_data_weapons.gd",
+   "scripts/route_map_screen.gd",
+   "scripts/stat_formulas.gd",
+   "scripts/status_effects.gd",
+   "scripts/summoner_weapon.gd",
+   "scripts/take_damage_contract.gd",
+   "scripts/ui/attribute_surfaces.gd",
+   "scripts/ui/attribute_surfaces.gd.uid",
+   "scripts/ui/global_tooltip.gd",
+   "scripts/ui/global_tooltip_control.gd",
+   "scripts/ui/ultimate_hud/ultimate_hud_state.gd",
+   "scripts/ui/ultimate_hud/ultimate_hud_state.gd.uid",
+   "scripts/ui/ultimate_hud/ultimate_hud_view_model.gd",
+   "scripts/ui/ultimate_hud/ultimate_hud_view_model.gd.uid",
+   "scripts/ui/ultimate_hud/ultimate_hud_widget.gd",
+   "scripts/ui/ultimate_hud/ultimate_hud_widget.gd.uid",
+   "scripts/ui/virtual_reticle.gd",
+   "scripts/ui/virtual_reticle.gd.uid",
+   "scripts/ui_screens.gd",
+   "scripts/ultimates/balance/ultimate_balance_harness.gd",
+   "scripts/ultimates/balance/ultimate_balance_harness.gd.uid",
+   "scripts/ultimates/balance/ultimate_charge_budget.gd",
+   "scripts/ultimates/balance/ultimate_charge_budget.gd.uid",
+   "scripts/ultimates/balance/ultimate_charge_ledger.gd",
+   "scripts/ultimates/balance/ultimate_charge_ledger.gd.uid",
+   "scripts/ultimates/classes/biologist/biologist_sample_injector.gd",
+   "scripts/ultimates/classes/biologist/biologist_sample_injector.gd.uid",
+   "scripts/ultimates/classes/biologist/biologist_sample_injector.tscn",
+   "scripts/ultimates/classes/biologist/biologist_spore_lens.gd",
+   "scripts/ultimates/classes/biologist/biologist_spore_lens.gd.uid",
+   "scripts/ultimates/classes/biologist/biologist_spore_lens.tscn",
+   "scripts/ultimates/classes/biologist/biologist_symbiote_seed.gd",
+   "scripts/ultimates/classes/biologist/biologist_symbiote_seed.gd.uid",
+   "scripts/ultimates/classes/biologist/biologist_symbiote_seed.tscn",
+   "scripts/ultimates/classes/doctor/bone_saw.gd",
+   "scripts/ultimates/classes/doctor/bone_saw.gd.uid",
+   "scripts/ultimates/classes/doctor/plague_syringe.gd",
+   "scripts/ultimates/classes/doctor/plague_syringe.gd.uid",
+   "scripts/ultimates/classes/doctor/restore_potion.gd",
+   "scripts/ultimates/classes/doctor/restore_potion.gd.uid",
+   "scripts/ultimates/classes/druid/briar_staff.gd",
+   "scripts/ultimates/classes/druid/briar_staff.gd.uid",
+   "scripts/ultimates/classes/druid/briar_staff.tscn",
+   "scripts/ultimates/classes/druid/raven_totem.gd",
+   "scripts/ultimates/classes/druid/raven_totem.gd.uid",
+   "scripts/ultimates/classes/druid/raven_totem.tscn",
+   "scripts/ultimates/classes/druid/summon_amulet.gd",
+   "scripts/ultimates/classes/druid/summon_amulet.gd.uid",
+   "scripts/ultimates/classes/druid/summon_amulet.tscn",
+   "scripts/ultimates/classes/elementalist/elementalist_meteor_core.gd",
+   "scripts/ultimates/classes/elementalist/elementalist_meteor_core.gd.uid",
+   "scripts/ultimates/classes/elementalist/elementalist_meteor_core.tscn",
+   "scripts/ultimates/classes/elementalist/elementalist_orb_ring.gd",
+   "scripts/ultimates/classes/elementalist/elementalist_orb_ring.gd.uid",
+   "scripts/ultimates/classes/elementalist/elementalist_orb_ring.tscn",
+   "scripts/ultimates/classes/elementalist/elementalist_prism_focus.gd",
+   "scripts/ultimates/classes/elementalist/elementalist_prism_focus.gd.uid",
+   "scripts/ultimates/classes/elementalist/elementalist_prism_focus.tscn",
+   "scripts/ultimates/classes/engineer/engineer_pressure_mines.gd",
+   "scripts/ultimates/classes/engineer/engineer_pressure_mines.gd.uid",
+   "scripts/ultimates/classes/engineer/engineer_repair_drone.gd",
+   "scripts/ultimates/classes/engineer/engineer_repair_drone.gd.uid",
+   "scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd",
+   "scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd.uid",
+   "scripts/ultimates/classes/engineer/temporary_engineer_device.tscn",
+   "scripts/ultimates/classes/guitarist/bass_guitar.gd",
+   "scripts/ultimates/classes/guitarist/bass_guitar.gd.uid",
+   "scripts/ultimates/classes/guitarist/electric_guitar.gd",
+   "scripts/ultimates/classes/guitarist/electric_guitar.gd.uid",
+   "scripts/ultimates/classes/guitarist/sound_amp.gd",
+   "scripts/ultimates/classes/guitarist/sound_amp.gd.uid",
+   "scripts/ultimates/classes/priest/priest_censer.gd",
+   "scripts/ultimates/classes/priest/priest_censer.gd.uid",
+   "scripts/ultimates/classes/priest/priest_censer.tscn",
+   "scripts/ultimates/classes/priest/priest_chime.gd",
+   "scripts/ultimates/classes/priest/priest_chime.gd.uid",
+   "scripts/ultimates/classes/priest/priest_chime.tscn",
+   "scripts/ultimates/classes/priest/priest_reliquary.gd",
+   "scripts/ultimates/classes/priest/priest_reliquary.gd.uid",
+   "scripts/ultimates/classes/priest/priest_reliquary.tscn",
+   "scripts/ultimates/classes/robot/robot_hydraulic_press.gd",
+   "scripts/ultimates/classes/robot/robot_hydraulic_press.gd.uid",
+   "scripts/ultimates/classes/robot/robot_magnetic_anchor.gd",
+   "scripts/ultimates/classes/robot/robot_magnetic_anchor.gd.uid",
+   "scripts/ultimates/classes/robot/robot_reactor_core.gd",
+   "scripts/ultimates/classes/robot/robot_reactor_core.gd.uid",
+   "scripts/ultimates/classes/sniper/sniper_deadeye_rifle.gd",
+   "scripts/ultimates/classes/sniper/sniper_deadeye_rifle.gd.uid",
+   "scripts/ultimates/classes/sniper/sniper_deadeye_rifle.tscn",
+   "scripts/ultimates/classes/sniper/sniper_shatter_rounds.gd",
+   "scripts/ultimates/classes/sniper/sniper_shatter_rounds.gd.uid",
+   "scripts/ultimates/classes/sniper/sniper_shatter_rounds.tscn",
+   "scripts/ultimates/classes/sniper/sniper_spotter_scope.gd",
+   "scripts/ultimates/classes/sniper/sniper_spotter_scope.gd.uid",
+   "scripts/ultimates/classes/sniper/sniper_spotter_scope.tscn",
+   "scripts/ultimates/classes/thief/thief_coin_pouch.gd",
+   "scripts/ultimates/classes/thief/thief_coin_pouch.gd.uid",
+   "scripts/ultimates/classes/thief/thief_coin_pouch.tscn",
+   "scripts/ultimates/classes/thief/thief_shadow_cloak.gd",
+   "scripts/ultimates/classes/thief/thief_shadow_cloak.gd.uid",
+   "scripts/ultimates/classes/thief/thief_shadow_cloak.tscn",
+   "scripts/ultimates/classes/thief/thief_smoke_bomb.gd",
+   "scripts/ultimates/classes/thief/thief_smoke_bomb.gd.uid",
+   "scripts/ultimates/classes/thief/thief_smoke_bomb.tscn",
+   "scripts/ultimates/controller/ultimate_activation.gd",
+   "scripts/ultimates/controller/ultimate_activation.gd.uid",
+   "scripts/ultimates/controller/ultimate_controller.gd",
+   "scripts/ultimates/controller/ultimate_controller.gd.uid",
+   "scripts/ultimates/controller/ultimate_damage_result.gd",
+   "scripts/ultimates/controller/ultimate_damage_result.gd.uid",
+   "scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd",
+   "scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd.uid",
+   "scripts/ultimates/controller/ultimate_guard_prevention_ledger.gd",
+   "scripts/ultimates/controller/ultimate_guard_prevention_ledger.gd.uid",
+   "scripts/ultimates/controller/ultimate_player_host.gd",
+   "scripts/ultimates/executors/ultimate_aimed_sequence_executor.gd",
+   "scripts/ultimates/executors/ultimate_aimed_sequence_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_burst_executor.gd",
+   "scripts/ultimates/executors/ultimate_burst_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_chained_projectile_executor.gd",
+   "scripts/ultimates/executors/ultimate_chained_projectile_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_control_executor.gd",
+   "scripts/ultimates/executors/ultimate_control_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_deploy_summon_executor.gd",
+   "scripts/ultimates/executors/ultimate_deploy_summon_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_executor_library.gd",
+   "scripts/ultimates/executors/ultimate_executor_library.gd.uid",
+   "scripts/ultimates/executors/ultimate_status_zone_executor.gd",
+   "scripts/ultimates/executors/ultimate_status_zone_executor.gd.uid",
+   "scripts/ultimates/executors/ultimate_targeting_primitives.gd",
+   "scripts/ultimates/executors/ultimate_targeting_primitives.gd.uid",
+   "scripts/ultimates/executors/ultimate_timed_modifier_executor.gd",
+   "scripts/ultimates/executors/ultimate_timed_modifier_executor.gd.uid",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd.uid",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd.uid",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd",
+   "scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd.uid",
+   "scripts/ultimates/registry/weapon_ultimate_package_discovery.gd",
+   "scripts/ultimates/registry/weapon_ultimate_package_discovery.gd.uid",
+   "scripts/ultimates/registry/weapon_ultimate_registry.gd",
+   "scripts/ultimates/registry/weapon_ultimate_registry.gd.uid",
+   "scripts/ultimates/registry/weapon_ultimate_resolver.gd",
+   "scripts/ultimates/registry/weapon_ultimate_resolver.gd.uid",
+   "scripts/ultimates/schema/weapon_ultimate_schema.gd",
+   "scripts/ultimates/schema/weapon_ultimate_schema.gd.uid",
+   "scripts/ultimates/staged/classes/soldier/soldier_bayonet.gd",
+   "scripts/ultimates/staged/classes/soldier/soldier_bayonet.gd.uid",
+   "scripts/ultimates/staged/classes/soldier/soldier_bayonet.tscn",
+   "scripts/ultimates/staged/classes/soldier/soldier_grenade.gd",
+   "scripts/ultimates/staged/classes/soldier/soldier_grenade.gd.uid",
+   "scripts/ultimates/staged/classes/soldier/soldier_rifle.gd",
+   "scripts/ultimates/staged/classes/soldier/soldier_rifle.gd.uid",
+   "scripts/ultimates/staged/classes/soldier/temporary_soldier_grenade.tscn"
+  ],
+  "ordered_commits": [
+   {
+    "commit": "b43a879891499e8a29713a220b16a9c680c8b549",
+    "segment": "measurement_contract",
+    "subject": "Fix A5 fixed-seed telemetry parity"
+   },
+   {
+    "commit": "7aff1e828a9c54d67e13db8a301386fbb1c752a3",
+    "segment": "measurement_contract",
+    "subject": "Regenerate A5 fixed-seed evidence"
+   },
+   {
+    "commit": "a3bf9ba25f908fc46242bb86af42ce52bfdc71c1",
+    "segment": "measurement_contract",
+    "subject": "fix(a5): add production observer A/B gate"
+   },
+   {
+    "commit": "e0c6c8c598165a97f5b31d6e8272fa940f9ad595",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1585): stabilize druid summon formations",
+    "issue": "FAN-1585"
+   },
+   {
+    "commit": "8376f5c73eb116ec08eef7a0e071c2b966f04a19",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1596): preserve homunculus pair guard direction",
+    "issue": "FAN-1596"
+   },
+   {
+    "commit": "3c279da0ab5d3e1182c63927a4f4b160079c8b9a",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1574): harden observer manifest gate",
+    "issue": "FAN-1574"
+   },
+   {
+    "commit": "bb50e9875e08845d68792d87016568ba392ff86b",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1612): track required test UID sidecars",
+    "issue": "FAN-1612"
+   },
+   {
+    "commit": "b8909e30b779afe8f99aad554b909cfa44e4f1a1",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1611): cover observer A/B fixed-window mutation regression",
+    "issue": "FAN-1611"
+   },
+   {
+    "commit": "cd459efeab262cbb87bd45df9fa12f770e42c507",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1641): make A5 parity gates lineage-aware after accepted summon fixes",
+    "issue": "FAN-1641"
+   },
+   {
+    "commit": "271597e4e7318594657555a10f6bfa19c27557e3",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1649): enforce full telemetry payload parity in A5 candidate gate",
+    "issue": "FAN-1649"
+   },
+   {
+    "commit": "4bd2e7101383b9bcc34970554f476d51adde0d62",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1658): anchor A5 full-telemetry gate on immutable runtime trust root",
+    "issue": "FAN-1658"
+   },
+   {
+    "commit": "ce512b8b2b06ed3ab1fa1260f923b6cd7bc41844",
+    "segment": "measurement_contract",
+    "subject": "fix(FAN-1672): stop the A5 candidate gate from reading its own output",
+    "issue": "FAN-1672"
+   },
+   {
+    "commit": "d191a65966a3545dc36f0d7e602a6c09c29683b7",
+    "segment": "other",
+    "subject": "fix(FAN-1675): discover tests recursively and fail closed on empty sets"
+   },
+   {
+    "commit": "e6c580965e59835b2c0566feaa7e10b9d88a6a6f",
+    "segment": "other",
+    "subject": "fix(FAN-1685): test the observable empty-Python-set guarantee, not a dead branch"
+   },
+   {
+    "commit": "ea776b8dd65fc3329fde77528d37dc85a3ba9c22",
+    "segment": "other",
+    "subject": "fix(FAN-1693): run the changed Godot profile on required CI candidates"
+   },
+   {
+    "commit": "1f1f8a4dc0bee38f1e9355628c90bc1fbcfa7f91",
+    "segment": "measurement_contract",
+    "subject": "test(FAN-1681): close the A5 gate regression-coverage gaps named by FAN-1673",
+    "issue": "FAN-1681"
+   },
+   {
+    "commit": "071338e9708bc13bef7bf338d18019c970e38186",
+    "segment": "other",
+    "subject": "fix(FAN-1700): fail a Godot suite that reported a failure, whatever the exit code"
+   },
+   {
+    "commit": "4fb123dbf0e1d971795d325bbc78e829546a76da",
+    "segment": "other",
+    "subject": "fix(FAN-1712): judge the berserk runaway gate on a reproducible ideal build"
+   },
+   {
+    "commit": "1c558ef46502dc563fb119d357171383843efa5a",
+    "segment": "other",
+    "subject": "test(FAN-1718): pin the push_error failure signature to the live engine"
+   },
+   {
+    "commit": "f28582e20ef31974ec075e73f205d3c1b172e219",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1449): manual aim via mouse cursor and right stick for all 51 weapons",
+    "issue": "FAN-1449"
+   },
+   {
+    "commit": "3d2f838a8ee7f1e8f3248d4647b3d1688912b373",
+    "segment": "other",
+    "subject": "docs(FAN-1683): name the static checks the gate actually reports for an empty test set"
+   },
+   {
+    "commit": "8586fa1e80fe9ba61086173fcaf4626b4414f13b",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1721): preserve physical aim handoff in forced modes",
+    "issue": "FAN-1721"
+   },
+   {
+    "commit": "82d8384141987b3809992c4b1d5bdaa8005ea89e",
+    "segment": "other",
+    "subject": "fix(FAN-1719): make inherited smoke exits failure-aware"
+   },
+   {
+    "commit": "573c4b231cb0f375a86ea86595bb67f5a68f8ef5",
+    "segment": "other",
+    "subject": "test(FAN-1684): cover nested discovery roots correctly"
+   },
+   {
+    "commit": "3f2d680847ee2ee02365b2dc7423dafbc35097d5",
+    "segment": "other",
+    "subject": "test(FAN-1731): seed pool runaway gate"
+   },
+   {
+    "commit": "da55533e17cdcd2c6e92d3e3cccd606fa3ee6124",
+    "segment": "integration",
+    "subject": "merge(FAN-1739): land QA-passed FAN-1449/FAN-1721 hybrid aim candidate 8586fa1e onto dev"
+   },
+   {
+    "commit": "823430918ebe3c893631eafcd38dcd389fc95ff7",
+    "segment": "other",
+    "subject": "docs: streamline agent context engineering"
+   },
+   {
+    "commit": "a37931b71c684fc26c0603fb6342603404d55a2d",
+    "segment": "other",
+    "subject": "test(FAN-1729): check the run-multiplier soft-cap directly in the berserk gate"
+   },
+   {
+    "commit": "7eae26a177c5c6186696265838cd642af51e048a",
+    "segment": "other",
+    "subject": "docs(FAN-1729): record the exclusivity-proven gate measurements"
+   },
+   {
+    "commit": "9918808ff04a5a606e1f963427a1976d7d2eb674",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1456): rebase weapon ultimate registry on current dev",
+    "issue": "FAN-1456"
+   },
+   {
+    "commit": "c34bcd410bf486c36e34be576ecbb3a763e2086b",
+    "segment": "other",
+    "subject": "fix(FAN-1725): fail Godot gate on fatal output"
+   },
+   {
+    "commit": "3583332e73018c1ec7dc54b157c21adb90965009",
+    "segment": "other",
+    "subject": "test(FAN-1725): keep stream probe under watchdog"
+   },
+   {
+    "commit": "9c11095cecff3b55750bc5bba0c1aa426100932e",
+    "segment": "other",
+    "subject": "test(FAN-1749): cover root-only Python discovery guards"
+   },
+   {
+    "commit": "02bda1bd949f0b48d871657994731348f8ac6b6d",
+    "segment": "other",
+    "subject": "docs(FAN-1729): close the two no-silent-retune gaps QA FAN-1748 found"
+   },
+   {
+    "commit": "8932493c6aa6ce573be651d1e9d01f6474bc7f06",
+    "segment": "other",
+    "subject": "docs(FAN-1728): realign the systems map with the live berserk gate"
+   },
+   {
+    "commit": "e4bbc13139ed871e68a44665b561de27c359cb39",
+    "segment": "other",
+    "subject": "docs(FAN-1757): realign the systems map with the live pool gate"
+   },
+   {
+    "commit": "353a1925906ba5d516869e08d766c6e00fe1e7e9",
+    "segment": "other",
+    "subject": "test(FAN-1720): make constellation consumer-paths suite crit-deterministic"
+   },
+   {
+    "commit": "651b99419aa7379cf685eb74980396523a1c4192",
+    "segment": "other",
+    "subject": "docs(FAN-1760): clarify pool runaway gate contract"
+   },
+   {
+    "commit": "8f10aafdb0efdc34876beeb7e319441d55fa4e71",
+    "segment": "other",
+    "subject": "docs(FAN-1752): name the gate checks the QA protocol must read"
+   },
+   {
+    "commit": "47afa3b71c9b1e01383a1e3ff452c64407c8b7f5",
+    "segment": "other",
+    "subject": "docs(FAN-1767): realign balance map source citations with code"
+   },
+   {
+    "commit": "a29ee3df6cbe48e0b684f150f8e197fa6eb70178",
+    "segment": "other",
+    "subject": "fix(FAN-1746): share Godot gate slots across tasks"
+   },
+   {
+    "commit": "fc820b5f92f9853b435e25333fc063b14794bd08",
+    "segment": "other",
+    "subject": "test(FAN-1766): lock QA protocol gate evidence contract"
+   },
+   {
+    "commit": "48d83d1ad06cd3f56663b6f6bb4765012eed21f4",
+    "segment": "other",
+    "subject": "docs(FAN-1769): refresh balance map claims"
+   },
+   {
+    "commit": "92fdffffeb7db98582ac0cbc789c8d17d6a183b1",
+    "segment": "other",
+    "subject": "fix(FAN-1710): regenerate semantic typography inventory for current dev"
+   },
+   {
+    "commit": "35da9a745de6c86870a4e43a55655a2be648f8da",
+    "segment": "integration",
+    "subject": "Merge pull request #12 from FomaBy/agent/codex-dev-terra/c0729e90"
+   },
+   {
+    "commit": "f92b74d3fd35f3ac38db10e8b948877be9159083",
+    "segment": "other",
+    "subject": "docs(FAN-1776): reconcile residual stale claims in balance map"
+   },
+   {
+    "commit": "9564c4d1554091fe2e3e2712a0fb2f89c5637213",
+    "segment": "gameplay",
+    "subject": "docs(FAN-1781): reconcile stale code comments",
+    "issue": "FAN-1781"
+   },
+   {
+    "commit": "e3f5e7c9fe733046afa4afa91fc15e3134e6656b",
+    "segment": "other",
+    "subject": "test(FAN-1779): pin godot gate suite to a private semaphore dir"
+   },
+   {
+    "commit": "8ed79ecea85e6ec6539555ad56713a064132289f",
+    "segment": "other",
+    "subject": "docs(FAN-1778): document balance baseline provenance"
+   },
+   {
+    "commit": "26fcbcc364a7b1f858aafdf5c8d14093b01f067c",
+    "segment": "other",
+    "subject": "docs(FAN-1784): reconcile comfort band claim with tracked artifact"
+   },
+   {
+    "commit": "1d4925e95cb0edf5c10fa573818d91e2a2fcabfc",
+    "segment": "other",
+    "subject": "fix(FAN-1773): rebase Godot import pre-pass onto shared-semaphore gate"
+   },
+   {
+    "commit": "3bbe76baa9c7c47f46a470dfef2614a3af127ab0",
+    "segment": "other",
+    "subject": "fix: make live balance probes deterministic"
+   },
+   {
+    "commit": "3e0914f4984bedadea990c5fc12f2ff332c58281",
+    "segment": "integration",
+    "subject": "Merge pull request #14 from FomaBy/agent/codex-dev-terra/4a24a9fd"
+   },
+   {
+    "commit": "12a02d37c91173c0a6d0be8f0603cf244513910c",
+    "segment": "other",
+    "subject": "fix(FAN-1780): isolate timing-sensitive Godot probes"
+   },
+   {
+    "commit": "a3810ea0929f790c8aeea511e4792dba490ff41e",
+    "segment": "other",
+    "subject": "ci(FAN-1701): cache Godot candidate imports"
+   },
+   {
+    "commit": "c20d38104210d11c238a9c0cfa08a993abf24cce",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1459): add weapon ultimate presentation contract",
+    "issue": "FAN-1459"
+   },
+   {
+    "commit": "68acfcf83970fc5a3a380a976f4a34e948f64db4",
+    "segment": "other",
+    "subject": "fix(FAN-1785): rebuild comfort band from tracked CSV"
+   },
+   {
+    "commit": "f14da034c99c7ab7c9ed6a7b46cff8bf8e7860e4",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1458): isolated weapon ultimate HUD widget with Codex tooltip",
+    "issue": "FAN-1458"
+   },
+   {
+    "commit": "342104441710bdbf890c856627f075548d8b156b",
+    "segment": "other",
+    "subject": "fix(FAN-1790): scrub inherited Godot exclusivity"
+   },
+   {
+    "commit": "b15ccc7755b9305c379b0ec7e50567e1d39c88c1",
+    "segment": "integration",
+    "subject": "Merge pull request #17 from FomaBy/agent/codex-dev-terra/2c70e92d"
+   },
+   {
+    "commit": "e3ba06894007543ead01dbce94ab4c2b23fa6d63",
+    "segment": "other",
+    "subject": "fix(FAN-1797): run import pre-pass scrub test under bash"
+   },
+   {
+    "commit": "3a08c13ec8fb3454665cb31bfe5bf16ffa25b9d9",
+    "segment": "integration",
+    "subject": "Merge pull request #19 from FomaBy/agent/fable/df60edff"
+   },
+   {
+    "commit": "865f6e7d47407b2864758196db2d642af01b3870",
+    "segment": "integration",
+    "subject": "Merge pull request #16 from FomaBy/agent/claude-opus-5/5a51d213"
+   },
+   {
+    "commit": "f8ecf650dd91ee2e173244e86bd971a0fdb36e93",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1461): add Berserk ultimate presentation timelines",
+    "issue": "FAN-1461"
+   },
+   {
+    "commit": "a2e9569487cd453373e8016eaad980fb11e7f75e",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1465): engineer weapon ultimate presentation pack",
+    "issue": "FAN-1465"
+   },
+   {
+    "commit": "6996cf203f4857b58bb8d4e2eeac713a108b99a1",
+    "segment": "gameplay",
+    "subject": "Fix take_damage feedback contract routing"
+   },
+   {
+    "commit": "8fd1e7e65fd611f56b23a6b14029388e23221cdb",
+    "segment": "other",
+    "subject": "fix(FAN-1465): commit the contact sheet script UID sidecar"
+   },
+   {
+    "commit": "69b119010535469c447331a6c5d5dbe2deb318cd",
+    "segment": "other",
+    "subject": "Add Godot UID sidecars for damage contract"
+   },
+   {
+    "commit": "f4938c04418e481751a4a3c518d7a66b20d7cbaa",
+    "segment": "other",
+    "subject": "FAN-1804 guard missing GDScript UID sidecars"
+   },
+   {
+    "commit": "fd43689035003f23031f6e4668c5341312f02fa4",
+    "segment": "integration",
+    "subject": "Merge pull request #23 from FomaBy/agent/codex-dev-sol/8a9190bd"
+   },
+   {
+    "commit": "a2cb5cbd5ec8fd186230612ba6350b1959448c1e",
+    "segment": "other",
+    "subject": "fix(FAN-1809): correct Berserk capture composition"
+   },
+   {
+    "commit": "36eaf6b75e34ee70eb2824bcbdd936e246c8b5e9",
+    "segment": "other",
+    "subject": "test(FAN-1814): neutralize .gdignore fixture directory name"
+   },
+   {
+    "commit": "314f6e13ae301d4549e364ae40eff813c6507797",
+    "segment": "integration",
+    "subject": "Merge pull request #24 from FomaBy/agent/claude-opus-5/f9462bf1"
+   },
+   {
+    "commit": "bca9ad225f9a2b69fe4388c499ac34b500101c71",
+    "segment": "integration",
+    "subject": "Merge pull request #22 from FomaBy/agent/codex-dev-terra-copy/ce3c749b"
+   },
+   {
+    "commit": "d5cea1496d634745c43b9ca97e0ef9fc7ec56347",
+    "segment": "other",
+    "subject": "fix(FAN-1817): review ultimate HUD typography"
+   },
+   {
+    "commit": "15db75a37f0f3554a681fb140854b998b21a6849",
+    "segment": "integration",
+    "subject": "FAN-1821: merge approved Berserk ultimate timelines"
+   },
+   {
+    "commit": "e4d90eead4e26208d7fd8a7b6a4fa0a8c00ca033",
+    "segment": "integration",
+    "subject": "Merge pull request #26 from FomaBy/agent/codex-dev-sol/031318cd"
+   },
+   {
+    "commit": "79d682db6ca3d977096f6bd39b7b62d25900748d",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1474): add Ranger ultimate presentation pack",
+    "issue": "FAN-1474"
+   },
+   {
+    "commit": "88e4bbd9c2383c65bf2ab5dcabdd63ad32ea7194",
+    "segment": "gameplay",
+    "subject": "FAN-1476: Elementalist weapon ultimate presentation pack",
+    "issue": "FAN-1476"
+   },
+   {
+    "commit": "4330c5383fc0c1c94b70b4eb3cbf01cbe40435b2",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1478): add Dark Mage ultimate timelines",
+    "issue": "FAN-1478"
+   },
+   {
+    "commit": "d914f7391fcd2a15d85fd103ce79fa16ca7f2637",
+    "segment": "gameplay",
+    "subject": "Add thief ultimate presentation timelines"
+   },
+   {
+    "commit": "51c246eb4cf65841b668066d189dcaadb32b39b1",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1468): add Soldier ultimate presentation timelines",
+    "issue": "FAN-1468"
+   },
+   {
+    "commit": "c4aaae29a5920c6ad96db1ebcb3237b936be144d",
+    "segment": "integration",
+    "subject": "Merge pull request #28 from FomaBy/agent/codex-dev-terra-copy/56e47227"
+   },
+   {
+    "commit": "bf956f44c3440427e8b156cc3ee3ffa76c725431",
+    "segment": "other",
+    "subject": "FAN-1834: center contact-sheet title on measured text, add text-bounds regression"
+   },
+   {
+    "commit": "fcaacc9defbe8b0160a8af537d7a6bef5fe02caf",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1836): fail closed ranger contact sheet bounds",
+    "issue": "FAN-1836"
+   },
+   {
+    "commit": "fb52277d40df26bbc5de318d17f4645f8f329e46",
+    "segment": "integration",
+    "subject": "Merge pull request #27 from FomaBy/agent/claude-opus-5/027a4c40"
+   },
+   {
+    "commit": "d7f0bd0686eade45f260e8b02f8bbc0b002addac",
+    "segment": "gameplay",
+    "subject": "feat(ultimates): add assassin presentation timelines"
+   },
+   {
+    "commit": "6f0a78eb0a9fa574ff05ea480a45222faa1b6d2a",
+    "segment": "other",
+    "subject": "fix(FAN-1838): skip assassin contact capture under headless"
+   },
+   {
+    "commit": "a7861661213e76f9c04be56c01f192d2ddb579da",
+    "segment": "integration",
+    "subject": "Merge pull request #29 from FomaBy/agent/codex-dev-sol/35035680"
+   },
+   {
+    "commit": "dc377a205ea34de55b6416fd4119e3c9267b7a11",
+    "segment": "integration",
+    "subject": "Merge pull request #30 from FomaBy/agent/fable/184d68b4"
+   },
+   {
+    "commit": "9ae10dd3763c8b16cf5a7a4a0ba9275d55915957",
+    "segment": "integration",
+    "subject": "Merge pull request #31 from FomaBy/agent/codex-dev-terra/a69782ce"
+   },
+   {
+    "commit": "369d21aa98c1e7ac386a7a4100821fb3d0724bab",
+    "segment": "integration",
+    "subject": "Merge pull request #32 from FomaBy/agent/claude-opus-5/0943c9ce"
+   },
+   {
+    "commit": "c0fa30044745c54ded9ebcf1e746d8280098f2ab",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1457): modular UltimateController, executor families, total boss cap",
+    "issue": "FAN-1457"
+   },
+   {
+    "commit": "c6bd220764e6568f06fcbea5b1f5215b46e2fe12",
+    "segment": "other",
+    "subject": "FAN-1835: validate contact sheet text bounds"
+   },
+   {
+    "commit": "ad3bb3f762ea847573896d424638dff63471ba4b",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1844): guard Ranger contact sheet pixels",
+    "issue": "FAN-1844"
+   },
+   {
+    "commit": "d7222d9687f0d711ccc867331c4bb22a523c8232",
+    "segment": "gameplay",
+    "subject": "refactor(FAN-1457): move the ultimate host adapter out of the Player monolith",
+    "issue": "FAN-1457"
+   },
+   {
+    "commit": "0c45bd839c23c49bee41658a535cf226ea3d2f86",
+    "segment": "other",
+    "subject": "chore(FAN-1457): add the generated .uid sidecar for the host adapter"
+   },
+   {
+    "commit": "d412eaf2ee115906b940f3a9a0d5d3f2efb87fd6",
+    "segment": "gameplay",
+    "subject": "feat: add Biologist ultimate presentation timelines"
+   },
+   {
+    "commit": "ab82a6c005045f3ad22b959b6913f772b161d5e3",
+    "segment": "gameplay",
+    "subject": "FAN-1484: Priest weapon ultimate presentation pack (3 timelines)",
+    "issue": "FAN-1484"
+   },
+   {
+    "commit": "1a925744e167eaeca3a17875ef06b52d60774233",
+    "segment": "gameplay",
+    "subject": "feat(vfx): add chemist weapon ultimate timelines"
+   },
+   {
+    "commit": "2d1666f03d8f4e5a5d123872808a8097188f42d3",
+    "segment": "gameplay",
+    "subject": "Add guitarist ultimate presentation timelines"
+   },
+   {
+    "commit": "90aa5001e0ff193ec2d09f795576dc6733ba2423",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1494): add Druid ultimate presentation timelines",
+    "issue": "FAN-1494"
+   },
+   {
+    "commit": "ced088fe44638f8c7fb7658f7ff555b0fc13a357",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1488): add Knight weapon ultimate presentation pack",
+    "issue": "FAN-1488"
+   },
+   {
+    "commit": "733ae7515de72757a610570bba50ab2bd5cb6a33",
+    "segment": "integration",
+    "subject": "Merge pull request #33 from FomaBy/agent/codex-dev-sol/72409fc9"
+   },
+   {
+    "commit": "397b6f2d925b55c6af684302ac746ffa5ef5d467",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1490): add Robot ultimate presentation pack",
+    "issue": "FAN-1490"
+   },
+   {
+    "commit": "7995e01076f1479083ff80a4245eee3d63f26142",
+    "segment": "other",
+    "subject": "fix(FAN-1818): select typography inventory suite for changed paths"
+   },
+   {
+    "commit": "7d8edcf7ff06498ef942eeefb7ad4fe00766b709",
+    "segment": "integration",
+    "subject": "Merge pull request #37 from FomaBy/agent/codex-dev-sol/31babd96"
+   },
+   {
+    "commit": "045935ec942228fd6bdada202c57db18774af508",
+    "segment": "integration",
+    "subject": "Merge origin/dev (7d8edcf7) into agent/fable/356a187e — FAN-1488 merge pass"
+   },
+   {
+    "commit": "76006bcc7593f7819be5f5e642905ea5165441c8",
+    "segment": "integration",
+    "subject": "Merge pull request #38 from FomaBy/agent/claude-opus-5/df1be7fe"
+   },
+   {
+    "commit": "c091658b47ee2eda34eadfb5bb7c3940c29d1043",
+    "segment": "integration",
+    "subject": "Merge pull request #40 from FomaBy/agent/codex-dev-terra/0c9aa0d2"
+   },
+   {
+    "commit": "8f228490f447df3d1b58073612d49adbe5996d86",
+    "segment": "integration",
+    "subject": "Merge pull request #41 from FomaBy/agent/codex-dev-terra-copy/63fa0518"
+   },
+   {
+    "commit": "8d1d4970915589f73ea7e32f396c209a78a61b1a",
+    "segment": "other",
+    "subject": "FAN-1859: enforce Priest timing rhythm distinction"
+   },
+   {
+    "commit": "9cc67496491dd09992f16f1899ce022df9311836",
+    "segment": "integration",
+    "subject": "Merge pull request #39 from FomaBy/agent/fable/356a187e"
+   },
+   {
+    "commit": "2cff3513f33e77f32eb815ce80d748135b3028dd",
+    "segment": "integration",
+    "subject": "Merge pull request #42 from FomaBy/agent/codex-dev-terra/e913293b"
+   },
+   {
+    "commit": "96dcf19bf4b647b67a47bcb9a9a90476da6dbf4c",
+    "segment": "other",
+    "subject": "ci(FAN-1869): add scheduled/manual dev-runtime-health full-profile job"
+   },
+   {
+    "commit": "300acd605054f9ac224f5733d8c5de3e16cb7427",
+    "segment": "gameplay",
+    "subject": "FAN-1486 add Doctor ultimate presentation timelines",
+    "issue": "FAN-1486"
+   },
+   {
+    "commit": "0d957f8259f44a310290a4fdda0fe8c5bd10894c",
+    "segment": "other",
+    "subject": "fix(FAN-1861): capture Doctor signature beats"
+   },
+   {
+    "commit": "c488c01e0c88f8b9b552582dcda9b8d929b1af1a",
+    "segment": "other",
+    "subject": "fix(FAN-1486): reuse shared contact sheet text fit"
+   },
+   {
+    "commit": "9ef6d3d155f6830d11caab4fdffd6c53da057d65",
+    "segment": "integration",
+    "subject": "Merge pull request #45 from FomaBy/agent/fable/41344b13"
+   },
+   {
+    "commit": "4c9a51254ed62dca71915d99185d566ea01951c7",
+    "segment": "integration",
+    "subject": "Merge pull request #43 from FomaBy/agent/fable/6d24ecc7"
+   },
+   {
+    "commit": "21f4c2e48e5ab487e0f01df61467980fd40f312b",
+    "segment": "integration",
+    "subject": "Merge pull request #44 from FomaBy/agent/codex-dev-terra/f3e51193"
+   },
+   {
+    "commit": "98b0b9dbc5088e2bb360a2662484668eb2bd8f86",
+    "segment": "other",
+    "subject": "fix(FAN-1868): pin dodge roll in on_low_hp guard smoke assert"
+   },
+   {
+    "commit": "2f2cb9e9dc83b2958edcf470cadfe3d6d432d7d8",
+    "segment": "integration",
+    "subject": "Merge pull request #47 from FomaBy/agent/claude-opus-5/a8bacd4c"
+   },
+   {
+    "commit": "0372dd7235de143f57359662cc636b2ff4b293ab",
+    "segment": "integration",
+    "subject": "Merge branch 'dev' into agent/codex-dev-terra-copy/540be6d0"
+   },
+   {
+    "commit": "4452e941eb80e7a1b6744a2443ac6d12165dac4d",
+    "segment": "integration",
+    "subject": "Merge pull request #36 from FomaBy/agent/codex-dev-terra-copy/540be6d0"
+   },
+   {
+    "commit": "25177e48675cd3e6847c464e84e23f23d7bb0f76",
+    "segment": "other",
+    "subject": "docs: specify clear attribute UI surfaces"
+   },
+   {
+    "commit": "8ca1b7559aa5b98378a1d1e4fb2c064aabf2ba9e",
+    "segment": "other",
+    "subject": "docs: rebuild attribute clarity viewport evidence"
+   },
+   {
+    "commit": "7c5075be3ecde270e157a1c77b116e00466d57d1",
+    "segment": "other",
+    "subject": "FAN-1900: замер spawn basic 3 в dev_console_smoke_test синхронно, до кадра живого боя"
+   },
+   {
+    "commit": "7493263bbbecd47dd847c65daafd0ed5df484a9a",
+    "segment": "other",
+    "subject": "FAN-1860 enforce ultimate timing distinctness"
+   },
+   {
+    "commit": "a1ab47db5a863ecc0ce225d1f196c4c46236521b",
+    "segment": "other",
+    "subject": "chore(FAN-1909): regenerate typography inventory for shifted player.gd sites"
+   },
+   {
+    "commit": "bbfb2a818713c5a8ef69bc0c9d4ddcb0609337ee",
+    "segment": "integration",
+    "subject": "Merge commit 'a1ab47db5a863ecc0ce225d1f196c4c46236521b' into HEAD"
+   },
+   {
+    "commit": "571462f33ad58e69c8faf842b1861e41ef0abc05",
+    "segment": "gameplay",
+    "subject": "feat(sniper): add weapon ultimate VFX timelines"
+   },
+   {
+    "commit": "1d79f6a5893a9b60c5a6fb6f5438c8af2b94c5b4",
+    "segment": "other",
+    "subject": "fix(FAN-1806): add sniper visual distinction uid"
+   },
+   {
+    "commit": "4894644d86caa4f91db6e6c1afe88b9e93acba3a",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1887): canonical 16-axis attribute registry with strict class-capability issuance",
+    "issue": "FAN-1887"
+   },
+   {
+    "commit": "0b7d4bbeae0e648fe5a4efeba98ab3b2b35e35db",
+    "segment": "integration",
+    "subject": "Merge pull request #48 from FomaBy/agent/fable/d7fbd95a"
+   },
+   {
+    "commit": "9644b10e9f2c506cd4640b27dc772cb86588f7f7",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1918): exercise Ranger pixel draw path",
+    "issue": "FAN-1918"
+   },
+   {
+    "commit": "c2d8227dbc8028b209d8b5911ad9cc11de76d8c6",
+    "segment": "integration",
+    "subject": "Merge pull request #21 from FomaBy/agent/codex-dev-terra/98c3c166"
+   },
+   {
+    "commit": "8846bcb073a4767490a2547328cb652b7c05a416",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1460): rare charge economy and 51-row ultimate balance harness",
+    "issue": "FAN-1460"
+   },
+   {
+    "commit": "ae13abb227e85c5217131fc95ca15522f8c8f9ea",
+    "segment": "integration",
+    "subject": "FAN-1860 enforce ultimate timing distinctness"
+   },
+   {
+    "commit": "7a099cee226de07b6c0f863caba808edddd35fa1",
+    "segment": "integration",
+    "subject": "Merge commit '9644b10e9f2c506cd4640b27dc772cb86588f7f7' into agent/codex-devops-terra/8392d890"
+   },
+   {
+    "commit": "b28955e8c448ecbab8fd2bdc4d960bd02b4ae317",
+    "segment": "other",
+    "subject": "FAN-1934 fail closed ultimate timing coverage"
+   },
+   {
+    "commit": "fbf55684a467cb15021f99e833be181d6819d40e",
+    "segment": "integration",
+    "subject": "Merge pull request #51 from FomaBy/agent/codex-dev-terra/0af6f2f4"
+   },
+   {
+    "commit": "8dc8c02cef8638b6bba412dea17a8a286de09638",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1927): weapon-aware live-consumer contract, single canonical view-model, context-aware offers",
+    "issue": "FAN-1927"
+   },
+   {
+    "commit": "c0a0e9568361af90f2b15b0d88d5c5b897f1f4b2",
+    "segment": "integration",
+    "subject": "Merge pull request #52 from FomaBy/agent/codex-dev-terra/a8e121ed"
+   },
+   {
+    "commit": "ee98830e70cb683254dbaac969edb6b1b99d4c0c",
+    "segment": "other",
+    "subject": "docs(FAN-1949): audit weapon ultimate executor contracts"
+   },
+   {
+    "commit": "b43c0c605580c69cfce839d374d4728a967e41b5",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1945): certify complete long-copy UI",
+    "issue": "FAN-1945"
+   },
+   {
+    "commit": "0f2d91cb3b66f145eaf635b7b05565c4a1747010",
+    "segment": "gameplay",
+    "subject": "Fix Level Up drawer overlap oracle"
+   },
+   {
+    "commit": "ee3857ba200f9a6bc5fde3a795c3cd738bebdb90",
+    "segment": "gameplay",
+    "subject": "Fix FAN-1963 UI contract rework",
+    "issue": "FAN-1963"
+   },
+   {
+    "commit": "ae02d278865f00b674ac8e5b28dfe8c34ec408f9",
+    "segment": "other",
+    "subject": "Regenerate semantic typography inventory"
+   },
+   {
+    "commit": "5d4a2e7bf66cf081c2218458c3cd8e277f7bc113",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1967): bound production tooltip hosts",
+    "issue": "FAN-1967"
+   },
+   {
+    "commit": "59dca50b99226a267098ef0bead8f834acbd2fdf",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1969): certify production tooltip hosts",
+    "issue": "FAN-1969"
+   },
+   {
+    "commit": "52aa311601b0996ff700b1a4e3bdf3275671c4bd",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1969): preserve production tooltip metadata",
+    "issue": "FAN-1969"
+   },
+   {
+    "commit": "99ec4e2ee6a4df98196b30fbeb788c4e99f5402f",
+    "segment": "other",
+    "subject": "test: harden attribute UI matrix oracles"
+   },
+   {
+    "commit": "4e36e665b25464c5d1e48a6b020f68382200ee93",
+    "segment": "other",
+    "subject": "FAN-1975 make native tooltip probe deterministic"
+   },
+   {
+    "commit": "341c0848ea8f76d32bfea77483db76106bec7a49",
+    "segment": "integration",
+    "subject": "Merge commit '4e36e665b25464c5d1e48a6b020f68382200ee93' into agent/codex-devops-terra/e3c1dbaf"
+   },
+   {
+    "commit": "3a80c9312682be84a113543931b00607b132c331",
+    "segment": "other",
+    "subject": "fix(FAN-1989): fail closed ultimate audit contracts"
+   },
+   {
+    "commit": "ff0aa1c265889bd0d00423dbe5944d68a2714016",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1993): centralize executor parameter contracts",
+    "issue": "FAN-1993"
+   },
+   {
+    "commit": "67f879959c086885cbe1938f240ca97929dd2fa4",
+    "segment": "other",
+    "subject": "test(FAN-1993): cover normalized ready fixtures"
+   },
+   {
+    "commit": "5aaca8c344af476d9d87e1634b88126c929682dd",
+    "segment": "other",
+    "subject": "test: align hero dossier suites with FAN-1887"
+   },
+   {
+    "commit": "99afd7ac9d9a375e3600061f47de02bfe2db2e01",
+    "segment": "gameplay",
+    "subject": "FAN-1447: Encounter Beat Director foundation + marked_target slice",
+    "issue": "FAN-1447"
+   },
+   {
+    "commit": "70c42b89eb0f54708f0cfb61b28b7f94687ccbeb",
+    "segment": "gameplay",
+    "subject": "test(FAN-1692): make encounter beat tests fail when the package breaks",
+    "issue": "FAN-1692"
+   },
+   {
+    "commit": "2df43948da88c6b22d1b1fcd6d44b562eaad52a6",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1999): stabilize encounter rework gates",
+    "issue": "FAN-1999"
+   },
+   {
+    "commit": "acc7b9bd18197159234194a620df37c4991fb18d",
+    "segment": "other",
+    "subject": "FAN-1704: adopt lean gameplay delivery default"
+   },
+   {
+    "commit": "a8d042fdb63ad8e5dfd6eaafdc7897b2255f3dbc",
+    "segment": "integration",
+    "subject": "Merge pull request #46 from FomaBy/integration/fan-1447-encounters"
+   },
+   {
+    "commit": "621d874ce78f6509b9d9abc59cf814f32672f43b",
+    "segment": "other",
+    "subject": "test: stabilize QA protocol report key boundary"
+   },
+   {
+    "commit": "815023353a22e1868b3386e728f14599de73ca18",
+    "segment": "integration",
+    "subject": "Merge remote-tracking branch 'origin/agent/codex-dev-terra-copy/15417d8f' into agent/codex-devops-terra/e6a5cb83"
+   },
+   {
+    "commit": "6a8f0b01638f2bfabb0c587f7c25eb7f2648f934",
+    "segment": "integration",
+    "subject": "Merge pull request #63 from FomaBy/agent/codex-dev-terra-copy/23edda35"
+   },
+   {
+    "commit": "f6c914223cf09b35042884b0f6684e26467a9ca6",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1451): add captain wave roles",
+    "issue": "FAN-1451"
+   },
+   {
+    "commit": "6db2a39e4fe007b5cc1ed13ba1dc81b1e52c1a53",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1454): add early clear pack",
+    "issue": "FAN-1454"
+   },
+   {
+    "commit": "93f119088d21ee3827ca8955e1ac5f20bba7c514",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1451): review captain HUD typography",
+    "issue": "FAN-1451"
+   },
+   {
+    "commit": "fd71b56642136ded7b7f26eef20d24261f66e336",
+    "segment": "gameplay",
+    "subject": "feat(FAN-2022): add encounter integration seams",
+    "issue": "FAN-2022"
+   },
+   {
+    "commit": "b87b328b64327359832f5adb9f4bdaf6fc4a3412",
+    "segment": "integration",
+    "subject": "Merge pull request #68 from FomaBy/agent/codex-dev-terra/2f97daa5"
+   },
+   {
+    "commit": "108538e6517087e7b54651f8bf0a025b9ac0f023",
+    "segment": "gameplay",
+    "subject": "feat(FAN-2025): add ultimate targeting primitives",
+    "issue": "FAN-2025"
+   },
+   {
+    "commit": "455369e3d68504e93bc41c8a633014976f29873c",
+    "segment": "integration",
+    "subject": "rework(FAN-2033): refresh encounter candidate onto current dev"
+   },
+   {
+    "commit": "b56b4ed8d582702c4355343f91c815cf82618e2e",
+    "segment": "integration",
+    "subject": "Merge pull request #67 from FomaBy/agent/codex-dev-terra-copy/a7c1d034"
+   },
+   {
+    "commit": "7e0d257a2bb81db59304c1ecac37d5138ef90207",
+    "segment": "integration",
+    "subject": "rework(FAN-2033): refresh candidate onto latest dev"
+   },
+   {
+    "commit": "d5456d4b6c12e62e8e43c6e739f63d83aaea9f9d",
+    "segment": "integration",
+    "subject": "Merge pull request #70 from FomaBy/agent/codex-dev-sol/6bff4422"
+   },
+   {
+    "commit": "4ca03c9f3c47c0c6c1a422a575aad768dbcf9e6a",
+    "segment": "gameplay",
+    "subject": "feat: add ultimate lifecycle foundation"
+   },
+   {
+    "commit": "4bbb3f5e892353a955a5c9b85df74b7ae9168d88",
+    "segment": "integration",
+    "subject": "rework(FAN-2040): refresh encounter candidate onto current dev"
+   },
+   {
+    "commit": "db4d25fb31a9a55257c3524668c92fba5383c5e2",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2040): restore context.combat and captain registry compatibility",
+    "issue": "FAN-2040"
+   },
+   {
+    "commit": "68f71f18a2e7d29479b195877e63981e88eed3a6",
+    "segment": "integration",
+    "subject": "Merge pull request #71 from FomaBy/agent/codex-dev-sol/76063126"
+   },
+   {
+    "commit": "db6063a14d6cb195e483d7b2a9e8473f5a92f4ec",
+    "segment": "integration",
+    "subject": "Merge pull request #72 from FomaBy/agent/claude-opus-5/26944f21"
+   },
+   {
+    "commit": "80f5a1d8dfa3ff9f8b97b7106a86c8280f089447",
+    "segment": "other",
+    "subject": "test(FAN-2046): admit exact ready ultimate pairs"
+   },
+   {
+    "commit": "6123d82ff48eece4c93df941932d33f4f41708e2",
+    "segment": "gameplay",
+    "subject": "rework(FAN-2051): rebase repair and deploy host primitives onto the ready-package contract",
+    "issue": "FAN-2051"
+   },
+   {
+    "commit": "0249df25d007dae2dd2813cc8efa45b31d2308e4",
+    "segment": "gameplay",
+    "subject": "feat(ultimates): implement biologist weapon mechanics"
+   },
+   {
+    "commit": "241ff8112f231efe7895c2a02d46a10eacf8ae8d",
+    "segment": "other",
+    "subject": "rework(FAN-2054): execute the delayed ready ultimate fixture in runtime smoke"
+   },
+   {
+    "commit": "089b7e40c344e493e9474fc0bbddd56d615756d2",
+    "segment": "other",
+    "subject": "rework(FAN-2057): align player contract with ready biologist packages"
+   },
+   {
+    "commit": "23f6a750a3b1d02bb252aa7f0cd94abcdea5529e",
+    "segment": "integration",
+    "subject": "Merge remote-tracking branch 'origin/dev' into agent/fable/2be0c1f5"
+   },
+   {
+    "commit": "038e6b1f027363894dee86c2da5811dbc13b80f1",
+    "segment": "gameplay",
+    "subject": "FAN-1466 implement Engineer weapon ultimates",
+    "issue": "FAN-1466"
+   },
+   {
+    "commit": "cf5b79182ac2860e08aa330703e54430222ba51d",
+    "segment": "integration",
+    "subject": "Merge pull request #80 from FomaBy/agent/claude-opus-5/103e53bb"
+   },
+   {
+    "commit": "a30ed52139f9efa4536350854d01f804af9cdc58",
+    "segment": "integration",
+    "subject": "Merge commit '038e6b1f027363894dee86c2da5811dbc13b80f1' into devops/fan-2063-integrate"
+   },
+   {
+    "commit": "f09ce10efe0ad629bdae84fd5f05c28ec553f059",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1464): implement sniper weapon ultimate mechanics",
+    "issue": "FAN-1464"
+   },
+   {
+    "commit": "f314b04eaa6c34f5e88914f80949e6779591c320",
+    "segment": "other",
+    "subject": "test(FAN-2082): audit discovered ultimate executors"
+   },
+   {
+    "commit": "59d9072269f29c1184b859683683a745fbf61e3c",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2084): derive ultimate ready-pair controller contract",
+    "issue": "FAN-2084"
+   },
+   {
+    "commit": "02efeb17e28ce791a1c36b21664b10e8824422d5",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1889): unify offensive scaling cadence",
+    "issue": "FAN-1889"
+   },
+   {
+    "commit": "4af6db12f2552c3f12bec16aee49974fe3269916",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1985): restore pool cadence gate",
+    "issue": "FAN-1985"
+   },
+   {
+    "commit": "2b953f351f70f242a4c9315e023f2dac3d40d3ed",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1995): repair crit and cadence rework",
+    "issue": "FAN-1995"
+   },
+   {
+    "commit": "af9e053fd855ee623ee82b57220deb432cc656b5",
+    "segment": "other",
+    "subject": "fix(FAN-2097): derive tracked-tween inventory from registry"
+   },
+   {
+    "commit": "9f27a405f7da45ed62636aa3375d049385d0b61e",
+    "segment": "other",
+    "subject": "chore(FAN-2101): refresh hosted quality evidence"
+   },
+   {
+    "commit": "02d38380c71f873da0c6a0728aa7e8506614ec07",
+    "segment": "other",
+    "subject": "test(FAN-2102): stabilize pool no-max oracle"
+   },
+   {
+    "commit": "61ec330b2e864addd662428b8fb2f3ba8b31a4a0",
+    "segment": "integration",
+    "subject": "Merge pull request #102 from FomaBy/agent/codex-dev-luna-5-6/fan-2101-static-quality"
+   },
+   {
+    "commit": "e984004c3bd6f8f76a846536df2390642a2d625c",
+    "segment": "integration",
+    "subject": "Merge pull request #103 from FomaBy/agent/codex-dev-terra/d002e5ea"
+   },
+   {
+    "commit": "e77da81cb38ff8e05cb0e8b542391bc643d3be0b",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1450): add seeded encounter decks",
+    "issue": "FAN-1450"
+   },
+   {
+    "commit": "22c235899e6a4f1391af087085b8a97301f324af",
+    "segment": "integration",
+    "subject": "Merge pull request #106 from FomaBy/agent/codex-dev-terra/fan-2104-deck-revalidation"
+   },
+   {
+    "commit": "9d862aa3b894c920682977229d997b990c229480",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2112): distinguish ultimate impact timing",
+    "issue": "FAN-2112"
+   },
+   {
+    "commit": "478b0d56ffd4c2d0c6ad30674f97fb5bd14a8979",
+    "segment": "integration",
+    "subject": "Merge pull request #107 from FomaBy/agent/codex-dev-sol/c2038794"
+   },
+   {
+    "commit": "1516020f539c2c6467b777fbf82311121b186879",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2091): connect Censer prevention counter",
+    "issue": "FAN-2091"
+   },
+   {
+    "commit": "946a6ca208867d36c4788f883662117894529d5a",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2091): clean Censer modifier synchronously",
+    "issue": "FAN-2091"
+   },
+   {
+    "commit": "14c14a28ec77a175977cba493520d8e2277b01c6",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2088): restore Thief package quality gate",
+    "issue": "FAN-2088"
+   },
+   {
+    "commit": "bac71430cadc280163c40a8ee9af746933c4048a",
+    "segment": "gameplay",
+    "subject": "rework(FAN-2067): stage Soldier ultimate packages",
+    "issue": "FAN-2067"
+   },
+   {
+    "commit": "4149e70b23867e510f4b51d5647586451e684324",
+    "segment": "gameplay",
+    "subject": "feat(ultimates): add Elementalist weapon mechanics",
+    "issue": "FAN-1477"
+   },
+   {
+    "commit": "413c03ab67f18d9ce23f4dbb2fb486c17d1c889f",
+    "segment": "gameplay",
+    "subject": "feat(FAN-2095): add guard prevention resource seam",
+    "issue": "FAN-2095"
+   },
+   {
+    "commit": "62dc205731c537102e89d9b901e0e80ff808f2c7",
+    "segment": "other",
+    "subject": "chore(FAN-2095): refresh typography inventory"
+   },
+   {
+    "commit": "dfdb51320a7f068d39f3da515c39af0da3ef1d11",
+    "segment": "measurement_contract",
+    "subject": "test(FAN-1513): add A5 conditional final A/B convergence pack",
+    "issue": "FAN-1513"
+   },
+   {
+    "commit": "fbf5c32652d854e3e9d03c690e46c0b7c9b153d6",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1491): add robot weapon ultimates",
+    "issue": "FAN-1491"
+   },
+   {
+    "commit": "afad3809dadf6f0a6f1da1d00b5bec98588aa802",
+    "segment": "gameplay",
+    "subject": "fix(FAN-1491): resolve robot ultimates within accepted host surfaces",
+    "issue": "FAN-1491"
+   },
+   {
+    "commit": "ca961a4edf9a1d823b319436ed83f4e249293b8b",
+    "segment": "integration",
+    "subject": "Merge pull request #111 from FomaBy/agent/codex-dev-terra-copy/3086bb49"
+   },
+   {
+    "commit": "a5eaf3674ff28107244a32881eaf7fb4f048f80e",
+    "segment": "integration",
+    "subject": "Merge PR #110: FAN-2067 Soldier rework (bac71430) into dev"
+   },
+   {
+    "commit": "e907c0fd9988f905dedc392e1204b62c1ecf57e5",
+    "segment": "other",
+    "subject": "ci(FAN-2132): drop full-history checkout from dev-runtime-health"
+   },
+   {
+    "commit": "465be0f223e8ad4691b414cc0aa4126427b16d16",
+    "segment": "integration",
+    "subject": "Merge pull request #109 from FomaBy/agent/codex-dev-luna-5-6/caffd171"
+   },
+   {
+    "commit": "af19df430230a3ba6f576b2f77b39dae49ba7607",
+    "segment": "integration",
+    "subject": "Merge FAN-1513 A5 conditional final candidate (dfdb5132) into dev"
+   },
+   {
+    "commit": "db33bcdae6061d6869a0b16ae9099b0537aa5344",
+    "segment": "integration",
+    "subject": "Merge FAN-1491 robot ultimates candidate afad3809 into dev (FAN-2140)"
+   },
+   {
+    "commit": "922768b7b55d4d3055f2b5854e0e5f4f11431fd5",
+    "segment": "integration",
+    "subject": "Merge FAN-1477 elementalist ultimates candidate 4149e70b into dev (FAN-2141)"
+   },
+   {
+    "commit": "73b9db35428a4cb6dc7aba6508f3ec7518bbef6b",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2142): make orbit_radius a true orbit radius",
+    "issue": "FAN-2142"
+   },
+   {
+    "commit": "fdcf9e4b6e90045f35ff60b7702f9eb1a914f79f",
+    "segment": "integration",
+    "subject": "Merge pull request #108 from FomaBy/agent/codex-dev-sol/3863a468"
+   },
+   {
+    "commit": "7585e90a2cf0f492e28c6e380e185028d558eedc",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1495): implement druid weapon ultimates",
+    "issue": "FAN-1495"
+   },
+   {
+    "commit": "c290a05c89d2935cb857c91f63891f5b3c4900d3",
+    "segment": "integration",
+    "subject": "Merge PR #113: dev-runtime-health checkout fetch-depth fix (FAN-2132, candidate e907c0fd)"
+   },
+   {
+    "commit": "c33b04151e8323c5d2ae35f37b0616be5e74d547",
+    "segment": "other",
+    "subject": "fix(FAN-2129): restore tracked-tween inventory and make ownership falsifiable"
+   },
+   {
+    "commit": "e07f51f1112753c1946cd4043f7a67a6b8eec4a6",
+    "segment": "gameplay",
+    "subject": "feat(FAN-1487): add doctor weapon ultimates",
+    "issue": "FAN-1487"
+   },
+   {
+    "commit": "d5b14da7693286f5b4f07960d8510f15d1953dee",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2090): route Player ultimate charge through UltimateChargeLedger",
+    "issue": "FAN-2090"
+   },
+   {
+    "commit": "587c45d9d77a1323112ab98b0fc0e90dbaaad256",
+    "segment": "gameplay",
+    "subject": "fix(FAN-2090): declare truthful Doctor cast-chain lifecycles",
+    "issue": "FAN-2090"
+   },
+   {
+    "commit": "20aa0e69d8aa62d913494821323870874e853d40",
+    "segment": "other",
+    "subject": "chore(FAN-2090): regenerate SCRUM-1061 typography inventory"
+   },
+   {
+    "commit": "c0825e4226f00e5d8b280a08b8ce675463f8e044",
+    "segment": "other",
+    "subject": "fix(FAN-2144): select tracked-tween suite for class-package changes"
+   },
+   {
+    "commit": "a71cd81c0430e3cfb03c547ea276f2357c996d3b",
+    "segment": "integration",
+    "subject": "Merge remote-tracking branch 'origin/dev' into agent/claude-opus-5/5c90abb0"
+   },
+   {
+    "commit": "0df83623ad94bf79828fc3cfa1659cf1d9c12213",
+    "segment": "other",
+    "subject": "fix(FAN-2090): register the Doctor pairs in the tracked-tween inventory"
+   },
+   {
+    "commit": "d5c178812f61c74b77c183ac1239901fa54fcfe0",
+    "segment": "other",
+    "subject": "fix(FAN-2090): model the per-encounter gate in the tracked-tween guard"
+   },
+   {
+    "commit": "e4d1b9a5c2f563c2b02baf685f5cc5d4a9c637ed",
+    "segment": "integration",
+    "subject": "Merge remote-tracking branch 'origin/dev' into agent/claude-opus-5/5c90abb0"
+   },
+   {
+    "commit": "1421853749cef5512b76561648ddbe17e68b51c5",
+    "segment": "other",
+    "subject": "fix(godot_gate): recognize Godot 4.7 script-load failure phrasing"
+   },
+   {
+    "commit": "89d24930436070903ec3ef629c76d0361d2b797a",
+    "segment": "other",
+    "subject": "fix(FAN-2163): align artifact family roll expectation with the 28-family canon"
+   },
+   {
+    "commit": "d09c516fd9e7f591a842f183b7e494d022410511",
+    "segment": "integration",
+    "subject": "Merge pull request #115 from FomaBy/agent/claude-opus-5/cefab475"
+   },
+   {
+    "commit": "bdb93daada8cf36ba3229e2745222dbe287d1407",
+    "segment": "integration",
+    "subject": "Merge FAN-2142: elementalist_orb_ring orbit_radius fix (QA-approved 73b9db35, FAN-2145)"
+   },
+   {
+    "commit": "9553d889c3ac90dd0946be4e6f63c915059d47c4",
+    "segment": "gameplay",
+    "subject": "Fix Elementalist orb ring radii contracts"
+   },
+   {
+    "commit": "965dc041a765e844ca7d1121199590906eea80f2",
+    "segment": "integration",
+    "subject": "Merge origin/dev (bdb93daa) into agent/fable/fan-2090: FAN-2173 re-issue of FAN-2090 candidate on current dev head"
+   },
+   {
+    "commit": "79bc5d87397a72afb6ddb304f1a6b6680a7511ea",
+    "segment": "other",
+    "subject": "fix(FAN-2173): register the druid pairs in the tracked-tween inventory"
+   },
+   {
+    "commit": "3f3788fd7809c14a6aa328cc6a1d38ea3841b9e8",
+    "segment": "integration",
+    "subject": "Merge pull request #123 from FomaBy/agent/codex-dev-luna-5-6/83dc7e68"
+   },
+   {
+    "commit": "fda9971bbe39b39088926c99d929cd147f3a5e65",
+    "segment": "integration",
+    "subject": "Merge pull request #118 from FomaBy/agent/fable/fan-2090"
+   }
+  ]
+ },
+ "notes": [
+  "Godot renders each projection cell with printf %.2f; the digests above are reproduced by tools/a5_balance_report.gd.",
+  "raw.json.gz, per_weapon.csv and report.md are the CURRENT regenerable artifacts a successful --mode=full rewrites; the immutable f09 dataset lives only in tests/fixtures/a5_f09_oracle.json.gz.",
+  "FAN-1575 atomic landing: divergence from f09 is systemic (FAN-2126; 47/51 pairs at measurement base 478b0d56). cause_issues are derived mechanically as the gameplay inventory issues whose commits change the shared damage/cadence/crit/attribute formula files (scripts/player.gd, class_weapon.gd, stat_formulas.gd, progression_data*.gd, attribute_contract.gd); druid/summon_amulet keeps its historical FAN-1585/FAN-1596 attribution. Per the PM structural ruling no per-cell bisection is performed.",
+  "segment=gameplay marks non-merge commits touching non-.uid files under scripts/ or scenes/; integration marks merge commits; measurement_contract marks A5 tool/test/artifact commits."
+ ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema_id": "fantasydisk.weapon_ultimate_profile",
+  "schema_version": 1,
+  "catalog_contract": {
+    "class_count": 17,
+    "profiles_per_class": 3,
+    "profile_count": 51,
+    "composition": "directory_per_class",
+    "runtime_manifest": false
+  },
+  "implementation_states": [
+    "declared",
+    "ready"
+  ],
+  "executor_primitives": {
+    "registered_ids": [
+      "aim_context",
+      "priority_target_selector",
+      "line_pierce_geometry",
+      "pattern_geometry",
+      "stateful_target_ledger",
+      "per_target_damage_cap",
+      "control_resistance_policy",
+      "summon_interaction_contract",
+      "ordered_step_composition"
+    ],
+    "parameter_contracts": {
+      "aim_context": {
+        "max_range": "finite number > 0",
+        "target_mode": "host_aim|nearest_target"
+      },
+      "priority_target_selector": {
+        "center": "source|target",
+        "radius": "finite number >= 0",
+        "limit": "integer >= 0",
+        "priority": "nearest|aimed|highest_hp|marked|densest_cluster",
+        "hint": "policy-specific exact dictionary"
+      },
+      "line_pierce_geometry": {
+        "start": "source|target",
+        "direction": "aim|source_to_target",
+        "length": "finite number >= 0",
+        "half_width": "finite number >= 0",
+        "limit": "integer >= 0"
+      },
+      "pattern_geometry": {
+        "center": "source|target",
+        "pattern": "ring|grid|radial|polygon|seeded_annulus",
+        "params": "pattern-specific exact dictionary",
+        "hit_radius": "finite number >= 0",
+        "target_limit": "integer >= 0"
+      },
+      "stateful_target_ledger": {
+        "operation": "record|add|consume",
+        "target_source": "targets|primary_target",
+        "key": "non-empty string",
+        "value": "finite number",
+        "event_id": "non-empty idempotency key"
+      },
+      "per_target_damage_cap": {
+        "cap_fraction": "finite number in [0, 1]",
+        "cap_flat": "finite number >= 0; fraction and flat may not both be zero"
+      },
+      "control_resistance_policy": {
+        "normal": "exact displacement/duration/movement-lock/execute policy",
+        "epic": "exact displacement/duration/movement-lock/execute policy",
+        "boss": "exact displacement/duration/movement-lock/execute policy"
+      },
+      "summon_interaction_contract": {
+        "group_id": "non-empty player-owned summon group",
+        "temporary_cap": "integer >= 0",
+        "snapshot_properties": "unique string array",
+        "setup": "deterministic scene setup dictionary"
+      },
+      "ordered_step_composition": {
+        "steps": "non-empty ordered Array[{at, primitive_id|family, params}]"
+      }
+    }
+  },
+  "class_package_contract": {
+    "data_root": "res://data/ultimates/classes",
+    "executor_root": "res://scripts/ultimates/classes",
+    "pairing": "identical relative <class>/** path with .json/.gd extensions",
+    "data_shape": "ready binding overlay for one immutable catalog profile",
+    "executor_constants": [
+      "PROFILE_ID",
+      "EXECUTOR_ID"
+    ],
+    "executor_methods": [
+      "static parameter_contract() -> Dictionary",
+      "static execute(activation) -> float"
+    ],
+    "missing_or_invalid_pair": "legacy_safe"
+  },
+  "required_profile_fields": [
+    "weapon_id",
+    "implementation_state",
+    "fallback_policy_id",
+    "identity",
+    "targeting",
+    "charge",
+    "cast_phases",
+    "executor",
+    "total_boss_cap",
+    "presentation",
+    "cleanup_policy"
+  ],
+  "required_phase_kinds": [
+    "acquire",
+    "windup",
+    "execute",
+    "active",
+    "recover",
+    "cleanup"
+  ],
+  "migration_contract": {
+    "declared_profiles_are_executable": false,
+    "declared_profile_resolution": "legacy_class_ultimate",
+    "unknown_pair_resolution": "fail_closed",
+    "legacy_fallback_bypasses_weapon_contract": true,
+    "save_schema_changes": false
+  },
+  "boss_cap_semantics": {
+    "field": "total_boss_cap",
+    "scope": "whole_activation",
+    "legacy_per_hit_boss_cap_reused": false,
+    "declared_value": null
+  }
+}

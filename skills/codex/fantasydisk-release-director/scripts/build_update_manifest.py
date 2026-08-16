@@ -6,18 +6,28 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
+import sys
 from pathlib import Path
 
+
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version, release_version_key
 
 REPOSITORY = "FomaBy/FantasyDisk-Releases"
 SCHEMA_VERSION = 1
 FIRST_UPDATER_VERSION = "0.2.2"
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
-
-
 class ManifestError(RuntimeError):
     """The release package cannot produce a trustworthy update manifest."""
+
+
+def _version_key(version: str) -> tuple[int, int, int, int]:
+    try:
+        return release_version_key(version)
+    except ValueError as error:
+        raise ManifestError(f"invalid release version: {error}: {version}") from error
 
 
 def _sha256(path: Path) -> str:
@@ -31,14 +41,9 @@ def _sha256(path: Path) -> str:
 def build_manifest(
     *, version: str, release_dir: Path, minimum_supported_version: str = FIRST_UPDATER_VERSION
 ) -> dict:
-    if not SEMVER_RE.fullmatch(version):
-        raise ManifestError(f"version must be strict SemVer X.Y.Z: {version}")
-    if not SEMVER_RE.fullmatch(minimum_supported_version):
-        raise ManifestError(
-            "minimum supported version must be strict SemVer X.Y.Z: "
-            f"{minimum_supported_version}"
-        )
-    if tuple(map(int, minimum_supported_version.split("."))) > tuple(map(int, version.split("."))):
+    version_key = _version_key(version)
+    minimum_supported_key = _version_key(minimum_supported_version)
+    if minimum_supported_key > version_key:
         raise ManifestError("minimum supported version cannot be newer than the release")
     tag = f"v{version}"
     asset_names = {

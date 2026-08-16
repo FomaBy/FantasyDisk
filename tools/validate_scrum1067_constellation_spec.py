@@ -50,7 +50,7 @@ REQUIRED_SCENARIOS = [
     "no_meta", "path_5_of_6", "path_6_of_6", "three_paths_6_of_6",
     "full_20_of_20", "a5_live",
 ]
-APPROVED_FINALS_SHA256 = "54d3f2a3debdf5db90f854cb0cc00c8ad5df537784efb0975edb62b291e7f510"
+APPROVED_FINALS_SHA256 = "71dcae59d5be86513fc8d77fd34e5be092078e04cdfb8d6ff1f9c29fb1a8afbc"
 APPROVED_BASELINE_SHA256 = "7af15c21e294c81c69b7438606c86c9eaf3777d337cdbea9847b40c5975014f7"
 
 

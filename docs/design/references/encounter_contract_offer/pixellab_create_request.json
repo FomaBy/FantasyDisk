@@ -1,0 +1,39 @@
+{
+  "tool": "mcp__pixellab__create_ui_asset",
+  "name": "FantasyDisk Encounter Contract Offer Modal",
+  "description": "Textless 16:9 modal UI frame layer for FantasyDisk combat. Unified D&D plus Dark Fantasy Dragon family: blackened iron, obsidian, worn brass, restrained ruby ember accents, crisp orthographic game UI. Build one centered modal window with two inner information panels and two equal action buttons. Preserve strict empty calm content interiors: title/subtitle band in the upper inner modal, a left risk panel with icon well and separate label/value/body zones, a right reward panel with icon well and separate label/value/cap/body zones, and two button label wells. Decorative dragon claws, gems, metal rails, seams, highlights, smoke, lettering and pseudo-runes must stay outside all content interiors. No readable text, no letters, no numbers, no pseudo-text, no logo, no watermark, no characters, no scenic background, no full-canvas illustration.",
+  "width": 688,
+  "height": 384,
+  "no_background": true,
+  "seed": 20932235,
+  "color_palette": "obsidian black, blackened iron, worn antique brass, muted ruby, restrained amber ember",
+  "elements": ["window", "panel", "button", "icon_button"],
+  "pieces": [
+    {"id": "modal_outer_frame", "kind": "rounded_rect", "x": 72, "y": 40, "w": 368, "h": 208, "radius": 18, "label": "empty modal interior surrounded by ornate frame"},
+    {"id": "risk_panel_frame", "kind": "rounded_rect", "x": 94, "y": 101, "w": 147, "h": 64, "radius": 12, "label": "empty risk information panel"},
+    {"id": "reward_panel_frame", "kind": "rounded_rect", "x": 271, "y": 101, "w": 147, "h": 64, "radius": 12, "label": "empty capped reward information panel"},
+    {"id": "risk_icon_well", "kind": "circle", "x": 108, "y": 133, "r": 14, "label": "empty risk icon well"},
+    {"id": "reward_icon_well", "kind": "circle", "x": 285, "y": 133, "r": 14, "label": "empty reward icon well"},
+    {"id": "accept_button_frame", "kind": "rounded_rect", "x": 133, "y": 190, "w": 108, "h": 23, "radius": 8, "label": "empty accept action label well"},
+    {"id": "decline_button_frame", "kind": "rounded_rect", "x": 271, "y": 190, "w": 108, "h": 23, "radius": 8, "label": "empty decline action label well"}
+  ],
+  "prompt_contract": {
+    "base_mockup": "1920x1080",
+    "runtime_text_baked": false,
+    "background": "existing gameplay underlay only; no new scenic/full-canvas background",
+    "planned_godot_nodes": {
+      "modal_outer_frame": "NinePatchRect or StyleBoxTexture",
+      "risk_panel_frame": "PanelContainer",
+      "reward_panel_frame": "PanelContainer",
+      "accept_button_frame": "Button",
+      "decline_button_frame": "Button",
+      "risk_icon_well": "TextureRect",
+      "reward_icon_well": "TextureRect"
+    }
+  },
+  "planning_gate": {
+    "decision": "ready_for_image",
+    "report": "docs/design/mockups/encounter_contract_offer/ui_plan.report.json",
+    "guide": "docs/design/mockups/encounter_contract_offer/ui_plan_guide.png"
+  }
+}

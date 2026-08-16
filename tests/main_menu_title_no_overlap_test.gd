@@ -30,10 +30,9 @@ func _initialize() -> void:
 		dump_file.store_string("\n".join(dump_lines))
 		dump_file.close()
 
-	print("Main menu title no-overlap test passed (%d button checks across %d viewports)." % [
+	_finish("Main menu title no-overlap test passed (%d button checks across %d viewports)." % [
 		total_checked, TARGET_VIEWPORTS.size(),
 	])
-	quit()
 
 
 func _validate_main_menu_size(viewport_size: Vector2i, dump_lines: PackedStringArray) -> int:

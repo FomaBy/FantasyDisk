@@ -1,0 +1,177 @@
+{
+	"contract": {
+		"fragment_schema": "fan1514.a5-defensive-fragment.v1",
+		"max_event_cv": 0.35,
+		"pack_contract": "a5.scenario-pack.v1",
+		"pack_id": "a5_defensive_reactive",
+		"quality": {
+			"move_speed": {
+				"minimum": 1.0,
+				"unit": "units/s",
+				"window_seconds": 0.5
+			},
+			"pickup_radius": {
+				"inside_margin": 0.1,
+				"outside_margin": 0.1,
+				"unit": "units"
+			}
+		},
+		"seeds": [
+			151401,
+			151402,
+			151403
+		]
+	},
+	"fragment_schema": "fan1514.a5-defensive-fragment.v1",
+	"limitations": [
+		"A/B is scoped to the named final; ordinary incoming damage has no public source signal outside guard-prevention telemetry.",
+		"A missing runtime event remains red through defensive_family_pack.gd rather than being inferred from a formula."
+	],
+	"pack_contract": "a5.scenario-pack.v1",
+	"pack_id": "a5_defensive_reactive",
+	"quality": {
+		"move_speed": {
+			"distance": 156.5,
+			"speed": 313.0,
+			"unit": "units/s",
+			"window_seconds": 0.5
+		},
+		"pickup_radius": {
+			"inside_collected": true,
+			"outside_collected": false,
+			"radius": 140.0,
+			"unit": "units"
+		}
+	},
+	"reactive": {
+		"absorb": {
+			"disabled": {
+				"expected_events": 0,
+				"final_damage": 0.0,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"enabled": {
+				"expected_events": 3,
+				"final_damage": 6.611999999999999,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"event_samples": [
+				1,
+				1,
+				1
+			],
+			"limitations": [
+				"fixed seeds [151401, 151402, 151403]"
+			],
+			"variance": 0.0
+		},
+		"block": {
+			"disabled": {
+				"expected_events": 0,
+				"final_damage": 0.0,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"enabled": {
+				"expected_events": 3,
+				"final_damage": 41.51347200000001,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"event_samples": [
+				1,
+				1,
+				1
+			],
+			"limitations": [
+				"fixed seeds [151401, 151402, 151403]"
+			],
+			"variance": 0.0
+		},
+		"dodge": {
+			"disabled": {
+				"expected_events": 0,
+				"final_damage": 0.0,
+				"incoming_hits": 96,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"enabled": {
+				"expected_events": 3,
+				"final_damage": 23.520000000000437,
+				"incoming_hits": 96,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"event_samples": [
+				1,
+				1,
+				1
+			],
+			"limitations": [
+				"fixed seeds [151401, 151402, 151403]"
+			],
+			"variance": 0.0
+		},
+		"retaliation": {
+			"disabled": {
+				"expected_events": 0,
+				"final_damage": 0.0,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"enabled": {
+				"expected_events": 3,
+				"final_damage": 7.896000000004278,
+				"incoming_hits": 3,
+				"sources": [
+					"Player.take_damage"
+				]
+			},
+			"event_samples": [
+				1,
+				1,
+				1
+			],
+			"limitations": [
+				"fixed seeds [151401, 151402, 151403]"
+			],
+			"variance": 0.0
+		}
+	},
+	"survivability": {
+		"effective_health": 177.77777777777777,
+		"hp_loss": 22.5,
+		"incoming_amount": 40.0,
+		"lifesteal_healed": 4.0,
+		"mitigated_amount": 17.5,
+		"samples": [
+			22.5,
+			22.5,
+			22.5
+		],
+		"shield_added": 3.225806451612903,
+		"source": "fan1514:canonical_incoming",
+		"sources": [
+			"fan1514:canonical_incoming"
+		],
+		"sustain_healed": 6.0,
+		"ttd_seconds": 2.5,
+		"variance": 0.0
+	},
+	"verdict": "green"
+}

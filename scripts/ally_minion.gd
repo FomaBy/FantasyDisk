@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 
 const ALLY_VISUAL_PATHS := {
@@ -63,6 +64,9 @@ const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 var _attack_cooldown := 0.0
 var _attack_anim_time := 0.0
 var _last_facing_right := false
+# Stable spawn-derived direction for the guard formation. ObjectID is opaque
+# runtime identity and must not affect gameplay geometry or timing.
+var _guard_formation_direction := Vector2.RIGHT
 # SCRUM-946: текущий ракурс 4-направленного статичного арта (см.
 # DIRECTIONAL_ALLY_VISUAL_PATHS); юниты без направленного арта его не трогают.
 var _directional_facing := "south"
@@ -99,6 +103,11 @@ func _ready() -> void:
 func set_visual_id(visual_id: String) -> void:
 	ally_visual_id = visual_id
 	_apply_visual()
+
+
+func set_guard_formation_direction(direction: Vector2) -> void:
+	if direction.length_squared() > 0.001:
+		_guard_formation_direction = direction.normalized()
 
 
 func set_combat_profile(profile: Dictionary) -> void:
@@ -169,7 +178,7 @@ func constellation_alpha_pounce(target: Node2D, damage_ratio: float) -> bool:
 	var pounce_damage := damage * clampf(damage_ratio, 0.0, 1.0)
 	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
 	if constellation_owner != null and is_instance_valid(constellation_owner) and constellation_owner.has_method("meta_damage_multiplier"):
-		pounce_damage *= float(constellation_owner.call("meta_damage_multiplier", {"weapon_id": constellation_weapon_id, "attack_mode": "summon", "damage_type": "physical", "summon_role": summon_role, "constellation_secondary": true}, target))
+		pounce_damage *= _owner_damage_multiplier(constellation_owner, {"weapon_id": constellation_weapon_id, "attack_mode": "summon", "damage_type": "physical", "summon_role": summon_role, "constellation_secondary": true}, target)
 	_deal_typed_damage(target, pounce_damage, {"damage_type": "physical", "constellation_final": "pack_alpha_pounce_guard"})
 	_play_attack_animation(to_target)
 	return true
@@ -311,13 +320,17 @@ func _follow_guard_position() -> void:
 	if owner_node == null or not is_instance_valid(owner_node):
 		velocity = Vector2.ZERO
 		return
-	var guard_offset := Vector2(56.0, 0.0).rotated(float(get_instance_id() % 360) * PI / 180.0)
+	var guard_offset := _guard_formation_direction * 56.0
 	var guard_position := owner_node.global_position + guard_offset
 	var to_guard := guard_position - global_position
 	if to_guard.length() <= 18.0:
 		velocity = Vector2.ZERO
 	else:
 		velocity = to_guard.normalized() * move_speed
+
+
+func _owner_damage_multiplier(owner: Node, context: Dictionary, target: Node2D) -> float:
+	return float(owner.call("meta_damage_multiplier", context, target))
 
 
 func _try_attack(target: Node2D) -> void:
@@ -333,7 +346,7 @@ func _try_attack(target: Node2D) -> void:
 			"damage_type": "magic" if damage_family == "magic" else "physical",
 			"summon_role": summon_role,
 		}
-		final_damage *= float(constellation_owner.call("meta_damage_multiplier", constellation_context, target))
+		final_damage *= _owner_damage_multiplier(constellation_owner, constellation_context, target)
 	# SCRUM-902: попадания призыва красятся семьёй урона записи ростера
 	# (physical-melee / magic-ranged) — единый feedback-контракт enemy.take_damage.
 	var hit_feedback := {"damage_type": "magic" if damage_family == "magic" else "physical"}

@@ -9,6 +9,29 @@
 ```bash
 bash scripts/onboard.sh
 ```
+Для release skill это не обычная ссылка на текущий checkout: onboarding сначала
+собирает и полностью проверяет managed mirror в
+`~/.codex/skill-mirrors/FantasyDisk/fantasydisk-release-director`, затем
+сохраняет проверенное дерево в immutable version store и одной atomic selection
+commit point переключает `~/.codex/skills/fantasydisk-release-director` на
+полностью готовую версию. Непосредственно перед каждой atomic activation
+onboarding заново проверяет физическую identity managed parent, stage, marker
+и destination через descriptor-relative no-follow операции; подмена прерывает
+run без success signal. Canonical mirror pointer обновляется после этого
+commit point; старые version trees не удаляются во время обновления, поэтому
+читатель, уже разрешивший старую версию, может дочитать её целиком. Обновления
+сериализуются managed lock; после обычного сбоя или SIGTERM временный residue
+убирается только в том же live-процессе после проверки физической идентичности.
+После SIGKILL residue и ownership marker намеренно сохраняются: следующий
+onboarding останавливается до изменения selection/mirror и просит оператора
+удалить или проверить эти пути вручную. Persistent marker, PID, режим, имя или
+содержимое никогда не считаются доказательством авторства для cross-run cleanup.
+Завершённый Multica task/worktree не остаётся persistent source. Неизвестная
+реальная локальная папка сохраняется и останавливает
+onboarding; private version store создаётся только как реальная директория внутри
+managed mirror parent, а symlink, файл, FIFO, socket или другой неожиданный тип
+останавливает onboarding до любого чтения или удаления под этим путём. Внешняя
+или dangling ссылка никогда не используется как source.
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
 (в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
 **Правило №1:** все задачи создаются в и берутся из **Multica** (проект
@@ -16,7 +39,12 @@ bash scripts/onboard.sh
 `docs/process/task_board.md` лишь зеркала/кэш. Legacy Jira (`SCRUM-*`) — read-only
 исторический архив, не источник новой работы (см.
 [`docs/process/jira_to_multica_cutover.md`](docs/process/jira_to_multica_cutover.md)).
-Ветки: `main`=релиз, `dev`=работа (default), теги `vX.Y.Z`=версии.
+Ветки: `main`=релиз, `dev`=работа (default), immutable теги `v<version>`=версии.
+
+Текущий опубликованный stable release: `0.2.4`. Обычный продуктовый релиз
+использует `X.Y.Z`; технический релиз с изменёнными байтами и без новых игровых
+функций использует `X.Y.Z.R`. Для обоих форм tag `v<version>` и опубликованные
+байты immutable; повторная доставка не меняет их.
 
 ## Требования
 - **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
@@ -43,9 +71,11 @@ python3 tools/quality_gate.py --profile changed
 ```bash
 python3 tools/quality_gate.py --profile full
 ```
-GitHub Actions выполняет certifying static profile через `--static-only`; он
-ловит case/version/Windows preset/architecture/credential regressions, но не
-заменяет локальный Godot `changed`/`full`.
+GitHub Actions на pull request и merge queue выполняет `--profile changed` на
+закреплённом Godot `4.7.stable.official.5b4e0cb0f`: static checks плюс
+Godot-suites, отобранные по diff. Push в `dev` перепроверяет уже прошедший гейт
+кандидат и остаётся на `--static-only`, который Godot не запускает. Полный
+`--profile full` остаётся локальным/release-гейтом.
 Нативный Windows-profile (PowerShell; предварительно задать путь к Godot):
 ```powershell
 $env:GODOT_BIN = "C:\Godot\Godot_v4.7-stable_win64.exe"
@@ -63,28 +93,32 @@ python tools/quality_gate.py --profile windows
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
 - `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
 - `release_webhook.cfg` — Discord-webhook публикации релизов.
-- `fantasydisk_release.session` — legacy Telethon-сессия только для релиза 0.2.2.
+- `fantasydisk_release.session` — текущая локальная Telethon-сессия (секрет) для
+  обязательной Telegram-доставки файлов каждого stable release.
 
 ## Сборка релиза (macOS)
 
-Текущий одобренный канал — явный `unsigned`:
-
-```bash
-FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <версия>
-```
-
-Строгий подписанный канал включается отдельно, когда доступны Apple credentials:
+Текущий production-канал — строгий `signed`:
 
 ```bash
 export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
-export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
-FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <версия>
+export MACOS_NOTARY_PROFILE="<keychain-profile>" # credentials stored in Keychain
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
 ```
 
-Оба канала fail-closed и не переключаются молча. `signed` требует Developer ID,
-Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
-при заданных Apple credentials, пропускает только Apple trust-проверки и честно
-показывает игроку инструкцию Gatekeeper «Всё равно открыть».
+Исторический fallback FAN-1121 остаётся только явно выбираемым при отсутствии
+Apple credentials:
+
+```bash
+FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>
+```
+
+Оба канала fail-closed и не переключаются молча. Текущий `signed` требует
+Developer ID, Apple notarization/stapling и успешный `spctl`; `unsigned`
+отказывается работать при заданных Apple credentials, ставит только локальную
+ad-hoc подпись для проверки целостности bundle и пропускает Apple trust-проверки.
+Она не является подписью Developer ID: явно relabelled unsigned-клиент сохраняет
+честную инструкцию Gatekeeper «Всё равно открыть».
 Проверенный пакет публикуется только в public binary-only repository
 `FomaBy/FantasyDisk-Releases` через bundled `github_release_publish.py`; клиент
 0.2.2+ читает `update-manifest.json` из `releases/latest` этого repository.

@@ -29,8 +29,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-1093 compact version corner passed four viewports, future version and live resize.")
-	quit(0)
+	_finish("SCRUM-1093 compact version corner passed four viewports, future version and live resize.")
 
 
 func _validate_fresh(viewport_size: Vector2i) -> void:

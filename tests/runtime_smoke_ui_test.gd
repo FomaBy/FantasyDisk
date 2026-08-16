@@ -46,8 +46,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Runtime UI smoke suite passed.")
-	quit()
+	_finish("Runtime UI smoke suite passed.")
 
 
 func _test_settings_return_origins(main_scene: PackedScene) -> void:

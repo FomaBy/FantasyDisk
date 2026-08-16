@@ -961,19 +961,23 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   PixelLab and the OpenAI Images API were not used. Provenance and responsive
   evidence live in the FAN-1098 design package documented above.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
-  art. FAN-1097 uses a cohesive 2560x1440 cinematic dark-fantasy scene generated
-  and corrected through the built-in OpenAI Image Generator in Codex: one
-  unarmed barbarian on a monumental basalt cliff above a violet disk-shaped
-  dimensional rift, with storm mountains and ruined spires behind him. The focal
-  silhouette is center-right, while the left column remains dark and quiet for
-  the six runtime actions and title texture; the lower-right utility zone is also
-  subdued. The RGB runtime image contains no baked UI text, labels, controls,
+  art. FAN-2488 uses a cohesive mature 2560x1440 cinematic dark-fantasy scene
+  generated through the explicitly user-selected paid OpenAI Images API route
+  (`gpt-image-2`, `quality=high`, helper
+  `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py`); PixelLab
+  and the built-in image generator were not used. Three adult weathered heroes
+  stand on a shattered mountain bastion before a colossal bone dragon, under a
+  cracked obsidian disk split by a violet dimensional rift. The focal silhouettes
+  are center-right, while the left column stays dark and quiet for the six
+  runtime actions and the title texture, and the lower-right utility zone is
+  smooth mist. The RGB runtime image contains no baked UI text, labels, controls,
   frames, logo, cursor or watermark. Initial/accepted sources, both prompts,
-  backup, mockup and safe-zone evidence are documented in
-  `docs/design/references/fan1097_main_menu_openai_background/manifest.json` and
-  `docs/design/mockups/fan1097_main_menu_openai_background/spec.md`. The former
-  FAN-1088 art is preserved under the FAN-1097 backup folder; its package remains
-  unchanged as historical provenance.
+  SHA-256 provenance, backup, clean preview, safe-zone overlay and the
+  four-viewport renderer captures are documented in
+  `docs/design/references/main_menu_030_mature_epic_api/manifest.json` and
+  `docs/design/mockups/main_menu_030_mature_epic_api/spec.md`. The former
+  FAN-1097 art is preserved under the FAN-2488 backup folder; the FAN-1088 and
+  FAN-1097 packages remain unchanged as historical provenance.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

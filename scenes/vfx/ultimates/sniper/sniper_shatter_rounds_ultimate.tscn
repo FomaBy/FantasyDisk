@@ -1,0 +1,108 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png" id="2_texture"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[node name="SniperShatterRoundsUltimate" type="Node2D"]
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="CrystalChamber" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.32, 0.32)
+modulate = Color(0.72, 0.88, 1, 0.52)
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="MuzzleFlash" type="Sprite2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(-180, 0)
+scale = Vector2(0.28, 0.28)
+modulate = Color(1, 1, 1, 0.9)
+[node name="FanTrajectory1" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-172, 0, 208, -180)
+width = 5.0
+default_color = Color(0.54, 0.92, 1, 0.82)
+antialiased = true
+[node name="FanTrajectory2" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-172, 0, 248, -82)
+width = 5.0
+default_color = Color(0.54, 0.92, 1, 0.82)
+antialiased = true
+[node name="FanTrajectory3" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-172, 0, 270, 0)
+width = 6.0
+default_color = Color(0.8, 0.98, 1, 0.92)
+antialiased = true
+[node name="FanTrajectory4" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-172, 0, 248, 82)
+width = 5.0
+default_color = Color(0.54, 0.92, 1, 0.82)
+antialiased = true
+[node name="FanTrajectory5" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-172, 0, 208, 180)
+width = 5.0
+default_color = Color(0.54, 0.92, 1, 0.82)
+antialiased = true
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="Ricochet1" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(208, -180, 112, -98)
+width = 7.0
+default_color = Color(0.9, 0.98, 1, 0.96)
+antialiased = true
+[node name="Ricochet5" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(208, 180, 112, 98)
+width = 7.0
+default_color = Color(0.9, 0.98, 1, 0.96)
+antialiased = true
+[node name="Shard01" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(112, -98, 16, -40)
+width = 3.0
+default_color = Color(0.74, 0.94, 1, 0.82)
+antialiased = true
+[node name="Shard08" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(270, 0, 12, 0)
+width = 4.0
+default_color = Color(0.82, 0.98, 1, 0.94)
+antialiased = true
+[node name="Shard15" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(112, 98, 16, 40)
+width = 3.0
+default_color = Color(0.74, 0.94, 1, 0.82)
+antialiased = true
+[node name="ShardRain" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(46, 0)
+scale = Vector2(0.54, 0.54)
+modulate = Color(0.7, 0.92, 1, 0.76)
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="CenterReturn" type="Sprite2D" parent="PhaseNodes/Recovery"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.22, 0.22)
+modulate = Color(0.74, 0.94, 1, 0.46)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="ShardDissolve" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(-80, -44, 80, 44)
+width = 2.0
+default_color = Color(0.58, 0.82, 1, 0.3)
+antialiased = true

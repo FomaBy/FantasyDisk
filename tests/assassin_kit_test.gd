@@ -116,8 +116,9 @@ func _test_trait_crit_cap_100(errors: Array) -> void:
 	var thief_crit := float(_derived("thief", str(PD.weapon_ids("thief")[0]), big_mods).get("crit_chance", 0.0))
 	if absf(assassin_crit - 1.0) > EPS:
 		errors.append("кап: Ассасин с большими вложениями crit=%.4f, ожидалось 1.0" % assassin_crit)
-	if absf(thief_crit - PD.CRIT_CHANCE_CAP) > EPS:
-		errors.append("кап контроля: не-Ассасин crit=%.4f, ожидался глобальный кап %.2f" % [thief_crit, PD.CRIT_CHANCE_CAP])
+	var thief_cap := PD.ordinary_crit_chance_cap(float(PD.base_stats("thief").get("agility", 0.0)))
+	if absf(thief_crit - thief_cap) > EPS:
+		errors.append("кап контроля: не-Ассасин crit=%.4f, ожидался Agility-кап %.2f" % [thief_crit, thief_cap])
 	# Реестр: trait-запись существует и заявляет кап 1.0.
 	var trait_config: Dictionary = PD.class_trait("assassin")
 	if absf(float(trait_config.get("crit_chance_cap", 0.0)) - 1.0) > EPS:
@@ -156,12 +157,13 @@ func _test_trait_overflow_to_crit_damage(errors: Array) -> void:
 
 
 func _test_trait_anti_runaway(errors: Array) -> void:
-	# Абсурдные вложения: шанс зажат 1.0, крит-урон зажат CRIT_DAMAGE_CAP.
+	# Абсурдные вложения: шанс Ассасина зажат 1.0, сила крита продолжает
+	# непрерывный diminishing tail выше raw 2.75x.
 	var params := _derived("assassin", "shadow_daggers", {"crit_chance_flat": 20.0, "crit_damage_flat": 20.0})
 	if float(params.get("crit_chance", 0.0)) > 1.0 + EPS:
 		errors.append("anti-runaway: crit_chance %.4f > 1.0" % float(params.get("crit_chance", 0.0)))
-	if float(params.get("crit_damage_multiplier", 0.0)) > PD.CRIT_DAMAGE_CAP + EPS:
-		errors.append("anti-runaway: crit_damage %.4f > CRIT_DAMAGE_CAP %.2f" % [float(params.get("crit_damage_multiplier", 0.0)), PD.CRIT_DAMAGE_CAP])
+	if float(params.get("crit_damage_multiplier", 0.0)) <= PD.CRIT_DAMAGE_CAP:
+		errors.append("anti-runaway: crit_damage %.4f не вошёл в diminishing tail" % float(params.get("crit_damage_multiplier", 0.0)))
 
 
 # --- Данные кита ---
@@ -571,7 +573,9 @@ func _test_dodge_veil(errors: Array) -> void:
 		errors.append("завеса: радиус ауры не положителен")
 	# Без врагов рядом — чистый базовый уворот.
 	var base_chance := float(player.call("current_dodge_chance"))
-	var base_dodge := clampf(float((player.get("derived_parameters") as Dictionary).get("dodge", 0.0)), 0.0, PD.SURVIVABILITY_DODGE_CAP)
+	var base_params := player.get("derived_parameters") as Dictionary
+	var base_dodge := float(base_params.get("dodge", 0.0))
+	var base_raw_dodge := float(base_params.get("raw_dodge", PD.raw_dodge_for_effective(base_dodge)))
 	if absf(base_chance - base_dodge) > EPS:
 		errors.append("завеса: без прессинга шанс %.4f != базовому %.4f" % [base_chance, base_dodge])
 
@@ -579,8 +583,8 @@ func _test_dodge_veil(errors: Array) -> void:
 	var close_enemy := _new_enemy(holder, player.global_position + Vector2(minf(veil_radius * 0.5, veil_radius - 5.0), 0))
 	await process_frame
 	var pressured_chance := float(player.call("current_dodge_chance"))
-	if absf(pressured_chance - clampf(base_dodge + veil_bonus, 0.0, PD.SURVIVABILITY_DODGE_CAP)) > EPS:
-		errors.append("завеса: под прессингом шанс %.4f != base+bonus (кап %.2f)" % [pressured_chance, PD.SURVIVABILITY_DODGE_CAP])
+	if absf(pressured_chance - PD.effective_dodge(base_raw_dodge + veil_bonus)) > EPS:
+		errors.append("завеса: под прессингом шанс %.4f не прошёл общий diminishing contract" % pressured_chance)
 	# Враг за радиусом — бонуса нет (дальний обстрел не в счёт).
 	close_enemy.global_position = player.global_position + Vector2(veil_radius + 150.0, 0)
 	await process_frame
@@ -588,28 +592,42 @@ func _test_dodge_veil(errors: Array) -> void:
 	if absf(float(player.call("current_dodge_chance")) - base_dodge) > EPS:
 		errors.append("завеса: враг за радиусом всё ещё даёт бонус")
 
-	# Масштаб от buff_power: рост → бонус растёт, гигантский buff_power упирается в кап.
+	# Масштаб от общего % урона: рост → бонус растёт, большой бонус упирается в кап.
 	var mods: Dictionary = player.get("run_modifiers")
-	mods["buff_power_flat"] = 0.5
+	mods["damage_multiplier"] = 1.5
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	var boosted_bonus := float(player.call("assassin_veil_dodge_bonus"))
 	if boosted_bonus <= veil_bonus + EPS:
-		errors.append("завеса: бонус не растёт от buff_power (%.4f -> %.4f)" % [veil_bonus, boosted_bonus])
-	mods["buff_power_flat"] = 50.0
+		errors.append("завеса: бонус не растёт от общего урона (%.4f -> %.4f)" % [veil_bonus, boosted_bonus])
+	mods["damage_multiplier"] = 50.0
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	var capped_bonus := float(player.call("assassin_veil_dodge_bonus"))
 	var trait_cap := float(PD.class_trait("assassin").get("veil_dodge_cap", 0.0))
 	if absf(capped_bonus - trait_cap) > EPS:
 		errors.append("завеса: бонус %.4f не упёрся в veil_dodge_cap %.2f" % [capped_bonus, trait_cap])
-	mods["buff_power_flat"] = 0.0
+	mods["damage_multiplier"] = 1.0
 
-	# Никакого бессмертия: с огромным dodge_flat итог ровно на SURVIVABILITY_DODGE_CAP.
-	mods["dodge_flat"] = 10.0
+	# Никакого бессмертия: огромный dodge_flat всё ещё остаётся ниже асимптоты.
+	# Оракул НЕЗАВИСИМ от derived_parameters.raw_dodge/dodge (вывод SUT) — raw_dodge
+	# считаем из известных входов теста (agility базы Ассасина + сам dodge_flat),
+	# иначе assert сверял бы SUT сам с собой и не поймал бы потерю dodge_flat из
+	# формулы (FAN-2434). EPS-tight сверка с effective_dodge(raw_dodge+veil_bonus)
+	# ловит потерю dodge_flat/подмену кривой; отдельный strict `< cap` (уже был,
+	# не ослаблен) ловит возврат к hard clamp — широкий интервал (0, cap) сам по
+	# себе принимал бы любое значение.
+	var agility := float(PD.base_stats("assassin").get("agility", 0.0))
+	var stacked_dodge_flat := 10.0
+	mods["dodge_flat"] = stacked_dodge_flat
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	close_enemy.global_position = player.global_position + Vector2(60, 0)
 	await process_frame
-	if absf(float(player.call("current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("завеса: суммарный уворот %.4f превысил SURVIVABILITY_DODGE_CAP" % float(player.call("current_dodge_chance")))
+	var expected_stacked_raw := 0.02 + agility * 0.010 + stacked_dodge_flat
+	var expected_stacked := PD.effective_dodge(expected_stacked_raw + veil_bonus)
+	var stacked_chance := float(player.call("current_dodge_chance"))
+	if absf(stacked_chance - expected_stacked) > EPS:
+		errors.append("завеса: стек-уворот %.4f != effective_dodge(raw+bonus) %.4f (потеря dodge_flat или подмена кривой)" % [stacked_chance, expected_stacked])
+	if not (stacked_chance > 0.0 and stacked_chance < PD.SURVIVABILITY_DODGE_CAP):
+		errors.append("завеса: суммарный уворот %.4f нарушил strict asymptote %.2f" % [stacked_chance, PD.SURVIVABILITY_DODGE_CAP])
 	await _cleanup(holder)
 
 	# Контроль: у не-Ассасина завесы нет.

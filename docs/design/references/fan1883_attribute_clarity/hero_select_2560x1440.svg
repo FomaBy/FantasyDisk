@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<style>.s{fill:#c6d5df}.note{fill:#87cdf3}.warn{fill:#f0b270}</style>
+<rect x="0" y="0" width="2560" height="1440" fill="#0a0b12"/>
+<rect x="267" y="160" width="2026" height="1107" rx="16" fill="#17141a" stroke="#bd9149" stroke-width="3"/>
+<text class="base" x="287" y="212" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#f3e4b2">HERO SELECT · ДОСЬЕ · 2560×1440</text>
+<text class="note" x="287" y="244" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#87cdf3">responsive stats: 1×8 · scrollbar reserve 16 px</text>
+<rect x="300" y="250" width="520" height="680" rx="12" fill="#253543" stroke="#bd9149" stroke-width="3"/>
+<ellipse cx="560" cy="510" rx="240" ry="240" fill="#5a4934" stroke="#bd9149" stroke-width="3"/>
+<text class="s" x="320" y="901" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#c6d5df">Ассасин · потенциал крита</text>
+<rect x="880" y="250" width="1380" height="520" rx="12" fill="#17141a" stroke="#bd9149" stroke-width="3"/>
+<rect x="920" y="292" width="800" height="440" rx="8" fill="#253543" stroke="#65bde7" stroke-width="2"/>
+<rect x="1760" y="292" width="460" height="440" rx="8" fill="#211e26" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="940" y="336" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#f3e4b2">Что получит этот герой</text>
+<text class="s" x="940" y="378" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#c6d5df">Вампиризм: 3 HP при срабатывании</text>
+<text class="warn" x="940" y="413" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#f0b270">Шанс срабатывания: 20% / максимум 20%</text>
+<text class="note" x="940" y="452" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#87cdf3">Для этого героя увеличение области атаки расширяет радиусы аур, ширину</text>
+<text class="note" x="940" y="480" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#87cdf3">лучей, секторные атаки и взрывы, поэтому описание целиком переносится в</text>
+<text class="note" x="940" y="508" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#87cdf3">scroll-lane и никогда не обрезается многоточием.</text>
+<rect x="1704" y="298" width="5" height="428" rx="2" fill="#111820" stroke="#65bde7" stroke-width="1"/>
+<rect x="1704" y="383" width="5" height="142" rx="2" fill="#87cdf3" stroke="none" stroke-width="0"/>
+<text class="base" x="1780" y="323" font-family="Arial, sans-serif" font-size="21" font-weight="bold" fill="#f3e4b2">Базовые характеристики</text>
+<rect x="1780" y="356" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="382" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Сила 12</text>
+<rect x="1780" y="401" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="427" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Ловкость 28</text>
+<rect x="1780" y="446" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="472" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Интеллект 10</text>
+<rect x="1780" y="491" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="517" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Восприятие 22</text>
+<rect x="1780" y="536" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="562" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Энергия 14</text>
+<rect x="1780" y="581" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="607" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Знание 16</text>
+<rect x="1780" y="626" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="652" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Выносливость 18</text>
+<rect x="1780" y="671" width="420" height="41" rx="3" fill="#25262c" stroke="#737984" stroke-width="1"/>
+<text class="s" x="1788" y="697" font-family="Arial, sans-serif" font-size="19" font-weight="normal" fill="#c6d5df">Лидерство 8</text>
+</svg>

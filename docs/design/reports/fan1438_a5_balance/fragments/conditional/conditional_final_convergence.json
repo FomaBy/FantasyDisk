@@ -1,0 +1,528 @@
+{
+	"contract": {
+		"convergence": {
+			"cv_threshold": 0.15,
+			"max_seeds": 7,
+			"max_window_seconds": 12.0,
+			"min_seeds": 3,
+			"min_window_seconds": 6.0,
+			"window_step_seconds": 3.0
+		},
+		"convergence_rule": "a5.conditional-convergence.v1",
+		"fragment_schema": "fan1513.a5-conditional-fragment.v1",
+		"pack_contract": "a5.scenario-pack.v1",
+		"pack_id": "a5_conditional_final"
+	},
+	"convergence_rule": "a5.conditional-convergence.v1",
+	"fragment_schema": "fan1513.a5-conditional-fragment.v1",
+	"issue": "FAN-1513",
+	"matrix": [
+		{
+			"class_id": "druid",
+			"damage_evidence": "tagged",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "summon",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "pack_alpha_pounce_guard",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "command",
+			"warmup_seconds": 4.0,
+			"weapon_id": "summon_amulet"
+		},
+		{
+			"class_id": "chemist",
+			"damage_evidence": "tagged",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "summon_death",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "homunculus_intercept_death_burst",
+			"min_triggers": 1,
+			"stimulus": "summon_lethal",
+			"target_count": 10,
+			"trigger_event": "summon_death",
+			"warmup_seconds": 4.0,
+			"weapon_id": "homunculus_vial"
+		},
+		{
+			"class_id": "engineer",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "deploy",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "sentry_marked_target_overclock",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "sentry_hit",
+			"warmup_seconds": 4.0,
+			"weapon_id": "engineer_sentry_wrench"
+		},
+		{
+			"class_id": "engineer",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "deploy",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "drone_excess_repair_shield",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "repair",
+			"warmup_seconds": 4.0,
+			"weapon_id": "engineer_repair_drone"
+		},
+		{
+			"class_id": "druid",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "deploy",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "totem_every_nth_raven_strike",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "totem_pulse",
+			"warmup_seconds": 4.0,
+			"weapon_id": "raven_totem"
+		},
+		{
+			"class_id": "guitarist",
+			"damage_evidence": "tagged",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "deploy",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "amp_instrument_echo",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "amp_pulse",
+			"warmup_seconds": 4.0,
+			"weapon_id": "sound_amp"
+		},
+		{
+			"class_id": "ranger",
+			"damage_evidence": "tagged",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "deploy",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"mechanic_id": "trap_prey_mark_distribution",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "trap_trigger",
+			"warmup_seconds": 4.0,
+			"weapon_id": "hunter_trap"
+		},
+		{
+			"class_id": "engineer",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "mine",
+			"fixture": "sustain",
+			"initial_target_hp": 0.0,
+			"layout": "ring",
+			"layout_radius": 185.0,
+			"mechanic_id": "mine_adjacency_chain",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "mine_explosion",
+			"warmup_seconds": 4.0,
+			"weapon_id": "engineer_pressure_mines"
+		},
+		{
+			"class_id": "dark_mage",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "kill",
+			"fixture": "mortal",
+			"initial_target_hp": 40.0,
+			"mechanic_id": "skull_death_curse_transfer",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "kill",
+			"warmup_seconds": 2.0,
+			"weapon_id": "cursed_skull"
+		},
+		{
+			"class_id": "assassin",
+			"damage_evidence": "resolver_only",
+			"expected_sources": [
+				"player_weapon|damage_application"
+			],
+			"family": "execute",
+			"fixture": "mortal",
+			"initial_target_hp": 40.0,
+			"mechanic_id": "dagger_execute_shadow_window",
+			"min_triggers": 1,
+			"stimulus": "autofire",
+			"target_count": 10,
+			"trigger_event": "execute",
+			"warmup_seconds": 2.0,
+			"weapon_id": "shadow_daggers"
+		}
+	],
+	"measurements": {
+		"assassin/shadow_daggers": {
+			"disabled": {
+				"casts": 132,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 387,
+				"kills": 387,
+				"ledger_damage": 11520.0,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 131,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 9,
+				"final_event_damage": 0.0,
+				"hits": 384,
+				"kills": 384,
+				"ledger_damage": 11400.0,
+				"trigger_resolutions": 9
+			},
+			"per_seed_triggers": [
+				3,
+				3,
+				3
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"chemist/homunculus_vial": {
+			"disabled": {
+				"casts": 0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 60,
+				"kills": 0,
+				"ledger_damage": 6532.6845,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 64,
+				"final_event_damage": 11444.9213,
+				"hits": 124,
+				"kills": 0,
+				"ledger_damage": 7524.875300000001,
+				"trigger_resolutions": 9
+			},
+			"per_seed_triggers": [
+				3,
+				3,
+				3
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"dark_mage/cursed_skull": {
+			"disabled": {
+				"casts": 132,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 2449,
+				"kills": 324,
+				"ledger_damage": 10305.498,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 132,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 2596,
+				"kills": 355,
+				"ledger_damage": 11102.4177,
+				"trigger_resolutions": 157
+			},
+			"per_seed_triggers": [
+				52,
+				54,
+				51
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"druid/raven_totem": {
+			"disabled": {
+				"casts": 53,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 3250,
+				"kills": 0,
+				"ledger_damage": 64540.33960000001,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 54,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 4030,
+				"kills": 0,
+				"ledger_damage": 73121.128,
+				"trigger_resolutions": 83
+			},
+			"per_seed_triggers": [
+				28,
+				27,
+				28
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"druid/summon_amulet": {
+			"disabled": {
+				"casts": 0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 60,
+				"kills": 0,
+				"ledger_damage": 150088.62110000002,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 24,
+				"final_event_damage": 22786.8682,
+				"hits": 84,
+				"kills": 0,
+				"ledger_damage": 150037.4395,
+				"trigger_resolutions": 24
+			},
+			"per_seed_triggers": [
+				8,
+				8,
+				8
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"engineer/engineer_pressure_mines": {
+			"disabled": {
+				"casts": 72,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 616,
+				"kills": 0,
+				"ledger_damage": 44663.457200000004,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 72,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 616,
+				"kills": 0,
+				"ledger_damage": 44815.263100000004,
+				"trigger_resolutions": 144
+			},
+			"per_seed_triggers": [
+				48,
+				48,
+				48
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"engineer/engineer_repair_drone": {
+			"disabled": {
+				"casts": 84,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 425,
+				"kills": 0,
+				"ledger_damage": 20672.630400000002,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 84,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 424,
+				"kills": 0,
+				"ledger_damage": 20896.7641,
+				"trigger_resolutions": 234
+			},
+			"per_seed_triggers": [
+				78,
+				78,
+				78
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"engineer/engineer_sentry_wrench": {
+			"disabled": {
+				"casts": 39,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 2268,
+				"kills": 0,
+				"ledger_damage": 15750.012400000001,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 39,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 2268,
+				"kills": 0,
+				"ledger_damage": 15749.1041,
+				"trigger_resolutions": 36
+			},
+			"per_seed_triggers": [
+				12,
+				12,
+				12
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"guitarist/sound_amp": {
+			"disabled": {
+				"casts": 39,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 1510,
+				"kills": 0,
+				"ledger_damage": 223043.57580000002,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 39,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 1440,
+				"final_event_damage": 45164.8474,
+				"hits": 2940,
+				"kills": 0,
+				"ledger_damage": 245898.16340000002,
+				"trigger_resolutions": 147
+			},
+			"per_seed_triggers": [
+				49,
+				49,
+				49
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		},
+		"ranger/hunter_trap": {
+			"disabled": {
+				"casts": 108,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 0,
+				"final_event_damage": 0.0,
+				"hits": 1140,
+				"kills": 0,
+				"ledger_damage": 30540.7333,
+				"trigger_resolutions": 0
+			},
+			"enabled": {
+				"casts": 109,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"final_event_count": 3150,
+				"final_event_damage": 24084.449800000002,
+				"hits": 4290,
+				"kills": 0,
+				"ledger_damage": 45526.7771,
+				"trigger_resolutions": 1080
+			},
+			"per_seed_triggers": [
+				360,
+				360,
+				360
+			],
+			"seed_count": 3,
+			"window_seconds": 6.0
+		}
+	},
+	"pack_contract": "a5.scenario-pack.v1",
+	"pack_id": "a5_conditional_final",
+	"verdict": "green"
+}

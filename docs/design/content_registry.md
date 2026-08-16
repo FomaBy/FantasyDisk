@@ -666,7 +666,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `biologist_symbiote_seed` | Семя Симбионта | Биолог | Symbiote web: первичная цель связывается с соседними врагами и делит биоурон по сети | `ProgressionData.BIOLOGIST_WEAPONS`, `scenes/BiologistSymbioteSeed.tscn`, `assets/sprites/weapons/biologist_symbiote_seed.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `robot_magnetic_anchor` | Магнитный Якорь | Робот | Magnetic anchor: отложенный тяжёлый AoE в точке цели, полный урон с falloff от центра, стягивает рядовых к центру 0.85/каст (импульс cap 1500); элитки/боссы не смещаются, урон полный | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotMagneticAnchor.tscn`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `robot_hydraulic_press` | Гидравлический Пресс | Робот | Compression line: урон по ВСЕЙ ширине коридора suppression_width (300, ×1.30 с «Калибратором»), прижимает рядовых к оси 0.80/каст; элитки/боссы — полный урон, резист смещения ×0.25; SCRUM-917 PixelLab VFX сжимается side-to-centre и синхронизирует active frame с hit delay 0.20с | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotHydraulicPress.tscn`, `scenes/vfx/RobotHydraulicPressCompressionVfx.tscn`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/effects/robot_hydraulic_press_compression/`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `robot_reactor_core` | Реакторное Ядро | Робот | Reactor vent: ровно 4 вентиля 90° от мировой фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile расширяет лопасти | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotReactorCore.tscn`, `assets/sprites/weapons/robot_reactor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `robot_reactor_core` | Реакторное Ядро | Робот | Reactor vent: ровно 4 вентиля 90° от мировой фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile — dormant/internal injected-only compatibility seam with no live production source; it does not expand the blades | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotReactorCore.tscn`, `assets/sprites/weapons/robot_reactor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_sentry_wrench` | Ключ Часового | Инженер | Sentry turret (SCRUM-888): разворачивает персистентные стационарные турели (жёсткий лимит 2, старейшая заменяется), турели сами обстреливают ближайших врагов залпом снарядов с capped splash | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerSentryWrench.tscn`, `scenes/SentryTurret.tscn`, `scripts/sentry_turret.gd`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `assets/sprites/weapons/engineer_turret/sentry_turret.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_repair_drone` | Орбитальный Дрон | Инженер | SCRUM-906/FAN-1075: 2 увеличенных контактных дрона по умолчанию, строго напротив друг друга на кольце 121 px; visual scale 0.24, спираль с третьего дрона, кап 6 | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerRepairDrone.tscn`, `assets/sprites/weapons/engineer_repair_drone.png`, `scripts/engineer_orbit_drone.gd`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_pressure_mines` | Минная Сетка | Инженер | Pressure mine grid: три мины веером срабатывают отдельно при касании врагом | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerPressureMines.tscn`, `assets/sprites/weapons/engineer_pressure_mines.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
@@ -708,7 +708,7 @@ SCRUM-152 Design pass 2026-06-12 добавил канонический raster-
 | `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png`; `assets/sprites/allies/ally_druid_wolf_spriteframes.tres` + `assets/sprites/allies/druid_wolf/ally_druid_wolf_{move,attack,death}_*.png` | Full-frame SpriteFrames через `FullFrameAnimationRegistry`: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, safe 256x256 wolf canvas, scale `0.37`, position `(0,-37)`, flip вправо по движению/атаке |
 | `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png`; `assets/sprites/allies/ally_pack_spirit_spriteframes.tres` + `assets/sprites/allies/pack_spirit/ally_pack_spirit_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
 | `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png`; `assets/sprites/allies/ally_homunculus_spriteframes.tres` + `assets/sprites/allies/homunculus/ally_homunculus_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
-| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png`; `assets/sprites/allies/ally_leadership_echo_spriteframes.tres` + `assets/sprites/allies/leadership_echo/ally_leadership_echo_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
+| `ally_leadership_echo` | Зарезервированный арт эхо-союзника; runtime-потребителя НЕТ (универсальный Leadership-echo удалён FAN-1893, summoner_weapon больше не мапит id) | `assets/sprites/allies/ally_leadership_echo.png`; `assets/sprites/allies/ally_leadership_echo_spriteframes.tres` + `assets/sprites/allies/leadership_echo/ally_leadership_echo_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
 | `druid_ghost_wolf` | Дух-волк Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_wolf/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres`; PixelLab `8d473df8-9bc2-481c-ad58-b69cfecc5d33` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + claw/body-sweep `attack_left/right` 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
 | `druid_ghost_bear` | Дух-медведь Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_bear/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres`; PixelLab `6805608a-b64a-471c-a1d9-9601a3062e2f` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + ground-slam `attack_left/right` 6f one-shot, transparent 256x256, no flip; SCRUM-1020 replaces `move_right` with coherent same-UUID job `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` pending independent re-QA; roster/gameplay pending SCRUM-902 |
 | `druid_ghost_panther` | Дух-пантера Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_panther/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres`; PixelLab `b2d06d20-aabb-48e2-9d8a-5053daa03e8e` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + pounce/rake `attack_left/right` 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
@@ -950,20 +950,35 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 
 ### Производные Атрибуты
 
+FAN-1887: канонический player-facing реестр прокачки — 16 осей
+(`CharacterData.ATTRIBUTE_REGISTRY`); плоская ось «Добавление урона»
+(`damage_flat`) использует иконку `attr_damage.png`. Иконки внутренних
+параметров (absorb, knockback, attack_range, range_multiplier, dot_speed,
+aura_radius, buff_power, projectile_speed, vampiric_chance) сохранены как
+ассеты для артефактных превью и legacy-редов, но эти параметры больше не
+являются самостоятельными выборами level-up/Shop/Codex/Hero Select. Пять
+player-facing defensive choices: max_health, defense, dodge, regeneration и
+vampiric. Absorb и vampiric_chance — внутренние параметры: absorb пропускает
+≥42% удара, а сила вампиризма масштабируется Knowledge и общим
+heal-per-second budget.
+
+Обычный dodge остаётся строго ниже 0.55; smoke bomb Вора — отдельное
+достижимое исключение с суммарным пределом 0.90 только внутри живого облака.
+
 | ID | Игровое имя | Ассет |
 | --- | --- | --- |
 | `damage` | Урон | `assets/sprites/ui/icons/derived/attr_damage.png` |
 | `magic_damage` | Магический урон | `assets/sprites/ui/icons/derived/attr_magic_damage.png` |
 | `attack_speed` | Скорость атаки | `assets/sprites/ui/icons/derived/attr_attack_speed.png` |
 | `crit_chance` | Шанс крита | `assets/sprites/ui/icons/derived/attr_crit_chance.png` |
-| `crit_damage_multiplier` | Множитель крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
+| `crit_damage_multiplier` | Сила крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
 | `move_speed` | Скорость движения | `assets/sprites/ui/icons/derived/attr_move_speed.png` |
-| `dodge` | Уворот | `assets/sprites/ui/icons/derived/attr_dodge.png` |
+| `dodge` | Уклонение | `assets/sprites/ui/icons/derived/attr_dodge.png` |
 | `defense` | Защита | `assets/sprites/ui/icons/derived/attr_defense.png` |
 | `absorb` | Поглощение | `assets/sprites/ui/icons/derived/attr_absorb.png` |
 | `health_point` | Максимальное здоровье | `assets/sprites/ui/icons/derived/attr_health_point.png` |
 | `knockback_distance` | Дистанция отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_distance.png` |
-| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
+| `summon_amount` | Сила призыва | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
 | `attack_range` | Дальность атаки | `assets/sprites/ui/icons/derived/attr_attack_range.png` |
 | `range_multiplier` | Множитель дальности | `assets/sprites/ui/icons/derived/attr_range_multiplier.png` |
 | `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
@@ -971,12 +986,12 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 | `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
 | `dot_damage` | Периодический урон | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
 | `dot_speed` | Частота периодического урона | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
-| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
+| `aoe_radius` | Увеличение области атаки | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
 | `knockback_power` | Сила отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_power.png` |
 | `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
+| `ultimate_multiplier` | Сила ультимейта | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
 | `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
 
 ### HUD Ресурсы
@@ -986,7 +1001,7 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
+| `ultimate_multiplier` | Сила ультимейта | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 
@@ -1171,7 +1186,7 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. SCRUM-418 confirm
 | --- | --- | --- | --- |
 | `arena_2k_combat` | Боевая Арена 2K | Generated by `scripts/main.gd` | Прямоугольная арена 2560x1440 с камерой zoom 1.12 |
 | `main_menu_epic_battle` | Эпичный бой стартового экрана | `build/qa/scrum418/removed_assets_backup/assets/backgrounds/main_menu_epic_battle.png` | Legacy фон главного меню, удален из runtime `assets/` SCRUM-418 и сохранен как QA backup вне shipping scope |
-| `main_menu_epic_battle_v3` | Разлом диска над утёсом | `assets/backgrounds/main_menu_epic_battle_v3.png` | Active FAN-1097 фон главного меню: цельная 2560x1440 cinematic dark-fantasy иллюстрация из built-in OpenAI Image Generator в Codex; один безоружный варвар на утёсе над фиолетовым disk rift, спокойная левая зона под title/6 runtime-кнопок и приглушённая lower-right utility zone, без baked UI/text/logo/frame/cursor/watermark |
+| `main_menu_epic_battle_v3` | Последний рубеж у Расколотого Диска | `assets/backgrounds/main_menu_epic_battle_v3.png` | Active FAN-2488 фон главного меню: цельная 2560x1440 mature cinematic dark-fantasy иллюстрация из OpenAI Images API (`gpt-image-2`, `quality=high`, явный выбор пользователя); три взрослых героя на разрушенном бастионе перед колоссальным костяным драконом под расколотым обсидиановым диском с фиолетовым rift, спокойная левая зона под title/6 runtime-кнопок и низкодетальная lower-right utility zone, без baked UI/text/logo/frame/cursor/watermark |
 | `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Active for `system`, `settings`, `codex`, `hero_select`, `weapon_select`, `pause_stats`, `meta_tree`, `campfire` |
 | `ui_backdrop_merchant_archive` | Shop backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Active for `shop` |
 | `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Active for `event`, `upgrade`, `level_up`, `meta_progression` |
@@ -1275,7 +1290,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `summon_amount`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `knockback_power`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано; retired range/projectile-speed/buff axes остаются только legacy assets |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 | Кодекс: непрочитанное | `ui_badge_codex_unread` | `assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` | Реализовано (FAN-1077) |
 
@@ -1341,7 +1356,7 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 «Масло темпа» — магазинный `shop_weapon_cooldown`, «Пыльный артефакт» —
 магазинный `shop_artifact`. Отдельного `dusty_artifact` не существует.
 
-### Универсальные семьи (29, rarity_scaling)
+### Универсальные семьи (28, rarity_scaling)
 
 8 семей базовых статов (+2/+4/+7):
 
@@ -1356,8 +1371,9 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `stone_heart` | Каменное сердце | Выносливость |
 | `banner_seed` | Семя знамени | Лидерство |
 
-21 семья производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
-убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`
+20 семей производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
+убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`, а общий
+cadence-контракт удалил отдельную selectable dot-speed семью `plague_metronome`
 (follow-up FAN-1034):
 
 | ID | Имя | Ключ эффекта | т1 / т2 / т3 |
@@ -1372,11 +1388,10 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
 | `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
 | `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
-| `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `wide_sigil` | Дальняя печать | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
-| `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
 | `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
+| `war_banner` | Боевое знамя | `damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |
 | `aegis_shard` | Осколок эгиды | `absorb_flat` | +3 / +5 / +8 |
 | `troll_blood` | Кровь тролля | `regeneration_flat` | +1.0 / +1.6 / +2.6 |

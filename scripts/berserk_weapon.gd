@@ -46,8 +46,8 @@ const CONSTELLATION_AFTERSHOCK_DELAY := 0.12
 @export var melee_arc_followup_multiplier := 0.0
 @export var visual_color := Color(0.62, 0.82, 1.0, 0.30)
 # SCRUM-922: база отброса для derived knockback_power; свойство скейлится
-# пайплайном Player._apply_weapon_scaling (эндуранс/лидерство/knockback_multiplier
-# × meta-множитель), потребитель — формула stagger-импульса ниже.
+# пайплайном Player._apply_weapon_scaling (Strength/knockback_multiplier ×
+# meta-множитель), потребитель — формула stagger-импульса ниже.
 @export var knockback := 60.0
 # SCRUM-922: доля knockback-стата в stagger-импульсе (0 = прежний фикс 260) и
 # кап отброса для боссов/главных элит (1.0 = прежнее поведение без капа).
@@ -173,6 +173,8 @@ func _start_swing(immediate_damage := false) -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("attack", _last_direction)
+	if owner_node.has_method("record_weapon_cast"):
+		owner_node.call("record_weapon_cast", weapon_id, "melee", "attack", maxf(windup_time, 0.0))
 
 	_animate_weapon(_last_direction)
 	var owner_id := owner_node.get_instance_id()
@@ -478,9 +480,14 @@ func _damage_target(owner_node: Node2D, enemy_node: Node2D, attack_direction: Ve
 	var hit_context := {"weapon_id": weapon_id, "attack_mode": "melee", "damage_type": "physical"}
 	if owner_node.has_method("meta_context_for_weapon"):
 		hit_context = owner_node.call("meta_context_for_weapon", self, hit_context)
+	if owner_node.has_method("telemetry_context_for_hit"):
+		hit_context = owner_node.call("telemetry_context_for_hit", hit_context)
 	if owner_node.has_method("meta_damage_multiplier"):
 		dealt *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy_node))
-	_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
+	var hit_feedback := {"critical": _last_attack_crit, "damage_type": "physical"}
+	if owner_node.has_method("telemetry_feedback_for_hit"):
+		hit_feedback = owner_node.call("telemetry_feedback_for_hit", hit_context, hit_feedback)
+	_call_take_damage(enemy_node, dealt, hit_feedback)
 	if owner_node.has_method("on_weapon_hit"):
 		owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit, hit_context)
 	_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
@@ -773,7 +780,13 @@ func _is_enemy_inside_frustum(owner_node: Node2D, enemy_node: Node2D, attack_dir
 
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
-		enemy.call("take_damage", amount, feedback)
+		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		var owner_node := _owner_node()
+		if str(tagged.get("telemetry_provenance_id", "")) == "" and owner_node != null and owner_node.has_method("telemetry_context_for_hit") and owner_node.has_method("telemetry_feedback_for_hit"):
+			var telemetry_context: Dictionary = owner_node.call("telemetry_context_for_hit", {"weapon_id": weapon_id, "attack_mode": "melee", "damage_type": str(tagged.get("damage_type", "physical"))})
+			tagged = owner_node.call("telemetry_feedback_for_hit", telemetry_context, tagged)
+		tagged["player_owned"] = true
+		enemy.call("take_damage", amount, tagged)
 	else:
 		enemy.call("take_damage", amount)
 

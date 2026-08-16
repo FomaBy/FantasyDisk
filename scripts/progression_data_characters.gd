@@ -428,9 +428,9 @@ const CLASS_TRAITS := {
 		# ProgressionData.class_crit_profile → derived_parameters (crit_chance /
 		# crit_damage_multiplier). veil_* — «Теневая завеса»: самоцентричная
 		# аура уворота против ближнего прессинга (Player.current_dodge_chance:
-		# бонус только когда враг внутри derived aura_radius; величина =
-		# veil_dodge_bonus × buff_power, кап veil_dodge_cap; суммарный уворот
-		# по-прежнему ≤ SURVIVABILITY_DODGE_CAP — бессмертия нет).
+		# бонус только когда враг внутри объявленной области ауры; величина =
+		# veil_dodge_bonus × support_multiplier, кап veil_dodge_cap; суммарный уворот
+		# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP — бессмертия нет).
 		# Покрыто tests/assassin_kit_test.gd.
 		"id": "cold_blood",
 		"title": "Хладнокровие",
@@ -527,8 +527,8 @@ const CLASS_TRAITS := {
 		# SCRUM-902 «Аура дикой силы»: ПОСТОЯННАЯ классовая аура урона с видимым
 		# полупрозрачным радиусом (Player.WildForceAuraRing). Баффает ТОЛЬКО
 		# Друида и его призывы (группа "allies" с owner_node == друид) внутри
-		# derived aura_radius × wild_aura_radius_ratio; враги/чужие сущности не
-		# затрагиваются. Величина = wild_aura_damage_bonus × buff_power, кап
+		# derived area × wild_aura_radius_ratio; враги/чужие сущности не
+		# затрагиваются. Величина = wild_aura_damage_bonus × support_multiplier, кап
 		# wild_aura_damage_cap. Потребители:
 		#   - призывы: статус "wild_force_aura" (damage_multiplier) в
 		#     Player._update_class_status_auras → StatusEffects.damage_multiplier
@@ -539,11 +539,11 @@ const CLASS_TRAITS := {
 		# Матожидание аура-баффа учтено budget-моделью
 		# (ProgressionData.class_wild_aura_damage_factor в
 		# estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон
-		# кита, инвестиции в buff_power/aura_radius сверх базы остаются наградой.
+		# кита, инвестиции в общий урон и область сверх базы остаются наградой.
 		# Покрыт tests/druid_kit_test.gd.
 		"id": "wild_force_aura",
 		"title": "Аура дикой силы",
-		"description": "Постоянная аура с видимым радиусом усиливает урон Друида и его призывов; сила растёт от мощи баффов, радиус — от радиуса ауры.",
+		"description": "Постоянная аура с видимым радиусом усиливает урон Друида и его призывов; сила следует общему урону, радиус — области атаки.",
 		"short_description": "Постоянная аура усиливает урон Друида и его призывов.",
 		"wild_aura_damage_bonus": 0.10,
 		"wild_aura_damage_cap": 0.30,
@@ -620,8 +620,8 @@ const CLASS_TRAITS := {
 		# (+HP/с штатным regen-пайплайном), Player.take_damage (−входящий
 		# ПОСЛЕДНИМ множителем после поглощения/защиты — концепт «Бронекорпуса»
 		# Робота SCRUM-914, но только на текущий бой и только у Священника).
-		# ВРЕМЕННО до SCRUM-926 (UI выбора): автовыбор первой молитвы пула в
-		# Player.on_battle_start (_auto_select_battle_prayer). Budget-модель
+		# Обязательный UI SCRUM-926 завершает выбор молитвы до Player.on_battle_start.
+		# Budget-модель
 		# молитвы НЕ зеркалит: условный/выборный бафф (прецедент «Разогрева»
 		# Гитариста); сравнение веток — docs/design/class_traits_registry.md.
 		# Покрыт tests/priest_kit_test.gd.
@@ -923,20 +923,20 @@ const CLASS_INTERPRETATIONS := {
 		"strength": "Прямо усиливает двуручное оружие.",
 		"intelligence": "Почти не влияет на двуручное оружие: физический урон Берсерка остается завязан на Силу.",
 		"energy": "Ускоряет темп уникальных срабатываний, но не превращает двуручные удары в магический урон.",
-		"leadership": "Каждые несколько ударов вызывает призрачное эхо-оружие.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"magic_damage": "Не усиливает двуручные физические удары Берсерка; полезность минимальна без отдельного магического источника.",
 		"dot_damage": "Добавляет малое кровотечение к ударам.",
-		"summon_amount": "Повышает частоту эхо-оружия.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"soldier": {
 		"strength": "Усиливает залпы, штык и вес гранат.",
 		"intelligence": "Добавляет рунический воспламенитель к гранатам и выстрелам.",
 		"energy": "Ускоряет тактические циклы: фитиль, залп и готовность ульты.",
 		"knowledge": "Добавляет горение/кровотечение к пораженным целям.",
-		"leadership": "Командный клич периодически вызывает эхо-залп строя.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"magic_damage": "Работает как зачарованный порох и руническая осколочная искра.",
 		"dot_damage": "Добавляет малый burn/bleed от пороха и штыка.",
-		"summon_amount": "Повышает частоту эхо-залпов и поддержку строя.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"thief": {
 		"strength": "Добавляет вес ударам кинжала и рикошетам.",
@@ -946,10 +946,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Быстрее заряжает Большой Куш и снижает темп провалов.",
 		"knowledge": "Добавляет яд/кровотечение к скрытым ударам.",
 		"endurance": "Компенсирует низкое HP через устойчивость к ошибкам.",
-		"leadership": "Подкупленная тень периодически повторяет удар.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"magic_damage": "Работает как теневое зачарование монет и клинков.",
 		"dot_damage": "Добавляет малый яд/bleed к backstab и дыму.",
-		"summon_amount": "Учащает подкупленные эхо-удары.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"elementalist": {
 		# SCRUM-948: физическая и периодическая оси — реальные каналы квадрата
@@ -961,10 +961,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Ускоряет заряд Сверхновы и питает длительность стихийных паттернов.",
 		"knowledge": "Усиливает ожог квадрата и догорающую зону метеора.",
 		"endurance": "Компенсирует хрупкость защитой и HP.",
-		"leadership": "Фамильяр-искра периодически повторяет малую стихийную вспышку.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"damage": "Работает как физический канал квадрата четырёх стихий.",
 		"dot_damage": "Питает ожог квадрата и тики метеорной зоны.",
-		"summon_amount": "Учащает фамильярные эхо-вспышки.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"sniper": {
 		"strength": "Усиливает отдачу тяжелых патронов и knockback lockshot.",
@@ -974,10 +974,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Быстрее заряжает Последний Выстрел и стабилизирует прицел.",
 		"knowledge": "Добавляет bleed/armor-pierce DoT к marked shots.",
 		"endurance": "Позволяет пережить ошибку при игре на дистанции.",
-		"leadership": "Корректировщик периодически повторяет малый прицельный выстрел.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"magic_damage": "Работает как зачарованный наконечник пули.",
 		"dot_damage": "Добавляет кровотечение к lockshot и split-round.",
-		"summon_amount": "Учащает корректировочные эхо-выстрелы.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"priest": {
 		"strength": "Придает вес кадилу и усиливает knockback священных волн.",
@@ -987,10 +987,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Быстрее заряжает Хор Искупления и поддерживает частые благословения.",
 		"knowledge": "Главный стат: усиливает священные формулы, DoT-покаяние и эффективность лечения.",
 		"endurance": "Дает HP/защиту, чтобы удерживать ближнюю ward-зону.",
-		"leadership": "Приходская поддержка периодически повторяет малую молитву.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"damage": "Работает как физический импульс кадила и реликвария.",
 		"dot_damage": "Добавляет покаянное горение к освященным целям.",
-		"summon_amount": "Учащает эхо-молитвы прихожан.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"biologist": {
 		"strength": "Утяжеляет капсулы и повышает knockback биореакций.",
@@ -1000,10 +1000,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Быстрее заряжает Пробуждение Колонии и ускоряет реакционные циклы.",
 		"knowledge": "Главный стат: усиливает анализ образцов, DoT и точность биореакций.",
 		"endurance": "Компенсирует хрупкость HP/защитой при игре рядом с зонами.",
-		"leadership": "Лабораторный ассистент периодически повторяет малую биореакцию.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"damage": "Работает как давление капсул и механический импульс инъектора.",
 		"dot_damage": "Усиливает споры, инфекционные тики и остаточную биомассу.",
-		"summon_amount": "Учащает ассистентские эхо-реакции без добавления отдельного питомца.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"robot": {
 		"strength": "Главный стат: усиливает сервоприводы, гидравлику и физический импульс оружия.",
@@ -1013,10 +1013,10 @@ const CLASS_INTERPRETATIONS := {
 		"energy": "Питает реактор, быстрее заряжает Перегрузку и ускоряет контуры оружия.",
 		"knowledge": "Стабилизирует перегрев: усиливает DoT/реген и снижает цену ошибок.",
 		"endurance": "Ключевой защитный стат: HP, броня, поглощение и выдержка под давлением.",
-		"leadership": "Автопилотный протокол периодически повторяет малый механический импульс.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
 		"magic_damage": "Работает как рунический аккумулятор внутри механизма.",
 		"dot_damage": "Добавляет перегрев/искрение к реакторным и прессовым ударам.",
-		"summon_amount": "Учащает эхо-протоколы сервоприводов без отдельного питомца.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"engineer": {
 		"strength": "Усиливает тяжелые инструменты, мины и отдачу турелей.",
@@ -1029,12 +1029,12 @@ const CLASS_INTERPRETATIONS := {
 		"leadership": "Главный стат: повышает лимит/частоту устройств и протоколы поддержки.",
 		"magic_damage": "Работает как руническая схема внутри механизмов.",
 		"dot_damage": "Добавляет перегрев, искрение и шрапнель к устройствам.",
-		"summon_amount": "Усиливает количество активных инженерных устройств и эхо-сборок.",
+		"summon_amount": "Усиливает количество активных инженерных устройств: турели и дроны добираются от порогов Силы призыва.",
 	},
 	"dark_mage": {
 		"strength": "Придает вес снарядам: больше knockback и физическая устойчивость.",
-		"leadership": "Усиливает фамильярные эхо-касты и поддержку.",
-		"summon_amount": "Учащает вспомогательные эхо-срабатывания.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"guitarist": {
 		# SCRUM-899: тексты соответствуют magic-caster идентичности и правилам
@@ -1048,29 +1048,35 @@ const CLASS_INTERPRETATIONS := {
 	},
 	"assassin": {
 		"intelligence": "Зачаровывает лезвия фиолетовой искрой по области.",
-		"leadership": "Фантом-двойник периодически повторяет удар.",
-		"summon_amount": "Повышает частоту фантомного повторного удара.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"ranger": {
 		"intelligence": "Зачаровывает болты магическим splash.",
 		"energy": "Быстрее заряжает стойку охотника.",
-		"leadership": "Сокол-метка периодически повторяет урон по цели.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"doctor": {
 		"strength": "Утяжеляет инструменты и повышает контроль ближней пилы.",
-		"leadership": "Санитарная команда усиливает эхо-лечение/повтор ударов.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"chemist": {
 		"strength": "Утяжеляет колбы и повышает knockback.",
-		"leadership": "Автономный помощник/эхо-реакция чаще повторяет удар.",
+		"leadership": "Главный масштаб пары гомункулов: усиливает их урон, здоровье и темп.",
+		"summon_amount": "Слегка усиливает урон и темп пары гомункулов в пределах внутренних капов; численность пары фиксирована.",
 	},
 	"knight": {
 		"intelligence": "Зачаровывает сталь магическим splash.",
 		"energy": "Сокращает cooldown контратаки.",
-		"leadership": "Знаменосец-аура чаще вызывает эхо-контроль.",
+		"leadership": "У этого класса нет призывов и деплоя: Лидерство не имеет реального боевого потребителя и не входит в предложения наград.",
+		"summon_amount": "У этого класса нет призывов и деплоя: ось «Сила призыва» не имеет реального потребителя и не входит в предложения наград.",
 	},
 	"druid": {
 		"strength": "Усиливает когти/тернии и knockback.",
+		"leadership": "Главный стат: растит стаю амулета и лимит тотемов (Лидерство/4), усиливает урон и живучесть призывов.",
+		"summon_amount": "Фактический размер стаи и парка деплоя: база + Лидерство/4 + бонус призывов, не выше капа кита.",
 		"magic_damage": "Подпитывает природные заклинания и зачарованные зоны.",
 		"energy": "Ускоряет природные циклы и уникальные cooldown.",
 	},
@@ -1104,7 +1110,7 @@ const ATTRIBUTE_PRIORITY_REASONS := {
 	"energy": "ускоряет уникальные механики, ультимейт и темп атак",
 	"knowledge": "усиливает DoT, лечение, регенерацию и стабильность билда",
 	"endurance": "дает HP, защиту, поглощение и устойчивость под давлением",
-	"leadership": "усиливает призывы, эхо-оружие, поддержку и ауры",
+	"leadership": "усиливает настоящие призывы и деплой-устройства; классам без них не предлагается",
 }
 
 # SCRUM-695: КАНОНИЧЕСКИЙ реестр боевых атрибутов — единственный источник правды для
@@ -1114,28 +1120,28 @@ const ATTRIBUTE_PRIORITY_REASONS := {
 # через поле "attr", а матрица релевантности ниже строится по этим же id.
 #   value_type: "percent" — множитель/доля, "flat" — плоская добавка.
 #   icon — имя папки в docs/design/references/icons/attributes/ (трассируемость арта).
+# FAN-1887: канонический player-facing контракт (спека fan1883_attribute_clarity) —
+# 16 осей. Убраны как самостоятельные выборы устаревшие presentation-оси;
+# добавлена плоская
+# ось «Добавление урона» (run_modifiers.damage_flat, канал по damage_parameter_for).
 const ATTRIBUTE_REGISTRY := [
-	{"id": "damage", "name": "Урон", "icon": "damage", "value_type": "percent"},
+	{"id": "damage_flat", "name": "Добавление урона", "icon": "damage", "value_type": "flat"},
+	{"id": "damage", "name": "Увеличение урона", "icon": "damage", "value_type": "percent"},
 	{"id": "attack_speed", "name": "Скорость атаки", "icon": "attack_speed", "value_type": "percent"},
-	{"id": "max_health", "name": "Макс. здоровье", "icon": "health_point", "value_type": "flat"},
+	{"id": "max_health", "name": "Максимальное здоровье", "icon": "health_point", "value_type": "flat"},
 	{"id": "move_speed", "name": "Скорость движения", "icon": "move_speed", "value_type": "percent"},
-	# FAN-1034: единственная ось геометрии поражения — растит aoe_radius, aura_radius
-	# и melee-дальность (range_scales_with_aoe). Прежние отдельные оси «Ширина
-	# сектора» (sector_multiplier, no-op для 46/51 оружий) и «Радиус» слиты сюда.
-	{"id": "aoe_radius", "name": "Область поражения", "icon": "aoe_radius", "value_type": "percent"},
+	# FAN-1891: единственная ось геометрии поражения — растит только явно
+	# объявленные размеры области, не дальность захвата цели.
+	{"id": "aoe_radius", "name": "Увеличение области атаки", "icon": "aoe_radius", "value_type": "percent"},
 	{"id": "pickup_radius", "name": "Радиус подбора", "icon": "pickup_radius", "value_type": "flat"},
 	{"id": "defense", "name": "Защита", "icon": "defense", "value_type": "percent"},
-	{"id": "magic_focus", "name": "Магический фокус", "icon": "magic_damage", "value_type": "percent"},
 	{"id": "crit_chance", "name": "Шанс крита", "icon": "crit_chance", "value_type": "percent"},
-	{"id": "crit_damage", "name": "Урон крита", "icon": "crit_damage_multiplier", "value_type": "percent"},
+	{"id": "crit_damage", "name": "Сила крита", "icon": "crit_damage_multiplier", "value_type": "percent"},
 	{"id": "dodge", "name": "Уклонение", "icon": "dodge", "value_type": "percent"},
-	{"id": "range", "name": "Дальность атаки", "icon": "attack_range", "value_type": "percent"},
 	# FAN-1034: поглотил ось «Скорость тиков» (dot_speed) — карта качает и магнитуду,
 	# и темп периодики одним пиком.
 	{"id": "dot_damage", "name": "Периодический урон", "icon": "dot_damage", "value_type": "flat"},
-	{"id": "buff_power", "name": "Сила поддержки", "icon": "buff_power", "value_type": "percent"},
 	{"id": "summon_amount", "name": "Сила призыва", "icon": "summon_amount", "value_type": "flat"},
-	{"id": "absorb", "name": "Поглощение", "icon": "absorb", "value_type": "flat"},
 	{"id": "regeneration", "name": "Регенерация", "icon": "regeneration", "value_type": "flat"},
 	# FAN-1034: мерж «Вампиризм (шанс)» + «Вампиризм (лечение)»: обе оси лили в одно
 	# ведро heal-бюджета 1.1 HP/с, две отдельные карты были избыточны.
@@ -1143,64 +1149,56 @@ const ATTRIBUTE_REGISTRY := [
 	{"id": "ultimate_power", "name": "Сила ультимейта", "icon": "ultimate_multiplier", "value_type": "percent"},
 ]
 
-# SCRUM-695/FAN-1034: ПРЯМАЯ матрица релевантности (атрибут × 17 классов),
-# первоисточник полезности атрибута для класса. ИНВАРИАНТ по каждому атрибуту
-# (проверяется tests/attribute_relevance_test.gd): ровно 2 primary,
-# 5..8 secondary, минимум 1 optional, разбиение всех 17 классов полное;
-# на класс приходится 1..3 primary-атрибута. Жёсткое «ровно 8 secondary»
-# снято: у гейтнутых осей (magic_focus, buff_power) честных secondary меньше,
-# и матрица не должна врать про мёртвые для класса оси.
-# primary = сигнатурный геймплей класса; secondary = ощутимо полезно; optional =
-# профильно мимо (Hero Select показывает как «Слабые атрибуты»).
+# SCRUM-695/FAN-1034/FAN-1887: ПРЯМАЯ матрица релевантности (атрибут × 17 классов),
+# первоисточник полезности атрибута для класса. FAN-1887 меняет СЕМАНТИКУ optional:
+# optional = «у класса нет настоящего потребителя оси» и такая ось НИКОГДА не
+# предлагается в выдаче (строгий фильтр weighted_level_up_selection). Профильное
+# взвешивание остаётся только внутри primary/secondary. ИНВАРИАНТ по каждому
+# атрибуту (tests/attribute_relevance_test.gd): ровно 2 primary, разбиение всех
+# 17 классов полное, optional допустимо пустое (универсальные оси работают всем);
+# на класс приходится 1..3 primary-атрибута. Optional-классы у capability-осей —
+# зафиксированные FAN-1034 решения по реальным потребителям (криты: тики DoT и
+# тела призывов не критуют; вампиризм: проки только on_weapon_hit; DoT: только
+# оружия с периодическим каналом), а у summon_amount — точное дополнение
+# config-derived множества class_summon_capable (проверяется тестом).
 const ATTRIBUTE_RELEVANCE := {
-	# `damage` is also consumed by the active per-hero generic damage star, so the
-	# Dark Mage remains secondary despite its three direct weapon channels being
-	# magic/DoT. Doctor's physical Bone Saw branch alone does not displace that
-	# full-build progression contract.
-	"damage": {"primary": ["berserk", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "chemist", "knight"]},
-	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "doctor", "chemist"]},
-	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "thief", "sniper", "priest", "engineer", "assassin", "ranger", "doctor"]},
-	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "elementalist", "sniper", "biologist", "dark_mage", "assassin", "chemist", "knight"]},
-	# FAN-1034: единая ось геометрии (бывшие «Ширина сектора»+«Радиус»). Secondary —
-	# классы, где радиус зон/аур/melee-охвата ощутим: свипы берсерка
-	# (range_scales_with_aoe), граната солдата, ауры жреца/друида, зоны робота,
-	# мины инженера, взрывы тёмного мага, волны гитариста.
-	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "guitarist", "druid"]},
-	# Thief owns the pickup trait. Engineer's remote device field is the second
-	# strongest fit.
-	"pickup_radius": {"primary": ["thief", "engineer"], "secondary": ["berserk", "elementalist", "sniper", "robot", "assassin", "ranger", "chemist", "knight"]},
-	# Armored Hull is an always-on mitigation mechanic; dodge specialists do not
-	# treat the separate armor/defense axis as kit-defining.
-	"defense": {"primary": ["knight", "priest"], "secondary": ["robot", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
-	# FAN-1034: карта гейтнута class_affinity на 8 маг-классов — у физ-классов ось
-	# magic_damage мертва (ни одно их оружие не читает magic-канал), держать их
-	# в secondary было ложью матрицы.
-	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["priest", "biologist", "guitarist", "doctor", "chemist", "druid"]},
+	# FAN-1887: run_modifiers.damage_flat добавляется ПОСЛЕ множителей к обоим
+	# каналам (derived damage/magic_damage) — потребитель есть у всех 17 классов.
+	# Primary — быстрые прямые киты, где плоская добавка на каждый удар весомее.
+	"damage_flat": {"primary": ["dark_mage", "ranger"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "guitarist", "assassin", "doctor", "chemist", "knight", "druid"]},
+	# damage_multiplier множит оба канала и dot_damage — универсальная ось.
+	"damage": {"primary": ["berserk", "soldier"], "secondary": ["thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
+	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["berserk", "thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
+	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "priest", "biologist", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "druid"]},
+	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "soldier", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "doctor", "chemist", "knight", "druid"]},
+	# FAN-1891: единая ось геометрии масштабирует только явно объявленные размеры
+	# (радиусы, ауры, лучи, сектора); target reach остаётся конфигурацией оружия.
+	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "soldier", "thief", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "knight", "druid"]},
+	"pickup_radius": {"primary": ["thief", "engineer"], "secondary": ["berserk", "soldier", "elementalist", "sniper", "priest", "biologist", "robot", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
+	"defense": {"primary": ["knight", "priest"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "druid"]},
 	# Assassin owns the unique 100% crit cap/overflow trait and must be primary.
-	# FAN-1034: биолог/друид выведены из secondary — тики DoT и тела призывов
-	# не критуют; инженер/рыцарь введены (устройства и melee критуют штатно).
+	# FAN-1034: optional = классы без критующего прямого канала (тики DoT и тела
+	# призывов не критуют) — строгий фильтр больше не предлагает им крит-оси.
 	"crit_chance": {"primary": ["assassin", "sniper"], "secondary": ["berserk", "soldier", "thief", "robot", "engineer", "dark_mage", "ranger", "knight"]},
 	"crit_damage": {"primary": ["sniper", "assassin"], "secondary": ["berserk", "soldier", "thief", "robot", "engineer", "dark_mage", "ranger", "knight"]},
-	"dodge": {"primary": ["thief", "assassin"], "secondary": ["berserk", "soldier", "sniper", "biologist", "guitarist", "ranger", "doctor", "druid"]},
-	"range": {"primary": ["sniper", "ranger"], "secondary": ["soldier", "elementalist", "priest", "biologist", "engineer", "dark_mage", "chemist", "druid"]},
+	"dodge": {"primary": ["thief", "assassin"], "secondary": ["berserk", "soldier", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "ranger", "doctor", "chemist", "knight", "druid"]},
 	# Catalyst multiplies every periodic branch by 1.5. Plague Oath makes the
 	# Doctor's long plague DoT the sole scalable source of weapon-only sustain,
-	# so it is kit-defining. FAN-1034: ось поглотила dot_speed; гитарист (нет
-	# DoT-оружия) заменён рейнджером (кровотечение капкана).
+	# so it is kit-defining. FAN-1034: ось поглотила dot_speed; optional = классы
+	# без периодического weapon-канала (искусственное «малое кровотечение» из
+	# описания карты потребителем не считается — FAN-1887).
 	"dot_damage": {"primary": ["doctor", "chemist"], "secondary": ["elementalist", "priest", "biologist", "engineer", "dark_mage", "assassin", "ranger", "druid"]},
-	# FAN-1034: карта гейтнута class_affinity на 7 классов с реальными
-	# потребителями buff_power (veil ассасина, ауры жреца/друида/гитариста/
-	# инженера, arcane_vulnerability тёмного мага/элементалиста).
-	"buff_power": {"primary": ["priest", "druid"], "secondary": ["guitarist", "engineer", "assassin", "dark_mage", "elementalist"]},
-	# FAN-1034: химик введён в secondary (гомункул — призыв), рыцарь выведен.
-	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["elementalist", "priest", "biologist", "robot", "dark_mage", "guitarist", "doctor", "chemist"]},
-	"absorb": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "priest", "biologist", "engineer", "guitarist", "doctor", "druid"]},
+	# FAN-1887: строго config-derived множество class_summon_capable (max_summons/
+	# summon_role/summon_damage_multiplier/deploy_role в конфиге оружия): гитарист,
+	# химик, друид, инженер. Эхо-оружие «интерпретаций» потребителем не считается.
+	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["guitarist", "chemist"]},
 	# Plague Oath explicitly blocks generic regen/vampirism. Priest's selectable
 	# Mending prayer and Druid sustain remain the true regeneration primaries.
-	"regeneration": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "engineer", "guitarist", "knight", "chemist"]},
-	# FAN-1034: мерж двух вампиризм-осей. Берсерк (rage-сустейн) и биолог
-	# (infection loop) — владельцы; друид выведен (удары призывов не проксят
-	# on_weapon_hit), рейнджер введён (высокая частота хитов).
+	# FAN-1887: regeneration_flat работает каждому классу, optional — только
+	# Доктор (trait generic_sustain_blocked режет внешний сустейн).
+	"regeneration": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "chemist", "knight"]},
+	# FAN-1034: мерж двух вампиризм-осей. Optional = классы, чьи киты почти не
+	# проксят on_weapon_hit (зоны/призывы/каналы), плюс Доктор (Plague Oath).
 	"vampiric": {"primary": ["berserk", "biologist"], "secondary": ["soldier", "thief", "assassin", "robot", "guitarist", "priest", "knight", "ranger"]},
-	"ultimate_power": {"primary": ["elementalist", "guitarist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "doctor", "druid"]},
+	"ultimate_power": {"primary": ["elementalist", "guitarist"], "secondary": ["berserk", "soldier", "thief", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
 }

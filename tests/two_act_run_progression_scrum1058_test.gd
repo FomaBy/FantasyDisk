@@ -24,6 +24,7 @@ func _initialize() -> void:
 	_test_transition_heal_and_single_advance(game)
 	_test_final_act_secret_gate(game)
 	_test_legacy_act_three_migration(game)
+	_test_legacy_snapshot_modifier_guard(game)
 	_test_production_sources_have_no_removed_act_contracts()
 	await _test_secret_boss_completion_clears_autosave(game)
 
@@ -121,6 +122,8 @@ func _test_legacy_act_three_migration(game: Node) -> void:
 		_fail("Legacy current_act=3 must normalize to the final Act 2 checkpoint")
 	if int(migrated.get("route_stage", -1)) != 5 or migrated.get("run_player_snapshot", {}) != legacy["run_player_snapshot"]:
 		_fail("Legacy migration must preserve route position and player build")
+	if migrated.get("route_nodes", []) != route or migrated.get("route_selected_indices", []) != legacy["route_selected_indices"] or str(migrated.get("selected_character_id", "")) != "berserk":
+		_fail("Legacy migration must keep route nodes/selections and selected character")
 	game.clear_run_autosave()
 	if not RunAutosave.save_run(legacy):
 		_fail("Legacy checkpoint fixture must save")
@@ -135,6 +138,35 @@ func _test_legacy_act_three_migration(game: Node) -> void:
 	var persisted := RunAutosave.load_run()
 	if int(persisted.get("current_act", 0)) != 2 or int(persisted.get("run_act_count", 0)) != 2:
 		_fail("Public load must persist the normalized two-act checkpoint")
+
+
+func _test_legacy_snapshot_modifier_guard(game: Node) -> void:
+	# FAN-2232: a present run_modifiers key passes canonical sanitization, an
+	# absent optional key is never created, and a wrong-typed value fails
+	# closed to an empty dictionary without crashing.
+	var migrated_missing: Dictionary = game.migrate_run_autosave_state({
+		"current_act": 3,
+		"run_player_snapshot": {"health": 50.0, "level": 4},
+	})
+	if (migrated_missing.get("run_player_snapshot", {}) as Dictionary).has("run_modifiers"):
+		_fail("Migration must not create the absent optional run_modifiers key")
+	var migrated_present: Dictionary = game.migrate_run_autosave_state({
+		"current_act": 3,
+		"run_player_snapshot": {
+			"health": 50.0,
+			"run_modifiers": {"damage_multiplier": 1.25, "range_multiplier": 2.0},
+		},
+	})
+	var sanitized = (migrated_present.get("run_player_snapshot", {}) as Dictionary).get("run_modifiers")
+	if not (sanitized is Dictionary) or sanitized != {"damage_multiplier": 1.25}:
+		_fail("Present run_modifiers must pass canonical sanitization")
+	var migrated_corrupt: Dictionary = game.migrate_run_autosave_state({
+		"current_act": 3,
+		"run_player_snapshot": {"health": 50.0, "run_modifiers": "corrupt"},
+	})
+	var corrupt_value = (migrated_corrupt.get("run_player_snapshot", {}) as Dictionary).get("run_modifiers")
+	if not (corrupt_value is Dictionary) or not (corrupt_value as Dictionary).is_empty():
+		_fail("Wrong-typed run_modifiers must fail closed to an empty dictionary")
 
 
 func _test_secret_boss_completion_clears_autosave(game: Node) -> void:

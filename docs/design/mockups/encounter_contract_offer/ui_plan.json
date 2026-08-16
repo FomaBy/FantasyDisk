@@ -1,0 +1,41 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 24, "allow_overlap": false},
+  "content": {
+    "title": "Контракт следующей фазы",
+    "subtitle": "Прими риск сейчас — получи заранее известную награду.",
+    "risk_label": "Риск",
+    "risk_value": "+35% врагов в следующей фазе",
+    "risk_body": "Сложность повышена только для следующего обычного боя.",
+    "reward_label": "Награда",
+    "reward_value": "+18 золота",
+    "reward_cap": "Потолок: 18 золота",
+    "reward_body": "Награда начисляется только после успешного завершения фазы.",
+    "accept": "Принять контракт",
+    "decline": "Отказаться",
+    "timeout": "По таймауту: отказ — безопасный вариант",
+    "input_hint": "Tab / стрелки — выбрать   Enter / A — подтвердить   Esc / B — отказаться"
+  },
+  "elements": [
+    {"id": "modal_frame", "kind": "panel", "x": 280, "y": 160, "w": 1360, "h": 760, "min_w": 1080, "min_h": 620},
+    {"id": "title_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 700, "y": 180, "w": 520, "h": 52, "text_key": "title", "max_font": 38, "min_font": 26},
+    {"id": "subtitle_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 748, "y": 312, "w": 424, "h": 34, "text_key": "subtitle", "max_font": 16, "min_font": 12},
+    {"id": "risk_panel", "kind": "panel", "parent": "modal_frame", "collision": false, "x": 740, "y": 350, "w": 210, "h": 210, "min_w": 180, "min_h": 180},
+    {"id": "risk_icon_zone", "kind": "icon", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 518, "y": 314, "w": 92, "h": 92, "min_w": 64, "min_h": 64},
+    {"id": "risk_label_zone", "kind": "text", "parent": "risk_panel", "content_zone": true, "collision": false, "x": 742, "y": 350, "w": 204, "h": 28, "text_key": "risk_label", "max_font": 19, "min_font": 14},
+    {"id": "risk_value_zone", "kind": "text", "parent": "risk_panel", "content_zone": true, "collision": false, "x": 742, "y": 383, "w": 204, "h": 62, "text_key": "risk_value", "max_font": 20, "min_font": 14},
+    {"id": "risk_body_zone", "kind": "text", "parent": "risk_panel", "content_zone": true, "collision": false, "x": 742, "y": 449, "w": 204, "h": 96, "text_key": "risk_body", "max_font": 14, "min_font": 10},
+    {"id": "reward_panel", "kind": "panel", "parent": "modal_frame", "collision": false, "x": 974, "y": 350, "w": 210, "h": 210, "min_w": 180, "min_h": 180},
+    {"id": "reward_icon_zone", "kind": "icon", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 1256, "y": 314, "w": 92, "h": 92, "min_w": 64, "min_h": 64},
+    {"id": "reward_label_zone", "kind": "text", "parent": "reward_panel", "content_zone": true, "collision": false, "x": 978, "y": 350, "w": 202, "h": 28, "text_key": "reward_label", "max_font": 19, "min_font": 14},
+    {"id": "reward_value_zone", "kind": "text", "parent": "reward_panel", "content_zone": true, "collision": false, "x": 978, "y": 383, "w": 202, "h": 42, "text_key": "reward_value", "max_font": 22, "min_font": 14},
+    {"id": "reward_cap_zone", "kind": "text", "parent": "reward_panel", "content_zone": true, "collision": false, "x": 978, "y": 429, "w": 202, "h": 28, "text_key": "reward_cap", "max_font": 14, "min_font": 10},
+    {"id": "reward_body_zone", "kind": "text", "parent": "reward_panel", "content_zone": true, "collision": false, "x": 978, "y": 462, "w": 202, "h": 82, "text_key": "reward_body", "max_font": 13, "min_font": 10},
+    {"id": "accept_button", "kind": "button", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 672, "y": 838, "w": 258, "h": 56, "min_w": 220, "min_h": 48, "text_key": "accept", "max_font": 18, "min_font": 13},
+    {"id": "decline_button", "kind": "button", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 990, "y": 838, "w": 258, "h": 56, "min_w": 220, "min_h": 48, "text_key": "decline", "max_font": 18, "min_font": 13},
+    {"id": "timeout_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 744, "y": 715, "w": 430, "h": 48, "text_key": "timeout", "max_font": 15, "min_font": 11},
+    {"id": "input_hint_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "collision": false, "x": 760, "y": 254, "w": 400, "h": 26, "text_key": "input_hint", "max_font": 11, "min_font": 9},
+    {"id": "combat_hud_reserved_top", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 112, "collision": true, "required": true},
+    {"id": "combat_hud_reserved_fab", "kind": "decor", "x": 1827, "y": 987, "w": 93, "h": 93, "collision": true, "required": true}
+  ]
+}

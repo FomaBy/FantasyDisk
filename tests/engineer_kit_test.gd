@@ -70,6 +70,8 @@ func _initialize() -> void:
 	_test_trait_registry_and_configs(errors)
 	_test_budget_models(errors)
 	await _test_trait_runtime_on_player(errors)
+	await _test_sentry_cadence_exact_once(errors)
+	await _test_sentry_extra_projectile_invariants(errors)
 	await _test_turret_shot_limit_and_persistence(errors)
 	await _test_turret_capacity_scaling(errors)
 	await _test_orbit_drone_orbit_and_contact(errors)
@@ -222,6 +224,92 @@ func _test_trait_runtime_on_player(errors: Array) -> void:
 		errors.append("реальный Player не читает network_damage_per_stack=0.06")
 	if float(player.call("class_trait_value", "network_stack_cap_base", 0.0)) <= 0.0:
 		errors.append("реальный Player не читает network_stack_cap_base")
+	await _cleanup(holder)
+
+
+func _test_sentry_cadence_exact_once(errors: Array) -> void:
+	var holder := _new_scene("SentryCadencePlayerScene")
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	await process_frame
+	player.call("configure_character", "engineer", "engineer_sentry_wrench")
+	await process_frame
+	var weapon := player.get("equipped_weapon") as Node
+	if weapon == null:
+		errors.append("real Player не экипировал sentry для cadence regression")
+		await _cleanup(holder)
+		return
+	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
+	await process_frame
+	var devices := _engineer_devices(holder)
+	if devices.is_empty():
+		errors.append("real Player не развернул sentry для cadence regression")
+		await _cleanup(holder)
+		return
+	var turret: Node2D = devices[0]
+	var config := PD.weapon("engineer", "engineer_sentry_wrench")
+	var baseline_pulse := float(turret.call("effective_pulse_interval", weapon))
+	var baseline_expected := _sentry_budget_pulse(config, player)
+	if absf(baseline_pulse - baseline_expected) > EPS:
+		errors.append("real Player baseline sentry pulse %.3f != budget %.3f" % [baseline_pulse, baseline_expected])
+	player.call("apply_reward", {"stats": {"agility": 5.0}})
+	var fast_pulse := float(turret.call("effective_pulse_interval", weapon))
+	var fast_expected := _sentry_budget_pulse(config, player)
+	if fast_pulse >= baseline_pulse - EPS or absf(fast_pulse - fast_expected) > EPS:
+		errors.append("real Player sentry cadence not exact-once (base %.3f, fast %.3f, budget %.3f)" % [baseline_pulse, fast_pulse, fast_expected])
+	var stored_pulse := float(weapon.get("amp_pulse_interval"))
+	if absf(stored_pulse - float(config.get("amp_pulse_interval", 0.0))) > EPS:
+		errors.append("Player pre-scaled sentry pulse before turret consumed attack_speed (%.3f != raw %.3f)" % [stored_pulse, config.get("amp_pulse_interval", 0.0)])
+	player.call("_apply_weapon_scaling", weapon)
+	if absf(float(turret.call("effective_pulse_interval", weapon)) - fast_pulse) > EPS:
+		errors.append("repeated real Player scaling changed sentry cadence")
+	await _cleanup(holder)
+
+
+func _sentry_budget_pulse(config: Dictionary, player: Node) -> float:
+	var stats: Dictionary = player.get("stats")
+	var params: Dictionary = player.get("derived_parameters")
+	var tempo := 1.0 + minf(float(params.get("summon_amount", 0.0)) * 0.014 + float(stats.get("leadership", 0.0)) * 0.006, 0.30)
+	return maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / maxf(float(params.get("attack_speed", 1.0)), 0.1), 0.10)
+
+
+func _test_sentry_extra_projectile_invariants(errors: Array) -> void:
+	var holder := _new_scene("SentryExtraProjectileInvariantScene")
+	var owner := _new_owner(holder)
+	owner.derived_parameters["summon_amount"] = 12.0
+	owner.derived_parameters["leadership"] = 6.0
+	owner.stats["leadership"] = 6.0
+	var weapon := _new_weapon(owner, "engineer_sentry_wrench")
+	var base_park := int(weapon.get("max_summons"))
+	var base_limit := int(weapon.call("_engineer_turret_limit", owner))
+	var base_damage := float(weapon.call("_rolled_damage", owner))
+	var base_summon_amount := float(owner.derived_parameters["summon_amount"])
+	weapon.call("_fire_engineer_sentry_link", owner, Vector2.RIGHT)
+	await process_frame
+	var turrets := _engineer_devices(holder)
+	if turrets.is_empty():
+		errors.append("extra_projectile invariant: baseline sentry did not deploy")
+		await _cleanup(holder)
+		return
+	var base_cadence := float(turrets[0].call("effective_pulse_interval", weapon))
+	owner.run_modifiers = {"extra_projectile": 1.0}
+	if int(weapon.call("_extra_projectiles")) != 1:
+		errors.append("extra_projectile invariant: sentry must consume one modifier point per volley")
+	if int(weapon.get("projectile_count")) != 2:
+		errors.append("extra_projectile invariant: base volley changed from 2")
+	if int(weapon.get("max_summons")) != base_park or absf(float(owner.derived_parameters["summon_amount"]) - base_summon_amount) > EPS:
+		errors.append("extra_projectile invariant: summon scaling changed")
+	if int(weapon.call("_engineer_turret_limit", owner)) != base_limit:
+		errors.append("extra_projectile invariant: turret cap changed %d -> %d" % [base_limit, int(weapon.call("_engineer_turret_limit", owner))])
+	if absf(float(weapon.call("_rolled_damage", owner)) - base_damage) > EPS:
+		errors.append("extra_projectile invariant: sentry damage changed")
+	if absf(float(turrets[0].call("effective_pulse_interval", weapon)) - base_cadence) > EPS:
+		errors.append("extra_projectile invariant: sentry cadence changed")
+	for _deploy in range(base_limit + 1):
+		weapon.call("_fire_engineer_sentry_link", owner, Vector2.RIGHT)
+	await process_frame
+	if _engineer_devices(holder).size() != base_limit:
+		errors.append("extra_projectile invariant: active turret count %d != cap %d" % [_engineer_devices(holder).size(), base_limit])
 	await _cleanup(holder)
 
 

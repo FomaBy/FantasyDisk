@@ -109,8 +109,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Dev console win flow passed: %d consecutive win->route->combat cycles are healthy (incl. win under level-up and escape-menu pauses)." % WIN_FLOW_COMBAT_ROUNDS)
-	quit()
+	_finish("Dev console win flow passed: %d consecutive win->route->combat cycles are healthy (incl. win under level-up and escape-menu pauses)." % WIN_FLOW_COMBAT_ROUNDS)
 
 
 # Подбирает сид, у которого первые combat_rows рядов маршрута содержат боевой узел.

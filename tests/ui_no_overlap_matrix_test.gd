@@ -54,6 +54,9 @@ func _initialize() -> void:
 	dump_lines.append("Checks: viewport fit, peer overlap, text allocation overflow, parent content containment, and exact-frame TextureRect stretch mode.")
 	dump_lines.append("")
 	var errors := []
+	var tooltip_host_source_error := _tooltip_host_source_error()
+	if tooltip_host_source_error != "":
+		errors.append(tooltip_host_source_error)
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_screen(viewport_size, "main_menu", Callable(self, "_open_main_menu"), [
 			"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
@@ -260,6 +263,19 @@ func _initialize() -> void:
 	quit(0)
 
 
+func _tooltip_host_source_error() -> String:
+	var source := FileAccess.get_file_as_string("res://tests/attribute_ui_matrix_fan1927_test.gd")
+	if source.is_empty():
+		return "FAN-1966: could not read the attribute UI matrix source."
+	if source.contains("FAN1927MountedTooltip") or source.contains("func _mount_tooltip"):
+		return "FAN-1966: attribute UI matrix restored a test-owned tooltip host instead of production hosts."
+	if source.contains("mouse_entered.emit()") or source.contains("call(\"_show_hover_tooltip\""):
+		return "FAN-1969: attribute UI matrix bypasses production coordinate hover wiring."
+	if not source.contains("push_input") or not source.contains("_effective_scroll_rect"):
+		return "FAN-1969: attribute UI matrix lost its real-input or scrollbar-lane oracle."
+	return ""
+
+
 func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Callable, control_names: Array, dump_lines: PackedStringArray, errors: Array, require_two_controls := true) -> void:
 	var viewport := SubViewport.new()
 	viewport.size = viewport_size
@@ -357,7 +373,8 @@ func _append_codex_split_errors(main: Node, context: String, errors: Array, dump
 
 	var section_specs := {
 		"characteristics": {"count": 8, "related_title": "Связанные атрибуты"},
-		"attributes": {"count": 26, "related_title": "Связанные характеристики"},
+		# FAN-1887: «Атрибуты» кодекса — канонические 16 player-facing осей.
+		"attributes": {"count": 16, "related_title": "Связанные характеристики"},
 	}
 	for section_id in section_specs:
 		main.ui.call("_show_codex_section", content, str(section_id))
@@ -1091,8 +1108,11 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return offer_error
 				if not offer.disabled:
 					return "%s: expected zero-money attribute offers to be disabled." % context
-				if not offer.tooltip_text.contains("Недостаточно золота"):
-					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+				var disclosure := str(offer.get_meta("attribute_tooltip_text", ""))
+				if not disclosure.contains("Недостаточно золота"):
+					return "%s: expected disabled attribute disclosure to explain insufficient gold." % context
+				if not bool(offer.get_meta("production_tooltip_host", false)):
+					return "%s: Attribute Shop must route tooltip rendering to AS.DetailDrawer." % context
 				for suffix in ["Influence", "Preview"]:
 					var visible_label := offer.find_child("%s%s" % [offer.name, suffix], false, false) as Label
 					if visible_label == null or visible_label.text.strip_edges() == "":
@@ -1207,6 +1227,9 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var advisor_badge_count := 0
 			var reward_socket_tops := PackedFloat32Array()
 			var reward_title_tops := PackedFloat32Array()
+			var level_viewport_rect := Rect2(Vector2.ZERO, main.get_viewport().get_visible_rect().size)
+			var detail_drawer := main.find_child("LevelUpDetailDrawer", true, false) as Control
+			var detail_drawer_rect := detail_drawer.get_global_rect() if detail_drawer != null and detail_drawer.visible else Rect2()
 			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
 				var reward_button := node as Button
 				if reward_button == null:
@@ -1279,18 +1302,34 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					).x
 					if badge_text_width > badge_label.size.x + 1.0:
 						return "%s: %s advisor label needs %.1fpx but has %.1fpx; ellipsis is forbidden." % [context, reward_button.name, badge_text_width, badge_label.size.x]
-				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
+				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview"]:
 					var child := reward_button.find_child(child_name, true, false) as Control
 					if child == null or not child.visible or not child.get_global_rect().has_area():
 						return "%s: expected visible %s inside %s." % [context, child_name, reward_button.name]
 					if not scaled_card_safe.encloses(child.get_global_rect()):
-						return "%s: expected %s to stay inside card chip safe rect %s." % [context, child_name, str(scaled_card_safe)]
+						return "%s: expected %s %s to stay inside card chip safe rect %s." % [context, child_name, str(child.get_global_rect()), str(scaled_card_safe)]
 				var effect_panel := reward_button.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
 				if effect_panel == null or not (effect_panel.get_theme_stylebox("panel") is StyleBoxFlat):
 					return "%s: expected %s effect preview field to use an atlas chip StyleBoxFlat." % [context, reward_button.name]
-				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
-				if effect_text == null or not effect_text.text.contains("->"):
-					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
+				if detail_drawer_rect.has_area() and detail_drawer_rect.intersects(effect_panel.get_global_rect()):
+					return "%s: %s effect preview %s intersects LU.DetailDrawer %s." % [context, reward_button.name, str(effect_panel.get_global_rect()), str(detail_drawer_rect)]
+				var effect_rows := reward_button.find_children("LevelUpRewardEffectText*", "Label", true, false)
+				if effect_rows.is_empty():
+					return "%s: %s exposes no mandatory effect rows." % [context, reward_button.name]
+				for row_index in range(effect_rows.size()):
+					var effect_text := effect_rows[row_index] as Label
+					var effect_rect := effect_text.get_global_rect()
+					if not effect_text.is_visible_in_tree() or not effect_rect.has_area():
+						return "%s: %s effect row %d is not visible." % [context, reward_button.name, row_index]
+					if not level_viewport_rect.encloses(effect_rect) or not scaled_level_safe.encloses(effect_rect) or not scaled_card_safe.encloses(effect_rect):
+						return "%s: %s effect row %d escapes viewport/panel/card safe areas (%s)." % [context, reward_button.name, row_index, str(effect_rect)]
+					if detail_drawer_rect.has_area() and detail_drawer_rect.intersects(effect_rect):
+						return "%s: %s effect row %d %s intersects LU.DetailDrawer %s." % [context, reward_button.name, row_index, str(effect_rect), str(detail_drawer_rect)]
+					if effect_text.clip_text or effect_text.max_lines_visible != -1 or effect_text.get_visible_line_count() < effect_text.get_line_count():
+						return "%s: %s effect row %d is clipped or truncated." % [context, reward_button.name, row_index]
+				var primary_effect := effect_rows[0] as Label
+				if not primary_effect.text.contains("->"):
+					return "%s: expected %s primary effect row to contain before/after delta, got %s." % [context, reward_button.name, primary_effect.text]
 			if advisor_badge_count < 1:
 				return "%s: deterministic Level Up fixture must expose at least one advisor badge (SCRUM-1032 oracle)." % context
 			if reward_socket_tops.size() != 3 or reward_title_tops.size() != 3:
@@ -1541,8 +1580,11 @@ func _economy_choice_card_contract_error(card: Button, context: String) -> Strin
 		and (context.contains("rest_economy") or context.contains("upgrade_economy"))
 	if attribute_card:
 		var expected_attribute_size := Vector2(250.0, 185.0)
-		if context.contains("(1280, 720)"):
-			expected_attribute_size = Vector2(276.0, 232.0)
+		if context.contains("(1152, 648)"):
+			expected_attribute_size = Vector2(190.0, 208.0)
+		elif context.contains("(1280, 720)"):
+			# FAN-1966 reserves the left safe lane for AS.DetailDrawer at 720p.
+			expected_attribute_size = Vector2(220.0, 256.0)
 		elif context.contains("(1920, 1080)"):
 			expected_attribute_size = Vector2(360.0, 360.0)
 		elif context.contains("(2560, 1440)"):

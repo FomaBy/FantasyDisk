@@ -18,14 +18,13 @@ func _initialize() -> void:
 	await _test_on_room_clear_heal()
 	await _test_transient_flags_not_frozen_in_snapshot()
 	await _test_character_change_clears_trigger_latches()
-	print("[triggered_artifacts] PASSED")
-	quit(0)
+	_finish("[triggered_artifacts] PASSED")
 
 
-func _make_player() -> Node2D:
+func _make_player(weapon_id := "sword") -> Node2D:
 	var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
 	root.add_child(player)
-	player.configure_character("berserk", "sword")
+	player.configure_character("berserk", weapon_id)
 	return player
 
 
@@ -127,6 +126,12 @@ func _test_on_low_hp_guard() -> void:
 	var maxhp := float(player.get("max_health"))
 	player.set("health", maxhp * 0.25)
 	player.call("_update_low_hp_state")
+	var derived := player.get("derived_parameters") as Dictionary
+	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_low_hp.
+	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		player.queue_free()
+		return
 	player.call("take_damage", 1.0)
 	if float(player.get("_damage_invulnerability_left")) < 1.0:
 		_fail("on_low_hp guard (guardian_bulwark) should grant brief invulnerability on first low-HP hit.")
@@ -150,6 +155,11 @@ func _test_on_take_hit_pulse() -> void:
 	player.set("health", float(player.get("max_health")))  # не дать low-HP щиту перехватить
 	var derived := player.get("derived_parameters") as Dictionary
 	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_take_hit.
+	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		player.queue_free()
+		enemy.queue_free()
+		return
 	player.call("take_damage", 20.0)
 	if float(enemy.get_meta("damage_taken", 0.0)) <= 0.0:
 		_fail("on_take_hit pulse (counterwave_sigil) should damage nearby enemy.")
@@ -161,15 +171,18 @@ func _test_on_take_hit_pulse() -> void:
 
 
 func _test_on_crit_speed_burst() -> void:
-	var player := _make_player()
+	var player := _make_player("")
 	await process_frame
 	player.call("apply_reward", {"kind": "artifact", "id": "crit_impulse", "title": "Импульс Крита", "mods": {"crit_speed_burst": 0.35}})
-	var enemy := _make_dummy_enemy(Vector2(player.global_position) + Vector2(40.0, 0.0))
-	await process_frame
-	var base_speed := float(player.get("speed"))
-	player.call("on_weapon_hit", enemy, 10.0, true)  # was_crit=true
 	var rm := player.get("run_modifiers") as Dictionary
-	if float(rm.get("crit_speed_burst_active", 0.0)) < 1.0:
+	if player.get("equipped_weapon") != null or not is_zero_approx(float(rm.get("crit_speed_burst_active", 0.0))):
+		_fail("on_crit test requires a weaponless player with an inactive speed burst before stimulus.")
+		player.queue_free()
+		return
+	var base_speed := float(player.get("speed"))
+	var enemy := _make_dummy_enemy(Vector2(player.global_position) + Vector2(40.0, 0.0))
+	player.call("on_weapon_hit", enemy, 10.0, true)  # was_crit=true
+	if not is_equal_approx(float(rm.get("crit_speed_burst_active", 0.0)), 1.0):
 		_fail("on_crit (crit_impulse) should set crit_speed_burst_active on crit hit.")
 		player.queue_free(); enemy.queue_free()
 		return
@@ -178,7 +191,7 @@ func _test_on_crit_speed_burst() -> void:
 		player.queue_free(); enemy.queue_free()
 		return
 	# Не-крит не должен включать бафф (на свежем игроке).
-	var player2 := _make_player()
+	var player2 := _make_player("")
 	await process_frame
 	player2.call("apply_reward", {"kind": "artifact", "id": "crit_impulse", "title": "Импульс Крита", "mods": {"crit_speed_burst": 0.35}})
 	player2.call("on_weapon_hit", enemy, 10.0, false)

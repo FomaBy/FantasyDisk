@@ -1,0 +1,87 @@
+{
+  "source": {
+    "filename": "pixellab_encounter_contract_offer_688x384_alpha_clean.png",
+    "size": [
+      688,
+      384
+    ],
+    "mode": "RGBA",
+    "alpha": {
+      "transparent_pixels": 114716,
+      "opaque_pixels": 149476,
+      "visible_bbox_xyxy": [
+        62,
+        0,
+        623,
+        383
+      ],
+      "white_opaque_pixels": 5
+    }
+  },
+  "raw_provenance": {
+    "filename": "pixellab_encounter_contract_offer_688x384_raw.png",
+    "size": [
+      688,
+      384
+    ],
+    "mode": "RGBA",
+    "alpha": {
+      "transparent_pixels": 114716,
+      "opaque_pixels": 149476,
+      "visible_bbox_xyxy": [
+        62,
+        0,
+        623,
+        383
+      ],
+      "white_opaque_pixels": 646
+    }
+  },
+  "accepted_content_rects_source_px": {
+    "title_inner": [
+      190,
+      8,
+      308,
+      36
+    ],
+    "central_empty": [
+      232,
+      83,
+      224,
+      157
+    ],
+    "lower_center_panel": [
+      217,
+      272,
+      253,
+      48
+    ],
+    "left_icon_well": [
+      118,
+      82,
+      54,
+      54
+    ],
+    "right_icon_well": [
+      496,
+      82,
+      54,
+      54
+    ],
+    "left_button_inner": [
+      214,
+      347,
+      98,
+      19
+    ],
+    "right_button_inner": [
+      372,
+      347,
+      98,
+      19
+    ]
+  },
+  "postprocess": "Removed only the two PixelLab auto-labels from the declared button interiors; frame and alpha pixels outside those rectangles were preserved.",
+  "no_text_baked": true,
+  "new_background": false
+}

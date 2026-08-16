@@ -21,5 +21,4 @@ func _initialize() -> void:
 	await _test_unique_class_identity_patterns()
 	await _test_ultimate_framework()
 
-	print("Runtime weapon mechanics smoke suite passed.")
-	quit()
+	_finish("Runtime weapon mechanics smoke suite passed.")

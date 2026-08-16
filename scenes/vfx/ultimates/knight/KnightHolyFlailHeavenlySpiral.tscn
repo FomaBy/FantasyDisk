@@ -1,0 +1,209 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_holy_flail.png" id="1_flail"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_heavenly_spiral"]
+resource_name = "ultimate"
+length = 7.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ChainRise:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.2, 6.6, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.9, 0.6, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FlailHead:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.6, 2.4, 3.2, 4.0, 4.4, 4.8, 5.6, 6.2, 6.8, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 60), Vector2(0, -150), Vector2(30, 0), Vector2(-52, -19), Vector2(61, 51), Vector2(-50, -87), Vector2(103, -38), Vector2(21, 118), Vector2(24, -136), Vector2(-75, 130), Vector2(0, -40), Vector2(0, 60)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FlailHead:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.2, 6.2, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.4, 12.0, 12.6]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FlailHead:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SpiralPath:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.6, 6.6, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.2, 0.85, 0.85, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SpiralPath:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.6, 6.2, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(0.2, 0.2), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("SpiralPath:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.6, 6.2, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 2.4, 2.8]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("PullGlints:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 2.2, 2.5, 5.2, 5.6, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.85, 0.85, 0.0, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("LaunchRing:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 6.0, 6.2, 6.9, 7.4, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.7, 0.0, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("LaunchRing:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 6.2, 7.0, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.55, 0.55), Vector2(0.6, 0.6), Vector2(1.2, 1.2), Vector2(1.25, 1.25)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_heavenly_spiral"]
+_data = {"ultimate": SubResource("Animation_heavenly_spiral")}
+
+[node name="KnightHolyFlailHeavenlySpiral" type="Node2D"]
+metadata/ultimate_id = "knight/holy_flail"
+metadata/silhouette = "colossal_flail_head_on_expanding_spiral"
+metadata/motion_path = "upward_chain_climb_then_expanding_rotating_spiral"
+metadata/impact_language = "inward_pull_loops_ending_in_sunburst_launch_ring"
+metadata/max_visual_nodes = 8
+metadata/crowd_cap = 20
+
+[node name="SpiralPath" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(4, 0, 7, 3, 7, 7, 5, 12, 0, 16, -8, 18, -17, 15, -24, 9, -29, -2, -29, -14, -23, -27, -12, -36, 4, -41, 21, -39, 37, -30, 49, -14, 54, 6, 50, 28, 37, 48, 16, 61, -10, 66, -36, 59, -59, 42, -74, 17, -78, -14, -69, -45, -48, -70, -17, -87, 19, -89, 54, -78, 82, -52, 99, -17, 101, 24, 86, 63, 56, 95, 15, 112, -30, 112, -73, 94, -107, 60, -125, 14, -123, -37, -102, -84, -62, -120, -11, -138, 45, -134, 95, -108, 133, -64, 150, -7)
+width = 7.0
+default_color = Color(1, 0.9, 0.55, 0.8)
+antialiased = true
+scale = Vector2(0.15, 0.15)
+modulate = Color(1, 1, 1, 0)
+
+[node name="ChainRise" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 84, 7, 44, -6, 4, 7, -36, -6, -76, 5, -112, 0, -148)
+width = 5.0
+default_color = Color(0.95, 0.9, 0.7, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FlailHead" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_flail")
+position = Vector2(0, 60)
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 0.95, 0.75, 0)
+
+[node name="PullGlints" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="GlintEast" type="Line2D" parent="PullGlints"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(76, 0)
+points = PackedVector2Array(13, -11, -9, 0, 13, 11)
+width = 6.0
+default_color = Color(1, 0.95, 0.7, 0.95)
+antialiased = true
+
+[node name="GlintSouthWest" type="Line2D" parent="PullGlints"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(-57, 48)
+rotation = 2.443
+points = PackedVector2Array(13, -11, -9, 0, 13, 11)
+width = 6.0
+default_color = Color(1, 0.95, 0.7, 0.95)
+antialiased = true
+
+[node name="GlintNorth" type="Line2D" parent="PullGlints"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(-26, -70)
+rotation = 4.363
+points = PackedVector2Array(13, -11, -9, 0, 13, 11)
+width = 6.0
+default_color = Color(1, 0.95, 0.7, 0.95)
+antialiased = true
+
+[node name="LaunchRing" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(150, 0, 139, 57, 106, 106, 57, 139, 0, 150, -57, 139, -106, 106, -139, 57, -150, 0, -139, -57, -106, -106, -57, -139, 0, -150, 57, -139, 106, -106, 139, -57)
+width = 14.0
+default_color = Color(1, 0.97, 0.85, 0.95)
+closed = true
+antialiased = true
+scale = Vector2(0.55, 0.55)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_heavenly_spiral")}
+autoplay = "ultimate"

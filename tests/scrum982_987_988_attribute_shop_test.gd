@@ -263,8 +263,33 @@ func _assert_attribute_shop_layout(main: Node, viewport_size: Vector2i, expected
 
 	if screen.find_child("AttributeShopPanel", true, false) != null:
 		_errors.append("%s: redundant AttributeShopPanel must remain removed." % context)
-	if not screen.find_children("*", "ScrollContainer", true, false).is_empty():
-		_errors.append("%s: Attribute Shop must not contain a ScrollContainer." % context)
+	# FAN-1927 (спека fan1883_attribute_clarity, AS.DetailDrawer): единственный
+	# разрешённый ScrollContainer — approved drawer длинной копии. На 1080p+ он
+	# виден между рядом и действиями; на compact-вьюпортах скрыт (длинная копия —
+	# скроллируемый tooltip), и другие ScrollContainer'ы по-прежнему запрещены.
+	var drawer := screen.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
+	var drawer_scroll := screen.find_child("AttributeShopDetailScroll", true, false) as ScrollContainer
+	var drawer_label := screen.find_child("AttributeShopDetailLabel", true, false) as Label
+	if drawer == null or drawer_scroll == null or drawer_label == null:
+		_errors.append("%s: approved AS.DetailDrawer (panel/scroll/label) is missing." % context)
+	else:
+		if drawer_label.text_overrun_behavior != TextServer.OVERRUN_NO_TRIMMING:
+			_errors.append("%s: AS.DetailDrawer label must not use ellipsis trimming." % context)
+		var drawer_expected_visible: bool = viewport_size.y >= 1000.0
+		if drawer.visible != drawer_expected_visible:
+			_errors.append("%s: AS.DetailDrawer visible=%s, expected %s." % [context, drawer.visible, drawer_expected_visible])
+		if drawer.visible:
+			if not _encloses(inner, drawer.get_global_rect()):
+				_errors.append("%s: AS.DetailDrawer %s escapes inner rect %s." % [context, str(drawer.get_global_rect()), str(inner)])
+			if drawer.get_global_rect().position.y < offers.get_global_rect().end.y - 1.0:
+				_errors.append("%s: AS.DetailDrawer overlaps the offer row." % context)
+			if drawer.get_global_rect().end.y > actions.get_global_rect().position.y + 1.0:
+				_errors.append("%s: AS.DetailDrawer overlaps the actions band." % context)
+			if str(drawer_label.text).strip_edges() == "":
+				_errors.append("%s: AS.DetailDrawer has no focused-card copy." % context)
+	for scroll_node in screen.find_children("*", "ScrollContainer", true, false):
+		if (scroll_node as Node).name != "AttributeShopDetailScroll":
+			_errors.append("%s: unexpected ScrollContainer '%s' outside the approved drawer." % [context, (scroll_node as Node).name])
 
 	if frame.get_parent() != screen or screen.get_child(screen.get_child_count() - 1) != frame:
 		_errors.append("%s: AttributeShopFrame must be the final direct child above all content." % context)

@@ -3,11 +3,15 @@ extends RefCounted
 const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
 const LORE_DATA := preload("res://scripts/lore_data.gd")
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+# FAN-1447: Encounter Beat Director — вся логика в scripts/encounters/**.
+const ENCOUNTER_ADAPTER := preload("res://scripts/encounters/encounter_adapter.gd")
+const ENCOUNTER_CONTEXT := preload("res://scripts/encounters/encounter_context.gd")
 
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
 
 var game
+var _encounters := ENCOUNTER_ADAPTER.new()
 
 const TRANSIENT_RUN_MODIFIER_KEYS := [
 	"dodge_rush_active",
@@ -283,6 +287,7 @@ func _finalize_combat_start() -> void:
 		_spawn_boss()
 	elif game.current_combat_type == "elite":
 		_spawn_elite_enemy()
+	_encounters.begin(game, self)
 
 
 func _configure_player_camera(player: Node2D) -> void:
@@ -337,6 +342,9 @@ func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 	_combat_start_in_progress = false
+
+	# FAN-1447: терминальная остановка бита ДО очистки мира/HUD.
+	_encounters.shutdown(victory)
 
 	# SCRUM-1000: канонический конец боя снимает ВСЕ внутрибоевые pause-причины.
 	# Штатные пути (win/lose из main._process, died-сигнал игрока) недостижимы при
@@ -478,8 +486,6 @@ func _play_combat_result_audio(victory: bool, was_boss_fight: bool, was_elite_fi
 		audio.play_music_stinger("music_sting_victory_epic" if (was_boss_fight or was_elite_fight) else "music_sting_victory")
 	else:
 		audio.play_music_stinger("music_sting_defeat")
-
-
 func _random_enemy_scene() -> PackedScene:
 	var scenes := [
 		game.enemy_scene,
@@ -498,24 +504,18 @@ func _random_enemy_scene() -> PackedScene:
 	for scene in scenes:
 		if scene != null:
 			available_scenes.append(scene)
-
 	if available_scenes.is_empty():
 		return null
-
 	var total_weight := 0.0
 	for scene in available_scenes:
 		total_weight += _spawn_weight_for_scene(scene)
-
 	var roll = game.rng.randf_range(0.0, total_weight)
 	var cursor := 0.0
 	for scene in available_scenes:
 		cursor += _spawn_weight_for_scene(scene)
 		if roll <= cursor:
 			return scene as PackedScene
-
 	return available_scenes[0] as PackedScene
-
-
 func _spawn_weight_for_scene(scene: PackedScene) -> float:
 	if scene == null:
 		return 0.0
@@ -529,25 +529,24 @@ func _spawn_weight_for_scene(scene: PackedScene) -> float:
 	if game.boss_combat_active and _is_shooter_scene(scene):
 		base_weight *= 0.6
 	return base_weight
-
-
-func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_position := Vector2.ZERO, use_given_position := false) -> Node2D:
+func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_position := Vector2.ZERO,
+		use_given_position := false, min_player_distance := -1.0) -> Node2D:
 	var enemy_packed_scene := enemy_scene_override if enemy_scene_override != null else _random_enemy_scene()
 	if enemy_packed_scene == null:
 		return null
-
 	var enemy := SCENE_CONTRACTS.instantiate_node_2d(enemy_packed_scene, "CombatDirector enemy spawn")
 	if enemy == null:
 		return null
 	game.add_child(enemy)
-	# Этап B: явные точки (пачки/свита) тоже держат дистанцию до живого игрока.
-	enemy.global_position = _push_spawn_from_player(_clamp_spawn_position(spawn_position), GIVEN_SPAWN_MIN_PLAYER_DISTANCE) if use_given_position else _random_spawn_position()
+	var safe_distance := min_player_distance
+	if safe_distance < 0.0:
+		safe_distance = GIVEN_SPAWN_MIN_PLAYER_DISTANCE if use_given_position else game.SPAWN_PLAYER_SAFE_RADIUS
+	enemy.global_position = _push_spawn_from_player(_clamp_spawn_position(spawn_position), safe_distance) \
+		if use_given_position else _random_spawn_position(safe_distance)
 	_scale_enemy_for_current_wave(enemy)
 	game.record_codex_enemy_discovery(enemy)
 	_connect_enemy_rewards(enemy)
 	return enemy
-
-
 func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 	# Возвращает число занятых слотов (0 если не спавнили).
 	var asc_chance := float(asc.get("mini_elite_chance", 0.0))
@@ -597,8 +596,6 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		if minion != null:
 			used += 1
 	return used
-
-
 func _elite_scene_by_key(key: String) -> PackedScene:
 	match key:
 		"armored":
@@ -611,11 +608,7 @@ func _elite_scene_by_key(key: String) -> PackedScene:
 			return game.elite_commander_scene
 		_:
 			return null
-
-
 func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
-	# Идентичность вида (для кодекса/HUD) + профиль статов поверх волнового скейла
-	# + тинт placeholder-спрайта (rig). Поведение атаки = натуральное у базовой сцены.
 	elite.set_meta("mini_elite_kind", str(kind.get("id", "")))
 	elite.set_meta("mini_elite_title", str(kind.get("title", "")))
 	elite.set_meta("drop_class", "mini_elite")
@@ -637,17 +630,33 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 	if elite.has_method("refresh_full_frame_visual"):
 		elite.call("refresh_full_frame_visual")
 	_apply_drop_rewards(elite, "mini_elite")
-
-
+func spawn_encounter_plan(plan: Dictionary) -> int:
+	if plan.is_empty() or plan != _encounters.spawn_plan_projection() or game.boss_combat_active \
+			or game.current_combat_type != "battle" or not game.pending_event_combat.is_empty():
+		return 0
+	var remaining := mini(_active_enemy_cap(), int(plan.get("active_cap", 0))) \
+		- ENCOUNTER_CONTEXT.wave_quota_count(game.get_tree().get_nodes_in_group("enemies"))
+	var spawned_count := 0
+	for entry in plan.get("entries", []):
+		var scene := load(str(entry.get("scene", ""))) as PackedScene
+		for _index in range(mini(int(entry.get("count", 0)), remaining)):
+			if _spawn_random_enemy(scene, Vector2.ZERO, false, float(plan.get("safe_radius", game.SPAWN_PLAYER_SAFE_RADIUS))) == null:
+				return spawned_count
+			spawned_count += 1
+			remaining -= 1
+			if remaining <= 0:
+				return spawned_count
+	return spawned_count
 func _spawn_enemy_wave() -> void:
-	# Активный кап врагов инвариантен в пределах одной волны (зависит от
-	# route_scaling_stage/spawn_wave_index/типа боя — они тут не меняются),
-	# поэтому считаем один раз и переиспользуем в горячем цикле спавна пачек.
 	var active_cap := _active_enemy_cap()
-	var remaining_slots = active_cap - game.get_tree().get_nodes_in_group("enemies").size()
+	var encounter_plan := _encounters.spawn_plan_projection()
+	if not encounter_plan.is_empty():
+		spawn_encounter_plan(encounter_plan)
+		return
+	var remaining_slots = active_cap - ENCOUNTER_CONTEXT.wave_quota_count(
+		game.get_tree().get_nodes_in_group("enemies"))
 	if remaining_slots <= 0:
 		return
-
 	var base_count = int(game.WAVE_SETTINGS["base_spawn_count"])
 	var scaling_stage: int = game.route_scaling_stage()
 	var elapsed_ratio := _combat_elapsed_ratio()
@@ -682,12 +691,10 @@ func _spawn_enemy_wave() -> void:
 		var packed_scene := _random_enemy_scene()
 		if packed_scene == null:
 			return
-
 		var base_position := _random_spawn_position()
 		var pack_count := 1
 		if not game.boss_combat_active and _is_small_pack_enemy_scene(packed_scene) and game.rng.randf() < game.SMALL_PACK_CHANCE:
 			pack_count = mini(game.rng.randi_range(3, 4), remaining_slots)
-
 		for pack_index in range(pack_count):
 			if remaining_slots <= 0:
 				return
@@ -698,8 +705,6 @@ func _spawn_enemy_wave() -> void:
 			if spawned == null:
 				return
 			remaining_slots -= 1
-
-
 func _active_enemy_cap() -> int:
 	var scaling_stage: int = game.route_scaling_stage()
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(scaling_stage)
@@ -710,8 +715,6 @@ func _active_enemy_cap() -> int:
 	var wave_cap_bonus = int(floor(float(game.spawn_wave_index) / 2.0)) * int(game.WAVE_SETTINGS["active_cap_per_wave_step"])
 	var cap = int(round(float(game.WAVE_SETTINGS["base_active_cap"]) * stage_scale)) + scaling_stage * int(game.WAVE_SETTINGS["active_cap_per_stage"]) + wave_cap_bonus
 	return mini(cap, int(game.WAVE_SETTINGS["max_active_cap"]))
-
-
 func _next_spawn_cooldown() -> float:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42 + _combat_elapsed_ratio() * SPAWN_COOLDOWN_ELAPSED_PRESSURE
@@ -719,8 +722,6 @@ func _next_spawn_cooldown() -> float:
 	if game.boss_combat_active:
 		return max(1.0, (game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35) * cooldown_mult)
 	return max(0.6, (game.rng.randf_range(float(game.WAVE_SETTINGS["spawn_pause_min"]), float(game.WAVE_SETTINGS["spawn_pause_max"])) - wave_pressure) * cooldown_mult)
-
-
 func _choose_wave_spawn_edges() -> void:
 	game.active_spawn_edges.clear()
 	# SCRUM-784: ощущение окружения с первой секунды — минимум 2 края всегда.
@@ -1241,10 +1242,11 @@ func _create_arena_border_visual() -> void:
 	game.add_child(border)
 
 
-func _random_spawn_position() -> Vector2:
+func _random_spawn_position(min_player_distance := -1.0) -> Vector2:
+	var safe_distance: float = game.SPAWN_PLAYER_SAFE_RADIUS if min_player_distance < 0.0 else min_player_distance
 	for attempt in range(game.OBSTACLE_MAX_ATTEMPTS):
 		var position := _random_edge_spawn_position()
-		if _is_spawn_position_clear(position):
+		if _is_spawn_position_clear(position, safe_distance):
 			return position
 	# Этап B: все попытки провалились (игрок стоит у кромки) — фолбэк не голый
 	# clamp случайной точки, а точка кромки, МАКСИМАЛЬНО удалённая от игрока.
@@ -1305,8 +1307,9 @@ func _push_spawn_from_player(position: Vector2, min_distance: float) -> Vector2:
 	return _clamp_spawn_position(player_position + away * min_distance)
 
 
-func _is_spawn_position_clear(position: Vector2) -> bool:
-	if position.distance_to(_live_player_position()) < game.SPAWN_PLAYER_SAFE_RADIUS:
+func _is_spawn_position_clear(position: Vector2, min_player_distance := -1.0) -> bool:
+	var safe_distance: float = game.SPAWN_PLAYER_SAFE_RADIUS if min_player_distance < 0.0 else min_player_distance
+	if position.distance_to(_live_player_position()) < safe_distance:
 		return false
 	for obstacle in game.get_tree().get_nodes_in_group("arena_obstacles"):
 		var obstacle_node := obstacle as Node2D
@@ -1451,7 +1454,7 @@ func _restore_player_snapshot(player: Node) -> void:
 	game.selected_weapon_id = str(game.run_player_snapshot.get("weapon_id", game.selected_weapon_id))
 	player.configure_character(game.selected_character_id)
 	player.set("stats", (game.run_player_snapshot.get("stats", {}) as Dictionary).duplicate(true))
-	player.set("run_modifiers", (game.run_player_snapshot.get("run_modifiers", {}) as Dictionary).duplicate(true))
+	player.set("run_modifiers", ProgressionData.sanitize_run_modifiers((game.run_player_snapshot.get("run_modifiers", {}) as Dictionary)))
 	player.set("artifacts", (game.run_player_snapshot.get("artifacts", []) as Array).duplicate(true))
 	player.set("xp", int(game.run_player_snapshot.get("xp", 0)))
 	player.set("xp_to_next", int(game.run_player_snapshot.get("xp_to_next", 5)))

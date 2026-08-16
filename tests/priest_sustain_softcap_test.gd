@@ -25,14 +25,34 @@ const EPS := 0.01
 const CROWD := 8  # «8 врагов» из тикета: спрос на лечение в этот тик
 
 
-func _neutralize_mitigation(player: Node2D) -> void:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _neutralize_mitigation(player: Node2D, errors: Array) -> void:
 	var dp: Dictionary = player.get("derived_parameters")
 	if dp == null:
 		dp = {}
 	dp["dodge"] = 0.0
+	dp["raw_dodge"] = 0.0
 	dp["defense"] = 0.0
+	dp["raw_defense"] = 0.0
 	dp["absorb"] = 0.0
 	dp["regeneration"] = 0.0  # изолируем именно heal-on-attack, не пассивный реген
+	for defect in [_raw_pair_defect(dp, "dodge", "raw_dodge"), _raw_pair_defect(dp, "defense", "raw_defense")]:
+		if defect != "":
+			errors.append(defect)
 	player.set("derived_parameters", dp)
 	player.set("_damage_invulnerability_left", 0.0)
 
@@ -57,7 +77,7 @@ func _initialize() -> void:
 		return
 	player.configure_character("priest", "priest_censer")
 	await process_frame
-	_neutralize_mitigation(player)
+	_neutralize_mitigation(player, errors)
 	var max_hp := float(player.get("max_health"))
 
 	# SCRUM-927/928: кит Священника больше НЕ лечит (heal_percent_on_attack убран
@@ -101,7 +121,7 @@ func _initialize() -> void:
 	var hp_start := float(player.get("health"))
 	var steps := int(sim_seconds / dt)
 	for _s in range(steps):
-		_neutralize_mitigation(player)
+		_neutralize_mitigation(player, errors)
 		player.call("_apply_regeneration", dt)  # рефилл бюджета на dt
 		# максимально возможный heal-on-attack в этот тик (толпа × ward)
 		for _t in range(CROWD):

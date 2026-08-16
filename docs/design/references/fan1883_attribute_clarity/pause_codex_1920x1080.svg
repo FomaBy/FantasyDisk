@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<style>.s{fill:#c6d5df}.note{fill:#87cdf3}.warn{fill:#f0b270}</style>
+<rect x="0" y="0" width="1920" height="1080" fill="#0a0b12"/>
+<text class="base" x="72" y="75" font-family="Arial, sans-serif" font-size="31" font-weight="bold" fill="#f3e4b2">PAUSE / CODEX · ХАРАКТЕРИСТИКИ · 1920×1080</text>
+<rect x="72" y="172" width="324" height="840" rx="12" fill="#17141a" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="90" y="212" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#f3e4b2">Навигация</text>
+<text class="s" x="90" y="282" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#c6d5df">Герои</text>
+<text class="s" x="90" y="340" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#c6d5df">Артефакты</text>
+<text class="note" x="90" y="398" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#87cdf3">Характеристики</text>
+<text class="s" x="90" y="456" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#c6d5df">Хроника</text>
+<rect x="452" y="218" width="556" height="44" rx="7" fill="#25262c" stroke="#737984" stroke-width="2" stroke-dasharray="8 6"/>
+<text class="note" x="470" y="240" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#87cdf3">class_ineligible: ось отсутствует; capped — без CTA</text>
+<rect x="452" y="278" width="556" height="690" rx="8" fill="#253543" stroke="#65bde7" stroke-width="2"/>
+<rect x="460" y="290" width="516" height="154" rx="8" fill="#211e26" stroke="#70d99a" stroke-width="2"/>
+<text class="base" x="478" y="332" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#f3e4b2">Увеличение урона · 18%</text>
+<text class="s" x="478" y="375" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#c6d5df">Все подходящие удары сильнее</text>
+<rect x="460" y="460" width="516" height="154" rx="8" fill="#412826" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="478" y="502" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#f3e4b2">Вампиризм · 3 HP при срабатывании</text>
+<text class="warn" x="478" y="545" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#f0b270">шанс: сейчас 20% · максимум 20%</text>
+<rect x="460" y="630" width="516" height="154" rx="8" fill="#211e26" stroke="#70d99a" stroke-width="2"/>
+<text class="base" x="478" y="672" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#f3e4b2">Шанс крита · 34%</text>
+<text class="warn" x="478" y="715" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#f0b270">сейчас 34% · максимум 62%</text>
+<rect x="460" y="800" width="516" height="154" rx="8" fill="#211e26" stroke="#70d99a" stroke-width="2"/>
+<text class="base" x="478" y="842" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#f3e4b2">Регенерация · 1.6 HP/с</text>
+<text class="s" x="478" y="885" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#c6d5df">Восстанавливаете HP со временем</text>
+<rect x="1064" y="172" width="784" height="840" rx="12" fill="#17141a" stroke="#bd9149" stroke-width="2"/>
+<text class="base" x="1096" y="228" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#f3e4b2">Понятно и полностью</text>
+<text class="base" x="1096" y="294" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#f3e4b2">Вампиризм</text>
+<text class="s" x="1096" y="340" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#c6d5df">Ось: 3 HP при срабатывании</text>
+<text class="note" x="1096" y="537" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#87cdf3">При успешном срабатывании удар восстанавливает указанное количество HP. Шанс срабатывания</text>
+<text class="note" x="1096" y="561" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#87cdf3">— отдельное условие карточки: он показан ниже вместе с пределом и не меняет единицу оси.</text>
+<text class="note" x="1096" y="585" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#87cdf3">Объяснение полностью доступно в прокрутке без многоточия.</text>
+<rect x="1432" y="396" width="330" height="70" rx="8" fill="#412826" stroke="#bd9149" stroke-width="2"/>
+<text class="warn" x="1450" y="430" font-family="Arial, sans-serif" font-size="15" font-weight="normal" fill="#f0b270">шанс: 20% · максимум 20%</text>
+<rect x="1832" y="178" width="5" height="828" rx="2" fill="#111820" stroke="#65bde7" stroke-width="1"/>
+<rect x="1832" y="343" width="5" height="276" rx="2" fill="#87cdf3" stroke="none" stroke-width="0"/>
+</svg>

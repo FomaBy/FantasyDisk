@@ -46,21 +46,23 @@ func _initialize() -> void:
 	quit(0)
 
 
-# 2. reward_is_damage_relevant — A/B по урон-осям и классам.
+# 2. reward_is_damage_relevant — A/B по урон-осям и классам (FAN-1887: оба
+# урон-канала кроют универсальные damage_flat/damage; magic_focus снят с реестра).
 func _test_helper_ab() -> void:
 	var dmg := {"id": "damage_up", "attr": "damage"}
-	var magic := {"id": "magic_focus_up", "attr": "magic_focus"}
+	var flat := {"id": "damage_flat_up", "attr": "damage_flat"}
+	var dot := {"id": "dot_damage_up", "attr": "dot_damage"}
 	var defense := {"id": "defense_up", "attr": "defense"}
-	# Физ-урон: релевантен физ-берсерку (primary), НЕ маг-жрецу (для него damage = optional).
+	# «Увеличение урона» множит оба канала — релевантно и физ-, и маг-классу.
 	if not ProgressionData.reward_is_damage_relevant(dmg, "berserk"):
 		_fail("damage должен быть damage-релевантен берсерку (primary).")
-	if ProgressionData.reward_is_damage_relevant(dmg, "priest"):
-		_fail("физ-damage НЕ должен считаться damage-релевантным жрецу (для мага ось optional).")
-	# Маг-урон: наоборот.
-	if not ProgressionData.reward_is_damage_relevant(magic, "priest"):
-		_fail("magic_focus должен быть damage-релевантен жрецу (secondary).")
-	if ProgressionData.reward_is_damage_relevant(magic, "berserk"):
-		_fail("magic_focus НЕ должен считаться damage-релевантным берсерку (маг-ось у него мертва).")
+	if not ProgressionData.reward_is_damage_relevant(dmg, "priest"):
+		_fail("damage (общий множитель обоих каналов) должен быть damage-релевантен жрецу.")
+	if not ProgressionData.reward_is_damage_relevant(flat, "dark_mage"):
+		_fail("damage_flat должен быть damage-релевантен тёмному магу (primary).")
+	# Урон-ось, optional для класса, damage-релевантной не считается.
+	if ProgressionData.reward_is_damage_relevant(dot, "berserk"):
+		_fail("dot_damage НЕ должен считаться damage-релевантным берсерку (ось optional).")
 	# Не-урон ось не релевантна никому.
 	if ProgressionData.reward_is_damage_relevant(defense, "knight"):
 		_fail("defense — не урон-ось, не должна считаться damage-релевантной.")
@@ -86,7 +88,7 @@ func _test_offer_guarantee(classes: Array) -> void:
 			var prefill: Array = []
 			if seed_index % 2 == 1 and not stat_pool.is_empty():
 				prefill = [stat_pool[seed_index % stat_pool.size()]]
-			var offer: Array = ProgressionData.weighted_level_up_selection(
+			var offer: Array = AttributeContract.weighted_level_up_selection(
 				regular_pool, stat_pool, OFFER_SIZE, character_id, rng, 0.05, prefill)
 			if offer.size() != OFFER_SIZE:
 				_fail("%s seed %d: набор %d != %d." % [character_id, seed_index, offer.size(), OFFER_SIZE])
@@ -101,7 +103,7 @@ func _test_offer_guarantee(classes: Array) -> void:
 			if damage_in_offer < 1:
 				_fail("%s seed %d (prefill=%d): показ БЕЗ damage-карты — random-floor гарантия нарушена." % [character_id, seed_index, prefill.size()])
 				break
-			# Регресс-страховка: новая гарантия не должна ломать старый инвариант «≤1 optional».
-			if optional_in_offer > 1:
-				_fail("%s seed %d: %d optional (>1) — форс damage сломал optional-инвариант." % [character_id, seed_index, optional_in_offer])
+			# FAN-1887: строгий инвариант — optional-карт в показе не бывает вовсе.
+			if optional_in_offer > 0:
+				_fail("%s seed %d: %d optional (>0) — строгий фильтр FAN-1887 нарушен." % [character_id, seed_index, optional_in_offer])
 				break

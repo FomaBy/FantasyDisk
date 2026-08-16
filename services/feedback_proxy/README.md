@@ -4,9 +4,10 @@ This is the repository-owned, dependency-free relay for FAN-1041. It keeps the
 Discord webhook on the server and accepts a strict FantasyDisk protocol instead
 of exposing Discord's multipart contract to the player client.
 
-The code is ready for a single-replica deployment and is covered by local Mac
-tests. It is not currently deployed. Online player feedback must remain disabled
-until hosting, HTTPS/DNS, a replacement Discord webhook and durable storage are
+The code and provider-neutral Compose bundle are ready for a single-replica
+deployment and are covered by deterministic local tests. They do not provision
+or activate a service. Online player feedback must remain disabled until
+hosting, HTTPS/DNS, server secrets and durable storage are separately
 provisioned and verified.
 
 ## Security model
@@ -37,19 +38,16 @@ No reusable secret may be embedded in a desktop build.
 
 ## Required environment
 
-```text
-FEEDBACK_TOKEN_SECRET=<at least 32 random bytes>
-FEEDBACK_LOG_SALT=<at least 16 independent random bytes>
-FEEDBACK_DISCORD_WEBHOOK=<new server-only Discord webhook>
-FEEDBACK_DATABASE_PATH=/data/feedback_proxy.sqlite3
-FEEDBACK_LISTEN_HOST=0.0.0.0
-FEEDBACK_LISTEN_PORT=8080
-FEEDBACK_UPSTREAM_TIMEOUT=10
-FEEDBACK_TRUSTED_PROXY_CIDRS=10.0.0.0/8,2001:db8:feed::/48
-FEEDBACK_SESSION_GLOBAL_LIMIT=500
-FEEDBACK_GLOBAL_LIMIT=120
-FEEDBACK_MAX_WORKERS=24
-FEEDBACK_READ_TIMEOUT=15
+`relay.env.example` lists every accepted deployment variable with safe defaults
+and blank credential placeholders. Copy it only to the ignored `relay.env` on
+the target host, then inject the three blank values from that host's secret
+store. Never write their values into Compose, shell history, logs or smoke
+evidence.
+
+```bash
+cd services/feedback_proxy
+cp relay.env.example relay.env
+docker compose config
 ```
 
 Leave `FEEDBACK_TRUSTED_PROXY_CIDRS` empty unless the service is unreachable
@@ -66,35 +64,66 @@ capacity and keep an independent edge/WAF body/rate policy.
 Running behind an HTTPS reverse proxy/WAF with request buffering, a body limit
 no larger than 2 MB, connection/header/read timeouts and an independent global
 rate policy is mandatory. The included internal server additionally bounds its
-worker threads/backlog and socket read time; it listens on plain HTTP:
+worker threads/backlog and socket read time; it listens on plain HTTP. Compose
+publishes that origin only on host loopback, runs one read-only replica with a
+bounded tmpfs, drops capabilities, limits CPU/memory/PIDs and stores SQLite on a
+named durable volume:
 
 ```bash
-docker build -t fantasydisk-feedback-relay services/feedback_proxy
-docker run --read-only --tmpfs /tmp --memory=128m --cpus=1 --pids-limit=80 \
-  -v feedback-data:/data --env-file relay.env \
-  -p 127.0.0.1:8080:8080 fantasydisk-feedback-relay
+docker compose up --build -d
+docker compose ps
 ```
 
 For more than one replica, replace the SQLite `Store` with shared transactional
 storage before scaling. Copying local databases between replicas breaks global
 rate limiting, idempotency and the at-most-once ambiguity policy.
 
-## Verification and rollout
+## No-cost staging preparation
+
+These steps validate the repository bundle without changing `project.godot`,
+creating production infrastructure or sending anything to production:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.test_feedback_proxy
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest \
+  tests.test_feedback_proxy tests.test_feedback_relay_smoke
+python3 tools/scan_release_secrets.py \
+  services/feedback_proxy tools/feedback_relay_smoke.py \
+  tests/test_feedback_relay_smoke.py docs/feedback_webhook_setup.md
 ```
 
-Before enabling `feedback/relay_session_url` in `project.godot`:
+The tests start the real relay against a loopback fake Discord upstream and
+cover success, duplicate/conflict, rejection and timeout behavior. Once a
+separately authorized staging service exists, capture redacted machine-readable
+evidence using only its public session endpoint:
+
+```bash
+python3 tools/feedback_relay_smoke.py \
+  https://feedback-staging.example.org/v1/session \
+  > relay-smoke-evidence.json
+python3 tools/scan_release_secrets.py relay-smoke-evidence.json
+```
+
+The smoke client generates its own text-only and image test reports. It accepts
+no server credential inputs and emits only check names, HTTP statuses and
+redacted failure categories. Keep the resulting file out of Git unless an issue
+explicitly locks an evidence path.
+
+## Production provisioning and activation
+
+This is a separate operational gate. Do not infer production approval from a
+green local or staging smoke, and obtain owner approval before any paid hosting
+or other charge. Before enabling `feedback/relay_session_url` in
+`project.godot`:
 
 1. provision HTTPS/DNS and restrict direct origin access;
-2. create a new Discord webhook only in server secret storage;
+2. create production-only server credentials in the production secret store;
 3. mount durable storage and backup/retention policy;
 4. verify health, session expiry, rate limits, duplicate delivery and ambiguous
-   upstream/crash fallback against staging;
+   upstream/crash fallback against production-equivalent staging;
 5. document operator contact/data retention and ship player-facing disclosure
    for screenshot, game/OS metadata, persistent installation UUID and edge IP;
    populate all four public `feedback/privacy_*` project settings (the client
    refuses a configured relay while any disclosure value is missing);
 6. run the Mac release/export secret scan and later the deferred Windows TLS test;
-7. set the public endpoint to exactly `https://<host>/v1/session` and rebuild.
+7. approve the production change, set the public endpoint to exactly
+   `https://<host>/v1/session`, rebuild and use the normal release gates.

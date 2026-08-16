@@ -82,12 +82,14 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 		var leading_stats := main.find_child("HS4LeadingBaseStats", true, false) as Label
 		var primary := main.find_child("HS4BuildGuidance_primary", true, false) as Label
 		var secondary := main.find_child("HS4BuildGuidance_secondary", true, false) as Label
-		var weak := main.find_child("HS4BuildGuidance_weak", true, false) as Label
 		var scroll := main.find_child("HS4DossierScroll", true, false) as ScrollContainer
 		var content := main.find_child("HS4DossierContent", true, false) as Control
 		var frame := main.find_child("HS4DossierFrame", true, false) as Control
-		if heading == null or name_label == null or weapon_label == null or leading_stats == null or primary == null or secondary == null or weak == null or scroll == null or content == null or frame == null:
+		if heading == null or name_label == null or weapon_label == null or leading_stats == null or primary == null or secondary == null or scroll == null or content == null or frame == null:
 			_fail("Missing SCRUM-952 dossier nodes for %s at %s." % [cid, str(viewport_size)])
+			return
+		if main.find_child("HS4BuildGuidance_weak", true, false) != null:
+			_fail("Expected the removed weak-attributes rail to be absent for %s at %s." % [cid, str(viewport_size)])
 			return
 		var expected_description := str(trait_config.get("short_description", trait_config.get("description", "")))
 		var expected_heading := "Особенность: %s — %s" % [str(trait_config.get("title", "")), expected_description]
@@ -103,10 +105,10 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 		if heading.tooltip_text != heading.text:
 			_fail("Exact trait tooltip copy missing for %s at %s." % [cid, str(viewport_size)])
 			return
-		if not (heading.get_index() < name_label.get_index() and name_label.get_index() < weapon_label.get_index() and weapon_label.get_index() < leading_stats.get_index() and leading_stats.get_index() < primary.get_index() and primary.get_index() < secondary.get_index() and secondary.get_index() < weak.get_index()):
+		if not (heading.get_index() < name_label.get_index() and name_label.get_index() < weapon_label.get_index() and weapon_label.get_index() < leading_stats.get_index() and leading_stats.get_index() < primary.get_index() and primary.get_index() < secondary.get_index()):
 			_fail("Expected trait -> name -> weapons -> stats -> relevance hierarchy for %s." % cid)
 			return
-		for label in [heading, name_label, weapon_label, leading_stats, primary, secondary, weak]:
+		for label in [heading, name_label, weapon_label, leading_stats, primary, secondary]:
 			var copy_label := label as Label
 			if copy_label.max_lines_visible >= 0 or copy_label.text_overrun_behavior == TextServer.OVERRUN_TRIM_ELLIPSIS:
 				_fail("Canonical copy is truncatable in %s for %s." % [copy_label.name, cid])
@@ -121,7 +123,7 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 				return
 			# SCRUM-1064 intentionally keeps complete relevance lists in the same
 			# scroll canvas at every tier; vertical overflow is accepted only when
-			# the final weak section remains reachable below.
+			# the final secondary section remains reachable below.
 		if not frame.get_global_rect().grow(1.0).encloses(scroll.get_global_rect()):
 			_fail("Dossier scroll left the frame-safe content area at %s." % str(viewport_size))
 			return
@@ -130,9 +132,9 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 			return
 		var bar := scroll.get_v_scroll_bar()
 		var max_scroll := maxi(0, int(ceil(bar.max_value - bar.page)))
-		var required_scroll := maxi(0, int(ceil(weak.get_global_rect().end.y - scroll.get_global_rect().end.y)))
+		var required_scroll := maxi(0, int(ceil(secondary.get_global_rect().end.y - scroll.get_global_rect().end.y)))
 		if max_scroll < required_scroll:
-			_fail("Minus section is not scroll-reachable for %s at %s." % [cid, str(viewport_size)])
+			_fail("Secondary section is not scroll-reachable for %s at %s." % [cid, str(viewport_size)])
 			return
 		if viewport_size == Vector2i(1280, 720) and cid == "druid":
 			await _check_compact_dossier_input(viewport, main, scroll, max_scroll)

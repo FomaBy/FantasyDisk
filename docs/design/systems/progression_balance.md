@@ -1,8 +1,24 @@
 # Progression And Balance
 
-Обновлено: 2026-07-04 (0.2.1 rebalance wave)
+Обновлено: 2026-08-03 (FAN-1891 area/control contract)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
+
+Обычный крит имеет Agility-зависимый cap 55%→75%, Assassin сохраняет 100%. Сила крита выше raw 2.75x растёт непрерывным хвостом `2.75 + sqrt(raw - 2.75)` без верхнего потолка. DoT получает `Knowledge base + dot flat`, затем общий damage multiplier; отдельные источники `dot_speed_flat` удалены. Attack Speed выдаёт нормализованный общий cadence multiplier для атак и периодических интервалов с их прежними базовыми значениями и safety floors.
+
+## FAN-1891: area, support, and knockback
+
+The 51 weapon configurations expose `geometry_capabilities`. The generic area
+multiplier changes every declared geometry field and never changes target reach
+or projectile travel speed. `attack_range` and `projectile_speed` remain fixed
+per-weapon configuration.
+
+`support_multiplier` is derived once from the shared general `% damage` run
+multiplier, so support effects and the budget mirror use the same source. The
+removed range/sector/projectile/aura-flat/buff-flat modifier keys are stripped
+when saves load and cannot be offered again. Knockback is `(weapon base +
+Strength × 4) × knockback multiplier`; Endurance and Leadership are inert for
+this calculation while existing elite/boss control resistance remains in force.
 
 ## SCRUM-504 / SCRUM-506 Balance Batch (2026-06-28)
 
@@ -125,49 +141,135 @@ global_damage_balance_smoke, runtime_smoke_test.
 
 Формулы могут быть упрощены относительно исходной таблицы, но направление влияния должно совпадать с `mechanics_extract.md`.
 
-## Universal Attribute Usefulness
+## Defense And Dodge Anti-Immunity Contract (FAN-1895 → FAN-2284)
 
-С 2026-06-12 старая модель скрытия «нерелевантных» атрибутов отключена. `ProgressionData.is_stat_relevant()` и `is_reward_relevant()` возвращают `true`, поэтому level-up, докачка за золото, артефакты, магазин, кодекс и Escape stats могут показывать любой stat/derived parameter любому классу.
+Raw defense/dodge ratings (база + endurance/agility-скейл + class-trait и
+run-модификаторы) остаются **unbounded** — клампа на самом raw-значении нет.
+Diminishing-composition кривая `ProgressionData.effective_defense()` /
+`effective_dodge()` превращает `0.62` defense и `0.55` ordinary dodge в
+**строгие недостижимые асимптоты**: `raw / (1 + raw * curve)` с
+`curve = 1.0 / cap` монотонно растёт с raw, но математически никогда не
+достигает капа ни при каком конечном raw (в отличие от прежней hard-clamp
+формы, где кап был достижим на конечном raw). Это восстановление anti-immunity
+safety, а не новый class rebalance — сами значения `0.62`/`0.55` не менялись,
+изменился характер кривой у капа.
 
-Если эффект тематически «чужой», он применяется через class interpretation:
-- Intelligence / Magic Damage: зачарование оружия, магический splash или резонанс;
-- Leadership / Summon Amount: эхо-оружие, фантом, сокол, знаменосец, фамильяр или прямые pet-команды;
-- Sound Wave Damage / Aura Radius: боевой клич и ближний контроль пространства;
-- Knowledge / DoT Damage / DoT Speed: малый bleed/burn/poison след на ударах;
-- Energy / Ultimate Power: ускорение уникального class mechanic cooldown/charge;
-- Strength / Damage: физическая весомость, knockback и прямой урон.
+Additive class-бонусы — Bastion (`bastion_defense_bonus`), low-HP «Покров
+мученика» (`lowhp_defense_bonus`), Assassin «Теневая завеса»
+(`assassin_veil_dodge_bonus()`) — суммируются с raw ДО diminishing-кривой, а
+не добавляются к уже эффективному значению с отдельным hard-clamp. Один и тот
+же контракт применяется к combined raw stack целиком, поэтому никакая
+комбинация класс-бонусов не может протолкнуть эффективное значение к капу.
 
-UI обязан показывать эти интерпретации текстом в level-up cards, attribute-upgrade tooltips, artifact notes, shop/HUD/pause tooltips и кодексе. Старые пометки «Не работает на текущем классе» и «Работает вполсилы» больше не используются.
+Ordinary dodge отделён от смок-исключения Вора: `SMOKE_CLOUD_DODGE_CAP` `0.90`
+— отдельный, достижимый (не asymptotic) кап, действующий ТОЛЬКО пока герой
+физически стоит в живом дым-облаке (`smoke_cloud_dodge_bonus()`), и
+складывается ПОВЕРХ уже посчитанного ordinary-dodge (после его собственной
+asymptote), а не заменяет общий контракт. Вне дыма Вор ограничен обычной
+`0.55` асимптотой как любой другой класс.
 
-### Attribute Relevance Matrix (SCRUM-695)
+Authoritative helpers: `ProgressionData.effective_defense()` /
+`effective_dodge()` и обратные `raw_defense_for_effective()` /
+`raw_dodge_for_effective()`; кривые — `SURVIVABILITY_DEFENSE_DIMINISH` /
+`SURVIVABILITY_DODGE_DIMINISH` (`progression_data_balance.gd`, оба
+`1.0 / cap`). Regression: `tests/defensive_attribute_contract_fan1895_test.gd`
+(N=0/1/5/10/high strict-asymptote sweep + aggregate `<0.98` mitigation gate,
+Bastion/low-HP/Assassin/Thief runtime composition cases), плюс
+`tests/robot_kit_test.gd`, `tests/assassin_kit_test.gd`,
+`tests/thief_kit_test.gd`, `tests/survivability_scenario_test.gd`,
+`global_survivability_balance_smoke`.
 
-Для прокачиваемых боевых атрибутов level-up введён ПРЯМОЙ источник правды
-вместо косвенного расчёта через 8 базовых характеристик:
+Источник: FAN-1895 (contract defect) → FAN-1896 (failed candidate) → FAN-2288
+(accepted predecessor, `PASSED`) → FAN-2284 (this rework). Component QA
+FAN-2289 `PASSED` on an immutable candidate SHA, но candidate ещё не
+интегрирован в `dev` — интеграция ждёт агрегирующий FAN-2287 и финальный
+exact-SHA QA. До интеграции live-рантайм на `dev` использует предыдущую
+(hard-clamp, достижимую-на-капе) реализацию той же пары значений `0.62`/`0.55`.
 
-- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный реестр 24 атрибутов
-  (`id`, `name`, `icon`-папка, `value_type`). На него ссылается каждый
-  `LEVEL_UP_REWARDS` через поле `attr`; иконки атрибутов лежат в
-  `docs/design/references/icons/attributes/<icon>/`.
-- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (атрибут × 17 классов) со
-  значениями `primary`/`secondary`/`optional`. **Жёсткий инвариант по каждому
-  атрибуту: ровно 2 primary, 8 secondary, 7 optional** (2+8+7=17), проверяется
-  `tests/attribute_relevance_test.gd` — любое нарушение валит data-гейт.
-  `optional` выводится как «все остальные классы». При 24 атрибутах per-class
-  выходит ~2-3 primary / 10-12 secondary / 9-12 optional (идеально ровный
-  per-class расклад достижим только при N, кратном 17; здесь сознательно
-  сохранён полный набор атрибутов вместо консолидации до 17, чтобы не убирать
-  игровые варианты прокачки — per-attribute правило 2/8/7 выполнено при любом N).
-- `attribute_relevance(attr, class)` и `attribute_relevance_weight(attr, class)`
-  читают матрицу напрямую; `level_up_reward_weight` весит награды от
-  релевантности (primary 2.4 > secondary 1.0 >> optional 0.4, optional держится
-  выше 0.3, чтобы атрибут не выпадал из пула). `ATTRIBUTE_PRIORITIES` (8 базовых
-  характеристик) остаётся для редкого main-stat слота и pause-stats tooltips.
-- Правило показа набора (`ProgressionData.weighted_level_up_selection`,
-  делегируется из `ui_screens._random_level_up_rewards`): в одном показе из 3
-  вариантов **не более 1** `optional`-атрибута и **всегда минимум 1**
-  primary/secondary; набор никогда не состоит только из необязательных. Редкий
-  main-stat слот (`MAIN_STAT_SLOT_CHANCE`) и capstone «Озарение» считаются
-  не-optional и правилу не противоречат.
+## Canonical Attribute Contract (FAN-1887)
+
+FAN-1887 заменяет прежнюю модель «все атрибуты полезны каждому классу через
+интерпретацию» строгим class-capability контрактом: игрок видит только реально
+работающие для его класса/оружия варианты и честные фактические дельты.
+Искусственная текстовая интерпретация (эхо-оружие, «малое кровотечение»)
+потребителем НЕ считается. `is_stat_relevant()` остаётся `true` (базовые
+характеристики универсальны), но `is_reward_relevant()` дополнительно гейтит
+summon-награды и чисто лидерские stat-награды config-derived capability.
+
+### Attribute Relevance Matrix (SCRUM-695 → FAN-1887)
+
+Для прокачиваемых боевых атрибутов level-up действует ПРЯМОЙ источник правды:
+
+- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный player-facing реестр
+  **16 осей** (`id`, `name`, `icon`-папка, `value_type`): Добавление урона
+  (`damage_flat`), Увеличение урона (`damage`), Скорость атаки, Максимальное
+  здоровье, Скорость движения, Увеличение области атаки, Радиус подбора,
+  Защита, Шанс крита, Сила крита, Уклонение, Периодический урон, Сила призыва,
+  Регенерация, Вампиризм (одна ось; шанс срабатывания — условие с капом 20%),
+  Сила ультимейта. Дальность и скорость снаряда — config-only; поддержка
+  выводится из общего `% damage`, а область атаки охватывает сектор, радиус и
+  ауры. Снятые legacy-ключи и раздельные vamp chance/amount — НЕ
+  самостоятельные выборы.
+  На реестр ссылается каждый `LEVEL_UP_REWARDS` через `attr`; титул карты =
+  имя оси реестра (проверяется тестом).
+- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (ось × 17 классов) со
+  значениями `primary`/`secondary`/`optional`. **Семантика optional изменена:
+  optional = «у класса нет настоящего потребителя оси», и такая ось НИКОГДА не
+  попадает в выдачу.** Инвариант: ровно 2 primary на ось, полное разбиение
+  17 классов, optional допустимо пустое (универсальные оси работают всем);
+  на класс 1..3 primary. Optional-состав capability-осей: криты — классы без
+  критующего прямого канала; DoT — классы без периодического weapon-канала;
+  вампиризм — киты без on_weapon_hit проков (+Доктор из-за Plague Oath);
+  регенерация — только Доктор; «Сила призыва» — строго дополнение
+  config-derived `class_summon_capable` (гитарист/химик/друид/инженер по
+  `max_summons`/`summon_role`/`summon_damage_multiplier`/`deploy_role`).
+- `level_up_reward_weight` весит только выдаваемые категории
+  (primary 1.4 > secondary 0.7); optional-вес не существует, потому что
+  optional исключён из пула уже в `level_up_rewards()`.
+- Правило показа (`ProgressionData.weighted_level_up_selection` +
+  `eligible_level_up_rewards`, вызывается из
+  `ui_screens._random_level_up_rewards`): показ из 3 карт содержит **ноль**
+  optional-карт; карты с нулевой фактической дельтой по живым статам/модам
+  (`cap_reached`/`zero_effective_delta` из `attribute_presentation`)
+  отсеиваются ДО построения ряда. Редкие базовые характеристики проходят
+  consumability-фильтр (`is_base_stat_consumable`): Лидерство не предлагается
+  без настоящего summon/deploy-потребителя — ни в level-up rare-слоте, ни в
+  Attribute Shop, ни в stat-пулах наград.
+- FAN-1927: выдача weapon-aware. Класс-релевантная ось дополнительно
+  проверяется live-consumer правилами ТЕКУЩЕГО оружия
+  (`AttributeContract.weapon_consumes`, зеркало runtime-чтений player.gd):
+  curse-only кит (Проклятый череп) не получает `damage_flat` и крит-оси;
+  SummonerWeapon-киты (Амулет призыва, Склянка гомункула) не получают
+  `attack_speed`; «Сила призыва» выдаётся только китам, где `summon_bonus`
+  реально двигает парк (`max_summons` без pair-mode и без устройств Инженера:
+  Звуковой усилитель, Амулет призыва, Тотем ворона) и показывает фактический
+  runtime-счёт, а не сырой `+2`.
+- Карточка строит view-model `attribute_presentation` (спека
+  `fan1883_attribute_clarity`): фактический канал урона ТЕКУЩЕГО ОРУЖИЯ
+  (`weapon_config.damage_parameter`; bone_saw/blast_powder/briar_staff —
+  физический канал у magic-классов, curse-only — dot-канал), before→after и
+  `delta_effective` после действующих diminishing/капов (у `attack_speed` —
+  фактическая каденция оружия с полом 0.18с), `current`/`cap` у шанса крита
+  (обычный live-Agility cap 55% при 0 → 75% при 100, Ассасин 100%), отдельные `proc_chance_current/cap`
+  (20%) у вампиризма. Тот же источник (`axis_snapshot`/`canonical_axes`)
+  кормит Attribute Shop, Pause-досье, Codex и Hero Select — второго
+  player-facing oracle порядка/названий не существует.
+- Legacy-сейвы: `sanitize_level_up_offer` сбрасывает показы с удалёнными/
+  недоступными картами, а при live-контексте (stats/mods/weapon из снапшота)
+  перепроверяет ИЗВЕСТНЫЕ карты по текущим effective-значениям, капам и
+  weapon-потребителям — capped/no-op/ineligible показ безопасно
+  регенерируется (FAN-1927). FAN-1891 additionally strips obsolete geometry
+  and support keys on load, so removed cards never return.
+- Гейты: `tests/attribute_relevance_test.gd` (инварианты матрицы, sync
+  реестр↔матрица↔награды↔титулы, строгий optional-фильтр, capability),
+  `tests/attribute_consumability_fan1887_test.gd` (FAN-1927: 51 живой путь
+  класс×оружие с НЕЗАВИСИМЫМ live-consumer oracle — живой Player + реальные
+  сцены оружия, канал доказывается probe'ом; 17×1000 сидированных показов с
+  ротацией оружия без optional/no-op/ineligible; контракт представления;
+  context-aware сейвы), `tests/attribute_ui_matrix_fan1927_test.gd`
+  (48 runtime-состояний: 4 поверхности × 3 вьюпорта ×
+  normal/ineligible/capped/long-copy c PNG-evidence),
+  `tests/level_up_damage_floor_gate.gd` (random-floor гарантия урона).
 
 ## XP, Money And Pickups
 
@@ -236,10 +338,10 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - Бой ставится на паузу до выбора.
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
-- Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
+- Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, area, DoT, summon, regeneration, vampirism и ultimate scaling; `absorb` остаётся внутренним параметром и не является selectable level-up осью (пять player-facing defensive choices: `max_health`, `defense`, `dodge`, `regeneration`, `vampiric`); дальность и скорость снаряда остаются config-only.
 - SCRUM-854/SCRUM-862: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` and boss-completion artifact selection filter Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices, boss completion rewards, and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
 - SCRUM-894 (заменяет kill-growth SCRUM-860): Shadow Momentum удалён из данных — kill-стаки Ассасину больше не положены (гейт `tests/kill_scaling_identity_test.gd`). Темп-наградой стал «Рывок темпа» Теневых кинжалов: `flurry_tempo_*` в конфиге оружия, триггер — серия, задевшая врага; короткий бафф скорости и уворота с внутренним кулдауном (аптайм ≤ duration/cooldown), без лечения, чистится при смене оружия. Sustain-ленты Doctor/Priest/Knight не тронуты.
-- SCRUM-894 крит-профиль per-class: `ProgressionData.class_crit_profile` читает `CLASS_TRAITS` — Ассасин («Хладнокровие») имеет кап шанса крита 1.0 (глобальный `CRIT_CHANCE_CAP` 0.55 у остальных), diminishing 0.0 и overflow 0.5 (избыток raw-шанса сверх капа → `crit_damage_flat`; итог всё равно зажат `CRIT_DAMAGE_CAP` 2.75 — runaway исключён). Уворот: «Теневая завеса» добавляет ситуативный dodge-бонус (`buff_power`-скейл, кап `veil_dodge_cap`) только под ближним прессингом, суммарный уворот ≤ `SURVIVABILITY_DODGE_CAP` 0.55 — гейт бессмертия (`global_survivability_balance_smoke`) не ослаблен.
+- SCRUM-894 крит-профиль per-class: `ProgressionData.class_crit_profile` читает `CLASS_TRAITS` — обычный cap шанса крита растёт от 0.55 при живой Agility 0 до первых 0.75 при Agility 100; Ассасин («Хладнокровие») имеет cap 1.0, diminishing 0.0 и overflow 0.5 (избыток raw-шанса сверх cap → `crit_damage_flat`). Сила крита выше raw 2.75 продолжает расти через непрерывный `2.75 + sqrt(raw - 2.75)` без верхнего потолка. Уворот: «Теневая завеса» добавляет ситуативный dodge-бонус от общего множителя поддержки (`support_multiplier`, cap `veil_dodge_cap`) только под ближним прессингом, суммарный уворот ≤ `SURVIVABILITY_DODGE_CAP` 0.55 — гейт бессмертия (`global_survivability_balance_smoke`) не ослаблен.
 - SCRUM-900 закрепляет это как data-driven trait «Клятва чумного доктора» (`CLASS_TRAITS.doctor.generic_sustain_blocked`) с ЧЕТЫРЬМЯ точками отсечки: (1) пул-фильтр выше; (2) применение — `Player._apply_reward_mods` и `apply_meta_skill_modifiers` молча гасят запрещённые sustain-ключи (`ProgressionData.is_blocked_sustain_mod_key`: `regeneration_flat`, `vampiric_*`, `kill_heal_percent`, `room_clear_heal_percent`, `kill_streak_heal_every`, `lowhp_regen_bonus`, `heal_percent`) — даже принудительно применённая награда/мета-звезда остаётся no-op; (3) формула — `derived_parameters` отрезает БАЗОВЫЙ пассивный реген (константа + knowledge-скейл) через `_class_gated_regeneration`; (4) рантайм-страховка — `_apply_regeneration` не добавляет `lowhp_regen_bonus`. Явная пометка `doctor_friendly: true` на предмете пропускает его и в пул, и в применение (моды ложатся в обычные run-ключи и работают штатными формулами). Route/rest/shop-лечение вне `apply_reward` (аптечки-пикапы, отдых на маршруте) сознательно НЕ блокируется — отсекается именно комбат/билд-сустейн. Гейт: `tests/doctor_kit_test.gd`.
 - SCRUM-860: kill-growth is a tempo hook, not generic sustain. `assassin/shadow_daggers` and `assassin/venom_wire` define `kill_growth_role = "shadow_momentum"`; normal non-boss/non-elite kills add/refresh up to 6 stacks for 6 seconds, capped at +12% attack speed and +9% crit damage through `kill_momentum_*` run modifiers. The hook never heals and clears on expiry or weapon swap, while Doctor/Priest/Knight sustain stays on their own drain, prayer/ward, and block/counter lanes.
 - SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в
@@ -927,6 +1029,85 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   защитой от зависания. Порог Berserk/hammer не ослаблен: после исправления пять подряд
   live-прогонов дали 20t `7337..8545 <= 10000` и 1t `789..1038 <= 1300`.
 
+- **FAN-1712 Воспроизводимый эталонный билд гейта Берсерка.**
+  Времябаза FAN-1210 была честной, а «идеальный» билд — нет. Level-up офферы гейт
+  раскатывает своим `RandomNumberGenerator`, но артефакты приходят из
+  `ProgressionData.reward_pool()`, который материализует rarity-семьи через
+  `roll_artifact_family_tier()` → ГЛОБАЛЬНЫЙ `randf()`
+  (`scripts/progression_data.gd:143`, веса тиров ≈`0.64/0.29/0.08`). Тиры
+  раскатывались заново в каждом процессе, поэтому один и тот же SHA судился по
+  разным билдам: на `071338e9` замеры дали в одном процессе `fox_boots` и
+  `damage=194.86`, в другом `captains_coin` и `damage=239.52`, а удачный ролл тиров
+  поднимал `20t` до `~14.8k` при нормальном `1t` (ложный красный FAN-1700).
+  `tests/berserk_dps_runaway_gate.gd` теперь фиксирует глобальный поток
+  (`seed(BASE_SEED)` перед сборкой билда и `seed(BASE_SEED + target_count)` перед
+  каждым окном). Потолки `10000/1300` не менялись: 20 подряд изолированных прогонов
+  дали 20t `7555..8621` (p50 `8463`, p95 `8620`) и 1t `930..967`, ложных красных 0.
+  Чувствительность проверена негативной мутацией `circle_target_diminish 0.62 → 0.0`:
+  гейт стабильно красный (`20t 18759/19685/18823`), мутация откачена.
+
+- **FAN-1729 Прямая проверка soft-cap'а забеговых множителей в гейте Берсерка
+  (no-silent-retune).** QA FAN-1713 измерила заявленную в шапке гейта цель мутацией:
+  тело `_soft_capped_run_multiplier` → `return multiplier` (soft-cap полностью
+  отключён) давало 3/3 ЗЕЛЁНЫХ. Эффект отката (+14% к `20t`) меньше запаса потолка
+  над медианой, поэтому косвенный порог по DPS его принципиально не покрывал.
+  Опускать потолки под этот эффект было нельзя — это съело бы запас на шум,
+  отвоёванный FAN-1712, на гейте с историей ложных красных. Вместо этого в
+  `tests/berserk_dps_runaway_gate.gd` добавлена ОТДЕЛЬНАЯ проверка `[soft-cap]`,
+  а вердикт по DPS помечен тегом `[ceiling]`.
+  - Потолки НЕ менялись: `MAX_IDEAL_20T` `10000.0` → `10000.0`,
+    `MAX_IDEAL_1T` `1300.0` → `1300.0`.
+  - Балансовые константы НЕ менялись: `RUN_DAMAGE_MULT_SOFTCAP` `12.0`,
+    `RUN_DAMAGE_MULT_KNEE` `0.03`, `RUN_ATTACK_SPEED_MULT_SOFTCAP` `1.70`,
+    `RUN_ATTACK_SPEED_MULT_KNEE` `0.50` — все before == after.
+  - Новые числа — только пороги новой проверки (before: отсутствовали):
+    `SOFTCAP_RUNAWAY_DAMAGE_MULT` → `6.5`, `SOFTCAP_RUNAWAY_ATTACK_SPEED_MULT` → `2.0`
+    (масштаб забеговых множителей «идеального» lvl20 билда, замер на `82343091`:
+    `damage_multiplier=6.4766`, `attack_speed_multiplier=2.0321`),
+    `SOFTCAP_MIN_COMPRESSION` → `0.05`, `SOFTCAP_EXTREME_MULT` → `100.0`,
+    `SOFTCAP_IDENTITY_MULTS` → `[1.0, 0.8]` (точки проверки тождественности
+    soft-cap'а на множителе `≤1.0` — база забега и штрафы),
+    `SOFTCAP_PROBE_STATS` → `{strength: 20.0, agility: 20.0}`, `SOFTCAP_EPS` → `1.0e-4`.
+    Действующая кривая сжимает пробы на `12.0%` (`6.500→5.7210`) и `16.7%`
+    (`2.000→1.6667`) — требуемые `5%` перекрыты более чем вдвое.
+  - Съём идёт через публичный `ProgressionData.derived_parameters` с пустым
+    `weapon_config`: отношение выхода с множителем к выходу без него равно ровно
+    тому, что вернул soft-cap (ни `upgrade_*_exponent`, ни `passive_mods` в
+    отношение не входят), поэтому проверка красная и на тождественном soft-cap'е,
+    и если множитель перестали через него пропускать.
+  - Все приёмочные прогоны сняты под доказанной эксклюзивностью: раннер писал
+    максимум живых процессов Godot на машине за окно каждого прогона, во всех
+    **66** принятых прогонах `max_godot_procs=1` (свой процесс и ничей больше).
+    Параллельный Godot воюет с времябазой, поэтому без этого замера числа не
+    принимаются. Разбивка 66: 20 эталонных на `82343091` + 20 на промежуточном
+    кандидате `a37931b7` + 20 на итоговом кандидате `7eae26a1` + 3 + 3 на двух
+    негативных мутациях.
+  - Эталон `20t` на неизменённом `dev 82343091`, 20 изолированных прогонов:
+    `8139..8596`, p50 `8267`, p95 `8583`, max `8596`, среднее `8328`; `1t` `931..968`.
+    Запас потолка над эталоном: над p50 `+21.0%`, над max `+16.3%` — измеренный
+    эффект отката soft-cap'а (`+14%`) в него укладывается.
+  - Ложных красных нет. Приёмочная серия — **итоговый кандидат `7eae26a1`**, 20
+    изолированных прогонов, 20/20 зелёных: `20t 8121..8696` (p50 `8469`,
+    p95 `8626`, среднее `8410`), `1t 931..932`, false-red 0. Запас max до
+    потолка `+15.0%`. Независимый перезамер QA FAN-1748 на том же SHA дал
+    совпадающую серию: 20/20, p50 `8475`, p95 `8613`, max `8620`.
+  - Промежуточный кандидат `a37931b7` (та же проверка, отличается только
+    комментарием в шапке и этим документом) — отдельная серия 20/20 зелёных,
+    `20t 8136..8587` (p50 `8177`, p95 `8579`, среднее `8242`), `1t 931..968`.
+    Приведена как вторая независимая выборка, а не как приёмочная.
+  - Строка `[soft-cap]` во всех прогонах побитово одинаковая — проверка чистая и
+    детерминированная, шума у неё нет по построению.
+  - Чувствительность подтверждена в одноразовом чекауте: мутация
+    `_soft_capped_run_multiplier → return multiplier` — 3/3 КРАСНЫХ ровно по
+    `[soft-cap]`, при этом `[ceiling]` оставался зелёным (`20t 9822/9449/9833`,
+    `1t 1065/1105/1065`), то есть пробел FAN-1713 воспроизведён и закрыт. Мутация
+    `circle_target_diminish 0.62 → 0.0` — 3/3 КРАСНЫХ ровно по `[ceiling]`
+    (`20t 18813/18826/18814`) при зелёном `[soft-cap]`. Обе мутации откачены.
+  - Правки этого пункта после `7eae26a1` — только документация: сам
+    `tests/berserk_dps_runaway_gate.gd` с `7eae26a1` побайтно не менялся,
+    поэтому перечисленные серии остаются замерами действующего кода и
+    перезамера под новый SHA не требуют.
+
 - **FAN-1031 Stage 3d (2026-07-13) — финальный балансировочный заход по честной времябазе v6
   (no-silent-retune).** Полный разбор + after-метрики + карта рычагов —
   `build/stage3d_final_balance_fan1031.md`. По приёмочному v6 (среднее 2 честных прогонов,
@@ -1051,7 +1232,9 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     `reward_is_damage_relevant` (урон-ось И relevance ≠ optional по ATTRIBUTE_RELEVANCE — физ-«damage»
     у мага мёртв, matrix это кодирует). Форс на последнем слоте, только если в regular-пуле есть damage-карта.
     Гарантия damage-релевантна ⟹ non-optional по построению → УСИЛИВАЕТ старый инвариант «≥1 non-optional»,
-    не нарушая «≤1 optional». LEVEL_UP_REWARDS не трогали (уже вычищен FAN-1034) — введена только офер-гарантия.
+    не нарушая действовавший тогда «≤1 optional» (историческая запись; FAN-1887 позднее ужесточил правило до
+    «ноль optional в показе» — см. Canonical Attribute Contract выше). LEVEL_UP_REWARDS не трогали (уже вычищен
+    FAN-1034) — введена только офер-гарантия.
     Гейт: `tests/level_up_damage_floor_gate.gd` (17 классов × 200 seed'ов + prefill capstone + helper A/B +
     satisfiability); `attribute_relevance_test` (старые инварианты) остаётся зелёным.
   - **Гейты (32 зелёных, гейтов НЕ ослаблял — только УСИЛЕНы priest_kit/coverage_cap + новый
@@ -1204,3 +1387,715 @@ Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 
 Остаток: QA child issue (lifecycle FAN-1048, оконный визуальный смоук 2–3
 классов) → Stage 5 PR `agent/claude/53f2a056` → `dev`.
+
+## FAN-1438 — воспроизводимый A5-срез ростера
+
+`tools/a5_balance_report.gd` собирает единый набор данных для текущих
+`ProgressionData.character_ids()` и `WEAPONS_BY_CLASS`, затем из него рендерит
+Markdown, CSV и raw JSON в `docs/design/reports/fan1438_a5_balance/`. Команда
+регенерации принимает только точный `--source-commit=<SHA>`: tree и committer
+timestamp она получает через `git show -s --format=%H%n%T%n%cI <SHA>`, а не из
+wall-clock или ручных флагов. Неразрешимый, неполный или расходящийся Git tuple
+останавливает генерацию до записи артефактов; integrity gate повторно сверяет
+commit/tree/timestamp и содержит отрицательный mismatch-case.
+
+Schema v4 публикует versioned registry `A5_ARTIFACT_SCHEMA_V4`: текущую raw
+schema и полный ordered mapping CSV column → raw field. Это единственная
+декларация формата CSV, поэтому generation и gate получают одинаковый
+явный контракт без неявного списка столбцов. Сам integrity gate не использует
+renderer или verifier генератора как oracle: он заново получает Git
+commit/tree/timestamp и ancestry, пересчитывает canonical SHA-256 payload,
+все CSV cells, Markdown projections, row deltas, class aggregates/medians,
+outlier sets, live means/stddev/deltas и formula/live verdicts из raw/runtime
+registry. Named raw, provenance, CSV, Markdown, aggregate, delta и verdict
+mutations обязаны отклоняться fail-closed; неизменный current dataset остаётся
+зелёным.
+
+Для class-kit ultimate сборщик всегда берёт контролируемые level stats из
+`no_meta` строки и ровно один раз применяет class/Atlas attribute и run
+modifiers. Поэтому мета-бонусы не переносятся повторно из weapon rows, а ultimate
+остаётся class-level показателем, не привязанным к конкретному оружию.
+
+Контролируемая матрица использует A5 вместе с накопленными наградами A1–A5,
+уровни 1 и 20, а также четыре состояния меты: без меты, полное созвездие класса
+schema 6, созвездие плюс легальный Atlas 50 и явно неигровой верхний Atlas 59.
+Уровень 20 — синтетическая балансная модель: ровно 19 целых неотрицательных
+очков базовых характеристик и один общий билд на всю тройку оружия класса. Это
+не реконструкция 19 выпавших в реальном забеге reward-карт.
+
+Формульный слой повторно использует `ProgressionData` и принимает A5/meta
+`run_modifiers`; опциональный `include_ultimate=false` исключает ульту из
+пер-оружейного sustain-DPM. Ульта показывается отдельно на уровне class kit.
+Schema-6 flat/cadence/geometry/axis/final профиль берётся из канонического
+`MetaProgression.skill_modifiers_for_weapon`. Нелинейный слой проверяется
+реальными headless Player/Enemy-пробами всех runtime-пар с фиксированными
+сидами, warm-up и фиксированным игровым окном.
+
+Начиная с raw schema `fan1438.a5-balance.v2`, каждая такая проба также содержит
+`fan1511.runtime-telemetry.v2`: стабильный ключ
+`pair|seed|scenario|fixture|target-cardinality`, trace ID, counters реальных
+casts/hits, уникальные target IDs и взаимоисключающие buckets `source×phase`.
+Каждый cast получает стабильный `cast_id`, а каждый применённый игроком hit —
+единственный `provenance_id`; оба идентификатора только наблюдательные и не
+влияют на боевой расчёт. Cast приходит из `Player.weapon_cast_observed`,
+применённый урон — после канонического расчёта HP в `Enemy.damage_applied`.
+
+Наблюдаемое final-событие обязано ссылаться на реальный hit через
+`related_hit_id`, а hit хранит ровно одну взаимную ссылку в `final_event_ids`;
+проверяются цель и причинный порядок. Отложенные или targetless resolver-сигналы
+не считаются наблюдённым финальным уроном до его канонического применения.
+`final_event_damage` — только дедуплицированное помеченное подмножество тех же
+hit buckets и никогда не прибавляется к общему урону второй раз.
+
+Каждая фикстура несёт `hp_ledger`: полный набор целей, сумму канонически
+применённого урона и health loss за measurement-окно. Ledger сверяет runtime
+hits и DPM с фактическим изменением HP с допуском `0.0001`; overkill учитывается
+как оставшийся HP, а не как запрошенный урон. Полный прогон добавляет три
+репрезентативные фикстуры: обычную offensive, mortal target с наблюдаемым kill и
+детерминированный incoming hit по игроку; короткая проверка только этих
+примитивов доступна через `--mode=telemetry_probe`.
+
+FAN-1551 фиксирует boundary live-measurement как число simulation steps и
+несокращённую сумму `process_delta_time`: `measurement_duration_seconds` и
+`measurement_frame_count` — canonical denominator для DPM. Округлённая до
+`0.0001` длительность сохранена только как диагностическое поле вместе с тремя
+projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
+`ledger/snapped duration`) и разностью numerator; она никогда не используется
+для расчёта report DPM. `tests/a5_balance_report_parity_test.gd` проверяет
+упорядоченный manifest 51 оружий и четыре live/variance поля against exact
+fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
+tuning.
+
+### FAN-1545 — gameplay ownership отделён от telemetry provenance
+
+Telemetry context (`telemetry_provenance_id`, source и phase) наблюдательный:
+`Player._apply_player_damage` передаёт caller-owned feedback без добавления
+`player_owned`. Поэтому канонический `Enemy.damage_applied` ledger остаётся
+полным, но Dark Mage `dark_decay` квалифицирует только gameplay-owned killing
+hit. Полный inventory rerouted secondary paths:
+
+- unowned Player paths: `trigger_assassin_crit_shadow`, `_deal_knight_counter_hit`,
+  `_trigger_thorn_reflect`, `_trigger_take_hit_pulse`, `_apply_meta_crit_execute`,
+  `_trigger_magic_enchant`, `_apply_dot_tick`, `_on_weapon_hit_echo`,
+  `on_enemy_killed` chain explosion и `_apply_heal_to_holy_damage`;
+- unowned Berserk melee extras: close bonus, wounded execute и follow-up splash
+  в `_apply_unique_melee_hit_effects` вызывают `take_damage(amount)` напрямую;
+- preserved owned paths: direct `ClassWeapon`/`BerserkWeapon` hit,
+  `Player._apply_ultimate_damage`, cursed-skull DoT `tick_feedback` и сам
+  `dark_decay` blast (с anti-recursion marker).
+
+`status_effects.gd`, `ally_minion.gd` и summon/projectile paths были audit-only:
+ни один из них не получает ownership из telemetry helper. Регресс
+`tests/dark_mage_kit_test.gd` исполняет thorn reflect, universal DoT и meta-crit
+execute как unowned kills, проверяет HP witness/absence Dark Decay, а также
+сохраняет owned positive control и anti-recursion. A5 parity сравнивает
+gameplay projection с immediate integration base отдельно от telemetry полей;
+никакой balance/config tuning этой правкой не допускается.
+
+### FAN-2224 — final-execution evidence через production consumer
+
+FAN-2224 добавляет к неизменному 309-sample anchor отдельный supplemental
+контракт `fan2224.final-execution.v2`: ровно 51 строка в порядке roster, каждая
+получена реальным прогоном production-потребителя, который владеет событием
+своего schema-6 final. Harness ничего не «дорисовывает»: он только подаёт тот же
+стимул, что и игра (авто-атака, цель, которая может умереть, умирающий призыв
+или входящий урон, который владелец уворачивает/блокирует/поглощает), и
+записывает то, что после этого сделал production runtime.
+
+Записывается четыре вида доказательств, и вид выводится из наблюдения, а не
+объявляется: `typed_damage` (реальный applied-HP хит, связанный с активацией),
+`target_death` (lifecycle-финалы kill/execute/summon_death),
+`target_status_transition` (production-маркер `constellation_<mechanic>_owner`,
+который ставит сам `Player._apply_constellation_final_side_effect`) и
+`owner_state_transition` (absorb/dodge/health владельца плюс его собственный
+`constellation_last_final_action`). Причинность держит `resolution_ladder` —
+последовательность dispatch'ей самого механика с парой `progress/required`,
+которую посчитал production resolver: N−1 шагов ниже порога и активация ровно на
+пороге. Отдельно считаются `event_dispatch_count`, `resolved_dispatch_count` и
+`consumer_gated_dispatch_count`, поэтому «потребитель ни разу не открыл гейт»
+отличимо от «механика не сработала».
+
+`verify_final_execution_artifacts` ничему в строке не верит на слово: mechanic,
+mode, event, `runtime_consumer` и порог берутся заново из
+`data/meta/constellation_schema6.json` и `ConstellationFinalRuntime`, профиль
+стимула — из `final_execution_profile`, а все counters, ledger, payoff-агрегаты
+и digest пересчитываются из собственного trace строки. Скопированный с другой
+пары или переименованный trace, удалённое/подменённое событие, чужой
+executor/target/фаза, harness-овый fallback-хит без production provenance и
+подделанный агрегат падают fail-closed даже после пересчёта digest'ов; набор
+мутаций зафиксирован в `tests/a5_balance_report_integrity_test.gd`.
+
+`fan2224.formula-live-disposition.v2` превращает решение по каждой из 51 пары в
+арифметику вместо ярлыка. При неизменном пороге `35%` строка получает
+`within_tolerance`, `explained_divergence` или `unresolved`, а расхождение
+раскладывается точно: `live = 60 × observed hit-rate × observed applied-HP на
+хит`, `formula = 60 × formula cast-rate × formula hit-damage × model_gap`,
+поэтому `live/formula = cadence × magnitude × formula_model`. Все три множителя —
+наблюдаемые production-величины из anchored telemetry над собственным базисом
+формулы, dominant factor выбирается по `|ln|`, и верификатор требует, чтобы
+пересчёт воспроизвёл и величину (±1 п.п.), и знак заявленного расхождения.
+Сертифицирующий прогон не принимает ни одной `unresolved` строки.
+
+FAN-2316 усиливает этот контракт без изменения balance-конфигов. `formula_basis`
+независимо выводится из текущих `ProgressionData`, schema-6 constellation и
+детерминированного L20 build, поэтому самосогласованная подмена cadence/damage
+basis отвергается. Финальный ledger также сохраняет pre-activation baseline для
+`berserk/sword`; любые ослабление или усиление его reconstructed hit means
+отклоняются. `target_death` учитывается только на/после первой activation, а
+один лишь `constellation_last_final_action` — служебная отметка execution, не
+payoff. Публикация явно различает executed mechanics `51/51`, direct
+resolver-provenance payoffs и ordered post-activation payoffs; это не три
+синонима одного счётчика.
+
+FAN-2373 уточняет phase semantics без изменения чисел или артефакта. Legacy-поля
+`pre_activation_*`/`unamplified_hit_mean` — это только **warmup diagnostic** до
+первой activation; они не входят в measurement-only HP ledger. Соответственно,
+`observed_damage_ratio` остаётся воспроизводимым legacy-diagnostic и никогда не
+сравнивается с `resolver_damage_ratio` и не служит доказательством усиления.
+Доказательство для resolver payoffs живёт в отдельном mechanic-aware policy,
+который разделяют generator и verifier: для `robot_reactor_core` tagged pulse
+сверяется только с обычными hit'ами того же measurement frame+cast. Его
+`pulse_damage_ratio=0.40` имеет консервативный floor `0.25`: четыре вентиля,
+геометрический falloff и canonical batching исключают ложное требование точного
+по-таргетного 0.40, но согласованное уполовинивание всех resolver-bound pulse
+hits уже не проходит. `tests/a5_balance_report_integrity_test.gd` содержит
+независимый (не вызывающий policy generator) oracle и подмену, которая заново
+собирает trace aggregates, HP ledger, DPM и digest после такого half-damage.
+
+FAN-2387 закрывает соседнюю trace-backed границу без изменения gameplay/balance:
+`target_status_transition` существует только как measurement-phase trace event с
+точным production marker, related hit и тем же target; один named marker в row
+без такого события отклоняется. `owner_state_delta` и `owner_final_marker`
+реконструируются из `owner_state_transition` trace event, а не из соседних полей
+row. Resolver-bound bucket принимает только связанный measurement hit, как и
+`applied_hp_total` в measurement HP ledger; поэтому
+`resolver_bound_payoff_share_pct` — физически согласованная доля `≤100%` для
+каждой пары, включая `chemist/homunculus_vial`.
+
+Остальные resolver bonus формы явно имеют `ledger_only_exception`: delayed/capped
+AoE (shrapnel, recall, bloom, chain, midpoint, branch, combo), DoT/stack/decay
+(rift, detonation, root burst, pierce echo), либо deferred/alternate target
+geometry (coin return, link, prey, instrument echo, raven). Для них нет
+один-к-одному сопоставимого hit denominator; контракт требует production-tagged
+final evidence и measurement HP ledger, но не выдаёт их за «увеличенный исходный
+hit».
+Новая механика с `resolver_damage_ratio > 1.0` без comparison policy или
+именованного исключения роняет generation и verification fail-closed.
+
+FAN-2388 закрывает три harness/contract щели в этом же evidence model, не
+меняя ни generation, ни balance. Раньше `_check(legacy_mutations.size() ==
+LEGACY_FINAL_EXECUTION_MUTATION_COUNT and LEGACY_FINAL_EXECUTION_MUTATION_COUNT
++ LEGACY_DISPOSITION_MUTATION_COUNT == 21, ...)` — вторая половина сравнивала
+два хардкодных литерала друг с другом и не могла упасть ни при каком runtime
+поведении каталога; она удалена, а осиротевший `LEGACY_DISPOSITION_MUTATION_COUNT`
+теперь реально привязан к `disposition_mutations.size()` (легаси-каталог плюс
+ровно один FAN-2316 provenance-кейс по имени). Оба mutation-каталога получили
+negative control, который локально укорачивает список и доказывает, что guard
+действительно падает — а не просто совпадает сам с собой. `_disposition_dataset`
+раньше строил свой `formula_basis` вызовом `Generator.production_formula_basis`
+— тем же вызовом, которым `_verify_disposition_row` потом сверяет строку, поэтому
+регрессия в производной формулы была бы незаметна (обе стороны сверяли сами
+себя). Базис для `berserk/sword` теперь независимо закреплённый литерал
+(`PINNED_BERSERK_SWORD_FORMULA_BASIS` в `tests/a5_balance_report_integrity_test.gd`),
+снятый один раз с текущего production-вывода; admissibility-проверка фикстуры
+(`the production-shaped disposition fixture must be admissible`) — первое место
+в suite, которое ловит дрейф `production_formula_basis`, а не просто подделанный
+мутант. `verify_final_execution_artifacts` раньше молча пропускал
+binding-kind/representative-baseline проверки, если `roster.pair_keys` не
+совпадал буквально с полным production roster — внутренне согласованный, но
+truncated или reordered набор (rows совпадают со своим же урезанным/переставленным
+`pair_keys`) проходил `ok=true` без единой ошибки. Теперь несовпадение с полным
+roster — explicit fail-closed error, если явно не запрошено обратное; opt-out
+`require_full_roster=false` оставлен только для изолированных single-row
+round-trip проб, которые никогда не претендуют на шипуемый артефакт.
+
+Диагностика без перегенерации артефактов: `--mode=final_execution_probe`
+(опционально `--pair=<class>/<weapon>`) печатает по строке на пару.
+
+**Разрешённый блокер (историческое).** На более раннем commit три финала были
+недостижимы через production ни при каком стимуле, и сертифицирующий прогон
+падал fail-closed: `sniper/sniper_deadeye_rifle` (`deadeye_weakpoint_cycle`) —
+`_resolve_sniper_lockshot` армировал weakpoint-метку только за `fully_charged`
+(`charge_seconds > 0.0`), а у винтовки этого стата нет; `ranger/moon_crossbow`
+(`crossbow_full_charge_mark`) — `_charge_time` сбрасывался каждым выстрелом
+вместо только полного разряда, поэтому заряд никогда не успевал накопиться;
+`chemist/blast_powder` (`powder_cross_reagent_combo`) — оружие после SCRUM-943
+летит прямым AoE без луж, а комбо требовало облако другого реагента, которого
+неоткуда было взять. Все три — production-фиксы вне write-set FAN-2224:
+FAN-2240 (`b1aeea0b`) снимает charge-гейт и армирует weakpoint по самому факту
+primary lockshot-хита; FAN-2237 (`a1cb4c5e`) сбрасывает `_charge_time` только
+на настоящем full-charge release; FAN-2238 (`54ecbb08`) поднимает реакцию
+через production каст → полёт → прилёт с инертным следом `PowderReagentTrace`
+вместо pool-канала.
+
+После этих фиксов все 51 пар исполняются через production consumer, и
+сертифицирующий прогон не содержит ни одной `unresolved` строки. Счётчики
+`event_dispatch_count`/`resolved_dispatch_count` совпадают с pinned артефактом:
+`sniper/sniper_deadeye_rifle` — `986/36` (950 dispatch'ей события `hit` —
+overpenetration/endpoint/close-burst хиты, которые по дизайну не армируют
+weakpoint), `ranger/moon_crossbow` — `7/7`, `chemist/blast_powder` — `52/52`
+(оба без единого gated dispatch). Актуальный прогон и его артефакты —
+`docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`.
+
+### FAN-1641 — lineage-aware A5 parity contract
+
+Исторический численный оракул `f09f21ec` неизменен и read-only. Его полный
+DATASET лежит в immutable fixture `tests/fixtures/a5_f09_oracle.json.gz`, а его
+51×4 матрица и хэши — в `tests/fixtures/a5_oracle_lineage.json`; только эти два
+файла являются источником lineage (FAN-1682/FAN-1730). Артефакты
+`docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`
+к f09 не относятся: это ТЕКУЩИЕ регенерируемые артефакты, которые каждый
+успешный `--mode=full` перезаписывает, и они никогда не служат baseline'ом f09.
+На момент FAN-1641, после принятых и независимо QA-проверенных summon-фиксов
+FAN-1585 (`e0c6c8c5`, druid summon formations) и FAN-1596 (`8376f5c7`, homunculus
+pair guard), свежая регенерация детерминированно отличалась от f09 ровно в трёх
+из 204 ячеек 51×4 — только у `druid/summon_amulet`: crowd mean
+`361323.76→394715.33`, solo variance `45635023.84→51498851.11`, crowd variance
+`36494237500.62→36324029697.05`; solo mean остаётся `68101.14`. Буквальный
+all-zero diff к f09/`ec15444e` уже тогда был недостижим без отката принятой
+геометрии или подмены baseline; с FAN-1575 расхождение к f09 системное — см.
+секцию FAN-1575 ниже, механизм контракта не изменился.
+
+`tests/fixtures/a5_oracle_lineage.json` (schema `fan1641.a5-oracle-lineage.v1`)
+кодирует это lineage fail-closed: неизменные f09 raw/dataset/projection/telemetry
+хэши и опубликованную 51×4 матрицу; точный список принятых дельт с `from/to` и
+причинными gameplay-issue; инвариантные ячейки и equal/changed счётчики;
+выведенный projection digest непосредственной current integration base; и точный
+сегментированный инвентарь `ec15444e..current`. На момент FAN-1641 это были ровно
+три дельты `druid/summon_amulet` (FAN-1585/FAN-1596), 201/204 равные ячейки, база
+`b8909e30` и инвентарь из 8 коммитов; с FAN-1575 — 180 дельт, 24 равные ячейки,
+база `fda9971b` и инвентарь `ec15444e..fda9971b` из 246 коммитов (75 gameplay).
+
+Верификатор в `tools/a5_balance_report.gd` состоит из трёх слоёв и не допускает
+wildcard, tolerance relaxation, snapshot substitution или ручную перезапись
+baseline:
+
+- `verify_oracle_lineage` — self-consistency манифеста против живого закоммиченного
+  оракула: f09 хэши воспроизводятся, опубликованная матрица равна live-оракулу,
+  принятые дельты реконструируют current base ровно с манифестными
+  `equal_cell_count`/`changed_cell_count`, а выведенный digest совпадает с pinned
+  значением и отличается от f09.
+- `verify_oracle_lineage_ancestry` — commit-level causality через настоящий Git
+  (`git show`/`merge-base`/`rev-list`), без зависимости от runtime ObjectID или
+  порядка аллокаций: pinned trees, линейная цепочка `f09 → ec15444e → current base`,
+  точный упорядоченный инвентарь и summon-файлы у gameplay-коммитов.
+- `verify_candidate_against_current_base` — замена невозможного
+  `candidate vs ec15444e all-zero`. Слой A (`verify_candidate_projection_against_current_base`)
+  требует exact zero delta по всем 204 projection-ячейкам и по 309-ключевому
+  telemetry sample-KEY множеству. Слой B (`verify_candidate_full_telemetry_against_pinned`,
+  FAN-1649) требует exact equality полного canonical telemetry PAYLOAD (см. ниже).
+
+Негативные мутации (лишняя дельта ячейки, изменённое принятое значение,
+пропущенная lineage-запись, подменённый оракул/коммит/tree, ложный current-base
+zero, дрейф current digest, подменённый decoded raw) обязаны fail closed;
+покрытие — в `tests/a5_balance_report_parity_test.gd` (полный контракт + Git
+causality + full-payload matrix) и `tests/a5_balance_report_lineage_test.gd`
+(committed oracle ↔ manifest tie + full-telemetry anchor). Оба набора читают
+только immutable fixture. `tests/a5_balance_report_integrity_test.gd` в lineage
+не участвует: с FAN-1730 он отвечает исключительно за текущие регенерируемые
+артефакты.
+
+#### FAN-1649 — full telemetry payload parity
+
+FAN-1642 QA доказала дефект слоя, проверявшего только 309 sample-KEY: правка
+`damage` существующего события на `+0.01` сохраняла `ok=true`, потому что набор
+ключей `roster × seed × fixture` не менялся. FAN-1649 добавляет проверку полного
+payload.
+
+- **Каноническая schema.** `canonical_telemetry_sample(sample)` сериализует весь
+  sample через `JSON.stringify(sample, "", true, true)` (рекурсивная сортировка
+  ключей словарей, сохранённый порядок массивов, полная точность float).
+  Покрыты: identity (`telemetry_schema`, `sample_key`, `trace_id`, `pair`, `seed`,
+  `scenario`, `fixture`, `target_cardinality`, `fixture_target_ids`); упорядоченный
+  поток `events` (`kind`, `source`, `phase`, `target_id`, `damage`, `frame`,
+  `provenance_id`/`cast_id`, `mechanic_id`/`observed` feedback, on-kill/final
+  связи `related_hit_id`/`final_event_ids`); `hp_ledger` (строки со снимками HP,
+  `total_applied_damage`, фиксированное окно измерения, `dpm_projections`);
+  блок `counters`/DPM (`dpm`); и `observer_probe` (`mode`, HP до/после/delta,
+  `rng_probe`). **Derived** поле `trace_digest_sha256` пересчитывается из массива
+  `events` и независимо проверяется, поэтому одиночная правка digest не проходит.
+  Числа не нормализуются вручную и не округляются — канон берёт ровно
+  full-precision представление; порядок событий значим (reorder = изменение),
+  порядок массива sample'ов не значим (агрегат идёт по отсортированным ключам).
+- **Independently pinned current base.** `f09` telemetry НЕ является базой для
+  payload: шесть measurement-contract коммитов между `f09` и `b8909e30` изменили
+  событийный контракт КАЖДОГО из 309 sample'ов (напр. `berserk/sword` solo: 119
+  событий у f09 против 69 у b8909e30 при неизменной projection). Поэтому payload
+  закреплён напрямую на текущей интеграционной базе:
+  `current_integration_base.telemetry_full` хранит `sample_count=309`, per-sample
+  digest map и агрегат `full_sha256`. Два независимых clean-прогона `--mode=full`
+  дают побайтово идентичные 309 sample'ов и один и тот же агрегат — на `b8909e30`
+  это `ad1d9a7a…` (перепроверено на FAN-1658), с FAN-1575 база — `fda9971b`, агрегат
+  `c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a` (два
+  byte-identical прогона). Начиная с FAN-1658 этот агрегат вместе с идентичностью
+  базы и `sample_count` закреплён **runtime-константами в исполняемом инструменте**
+  (`TELEMETRY_ANCHOR_*`), а не только внешней константой в тестах. Поэтому
+  self-consistent подмена (переписать pinned digest и пересчитать собственный агрегат
+  манифеста) расходится с runtime trust root и fail closed уже в самом гейте, а не
+  только в тесте. Манифест поставляет лишь материализованную per-sample map; он не
+  может переопределить идентичность базы, count или агрегат.
+- **Гейт (FAN-1658 trust root).** `verify_candidate_full_telemetry_against_pinned`
+  анкорит проверку на **неизменяемый runtime trust root в самом инструменте**, а не
+  на caller/candidate-owned манифесте. Константы `TELEMETRY_ANCHOR_BASE_COMMIT`/
+  `_BASE_TREE`/`_SAMPLE_COUNT`/`_FULL_SHA256` в `tools/a5_balance_report.gd` держат
+  точную идентичность anchor-базы (с FAN-1575 — `fda9971b`), `309` и агрегат
+  (`c269edb1…`). Порядок:
+  (1) `current_integration_base.commit`/`tree` манифеста обязаны совпасть с anchor;
+  (2) materialized `telemetry_full` map допускается лишь как вход — его
+  `sample_count`, `full_sha256` и независимо пересчитанный из map агрегат обязаны
+  воспроизвести runtime-константы **до** любого использования; (3) кандидат обязан
+  независимо воспроизвести тот же агрегат и per-sample map. Верный кандидат
+  текущей anchor-базы проходит; любое extra/missing/duplicate sample, add/remove/reorder
+  event, изменение `damage`/target/frame-timing/HP ledger/RNG-observer/counters-DPM/
+  feedback/on-kill-final link, подмена base identity, а также self-consistent
+  manifest/digest tamper — fail closed. Ключевое отличие от FAN-1649: перепривязка
+  ВСЕХ candidate-controlled полей (per-sample map + агрегат) вместе с переписыванием
+  pinned map манифеста больше не даёт `ok=true`, потому что trust root неизменяем и
+  не берётся из данных (закрытый fail-open FAN-1650). Матрица мутаций,
+  материализованный faithful кандидат и self-repin негатив — в
+  `tests/a5_balance_report_parity_test.gd` и `_lineage_test.gd` (FAN-1730;
+  до разделения вторая половина жила в `_integrity_test.gd`). Тестовый seam
+  `test_only_verify_full_telemetry_with_root` (инъекция root для малой синтетической
+  матрицы) не достижим ни из production, ни из `--mode=full` пути.
+- **Предикат projection-дубликата.** `_projection_rows` уже отвергает дубликат
+  НАСТОЯЩЕЙ projection-строки (`level=20`, `scenario=class_constellation`) и
+  требует ровно 51 пары. Committed regression дублирует именно настоящую
+  `druid/summon_amulet` строку (отказ), отвергает лишнюю уникальную пару и
+  подтверждает, что дубликат НЕ-projection строки (`level=1`) не считается
+  дефектом (projection digest не меняется). Заявление QA о принятом дубликате
+  относилось к не-projection строке.
+
+#### FAN-1658 — runtime trust root и before-write гейт `--mode=full`
+
+FAN-1650 exact-SHA QA доказала, что гейт полного telemetry payload был fail-open:
+`verify_candidate_full_telemetry_against_pinned` сверял кандидата с map, закреплённой
+в манифесте, но манифест — caller/candidate-owned. Изменив `damage` на `+0.01`,
+пересчитав кандидатский trace/per-sample/aggregate И перепривязав pinned map
+манифеста к тому же значению, можно было сохранить `ok=true`: проверялась только
+внутренняя самосогласованность двух подконтрольных атакующему представлений. Внешняя
+константа существовала лишь в тестах, а не в исполняемом гейте. Дополнительно
+настоящий `--mode=full`/`generate_dataset()` не вызывал
+`verify_candidate_against_current_base` для фактически сгенерированного 309-sample
+датасета, поэтому документация была строже реального runtime path.
+
+FAN-1658 закрывает оба разрыва:
+
+- **Единый runtime trust root.** Константы `TELEMETRY_ANCHOR_BASE_COMMIT`,
+  `TELEMETRY_ANCHOR_BASE_TREE`, `TELEMETRY_ANCHOR_SAMPLE_COUNT` и
+  `TELEMETRY_ANCHOR_FULL_SHA256` живут в `tools/a5_balance_report.gd` и видимы в
+  production tool. Гейт сверяет с ними идентичность базы манифеста, count и агрегат;
+  materialized `telemetry_full` map допускается только как вход и обязана независимо
+  воспроизвести константный агрегат до сравнения с кандидатом. Caller не может
+  подставить альтернативный trust root. Инъекция root возможна лишь через отдельную
+  test-only функцию `test_only_verify_full_telemetry_with_root`, недостижимую из
+  production/`--mode=full` пути.
+- **Before-write гейт в `--mode=full`.** После генерации 309-sample кандидата и до
+  записи любого принятого артефакта (`per_weapon.csv`, `report.md`, `raw.json.gz`)
+  путь `--mode=full` вызывает `verify_candidate_against_current_base` (projection +
+  full telemetry). Верный кандидат завершается `0` и пишет вывод; любой mismatch
+  печатает ошибку, завершается non-zero и **не оставляет ни принятого, ни частичного
+  вывода** — `quit(1)` стоит до `make_dir`/любой записи. Formula/telemetry_probe/
+  observer_neutrality режимы не генерируют полный 309-sample payload и намеренно не
+  гейтятся здесь.
+- **Негативы.** Committed матрица доказывает: faithful материализованная `b8909e30`
+  map проходит runtime anchor; self-repin кандидата+манифеста (перепривязка всех
+  candidate-controlled полей при неизменном trust root) fail closed; подмена base
+  identity fail closed; и вся FAN-1649 per-field матрица
+  (extra/missing/duplicate sample, add/remove/reorder event, damage/target/frame/
+  HP ledger/RNG-observer/counters-DPM/feedback/on-kill-final link, tamper trace
+  digest) остаётся fail closed.
+
+Lineage-aware замена FAN-1575 AC6/AC7 (применяется после независимого exact-SHA
+QA PASS этого дефекта):
+
+- **AC6′.** Две clean executable f09 regeneration детерминированы, а исторический
+  f09 51×4 oracle/digest сохранён неизменным. Candidate по 51 keys × четырём
+  live/variance полям равен f09 за исключением ровно трёх перечисленных принятых
+  `druid/summon_amulet` дельт (crowd mean, solo variance, crowd variance),
+  причинно связанных с независимо QA-проверенными FAN-1585/FAN-1596; остальные
+  201 ячейки — exact zero diff; solo mean остаётся `68101.14`. Tolerance
+  relaxation, wildcard, snapshot substitution или ручная baseline rewrite = FAIL.
+- **AC7′ (FAN-1649).** Candidate имеет exact zero gameplay/event delta к своей
+  immediate current integration base `b8909e30`, а не к `ec15444e`, и это теперь
+  реально исполняется: `verify_candidate_full_telemetry_against_pinned` требует
+  побитового совпадения полного canonical telemetry payload (damage, targets/
+  order, frame/timing, HP ledger, RNG/observer, counters/DPM, feedback,
+  on-kill/final links) с закреплённым на `b8909e30` per-sample digest map. Правка
+  существующего события (напр. `+0.01 damage`) при неизменном 309-ключевом наборе
+  больше не проходит (закрытый дефект FAN-1642). Исторический инвентарь
+  `ec15444e→current` зафиксирован точно и сегментирован на принятые
+  measurement-contract и gameplay (FAN-1585/FAN-1596) коммиты. Stage 1 A/B,
+  FAN-1539 telemetry, Dark Mage/Homunculus/summon regressions и fail-closed
+  mutations остаются зелёными.
+
+#### FAN-1672 — projection trust root и повторяемость `--mode=full`
+
+FAN-1660 exact-SHA QA получила non-zero `--mode=full` на верном кандидате
+`4bd2e710` с тремя `druid/summon_amulet` ячейками из lineage-дельты. Причина не в
+gameplay/RNG/runtime-order: живая druid-телеметрия детерминирована и
+воспроизводит все четыре принятые ячейки — solo mean `68101.14`, crowd mean
+`394715.33`, solo variance `51498851.11`, crowd variance `36324029697.05`.
+`tests/a5_balance_report_druid_full_determinism_test.gd` утверждает это как
+anchored assertion (FAN-1681): оба прохода агрегируются ровно так же, как
+`_live_parity` + `_apply_live_evidence_to_rows` (snapped mean; variance — квадрат
+уже snapped stddev), и сравниваются с закоммиченными литералами в том же
+`%.2f`-представлении, которое сравнивает гейт; сами литералы сверяются с
+`accepted_projection_deltas` и `invariant_projection_cells` из
+`tests/fixtures/a5_oracle_lineage.json`, поэтому фикстура не может анкериться на
+значении, которого гейт не требует. До FAN-1681 файл сравнивал только свой первый
+проход со вторым, и детерминированный дрейф к новому стабильному значению
+оставлял его зелёным. Дефект был в самом
+гейте — `verify_candidate_projection_against_current_base` читал исторический
+оракул из `docs/design/reports/fan1438_a5_balance/raw.json.gz`, то есть из того
+же артефакта, который успешный `--mode=full` перезаписывает своим выводом.
+Поэтому первый прогон на чекауте проходил и подменял f09-оракул текущей базой, а
+каждый следующий прогон в том же чекауте fail closed: принятые `from`-значения в
+файле уже были заменены на `to`-значения. Тот же самоотравленный вход ломал и
+`tests/a5_balance_report_parity_test.gd` / `..._integrity_test.gd` на чекауте
+после регенерации.
+
+FAN-1672 распространяет FAN-1658 trust root на projection-измерение:
+
+- **Константы projection-анкера.** `PROJECTION_ANCHOR_HISTORICAL_SHA256`
+  (`d8109233…`, f09 51×4) и `PROJECTION_ANCHOR_CURRENT_SHA256` (с FAN-1575 —
+  `a85a35d0…`, `fda9971b` 51×4) живут в `tools/a5_balance_report.gd` рядом с
+  telemetry-анкером.
+- **Исторический baseline из закоммиченного манифеста.**
+  `historical_oracle_cells(manifest)` строит 51×4 карту из
+  `historical_oracle.published_matrix` и fail closed, если набор неполон,
+  содержит дубли или его canonical digest не совпадает одновременно с
+  `PROJECTION_ANCHOR_HISTORICAL_SHA256` и с собственным
+  `historical_oracle.projection_sha256` манифеста. Мутабельный сгенерированный
+  артефакт из production-гейта исключён полностью.
+- **Двойной анкер current base.** Реконструкция «f09 + ровно три принятые дельты»
+  и projection digest кандидата обязаны совпасть и с pinned значением манифеста,
+  и с `PROJECTION_ANCHOR_CURRENT_SHA256`. Self-repin манифеста (перепривязка
+  `current_integration_base.projection_sha256` или правка `published_matrix`)
+  fail closed.
+- **Ничего не ослаблено.** Сравнение остаётся exact `%.2f` по всем 204 ячейкам,
+  без tolerance, wildcard и исключённых полей; 309-ключевой telemetry set и
+  FAN-1649/FAN-1658 full-payload слой не изменены; before-write семантика
+  сохранена — при mismatch `quit(1)` стоит до `make_dir`/любой записи.
+- **Следствие контракта.** Настоящий `--mode=full` теперь повторяем: два подряд
+  прогона в одном чекауте дают exit `0` и побитово одинаковые
+  `report.md` / `per_weapon.csv` / `raw.json.gz`. Полный прогон стоит ~12 минут,
+  поэтому автоматическая регрессия на этот симптом живёт на уровне
+  `verify_candidate_projection_against_current_base`
+  (`tests/a5_balance_report_parity_test.gd`, FAN-1681) и работает с «отравленным»
+  артефактом — тем самым датасетом с current-base значениями, который успешный
+  прогон оставляет на диске. Она доказывает три вещи разом: pre-FAN-1672 источник
+  baseline (сам сгенерированный артефакт) на нём fail closed с точной диагностикой
+  `'from' … does not match historical oracle`, manifest-anchored baseline при этом
+  остаётся неизменным f09-оракулом, а гейт принимает такой артефакт и на первом, и
+  на повторном вызове.
+
+FAN-1682 устраняет это остаточное ограничение: полный f09 DATASET хранится в
+закоммиченной immutable fixture
+`tests/fixtures/a5_f09_oracle.json.gz`. `read_raw_artifact()` по умолчанию
+читает именно её, поэтому parity и lineage-проверка больше не получают
+исторический baseline из перезаписываемого отчёта.
+
+FAN-1730 доводит разделение до конца. FAN-1682 перенёс только источник lineage:
+сам lineage-контракт оставался последней секцией integrity-набора, который
+безусловно открывал `RAW_PATH` и выходил раньше при ошибке, поэтому удаление или
+повреждение регенерируемого `raw.json.gz` роняло lineage вместе с ним. Теперь
+два контракта живут в двух наборах, и ни один из них не пропускает проверку
+молча — каждый fail closed на СВОЁМ входе:
+
+- `tests/a5_balance_report_lineage_test.gd` — immutable f09 oracle/lineage.
+  Читает только `tests/fixtures/a5_f09_oracle.json.gz` и
+  `tests/fixtures/a5_oracle_lineage.json`, к `RAW_PATH` не обращается ни при
+  каких условиях. Владеет связкой committed oracle ↔ manifest, внешними анкерами
+  51×4 и 309-sample telemetry (с FAN-1575 — `a85a35d0…` и `c269edb1…`), а также
+  негативами drifted-manifest и self-repin.
+- `tests/a5_balance_report_integrity_test.gd` — ТЕКУЩИЕ регенерируемые
+  `report.md` / `per_weapon.csv` / `raw.json.gz`. Читает `RAW_PATH` явно и
+  безусловно и обязан fail closed при его отсутствии или повреждении;
+  lineage-проверок не содержит и f09 fixture не открывает.
+- `tests/a5_balance_report_parity_test.gd` — 51×4 executable-oracle parity и Git
+  causality; тоже питается только от immutable fixture.
+
+Поэтому после локального `--mode=full` A5 parity/integrity/lineage запускаются в
+том же checkout без `git restore`; decoded-content SHA-256, dataset SHA-256,
+51×4 projection anchor и все fail-closed негативы остаются обязательными.
+
+#### FAN-1681 — покрытие регрессий вокруг projection trust root
+
+Независимая QA FAN-1673 приняла кандидата FAN-1672, но назвала пробелы в будущем
+обнаружении регрессий: проверки существовали, однако часть из них не могла
+упасть. FAN-1681 закрывает их тестами и документацией; поведение гейта,
+tolerance, wildcards, immutable trust root, re-pin семантика и принятые значения
+друида не менялись.
+
+- **Anchored assertion друида** — см. выше. Доказано прогоном: детерминированный
+  сдвиг `_project_dpm` на `+0.01` оставляет repeat-identity зелёной и роняет
+  фикстуру именно на анкере (`68101.15` vs `68101.14`).
+- **Изоляция `PROJECTION_ANCHOR_CURRENT_SHA256`.** Прежний негатив
+  перепривязывал только `current_integration_base.projection_sha256`, поэтому
+  реконструированный digest по-прежнему совпадал с константой, а отказ давала
+  доFAN-1672-проверка «расходится с манифестом»; удаление константы этот негатив
+  не роняло. Новый негатив переводит на сокращённый lineage и манифест, и
+  кандидата: манифест выбрасывает одну принятую дельту и перепривязывает свои
+  счётчики и current sha, кандидат материализует ровно эту сокращённую базу.
+  Все caller-owned сравнения сходятся сами с собой, поэтому единственным
+  источником отказа остаётся immutable runtime-константа. Проверено прогоном:
+  с удалённой константой новый негатив красный, а полный до-FAN-1681 набор
+  негативов остаётся зелёным.
+- **Регрессия на симптом повторного `--mode=full`** — см. выше.
+- **Дубликат projection row (перенесённая AC5 FAN-1649).** Предикат теперь
+  утверждается и на уровне digest-хелпера, и на уровне production-гейта
+  `verify_candidate_projection_against_current_base`: дубликат настоящей
+  `level=20` / `class_constellation` строки и дополнительная уникальная
+  projection pair отклоняются, а дубликат не-projection строки принимается,
+  поэтому mislabeled строка не выдаётся за projection-дефект. Обе ветви
+  фальсифицируемы: снятие duplicate-guard в `_projection_rows` роняет ветвь
+  дубликата, ослабление 51-парной кардинальности роняет ветвь лишней пары, и в
+  обоих прогонах не-projection контроль остаётся зелёным.
+- **Sample-key set подпёрт runtime-константой (отложенный пункт закрыт
+  FAN-1709).** До FAN-1709 `historical_oracle.telemetry_sample_key_count` и
+  `telemetry_sample_keys_sha256` были единственными компараторами
+  projection-гейта, чья ожидаемая сторона целиком принадлежала манифесту:
+  production-путь `--mode=full` оставался закрыт через
+  `TELEMETRY_ANCHOR_FULL_SHA256` (агрегат по строкам `sample_key|digest`), но
+  projection-only вызов гейта принимал кандидата, который мутировал 309-ключевой
+  набор и согласованно перепривязывал оба значения манифеста. Теперь в
+  `tools/a5_balance_report.gd` живёт `TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256`
+  (`715745eb…`, sha256 канонической формы `telemetry_sample_keys_digest`:
+  отсортированные ключи по одному на `\n`-терминированную строку; значение
+  пересчитано независимо из payload f09-fixture и из набора ключей
+  `current_integration_base.telemetry_full.sample_digests`, а не скопировано из
+  манифеста), и `verify_candidate_projection_against_current_base` fail closed
+  требует от манифестных `telemetry_sample_key_count` /
+  `telemetry_sample_keys_sha256` совпадения с `TELEMETRY_ANCHOR_SAMPLE_COUNT`
+  (309) и этой константой до сравнения с кандидатом. Дискриминирующий негатив
+  (`tests/a5_balance_report_parity_test.gd`) повторяет форму изоляции
+  `PROJECTION_ANCHOR_CURRENT_SHA256`: один telemetry sample переименован
+  (кардинальность 309 сохранена, projection-ячейки не тронуты), манифест
+  перепривязывает оба значения согласованно, все caller-owned сравнения сходятся
+  сами с собой — и каждый error отказа обязан цитировать именно
+  `immutable sample-keys anchor`. Доказано прогоном в disposable worktree: с
+  временно удалёнными сравнениями новой константы негатив красный, с ними —
+  зелёный, остальной набор в обоих прогонах зелёный. Tolerance, wildcards,
+  исключённые поля, re-pin семантика и before-write порядок не изменены.
+
+FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
+`--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс
+три representative fixtures, то есть **309 samples в каждой arm**. Обе arm
+создают тот же `Player.tscn`/`Enemy.tscn`, применяют тот же A5/meta state и
+seed, прогреваются ровно 120 и измеряются ровно 360 process frames при
+`--fixed-fps 60`; canonical duration всегда `360 / 60 = 6.0` seconds.
+Authoritative measurement witness подключён к production `weapon_cast_observed`,
+`constellation_final_resolved`, `damage_applied` и `died` в обеих arm, поэтому
+обе используют один applied-HP `ledger_total` numerator и raw fixed duration.
+Наблюдатель под тестом — второй реальный subscriber этих же signals: он
+подключён только в enabled arm, а disabled arm проверяемо имеет ноль его
+subscriptions и callbacks. Гейт требует exact equality witness events/callback
+input, damage, target order, HP ledger/snapshots, frames, duration, RNG,
+feedback/final events и 51×4 projection; любое drift или отсутствие disabled
+baseline — fail-closed. `health_delta` сохраняется исключительно как legacy
+diagnostic projection и не является DPM source ни в одной arm.
+
+`tests/a5_balance_report_observer_neutrality_test.gd` покрывает fail-closed
+fixtures для missing и identical disabled baseline, canonical numerator, off-by-one
+measurement frame count и RNG consumption. Отдельная coherent wrong-window
+фикстура сдвигает `measurement_duration_seconds` ровно на один fixed delta
+(`(360 + 1) / 60` при канонических 360 frames) и согласованно пересобирает
+snapped duration, `ledger/raw` и `legacy HP-delta/raw` DPM-проекции и probe
+duration, оставляя frame count, numerator, RNG probe, manifest identity, delivery
+и events каноничными. Тест утверждает, что диагностика содержит
+`does not preserve the canonical fixed ledger window`, доказывая, что отказ
+исходит именно от инварианта фиксированного окна, а не от случайного
+рассогласования. Дополнительно покрыты duplicate или substituted 309-sample
+manifest и каждая из 51×4 projection cells. Верификатор требует не только count,
+но и exact roster/seed/fixture key для каждой arm. Полная команда выполняется
+только через gate: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=observer_neutrality`.
+
+Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
+сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
+ветки, у которых в runtime отдельные consumers. Условные control, timed absorb,
+one-hit ward и death-save не маскируются под постоянный shield HP.
+
+Class-kit corridor использует один строгий контракт для `solo`, `AoE` и
+`defense`: выбросом считается только значение `<0.80×` или `>1.20×` медианы
+того же level/scenario; ровно `0.80×` и `1.20×` остаются внутри коридора. Флаг
+строки и raw summary получают результат из одного helper, поэтому перечисляют
+все сработавшие оси в стабильном порядке `solo`, `AoE`, `defense`.
+
+Два десятичных знака в class-ratio тексте (`outlier_flag`, `strengths`,
+`weaknesses`) печатает один formatter `Generator.format_class_ratio`, и он
+намеренно не проходит через `printf`. `%.2f` расходится между хостами на ties,
+точно представимых в binary (`1.625` → `1.62` на macOS half-even и `1.63` на
+Windows half-away), а `floor(value * 100.0 + 0.5)` ошибается на куда более
+частых десятичных ties, которые binary хранит чуть ниже границы (`1.015` и
+`1.035` лежат как `1.01499…` и `1.03499…`). Formatter сначала квантует значение
+на micro-сетку одним IEEE-умножением и `round`, и только потом переносит half-up
+в центы, поэтому политика десятичная, а не двоичная, и одинакова на macOS и
+Windows: `1.0149 → 1.01`, `1.015 → 1.02`, `1.035 → 1.04`, `1.625 → 1.63`,
+`0.995 → 1.00`, `-1.015 → -1.02`.
+
+Обновить этот текст в уже запиненном артефакте можно только прогоном
+`--mode=full --presentation-only --source-commit=<supplemental_execution.commit>`:
+он перечитывает anchored `raw.json.gz`, заново рендерит class-ratio текст из уже
+запиненных числовых scores и переписывает raw/report/CSV, не запуская live
+final-execution пробу. Обычный `--mode=full` эту пробу выполняет и меряет
+текущий checkout, поэтому он всегда перебазирует supplemental telemetry, если
+gameplay изменился после пина артефакта, — это отдельная регенерация, а не
+правка форматирования. Fail-closed: `--presentation-only` требует `--mode=full`
+и отказывается работать, если `--source-commit` не равен
+`supplemental_execution.commit` артефакта.
+
+Гейт: `tests/a5_balance_report_integrity_test.gd`. Он динамически проверяет
+полное декартово покрытие ростера, общие 19-точечные билды, расходы и связность
+Atlas 50/59, отсутствие ульты в weapon rows, class-kit строки, полное множество
+attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown,
+включая fail-closed совпадение corridor-флагов и summary по трём осям. Class-ratio
+текст проверяется таблицей hand-computed литералов и независимым decimal-оракулом,
+который не вызывает `format_class_ratio` и не повторяет его арифметику; отдельный
+негативный контроль требует, чтобы в артефакте оставались ties, на которых
+`floor(value * 100.0 + 0.5)` расходится с политикой. Для
+telemetry gate отдельно реконструирует counters из trace и отвергает missing или
+duplicated events, неверную cardinality цели, подмену source/phase, а также
+рассинхронизацию count/damage final-event.
+
+### FAN-1575 — атомарная посадка: relocation + перепин + регенерация
+
+FAN-1575 садит одним кандидатом три изменения, которые не могли приземлиться по
+отдельности (перенос эталона ждал зелёного dev, зелёный dev ждал регенерации,
+регенерация ждала переноса):
+
+- **Relocation (переиспользован diff PR #13, FAN-1682/FAN-1730).** Immutable f09
+  DATASET живёт в `tests/fixtures/a5_f09_oracle.json.gz` (decoded sha256
+  `cd02e0cc…`, 298 956 816 байт); `read_raw_artifact()` по умолчанию читает
+  fixture; lineage-контракт выделен в `tests/a5_balance_report_lineage_test.gd`;
+  integrity-набор отвечает только за текущие регенерируемые артефакты.
+- **Перепин на новую интеграционную базу `fda9971b` (tree `7795fa80`).**
+  Runtime trust root в `tools/a5_balance_report.gd`: `TELEMETRY_ANCHOR_BASE_COMMIT`/
+  `_BASE_TREE` = `fda9971b`/`7795fa80`, `TELEMETRY_ANCHOR_FULL_SHA256` =
+  `c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a`,
+  `PROJECTION_ANCHOR_CURRENT_SHA256` =
+  `a85a35d0430d5d520c2b0643870b762dff9285f00ae0b2b214b3ff96d01ef7cb`; те же
+  значения продублированы внешними константами в parity/lineage тестах и pinned
+  значениями манифеста. Значения воспроизведены byte-identical clean
+  `--mode=full` прогонами на двух gameplay-деревьях (`3f3788fd` и `fda9971b`):
+  детерминизм подтверждён побайтовым сравнением projection cells, всех 309
+  per-sample digest и агрегатов; DPM/telemetry-нейтральность изменений
+  `3f3788fd..fda9971b` (doctor ultimates, player charge routing) доказана
+  прохождением fail-closed гейта без смены цифровых анкеров.
+- **Системный инвентарь вместо трёхклеточного контракта (ruling PM 2026-08-04 по
+  измерению FAN-2126).** Расхождение к f09 системное: 180/204 изменённых ячеек,
+  48/51 пар, все 17 классов. Манифест перечисляет все 180 принятых дельт с
+  `from/to`; причинная атрибуция механическая — gameplay-issue инвентаря, чьи
+  коммиты меняют общие формульные файлы урона/каденции/крита/атрибутов
+  (FAN-1887, FAN-1889, FAN-1985, FAN-1995); `druid/summon_amulet` сохраняет
+  историческую атрибуцию FAN-1585/FAN-1596 и ровно свои принятые значения.
+  Четыре пары полностью стабильны против current base:
+  `dark_mage/cursed_skull`, `ranger/storm_longbow`, `chemist/homunculus_vial`
+  (равны f09 во всех четырёх полях, закреплены `invariant_projection_cells`) и
+  `druid/summon_amulet` (равна f09+принятые дельты). Набор из 309 telemetry
+  sample-key неизменен (digest `715745eb…` равен f09-пину). Никакой tolerance,
+  wildcard или исключённых полей не введено: сравнение остаётся exact `%.2f` по
+  всем 204 ячейкам и exact по полному canonical telemetry payload.
+- **Регенерация под fail-closed гейтом.** Три артефакта
+  `docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`
+  регенерированы `--mode=full` на exact SHA кандидата; FAN-1658/FAN-1672 гейт
+  прошёл до записи, что и доказывает совпадение кандидата с runtime trust root.

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 6,
+  "class_id": "biologist",
+  "profiles": [
+    {
+      "weapon_id": "biologist_spore_lens",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.biologist.biologist_spore_lens",
+        "title_id": "weapon_ultimate.title.biologist.biologist_spore_lens",
+        "mechanic_id": "weapon_ultimate.mechanic.biologist.biologist_spore_lens"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.biologist.biologist_spore_lens",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.biologist.biologist_spore_lens",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.biologist.biologist_spore_lens.acquire",
+        "windup": "weapon_ultimate.phase.biologist.biologist_spore_lens.windup",
+        "execute": "weapon_ultimate.phase.biologist.biologist_spore_lens.execute",
+        "active": "weapon_ultimate.phase.biologist.biologist_spore_lens.active",
+        "recover": "weapon_ultimate.phase.biologist.biologist_spore_lens.recover",
+        "cleanup": "weapon_ultimate.phase.biologist.biologist_spore_lens.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.biologist.biologist_spore_lens",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.biologist.biologist_spore_lens",
+        "animation_id": "weapon_ultimate.animation.biologist.biologist_spore_lens",
+        "vfx_id": "weapon_ultimate.vfx.biologist.biologist_spore_lens",
+        "sfx_id": "weapon_ultimate.sfx.biologist.biologist_spore_lens",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.biologist.biologist_spore_lens",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "biologist_sample_injector",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.biologist.biologist_sample_injector",
+        "title_id": "weapon_ultimate.title.biologist.biologist_sample_injector",
+        "mechanic_id": "weapon_ultimate.mechanic.biologist.biologist_sample_injector"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.biologist.biologist_sample_injector",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.biologist.biologist_sample_injector",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.biologist.biologist_sample_injector.acquire",
+        "windup": "weapon_ultimate.phase.biologist.biologist_sample_injector.windup",
+        "execute": "weapon_ultimate.phase.biologist.biologist_sample_injector.execute",
+        "active": "weapon_ultimate.phase.biologist.biologist_sample_injector.active",
+        "recover": "weapon_ultimate.phase.biologist.biologist_sample_injector.recover",
+        "cleanup": "weapon_ultimate.phase.biologist.biologist_sample_injector.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.biologist.biologist_sample_injector",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.biologist.biologist_sample_injector",
+        "animation_id": "weapon_ultimate.animation.biologist.biologist_sample_injector",
+        "vfx_id": "weapon_ultimate.vfx.biologist.biologist_sample_injector",
+        "sfx_id": "weapon_ultimate.sfx.biologist.biologist_sample_injector",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.biologist.biologist_sample_injector",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "biologist_symbiote_seed",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.biologist.biologist_symbiote_seed",
+        "title_id": "weapon_ultimate.title.biologist.biologist_symbiote_seed",
+        "mechanic_id": "weapon_ultimate.mechanic.biologist.biologist_symbiote_seed"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.biologist.biologist_symbiote_seed",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.biologist.biologist_symbiote_seed",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.acquire",
+        "windup": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.windup",
+        "execute": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.execute",
+        "active": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.active",
+        "recover": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.recover",
+        "cleanup": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.biologist.biologist_symbiote_seed",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.biologist.biologist_symbiote_seed",
+        "animation_id": "weapon_ultimate.animation.biologist.biologist_symbiote_seed",
+        "vfx_id": "weapon_ultimate.vfx.biologist.biologist_symbiote_seed",
+        "sfx_id": "weapon_ultimate.sfx.biologist.biologist_symbiote_seed",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.biologist.biologist_symbiote_seed",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

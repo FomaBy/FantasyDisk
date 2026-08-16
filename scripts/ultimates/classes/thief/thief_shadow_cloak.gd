@@ -1,0 +1,134 @@
+extends Node2D
+
+const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
+
+const PROFILE_ID := "weapon_ultimate.profile.thief.thief_shadow_cloak"
+const EXECUTOR_ID := "weapon_ultimate.executor.thief.thief_shadow_cloak"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/thief/thief_shadow_cloak.tscn"
+const CONTROL_POLICY := {
+	"normal": {"displacement_multiplier": 1.0, "duration_multiplier": 1.0, "allow_movement_lock": false, "allow_execute": true},
+	"epic": {"displacement_multiplier": 0.25, "duration_multiplier": 0.5, "allow_movement_lock": false, "allow_execute": true},
+	"boss": {"displacement_multiplier": 0.0, "duration_multiplier": 0.25, "allow_movement_lock": false, "allow_execute": false},
+}
+
+var ultimate_damage_sink: Callable = Callable()
+var strike_count_for_tests := 0
+var finish_line_for_tests := false
+
+var _activation = null
+var _marks: Array = []
+var _strike_claims := {}
+var _leases: Array[Dictionary] = []
+
+
+static func parameter_contract() -> Dictionary:
+	return {
+		"radius": {"type": "number", "minimum": 0.01},
+		"mark_limit": {"type": "integer", "minimum": 1, "maximum": 8},
+		"strike_interval": {"type": "number", "minimum": 0.01},
+		"mark_duration": {"type": "number", "minimum": 0.01},
+		"stab_damage": {"type": "number", "minimum": 0.0},
+		"escalation": {"type": "number", "minimum": 0.0},
+	}
+
+
+static func execute(activation) -> float:
+	activation.set_primitive_state({"source": activation.origin()})
+	if not Library.execute_primitive("control_resistance_policy", activation, CONTROL_POLICY):
+		return 0.0
+	if not Library.execute_primitive("priority_target_selector", activation, {
+		"center": "source",
+		"radius": activation.param_float("radius", 520.0),
+		"limit": activation.param_int("mark_limit", 8),
+		"priority": "highest_hp",
+		"hint": {},
+	}):
+		return 0.0
+	var marks = activation.primitive_value("targets", [])
+	if not marks is Array or marks.is_empty():
+		return 0.0
+	var effect = activation.spawn(EFFECT_SCENE)
+	if effect == null or not effect.has_method("configure"):
+		return 0.0
+	effect.call("configure", activation, marks as Array)
+	var tween: Tween = activation.track_tween()
+	if tween == null:
+		return 0.0
+	var interval: float = activation.param_float("strike_interval", 0.16)
+	for index in activation.param_int("mark_limit", 8):
+		tween.tween_callback(Callable(effect, "stab").bind(index))
+		tween.tween_interval(interval)
+	tween.tween_callback(Callable(effect, "finish_line"))
+	return float(activation.param_int("mark_limit", 8)) * interval
+
+
+func configure(activation, marks: Array) -> void:
+	_activation = activation
+	_marks = marks.duplicate()
+	global_position = activation.origin()
+	for raw_target in _marks:
+		var target := raw_target as Node2D
+		if target == null or not is_instance_valid(target):
+			continue
+		var status_id := "thief_ultimate_shadow_%d_%d" % [get_instance_id(), target.get_instance_id()]
+		var result: Dictionary = _activation.apply_control(target, Vector2.ZERO, status_id, {
+			"duration": _activation.param_float("mark_duration", 2.1),
+			"speed_multiplier": 1.0,
+			"death_mark": true,
+		})
+		if bool(result.get("status_applied", false)):
+			_leases.append({"target": target, "status_id": status_id})
+
+
+func stab(index: int) -> void:
+	if _activation == null or _activation.is_finished() or _strike_claims.has(index) or _marks.is_empty():
+		return
+	_strike_claims[index] = true
+	var target := _marks[index] as Node if index < _marks.size() else _marks[0] as Node
+	if target == null or not is_instance_valid(target):
+		return
+	strike_count_for_tests += 1
+	var amount: float = _activation.scaled_damage("stab_damage", 0.0) \
+		* (1.0 + _activation.param_float("escalation", 0.12) * float(index))
+	_deal(target, amount, "shadow_stab:%d" % index, {
+		"ultimate_mechanic": "shadow_backstab", "strike_index": index,
+	})
+
+
+func finish_line() -> void:
+	if finish_line_for_tests:
+		return
+	finish_line_for_tests = true
+	if _activation != null:
+		_activation.present("shadow_finish", {"shape": "beam", "from": global_position, "to": global_position})
+
+
+func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
+	if not ultimate_damage_sink.is_valid():
+		return null
+	return ultimate_damage_sink.call(target, amount, feedback, event_id, false)
+
+
+func _exit_tree() -> void:
+	for lease in _leases:
+		_remove_lease(lease)
+	_leases.clear()
+	_marks.clear()
+	_strike_claims.clear()
+	_activation = null
+
+
+func _remove_lease(lease: Dictionary) -> void:
+	var target := lease.get("target") as Node
+	if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
+		return
+	var statuses = target.get_meta(StatusEffects.META_KEY)
+	if not statuses is Dictionary:
+		return
+	var owned := (statuses as Dictionary).duplicate(true)
+	owned.erase(str(lease.get("status_id", "")))
+	if owned.is_empty():
+		target.remove_meta(StatusEffects.META_KEY)
+	else:
+		target.set_meta(StatusEffects.META_KEY, owned)

@@ -34,6 +34,8 @@ const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
 const CROWD_CLEAR_CORRIDOR := BalanceData.CROWD_CLEAR_CORRIDOR
 const CROWD_CLEAR_SOLO_CORRIDOR := BalanceData.CROWD_CLEAR_SOLO_CORRIDOR
 const BOSS_HAZARD_MAX_HP_FRACTION := BalanceData.BOSS_HAZARD_MAX_HP_FRACTION  # FAN-1031 S2: кап зон/сламов босса долей max HP
+# Compatibility re-exports; BalanceData is the single live owner of these
+# defensive ceiling and diminishing-curve declarations.
 const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
@@ -44,11 +46,12 @@ const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLA
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
 const VAMPIRIC_CHANCE_CAP := BalanceData.VAMPIRIC_CHANCE_CAP
 const VAMPIRIC_DAMAGE_HEAL_RATIO := BalanceData.VAMPIRIC_DAMAGE_HEAL_RATIO
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := BalanceData.VAMPIRIC_BASE_HEAL_MULTIPLIER
 const VAMPIRIC_HEAL_CAP_DEFAULT := BalanceData.VAMPIRIC_HEAL_CAP_DEFAULT
 const VAMPIRIC_HEAL_CAP_HARD := BalanceData.VAMPIRIC_HEAL_CAP_HARD
 const WEAPON_DRAIN_HEAL_MULTIPLIER := BalanceData.WEAPON_DRAIN_HEAL_MULTIPLIER
 const CRIT_CHANCE_CAP := BalanceData.CRIT_CHANCE_CAP
+const CRIT_CHANCE_CAP_MAX := BalanceData.CRIT_CHANCE_CAP_MAX
+const CRIT_CHANCE_CAP_AGILITY_SCALE := BalanceData.CRIT_CHANCE_CAP_AGILITY_SCALE
 const CRIT_CHANCE_DIMINISH := BalanceData.CRIT_CHANCE_DIMINISH
 const CRIT_FLAT_EFFECTIVENESS := BalanceData.CRIT_FLAT_EFFECTIVENESS
 const CRIT_DAMAGE_BASE_MULTIPLIER := BalanceData.CRIT_DAMAGE_BASE_MULTIPLIER
@@ -69,6 +72,12 @@ const XP_CURVE_FLAT := BalanceData.XP_CURVE_FLAT
 const DROP_CLASS_MULTIPLIERS := BalanceData.DROP_CLASS_MULTIPLIERS
 const COST_BY_TIER := BalanceData.COST_BY_TIER
 const TIER_WEIGHTS := BalanceData.TIER_WEIGHTS
+
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")  # FAN-2287: защита/уворот/поглощение/реген/вампиризм вынесены под line-ratchet, точки ниже — делегаторы
+
+# FAN-1891: снятые прогрессионные оси и геометрический контракт вынесены в
+# ModifiersData (FAN-2171, line-ratchet этого файла).
+const ModifiersData := preload("res://scripts/progression_data_modifiers.gd")
 
 const WeaponsData := preload("res://scripts/progression_data_weapons.gd")
 const BERSERK_WEAPONS := WeaponsData.BERSERK_WEAPONS
@@ -287,12 +296,44 @@ static func is_blocked_sustain_mod_key(key: String) -> bool:
 	return DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(key)
 
 
+# FAN-1887: data-driven summon/deploy capability класса — строго из конфигов его
+# оружий (max_summons / summon_role / summon_damage_multiplier / deploy_role),
+# а не из текстовых «эхо»-интерпретаций. Сейчас это гитарист/химик/друид/инженер;
+# множество проверяется тестом, а не поддерживается вручную.
+static func class_summon_capable(character_id: String) -> bool:
+	for weapon_id_value in weapon_ids(character_id):
+		var config := weapon(character_id, str(weapon_id_value))
+		if weapon_archetype(config) == "summon" or str(config.get("deploy_role", "")) != "":
+			return true
+	return false
+
+
+# FAN-1887: consumability-гейт редких базовых характеристик. Лидерство без
+# настоящего summon/deploy-потребителя не предлагается (level-up rare слот,
+# Attribute Shop, stat-пулы наград); остальные 8-стат оси универсальны.
+static func is_base_stat_consumable(stat_id: String, character_id: String) -> bool:
+	if character_id == "":
+		return true
+	if stat_id == "leadership":
+		return class_summon_capable(character_id)
+	return true
+
+
 static func is_reward_relevant(reward: Dictionary, character_id: String, ascension_level := 0, cross_class_ids: Array = []) -> bool:
 	# SCRUM-900: trait-гейт вместо хардкода класса; явная пометка doctor_friendly
 	# пропускает предмет в пул (и Player применит его моды штатно).
 	if class_blocks_generic_sustain(character_id) and not bool(reward.get("doctor_friendly", false)) \
 			and _is_doctor_forbidden_sustain_reward(reward):
 		return false
+	# FAN-1887: summon-награды (attr/зависимость summon_amount) и чисто
+	# лидерские stat-награды доступны только фактически summon-способным классам.
+	if character_id != "":
+		var dependency := reward_attribute_dependency(reward)
+		if dependency == "summon_amount" and not class_summon_capable(character_id):
+			return false
+		var reward_stats: Dictionary = reward.get("stats", {}) as Dictionary
+		if reward_stats.size() == 1 and not is_base_stat_consumable(str(reward_stats.keys()[0]), character_id):
+			return false
 	# SCRUM-961 (artifact_system_matrix §1.4): классовые артефакты заперты гейтом
 	# «свой класс И мета-Возвышение >= requires_ascension». Пустой class_affinity =
 	# универсал (гейта нет). cross_class_ids — run-исключение «Украденного герба»
@@ -315,8 +356,8 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 			return "Для этого класса работает как частота вспомогательных эхо-эффектов и поддержки."
 		"intelligence", "magic_damage":
 			return "Для этого класса работает как зачарование оружия или магический splash."
-		"aura_radius":
-			return "Для этого класса работает как аура присутствия и ближний контроль пространства."
+		"aoe_radius":
+			return "Для этого класса работает как объявленная область удара, ауры и ближний контроль пространства."
 		"knowledge", "dot_damage", "dot_speed":
 			return "Для этого класса добавляет малый bleed/burn/poison след к ударам."
 		"energy", "ultimate_multiplier":
@@ -439,21 +480,20 @@ static func leading_base_stats(character_id: String, count := 3) -> Array:
 	return rows.slice(0, limit)
 
 
-# Internal matrix key `optional` remains stable for reward weighting. The Hero
-# Select projection exposes the requested player-facing category `weak` and
-# covers the registry in canonical order without caps, abbreviations or overlap.
+# FAN-1887: Hero Select показывает только то, что герой реально может получить
+# (primary/secondary в каноническом порядке реестра). Optional-оси (нет настоящего
+# потребителя) исключены из выдачи и не отображаются — рейла «Слабые атрибуты»
+# больше нет, исключения не подаются как выбор.
 static func hero_attribute_relevance_groups(character_id: String) -> Dictionary:
-	var groups := {"primary": [], "secondary": [], "weak": []}
+	var groups := {"primary": [], "secondary": []}
 	for entry_value in ATTRIBUTE_REGISTRY:
 		var entry := entry_value as Dictionary
 		var attr_id := str(entry.get("id", ""))
 		if attr_id.is_empty():
 			continue
 		var category := attribute_relevance(attr_id, character_id)
-		if category == "optional":
-			category = "weak"
 		if not groups.has(category):
-			category = "weak"
+			continue
 		(groups[category] as Array).append({
 			"id": attr_id,
 			"name": str(entry.get("name", attr_id)),
@@ -500,6 +540,8 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 	var mods: Dictionary = reward.get("mods", {})
 	for key in mods.keys():
 		match str(key):
+			"damage_flat":
+				return "damage_flat"
 			"damage_multiplier":
 				return "damage"
 			"attack_speed_multiplier":
@@ -508,11 +550,9 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "max_health"
 			"move_speed_multiplier":
 				return "move_speed"
-			# FAN-1034: aoe_radius — единая ось геометрии (сектор/радиус/аура).
-			"sector_multiplier", "aoe_radius_multiplier", "aura_radius_flat":
+			# FAN-1891: единая ось геометрии (сектор/радиус/аура).
+			"aoe_radius_multiplier":
 				return "aoe_radius"
-			"magic_damage_multiplier":
-				return "magic_focus"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
@@ -523,19 +563,14 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "crit_damage"
 			"dodge_flat":
 				return "dodge"
-			"range_multiplier":
-				return "range"
 			# FAN-1034: темп тиков слит в ось dot_damage. projectile_speed/knockback
 			# больше не level-up атрибуты: их источники (артефакты) взвешиваются
-			# нейтрально через пустую зависимость.
-			"dot_damage_flat", "dot_speed_flat":
+			# нейтрально через пустую зависимость. FAN-1887: то же для снятых с
+			# player-facing реестра снятых ключей.
+			"dot_damage_flat":
 				return "dot_damage"
-			"buff_power_flat":
-				return "buff_power"
 			"summon_bonus":
 				return "summon_amount"
-			"absorb_flat":
-				return "absorb"
 			"regeneration_flat":
 				return "regeneration"
 			"vampiric_amount_flat", "vampiric_chance_flat":
@@ -567,10 +602,10 @@ static func reward_is_optional(reward: Dictionary, character_id: String) -> bool
 
 
 # FAN-1031 S4 (random-floor): урон-оси level-up наград. Карта релевантна УРОНУ класса, если
-# несёт одну из этих осей И ось для класса НЕ optional (matrix primary/secondary). Физ-урон
-# «damage» мёртв у маг-классов и наоборот — ATTRIBUTE_RELEVANCE это уже кодирует (для мага
-# «damage» → optional), поэтому проверки relevance достаточно, дубль-карты класса не нужны.
-const DAMAGE_RELEVANT_ATTRS := ["damage", "magic_focus", "attack_speed", "crit_chance", "crit_damage", "dot_damage"]
+# несёт одну из этих осей И ось для класса НЕ optional (matrix primary/secondary).
+# FAN-1887: magic_focus снят с реестра — оба урон-канала кроют универсальные
+# damage_flat («Добавление урона») и damage («Увеличение урона»).
+const DAMAGE_RELEVANT_ATTRS := ["damage_flat", "damage", "attack_speed", "crit_chance", "crit_damage", "dot_damage"]
 
 
 static func reward_is_damage_relevant(reward: Dictionary, character_id: String) -> bool:
@@ -607,74 +642,8 @@ static func weighted_level_up_index(pool: Array, character_id: String, rng: Rand
 	return pool.size() - 1
 
 
-# SCRUM-695: ЕДИНАЯ (тестируемая) выборка level-up-наград с правилом релевантности:
-# не более 1 optional-атрибута на показ и минимум 1 primary/secondary (или основная
-# характеристика). prefill — уже выбранные награды (например capstone «Озарение»);
-# они учитываются в балансе optional/non-optional. Пулы не мутируются (работаем на копиях).
-# FAN-1031 S4 (random-floor, план §2.1-S4): КАЖДЫЙ показ гарантирует ≥1 карту, релевантную
-# УРОНУ класса (reward_is_damage_relevant). Без этого слабые/дно-классы вынуждены в некоторых
-# оферах брать не-урон (защита/утилита), и их random-билд-пол проседает (worst-класс v8 0.86).
-# Форс — только на ПОСЛЕДНЕМ слоте и только если в regular-пуле реально есть damage-карта класса
-# (иначе грациозно пропускаем). damage-релевантная карта non-optional по построению, поэтому
-# гарантия УСИЛИВАЕТ инвариант «≥1 non-optional», не нарушая «≤1 optional».
-static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, count: int, character_id: String, rng: RandomNumberGenerator, rare_slot_chance := 0.05, prefill := []) -> Array:
-	var rewards: Array = prefill.duplicate()
-	var reg: Array = regular_pool.duplicate()
-	var stat: Array = stat_pool.duplicate()
-	var optional_count := 0
-	var non_optional_count := 0
-	var damage_count := 0
-	for reward in rewards:
-		if reward_is_optional(reward, character_id):
-			optional_count += 1
-		else:
-			non_optional_count += 1
-		if reward_is_damage_relevant(reward, character_id):
-			damage_count += 1
-	while rewards.size() < count and (not reg.is_empty() or not stat.is_empty()):
-		var slots_left: int = count - rewards.size()
-		# FAN-1031 S4: на последнем слоте, если урон-карты ещё нет и в regular-пуле она есть —
-		# закрываем этот слот именно ей (не отдаём рарному стат-слоту, не фильтруем в не-урон).
-		var must_secure_damage: bool = damage_count == 0 and slots_left <= 1 and _reg_has_damage_relevant(reg, character_id)
-		var want_rare: bool = not stat.is_empty() and rng.randf() < rare_slot_chance
-		if (want_rare or reg.is_empty()) and not must_secure_damage:
-			var s_index: int = weighted_level_up_index(stat, character_id, rng)
-			rewards.append(stat[s_index])
-			stat.remove_at(s_index)
-			non_optional_count += 1
-			continue
-		var allow_optional: bool = optional_count < 1
-		var need_non_optional: bool = non_optional_count == 0 and slots_left <= 1
-		var candidates: Array = []
-		for reward in reg:
-			if must_secure_damage and not reward_is_damage_relevant(reward, character_id):
-				continue
-			var rel: String = attribute_relevance(str(reward.get("attr", "")), character_id)
-			if rel == "optional" and (not allow_optional or need_non_optional):
-				continue
-			candidates.append(reward)
-		if candidates.is_empty():
-			candidates = reg
-		var picked: Dictionary = candidates[weighted_level_up_index(candidates, character_id, rng)]
-		reg.erase(picked)
-		rewards.append(picked)
-		if reward_is_optional(picked, character_id):
-			optional_count += 1
-		else:
-			non_optional_count += 1
-		if reward_is_damage_relevant(picked, character_id):
-			damage_count += 1
-	return rewards
-
-
 static func ultimate_config(character_id: String) -> Dictionary:
 	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
-
-
-static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> float:
-	var raw := maxf(raw_value, 0.0)
-	var softened := raw / (1.0 + raw * curve)
-	return clampf(softened, 0.0, cap)
 
 
 # SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
@@ -719,27 +688,27 @@ static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float)
 
 
 static func effective_defense(raw_defense: float) -> float:
-	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_defense(raw_defense)
 
 
 static func effective_dodge(raw_dodge: float) -> float:
-	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_CAP, SURVIVABILITY_DODGE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_dodge(raw_dodge)
+
+
+static func raw_defense_for_effective(effective_defense_value: float) -> float:
+	return DefensiveAttributeRuntime.raw_defense_for_effective(effective_defense_value)
+
+
+static func raw_dodge_for_effective(effective_dodge_value: float) -> float:
+	return DefensiveAttributeRuntime.raw_dodge_for_effective(effective_dodge_value)
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	var base_absorb := maxf(endurance, 0.0) * 0.145  # SCRUM-526: 0.16→0.145, поджать базовый absorb стойкости (танк остаётся крепче fragile)
-	var positive_flat := maxf(flat_absorb, 0.0)
-	var negative_flat := minf(flat_absorb, 0.0)
-	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
-	return maxf(0.0, base_absorb + softened_flat + negative_flat)
+	return DefensiveAttributeRuntime.effective_absorb(endurance, flat_absorb)
 
 
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
-	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
-	var negative_flat := minf(flat_regeneration, 0.0)
-	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
-	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
-	return regen_base * knowledge_scale
+	return DefensiveAttributeRuntime.effective_regeneration(knowledge, flat_regeneration)
 
 
 # SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
@@ -752,11 +721,15 @@ static func _class_gated_regeneration(character_id: String, knowledge: float, fl
 
 
 static func effective_vampiric_chance(raw_chance: float) -> float:
-	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
+	return DefensiveAttributeRuntime.effective_vampiric_chance(raw_chance)
+
+
+static func effective_vampiric_amount(knowledge: float, flat_amount: float) -> float:
+	return DefensiveAttributeRuntime.effective_vampiric_amount(knowledge, flat_amount)
 
 
 static func effective_vampiric_cap(raw_cap: float) -> float:
-	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
+	return DefensiveAttributeRuntime.effective_vampiric_cap(raw_cap)
 
 
 # SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»
@@ -768,11 +741,17 @@ static func effective_crit_chance(raw_chance: float, cap := CRIT_CHANCE_CAP, dim
 	return clampf(softened, 0.0, clampf(cap, 0.0, 1.0))
 
 
+static func ordinary_crit_chance_cap(agility: float) -> float:
+	return clampf(CRIT_CHANCE_CAP + maxf(agility, 0.0) * CRIT_CHANCE_CAP_AGILITY_SCALE, CRIT_CHANCE_CAP, CRIT_CHANCE_CAP_MAX)
+
+
 static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
 	var positive_flat := maxf(flat_bonus, 0.0) * CRIT_DAMAGE_FLAT_EFFECTIVENESS
 	var negative_flat := minf(flat_bonus, 0.0)
-	var multiplier := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
-	return clampf(multiplier, 1.0, CRIT_DAMAGE_CAP)
+	var raw := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
+	if raw <= CRIT_DAMAGE_CAP:
+		return maxf(raw, 1.0)
+	return CRIT_DAMAGE_CAP + sqrt(raw - CRIT_DAMAGE_CAP)
 
 
 # SCRUM-524: архетип-множитель урона удалён. Он зависел от ВСЕХ атрибутов и
@@ -903,8 +882,8 @@ static func class_action_echo_chance(character_id: String) -> float:
 # Data-driven: молитва входит в пул, только если её trait-ключ задан у класса в
 # CLASS_TRAITS (у классов без battle_prayer-ключей пул пуст — утечки нет).
 # Записи: {id, title, description, trait_key, value} — русский player-facing
-# текст для UI SCRUM-926 и численный эффект. Порядок пула = порядок UI;
-# первая запись — временный автовыбор (Player._auto_select_battle_prayer).
+# текст для обязательного UI SCRUM-926 и численный эффект. Порядок пула =
+# порядок UI.
 static func class_battle_prayers(character_id: String) -> Array:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var pool: Array = []
@@ -920,30 +899,31 @@ static func class_battle_prayers(character_id: String) -> Array:
 
 
 # SCRUM-894 «Хладнокровие»: крит-профиль класса из CLASS_TRAITS. Без trait-записи —
-# глобальные константы (кап 55%, diminish 0.45, без overflow). Ассасин: кап 1.0,
+# обычный Agility-cap 55→75%, diminish 0.45, без overflow. Ассасин: кап 1.0,
 # diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток
-# raw-шанса сверх капа переливается в crit_damage_flat (итог по-прежнему зажат
-# CRIT_DAMAGE_CAP в effective_crit_damage_multiplier — runaway невозможен).
-static func class_crit_profile(character_id: String) -> Dictionary:
+# raw-шанса сверх капа переливается в crit_damage_flat. Выше raw 2.75 сила крита
+# продолжает расти через убывающий sqrt-tail без верхнего потолка.
+static func class_crit_profile(character_id: String, ordinary_cap := CRIT_CHANCE_CAP) -> Dictionary:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	return {
-		"cap": clampf(float(trait_config.get("crit_chance_cap", CRIT_CHANCE_CAP)), 0.0, 1.0),
+		"cap": clampf(float(trait_config.get("crit_chance_cap", ordinary_cap)), 0.0, 1.0),
 		"diminish": maxf(float(trait_config.get("crit_chance_diminish", CRIT_CHANCE_DIMINISH)), 0.0),
 		"overflow": clampf(float(trait_config.get("crit_overflow_to_crit_damage", 0.0)), 0.0, 1.0),
 	}
 
 
 # SCRUM-894 «Теневая завеса»: величина бонуса уворота самоцентричной ауры класса
-# (у классов без veil-записи — 0). Масштаб от buff_power, жёсткий кап
+# (у классов без veil-записи — 0). Масштаб от support_multiplier, жёсткий кап
 # veil_dodge_cap; применяется Player.current_dodge_chance ТОЛЬКО при враге внутри
-# derived aura_radius; суммарный уворот всё равно ≤ SURVIVABILITY_DODGE_CAP.
-static func class_veil_dodge_bonus(character_id: String, buff_power: float) -> float:
+# derived aura_radius; суммарный уворот остаётся строго ниже
+# SURVIVABILITY_DODGE_CAP.
+static func class_veil_dodge_bonus(character_id: String, support_multiplier: float) -> float:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var base := float(trait_config.get("veil_dodge_bonus", 0.0))
 	if base <= 0.0:
 		return 0.0
 	var cap := maxf(float(trait_config.get("veil_dodge_cap", 0.18)), 0.0)
-	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
+	return clampf(base * maxf(support_multiplier, 0.0), 0.0, cap)
 
 
 # SCRUM-1005 «Разбор образцов»: множитель ПРЯМОГО урона по целям под собственным
@@ -953,26 +933,26 @@ static func class_infected_direct_multiplier(character_id: String) -> float:
 
 
 # SCRUM-902 «Аура дикой силы»: величина постоянного аура-баффа урона класса
-# (у классов без wild_aura-записи — 0). Масштаб от buff_power, жёсткий кап
+# (у классов без wild_aura-записи — 0). Масштаб от support_multiplier, жёсткий кап
 # wild_aura_damage_cap. ЕДИНАЯ точка чтения для рантайма
 # (Player.wild_aura_damage_multiplier + статус "wild_force_aura" призывам) и
 # budget-модели (class_wild_aura_damage_factor в estimate_weapon_budget_for_stats):
 # live-бой и формульный гейт видят один и тот же бафф.
-static func class_wild_aura_damage_bonus(character_id: String, buff_power: float) -> float:
+static func class_wild_aura_damage_bonus(character_id: String, support_multiplier: float) -> float:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var base := float(trait_config.get("wild_aura_damage_bonus", 0.0))
 	if base <= 0.0:
 		return 0.0
 	var cap := maxf(float(trait_config.get("wild_aura_damage_cap", 0.30)), 0.0)
-	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
+	return clampf(base * maxf(support_multiplier, 0.0), 0.0, cap)
 
 
 # Бюджет-фактор ауры: аура постоянна и баффает И владельца, И призывы — фактор
 # применяется ко ВСЕМ каналам выхода кита (budget_tuning_for компенсирует урон,
 # как у action_echo Солдата) — кит остаётся в общем коридоре, а инвестиции в
-# buff_power/aura_radius сверх базы остаются живой наградой в забеге.
+# support_multiplier/area сверх базы остаются живой наградой в забеге.
 static func class_wild_aura_damage_factor(character_id: String, params: Dictionary) -> float:
-	return 1.0 + class_wild_aura_damage_bonus(character_id, float(params.get("buff_power", 1.0)))
+	return 1.0 + class_wild_aura_damage_bonus(character_id, float(params.get("support_multiplier", 1.0)))
 
 
 # SCRUM-1004 «Ярость»: средне-ожидаемая доля НЕДОСТАЮЩЕГО здоровья Берсерка за
@@ -1161,13 +1141,13 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 	return estimate_weapon_budget_for_stats(character_id, weapon_config, base_stats(character_id), apply_budget)
 
 
-static func estimate_weapon_budget_for_stats(character_id: String, weapon_config: Dictionary, stats: Dictionary, apply_budget := true) -> Dictionary:
+static func estimate_weapon_budget_for_stats(character_id: String, weapon_config: Dictionary, stats: Dictionary, apply_budget := true, run_modifiers := {}, include_ultimate := true) -> Dictionary:
 	var config := weapon_config.duplicate(true)
 	config["character_id"] = character_id
 	if not apply_budget:
 		config.erase("budget_damage_multiplier")
 		config.erase("budget_tuning")
-	var params := derived_parameters(stats, {}, config)
+	var params := derived_parameters(stats, run_modifiers, config)
 	var damage_parameter := str(config.get("damage_parameter", damage_parameter_for(character_id)))
 	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
 	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
@@ -1250,9 +1230,10 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var rage_factor := class_rage_expected_damage_factor(character_id)
 	solo_dps *= rage_factor
 	aoe_dps *= rage_factor
-	var ultimate := _budget_ultimate_dps(character_id, params)
-	solo_dps += float(ultimate.get("solo", 0.0))
-	aoe_dps += float(ultimate.get("aoe", 0.0))
+	if include_ultimate:
+		var ultimate := _budget_ultimate_dps(character_id, params)
+		solo_dps += float(ultimate.get("solo", 0.0))
+		aoe_dps += float(ultimate.get("aoe", 0.0))
 	if apply_budget:
 		solo_dps *= float(config.get("budget_solo_multiplier", 1.0))
 		aoe_dps *= float(config.get("budget_aoe_multiplier", 1.0))
@@ -1270,10 +1251,10 @@ static func estimate_crowd_clear_budget(character_id: String, weapon_config: Dic
 	return estimate_crowd_clear_budget_for_stats(character_id, weapon_config, target_count, base_stats(character_id), apply_budget)
 
 
-static func estimate_crowd_clear_budget_for_stats(character_id: String, weapon_config: Dictionary, target_count: int, stats: Dictionary, apply_budget := true) -> Dictionary:
+static func estimate_crowd_clear_budget_for_stats(character_id: String, weapon_config: Dictionary, target_count: int, stats: Dictionary, apply_budget := true, run_modifiers := {}, include_ultimate := true) -> Dictionary:
 	var count: int = maxi(target_count, 1)
 	var profile := class_budget_profile(character_id)
-	var metrics := estimate_weapon_budget_for_stats(character_id, weapon_config, stats, apply_budget)
+	var metrics := estimate_weapon_budget_for_stats(character_id, weapon_config, stats, apply_budget, run_modifiers, include_ultimate)
 	var tuning: Dictionary = weapon_config.get("budget_tuning", {})
 	var aoe_target := float(tuning.get(
 		"aoe_target",
@@ -2052,7 +2033,16 @@ static func weapon(character_id: String, weapon_id: String) -> Dictionary:
 	config["budget_solo_multiplier"] = float(tuning.get("solo_budget_multiplier", 1.0))
 	config["budget_aoe_multiplier"] = float(tuning.get("aoe_budget_multiplier", 1.0))
 	config["budget_tuning"] = tuning
+	config["geometry_capabilities"] = ModifiersData.geometry_capabilities(character_id, config)
 	return config
+
+
+static func is_removed_progression_modifier(key: String) -> bool:
+	return ModifiersData.is_removed_progression_modifier(key)
+
+
+static func sanitize_run_modifiers(modifiers: Dictionary) -> Dictionary:
+	return ModifiersData.sanitize_run_modifiers(modifiers)
 
 
 static func _class_stat_growth_scalar(character_id: String, stat_id: String) -> float:
@@ -2159,22 +2149,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var flurry_tempo_active := clampf(float(run_modifiers.get("flurry_tempo_active", 0.0)), 0.0, 1.0)
 	move_speed_multiplier *= 1.0 + clampf(float(run_modifiers.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.25) * flurry_tempo_active
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
-	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
-	var sector_multiplier := float(run_modifiers.get("sector_multiplier", 1.0)) * float(passive_mods.get("sector_multiplier", 1.0))
 	var knockback_multiplier := float(run_modifiers.get("knockback_multiplier", 1.0)) * float(passive_mods.get("knockback_multiplier", 1.0))
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
 	var absorb_flat := float(run_modifiers.get("absorb_flat", 0.0)) + float(passive_mods.get("absorb_flat", 0.0))
 	var regeneration_flat := float(run_modifiers.get("regeneration_flat", 0.0)) + float(passive_mods.get("regeneration_flat", 0.0))
 	var pickup_radius_flat := float(run_modifiers.get("pickup_radius_flat", 0.0)) + float(passive_mods.get("pickup_radius_flat", 0.0))
 	var max_health_flat := float(run_modifiers.get("max_health_flat", 0.0)) + float(passive_mods.get("max_health_flat", 0.0))
-	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
-	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
-	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
-	var run_dot_damage_flat := minf(maxf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0), 12.0) + minf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0)
-	var run_dot_speed_flat := minf(maxf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0), 1.0) + minf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0)
+	var run_dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0))
 	var dot_damage_flat := run_dot_damage_flat + float(passive_mods.get("dot_damage_flat", 0.0))
-	var dot_speed_flat := run_dot_speed_flat + float(passive_mods.get("dot_speed_flat", 0.0))
 	# SCRUM-834a: условный keystone «рывок → крит-шанс» (thief «Из тени»). Гейт
 	# rush_window_active ставит player._trigger_rush_window; 0 вне окна. Проходит
 	# ту же CRIT_FLAT_EFFECTIVENESS, что и базовый крит-шанс (тождество весов).
@@ -2185,8 +2168,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# SCRUM-894 «Хладнокровие»: per-class крит-профиль (кап/diminish из
 	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
 	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
-	# с trait-ключом; итоговый крит-урон всё равно зажат CRIT_DAMAGE_CAP).
-	var crit_profile := class_crit_profile(character_id)
+	# с trait-ключом; выше raw 2.75 итог идёт в убывающий sqrt-tail без потолка).
+	var crit_profile := class_crit_profile(character_id, ordinary_crit_chance_cap(agility))
 	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
 	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))
 	if crit_overflow_ratio > 0.0:
@@ -2210,51 +2193,63 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 			magic_intelligence = base_intelligence + intelligence_delta * magic_bonus_effectiveness
 	var magic_base := 14.0 * magic_intelligence / 10.0
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
+	var attack_speed := maxf(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier)
+	var base_attack_stat := universal_attack_stat
+	if not base_for_growth.is_empty():
+		base_attack_stat = float(base_for_growth.get("agility", agility)) + float(base_for_growth.get("energy", energy)) * 0.18 + float(base_for_growth.get("perception", perception)) * 0.10 + float(base_for_growth.get("endurance", endurance)) * 0.04
+	var base_attack_speed := maxf(9.0 * 3.0 * base_attack_stat / 100.0, 0.1)
+	var attack_cadence_multiplier := maxf(attack_speed / base_attack_speed, 0.1)
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
-	var range_perception := perception
-	var range_intelligence := intelligence
-	var range_endurance := endurance
-	var range_leadership := leadership
+	var base_dot_speed := maxf(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010)
 	var radius_perception := perception
 	var radius_intelligence := intelligence
 	var radius_knowledge := knowledge
 	var radius_leadership := leadership
 	if bool(weapon_config.get("geometry_stat_growth_from_delta", false)) and not base_for_growth.is_empty():
-		range_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
-		range_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
-		range_endurance = maxf(0.0, endurance - float(base_for_growth.get("endurance", 0.0)))
-		range_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
 		radius_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
 		radius_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
 		radius_knowledge = maxf(0.0, knowledge - float(base_for_growth.get("knowledge", 0.0)))
 		radius_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
-	var range_intelligence_weight := float(weapon_config.get("attack_range_intelligence_weight", 0.35))
 	var aoe_intelligence_weight := float(weapon_config.get("aoe_radius_intelligence_weight", 0.45))
-	var attack_range_multiplier := range_multiplier
-	if bool(weapon_config.get("range_scales_with_aoe_radius", false)):
-		attack_range_multiplier *= aoe_radius_multiplier
+	var base_area := maxf(float(weapon_config.get("aoe_radius", 190.0)), 1.0)
+	var attack_area_multiplier := (base_area + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier / base_area
+	var aura_radius := base_area * attack_area_multiplier
+	# Support effects derive at one aggregation point. Druid's existing summon
+	# support inputs live here too, so Player and summons cannot scale them twice.
+	var support_multiplier := maxf(run_damage_multiplier, 0.0)
+	if character_id == "druid":
+		support_multiplier = 1.0 + leadership * 0.025 + float(stats.get("knowledge", 0.0)) * 0.006 + float(stats.get("energy", 0.0)) * 0.004
+		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
+		# множитель области применяется ровно один раз — как и у остальной геометрии.
+		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
+	var raw_dodge := 0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active
+	var raw_defense := 0.04 + endurance * 0.018 + defense_flat
 
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
 		"magic_damage": (magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
-		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
+		"attack_speed": attack_speed,
+		"attack_cadence_multiplier": attack_cadence_multiplier,
 		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active),
-		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
+		"raw_dodge": raw_dodge,
+		"dodge": effective_dodge(raw_dodge),
+		"raw_defense": raw_defense,
+		"defense": effective_defense(raw_defense),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
-		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + range_perception * 2.5 + range_intelligence * range_intelligence_weight + range_endurance * 0.25 + range_leadership * 0.35) * attack_range_multiplier,
-		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier,
+		"attack_range": float(weapon_config.get("attack_range", 240.0)),
+		"attack_area_multiplier": attack_area_multiplier,
+		"aoe_radius": base_area * attack_area_multiplier,
 		# SCRUM-897 «Воровская хватка»: стартовая часть радиуса подбора усилена
 		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
 		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
 		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
-		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
-		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
-		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
-		"buff_power": 1.0 + leadership * 0.025 + knowledge * 0.006 + energy * 0.004 + buff_power_flat,
-		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
+		"dot_speed": base_dot_speed * attack_cadence_multiplier,
+		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)),
+		"aura_radius": aura_radius,
+		"support_multiplier": support_multiplier,
+		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + strength * 4.0) * knockback_multiplier,
 		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,
 		# SCRUM-546: профильное (growth-масштабированное) Лидерство как драйвер силы
 		# саммонов — читается runtime deploy/sentry-пайплайном (class_weapon
@@ -2268,10 +2263,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
 		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
 		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
-		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
-		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
-		"range_multiplier": range_multiplier,
-		"sector_multiplier": sector_multiplier,
+		"vampiric_amount": effective_vampiric_amount(knowledge, float(run_modifiers.get("vampiric_amount_flat", 0.0))),
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
@@ -2307,15 +2299,23 @@ static func level_up_rewards(character_id := "") -> Array:
 	for reward in LEVEL_UP_REWARDS:
 		if character_id != "" and not is_reward_relevant(reward, character_id):
 			continue
+		# FAN-1887: optional-ось (нет настоящего потребителя у класса) вообще
+		# не входит в классовый пул — строгий фильтр начинается с источника.
+		if character_id != "" and reward_is_optional(reward, character_id):
+			continue
 		rewards.append(reward.duplicate(true))
 	return rewards
 
 
-static func main_stat_level_up_rewards(_character_id := "") -> Array:
+static func main_stat_level_up_rewards(character_id := "") -> Array:
 	# Редкий пул level-up: рост основной характеристики на +1. Помечены rare=true
 	# для визуального выделения; классовая интерпретация считается на карточке.
+	# FAN-1887: редкие базовые характеристики тоже проходят consumability-фильтр —
+	# Лидерство не предлагается классу без настоящего summon/deploy-потребителя.
 	var rewards := []
 	for stat_id in STAT_NAMES.keys():
+		if not is_base_stat_consumable(str(stat_id), character_id):
+			continue
 		rewards.append({
 			"id": "levelup_stat_%s" % stat_id,
 			"title": "%s +1" % STAT_NAMES[stat_id],

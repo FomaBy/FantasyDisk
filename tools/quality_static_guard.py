@@ -9,6 +9,14 @@ import sys
 from pathlib import Path
 
 
+TOOLS_DIR = Path(__file__).resolve().parent
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
+from release_version_mapping import platform_version_mapping, release_assignment_errors
+
+
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
 RESOURCE_RE = re.compile(r"res://[A-Za-z0-9_./@+\-]+")
 LEGACY_LINE_CEILINGS = {
@@ -99,15 +107,16 @@ def version_and_windows_errors(root: Path) -> list[str]:
     version = _quoted_value(project, "config/version")
     if not version:
         errors.append("project.godot: config/version is missing")
-    expected = {
-        "application/short_version": version,
-        "application/version": version,
-        "application/product_version": version,
-        "application/file_version": f"{version}.0",
-    }
-    for key, value in expected.items():
-        if _quoted_value(exports, key) != value:
-            errors.append(f"export_presets.cfg: {key} must equal {value!r}")
+    elif not is_valid_release_version(version):
+        errors.append("project.godot: config/version must use the canonical bounded X.Y.Z or X.Y.Z.R contract")
+    mapping = None
+    if is_valid_release_version(version):
+        try:
+            mapping = platform_version_mapping(version)
+        except ValueError as error:
+            errors.append(f"project.godot: config/version {error}")
+    if mapping is not None:
+        errors.extend(release_assignment_errors(project, exports, version, mapping))
 
     required_project = [
         'config/features=PackedStringArray("4.7")',
@@ -155,6 +164,23 @@ def architecture_errors(root: Path, tracked: list[str]) -> list[str]:
     return errors
 
 
+def script_uid_errors(root: Path, tracked: list[str]) -> list[str]:
+    errors: list[str] = []
+    tracked_paths = {Path(relative) for relative in tracked}
+    ignored_directories = {
+        path.parent for path in tracked_paths if path.name == ".gdignore"
+    }
+    for relative in tracked:
+        path = Path(relative)
+        is_ignored = any(parent in ignored_directories for parent in path.parents)
+        if path.suffix != ".gd" or is_ignored:
+            continue
+        sidecar = Path(f"{path}.uid")
+        if sidecar not in tracked_paths:
+            errors.append(f"{path}: missing committed .uid sidecar")
+    return errors
+
+
 def credential_errors(root: Path, tracked: list[str]) -> list[str]:
     errors: list[str] = []
     forbidden_marker = "BUILTIN_WEBHOOK_" + "B64"
@@ -173,6 +199,7 @@ def collect_errors(root: Path) -> list[str]:
         case_and_resource_errors(root, tracked)
         + version_and_windows_errors(root)
         + architecture_errors(root, tracked)
+        + script_uid_errors(root, tracked)
         + credential_errors(root, tracked)
     )
 
@@ -188,7 +215,7 @@ def main() -> int:
             print(f"FAIL: {error}", file=sys.stderr)
         print(f"Static quality guard failed: {len(errors)} error(s).", file=sys.stderr)
         return 1
-    print("Static quality guard passed (case/version/Windows/architecture/credentials).")
+    print("Static quality guard passed (case/version/Windows/architecture/sidecars/credentials).")
     return 0
 
 

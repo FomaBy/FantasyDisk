@@ -1,9 +1,18 @@
 # Code Quality & Windows Performance Gate
 
-Обновлено: 2026-07-13. Аудит FAN-1040 выполнен на исходном
+Обновлено: 2026-08-01. Аудит FAN-1040 выполнен на исходном
 `1190db1d1de10ab90e21d2cdea32be908efbeada`; исправления проверяются единым gate.
 
-## Обязательные профили
+## Lean default и risk-профили
+
+Обычное небольшое gameplay/scene/test изменение запускает один непосредственно
+затронутый suite через `tools/godot_gate.py`; второй нужен только для отдельного
+failure mode. `changed`/`full` не являются локальной матрицей по умолчанию.
+Полный gate требуется только для release/publish, saves/migrations, network,
+payments/secrets/security или уже красного CI, когда focused checks не изолируют
+причину. Не дублировать один full gate на developer, QA, PR и post-merge стадиях.
+
+Доступные broad-профили для этих случаев:
 
 ```bash
 python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
@@ -14,13 +23,37 @@ Gate требует Godot 4.7 и последовательно проверяе
 синхронность версии и Windows export preset, архитектурные line-count ratchet’ы,
 отсутствие raw/Base64 webhook credential, Python-тесты/синтаксис и direct +
 inherited Godot suites. `changed` автоматически включает изменённые/новые тесты
-и umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
-набор. Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
+и `semantic_typography_scrum1061_test` для области inventory, а также umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
+набор. Discovery рекурсивна: Godot suites берутся из всего `tests/**`, а
+Python-тесты запускаются отдельной `unittest discover` на каждый каталог с
+`test_*.py`, потому что `unittest` не заходит в non-package подкаталоги.
+Одинаковые имена suites в разных каталогах отвергаются как ambiguous.
+Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure. С FAN-1700
+провал набора не зависит от кода возврата: набор сообщает о провале через
+`push_error()`, Godot печатает при этом кадр `at: push_error (`, и гейт считает
+такой вывод фатальным даже при exit 0. Это закрывает ложно-зелёный прогон, когда
+`_fail()` без `return` доходит до успешного `quit()` (отложенный `quit(1)`
+затирается нулём). Обычные `ERROR:`-строки движка без этого кадра остаются
+безобидными и набор не роняют. С FAN-1718 эта сигнатура не может измениться
+молча: фикстуры FAN-1700 в `tests/test_quality_tools.py` обязаны нести баннер
+пинованного `GODOT_BUILD_ID` из `quality.yml`, а live-probe
+(`LiveEngineSignatureTests`) запускает установленный движок на минимальном
+временном проекте с `push_error(...)` и читает вывод боевым классификатором;
+чистый контрольный прогон обязан остаться без сигнала. Без движка probe
+детерминированно скипается с указанием причины; кандидатный CI экспортирует
+`GODOT_BIN` (закреплено в `test_quality_workflow.py`), поэтому там probe
+исполняется всегда, а заданный, но нерабочий `GODOT_BIN` — громкий failure,
+не skip.
 Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
-запрещён. Staged, unstaged или untracked worktree также всегда non-certifying и
+запрещён: нулевой выбор Godot-тестов или `Ran 0 tests` в Python-discovery дают
+`failed` с записью в `static_checks`, а не зелёный отчёт. Staged, unstaged или untracked worktree также всегда non-certifying и
 фиксируется в JSON evidence; commit-range и index whitespace проверяются
-отдельно. `--static-only` — certifying CI-профиль, но не заменяет полный
-локальный/release gate.
+отдельно. `--static-only` — engine-free профиль: `select_godot_tests` возвращает
+для него пустой список, поэтому он допустим только там, где Godot не установлен
+(push в `dev`). Required-проверка на pull request и merge queue запускает
+`changed` на закреплённом Godot `4.7.stable.official.5b4e0cb0f`. Для обычного
+малого PR это единственный broad CI; `full` остаётся release/risk gate для
+случаев выше.
 
 ## Реестр находок
 

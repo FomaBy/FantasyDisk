@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 4,
+  "class_id": "sniper",
+  "profiles": [
+    {
+      "weapon_id": "sniper_deadeye_rifle",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.sniper.sniper_deadeye_rifle",
+        "title_id": "weapon_ultimate.title.sniper.sniper_deadeye_rifle",
+        "mechanic_id": "weapon_ultimate.mechanic.sniper.sniper_deadeye_rifle"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.sniper.sniper_deadeye_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.sniper.sniper_deadeye_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.acquire",
+        "windup": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.windup",
+        "execute": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.active",
+        "recover": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.recover",
+        "cleanup": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.sniper.sniper_deadeye_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.sniper.sniper_deadeye_rifle",
+        "animation_id": "weapon_ultimate.animation.sniper.sniper_deadeye_rifle",
+        "vfx_id": "weapon_ultimate.vfx.sniper.sniper_deadeye_rifle",
+        "sfx_id": "weapon_ultimate.sfx.sniper.sniper_deadeye_rifle",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.sniper.sniper_deadeye_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "sniper_spotter_scope",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.sniper.sniper_spotter_scope",
+        "title_id": "weapon_ultimate.title.sniper.sniper_spotter_scope",
+        "mechanic_id": "weapon_ultimate.mechanic.sniper.sniper_spotter_scope"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.sniper.sniper_spotter_scope",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.sniper.sniper_spotter_scope",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.sniper.sniper_spotter_scope.acquire",
+        "windup": "weapon_ultimate.phase.sniper.sniper_spotter_scope.windup",
+        "execute": "weapon_ultimate.phase.sniper.sniper_spotter_scope.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_spotter_scope.active",
+        "recover": "weapon_ultimate.phase.sniper.sniper_spotter_scope.recover",
+        "cleanup": "weapon_ultimate.phase.sniper.sniper_spotter_scope.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.sniper.sniper_spotter_scope",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.sniper.sniper_spotter_scope",
+        "animation_id": "weapon_ultimate.animation.sniper.sniper_spotter_scope",
+        "vfx_id": "weapon_ultimate.vfx.sniper.sniper_spotter_scope",
+        "sfx_id": "weapon_ultimate.sfx.sniper.sniper_spotter_scope",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.sniper.sniper_spotter_scope",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "sniper_shatter_rounds",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.sniper.sniper_shatter_rounds",
+        "title_id": "weapon_ultimate.title.sniper.sniper_shatter_rounds",
+        "mechanic_id": "weapon_ultimate.mechanic.sniper.sniper_shatter_rounds"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.sniper.sniper_shatter_rounds",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.sniper.sniper_shatter_rounds",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.acquire",
+        "windup": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.windup",
+        "execute": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.active",
+        "recover": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.recover",
+        "cleanup": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.sniper.sniper_shatter_rounds",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.sniper.sniper_shatter_rounds",
+        "animation_id": "weapon_ultimate.animation.sniper.sniper_shatter_rounds",
+        "vfx_id": "weapon_ultimate.vfx.sniper.sniper_shatter_rounds",
+        "sfx_id": "weapon_ultimate.sfx.sniper.sniper_shatter_rounds",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.sniper.sniper_shatter_rounds",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

@@ -1,21 +1,23 @@
 extends CharacterBody2D
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
-
 signal died
 signal leveled_up
 signal damaged(amount: float)
 signal weapon_animation_event(event: Dictionary)
-
+signal weapon_cast_observed(event: Dictionary)
+signal constellation_final_resolved(weapon_id: String, event: String, target: Node2D, context: Dictionary, resolution: Dictionary)
+signal guard_prevention_measured(event: Dictionary)
 @export var max_health := 10.0
 @export var speed := 260.0
 @export var damage_invulnerability_time := 0.32
-
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
@@ -30,7 +32,12 @@ const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
 const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
+const ULTIMATE_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const ULTIMATE_CHARGE_LEDGER := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
+const GUARD_PREVENTION_INGRESS := preload("res://scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
+# FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
+const AIM_CONTROLLER := preload("res://scripts/input/aim_controller.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const PLAYER_SPRITE_GROUNDING := preload("res://scripts/player_sprite_grounding.gd")
 # Combat Feel Rework (этап A): per-class foot_y для legacy feet-origin fallback.
@@ -132,9 +139,11 @@ var character_id := "berserk"
 var weapon_id := ""
 var weapon_config := {}
 var aim_mode := "nearest"
+var _aim := AIM_CONTROLLER.new()  # FAN-1449: наводка мышью / правым стиком
 var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
+var _telemetry_sequence := {"cast": 0, "hit": 0, "final": 0}
 var run_modifiers := _default_run_modifiers()
 var artifacts := []
 var derived_parameters := {}
@@ -180,7 +189,6 @@ var _smoke_cloud_token := 0
 var _web_slow_until := 0.0
 var _web_slow_factor := 1.0
 var _echo_hit_counter := 0
-var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
 var _low_hp_active := false
 # SCRUM-834 (Мета 4.1): гейты условных keystone (не часть run_modifiers-дефолтов,
@@ -261,9 +269,17 @@ var _vampiric_heal_budget := 0.0
 # apply_drain_heal(), который списывает из этого бюджета (пополняется в
 # _apply_regeneration по тому же принципу, что вампирный).
 var _drain_heal_budget := 0.0
-var ultimate_charge := 0.0
+# FAN-2090: заряд и активность ульты живут в UltimateChargeLedger — он же держит
+# per-encounter гейт активаций. Свежий узел Player (новый бой) и
+# configure_character (новый забег) — единственные точки сброса гейта.
+var _ultimate_charge_ledger := ULTIMATE_CHARGE_LEDGER.new()
 var ultimate_max_charge := 100.0
-var _ultimate_active := false
+var ultimate_charge: float:
+	get: return _ultimate_charge_ledger.charge
+	set(value): _ultimate_charge_ledger.charge = clampf(value, 0.0, ultimate_max_charge)
+var _ultimate_active: bool:
+	get: return _ultimate_charge_ledger.is_ultimate_active()
+	set(value): _ultimate_charge_ledger.set_ultimate_active(value)
 var _ultimate_tween: Tween = null
 var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
@@ -280,9 +296,7 @@ static func _default_run_modifiers() -> Dictionary:
 		# SCRUM-976: отдельный final-layer вне softcap release-баланса.
 		"sandbox_player_damage_multiplier": 1.0,
 		"sandbox_player_attack_speed_multiplier": 1.0,
-		"range_multiplier": 1.0,
 		"aoe_radius_multiplier": 1.0,
-		"sector_multiplier": 1.0,
 		"move_speed_multiplier": 1.0,
 		"max_health_multiplier": 1.0,
 		"summon_bonus": 0.0,
@@ -407,11 +421,13 @@ func rage_damage_multiplier() -> float:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()
+	_aim.attach(self)
 	if stats.is_empty():
 		configure_character(character_id)
 
 
 func configure_character(new_character_id: String, new_weapon_id := "") -> void:
+	ULTIMATE_HOST.reset(self)  # FAN-1457: до сброса run_modifiers — см. ultimate_player_host.gd
 	character_id = new_character_id
 	_movement_input_armed = false
 	weapon_id = ""
@@ -428,8 +444,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	xp_to_next = 5
 	level = 1
 	money = 0
-	ultimate_charge = 0.0
-	_ultimate_active = false
+	_ultimate_charge_ledger.reset_for_new_run()
 	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
 	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
 	_low_hp_active = false
@@ -752,6 +767,7 @@ func _physics_process(_delta: float) -> void:
 	_triage_cooldown_left = max(_triage_cooldown_left - _delta, 0.0)
 	_update_rage_hit_stacks(_delta)
 	_update_flurry_tempo(_delta)
+	_aim.sync(self, _gamepad_deadzone(), attack_aim_mode())
 	var direction := _movement_input_direction()
 	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
@@ -814,7 +830,8 @@ func _clear_debug_move_target() -> void:
 
 
 func set_aim_mode(mode: String) -> void:
-	aim_mode = "cursor" if mode == "cursor" else "nearest"
+	aim_mode = AIM_CONTROLLER.normalize_mode(mode)
+	_aim.set_mode(aim_mode)
 
 
 func attack_aim_mode() -> String:
@@ -824,26 +841,16 @@ func attack_aim_mode() -> String:
 
 
 func attack_aim_position(range_limit := 999999.0) -> Vector2:
-	var cursor_position := get_global_mouse_position()
-	var offset := cursor_position - global_position
-	if range_limit >= 999998.0 or offset.length() <= range_limit:
-		return cursor_position
-	if offset.length_squared() <= 0.001:
-		return global_position + _facing_direction * range_limit
-	return global_position + offset.normalized() * range_limit
+	return _aim.player_aim_point(self, range_limit)
 
 
 func attack_aim_direction(default_direction := Vector2.RIGHT, range_limit := 999999.0) -> Vector2:
-	if attack_aim_mode() == "cursor":
-		var offset := attack_aim_position(range_limit) - global_position
-		if offset.length_squared() > 0.001:
-			return offset.normalized()
-	var fallback := default_direction
-	if fallback.length_squared() <= 0.001:
-		fallback = _facing_direction
-	if fallback.length_squared() <= 0.001:
-		fallback = Vector2.RIGHT
-	return fallback.normalized()
+	attack_aim_mode()
+	return _aim.player_aim_direction(self, default_direction, range_limit)
+
+
+func _on_aim_joy_connection_changed(_device: int, connected: bool) -> void:
+	_aim.on_joy_connection_changed(connected, self)
 
 
 func play_action_animation(action_id: String, direction := Vector2.ZERO, phase := "", duration := 0.0, metadata := {}) -> void:
@@ -922,13 +929,23 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 	_action_tween.tween_property(self, "_action_rotation", 0.0, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_property(self, "_action_scale", Vector2.ONE, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_callback(_apply_sprite_transform)
-
-
+func record_weapon_cast(weapon_id_value: String, attack_mode_value: String, action_id: String, duration := 0.0) -> void:
+	_telemetry_sequence["cast"] += 1
+	weapon_cast_observed.emit({"weapon_id": weapon_id_value, "attack_mode": attack_mode_value, "action_id": action_id, "telemetry_cast_id": "cast_%06d" % _telemetry_sequence["cast"], "phase": "windup", "duration": maxf(float(duration), 0.0), "phase_source": "class_weapon"})
+func telemetry_context_for_hit(context := {}) -> Dictionary:
+	_telemetry_sequence["hit"] += 1
+	var tagged: Dictionary = context.duplicate(true) if context is Dictionary else {}
+	tagged.merge({"telemetry_provenance_id": "hit_%06d" % _telemetry_sequence["hit"], "telemetry_cast_id": "cast_%06d" % _telemetry_sequence["cast"] if _telemetry_sequence["cast"] > 0 else ""})
+	return tagged
+func telemetry_feedback_for_hit(context := {}, feedback := {}) -> Dictionary:
+	var tagged: Dictionary = feedback.duplicate(true) if feedback is Dictionary else {}
+	for key in ["telemetry_provenance_id", "telemetry_cast_id", "telemetry_final_activation_id", "telemetry_final_mechanic_id"]:
+		if context is Dictionary and context.has(key): tagged[key] = context[key]
+	return tagged
 func apply_web_slow(duration: float, factor: float) -> void:
 	# Паутина: временное замедление движения (повтор продлевает, фактор общий).
 	_web_slow_until = maxf(_web_slow_until, Time.get_ticks_msec() / 1000.0 + duration)
 	_web_slow_factor = clampf(factor, 0.2, 1.0)
-
 
 # Combat Feel Rework (этап C): скорости побега для CombatFairness.fair_windup.
 # escape_speed — текущая эффективная скорость движения (после паутины и
@@ -1010,21 +1027,22 @@ func smoke_cloud_dodge_bonus() -> float:
 	return best_bonus
 
 
-# SCRUM-897: итоговый шанс уворота для ролла take_damage. Базовый dodge капится
-# обычным SURVIVABILITY_DODGE_CAP (0.55); бонус дым-облака добавляется ПОВЕРХ
-# капнутой базы и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
+# SCRUM-897: итоговый шанс уворота для ролла take_damage. Базовый dodge следует
+# обычной strict asymptote SURVIVABILITY_DODGE_CAP (0.55); бонус дым-облака
+# добавляется поверх и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
 # при тяжёлом dodge-билде», и только пока герой внутри облака.
 func _current_dodge_chance() -> float:
-	var dodge_chance := clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
+	var raw_dodge := DefensiveAttributeRuntime.raw_dodge_rating(derived_parameters)
+	if _assassin_veil_engaged():
+		raw_dodge += assassin_veil_dodge_bonus()
+	var dodge_chance := ProgressionData.effective_dodge(raw_dodge)
 	var smoke_cloud_bonus := smoke_cloud_dodge_bonus()
 	if smoke_cloud_bonus > 0.0:
 		dodge_chance = minf(dodge_chance + smoke_cloud_bonus, ProgressionData.SMOKE_CLOUD_DODGE_CAP)
 	# SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина — бонус
 	# только пока враг внутри derived aura_radius; суммарный уворот класса
-	# по-прежнему ≤ SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
+	# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
 	# не пересекаются: дым — оружие Вора, завеса — trait Ассасина.
-	if _assassin_veil_engaged():
-		dodge_chance = clampf(dodge_chance + assassin_veil_dodge_bonus(), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
 	return dodge_chance
 
 
@@ -1040,14 +1058,15 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 		_play_sfx("dodge")
 		return false
 	if _ultimate_active and character_id == "knight":
+		GUARD_PREVENTION_INGRESS.emit_measured(self, amount, 0.0, _source, attacker)
 		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
 		_play_sfx("dodge")
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
 		return true
 
 	# SCRUM-897 + SCRUM-894: ролл уворота через _current_dodge_chance — базовый
-	# кап 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
-	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог ≤ 0.55).
+	# асимптота 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
+	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог < 0.55).
 	if randf() < _current_dodge_chance():
 		_show_dodge_popup()
 		_play_sfx("dodge")
@@ -1088,12 +1107,13 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 				"incoming_amount": amount,
 				"constellation_ward_source": str(constellation_ward.get("source_id", "")),
 			})
-	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+	var raw_defense := DefensiveAttributeRuntime.raw_defense_rating(derived_parameters)
 	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
-		defense = clampf(defense + float(run_modifiers.get("bastion_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
-	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше (общий кэп).
+		raw_defense += float(run_modifiers.get("bastion_defense_bonus", 0.0))
+	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше по общей diminishing curve.
 	if _low_hp_active and float(run_modifiers.get("lowhp_defense_bonus", 0.0)) > 0.0:
-		defense = clampf(defense + float(run_modifiers.get("lowhp_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+		raw_defense += float(run_modifiers.get("lowhp_defense_bonus", 0.0))
+	var defense := ProgressionData.effective_defense(raw_defense)
 	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
 	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
@@ -1118,6 +1138,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# уворот → контр → reactor-heat → absorb → defense → финальные классовые скидки.
 	if _battle_prayer_protection > 0.0:
 		final_damage *= 1.0 - clampf(_battle_prayer_protection, 0.0, 0.9)
+	GUARD_PREVENTION_INGRESS.emit_measured(self, amount, final_damage, _source, attacker)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()
@@ -1161,16 +1182,17 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 
 # SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина (не саппорт
 # союзников). Бонус действует ТОЛЬКО под ближним прессингом — когда враг внутри
-# derived aura_radius (радиус растёт от aura_radius-статов, величина — от
-# buff_power через ProgressionData.class_veil_dodge_bonus с жёстким капом).
-# Итоговый шанс уворота всё равно зажат SURVIVABILITY_DODGE_CAP — бессмертия
-# на высоком доджe нет, дальние выстрелы без прессинга бонуса не получают.
+# derived aura_radius (радиус растёт от единой области атаки, величина — от
+# support_multiplier через ProgressionData.class_veil_dodge_bonus с жёстким капом).
+# Итоговый шанс уворота всё равно строго ниже asymptote
+# SURVIVABILITY_DODGE_CAP — бессмертия на высоком доджe нет, дальние выстрелы
+# без прессинга бонуса не получают.
 func current_dodge_chance() -> float:
 	return _current_dodge_chance()
 
 
 func assassin_veil_dodge_bonus() -> float:
-	return ProgressionData.class_veil_dodge_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+	return ProgressionData.class_veil_dodge_bonus(character_id, float(derived_parameters.get("support_multiplier", 1.0)))
 
 
 func assassin_veil_radius() -> float:
@@ -1210,8 +1232,7 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	if echo_ratio > 0.0:
 		var echo_damage := maxf(float(derived_parameters.get("damage", 10.0)) * echo_ratio, 1.0)
 		for other_node in TARGET_QUERY.in_radius(self, target.global_position, radius):
-			if other_node.has_method("take_damage"):
-				other_node.take_damage(echo_damage)
+			_apply_player_damage(other_node as Node, echo_damage)
 	var invis_time := float(run_modifiers.get("shadow_burst_invisibility_time", 0.0))
 	if invis_time > 0.0:
 		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
@@ -1332,10 +1353,7 @@ func _knight_counter_damage(incoming_amount: float, passive_mods: Dictionary) ->
 
 
 func _deal_knight_counter_hit(enemy_node: Node2D, amount: float) -> void:
-	if _take_damage_accepts_feedback(enemy_node):
-		enemy_node.take_damage(amount, {"damage_type": "physical"})
-	else:
-		enemy_node.take_damage(amount)
+	_apply_player_damage(enemy_node, amount, {"damage_type": "physical"})
 
 
 func _trigger_thorn_reflect(received_damage: float) -> void:
@@ -1347,8 +1365,8 @@ func _trigger_thorn_reflect(received_damage: float) -> void:
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0 and enemy_node.has_method("take_damage"):
-			enemy_node.take_damage(reflected)
+		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0:
+			_apply_player_damage(enemy_node, reflected)
 
 
 func _trigger_dodge_rush() -> void:
@@ -1542,6 +1560,8 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	multiplier *= constellation_weapon_axis_multiplier(str(ctx.get("weapon_id", "")))
 	var final_resolution := constellation_weapon_event(str(ctx.get("weapon_id", "")), "hit", ctx, enemy)
 	multiplier *= float(final_resolution.get("damage_multiplier", 1.0))
+	if bool(final_resolution.get("triggered", false)):
+		ctx.merge({"telemetry_final_activation_id": str(final_resolution.get("telemetry_final_activation_id", "")), "telemetry_final_mechanic_id": str(final_resolution.get("mechanic_id", ""))})
 	# SCRUM-942: периодический источник (тики луж / DoT-тики оружия) помечен
 	# damage_type="dot" — усиливаем классовым trait-множителем периодики.
 	if str(ctx.get("damage_type", "")) == "dot":
@@ -1796,8 +1816,7 @@ func _trigger_take_hit_pulse(received_damage: float) -> void:
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		if global_position.distance_squared_to(enemy_node.global_position) <= 190.0 * 190.0:
-			if enemy_node.has_method("take_damage"):
-				enemy_node.take_damage(pulse_damage)
+			_apply_player_damage(enemy_node, pulse_damage)
 			if enemy_node.has_method("apply_knockback"):
 				enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 180.0)
 
@@ -1850,7 +1869,7 @@ func apply_reward(reward: Dictionary) -> void:
 		# SCRUM-960: + опциональный tier материализованного оффера (редкость для UI).
 		# Старые записи {id, title} без tier остаются валидными — читатели берут
 		# tier через .get("tier", 0), 0 = не показывать.
-		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", ""))}
+		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", "")), "description": str(reward.get("description", ""))}
 		var reward_tier := int(reward.get("tier", 0))
 		if reward_tier > 0:
 			artifact_entry["tier"] = reward_tier
@@ -1877,6 +1896,8 @@ func apply_reward(reward: Dictionary) -> void:
 func _apply_reward_mods(mods: Dictionary, allow_generic_sustain := false) -> void:
 	var sustain_blocked := blocks_generic_sustain() and not allow_generic_sustain
 	for modifier_id in mods.keys():
+		if ProgressionData.is_removed_progression_modifier(str(modifier_id)):
+			continue
 		if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(str(modifier_id)):
 			continue
 		if modifier_id.ends_with("_multiplier"):
@@ -1916,9 +1937,7 @@ const META_SKILL_MULT_MAP := {
 	"attack_speed_mult": "attack_speed_multiplier",
 	"move_speed_mult": "move_speed_multiplier",
 	"max_health_mult": "max_health_multiplier",
-	"range_mult": "range_multiplier",
 	"aoe_radius_mult": "aoe_radius_multiplier",
-	"aura_radius_mult": "aoe_radius_multiplier",
 	"knockback_mult": "knockback_multiplier",
 	"xp_gain_mult": "xp_gain_multiplier",
 	"money_gain_mult": "money_gain_multiplier",
@@ -1941,9 +1960,6 @@ const META_SKILL_FLAT_MAP := {
 	"crit_chance_flat": "crit_chance_flat",
 	"crit_damage_flat": "crit_damage_flat",
 	"dot_damage_flat": "dot_damage_flat",
-	"dot_speed_flat": "dot_speed_flat",
-	"aura_radius_flat": "aura_radius_flat",
-	"buff_power_flat": "buff_power_flat",
 	"vampiric_chance_flat": "vampiric_chance_flat",
 	"vampiric_amount_flat": "vampiric_amount_flat",
 	"summon_bonus": "summon_bonus",
@@ -1953,7 +1969,6 @@ const META_SKILL_FLAT_MAP := {
 	# SCRUM-807: разведены под классовые ветви Skill Tree 3.0 (те же run-ключи,
 	# что использует докачка уровней — progression_data.derived_parameters).
 	"pickup_radius_flat": "pickup_radius_flat",
-	"projectile_speed_flat": "projectile_speed_flat",
 	"absorb_flat": "absorb_flat",
 	# SCRUM-828 (Мета 4.0): механики звёзд-техник и скрытых звёзд созвездий.
 	# Все ключи уже консумятся артефакт-триггерами player.gd (SCRUM-500):
@@ -2202,6 +2217,10 @@ func constellation_weapon_event(weapon_id_value: String, event: String, context 
 		push_error("SCRUM-1068 final runtime rejected %s." % mechanic_id)
 		return {"valid": false, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
 	if bool(resolution.get("triggered", false)):
+		_telemetry_sequence["final"] += 1
+		resolution["telemetry_final_activation_id"] = "final_%06d" % _telemetry_sequence["final"]
+	constellation_final_resolved.emit(weapon_id_value, event, enemy, runtime_context.duplicate(true), resolution.duplicate(true))
+	if bool(resolution.get("triggered", false)):
 		run_modifiers["constellation_last_final_action"] = resolution.duplicate(true)
 		if enemy != null and is_instance_valid(enemy):
 			enemy.set_meta("constellation_final_action", resolution.duplicate(true))
@@ -2417,7 +2436,6 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 				weapon.call("on_owner_vampiric_heal", effective_vampiric_heal)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
-	_trigger_leadership_echo(enemy)
 	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
@@ -2477,10 +2495,7 @@ func _apply_meta_crit_execute(enemy: Node2D, context: Dictionary) -> void:
 		return
 	var execute_damage := maxf(current_hp + max_hp * 0.01, 1.0)
 	var feedback := {"critical": true, "damage_type": str(context.get("damage_type", "physical"))}
-	if _take_damage_accepts_feedback(enemy):
-		enemy.take_damage(execute_damage, feedback)
-	else:
-		enemy.take_damage(execute_damage)
+	_apply_player_damage(enemy, execute_damage, feedback)
 
 
 func _is_non_elite_enemy(enemy: Node2D) -> bool:
@@ -2552,49 +2567,50 @@ func ultimate_ready() -> bool:
 	return ultimate_charge >= ultimate_max_charge
 
 
+# FAN-2090: data-driven гейт «одна активация за encounter» — без class-веток;
+# действует, только когда ready-пакет пары декларирует rare_charge_ledger.
+func _ultimate_rare_charge_gated() -> bool:
+	var profile: Dictionary = ULTIMATE_HOST.shared_registry().catalog_profile_for(character_id, weapon_id)
+	if str(profile.get("implementation_state", "")) != "ready":
+		return false
+	var charge_binding = profile.get("charge")
+	return charge_binding is Dictionary \
+		and str((charge_binding as Dictionary).get("strategy_id", "")) == "rare_charge_ledger"
+
+
+func _commit_ultimate_charge() -> bool:
+	if not _ultimate_charge_ledger.try_activate():
+		if _ultimate_rare_charge_gated():
+			return false
+		ultimate_charge = 0.0
+	return true
+
+
 func activate_ultimate() -> bool:
 	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
 		return false
+	# Ready packages commit charge only after their presentation is admitted.
+	# Legacy classes keep the same ledger/refill behavior through the same helper.
+	var result := ULTIMATE_HOST.activate(self, Callable(self, "_commit_ultimate_charge"))
+	if result == ULTIMATE_HOST.ACTIVATION_FAILED:
+		var failure := ULTIMATE_HOST.activation_failure(self)
+		if failure == "presentation_failed":
+			push_warning("Weapon ultimate activation failed: %s" % failure)
+		return false
+	if result == ULTIMATE_HOST.ACTIVATION_LEGACY_FALLBACK and not _commit_ultimate_charge():
+		return false
 	var config := _ultimate_config()
 	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
-	ultimate_charge = 0.0
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
-	match character_id:
-		"berserk":
-			_activate_berserk_ultimate(config, multiplier)
-		"dark_mage":
-			_activate_dark_mage_ultimate(config, multiplier)
-		"guitarist":
-			_activate_guitarist_ultimate(config, multiplier)
-		"assassin":
-			_activate_assassin_ultimate(config, multiplier)
-		"thief":
-			_activate_thief_ultimate(config, multiplier)
-		"elementalist":
-			_activate_elementalist_ultimate(config, multiplier)
-		"sniper":
-			_activate_sniper_ultimate(config, multiplier)
-		"priest":
-			_activate_priest_ultimate(config, multiplier)
-		"biologist":
-			_activate_biologist_ultimate(config, multiplier)
-		"robot":
-			_activate_robot_ultimate(config, multiplier)
-		"engineer":
-			_activate_engineer_ultimate(config, multiplier)
-		"ranger":
-			_activate_ranger_ultimate(config, multiplier)
-		"doctor":
-			_activate_doctor_ultimate(config, multiplier)
-		"chemist":
-			_activate_chemist_ultimate(config, multiplier)
-		"knight":
-			_activate_knight_ultimate(config, multiplier)
-		"druid":
-			_activate_druid_ultimate(config, multiplier)
-		_:
-			_activate_dark_mage_ultimate(config, multiplier)
+	if result == ULTIMATE_HOST.ACTIVATION_STARTED:
+		return true
+	# Каждый класс объявляет _activate_<character_id>_ultimate; незнакомый id
+	# уходит в dark_mage — тот же default, что был у прежнего match-диспатча.
+	var handler := "_activate_%s_ultimate" % character_id
+	if not has_method(handler):
+		handler = "_activate_dark_mage_ultimate"
+	call(handler, config, multiplier)
 	return true
 
 
@@ -2915,11 +2931,8 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 		final_amount = minf(final_amount, float(enemy.get("max_health")) * float(_ultimate_config().get("boss_cap", 0.1)))
 	# SCRUM-1007: ульта — урон игрока; метка атрибутирует он-килл trait'ы, тип
 	# урона — канал класса (маг. классы красят цифру магией).
-	if _take_damage_accepts_feedback(enemy):
-		var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
-		enemy.take_damage(final_amount, {"damage_type": ult_type, "player_owned": true})
-	else:
-		enemy.take_damage(final_amount)
+	var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
+	_apply_player_damage(enemy, final_amount, {"damage_type": ult_type, "player_owned": true})
 
 
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
@@ -2982,8 +2995,7 @@ func _trigger_magic_enchant(enemy: Node2D) -> void:
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 	AttackVfx.orb_burst(parent, enemy.global_position, radius, Color(0.58, 0.38, 1.0, 0.34))
 	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
-		if other_node.has_method("take_damage"):
-			other_node.take_damage(enchant_damage)
+		_apply_player_damage(other_node as Node, enchant_damage)
 
 
 func _trigger_universal_dot(enemy: Node2D) -> void:
@@ -3007,21 +3019,20 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 
 func _apply_dot_tick(enemy_id: int, tick_damage: float) -> void:
 	var enemy := instance_from_id(enemy_id) as Node
-	if enemy != null and enemy.has_method("take_damage"):
-		enemy.take_damage(tick_damage)
+	_apply_player_damage(enemy, tick_damage)
 
 
 func _trigger_class_status_effects(enemy: Node2D) -> void:
 	if enemy == null or not is_instance_valid(enemy):
 		return
-	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	var support_multiplier := float(derived_parameters.get("support_multiplier", 1.0))
 	match character_id:
 		"dark_mage", "elementalist":
 			StatusEffects.apply_status(enemy, "arcane_vulnerability", {
 				"duration": 2.6,
 				"max_stacks": 2,
 				"stack_mode": "add",
-				"damage_taken_multiplier": 1.0 + minf(0.045 * buff_power, 0.075),
+				"damage_taken_multiplier": 1.0 + minf(0.045 * support_multiplier, 0.075),
 				"marker_color": Color(0.72, 0.42, 1.0, 1.0),
 			})
 		"chemist", "doctor", "assassin", "biologist":
@@ -3053,11 +3064,11 @@ func _update_class_status_auras() -> void:
 	if character_id not in ["guitarist", "druid", "engineer", "priest"]:
 		return
 	var aura_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.62, 120.0, 280.0)
-	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	var support_multiplier := float(derived_parameters.get("support_multiplier", 1.0))
 	var applied := false
 	StatusEffects.apply_status(self, "class_aura_focus", {
 		"duration": 0.85,
-		"speed_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+		"speed_multiplier": 1.0 + minf(0.018 * support_multiplier, 0.035),
 	})
 	for ally in get_tree().get_nodes_in_group("allies"):
 		var ally_node := ally as Node2D
@@ -3069,8 +3080,8 @@ func _update_class_status_auras() -> void:
 			continue
 		StatusEffects.apply_status(ally_node, "command_aura", {
 			"duration": 0.85,
-			"damage_multiplier": 1.0 + minf(0.055 * buff_power, 0.12),
-			"speed_multiplier": 1.0 + minf(0.025 * buff_power, 0.05),
+			"damage_multiplier": 1.0 + minf(0.055 * support_multiplier, 0.12),
+			"speed_multiplier": 1.0 + minf(0.025 * support_multiplier, 0.05),
 			"marker_color": Color(0.50, 0.88, 1.0, 1.0),
 		})
 		applied = true
@@ -3079,12 +3090,12 @@ func _update_class_status_auras() -> void:
 			StatusEffects.apply_status(enemy_node, "command_pressure", {
 				"duration": 0.85,
 				"speed_multiplier": 0.93,
-				"damage_taken_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+				"damage_taken_multiplier": 1.0 + minf(0.018 * support_multiplier, 0.035),
 				"marker_color": Color(0.42, 0.78, 1.0, 1.0),
 			})
 			applied = true
 	if character_id == "priest":
-		heal_percent(minf(0.0015 * buff_power, 0.004))
+		heal_percent(minf(0.0015 * support_multiplier, 0.004))
 		applied = true
 	if applied:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, aura_radius, Color(0.44, 0.82, 1.0, 0.20), false)
@@ -3096,7 +3107,7 @@ func _update_class_status_auras() -> void:
 # хардкода класса): полупрозрачное кольцо показывает фактический радиус,
 # внутри баффаются ТОЛЬКО сам Друид и ЕГО призывы (группа "allies" с
 # owner_node == self). Враги и чужие сущности статус не получают.
-#   - величина баффа = wild_aura_damage_bonus × buff_power, кап wild_aura_damage_cap
+#   - величина баффа = wild_aura_damage_bonus × support_multiplier, кап wild_aura_damage_cap
 #     (ProgressionData.class_wild_aura_damage_bonus — то же значение видит бюджет);
 #   - радиус = derived aura_radius × wild_aura_radius_ratio;
 #   - призывы: статус "wild_force_aura" → StatusEffects.damage_multiplier в
@@ -3123,7 +3134,7 @@ class WildForceAuraRing extends Node2D:
 
 
 func wild_aura_damage_bonus() -> float:
-	return ProgressionData.class_wild_aura_damage_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+	return ProgressionData.class_wild_aura_damage_bonus(character_id, float(derived_parameters.get("support_multiplier", 1.0)))
 
 
 # Множитель исходящего урона владельца ауры (Друид всегда внутри своего кольца).
@@ -3169,21 +3180,9 @@ func _update_wild_force_aura() -> void:
 		})
 
 
-func _trigger_leadership_echo(enemy: Node2D) -> void:
-	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
-		return
-	var summon_amount := float(derived_parameters.get("summon_amount", 0.0))
-	if summon_amount < 4.0:
-		return
-	var every := maxi(3, 10 - int(floor(summon_amount * 0.55)))
-	_leadership_echo_hit_counter += 1
-	if _leadership_echo_hit_counter < every:
-		return
-	_leadership_echo_hit_counter = 0
-	var echo_damage := float(derived_parameters.get(PROGRESSION_DATA.damage_parameter_for(character_id), derived_parameters.get("damage", 8.0))) * 0.34
-	var parent := _vfx_parent() as Node2D
-	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
-	enemy.take_damage(echo_damage)
+# FAN-1893: универсальный «Leadership echo» удалён — summon_amount/Лидерство
+# больше не конвертируются в synthetic-урон для классов без реальных призывов;
+# ось потребляют только настоящие summon/deploy-киты (summon_semantics конфига).
 
 
 func _on_weapon_hit_echo(enemy: Node2D) -> void:
@@ -3202,8 +3201,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 		scene = get_tree().root
 	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
-		if other_node.has_method("take_damage"):
-			other_node.take_damage(blast_damage)
+		_apply_player_damage(other_node as Node, blast_damage)
 
 
 # SCRUM-500 (on_kill): диспетчер триггеров убийства. Вызывается combat_director из
@@ -3228,8 +3226,8 @@ func on_enemy_killed(enemy: Node2D) -> void:
 			scene = get_tree().root
 		AttackVfx.orb_burst(scene, blast_position, 150.0, Color(1.0, 0.55, 0.20, 0.55))
 		for other_node in TARGET_QUERY.in_radius(self, blast_position, 150.0):
-			if other_node != enemy and other_node.has_method("take_damage"):
-				other_node.take_damage(blast_damage)
+			if other_node != enemy:
+				_apply_player_damage(other_node as Node, blast_damage)
 	# «Сбор Душ»: каждое N-е убийство лечит процент max HP.
 	var streak_every := int(run_modifiers.get("kill_streak_heal_every", 0.0))
 	if streak_every > 0:
@@ -3278,10 +3276,7 @@ func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, radius):
 		if other_node == enemy or not other_node.has_method("take_damage"):
 			continue
-		if _take_damage_accepts_feedback(other_node):
-			other_node.take_damage(damage_amount, {"damage_type": "magic", "player_owned": true, "dark_decay": true})
-		else:
-			other_node.take_damage(damage_amount)
+		_apply_player_damage(other_node, damage_amount, {"damage_type": "magic", "player_owned": true, "dark_decay": true})
 
 
 # SCRUM-940: у Проклятого черепа нет прямого урона → on_weapon_hit не зовётся.
@@ -3473,18 +3468,17 @@ func _apply_heal_to_holy_damage(healed: float) -> void:
 			continue
 		AttackVfx.beam(_vfx_parent(), previous_position, enemy_node.global_position, 26.0, Color(1.0, 0.92, 0.56, 0.38))
 		var chain_damage := damage_amount * pow(0.72, float(index))
-		if _take_damage_accepts_feedback(enemy_node):
-			enemy_node.take_damage(chain_damage, {"damage_type": "magic"})
-		else:
-			enemy_node.take_damage(chain_damage)
+		_apply_player_damage(enemy_node, chain_damage, {"damage_type": "magic"})
 		previous_position = enemy_node.global_position
-
-
+# FAN-1545: НЕ синтезирует ownership. `player_owned` (гейт он-килл trait'ов) едет
+# только если его несёт базовый feedback caller'а; вторичные пути остаются unowned.
+func _apply_player_damage(target: Node, amount: float, feedback := {}) -> void:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"): return
+	if _take_damage_accepts_feedback(target):
+		target.call("take_damage", amount, feedback if feedback is Dictionary else {})
+	else: target.call("take_damage", amount)
 func _take_damage_accepts_feedback(target: Node) -> bool:
-	for method in target.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			return int((method.get("args", []) as Array).size()) >= 2
-	return false
+	return TAKE_DAMAGE_CONTRACT.accepts_feedback(target)
 
 
 func gain_xp(amount: int) -> void:
@@ -3583,6 +3577,8 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	var weapon_id_value := str(meta_context.get("weapon_id", ""))
 	var constellation_attack_speed := constellation_weapon_multiplier(weapon_id_value, "weapon_attack_speed_mult")
 	var constellation_geometry := constellation_weapon_geometry_multiplier(weapon_id_value)
+	var geometry_capabilities: Array = weapon_config.get("geometry_capabilities", [])
+	var attack_area_multiplier := float(derived_parameters.get("attack_area_multiplier", 1.0)) * constellation_geometry
 
 	if weapon.get("damage") != null:
 		var damage_parameter := "damage"
@@ -3597,6 +3593,11 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
 		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed * constellation_attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
 
+	var cadence := maxf(float(derived_parameters.get("attack_cadence_multiplier", 1.0)), 0.1)
+	AttributeContract.apply_weapon_cadence(weapon, cadence, meta_interval_multiplier(meta_context))
+	if weapon.has_method("refresh_persistent_status_cadence"):
+		weapon.call("refresh_persistent_status_cadence")
+
 	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
 	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
 	if weapon.get("summon_interval") != null:
@@ -3610,34 +3611,30 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
-		var scaled_attack_range := float(derived_parameters.get("attack_range", base_attack_range)) * constellation_geometry
-		weapon.set("attack_range", scaled_attack_range)
-		var width_scale: float = scaled_attack_range / max(base_attack_range, 1.0)
-		if weapon.get("inner_width") != null:
-			weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * min(width_scale, 1.35))
-		if weapon.get("outer_width") != null:
-			weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * width_scale)
+		weapon.set("attack_range", base_attack_range * constellation_geometry)
 
-	if weapon.get("aoe_radius") != null:
-		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context) * constellation_geometry)
+	if geometry_capabilities.has("aoe_radius"):
+		var radius_property := "aoe_radius" if weapon.get("aoe_radius") != null else "summon_aoe_radius"
+		if weapon.get(radius_property) != null:
+			var base_radius := float(weapon.get_meta("base_%s" % radius_property, 200.0))
+			weapon.set(radius_property, base_radius * attack_area_multiplier * meta_radius_multiplier(meta_context))
+	if geometry_capabilities.has("inner_width") and weapon.get("inner_width") != null:
+		weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * attack_area_multiplier)
+	if geometry_capabilities.has("outer_width") and weapon.get("outer_width") != null:
+		weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * attack_area_multiplier)
 
-	if weapon.get("sweep_degrees") != null and (weapon.get("attack_shape") == null or str(weapon.get("attack_shape")) != "circle"):
+	if geometry_capabilities.has("sweep_degrees") and weapon.get("sweep_degrees") != null:
 		var base_sweep_degrees := float(weapon.get_meta("base_sweep_degrees", weapon.get("sweep_degrees")))
-		var sector_multiplier := float(derived_parameters.get("sector_multiplier", 1.0))
-		weapon.set("sweep_degrees", clampf(base_sweep_degrees * sector_multiplier * constellation_geometry, 1.0, 360.0))
+		weapon.set("sweep_degrees", clampf(base_sweep_degrees * attack_area_multiplier, 1.0, 360.0))
+	if geometry_capabilities.has("cone_degrees") and weapon.get("cone_degrees") != null:
+		weapon.set("cone_degrees", clampf(float(weapon.get_meta("base_cone_degrees")) * attack_area_multiplier, 1.0, 360.0))
 
 	if weapon.get("projectile_speed") != null:
-		weapon.set("projectile_speed", float(derived_parameters.get("projectile_speed", weapon.get_meta("base_projectile_speed", 520.0))))
+		weapon.set("projectile_speed", float(weapon.get_meta("base_projectile_speed", 520.0)))
 
 	if weapon.get("knockback") != null:
 		var control_multiplier := constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult") * constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
 		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context) * control_multiplier)
-
-	if weapon.get("amp_pulse_interval") != null and weapon.has_meta("base_amp_pulse_interval"):
-		weapon.set("amp_pulse_interval", maxf(0.08, float(weapon.get_meta("base_amp_pulse_interval")) * meta_interval_multiplier(meta_context)))
-
-	if weapon.get("pool_tick_interval") != null and weapon.has_meta("base_pool_tick_interval"):
-		weapon.set("pool_tick_interval", maxf(0.08, float(weapon.get_meta("base_pool_tick_interval")) * meta_interval_multiplier(meta_context)))
 
 	if weapon.get("pool_duration") != null and weapon.has_meta("base_pool_duration"):
 		weapon.set("pool_duration", maxf(0.2, float(weapon.get_meta("base_pool_duration")) * meta_duration_multiplier(meta_context)))
@@ -3651,36 +3648,30 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		charge_context["is_charged"] = float(weapon.get_meta("base_charge_seconds")) > 0.0
 		weapon.set("charge_seconds", maxf(0.0, float(weapon.get_meta("base_charge_seconds")) * meta_charge_time_multiplier(charge_context)))
 
-	if weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
-		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("beam_width") and weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
+		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * attack_area_multiplier)
 
-	if weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
-		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("wave_width") and weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
+		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * attack_area_multiplier)
 
-	if weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
-		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("suppression_width") and weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
+		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * attack_area_multiplier)
 
-	if weapon.get("max_summons") != null and str(weapon.get("attack_mode")) in ["engineer_sentry_link", "engineer_orbit_drone"]:
-		# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
-		# summon_amount (ClassWeapon._engineer_turret_limit /
-		# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
-		# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
-		# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
-		# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
-		weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
-	elif weapon.get("max_summons") != null:
-		var base_max_summons := int(weapon.get_meta("base_max_summons"))
-		var scaled_max_summons := base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0))
-		if weapon.get("max_summons_cap") != null and int(weapon.get("max_summons_cap")) > 0:
-			var summons_cap := int(weapon.get("max_summons_cap"))
-			# SCRUM-961 «Сценический усилитель»: потолок amp-деплоя выше (3→4);
-			# «Полевой чертеж»: +1 к капу deploy-устройств за каждые 6 Лидерства.
-			if str(weapon.get("attack_mode")) == "amp":
-				summons_cap += int(run_modifiers.get("amp_cap_bonus", 0.0))
-			if float(run_modifiers.get("blueprint_leadership_scaling", 0.0)) > 0.0 and bool(meta_context.get("is_device", false)):
-				summons_cap += int(floor(float(stats.get("leadership", 0.0)) / 6.0))
-			scaled_max_summons = mini(scaled_max_summons, summons_cap)
-		weapon.set("max_summons", scaled_max_summons)
+	if weapon.get("max_summons") != null:
+		# FAN-2249: ветку парка решает объявленная summon_semantics конфига, а не
+		# второй список attack_mode; счёт «обычной» ветки живёт единственной
+		# формулой AttributeContract.summon_runtime_count — рантайм и
+		# предъявление (карточки/досье/advisor) не могут разойтись.
+		if AttributeContract.weapon_summon_semantics(weapon_config) == "device":
+			# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
+			# summon_amount (ClassWeapon._engineer_turret_limit /
+			# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
+			# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
+			# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
+			# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
+			weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
+		else:
+			weapon.set("max_summons", int(AttributeContract.summon_runtime_count(weapon_config, stats, run_modifiers)))
 
 
 func _equipped_weapons() -> Array:
@@ -3709,8 +3700,12 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_attack_range", weapon.get("attack_range"))
 	if weapon.get("aoe_radius") != null and not weapon.has_meta("base_aoe_radius"):
 		weapon.set_meta("base_aoe_radius", weapon.get("aoe_radius"))
+	if weapon.get("summon_aoe_radius") != null and not weapon.has_meta("base_summon_aoe_radius"):
+		weapon.set_meta("base_summon_aoe_radius", weapon.get("summon_aoe_radius"))
 	if weapon.get("sweep_degrees") != null and not weapon.has_meta("base_sweep_degrees"):
 		weapon.set_meta("base_sweep_degrees", weapon.get("sweep_degrees"))
+	if weapon.get("cone_degrees") != null and not weapon.has_meta("base_cone_degrees"):
+		weapon.set_meta("base_cone_degrees", weapon.get("cone_degrees"))
 	if weapon.get("inner_width") != null and not weapon.has_meta("base_inner_width"):
 		weapon.set_meta("base_inner_width", weapon.get("inner_width"))
 	if weapon.get("outer_width") != null and not weapon.has_meta("base_outer_width"):

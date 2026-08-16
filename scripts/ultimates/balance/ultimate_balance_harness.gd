@@ -1,0 +1,307 @@
+class_name UltimateBalanceHarness
+extends RefCounted
+
+## FAN-1460: the measurement harness for the charge economy and the power
+## corridor.
+##
+## `measure()` produces one report row per weapon ultimate (51) with every
+## scenario resolved; `violations()` turns that report into the pass/fail
+## statement the class mechanics packs and QA read. The two are separate on
+## purpose: `violations()` judges any report it is handed, so a deliberately
+## tampered report must come back red — a harness that cannot go red would be
+## inherited green by all 17 downstream packs.
+##
+## The encounter model is normalized per weapon: an encounter contains exactly
+## the HP its own reference output clears inside the canonical window. Swinging
+## harder than there is HP removes no extra HP, which is what makes the overkill
+## scenario a real control rather than a restatement of the neutral one.
+
+const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
+const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
+
+const REFERENCE_MAX_HEALTH := 100.0
+const READY_SEARCH_LIMIT := 24
+
+## `output_factor` > 1 is attempted damage beyond the HP present (overkill);
+## `health_bars_lost` overrides the neutral damage-taken profile.
+const SCENARIOS := [
+	{"id": "neutral", "energy": 0.0, "ult_charge_multiplier": 1.0, "start_charge": 0.0, "output_factor": 1.0},
+	{"id": "high_energy", "energy": 24.0, "ult_charge_multiplier": 1.0, "start_charge": 0.0, "output_factor": 1.0},
+	{"id": "high_energy_stacked", "energy": 24.0, "ult_charge_multiplier": 1.35, "start_charge": 0.0, "output_factor": 1.0},
+	{"id": "atlas_half", "energy": 0.0, "ult_charge_multiplier": 1.0, "start_charge": 0.5, "output_factor": 1.0},
+	{"id": "atlas_full", "energy": 0.0, "ult_charge_multiplier": 1.0, "start_charge": 1.0, "output_factor": 1.0},
+	{"id": "overkill_abuse", "energy": 0.0, "ult_charge_multiplier": 1.0, "start_charge": 0.0, "output_factor": 6.0},
+	{"id": "tank_runaway", "energy": 0.0, "ult_charge_multiplier": 1.0, "start_charge": 0.0, "output_factor": 1.0, "health_bars_lost": 6.0},
+]
+
+const NEUTRAL_SCENARIO_ID := "neutral"
+const OVERKILL_SCENARIO_ID := "overkill_abuse"
+const TANK_SCENARIO_ID := "tank_runaway"
+
+
+static func scenario_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for scenario in SCENARIOS:
+		ids.append(str((scenario as Dictionary)["id"]))
+	return ids
+
+
+## One report row per fixture row, each carrying every scenario.
+static func measure(rows: Array) -> Array[Dictionary]:
+	var report: Array[Dictionary] = []
+	for raw_row in rows:
+		if not raw_row is Dictionary:
+			continue
+		var row := raw_row as Dictionary
+		var scenarios := {}
+		for raw_scenario in SCENARIOS:
+			var scenario := raw_scenario as Dictionary
+			scenarios[str(scenario["id"])] = _measure_scenario(row, scenario)
+		report.append(
+			{
+				"key": str(row.get("key", "")),
+				"class_id": str(row.get("class_id", "")),
+				"weapon_id": str(row.get("weapon_id", "")),
+				"reference_solo_dps": float(row.get("reference_solo_dps", 0.0)),
+				"reference_aoe_dps": float(row.get("reference_aoe_dps", 0.0)),
+				"reference_ehp": float(row.get("reference_ehp", 0.0)),
+				"charge_per_removed_hp": float(row.get("charge_per_removed_hp", 0.0)),
+				"total_boss_cap": float(row.get("total_boss_cap", 0.0)),
+				"power_archetype": str(row.get("power_archetype", "")),
+				"power_budget_min": float(row.get("power_budget_min", 0.0)),
+				"power_budget_max": float(row.get("power_budget_max", 0.0)),
+				"control_save_seconds": float(row.get("control_save_seconds", 0.0)),
+				"scenarios": scenarios,
+			}
+		)
+	return report
+
+
+## Every corridor, cap and abuse invariant the 17 class packs inherit. An empty
+## result is the pass statement.
+static func violations(report: Array) -> Array[String]:
+	var errors: Array[String] = []
+	if report.size() != Budget.EXPECTED_ROW_COUNT:
+		errors.append("harness.row_count: expected %d, got %d" % [Budget.EXPECTED_ROW_COUNT, report.size()])
+
+	var classes := {}
+	for raw_row in report:
+		if not raw_row is Dictionary:
+			errors.append("harness.row_type: report rows must be Dictionaries")
+			continue
+		var row := raw_row as Dictionary
+		_check_row(row, errors)
+		var class_id := str(row.get("class_id", ""))
+		if not classes.has(class_id):
+			classes[class_id] = []
+		(classes[class_id] as Array).append(row)
+
+	if classes.size() != Budget.EXPECTED_CLASS_COUNT:
+		errors.append("harness.class_count: expected %d, got %d" % [Budget.EXPECTED_CLASS_COUNT, classes.size()])
+	for class_id in classes.keys():
+		_check_class_trio(str(class_id), classes[class_id] as Array, errors)
+	return errors
+
+
+static func _check_row(row: Dictionary, errors: Array[String]) -> void:
+	var key := str(row.get("key", "?"))
+	var reference_dps := float(row.get("reference_solo_dps", 0.0))
+	if reference_dps <= 0.0:
+		errors.append("row.reference_solo_dps: %s must be positive" % key)
+	if float(row.get("reference_aoe_dps", 0.0)) <= 0.0:
+		errors.append("row.reference_aoe_dps: %s must be positive" % key)
+	if float(row.get("reference_ehp", 0.0)) <= 0.0:
+		errors.append("row.reference_ehp: %s must be positive" % key)
+	if float(row.get("charge_per_removed_hp", 0.0)) <= 0.0:
+		errors.append("row.charge_per_removed_hp: %s must be positive" % key)
+
+	var boss_cap := float(row.get("total_boss_cap", 0.0))
+	if boss_cap < Budget.BOSS_CAP_MIN or boss_cap > Budget.BOSS_CAP_MAX:
+		errors.append("row.total_boss_cap: %s = %.3f outside [%.2f, %.2f]" % [key, boss_cap, Budget.BOSS_CAP_MIN, Budget.BOSS_CAP_MAX])
+
+	var archetype := str(row.get("power_archetype", ""))
+	if archetype != Budget.POWER_ARCHETYPE_BURST and archetype != Budget.POWER_ARCHETYPE_CONTROL_SAVE:
+		errors.append("row.power_archetype: %s = '%s'" % [key, archetype])
+	elif archetype == Budget.POWER_ARCHETYPE_CONTROL_SAVE \
+			and float(row.get("control_save_seconds", 0.0)) < Budget.CONTROL_SAVE_MIN_SECONDS:
+		errors.append("row.control_save_seconds: %s below %.1fs" % [key, Budget.CONTROL_SAVE_MIN_SECONDS])
+
+	var power_min := float(row.get("power_budget_min", 0.0))
+	var power_max := float(row.get("power_budget_max", 0.0))
+	if not is_equal_approx(power_min, reference_dps * Budget.POWER_SECONDS_MIN):
+		errors.append("row.power_budget_min: %s must be %.1fs of its own output" % [key, Budget.POWER_SECONDS_MIN])
+	if not is_equal_approx(power_max, reference_dps * Budget.POWER_SECONDS_MAX):
+		errors.append("row.power_budget_max: %s must be %.1fs of its own output" % [key, Budget.POWER_SECONDS_MAX])
+	if power_max <= power_min:
+		errors.append("row.power_budget_range: %s is empty" % key)
+
+	var scenarios = row.get("scenarios")
+	if not scenarios is Dictionary:
+		errors.append("row.scenarios: %s missing scenario results" % key)
+		return
+	for scenario_id in scenario_ids():
+		if not (scenarios as Dictionary).has(scenario_id):
+			errors.append("row.scenarios.missing: %s/%s" % [key, scenario_id])
+	_check_scenarios(key, scenarios as Dictionary, errors)
+
+
+static func _check_scenarios(key: String, scenarios: Dictionary, errors: Array[String]) -> void:
+	for raw_scenario_id in scenarios.keys():
+		var scenario_id := str(raw_scenario_id)
+		var result = scenarios[raw_scenario_id]
+		if not result is Dictionary:
+			errors.append("scenario.type: %s/%s" % [key, scenario_id])
+			continue
+		var measured := result as Dictionary
+		for kind in [Budget.ENCOUNTER_NORMAL, Budget.ENCOUNTER_ELITE]:
+			var gained := float(measured.get("%s_charge" % kind, -1.0))
+			var cap := Budget.encounter_cap(kind)
+			if gained < 0.0 or gained > cap + 0.001:
+				errors.append("scenario.encounter_cap: %s/%s %s gained %.2f over cap %.2f" % [key, scenario_id, kind, gained, cap])
+		var taken := float(measured.get("normal_taken_charge", 0.0))
+		if taken > Budget.taken_channel_cap(Budget.ENCOUNTER_NORMAL) + 0.001:
+			errors.append("scenario.taken_channel_cap: %s/%s taken %.2f" % [key, scenario_id, taken])
+		# The recurring cadence — measured AFTER the first activation, so a
+		# once-per-run Atlas pre-charge cannot hide inside it.
+		var recurring := int(measured.get("recurring_encounters_to_ready", 0))
+		if recurring < Budget.MIN_ENCOUNTERS_TO_READY:
+			errors.append("scenario.recurring_cadence: %s/%s ready again after %d encounters" % [key, scenario_id, recurring])
+		var activations := int(measured.get("activations_per_encounter", 0))
+		if activations != Budget.MAX_ACTIVATIONS_PER_ENCOUNTER:
+			errors.append("scenario.activation_gate: %s/%s allowed %d activations in one encounter" % [key, scenario_id, activations])
+
+	var neutral = scenarios.get(NEUTRAL_SCENARIO_ID)
+	if not neutral is Dictionary:
+		errors.append("scenario.neutral_missing: %s" % key)
+		return
+	var neutral_result := neutral as Dictionary
+	for kind in [Budget.ENCOUNTER_NORMAL, Budget.ENCOUNTER_ELITE]:
+		var bounds := Budget.corridor(kind)
+		var gained := float(neutral_result.get("%s_charge" % kind, -1.0))
+		if gained < bounds.x - 0.001 or gained > bounds.y + 0.001:
+			errors.append("neutral.corridor: %s %s gained %.2f outside [%.1f, %.1f]" % [key, kind, gained, bounds.x, bounds.y])
+	var first_ready := int(neutral_result.get("encounters_to_ready", 0))
+	if first_ready < Budget.MIN_ENCOUNTERS_TO_READY or first_ready > Budget.NEUTRAL_ENCOUNTERS_TO_READY_MAX:
+		errors.append("neutral.readiness: %s ready after %d normal encounters" % [key, first_ready])
+
+	var overkill = scenarios.get(OVERKILL_SCENARIO_ID)
+	if overkill is Dictionary:
+		var overkill_charge := float((overkill as Dictionary).get("normal_charge", -1.0))
+		var neutral_charge := float(neutral_result.get("normal_charge", 0.0))
+		if not is_equal_approx(overkill_charge, neutral_charge):
+			errors.append("overkill.no_inflation: %s gained %.2f vs neutral %.2f" % [key, overkill_charge, neutral_charge])
+
+	var tank = scenarios.get(TANK_SCENARIO_ID)
+	if tank is Dictionary:
+		var tank_taken := float((tank as Dictionary).get("normal_taken_charge", 0.0))
+		if tank_taken > Budget.taken_channel_cap(Budget.ENCOUNTER_NORMAL) + 0.001:
+			errors.append("tank.taken_channel_cap: %s taken %.2f" % [key, tank_taken])
+
+
+## The three weapons of a class must price their ultimates against their OWN
+## output: same corridor, different absolute budget. That is what keeps the
+## solo / AoE / defense identity of the trio intact once the packs land.
+static func _check_class_trio(class_id: String, rows: Array, errors: Array[String]) -> void:
+	if rows.size() != 3:
+		errors.append("class.trio_size: %s has %d weapons" % [class_id, rows.size()])
+		return
+	var archetypes := {}
+	var boss_caps := {}
+	for raw_row in rows:
+		var row := raw_row as Dictionary
+		var reference_dps := maxf(float(row.get("reference_solo_dps", 0.0)), 0.0001)
+		var seconds := float(row.get("power_budget_max", 0.0)) / reference_dps
+		if not is_equal_approx(seconds, Budget.POWER_SECONDS_MAX):
+			errors.append("class.trio_power_ratio: %s/%s prices its ultimate at %.2fs" % [class_id, str(row.get("weapon_id", "?")), seconds])
+		archetypes[str(row.get("power_archetype", ""))] = true
+		boss_caps[snappedf(float(row.get("total_boss_cap", 0.0)), 0.0001)] = true
+	if archetypes.size() != 1:
+		errors.append("class.trio_archetype: %s mixes power archetypes" % class_id)
+	if boss_caps.size() != 1:
+		errors.append("class.trio_boss_cap: %s declares more than one boss cap" % class_id)
+
+
+static func _measure_scenario(row: Dictionary, scenario: Dictionary) -> Dictionary:
+	var normal := _simulate_encounter(row, scenario, Budget.ENCOUNTER_NORMAL)
+	var elite := _simulate_encounter(row, scenario, Budget.ENCOUNTER_ELITE)
+	return {
+		"normal_charge": float(normal["charge"]),
+		"normal_taken_charge": float(normal["taken_charge"]),
+		"elite_charge": float(elite["charge"]),
+		"elite_taken_charge": float(elite["taken_charge"]),
+		"build_multiplier": Budget.build_multiplier(
+			float(scenario.get("energy", 0.0)), float(scenario.get("ult_charge_multiplier", 1.0))
+		),
+		"encounters_to_ready": _encounters_to_ready(row, scenario, false),
+		"recurring_encounters_to_ready": _encounters_to_ready(row, scenario, true),
+		"activations_per_encounter": _activations_in_one_encounter(row, scenario),
+	}
+
+
+static func _new_ledger(row: Dictionary, scenario: Dictionary) -> Ledger:
+	var ledger := Ledger.new(row)
+	ledger.set_build(
+		float(scenario.get("energy", 0.0)), float(scenario.get("ult_charge_multiplier", 1.0))
+	)
+	ledger.apply_start_charge(float(scenario.get("start_charge", 0.0)))
+	return ledger
+
+
+## One encounter of the weapon's own normalized window.
+static func _run_encounter(ledger: Ledger, row: Dictionary, scenario: Dictionary, kind: String) -> Dictionary:
+	ledger.begin_encounter(kind)
+	var before := ledger.charge
+	var taken_before := ledger.encounter_taken_charge()
+	var hp_pool := float(row.get("reference_solo_dps", 0.0)) * Budget.encounter_seconds(kind)
+	var attempted := hp_pool * maxf(float(scenario.get("output_factor", 1.0)), 0.0)
+	# HP that is not there cannot be removed: overkill buys nothing.
+	ledger.add_removed_health(minf(attempted, hp_pool))
+	var bars := float(scenario.get("health_bars_lost", Budget.neutral_health_bars_lost(kind)))
+	ledger.add_taken_health(bars * REFERENCE_MAX_HEALTH, REFERENCE_MAX_HEALTH)
+	return {
+		"charge": ledger.charge - before,
+		"taken_charge": ledger.encounter_taken_charge() - taken_before,
+	}
+
+
+static func _simulate_encounter(row: Dictionary, scenario: Dictionary, kind: String) -> Dictionary:
+	return _run_encounter(_new_ledger(row, scenario), row, scenario, kind)
+
+
+## Normal encounters needed before the ultimate is available. With
+## `after_first_activation` the Atlas pre-charge is spent first, so the result is
+## the recurring cadence rather than the one-off run opener.
+static func _encounters_to_ready(row: Dictionary, scenario: Dictionary, after_first_activation: bool) -> int:
+	var ledger := _new_ledger(row, scenario)
+	if after_first_activation:
+		var opener := 0
+		while not ledger.is_ready() and opener < READY_SEARCH_LIMIT:
+			_run_encounter(ledger, row, scenario, Budget.ENCOUNTER_NORMAL)
+			opener += 1
+		ledger.begin_encounter(Budget.ENCOUNTER_NORMAL)
+		if not ledger.try_activate():
+			return 0
+	var encounters := 0
+	while not ledger.is_ready() and encounters < READY_SEARCH_LIMIT:
+		_run_encounter(ledger, row, scenario, Budget.ENCOUNTER_NORMAL)
+		encounters += 1
+	return encounters
+
+
+## A full bar plus a whole encounter of income must still buy exactly one cast.
+static func _activations_in_one_encounter(row: Dictionary, scenario: Dictionary) -> int:
+	var ledger := _new_ledger(row, scenario)
+	ledger.begin_encounter(Budget.ENCOUNTER_NORMAL)
+	ledger.apply_start_charge(1.0)
+	var activations := 0
+	for attempt in 4:
+		if ledger.try_activate():
+			activations += 1
+		_run_encounter_without_reset(ledger, row, scenario)
+		ledger.apply_start_charge(1.0)
+	return activations
+
+
+static func _run_encounter_without_reset(ledger: Ledger, row: Dictionary, scenario: Dictionary) -> void:
+	var hp_pool := float(row.get("reference_solo_dps", 0.0)) * Budget.NORMAL_ENCOUNTER_SECONDS
+	ledger.add_removed_health(hp_pool * maxf(float(scenario.get("output_factor", 1.0)), 0.0))

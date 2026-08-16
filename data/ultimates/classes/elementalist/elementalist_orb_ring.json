@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "class_id": "elementalist",
+  "weapon_id": "elementalist_orb_ring",
+  "profile_id": "weapon_ultimate.profile.elementalist.elementalist_orb_ring",
+  "executor_id": "weapon_ultimate.executor.elementalist.elementalist_orb_ring",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "moving_square_orbit", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.elementalist.elementalist_orb_ring",
+    "params": {
+      "orbit_radius": 212.13203435596427,
+      "beat_radius": 290.0,
+      "nova_radius": 440.0,
+      "crowd_cap": 24,
+      "beat_start": 1.0,
+      "beat_interval": 1.2,
+      "nova_at": 6.0,
+      "lifetime": 8.4,
+      "burn_damage": 9.0,
+      "frost_damage": 7.5,
+      "gale_damage": 6.0,
+      "shock_damage": 7.5,
+      "shock_chain_count": 6,
+      "shock_falloff": 0.86,
+      "nova_damage": 15.0,
+      "nova_status_bonus": 0.10,
+      "freeze_duration": 4.0,
+      "frost_slow": 0.45,
+      "knockback": 420.0,
+      "epic_displacement": 0.35,
+      "epic_duration": 0.35,
+      "boss_displacement": 0.10,
+      "boss_duration": 0.15
+    }
+  },
+  "total_boss_cap": 0.10,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}

@@ -1,0 +1,2 @@
+# Python packages required by the repository's deterministic CI/static gates.
+Pillow==11.3.0

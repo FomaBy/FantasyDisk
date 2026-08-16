@@ -1,0 +1,47 @@
+{
+  "timeline_id": "sniper_shatter_rounds.crystal_storm",
+  "scene_path": "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "sniper",
+    "key": {"weapon_id": "sniper_shatter_rounds", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.sniper.sniper_shatter_rounds",
+    "animation": {
+      "id": "weapon_ultimate.animation.sniper.sniper_shatter_rounds",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_shatter_rounds_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.sniper.sniper_shatter_rounds",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_shatter_rounds_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.sniper.sniper_shatter_rounds",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.cleanup"}
+    ],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "timing": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Хрустальный Шторм",
+    "silhouette": "five-way icy fan that ricochets once at the arena edge and returns as shard rain",
+    "motion_path": "one muzzle flash splits to five trajectories, each turns once at the edge, then releases three inward shards",
+    "timing_rhythm": "0.36s muzzle flash, 0.38s fan travel, 0.91s ricochet and shard rain, 0.45s center settle",
+    "impact_language": "five edge flares and fifteen thin crystal shards converging through center; no circular glyph",
+    "trajectory_count": 5,
+    "shards_per_trajectory": 3,
+    "required_nodes": ["PhaseNodes/Release/MuzzleFlash", "PhaseNodes/Release/FanTrajectory1", "PhaseNodes/Release/FanTrajectory5", "PhaseNodes/Active/Ricochet5", "PhaseNodes/Active/Shard15", "PhaseNodes/Recovery/CenterReturn"],
+    "scene_node_budget": {"sprites": 3, "line_segments": 23, "simultaneous_emitters": 15},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 96}
+  }
+}

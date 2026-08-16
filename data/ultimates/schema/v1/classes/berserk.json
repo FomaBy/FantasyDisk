@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 0,
+  "class_id": "berserk",
+  "profiles": [
+    {
+      "weapon_id": "sword",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.berserk.sword",
+        "title_id": "weapon_ultimate.title.berserk.sword",
+        "mechanic_id": "weapon_ultimate.mechanic.berserk.sword"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.berserk.sword",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.berserk.sword",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.berserk.sword.acquire",
+        "windup": "weapon_ultimate.phase.berserk.sword.windup",
+        "execute": "weapon_ultimate.phase.berserk.sword.execute",
+        "active": "weapon_ultimate.phase.berserk.sword.active",
+        "recover": "weapon_ultimate.phase.berserk.sword.recover",
+        "cleanup": "weapon_ultimate.phase.berserk.sword.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.berserk.sword",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.berserk.sword",
+        "animation_id": "weapon_ultimate.animation.berserk.sword",
+        "vfx_id": "weapon_ultimate.vfx.berserk.sword",
+        "sfx_id": "weapon_ultimate.sfx.berserk.sword",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.berserk.sword",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "axe",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.berserk.axe",
+        "title_id": "weapon_ultimate.title.berserk.axe",
+        "mechanic_id": "weapon_ultimate.mechanic.berserk.axe"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.berserk.axe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.berserk.axe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.berserk.axe.acquire",
+        "windup": "weapon_ultimate.phase.berserk.axe.windup",
+        "execute": "weapon_ultimate.phase.berserk.axe.execute",
+        "active": "weapon_ultimate.phase.berserk.axe.active",
+        "recover": "weapon_ultimate.phase.berserk.axe.recover",
+        "cleanup": "weapon_ultimate.phase.berserk.axe.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.berserk.axe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.berserk.axe",
+        "animation_id": "weapon_ultimate.animation.berserk.axe",
+        "vfx_id": "weapon_ultimate.vfx.berserk.axe",
+        "sfx_id": "weapon_ultimate.sfx.berserk.axe",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.berserk.axe",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "hammer",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.berserk.hammer",
+        "title_id": "weapon_ultimate.title.berserk.hammer",
+        "mechanic_id": "weapon_ultimate.mechanic.berserk.hammer"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.berserk.hammer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.berserk.hammer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.berserk.hammer.acquire",
+        "windup": "weapon_ultimate.phase.berserk.hammer.windup",
+        "execute": "weapon_ultimate.phase.berserk.hammer.execute",
+        "active": "weapon_ultimate.phase.berserk.hammer.active",
+        "recover": "weapon_ultimate.phase.berserk.hammer.recover",
+        "cleanup": "weapon_ultimate.phase.berserk.hammer.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.berserk.hammer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.berserk.hammer",
+        "animation_id": "weapon_ultimate.animation.berserk.hammer",
+        "vfx_id": "weapon_ultimate.vfx.berserk.hammer",
+        "sfx_id": "weapon_ultimate.sfx.berserk.hammer",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.berserk.hammer",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

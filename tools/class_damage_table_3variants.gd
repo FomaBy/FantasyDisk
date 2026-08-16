@@ -116,7 +116,13 @@ static func _weapon_metrics(class_id: String, weapon_id: String, weapon: Diction
 	}
 
 
-static func _optimized_stats(class_id: String, base_stats: Dictionary) -> Dictionary:
+static func optimized_stats_for_class(class_id: String, base_stats := {}) -> Dictionary:
+	if base_stats.is_empty():
+		base_stats = PD.base_stats(class_id)
+	return _optimized_stats_impl(class_id, base_stats, false)
+
+
+static func _optimized_stats_impl(class_id: String, base_stats: Dictionary, include_ultimate: bool) -> Dictionary:
 	var stats := base_stats.duplicate(true)
 	for _point in range(LEVEL20_POINTS):
 		var best_stat := str(StatFormulas.BASE_STAT_ORDER[0])
@@ -125,12 +131,33 @@ static func _optimized_stats(class_id: String, base_stats: Dictionary) -> Dictio
 			var stat_id := str(stat_id_value)
 			var candidate := stats.duplicate(true)
 			candidate[stat_id] = float(candidate.get(stat_id, 0.0)) + 1.0
-			var score := float(_build_row(class_id, "candidate", candidate).get("score", 0.0))
+			var score := float(_build_row(class_id, "candidate", candidate).get("score", 0.0)) if include_ultimate else _trio_sustain_score(class_id, candidate)
 			if score > best_score + 0.0001 or (absf(score - best_score) <= 0.0001 and stat_id < best_stat):
 				best_score = score
 				best_stat = stat_id
 		stats[best_stat] = float(stats.get(best_stat, 0.0)) + 1.0
 	return stats
+
+
+# Backward-compatible alias for older reporting callers.
+static func _optimized_stats(class_id: String, base_stats: Dictionary) -> Dictionary:
+	return _optimized_stats_impl(class_id, base_stats, true)
+
+
+static func _trio_sustain_score(class_id: String, stats: Dictionary) -> float:
+	var total := 0.0
+	var count := 0.0
+	for weapon_id_value in PD.weapon_ids(class_id):
+		var weapon := PD.weapon(class_id, str(weapon_id_value))
+		var metrics := PD.estimate_weapon_budget_for_stats(class_id, weapon, stats, true, {}, false)
+		var crowd := PD.estimate_crowd_clear_budget_for_stats(class_id, weapon, 20, stats, true, {}, false)
+		var tuning: Dictionary = weapon.get("budget_tuning", {})
+		var solo_target := maxf(float(tuning.get("solo_target", PD.BALANCE_BASE_SOLO_DPS)), 0.001)
+		var aoe_target := maxf(float(tuning.get("aoe_target", PD.BALANCE_BASE_AOE_DPS)), 0.001)
+		var crowd_target := maxf(float(crowd.get("target_dps", aoe_target)), 0.001)
+		total += (float(metrics.get("solo_dps", 0.0)) / solo_target + float(metrics.get("aoe_dps", 0.0)) / aoe_target + float(crowd.get("crowd_dps", 0.0)) / crowd_target) / 3.0
+		count += 1.0
+	return total / maxf(count, 1.0)
 
 
 static func _random_average_build(class_id: String, base_stats: Dictionary) -> Dictionary:

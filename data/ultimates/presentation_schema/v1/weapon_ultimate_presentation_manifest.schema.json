@@ -1,0 +1,43 @@
+{
+  "schema_id": "fantasydisk.weapon_ultimate_presentation_manifest",
+  "schema_version": 1,
+  "action": "ultimate",
+  "required_asset_channels": [
+    "animation",
+    "vfx",
+    "sfx"
+  ],
+  "required_phase_groups": [
+    [
+      "windup"
+    ],
+    [
+      "release"
+    ],
+    [
+      "active",
+      "impact"
+    ],
+    [
+      "recovery"
+    ],
+    [
+      "cancel"
+    ]
+  ],
+  "phase_id_bindings": {
+    "windup": "windup",
+    "release": "execute",
+    "active": "active",
+    "impact": "active",
+    "recovery": "recover",
+    "cancel": "cleanup"
+  },
+  "pivot_range": [
+    0.0,
+    1.0
+  ],
+  "max_timeline_seconds": 10.0,
+  "headless_fallback": "no_op",
+  "runtime_manifest": false
+}

@@ -1,0 +1,238 @@
+{
+	"class_id": "berserk",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 20
+			},
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 31.0148,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 19.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 341146.5579,
+				"hits": 29630
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 27,
+						"hits": 10
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 303,
+						"hits": 10
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.4667000000000001
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 20
+			},
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 31.0148,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 19.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 339480.9463,
+				"hits": 29530
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 115,
+						"hits": 10
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 391,
+						"hits": 10
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				2.0333
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 20
+			},
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 29.2465,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60,
+				"process_delta_seconds": 0.016666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8,
+				"trusted": true
+			},
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 253002.7108,
+				"hits": 29530
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 149,
+						"hits": 10
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 425,
+						"hits": 10
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20
+			}
+		}
+	}
+}

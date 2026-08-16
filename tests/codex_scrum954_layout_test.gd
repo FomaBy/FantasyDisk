@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const LoreData := preload("res://scripts/lore_data.gd")
+const Meta := preload("res://scripts/meta_progression.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
@@ -59,6 +60,10 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	var main := MAIN_SCENE.instantiate()
 	viewport.add_child(main)
 	await process_frame
+	# Non-first unread entries must keep the canonical list/dossier order.
+	main.meta_state = Meta.default_state()
+	main.meta_state = Meta.record_codex_discovery(main.meta_state, "monsters", "ash_marksman")
+	main.meta_state = Meta.record_codex_discovery(main.meta_state, "artifacts", "rift_key")
 	main.ui._show_codex_screen()
 	for _frame_index in range(6):
 		await process_frame
@@ -239,8 +244,9 @@ func _expected_entries(section_id: String) -> Array:
 				var texture := UIIconRegistry.texture_for(str(entry["id"]))
 				result.append({"title": str(entry["title"]), "texture": texture.resource_path if texture != null else ""})
 		"attributes":
+			# FAN-1927: канонические оси несут icon_id реестра (axis id != derived id).
 			for entry in CodexData.attributes():
-				var texture := UIIconRegistry.texture_for(str(entry["id"]))
+				var texture := UIIconRegistry.texture_for(str(entry.get("icon_id", entry["id"])))
 				result.append({"title": str(entry["title"]), "texture": texture.resource_path if texture != null else ""})
 		"ascension":
 			for entry in CodexData.ascensions():

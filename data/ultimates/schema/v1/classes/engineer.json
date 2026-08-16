@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 8,
+  "class_id": "engineer",
+  "profiles": [
+    {
+      "weapon_id": "engineer_sentry_wrench",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.engineer.engineer_sentry_wrench",
+        "title_id": "weapon_ultimate.title.engineer.engineer_sentry_wrench",
+        "mechanic_id": "weapon_ultimate.mechanic.engineer.engineer_sentry_wrench"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.engineer.engineer_sentry_wrench",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.engineer.engineer_sentry_wrench",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.acquire",
+        "windup": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.windup",
+        "execute": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.execute",
+        "active": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.active",
+        "recover": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.recover",
+        "cleanup": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.engineer.engineer_sentry_wrench",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.engineer.engineer_sentry_wrench",
+        "animation_id": "weapon_ultimate.animation.engineer.engineer_sentry_wrench",
+        "vfx_id": "weapon_ultimate.vfx.engineer.engineer_sentry_wrench",
+        "sfx_id": "weapon_ultimate.sfx.engineer.engineer_sentry_wrench",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.engineer.engineer_sentry_wrench",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "engineer_repair_drone",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.engineer.engineer_repair_drone",
+        "title_id": "weapon_ultimate.title.engineer.engineer_repair_drone",
+        "mechanic_id": "weapon_ultimate.mechanic.engineer.engineer_repair_drone"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.engineer.engineer_repair_drone",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.engineer.engineer_repair_drone",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.engineer.engineer_repair_drone.acquire",
+        "windup": "weapon_ultimate.phase.engineer.engineer_repair_drone.windup",
+        "execute": "weapon_ultimate.phase.engineer.engineer_repair_drone.execute",
+        "active": "weapon_ultimate.phase.engineer.engineer_repair_drone.active",
+        "recover": "weapon_ultimate.phase.engineer.engineer_repair_drone.recover",
+        "cleanup": "weapon_ultimate.phase.engineer.engineer_repair_drone.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.engineer.engineer_repair_drone",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.engineer.engineer_repair_drone",
+        "animation_id": "weapon_ultimate.animation.engineer.engineer_repair_drone",
+        "vfx_id": "weapon_ultimate.vfx.engineer.engineer_repair_drone",
+        "sfx_id": "weapon_ultimate.sfx.engineer.engineer_repair_drone",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.engineer.engineer_repair_drone",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "engineer_pressure_mines",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.engineer.engineer_pressure_mines",
+        "title_id": "weapon_ultimate.title.engineer.engineer_pressure_mines",
+        "mechanic_id": "weapon_ultimate.mechanic.engineer.engineer_pressure_mines"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.engineer.engineer_pressure_mines",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.engineer.engineer_pressure_mines",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.engineer.engineer_pressure_mines.acquire",
+        "windup": "weapon_ultimate.phase.engineer.engineer_pressure_mines.windup",
+        "execute": "weapon_ultimate.phase.engineer.engineer_pressure_mines.execute",
+        "active": "weapon_ultimate.phase.engineer.engineer_pressure_mines.active",
+        "recover": "weapon_ultimate.phase.engineer.engineer_pressure_mines.recover",
+        "cleanup": "weapon_ultimate.phase.engineer.engineer_pressure_mines.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.engineer.engineer_pressure_mines",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.engineer.engineer_pressure_mines",
+        "animation_id": "weapon_ultimate.animation.engineer.engineer_pressure_mines",
+        "vfx_id": "weapon_ultimate.vfx.engineer.engineer_pressure_mines",
+        "sfx_id": "weapon_ultimate.sfx.engineer.engineer_pressure_mines",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.engineer.engineer_pressure_mines",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

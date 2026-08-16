@@ -40,11 +40,11 @@ download_url = "https://t.me/your_channel"
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version X.Y.Z --dry-run
+  --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version X.Y.Z
+  --version <version>
 python3 skills/codex/fantasydisk-release-director/scripts/release_publish.py \
-  --version X.Y.Z
+  --version <version>
 ```
 
 Скрипты fail closed, если durable release не верифицирован, отсутствует один из

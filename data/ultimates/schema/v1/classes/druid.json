@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "druid",
+  "class_order": 16,
+  "profiles": [
+    {
+      "weapon_id": "summon_amulet",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.druid.summon_amulet",
+        "title_id": "weapon_ultimate.title.druid.summon_amulet",
+        "mechanic_id": "weapon_ultimate.mechanic.druid.summon_amulet"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.druid.summon_amulet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.druid.summon_amulet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.druid.summon_amulet.acquire",
+        "windup": "weapon_ultimate.phase.druid.summon_amulet.windup",
+        "execute": "weapon_ultimate.phase.druid.summon_amulet.execute",
+        "active": "weapon_ultimate.phase.druid.summon_amulet.active",
+        "recover": "weapon_ultimate.phase.druid.summon_amulet.recover",
+        "cleanup": "weapon_ultimate.phase.druid.summon_amulet.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.druid.summon_amulet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.druid.summon_amulet",
+        "animation_id": "weapon_ultimate.animation.druid.summon_amulet",
+        "vfx_id": "weapon_ultimate.vfx.druid.summon_amulet",
+        "sfx_id": "weapon_ultimate.sfx.druid.summon_amulet",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.druid.summon_amulet",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "briar_staff",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.druid.briar_staff",
+        "title_id": "weapon_ultimate.title.druid.briar_staff",
+        "mechanic_id": "weapon_ultimate.mechanic.druid.briar_staff"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.druid.briar_staff",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.druid.briar_staff",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.druid.briar_staff.acquire",
+        "windup": "weapon_ultimate.phase.druid.briar_staff.windup",
+        "execute": "weapon_ultimate.phase.druid.briar_staff.execute",
+        "active": "weapon_ultimate.phase.druid.briar_staff.active",
+        "recover": "weapon_ultimate.phase.druid.briar_staff.recover",
+        "cleanup": "weapon_ultimate.phase.druid.briar_staff.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.druid.briar_staff",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.druid.briar_staff",
+        "animation_id": "weapon_ultimate.animation.druid.briar_staff",
+        "vfx_id": "weapon_ultimate.vfx.druid.briar_staff",
+        "sfx_id": "weapon_ultimate.sfx.druid.briar_staff",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.druid.briar_staff",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "raven_totem",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.druid.raven_totem",
+        "title_id": "weapon_ultimate.title.druid.raven_totem",
+        "mechanic_id": "weapon_ultimate.mechanic.druid.raven_totem"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.druid.raven_totem",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.druid.raven_totem",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.druid.raven_totem.acquire",
+        "windup": "weapon_ultimate.phase.druid.raven_totem.windup",
+        "execute": "weapon_ultimate.phase.druid.raven_totem.execute",
+        "active": "weapon_ultimate.phase.druid.raven_totem.active",
+        "recover": "weapon_ultimate.phase.druid.raven_totem.recover",
+        "cleanup": "weapon_ultimate.phase.druid.raven_totem.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.druid.raven_totem",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.druid.raven_totem",
+        "animation_id": "weapon_ultimate.animation.druid.raven_totem",
+        "vfx_id": "weapon_ultimate.vfx.druid.raven_totem",
+        "sfx_id": "weapon_ultimate.sfx.druid.raven_totem",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.druid.raven_totem",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

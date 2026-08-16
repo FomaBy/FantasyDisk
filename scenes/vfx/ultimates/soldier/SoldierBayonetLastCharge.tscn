@@ -1,0 +1,219 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_bayonet.png" id="1_bayonet"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_last_charge"]
+resource_name = "ultimate"
+length = 4.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WhistleBrace:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.28, 0.48, 0.9, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.2, 0.9, 0.6, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ChargeCorridor:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.48, 0.72, 3.2, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.5, 1.0, 0.8, 0.3, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("RankOne:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.72, 1.5, 2.9, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 30), Vector2(0, 30), Vector2(0, -230), Vector2(0, -230), Vector2(0, 20), Vector2(0, 30)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("RankOne:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.71, 0.72, 2.9, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.4, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("RankTwo:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.35, 2.1, 3.1, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-62, 46), Vector2(-62, 46), Vector2(-62, -214), Vector2(-62, -214), Vector2(-62, 34), Vector2(-62, 46)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("RankTwo:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.34, 1.35, 3.1, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.4, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("RankThree:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 2, 2.75, 3.2, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(62, 46), Vector2(62, 46), Vector2(62, -214), Vector2(62, -214), Vector2(62, 34), Vector2(62, 46)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("RankThree:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1.99, 2, 3.2, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.4, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("CrossedBayonetImpact:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 2.55, 2.6, 3, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.5, 0.0, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("FrontalGuard:modulate:a")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.7, 0.72, 3.4, 3.6, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.85, 0.7, 0.2, 0.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("RallySalute:modulate:a")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 3.5, 3.6, 3.9, 4.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.5, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_last_charge"]
+_data = {"ultimate": SubResource("Animation_last_charge")}
+
+[node name="SoldierBayonetLastCharge" type="Node2D"]
+metadata/ultimate_id = "soldier/soldier_bayonet"
+metadata/silhouette = "three_offset_ranks_of_ghost_infantry_holding_levelled_bayonets"
+metadata/motion_path = "three_time_offset_phalanx_charges_down_one_aimed_corridor_without_hero_displacement"
+metadata/impact_language = "crossed_bayonet_pin_then_frontal_guard_and_rally_salute"
+metadata/max_visual_nodes = 8
+metadata/crowd_cap = 18
+metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved bayonet art."
+
+[node name="WhistleBrace" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.72, 0.82, 0.96, 0.36)
+polygon = PackedVector2Array(-30, 34, 0, -46, 30, 34)
+modulate = Color(1, 1, 1, 0.2)
+
+[node name="ChargeCorridor" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 40, 0, -240)
+width = 120.0
+default_color = Color(0.58, 0.68, 0.88, 0.22)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FrontalGuard" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-74, -22, -38, -42, 0, -50, 38, -42, 74, -22)
+width = 11.0
+default_color = Color(0.78, 0.88, 1, 0.8)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="RankOne" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_bayonet")
+position = Vector2(0, 30)
+rotation = -1.5708
+scale = Vector2(0.34, 0.34)
+modulate = Color(0.86, 0.92, 1, 0)
+
+[node name="RankTwo" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_bayonet")
+position = Vector2(-62, 46)
+rotation = -1.4
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.8, 0.88, 1, 0)
+
+[node name="RankThree" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_bayonet")
+position = Vector2(62, 46)
+rotation = -1.74
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.8, 0.88, 1, 0)
+
+[node name="CrossedBayonetImpact" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-70, -266, 0, -206, 70, -146, 70, -266, 0, -206, -70, -146)
+width = 13.0
+default_color = Color(0.92, 0.96, 1, 0.94)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="RallySalute" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.82, 0.9, 1, 0.5)
+polygon = PackedVector2Array(-46, 40, -34, -34, 0, -60, 34, -34, 46, 40)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_last_charge")}
+autoplay = "ultimate"

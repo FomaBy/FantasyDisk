@@ -1,534 +1,109 @@
-# Agent Role Boundaries And Handoffs
+# FantasyDisk role boundaries and handoffs
 
-Обновлено: 2026-07-03
+Updated: 2026-08-01
 
-Этот документ задает правило работы для всех специализированных чатов FantasyDisk:
-`Design`, `Back-end`, `Animator`, `QA`.
+One issue has one live owner and one non-overlapping locked scope. Roles may
+collaborate through independently acceptable child issues, not by editing the
+same files or assets concurrently.
 
-Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Активна текущая Multica board / release target (`0.2.1` на 2026-07-03; всегда
-проверять live Multica board перед dispatch/claim): v0.1.5 выпущен, feature block 0.1.5
-снят. Плановые версии `0.1.8` и `0.1.9` отменены/superseded; новые
-tasks/fixVersions/release notes используют live active board/release
-(`0.2.1` на момент обновления) и далее `0.2.2`, `0.2.3`, ... С 2026-07-13
-Multica проект `FantasyDisk` (issues `FAN-*`) является authoritative task
-queue/status/owner source; local task files/board — mirrors/evidence only.
-Legacy Jira (SCRUM-*) — read-only historical archive (см.
-docs/process/jira_to_multica_cutover.md).
-Директива пользователя 2026-07-03: все задачи, которые пользователь добавляет
-в любые чаты, сразу заводятся в active Multica board; backlog допустим только при
-явном freeze/hold marker. Новые задачи текущего цикла берутся только из
-активной Multica board. PM/Documentation dispatcher является единственным writer
-назначения implementation-задач: role agents получают одну issue с exact
-`assignee_id`, но не берут eligible/unassigned работу самостоятельно. Узкое
-исключение: QA Codex Sol — единственный writer review-очереди и может выбрать
-одну eligible parent issue уже в `in_review`, оформив ownership отдельной QA
-child без изменения implementation assignee. Live Multica ACL не разрешает
-agent actor self-assignment, поэтому QA child может оставаться unassigned только
-при полном metadata claim, описанном ниже.
-`docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
-и dashboard/cache.
+## Authority map
 
-При взятии задачи исполнитель сначала обновляет Multica issue/comment/status, затем
-локальный task mirror (`Статус: in_progress`) при наличии. По завершении —
-Multica + mirror `done` (или `in_review`) с коротким резюме результата. Закрытие
-задачи — ответственность исполнителя/ревьюера: dispatcher не ставит `done` за
-агента, а только синхронизирует уже записанный в Multica/task результат или QA-вердикт.
+| Role | Owns | Must not do |
+| --- | --- | --- |
+| PM | outcome, CUE/Fibonacci, AC, dependencies, complexity, routing, QA/rework readiness | assign delivery agents, launch lifecycle, implement product scope, perform independent QA |
+| Qwen dispatcher | deterministic assignment and lifecycle from PM-ready metadata | estimate, change AC/scope/routing, implement, test, interpret product ambiguity |
+| Developer | one assigned implementation scope, tests/docs, pushed candidate evidence | self-claim, dispatch, select QA, review its own work independently |
+| QA | one assigned exact-SHA child and independent verdict | self-select parent, repair production code, allocate rework, accept stale SHA |
+| Design/UI | visual system, mockup/art package, screen/layout evidence in assigned scope | backend/gameplay changes outside the handoff |
+| Animation | motion/source frames, runtime animation integration, animation evidence | unrelated UI/backend ownership |
 
-Любой агент, меняющий task status или создающий handoff/bug/QA task, обязан
-сначала проверить/создать `Multica: FAN-*`, обновить Multica status/comment, затем
-обновить локальный mirror.
+Capability labels do not override the assigned issue, active locks, reviewer
+independence, quota, or capacity.
 
-## Живая Синхронизация Multica (директива пользователя 2026-06-13)
+## Ownership check
 
-Пользователь управляет разработкой по Multica — она ОБЯЗАНА всегда отражать
-реальность. На каждом шаге работы агент держит Multica синхронной:
-- новая задача → сначала Multica issue, затем локальный `.md`/board mirror;
-- взял задачу → Multica `in_progress`/comment с owner/thread/locked paths, затем mirror;
-- завершил → `done` + sync (тикет `in_review` → после QA PASSED `done`);
-- **передаёшь основную работу другому агенту** → создаёшь/обновляешь Multica issue
-  handoff'а И комментарием в ИСХОДНОМ Multica-тикете отмечаешь, кому и что передано
-  (ключ handoff'а), затем локальный handoff-`.md` mirror при необходимости;
-- заблокировал/дубль/superseded → отрази статусом и комментарием в Multica.
-Правило: «не закрыл/не передал в Multica — работа не считается сделанной».
+Before mutation, read:
 
-## Главное Правило
+- issue status and assignee;
+- acceptance criteria, dependencies, metadata, and comments;
+- active run/task for the proposed owner;
+- locked files, assets, scenes, screens, and resources;
+- repository/worktree dirty state;
+- exact candidate SHA for review.
 
-Каждый агент делает только свою часть работы. Если для завершения задачи нужен кусок работы другого специалиста, агент не должен сам делать чужую часть "как получится". Он должен:
+If evidence conflicts, do not take or resend the task. Record the exact blocker
+or return it to PM readiness; never resolve a race by adding a second owner.
 
-1. Выполнить свою часть.
-2. Создать или обновить Multica issue/handoff comment для другого специалиста.
-3. Создать или обновить локальную `.md` mirror-задачу в `docs/tasks/`, если
-   нужны подробная спецификация или evidence.
-4. Четко описать, что нужно другому специалисту.
-5. Передать задачу в нужный чат.
-6. В своей финалке указать, что передано и куда.
+## Discipline boundaries
 
-Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
+### Backend/gameplay
 
-## Single-owner / Dispatcher Assignment Lock
+Own GDScript/runtime logic, data configuration, balance implementation, tests,
+and code-facing docs. Request separate UI art, animation, release, or QA children
+when those outcomes can be accepted independently.
 
-Новая работа попадает к исполнителю только из активной Multica board. Локальная
-доска не является очередью. Роль-агенты не выбирают `new` rows из
-`docs/process/task_board.md` и не claim'ят unassigned issues. Единственный
-dispatcher резервирует ровно одну parked Multica issue (`FAN-*`) exact UUID
-исполнителя, перепроверяет assignee/status, пишет lock comment и только затем
-enqueue'ит её переходом в `todo`:
+### UI/design
 
-```bash
-multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
-multica issue get <FAN-id> --output json
-multica issue comment add <FAN-id> --content-file ./assignment.md
-multica issue status <FAN-id> todo
-```
+Own mockups, content zones, responsive geometry, visual asset source packages,
+and visual evidence. Use `fantasydisk-ui-director`. Backgrounds use the built-in
+image generator; non-background UI art uses PixelLab. Backend integration may
+be a separate child when it changes gameplay/runtime contracts.
 
-Worker принимает только issue со своим exact `assignee_id`, повторно проверяет
-comments/locks, переводит её в `in_progress` и обновляет локальный `.md`/board
-mirror только как bookkeeping. Свободная issue, status change без assignee или
-второй dispatcher не дают права начать работу.
+### Animation
 
-PM/Documentation dispatcher остаётся единственным writer назначения до появления
-server-side compare-and-swap claim; параллельные dispatchers запрещены.
+Own PixelLab animation/source packs, normalization, SpriteFrames, directional
+state integration, and animation evidence. Do not replace art direction or
+gameplay behavior without an explicit issue scope.
 
-QA lane имеет отдельного единственного writer: QA Codex Sol
-(`f992a646-a8ea-4935-ba94-212595803052`, runtime concurrency `1`). В queue-sweep
-он может self-select только parent в `in_review` после полного duplicate/SHA/
-dependency/lock audit, написать parent claim comment и создать/переиспользовать
-свою QA child. Штатный ownership для unassigned child доказывается только exact
-metadata `qa_owner_id`, `qa_run_id`, `qa_candidate_sha`,
-`qa_claim_mode=autonomous_unassigned`, owner/run/SHA comment и live current run.
-QA перечитывает все сигналы до прямого `backlog → in_progress`; conflict/stale
-SHA отменяет claim. General dispatcher считает такой metadata claim живым, не
-создаёт конкурирующую child и не выдаёт ту же проверку другому reviewer. Это
-исключение не распространяется на implementation issues, локальные board rows
-или других role agents.
+### QA
 
-Для параллельной работы Codex и Claude каждая активная задача должна иметь
-execution-lane metadata:
+Own acceptance evidence and verdict for the assigned exact candidate. QA may
+create evidence/probes that do not modify production code. Confirmed defects are
+reported to PM for bounded estimation and Qwen dispatch.
+
+## Handoff content
+
+A cross-role child or handoff includes:
 
 ```text
-Контур: Codex | Claude
-Owner: <роль>/<thread или worker> | unassigned
-Thread: <Codex thread id> | <Claude chat/worker id> | n/a
-Locked paths: <основные файлы/папки/ассеты/экраны>
+Parent issue:
+Expected result:
+In scope:
+Out of scope:
+Owned/locked paths or assets:
+Inputs and exact candidate/source SHA:
+Acceptance criteria:
+Required evidence/checks:
+Dependencies:
+Recommended role/lane:
 ```
 
-Перед dispatch или взятием задачи обязательно проверить:
-
-- Multica issue: status, assignee, labels, board, comments, linked issues;
-- строку `docs/process/task_board.md`;
-- `Статус`, `Исполнитель`, `Dispatch`, `Owner`, `Thread` и свежие логи в task-файле;
-- `Контур` и `Locked paths` в task-файле или board note;
-- Multica key/status/комментарии в issue timeline;
-- последние сообщения всех role threads этой роли;
-- dirty worktree и пересекающиеся файлы/ассеты/экраны.
-
-Задачу нельзя брать или повторно отправлять, если есть хотя бы один сигнал
-активного владельца: `in_progress`, свежий dispatch note, thread id, Multica
-assignee/comment, незавершённый role-thread heartbeat по этой задаче, или
-пересечение основных файлов/ассетов с активной задачей. В сомнительном случае
-dispatcher оставляет задачу без dispatch и пишет Multica/PM/board note вместо параллельной
-работы.
-
-При dispatcher assignment или direct-control ownership owner фиксируется явно:
-
-- в task-файле: `Dispatch: отправлено <Role>/<Thread name> (<thread id>) <YYYY-MM-DD HH:MM>`;
-- в task-файле: `Контур`, `Owner`, `Thread`, `Locked paths` должны совпадать с
-  фактическим исполнителем и scope;
-- на board: роль/примечание должны показывать конкретного владельца, если таких
-  владельцев несколько;
-- в Multica: status/comment должен отражать, кто взял работу, каким способом
-  (`dispatcher assignment` или `direct control`), lane/role/thread-or-worker и какой handoff
-  создан, если работа передана.
-
-Active claim health is mandatory. `in_progress` means a live worker is still
-responsible now, not that somebody once intended to work on the issue.
-
-- The claim/start comment must include owner/thread, lane, locked paths,
-  branch/worktree, and next verification step.
-- Long work requires a Multica heartbeat at least every 60 minutes and before the
-  worker switches context or ends the run.
-- A worker may hold only one unrelated active issue. Multiple active Multica issues
-  require an explicit dispatcher comment that they are one combined scope with
-  shared locked paths.
-- Before stopping, the worker must move the issue to a truthful state:
-  `in_review` with branch/commit/tests, `done` only after QA PASSED,
-  `todo` if released, or blocked/handoff with a precise reason.
-- Dispatcher cleanup may release stale claims back to `todo` when Multica
-  lacks a fresh heartbeat/result, active worker evidence, or single-owner
-  consistency.
-
-Disk cleanup is also mandatory. Any role agent or QA worker that creates a
-separate worktree/clone/cache must delete it after the result is pushed and Multica
-is updated. The final task report must include `Disk cleanup:` with removed
-paths or locked leftovers. Disposable paths include `D:\FantasyDisk_worktrees\*`,
-`D:\FantasyDisk_qa\*`, per-issue (`*FAN-*`) worktrees, `.godot/`, `.vs/`, `__pycache__/`,
-and untracked Godot `.import`/`.uid` sidecars. Do not remove committed evidence,
-runtime assets, the main repository, or unrelated user files.
-
-Codex thread cleanup is mandatory for one-off worker threads. After Multica/GitHub,
-local mirrors, memory, tests/evidence, and disk cleanup are truthful, an
-automation-created Codex worker must archive its own current thread by calling
-`codex_app.set_thread_archived` with `archived: true` and no `threadId`. Treat
-this as the last tool action before the final response. Permanent
-dispatcher/watch chats stay unarchived; do not archive active/running workers or
-threads whose ownership/status is unclear. Final reports should include
-`Thread cleanup:` with the archive result.
-
-## Codex И Claude Параллельно
-
-Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной
-задачей, проблемой или locked path.
-
-- Codex role thread работает автономно только если задача имеет lane
-  `Контур: Codex` в description/dispatcher comment и была assigned/dispatched на
-  этот thread либо имеет подтверждённый direct-control owner comment; optional
-  label `codex` не заменяет ownership. Свежего Claude/OtherAI owner/comment по
-  тому же scope быть не должно.
-- Claude Code/Claude worker работает автономно только если задача имеет lane
-  `Контур: Claude` и была assigned этим worker, или
-  является отдельной review/bug задачей после Codex-result.
-- Нельзя превращать review в параллельную реализацию. Claude review Codex-работы
-  начинается после Codex `done/review`, а найденные проблемы оформляются как
-  отдельные `bug_` или follow-up tasks с собственным owner.
-- Если Codex видит, что Claude уже изменяет один из locked paths, Codex не
-  начинает работу: помечает задачу `blocked` или оставляет `new` с note о
-  конфликте owner/scope.
-- Если Claude видит `Контур: Codex`, `Dispatch` на Codex thread или Codex WIP в
-  Multica/task mirror, он не берёт этот issue и не правит те же файлы без
-  отдельной review/bug задачи.
-- Если оба контура нужны в одной фиче, PM делит работу на цепочку задач:
-  source/design -> runtime/backend -> animation -> QA/review. Каждая задача имеет
-  свой owner и свои locked paths; handoff связывает их через Multica comments.
-- Documentation dispatcher не делает реализацию и не закрывает работу за role
-  agents. Его автономия ограничена routing/sync/dedupe/owner notes.
-
-Dirty worktree считается активным контекстом разработки. Агент может продолжать
-только свои изменения или явно связанные файлы своей задачи. Любые чужие dirty
-files в locked paths другого контура блокируют старт до результата owner или
-новой dispatcher-разбивки.
-
-## Design Pool: Design main и Designer 2
-
-`Design main` и `Designer 2` — два отдельных исполнителя, а не одна общая
-очередь. У Design-задачи в любой момент может быть только один активный владелец.
-Перед dispatcher assignment Design-задача должна получить worker scope
-`design-main` или `designer2` в description/dispatcher comment. Optional Multica
-label с тем же значением разрешён для поиска, но label сам по себе не даёт права
-на работу и его отсутствие не блокирует issue с exact assignee и scope comment.
-
-- `Design main` обычно получает крупные visual direction/UI-source/style-anchor
-  задачи, где важны цельный арт-дирекшен, mockup/spec, источники и handoff.
-- `Designer 2` обычно получает параллельные, файл-изолированные Design-задачи:
-  cleanup, отдельные asset packs, visual QA fixes, source-sheet preparation,
-  повторяемые генерации по уже принятому стилю.
-- Designer 2 не берёт задачу, если Design main уже упомянут в `Dispatch`,
-  `Исполнитель`, результате или свежей role-thread истории, даже если board row
-  всё ещё выглядит `new/review`.
-- Design main не берёт задачу, если Designer 2 уже указан владельцем или есть
-  активная Designer 2 работа с тем же экраном, source pack, frame kit, character
-  set или asset directory.
-- Второй дизайнер может делать review только по явному dispatch/review note от
-  PM/dispatcher. Review не означает право переписывать source package без новой
-  задачи или handoff.
-
-## Asset Backup Hygiene
-
-Архивные копии игровых PNG/ресурсов внутри репозитория не должны входить в
-Godot import scope и не должны включать Godot `.import` sidecars.
-`docs/design/backups/` держит `.gdignore`, а `build/` уже исключен из импорта;
-новые backup-папки должны сохранять это правило. При создании backups копируйте
-исходный ассет и служебные manifest/preview-файлы, но не копируйте
-`<asset>.import`: эти sidecar файлы содержат UID живого ресурса и при попадании
-в import scope создают `UID duplicate detected` warnings. Если backup уже
-содержит `.import`, его нужно удалить или держать вне Godot import scope; живой
-ассет при необходимости перегенерирует свой `.import` сам.
-
-## Design
-
-ПРАВИЛО «UI не наползает» (пользователь, 2026-06-12): любой UI/HUD-лейаут
-проектируется так, чтобы элементы не пересекались ни на одном поддерживаемом
-разрешении (включая узкие 1152x648 и широкие-низкие окна). Это требование
-acceptance для Design И Back-end UI-работ; QA проверяет фактические rect'ы
-и заваливает задачу при пересечении.
-
-ПРАВИЛО «контент только в пустой зоне фрейма» (пользователь, 2026-06-14):
-нельзя накладывать элементы интерфейса на декоративную рамку фрейма ни при
-каких обстоятельствах. Кнопки, герои/портреты, области выбора, иконки, текст,
-карточки, радары, миниатюры и любые интерактивные или информационные элементы
-размещаются только во внутренней пустой зоне фрейма: прозрачном центре, плоской
-внутренней подложке или явно заданной safe-area. Декоративные борта, углы,
-самоцветы, шипы, печати, гребни, металл и орнамент должны оставаться полностью
-видимыми и не перекрытыми. Design обязан задавать content-zone/margins для
-каждого UI frame; Back-end обязан соблюдать их в layout; QA обязан завалить
-задачу при любом наложении контента на рамку, даже если no-overlap между
-отдельными плашками прошёл.
-
-Design отвечает за:
-
-- арт-дирекшен;
-- спрайты персонажей, монстров, элиток, боссов;
-- иконки характеристик, предметов, узлов карты;
-- UI visual style, panels, frames, buttons, backgrounds;
-- event/shop/campfire backgrounds;
-- route map visuals;
-- projectiles/VFX visual assets;
-- sprite quality audit;
-- исправление visual artifacts: лишние куски текстуры, dirty pixels, halos, crop issues;
-- content registry для asset paths и visual entities.
-
-PixelLab-first redraw rule (SCRUM-689): future Design redraw tasks for
-characters, enemies, bosses, UI/frame source kits and comparable redraw source
-assets must use PixelLab as the default source pipeline. Older generic
-OpenAI/asset-generator redraw paths are allowed only when Multica/task explicitly
-records an exception and reason. Design results must still include transparent
-source/runtime PNGs, source/evidence under `docs/design/references` or previews,
-runtime-safe sizing/readability evidence, and content-zone/safe-area notes for
-UI/frame work. This rule does not weaken the hard frame rule: content remains
-only inside the empty frame zone.
-
-Design не должен самостоятельно делать:
-
-- gameplay logic;
-- баланс урона/HP/спавна;
-- route map click/scroll logic;
-- Godot backend systems;
-- cleanup runtime objects;
-- сложную animation state machine, если это не просто подготовка ассетов.
-
-Если Design нужно подключить ассеты в игру, но требуется логика или сцены/скрипты:
-
-- подготовить ассеты;
-- описать file paths и asset IDs;
-- создать handoff для `Back-end`.
-
-Если Design видит, что спрайт нельзя красиво анимировать без другой нарезки/rig:
-
-- подготовить части/референсы;
-- создать handoff для `Animator`.
-
-## Back-end
-
-Back-end отвечает за:
-
-- Godot/GDScript gameplay logic;
-- route map, clicks, scroll/pan, node transitions;
-- combat systems;
-- balance numbers and formulas;
-- characters/weapons/enemies/boss behavior;
-- spawn/waves;
-- pause/game state;
-- UI integration;
-- cleanup/lifecycle of nodes/effects;
-- performance/code quality;
-- tests;
-- documentation updates for implemented systems.
-
-Back-end не должен самостоятельно делать:
-
-- финальный арт;
-- перерисовку персонажей/монстров;
-- полноценную animation polish/art motion design;
-- visual style decisions beyond integration and layout;
-- complex rig animation, если это не техническая интеграция готовых animation assets.
-
-Если Back-end нужны новые картинки, иконки, фоны, VFX или исправление спрайта:
-
-- создать handoff для `Design`;
-- указать размеры, IDs, paths, где будут использоваться ассеты.
-
-Если Back-end видит, что движение выглядит плохо и нужна animation work:
-
-- создать handoff для `Animator`;
-- указать сцены, персонажей, состояния, acceptance criteria.
-
-## Animator
-
-Animator отвечает за:
-
-- движение персонажей и врагов;
-- rig/cutout/skeleton/sprite sheet animation;
-- AnimationPlayer/AnimationTree setup;
-- animation states: idle, walk, attack, cast, hit, death;
-- pivot points;
-- плавность, направление взгляда, body lean, secondary motion;
-- animation smoke tests;
-- совместимость animation с pause/game state;
-- handoff требований к ассетам, если текущие спрайты нельзя анимировать красиво.
-- применение skill `~/.codex/skills/fantasydisk-pixellab-animation-integrator/`
-  для задач по персонажам, монстрам, элиткам и боссам: брать готовые PixelLab
-  idle/move packs, импортировать 8 направлений, собирать full-frame runtime PNG
-  и `SpriteFrames`, подключать directional movement/idle и Hero Select animated
-  preview для playable characters. Минимум `move/walk` 5+ кадров; дополнительные
-  attack/phase анимации подключать только когда они есть в PixelLab pack или
-  явно указаны в задаче.
-- соблюдение PixelLab-first redraw rule: если Animator-задача требует новых или
-  перерисованных character/enemy/boss/source frames, источник по умолчанию
-  PixelLab. Non-PixelLab source допустим только как явный Multica/task override.
-  Animation delivery должна сохранять transparent background, pivots,
-  8-direction/required animation contract и runtime-safe sizing evidence.
-
-Animator не должен самостоятельно делать:
-
-- финальную перерисовку персонажей в новом стиле;
-- баланс классов/урона/спавна;
-- route map/gameplay systems;
-- UI visual design;
-- крупные backend refactors вне animation needs.
-
-Если Animatorу нужны новые или перерисованные спрайты:
-
-- создать handoff для `Design`;
-- описать нужные poses, parts, directions, pivots, размеры и file naming.
-
-Если Animatorу нужна поддержка кода, cleanup, pause integration или scene lifecycle:
-
-- создать handoff для `Back-end`;
-- описать, какая API/scene structure нужна.
-
-## QA
-
-QA отвечает за:
-
-- автономный просмотр live Multica `in_review` queue и безопасный claim ровно
-  одной eligible проверки через отдельную QA child с exact QA metadata owner,
-  run, candidate SHA и claim mode (child остаётся unassigned из-за agent ACL);
-- сохранение исходного implementation assignee и независимости reviewer;
-- приемочное ревью задач после реализации;
-- перевод каждого acceptance criterion в фактическую проверку и evidence;
-- самостоятельный risk-based план: focused/regression/integration/negative/
-  edge/manual/windowed/performance/platform/save-load/pause/input coverage по
-  затронутому scope;
-- чтение changed code, тестов и fixtures для исключения false-green;
-- создание и удаление disposable QA probes, если существующих тестов недостаточно;
-- проверку smoke/regression результатов, логов и артефактов на exact pushed SHA;
-- screenshots/video/rect dumps/logs/traces/profiler evidence для visual/UI/runtime
-  acceptance, когда они materially доказывают результат;
-- поиск регрессий в бою, карте, меню, UI, анимациях, арте и балансе;
-- создание linked Multica child issue на каждый подтверждённый `BUG:` и каждое
-  обязательное `IMPROVEMENT:` с reproduction, expected/actual, environment/SHA,
-  severity/priority, evidence, acceptance и recommended implementation role;
-- подтверждение, что документация и CHANGELOG обновлены для выполненной работы.
-- подробный verdict report с traceability, командами/results, manual scenarios,
-  evidence, findings, tested/not-tested/blocked scope, residual risks, cleanup и
-  ровно одной recommendation: `Go`, `Go with known risks` или `No-Go`.
-
-QA не должен самостоятельно делать:
-
-- gameplay/code implementation;
-- перерисовку ассетов;
-- animation/rig правки;
-- баланс-изменения;
-- коммиты релизов или merge/tag операции.
-- переназначение implementation parent на себя или production fixes внутри QA child.
-
-Каждая implementation issue после перехода в `in_review` получает отдельную QA
-child по `docs/process/qa_protocol.md`. QA Codex Sol создаёт/переиспользует её
-сам в текущем queue-sweep run; общий dispatcher только наблюдает или будит QA.
-`PASSED` закрывает child и parent в `done`. `FAILED` закрывает QA child с
-verdict, оставляет parent в `in_review` и создаёт linked bug/improvement issues.
-Повторная проверка всегда использует новый candidate SHA и отдельную re-QA child;
-старый verdict не перезаписывается.
-
-## Handoff Формат
-
-Любой cross-agent handoff должен сначала быть Multica issue/comment chain, а затем
-локальным `.md` mirror-файлом в `docs/tasks/`, если нужны подробная спецификация
-или evidence.
-
-Название:
-
-```text
-docs/tasks/<role>_<short_task_name>.md
-```
-
-Где `<role>`:
-
-- `design`
-- `backend`
-- `animation`
-- `qa`
-
-Минимальная структура:
-
-```md
-# Задача Для <Role>-Агента: <Название>
-
-Статус: new
-Контур: Codex | Claude
-Owner: unassigned
-Thread: n/a
-Locked paths: <ключевые файлы/папки/ассеты/экраны>
-Multica: FAN-<номер>
-
-## Autonomy / Approval
-Пользователь заранее одобрил все изменения в рамках этой задачи...
-Directive 2026-06-28: agents should not ask the user for routine confirmations.
-For a claimed Multica issue, the agent has full in-repository approval to pull,
-claim/update Multica, edit project files, run tests, update docs, commit, and push
-its own task files. Escalate only platform-enforced approval gates, secrets,
-destructive external actions, or true blockers.
-
-## Контекст
-
-## Что Уже Сделано
-
-## Что Нужно От Другого Агента
-
-## Files / Assets / IDs
-
-## Acceptance Criteria
-
-## Документация
-```
-
-## Правило Передачи В Чат
-
-После создания handoff-файла агент должен отправить задачу в соответствующий чат:
-
-- `Design` для визуала и ассетов;
-- `Back-end` для кода, логики, интеграции, тестов;
-- `Animator` для движения и animation systems.
-- `QA` для приемочного ревью и регрессий; если отдельного QA-чата нет, задача
-  фиксируется на доске для Claude-QA board worker.
-
-Сообщение в чат должно содержать:
-
-- путь к `.md` файлу;
-- короткое резюме;
-- что уже готово;
-- что требуется;
-- зависимости;
-- напоминание, что пользователь дал approval на in-scope изменения.
-
-## Если Задача Смешанная
-
-Если задача затрагивает несколько областей:
-
-1. Главный агент делает свою часть.
-2. Создает отдельные handoff tasks для остальных.
-3. Не делает чужую работу "на глаз".
-4. Документирует зависимости.
-5. После получения результата другого агента интегрирует только свою часть, если это его зона ответственности.
-
-## Когда Можно Коснуться Чужой Области
-
-Допустимо минимально коснуться чужой области только если это нужно для связи:
-
-- Back-end может подключить готовый asset в сцену.
-- Animator может добавить технические animation nodes.
-- Design может создать preview scene/reference layout без gameplay logic.
-
-Но агент не должен принимать ключевые решения за другую роль.
-
-## Документация
-
-Каждый агент обновляет документы только в части своей работы:
-
-- Design: `content_registry.md`, `visual_style_assets.md`, visual sections.
-- Back-end: `current_game_state.md`, system docs, mechanics/balance docs, tests.
-- Animator: `animation.md`, animation architecture, animation asset status.
-- QA: результат проверки в task-файле, найденные дефекты отдельными handoff
-  задачами; продуктовую документацию QA не переписывает вместо владельца.
-
-Если документация еще не разбита по доменам, обновить существующие документы и отметить, что после batch changes нужно выполнить `docs/tasks/documentation_post_changes_domain_split_task.md`.
+The receiving issue has its own CUE/Fibonacci and complexity gate. A local
+`docs/tasks/*.md` handoff may preserve a rich spec, but Multica remains the live
+owner/status source.
+
+## Completion handoff
+
+Developer evidence:
+
+- Russian summary;
+- exact pushed SHA and ancestry;
+- changed systems/files;
+- commands/results and untested checks;
+- docs/evidence only when required or changed;
+- residual risk;
+- operator mirror result only when safely updated; WIP is skipped and
+  non-blocking;
+- one PM completion trigger.
+
+QA evidence follows `docs/process/qa_protocol.md`. PM then prepares the next
+consistent gate; Qwen performs the mechanical transition. No role selects its
+own successor.
+
+## Subagents
+
+The main agent may delegate independent, bounded, non-overlapping investigation,
+tests, docs, or implementation surfaces. It must define ownership and
+verification, collect all results synchronously, inspect the combined diff, and
+remain accountable for the final evidence. Subagents never widen authority or
+create competing Multica ownership.

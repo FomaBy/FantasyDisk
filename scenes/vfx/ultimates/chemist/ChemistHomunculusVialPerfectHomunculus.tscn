@@ -1,0 +1,195 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank_south.png" id="1_tank"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster_south.png" id="2_caster"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/ally_homunculus.png" id="3_avatar"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_perfect_homunculus"]
+resource_name = "ultimate"
+length = 5.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AlchemicalCircle:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.9, 4.2, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.82, 1.0, 0.48, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FusingPair/Tank:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.15, 4.2, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-142, 20), Vector2(-24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(-142, 20)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FusingPair/Caster:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.15, 4.2, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(142, 20), Vector2(24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(142, 20)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FusingPair:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.95, 1.2, 4.2, 4.55, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.9, 1.0, 0.0, 0.0, 0.9, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Avatar:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.2, 4.15, 4.55, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.96, 0.96, 0.0, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Avatar:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.7, 4.15, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1.5, 1.5), Vector2(1.7, 1.7), Vector2(0.2, 0.2)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("TauntHalo:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.3, 1.75, 4.0, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.88, 0.52, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("StompWave:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1.7, 2.0, 4.05, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.42, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("ToxicCascade:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.85, 2.15, 4.1, 5.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.86, 0.55, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_perfect_homunculus"]
+_data = {"ultimate": SubResource("Animation_perfect_homunculus")}
+
+[node name="ChemistHomunculusVialPerfectHomunculus" type="Node2D"]
+metadata/ultimate_id = "chemist/homunculus_vial"
+metadata/silhouette = "tank and caster fuse into one towering emerald homunculus"
+metadata/motion_path = "two allies converge through a circle, giant avatar stomps, then both split back out"
+metadata/impact_language = "taunt halo, broad stomp rings, and toxic cascade waves"
+metadata/max_visual_nodes = 8
+metadata/crowd_cap = 14
+
+[node name="AlchemicalCircle" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(152, 0, 132, 76, 76, 132, 0, 152, -76, 132, -132, 76, -152, 0, -132, -76, -76, -132, 0, -152, 76, -132, 132, -76, 152, 0)
+width = 7.0
+default_color = Color(0.4, 1, 0.5, 0.92)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FusingPair" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="Tank" type="Sprite2D" parent="FusingPair"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_tank")
+position = Vector2(-142, 20)
+scale = Vector2(0.85, 0.85)
+modulate = Color(0.56, 1, 0.46, 0.96)
+
+[node name="Caster" type="Sprite2D" parent="FusingPair"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_caster")
+position = Vector2(142, 20)
+scale = Vector2(0.85, 0.85)
+modulate = Color(0.4, 0.82, 1, 0.96)
+
+[node name="Avatar" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_avatar")
+position = Vector2(0, -24)
+scale = Vector2(0.2, 0.2)
+modulate = Color(0.48, 1, 0.38, 0)
+
+[node name="TauntHalo" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(210, 0, 194, 80, 148, 148, 80, 194, 0, 210, -80, 194, -148, 148, -194, 80, -210, 0, -194, -80, -148, -148, -80, -194, 0, -210, 80, -194, 148, -148, 194, -80, 210, 0)
+width = 12.0
+default_color = Color(0.66, 1, 0.3, 0.88)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="StompWave" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 164, 92, 138, 168, 70, 210, 0, 168, -70, 92, -138, 0, -164, -92, -138, -168, -70, -210, 0, -168, 70, -92, 138, 0, 164)
+width = 18.0
+default_color = Color(0.78, 1, 0.52, 0.92)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="ToxicCascade" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-226, 96, -142, 54, -62, 100, 0, 44, 68, 100, 146, 52, 226, 96)
+width = 22.0
+default_color = Color(0.3, 0.96, 0.28, 0.8)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_perfect_homunculus")}
+autoplay = "ultimate"
