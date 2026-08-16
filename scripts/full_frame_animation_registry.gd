@@ -8,6 +8,17 @@ class_name FullFrameAnimationRegistry
 const DEFAULT_ANIMATED_BODY_NAME := "FullFrameBody"
 const DEFAULT_STATIC_BODY_NAME := "Body"
 
+# FAN-2519: 8-направленный рантайм-контракт не-игровых акторов (monsters,
+# elites, bosses, summons). Именование направлений совпадает с игроком
+# (player.gd DIRECTIONAL_ANIMATION_SUFFIXES): октанты по часовой стрелке от
+# востока, строки именуются `<state>_<suffix>`. Пак декларирует контракт ключом
+# конфигурации `explicit_eight_directions: true`; такой актор никогда не
+# зеркалится (flip_h запрещён) и деградирует только в безнаправленную строку
+# того же пула состояний с явным флагом `directional_fallback_used`.
+const DIRECTION_SUFFIXES := ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]
+const DEFAULT_FACING_DIRECTION := Vector2.LEFT
+const DIRECTION_SNAP_EPSILON := 0.001
+
 const FULL_FRAME_SPRITEFRAMES := {
 	"ally": {
 		"druid_beast": {
@@ -278,6 +289,7 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 			"scale": owner.get_meta("full_frame_scale", Vector2.ONE),
 			"position": owner.get_meta("full_frame_position", Vector2.ZERO),
 			"source_faces_left": bool(owner.get_meta("full_frame_source_faces_left", true)),
+			"explicit_eight_directions": bool(owner.get_meta("full_frame_explicit_eight_directions", false)),
 		}
 	if config.is_empty():
 		return null
@@ -302,6 +314,7 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 	animated_body.set_meta("entity_id", entity_id)
 	animated_body.set_meta("source_faces_left", bool(config.get("source_faces_left", true)))
 	animated_body.set_meta("explicit_horizontal_directions", bool(config.get("explicit_horizontal_directions", false)))
+	animated_body.set_meta("explicit_eight_directions", bool(config.get("explicit_eight_directions", false)))
 
 	var static_body := owner.get_node_or_null(static_body_name) as CanvasItem
 	if static_body != null:
@@ -314,21 +327,36 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 static func play_state(animated_body: AnimatedSprite2D, requested_state: String, direction := Vector2.ZERO) -> bool:
 	if animated_body == null or animated_body.sprite_frames == null:
 		return false
+	var effective_direction := _effective_facing_direction(animated_body, direction)
+	var uses_explicit_eight := bool(animated_body.get_meta("explicit_eight_directions", false))
 	var uses_explicit_horizontal := bool(animated_body.get_meta("explicit_horizontal_directions", false))
-	var state_name := ""
-	if uses_explicit_horizontal and absf(direction.x) > 0.001:
-		state_name = _resolve_horizontal_animation_name(animated_body.sprite_frames, requested_state, direction.x > 0.0)
+	var directional_state_name := ""
+	if uses_explicit_eight:
+		directional_state_name = _resolve_directional_animation_name(animated_body.sprite_frames, requested_state, direction_suffix_for(effective_direction))
+	elif uses_explicit_horizontal:
+		directional_state_name = _resolve_horizontal_animation_name(animated_body.sprite_frames, requested_state, _horizontal_facing_right(animated_body, effective_direction))
+	var state_name := directional_state_name
 	if state_name == "":
+		# FAN-2519: явный направленный контракт без направленной строки деградирует
+		# в безнаправленную строку ТОГО ЖЕ пула состояний и кандидатов — никогда в
+		# зеркальный суррогат другого ракурса (flip ниже запрещён), и деградация
+		# маркируется метой `directional_fallback_used`: живой актор не может
+		# молча сыграть чужую/зеркальную идентичность.
 		state_name = _resolve_animation_name(animated_body.sprite_frames, requested_state)
 	if state_name == "":
 		return false
-	if uses_explicit_horizontal:
+	var uses_directional_contract := uses_explicit_eight or uses_explicit_horizontal
+	animated_body.set_meta("directional_row_resolved", directional_state_name != "")
+	animated_body.set_meta("directional_fallback_used", uses_directional_contract and directional_state_name == "")
+	if uses_directional_contract:
 		animated_body.flip_h = false
-	elif direction.length_squared() > 0.001:
+	elif effective_direction.length_squared() > DIRECTION_SNAP_EPSILON:
 		var source_faces_left := bool(animated_body.get_meta("source_faces_left", true))
-		animated_body.flip_h = direction.x > 0.0 if source_faces_left else direction.x < 0.0
+		animated_body.flip_h = effective_direction.x > 0.0 if source_faces_left else effective_direction.x < 0.0
 	animated_body.set_meta("last_requested_state", requested_state)
 	animated_body.set_meta("last_resolved_state", state_name)
+	if uses_explicit_eight:
+		animated_body.set_meta("last_resolved_direction_suffix", direction_suffix_for(effective_direction))
 	if animated_body.animation != state_name or not animated_body.is_playing():
 		animated_body.play(state_name)
 	return true
@@ -337,11 +365,74 @@ static func play_state(animated_body: AnimatedSprite2D, requested_state: String,
 static func has_state(animated_body: AnimatedSprite2D, requested_state: String) -> bool:
 	if animated_body == null or animated_body.sprite_frames == null:
 		return false
+	if bool(animated_body.get_meta("explicit_eight_directions", false)):
+		var persisted_direction: Vector2 = animated_body.get_meta("last_facing_direction", DEFAULT_FACING_DIRECTION)
+		if _resolve_directional_animation_name(animated_body.sprite_frames, requested_state, direction_suffix_for(persisted_direction)) != "":
+			return true
+	if bool(animated_body.get_meta("explicit_horizontal_directions", false)):
+		var faces_right := bool(animated_body.get_meta("last_horizontal_facing_right", false))
+		if _resolve_horizontal_animation_name(animated_body.sprite_frames, requested_state, faces_right) != "":
+			return true
 	return _resolve_animation_name(animated_body.sprite_frames, requested_state) != ""
 
 
 static func uses_explicit_horizontal_directions(animated_body: AnimatedSprite2D) -> bool:
 	return animated_body != null and bool(animated_body.get_meta("explicit_horizontal_directions", false))
+
+
+static func uses_explicit_eight_directions(animated_body: AnimatedSprite2D) -> bool:
+	return animated_body != null and bool(animated_body.get_meta("explicit_eight_directions", false))
+
+
+# FAN-2519: октант вектора в суффикс строки. Нулевой вектор даёт "south" —
+# тот же дефолт, что у игрока; фактический ракурс для нулевого направления
+# берётся из персистентной памяти последнего ненулевого направления.
+static func direction_suffix_for(direction: Vector2) -> String:
+	if direction.length_squared() <= DIRECTION_SNAP_EPSILON:
+		return "south"
+	var sector_size := TAU / float(DIRECTION_SUFFIXES.size())
+	var index := int(floor((direction.angle() + sector_size * 0.5) / sector_size))
+	return str(DIRECTION_SUFFIXES[posmod(index, DIRECTION_SUFFIXES.size())])
+
+
+# FAN-2519: аудит-хелпер для паков с явным 8-направленным контрактом: состояние
+# обязано иметь ВСЕ восемь явных строк, частичное покрытие — нарушение контракта.
+static func has_full_directional_rows(frames: SpriteFrames, state_name: String) -> bool:
+	if frames == null:
+		return false
+	for suffix in DIRECTION_SUFFIXES:
+		if not frames.has_animation("%s_%s" % [state_name, suffix]):
+			return false
+	return true
+
+
+static func _effective_facing_direction(animated_body: AnimatedSprite2D, direction: Vector2) -> Vector2:
+	if direction.length_squared() > DIRECTION_SNAP_EPSILON:
+		var normalized := direction.normalized()
+		animated_body.set_meta("last_facing_direction", normalized)
+		return normalized
+	return animated_body.get_meta("last_facing_direction", DEFAULT_FACING_DIRECTION)
+
+
+# Горизонтальный контракт помнит только знак X: вертикальные направления
+# сохраняют последний горизонтальный ракурс (запад по умолчанию у west-facing
+# исходников) — семантика ghost-паков SCRUM-885 сохранена, но живёт в реестре.
+static func _horizontal_facing_right(animated_body: AnimatedSprite2D, effective_direction: Vector2) -> bool:
+	if absf(effective_direction.x) > DIRECTION_SNAP_EPSILON:
+		var faces_right := effective_direction.x > 0.0
+		animated_body.set_meta("last_horizontal_facing_right", faces_right)
+		return faces_right
+	return bool(animated_body.get_meta("last_horizontal_facing_right", false))
+
+
+static func _resolve_directional_animation_name(frames: SpriteFrames, requested_state: String, suffix: String) -> String:
+	if frames == null or suffix == "":
+		return ""
+	for candidate in _state_candidates(requested_state):
+		var directional_candidate := "%s_%s" % [candidate, suffix]
+		if frames.has_animation(directional_candidate):
+			return directional_candidate
+	return ""
 
 
 static func _resolve_horizontal_animation_name(frames: SpriteFrames, requested_state: String, faces_right: bool) -> String:
