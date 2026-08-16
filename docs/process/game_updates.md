@@ -37,7 +37,19 @@ collaborators и pending invitations нет, deploy keys только read-only.
 Затем publisher повторно byte-exact сверяет все draft assets последним чтением
 перед публичным edit. Подмена файла после последней чистой проверки
 останавливает публикацию, пока release ещё draft. Аттестации, cookies и токены
-не сохраняются в git, Multica или логах.
+не сохраняются в git, Multica или логах. Публикационная команда всегда получает
+оба proof path:
+
+```bash
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+```
+
+Второй proof перечитывается после проверки draft assets непосредственно перед
+public edit; точный JSON template и безопасное временное хранение/удаление — в
+`fantasydisk-release-director`.
 
 ## Клиентский контракт
 

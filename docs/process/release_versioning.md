@@ -242,6 +242,17 @@ dev  — основная ветка разработки. Все чаты (Back
     что GitHub предоставил account-wide API. Не помещайте эти файлы, cookies или
     токены в git, Multica и логи; после ошибки создайте две новые аттестации и
     начните с нового номера версии, ничего не удаляя и не переиспользуя.
+
+```bash
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+```
+
+    Второй proof publisher перечитывает после draft asset verification, прямо
+    перед `--draft=false`; template, `mktemp -d` и безопасное удаление указаны в
+    `fantasydisk-release-director`.
     Конкурентная подмена asset после последней чистой проверки блокирует
     публикацию, пока release ещё draft; непроверяемое состояние тоже блокирует
     (fail-closed), и publisher сам никогда не меняет эти настройки GitHub.

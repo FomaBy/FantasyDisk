@@ -274,7 +274,9 @@ and installers without GitHub credentials:
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
-  --version <version>
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.py \
   --version <version> --local-release /absolute/durable/releases/v<version>
 ```
@@ -286,6 +288,57 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    until every asset, including the manifest, is verified uploaded byte-exact
    (name, size, SHA-256), and only a fully verified draft is made public and
    then latest — `latest/download` can never expose an incomplete installer set.
+
+### Owner-attested App writer proof
+
+Use two independently observed Settings → Applications inventories for the same
+personal account and distribution repository. The publisher validates both before
+its first write, then opens the **second file again** after draft-asset verification
+and immediately before `--draft=false`; do not replace it with the first file or
+reuse an old observation. Unknown repository selection or an incomplete selected
+repository list is unsafe even for an App that currently reports read-only access.
+
+Keep proofs only in a private temporary directory, never in the checkout, shell
+history, Multica, or logs. Replace the placeholders from the actual Settings UI;
+the `installations` array must contain every visible installed App and each
+`selected` App must include its complete selected-repository inventory.
+
+```bash
+PROOF_DIR="$(mktemp -d)"
+chmod 700 "$PROOF_DIR"
+cat >"$PROOF_DIR/writer-proof-first.json" <<'JSON'
+{
+  "schema_version": 1,
+  "source": "github-account-applications-settings",
+  "account": "FomaBy",
+  "repository": "FomaBy/FantasyDisk-Releases",
+  "observed_at": "2026-08-16T12:00:00Z",
+  "complete": true,
+  "installations": []
+}
+JSON
+cat >"$PROOF_DIR/writer-proof-second.json" <<'JSON'
+{
+  "schema_version": 1,
+  "source": "github-account-applications-settings",
+  "account": "FomaBy",
+  "repository": "FomaBy/FantasyDisk-Releases",
+  "observed_at": "2026-08-16T12:00:01Z",
+  "complete": true,
+  "installations": []
+}
+JSON
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+rm -rf "$PROOF_DIR"
+```
+
+If validation or publication fails, inspect the reported non-secret error, retain
+the proofs only long enough for the authorized incident review, then delete the
+same temporary directory with `rm -rf "$PROOF_DIR"`. Never paste a proof into a
+ticket: it is account-security evidence, not release metadata.
 
    FAN-1276 sole-writer boundary: draft release assets stay writable to any
    account with contents write access until the release goes public, and

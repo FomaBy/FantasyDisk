@@ -117,8 +117,15 @@ def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
 
 def run(command: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
     result = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Every caller, including check=False recovery paths, receives scrubbed output.
+    result = subprocess.CompletedProcess(
+        result.args,
+        result.returncode,
+        TOKEN_RE.sub("[REDACTED]", result.stdout or ""),
+        TOKEN_RE.sub("[REDACTED]", result.stderr or ""),
+    )
     if check and result.returncode:
-        detail = TOKEN_RE.sub("[REDACTED]", (result.stderr or result.stdout).strip())
+        detail = (result.stderr or result.stdout).strip()
         raise RuntimeError(f"command failed: {' '.join(command)}\n{detail}")
     return result
 
@@ -424,11 +431,14 @@ def _assert_owner_attested_writer_proof(
         ):
             raise RuntimeError("owner attestation App inventory is malformed")
         seen_ids.add(installation_id)
+        # Repository selection is proof completeness, not a write-only detail:
+        # an unreadable read grant can otherwise hide a later permission change.
+        covers_repository = _proof_installation_covers_repository(installation, repository)
         granted = [
             name for name in RELEASE_MUTATING_APP_PERMISSIONS
             if permissions.get(name) not in (None, "read")
         ]
-        if granted and _proof_installation_covers_repository(installation, repository):
+        if granted and covers_repository:
             raise RuntimeError(
                 "owner-attested GitHub App installation "
                 f"{installation['app_slug']} holds {', '.join(granted)} write access "
@@ -806,6 +816,18 @@ def publish(
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     if shutil.which("gh") is None:
         raise RuntimeError("GitHub CLI `gh` не установлен")
+    # Reject known bad/replayed evidence before the tag claim or draft creation.
+    # Production supplies a path so the second file is read once here and again
+    # after draft asset verification; tests may pass decoded fixtures directly.
+    preflight_second_proof = (
+        load_owner_attested_writer_proof(second_writer_proof)
+        if isinstance(second_writer_proof, (str, os.PathLike))
+        else second_writer_proof
+    )
+    account = first_writer_proof.get("account") if isinstance(first_writer_proof, dict) else None
+    assert_owner_attested_writer_inventory(
+        repository, account, first_writer_proof, preflight_second_proof
+    )
     run(["gh", "auth", "status", "--hostname", "github.com"])
     default_branch = assert_safe_public_distribution_repository(repository)
     assert_immutable_release_enforcement(repository)
@@ -857,10 +879,15 @@ def publish(
     # final read before the irreversible edit. From that read to the edit the
     # proven sole-writer boundary is what keeps the assets frozen, and the
     # server-side tag ruleset proven before the claim keeps the tag frozen.
-    second_proof_time = assert_sole_publisher_write_access(
-        repository, second_writer_proof, proof_label="second"
+    second_proof = (
+        load_owner_attested_writer_proof(second_writer_proof)
+        if isinstance(second_writer_proof, (str, os.PathLike))
+        else second_writer_proof
     )
-    if second_proof_time <= first_proof_time or second_writer_proof == first_writer_proof:
+    second_proof_time = assert_sole_publisher_write_access(
+        repository, second_proof, proof_label="second"
+    )
+    if second_proof_time <= first_proof_time or second_proof == first_writer_proof:
         raise RuntimeError(
             "publication requires a fresh second owner attestation, not a replay"
         )
@@ -953,12 +980,10 @@ def main() -> int:
                 "publication requires exactly two --writer-inventory-proof files; "
                 "dry-run performs no external side effects and does not require them"
             )
-        first_proof, second_proof = (
-            load_owner_attested_writer_proof(path)
-            for path in args.writer_inventory_proof
-        )
+        first_proof = load_owner_attested_writer_proof(args.writer_inventory_proof[0])
         print(publish(
-            args.repository, args.version, files, changelog, first_proof, second_proof
+            args.repository, args.version, files, changelog,
+            first_proof, args.writer_inventory_proof[1]
         ))
     except (OSError, RuntimeError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
