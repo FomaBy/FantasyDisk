@@ -193,6 +193,11 @@ quit and remediation observation window. Until that review is terminal
 Build the temporary embedded-PCK exe, wrap it with NSIS, verify the exact NSIS
 CRC algorithm, secret-scan staged payloads, and publish only setup.exe.
 
+The final Windows verification card (`qa_windows`) must include a filled
+performance section per `docs/qa/perf-checklist.md`: metrics M1–M5 measured on
+real Windows hardware with the exact commands from that checklist. A QA verdict
+without the filled performance section is incomplete and must not be accepted.
+
 ## 6. Durable local release — blocking
 
 An ephemeral Multica worktree is never the retained release location. Configure
