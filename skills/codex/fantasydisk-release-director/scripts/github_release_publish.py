@@ -40,7 +40,7 @@ README_FORBIDDEN_MARKERS = (
 )
 HTTP_STATUS_RE = re.compile(r"(?m)^HTTP/[^\s]+\s+(\d{3})\b")
 COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
-TOKEN_RE = re.compile(r"\b(?:gh[opsu]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)\b")
+TOKEN_RE = re.compile(r"\b(?:gh[oprsu]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)\b")
 # GitHub has no atomic publish-with-expected-SHA, so the create-only claim stays
 # trustworthy only while the platform itself rejects tag rewrites. Both rule
 # types must be guaranteed server-side before the first external side effect.
@@ -390,9 +390,18 @@ def _proof_installation_covers_repository(installation: dict, repository: str) -
         raise RuntimeError("owner attestation selected-repository inventory is incomplete")
     names: set[str] = set()
     for entry in repositories:
-        if not isinstance(entry, dict) or not isinstance(entry.get("full_name"), str):
+        full_name = entry.get("full_name") if isinstance(entry, dict) else None
+        if (
+            not isinstance(full_name, str)
+            or not full_name
+            or full_name != full_name.strip()
+            or "/" not in full_name
+        ):
             raise RuntimeError("owner attestation has an unreadable selected-repository inventory")
-        names.add(entry["full_name"].casefold())
+        canonical_name = full_name.casefold()
+        if canonical_name in names:
+            raise RuntimeError("owner attestation selected-repository inventory is incomplete")
+        names.add(canonical_name)
     return repository.casefold() in names
 
 
@@ -448,7 +457,12 @@ def _assert_owner_attested_writer_proof(
 
 
 def assert_owner_attested_writer_inventory(
-    repository: str, account: str, first_proof: object, second_proof: object
+    repository: str,
+    account: str,
+    first_proof: object,
+    second_proof: object,
+    *,
+    observed_after: datetime | None = None,
 ) -> None:
     """Validate two fresh owner attestations of the account-wide App inventory.
 
@@ -464,7 +478,11 @@ def assert_owner_attested_writer_inventory(
     second_observed = _assert_owner_attested_writer_proof(
         repository, account, second_proof, label="second"
     )
-    if second_observed <= first_observed or second_proof == first_proof:
+    if (
+        second_observed <= first_observed
+        or second_proof == first_proof
+        or observed_after is not None and second_observed <= observed_after
+    ):
         raise RuntimeError("publication requires a fresh second owner attestation, not a replay")
 
 
@@ -816,18 +834,16 @@ def publish(
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     if shutil.which("gh") is None:
         raise RuntimeError("GitHub CLI `gh` не установлен")
-    # Reject known bad/replayed evidence before the tag claim or draft creation.
-    # Production supplies a path so the second file is read once here and again
-    # after draft asset verification; tests may pass decoded fixtures directly.
-    preflight_second_proof = (
-        load_owner_attested_writer_proof(second_writer_proof)
-        if isinstance(second_writer_proof, (str, os.PathLike))
-        else second_writer_proof
-    )
+    # The pre-public proof deliberately remains unread until the verified draft
+    # exists: an earlier snapshot is not an observation of the draft window.
     account = first_writer_proof.get("account") if isinstance(first_writer_proof, dict) else None
-    assert_owner_attested_writer_inventory(
-        repository, account, first_writer_proof, preflight_second_proof
-    )
+    if isinstance(second_writer_proof, (str, os.PathLike)):
+        _assert_owner_attested_writer_proof(repository, account, first_writer_proof, label="first")
+    else:
+        # In-memory callers are test-only; preserve their no-write validation.
+        assert_owner_attested_writer_inventory(
+            repository, account, first_writer_proof, second_writer_proof
+        )
     run(["gh", "auth", "status", "--hostname", "github.com"])
     default_branch = assert_safe_public_distribution_repository(repository)
     assert_immutable_release_enforcement(repository)
@@ -873,6 +889,11 @@ def publish(
         )
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
+    draft_verified_at = datetime.now(timezone.utc)
+    if isinstance(second_writer_proof, (str, os.PathLike)) and sys.stdin.isatty():
+        input(
+            "Draft assets verified. Refresh the second writer inventory now, then press Enter: "
+        )
     # Last pre-public boundary: GitHub has no publish-with-expected-bytes
     # precondition, so re-prove that no other account can rewrite the draft,
     # re-check the claimed tag, and re-verify every asset byte-exact as the
@@ -883,6 +904,15 @@ def publish(
         load_owner_attested_writer_proof(second_writer_proof)
         if isinstance(second_writer_proof, (str, os.PathLike))
         else second_writer_proof
+    )
+    assert_owner_attested_writer_inventory(
+        repository,
+        account,
+        first_writer_proof,
+        second_proof,
+        observed_after=draft_verified_at
+        if isinstance(second_writer_proof, (str, os.PathLike))
+        else None,
     )
     second_proof_time = assert_sole_publisher_write_access(
         repository, second_proof, proof_label="second"

@@ -292,11 +292,13 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
 ### Owner-attested App writer proof
 
 Use two independently observed Settings → Applications inventories for the same
-personal account and distribution repository. The publisher validates both before
-its first write, then opens the **second file again** after draft-asset verification
-and immediately before `--draft=false`; do not replace it with the first file or
-reuse an old observation. Unknown repository selection or an incomplete selected
-repository list is unsafe even for an App that currently reports read-only access.
+personal account and distribution repository. Create the first proof before the
+command. The command creates and verifies the draft, then pauses at the terminal:
+only then export the second proof and press Enter. The second observation must be
+newer than the completed draft-asset check; a pre-created, replayed, malformed,
+hidden, partial, empty-name, or duplicate selected-repository inventory is rejected
+before `--draft=false`. Unknown repository selection is unsafe even for a read-only
+App.
 
 Keep proofs only in a private temporary directory, never in the checkout, shell
 history, Multica, or logs. Replace the placeholders from the actual Settings UI;
@@ -306,34 +308,43 @@ the `installations` array must contain every visible installed App and each
 ```bash
 PROOF_DIR="$(mktemp -d)"
 chmod 700 "$PROOF_DIR"
-cat >"$PROOF_DIR/writer-proof-first.json" <<'JSON'
-{
+write_proof() {
+  python3 - "$1" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+json.dump({
+  # JSON field: "complete": true
   "schema_version": 1,
   "source": "github-account-applications-settings",
   "account": "FomaBy",
   "repository": "FomaBy/FantasyDisk-Releases",
-  "observed_at": "2026-08-16T12:00:00Z",
-  "complete": true,
-  "installations": []
+  "observed_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+  "complete": True,
+  "installations": [{
+    "id": 123456,
+    "app_slug": "example-read-only-app",
+    "permissions": {"contents": "read", "administration": "read"},
+    "repository_selection": "selected",
+    "repositories": {"total_count": 1, "repositories": [
+      {"full_name": "FomaBy/FantasyDisk-Releases"}
+    ]}
+  }]
+}, open(sys.argv[1], "w", encoding="utf-8"), indent=2)
+PY
 }
-JSON
-cat >"$PROOF_DIR/writer-proof-second.json" <<'JSON'
-{
-  "schema_version": 1,
-  "source": "github-account-applications-settings",
-  "account": "FomaBy",
-  "repository": "FomaBy/FantasyDisk-Releases",
-  "observed_at": "2026-08-16T12:00:01Z",
-  "complete": true,
-  "installations": []
-}
-JSON
+write_proof "$PROOF_DIR/writer-proof-first.json"
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version <version> \
   --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
   --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
 rm -rf "$PROOF_DIR"
 ```
+
+When the publisher reports that the draft assets are verified, switch to the
+Settings → Applications export, replace the example installation list with the
+complete current list, run `write_proof "$PROOF_DIR/writer-proof-second.json"`,
+and only then press Enter in the publisher terminal. The example is a complete
+installation-bearing schema, not permission to omit Apps or repositories.
 
 If validation or publication fails, inspect the reported non-secret error, retain
 the proofs only long enough for the authorized incident review, then delete the

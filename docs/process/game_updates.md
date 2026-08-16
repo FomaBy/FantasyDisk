@@ -30,10 +30,12 @@ collaborators и pending invitations нет, deploy keys только read-only.
 список GitHub Apps фиксирует владелец в двух fresh JSON-attestations из
 `Settings → Applications`: `GET /user/installations` от `ghu_` показывает лишь
 установки текущего App и не является доказательством для аккаунта. Каждый
-файл привязан к account/repository/time/complete inventory; второй новее
-первого, оба не старше двух минут, а selected installation содержит полный
-список repositories. Любой App с contents/administration write, неполный,
-просроченный, повторный или malformed файл блокирует запуск либо public edit.
+файл привязан к account/repository/time/complete inventory; второй создаётся
+только по паузе publisher после проверки draft assets, новее первого и этой
+проверки, а selected installation содержит непустые уникальные canonical
+`full_name` и согласованный полный список repositories. Любой App с
+contents/administration write, неполный, просроченный, повторный или malformed
+файл блокирует запуск либо public edit.
 Затем publisher повторно byte-exact сверяет все draft assets последним чтением
 перед публичным edit. Подмена файла после последней чистой проверки
 останавливает публикацию, пока release ещё draft. Аттестации, cookies и токены

@@ -316,6 +316,26 @@ class OwnerAttestedWriterInventoryTests(unittest.TestCase):
         cases = (
             (dict(selected_writer, repositories={"total_count": 2, "repositories": []}), "incomplete"),
             (dict(selected_writer, repositories={"total_count": True, "repositories": []}), "incomplete"),
+            (
+                dict(
+                    selected_writer,
+                    repositories={"total_count": 1, "repositories": [{"full_name": ""}]},
+                ),
+                "unreadable",
+            ),
+            (
+                dict(
+                    selected_writer,
+                    repositories={
+                        "total_count": 2,
+                        "repositories": [
+                            {"full_name": "FomaBy/Other"},
+                            {"full_name": "fomaby/other"},
+                        ],
+                    },
+                ),
+                "incomplete",
+            ),
             (dict(selected_writer, repository_selection="unknown"), "unknown App repository selection"),
             (dict(selected_writer, id=True), "App inventory is malformed"),
             (dict(selected_writer, permissions=None), "App inventory is malformed"),
@@ -372,7 +392,7 @@ class OwnerAttestedWriterInventoryTests(unittest.TestCase):
         self.assertIn("[REDACTED]", str(caught.exception))
 
     def test_check_false_result_redacts_stdout_and_stderr(self) -> None:
-        token = "gho_this_must_not_appear"
+        token = "ghr_this_must_not_appear"
         with mock.patch.object(
             github_release_publish.subprocess,
             "run",
@@ -2103,7 +2123,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             any(command[:3] == ["gh", "release", "edit"] for command in commands)
         )
 
-    def test_second_app_inventory_is_reloaded_after_draft_verification(self) -> None:
+    def test_second_app_inventory_is_observed_only_after_draft_verification(self) -> None:
         first, second = _owner_attested_writer_proofs()
         late_writer = dict(
             second,
@@ -2118,17 +2138,36 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "run", side_effect=fake_run), \
-             mock.patch.object(
-                 github_release_publish,
-                 "load_owner_attested_writer_proof",
-                 side_effect=[second, late_writer],
-             ) as load_mock:
+             mock.patch.object(github_release_publish, "load_owner_attested_writer_proof") as load_mock:
+            def post_draft_observation(_path):
+                self.assertEqual(state["draft_views"], 1)
+                return dict(
+                    late_writer,
+                    observed_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                )
+
+            load_mock.side_effect = post_draft_observation
             with self.assertRaisesRegex(RuntimeError, "late-writer holds contents write"):
                 github_release_publish.publish(
                     self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
                     first, "second-proof.json",
                 )
-        self.assertEqual(load_mock.call_count, 2)
+        self.assertEqual(load_mock.call_count, 1)
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(any("--draft=false" in command for command in state["commands"]))
+
+    def test_precreated_second_inventory_cannot_publish_the_draft(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        state, fake_run = self._stateful_github()
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run), \
+             mock.patch.object(github_release_publish, "load_owner_attested_writer_proof", return_value=second):
+            with self.assertRaisesRegex(RuntimeError, "fresh second owner attestation"):
+                github_release_publish.publish(
+                    self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
+                    first, "precreated-second-proof.json",
+                )
         self.assertEqual(state["release"], "draft")
         self.assertFalse(any("--draft=false" in command for command in state["commands"]))
 

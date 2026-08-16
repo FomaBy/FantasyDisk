@@ -236,8 +236,10 @@ dev  — основная ветка разработки. Все чаты (Back
     полный `repositories {total_count,repositories}`. Файлы передаются в порядке
     pre-draft, pre-public двумя `--writer-inventory-proof`; publisher сверяет
     account с `GET /user`, repository, типы/ID/permissions/selection и свежесть
-    (не старше двух минут). Второй файл обязан быть новее и отличаться от первого;
-    stale/replay/malformed/hidden/partial данные блокируют до side effect или до
+    (не старше двух минут). После проверки draft assets publisher ждёт отдельного
+    нового экспорта второго файла; он обязан быть новее первого и draft-check,
+    а selected inventory требует непустые уникальные canonical `full_name` и
+    согласованный полный `total_count`. stale/replay/malformed/hidden/partial данные блокируют до side effect или до
     `--draft=false`. Это намеренно owner-attested trust boundary, а не заявление,
     что GitHub предоставил account-wide API. Не помещайте эти файлы, cookies или
     токены в git, Multica и логи; после ошибки создайте две новые аттестации и
