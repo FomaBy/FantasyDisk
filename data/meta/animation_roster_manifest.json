@@ -1,0 +1,308 @@
+[
+  {
+    "id": "berserk",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/berserk_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "soldier",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/soldier_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "thief",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/thief_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "elementalist",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/elementalist_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "sniper",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/sniper_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "priest",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/priest_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "biologist",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/biologist_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "robot",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/robot_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "engineer",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/engineer_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "dark_mage",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/dark_mage_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "guitarist",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/guitarist_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "assassin",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/assassin_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "ranger",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/ranger_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "doctor",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/doctor_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "chemist",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/chemist_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "knight",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/knight_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "druid",
+    "group": "hero",
+    "frames": "res://assets/sprites/characters/druid_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "rift_cutter",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres"
+  },
+  {
+    "id": "ash_marksman",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres"
+  },
+  {
+    "id": "spark_runner",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres"
+  },
+  {
+    "id": "stone_bruiser",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres"
+  },
+  {
+    "id": "bone_caller",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres"
+  },
+  {
+    "id": "void_mage",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/void_mage_spriteframes.tres"
+  },
+  {
+    "id": "venom_spitter",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres"
+  },
+  {
+    "id": "rift_shieldbearer",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres"
+  },
+  {
+    "id": "small_biter",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres"
+  },
+  {
+    "id": "bone_shaman",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres"
+  },
+  {
+    "id": "winged_spark",
+    "group": "monster",
+    "frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres"
+  },
+  {
+    "id": "iron_bastion",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres"
+  },
+  {
+    "id": "night_stalker",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres"
+  },
+  {
+    "id": "plague_prophet",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres"
+  },
+  {
+    "id": "shard_marshal",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres"
+  },
+  {
+    "id": "mini_scavenger_reaper",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres"
+  },
+  {
+    "id": "mini_plague_bellringer",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_plague_bellringer_spriteframes.tres"
+  },
+  {
+    "id": "mini_bone_warden",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_bone_warden_spriteframes.tres"
+  },
+  {
+    "id": "mini_spark_wight",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_spark_wight_spriteframes.tres"
+  },
+  {
+    "id": "mini_rot_hound",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres"
+  },
+  {
+    "id": "mini_shadow_devourer",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres"
+  },
+  {
+    "id": "mini_siege_rammer",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
+    "fallback_of": "iron_bastion"
+  },
+  {
+    "id": "mini_swarm_sniper",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",
+    "fallback_of": "shard_marshal"
+  },
+  {
+    "id": "mini_plague_berserker",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
+    "fallback_of": "plague_prophet"
+  },
+  {
+    "id": "mini_void_phantom",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
+    "fallback_of": "night_stalker"
+  },
+  {
+    "id": "rift_warden",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+  },
+  {
+    "id": "disk_devourer",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres"
+  },
+  {
+    "id": "bone_archon",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres"
+  },
+  {
+    "id": "brood_mother",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres"
+  },
+  {
+    "id": "ashen_colossus",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres"
+  },
+  {
+    "id": "bloodthorn_lion",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres"
+  },
+  {
+    "id": "secret_ascension_boss",
+    "group": "boss",
+    "frames": "res://assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres"
+  },
+  {
+    "id": "druid_ghost_wolf",
+    "group": "druid_summon",
+    "frames": "res://assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres",
+    "explicit_horizontal": true
+  },
+  {
+    "id": "druid_ghost_bear",
+    "group": "druid_summon",
+    "frames": "res://assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres",
+    "explicit_horizontal": true
+  },
+  {
+    "id": "druid_ghost_panther",
+    "group": "druid_summon",
+    "frames": "res://assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres",
+    "explicit_horizontal": true
+  },
+  {
+    "id": "druid_ghost_stag",
+    "group": "druid_summon",
+    "frames": "res://assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres",
+    "explicit_horizontal": true
+  },
+  {
+    "id": "druid_ghost_lion",
+    "group": "druid_summon",
+    "frames": "res://assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres",
+    "explicit_horizontal": true
+  },
+  {
+    "id": "homunculus_tank",
+    "group": "homunculus",
+    "frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres"
+  },
+  {
+    "id": "homunculus_caster",
+    "group": "homunculus",
+    "frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres"
+  }
+]
