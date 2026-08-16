@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
 from unittest import mock
@@ -200,14 +201,40 @@ def _no_installations():
 
 
 def _sole_write_access_ok(login: str = PUBLISHER_LOGIN):
-    """FAN-1276 proof sextet: authenticated owner with no other write path."""
+    """FAN-1276 proof quintet: authenticated owner with no other write path."""
     return (
         _publisher_identity(login),
         _user_owned_repository(login),
         _sole_collaborator(login),
         _no_invitations(),
         _no_deploy_keys(),
-        _no_installations(),
+    )
+
+
+def _owner_attested_writer_proof(
+    *,
+    observed_at: datetime | None = None,
+    installations: list[dict] | None = None,
+) -> dict:
+    """A complete, owner-attested inventory fixture for the publish boundary."""
+    if observed_at is None:
+        observed_at = datetime.now(timezone.utc)
+    return {
+        "schema_version": 1,
+        "source": "github-account-applications-settings",
+        "account": PUBLISHER_LOGIN,
+        "repository": "FomaBy/FantasyDisk-Releases",
+        "observed_at": observed_at.isoformat().replace("+00:00", "Z"),
+        "complete": True,
+        "installations": installations or [],
+    }
+
+
+def _owner_attested_writer_proofs() -> tuple[dict, dict]:
+    first = datetime.now(timezone.utc) - timedelta(seconds=1)
+    return (
+        _owner_attested_writer_proof(observed_at=first),
+        _owner_attested_writer_proof(observed_at=first + timedelta(seconds=1)),
     )
 
 
@@ -234,6 +261,96 @@ def _classify_publisher_commands(
         ):
             write_commands.append(command)
     return {"write_commands": write_commands}
+
+
+class OwnerAttestedWriterInventoryTests(unittest.TestCase):
+    """FAN-2829: one App token cannot prove the account-wide App inventory."""
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+
+    def test_requires_two_fresh_distinct_complete_owner_proofs(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        github_release_publish.assert_owner_attested_writer_inventory(
+            self.REPOSITORY, PUBLISHER_LOGIN, first, second
+        )
+
+    def test_rejects_replayed_proof_before_any_github_call(self) -> None:
+        proof = _owner_attested_writer_proof()
+        with mock.patch.object(github_release_publish, "run") as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "fresh second owner attestation"):
+                github_release_publish.assert_owner_attested_writer_inventory(
+                    self.REPOSITORY, PUBLISHER_LOGIN, proof, proof
+                )
+        run_mock.assert_not_called()
+
+    def test_rejects_app_writer_and_account_or_repository_mismatch(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        writer = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+        cases = (
+            ("writer", dict(second, installations=[writer]), "can reach the distribution repository"),
+            ("account", dict(second, account="Mallory"), "account does not match"),
+            ("repository", dict(second, repository="FomaBy/Other"), "repository does not match"),
+            ("incomplete", dict(second, complete=False), "not marked complete"),
+        )
+        for label, bad_second, message in cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    github_release_publish.assert_owner_attested_writer_inventory(
+                        self.REPOSITORY, PUBLISHER_LOGIN, first, bad_second
+                    )
+
+    def test_rejects_malformed_or_partial_selected_repository_inventory(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        selected_writer = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "selected",
+            "permissions": {"administration": "write"},
+            "repositories": {"total_count": 1, "repositories": [{"full_name": self.REPOSITORY}]},
+        }
+        cases = (
+            (dict(selected_writer, repositories={"total_count": 2, "repositories": []}), "incomplete"),
+            (dict(selected_writer, repositories={"total_count": True, "repositories": []}), "incomplete"),
+            (dict(selected_writer, repository_selection="unknown"), "unknown App repository selection"),
+            (dict(selected_writer, id=True), "App inventory is malformed"),
+            (dict(selected_writer, permissions=None), "App inventory is malformed"),
+            (selected_writer, "can reach the distribution repository"),
+        )
+        for installation, message in cases:
+            with self.subTest(case=message):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    github_release_publish.assert_owner_attested_writer_inventory(
+                        self.REPOSITORY,
+                        PUBLISHER_LOGIN,
+                        first,
+                        dict(second, installations=[installation]),
+                    )
+
+    def test_gho_403_fails_closed_without_echoing_a_token(self) -> None:
+        token = "gho_this_must_not_appear"
+        with mock.patch.object(
+            github_release_publish.subprocess,
+            "run",
+            return_value=_gh(["gh", "api", "user"], 1, "", f"HTTP 403 {token}"),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "command failed") as caught:
+                github_release_publish.run(["gh", "api", "user"])
+        self.assertNotIn(token, str(caught.exception))
+        self.assertIn("[REDACTED]", str(caught.exception))
+
+    def test_dry_run_needs_no_attestations_and_never_calls_publish(self) -> None:
+        with mock.patch.object(sys, "argv", ["github_release_publish.py", "--version", "0.2.3", "--dry-run"]), \
+             mock.patch.object(github_release_publish, "verify_local_release", return_value=Path("release")), \
+             mock.patch.object(github_release_publish, "release_files", return_value=([], Path("notes"))), \
+             mock.patch.object(github_release_publish, "publish") as publish_mock:
+            with mock.patch("builtins.print"):
+                self.assertEqual(github_release_publish.main(), 0)
+        publish_mock.assert_not_called()
 
 
 class UpdateReleasePipelineTests(unittest.TestCase):
@@ -373,7 +490,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]):
             with self.assertRaisesRegex(RuntimeError, "never overwrite"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
 
     def test_publisher_refuses_existing_bare_immutable_tag(self) -> None:
@@ -393,7 +510,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "never reuse"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
@@ -413,7 +530,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]):
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
 
     def test_publisher_allows_a_missing_bare_tag(self) -> None:
@@ -441,7 +558,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  published,
              ]) as run_mock:
             published_url = github_release_publish.publish(
-                "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
             )
         self.assertEqual(published_url, "https://example.invalid/v0.2.3.1")
         self.assertTrue(any("create" in call.args[0] for call in run_mock.call_args_list))
@@ -461,7 +578,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
@@ -485,7 +602,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "draft assets are incomplete"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(
             any(call.args[0][:3] == ["gh", "release", "edit"] for call in run_mock.call_args_list)
@@ -651,7 +768,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1050,7 +1167,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1494,7 +1611,7 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1714,7 +1831,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [self.asset], self.changelog
+            self.REPOSITORY, self.VERSION, [self.asset], self.changelog, *_owner_attested_writer_proofs()
         )
 
     def _stateful_github(
@@ -1994,6 +2111,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         self.assertFalse(any("create" in command for command in commands))
         self.assertFalse(any("edit" in command for command in commands))
 
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_sole_writer_boundary_fails_closed_on_unprovable_state(self) -> None:
         identity = (_publisher_identity(), _user_owned_repository())
         no_writers = (*identity, _sole_collaborator(), _no_invitations())
@@ -2148,6 +2266,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                             self.REPOSITORY
                         )
 
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_malformed_app_inventory_blocks_production_sequence_before_any_write(
         self,
     ) -> None:
@@ -2305,6 +2424,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                 write_commands = _classify_publisher_commands(commands)["write_commands"]
                 self.assertEqual(write_commands, [], label)
 
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_sole_writer_boundary_accepts_only_provably_harmless_grants(
         self,
     ) -> None:

@@ -296,8 +296,16 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    distribution repository is owned by the authenticated publisher account
    (user-owned), lists no other collaborator and no pending collaboration
    invitation, holds no deploy key that can push, and is covered by no GitHub
-   App installation with contents or administration write; hidden, malformed,
-   or unprovably paginated state blocks publication. Every draft asset is
+   App installation with contents or administration write. Do not treat
+   `GET /user/installations` from a `ghu_` token as account-wide evidence: it
+   covers only that App's visible installations. For a personal account the
+   supported proof is two owner-attested, complete Settings → Applications JSON
+   inventories passed with `--writer-inventory-proof` (pre-draft then
+   pre-public). Each binds account, repository, UTC observation time and full
+   selected-repository details; both expire after two minutes and the second
+   must be newer. Hidden, malformed, partial, stale, replayed, or writer-bearing
+   evidence blocks publication. Keep attestations, cookies and tokens out of git,
+   Multica and logs. Every draft asset is
    then re-verified byte-exact (name, size, SHA-256) as the last read before
    `gh release edit --draft=false`, so a concurrent asset swap after the last
    clean verification aborts the attempt while the release is still an

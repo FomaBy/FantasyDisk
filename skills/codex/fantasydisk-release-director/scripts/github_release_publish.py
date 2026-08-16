@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -39,6 +40,7 @@ README_FORBIDDEN_MARKERS = (
 )
 HTTP_STATUS_RE = re.compile(r"(?m)^HTTP/[^\s]+\s+(\d{3})\b")
 COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
+TOKEN_RE = re.compile(r"\b(?:gh[opsu]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)\b")
 # GitHub has no atomic publish-with-expected-SHA, so the create-only claim stays
 # trustworthy only while the platform itself rejects tag rewrites. Both rule
 # types must be guaranteed server-side before the first external side effect.
@@ -50,6 +52,8 @@ REQUIRED_TAG_RULE_TYPES = frozenset({"update", "deletion"})
 RELEASE_MUTATING_APP_PERMISSIONS = ("administration", "contents")
 # A listing proves an inventory only when one page provably holds every entry.
 COMPLETE_LISTING_LIMIT = 100
+WRITER_PROOF_MAX_AGE = timedelta(minutes=2)
+WRITER_PROOF_SOURCE = "github-account-applications-settings"
 RECONCILIATION_GUIDANCE = (
     "the supported path has no rollback: it never deletes, force-updates, "
     "demotes, or reuses a published release or tag, and never edits or demotes "
@@ -114,7 +118,7 @@ def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
 def run(command: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
     result = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if check and result.returncode:
-        detail = (result.stderr or result.stdout).strip()
+        detail = TOKEN_RE.sub("[REDACTED]", (result.stderr or result.stdout).strip())
         raise RuntimeError(f"command failed: {' '.join(command)}\n{detail}")
     return result
 
@@ -347,31 +351,129 @@ def _complete_listing(route: str, inventory: str) -> list:
     return entries
 
 
-def _installation_covers_repository(installation_id: int, repository: str) -> bool:
-    """Prove whether a selected-repositories App installation reaches the repo."""
-    payload = _api_json(
-        f"user/installations/{installation_id}/repositories"
-        f"?per_page={COMPLETE_LISTING_LIMIT}"
-    )
-    repositories = payload.get("repositories")
-    total = payload.get("total_count")
-    if not isinstance(repositories, list) or type(total) is not int:
-        raise RuntimeError("GitHub App installation repositories are unreadable")
-    if total != len(repositories) or total >= COMPLETE_LISTING_LIMIT:
-        raise RuntimeError(
-            "cannot prove the GitHub App installation repository list is "
-            "complete within one page; publication requires a provably "
-            "complete writer inventory"
-        )
-    covered = set()
+def _proof_time(value: object) -> datetime:
+    if not isinstance(value, str):
+        raise RuntimeError("owner attestation has an invalid observation time")
+    try:
+        observed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise RuntimeError("owner attestation has an invalid observation time") from error
+    if observed.tzinfo is None:
+        raise RuntimeError("owner attestation observation time must include UTC offset")
+    return observed.astimezone(timezone.utc)
+
+
+def _proof_installation_covers_repository(installation: dict, repository: str) -> bool:
+    selection = installation.get("repository_selection")
+    if selection == "all":
+        return True
+    if selection != "selected":
+        raise RuntimeError("owner attestation has an unknown App repository selection")
+    selected = installation.get("repositories")
+    if not isinstance(selected, dict):
+        raise RuntimeError("owner attestation has an unreadable selected-repository inventory")
+    repositories = selected.get("repositories")
+    total = selected.get("total_count")
+    if (
+        not isinstance(repositories, list)
+        or type(total) is not int
+        or total != len(repositories)
+        or total >= COMPLETE_LISTING_LIMIT
+    ):
+        raise RuntimeError("owner attestation selected-repository inventory is incomplete")
+    names: set[str] = set()
     for entry in repositories:
         if not isinstance(entry, dict) or not isinstance(entry.get("full_name"), str):
-            raise RuntimeError("GitHub App installation repositories are unreadable")
-        covered.add(entry["full_name"].casefold())
-    return repository.casefold() in covered
+            raise RuntimeError("owner attestation has an unreadable selected-repository inventory")
+        names.add(entry["full_name"].casefold())
+    return repository.casefold() in names
 
 
-def assert_sole_publisher_write_access(repository: str) -> None:
+def _assert_owner_attested_writer_proof(
+    repository: str, account: str, proof: object, *, label: str
+) -> datetime:
+    if not isinstance(proof, dict):
+        raise RuntimeError(f"{label} owner attestation is malformed")
+    if proof.get("schema_version") != 1 or proof.get("source") != WRITER_PROOF_SOURCE:
+        raise RuntimeError(f"{label} owner attestation has an unsupported source or schema")
+    if proof.get("account") != account:
+        raise RuntimeError("owner attestation account does not match the authenticated publisher")
+    if proof.get("repository") != repository:
+        raise RuntimeError("owner attestation repository does not match the distribution repository")
+    if proof.get("complete") is not True:
+        raise RuntimeError("owner attestation is not marked complete")
+    observed = _proof_time(proof.get("observed_at"))
+    if datetime.now(timezone.utc) - observed > WRITER_PROOF_MAX_AGE or observed > datetime.now(timezone.utc):
+        raise RuntimeError("owner attestation is stale or has an invalid future observation time")
+    installations = proof.get("installations")
+    if not isinstance(installations, list) or len(installations) >= COMPLETE_LISTING_LIMIT:
+        raise RuntimeError("owner attestation App inventory is incomplete")
+    seen_ids: set[int] = set()
+    for installation in installations:
+        if not isinstance(installation, dict):
+            raise RuntimeError("owner attestation App inventory is malformed")
+        installation_id = installation.get("id")
+        permissions = installation.get("permissions")
+        if (
+            type(installation_id) is not int
+            or installation_id <= 0
+            or installation_id in seen_ids
+            or not isinstance(installation.get("app_slug"), str)
+            or not installation["app_slug"]
+            or not isinstance(permissions, dict)
+        ):
+            raise RuntimeError("owner attestation App inventory is malformed")
+        seen_ids.add(installation_id)
+        granted = [
+            name for name in RELEASE_MUTATING_APP_PERMISSIONS
+            if permissions.get(name) not in (None, "read")
+        ]
+        if granted and _proof_installation_covers_repository(installation, repository):
+            raise RuntimeError(
+                "owner-attested GitHub App installation "
+                f"{installation['app_slug']} holds {', '.join(granted)} write access "
+                "that can reach the distribution repository"
+            )
+    return observed
+
+
+def assert_owner_attested_writer_inventory(
+    repository: str, account: str, first_proof: object, second_proof: object
+) -> None:
+    """Validate two fresh owner attestations of the account-wide App inventory.
+
+    GitHub documents ``GET /user/installations`` as installations accessible to
+    *the current App user token*, not every App installed on a personal account.
+    The owner therefore exports the complete Settings → Applications inventory
+    into this schema; the publisher binds it to its authenticated account and
+    refuses stale, replayed, incomplete, malformed, or writer-bearing evidence.
+    """
+    first_observed = _assert_owner_attested_writer_proof(
+        repository, account, first_proof, label="first"
+    )
+    second_observed = _assert_owner_attested_writer_proof(
+        repository, account, second_proof, label="second"
+    )
+    if second_observed <= first_observed or second_proof == first_proof:
+        raise RuntimeError("publication requires a fresh second owner attestation, not a replay")
+
+
+def load_owner_attested_writer_proof(path: str) -> dict:
+    proof_path = Path(path)
+    if proof_path.is_symlink() or not proof_path.is_file() or proof_path.stat().st_size > 128 * 1024:
+        raise RuntimeError("owner attestation file must be a small regular JSON file")
+    try:
+        proof = json.loads(proof_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError("owner attestation file is unreadable JSON") from error
+    if not isinstance(proof, dict):
+        raise RuntimeError("owner attestation file must contain a JSON object")
+    return proof
+
+
+def assert_sole_publisher_write_access(
+    repository: str, writer_proof: object, *, proof_label: str
+) -> datetime:
     """Prove no other account can rewrite draft release assets before publication.
 
     GitHub keeps every draft release asset writable for any actor with
@@ -422,48 +524,9 @@ def assert_sole_publisher_write_access(repository: str) -> None:
                 "distribution repository holds a deploy key that is not "
                 "provably read-only; remove it before publication"
             )
-    installations_payload = _api_json(
-        f"user/installations?per_page={COMPLETE_LISTING_LIMIT}"
+    return _assert_owner_attested_writer_proof(
+        repository, login, writer_proof, label=proof_label
     )
-    installations = installations_payload.get("installations")
-    total = installations_payload.get("total_count")
-    if not isinstance(installations, list) or type(total) is not int:
-        raise RuntimeError("GitHub App installations are unreadable")
-    if total != len(installations) or total >= COMPLETE_LISTING_LIMIT:
-        raise RuntimeError(
-            "cannot prove the GitHub App installation inventory is complete "
-            "within one page; publication requires a provably complete writer "
-            "inventory"
-        )
-    for installation in installations:
-        installation_id = (
-            installation.get("id") if isinstance(installation, dict) else None
-        )
-        if type(installation_id) is not int or installation_id <= 0:
-            raise RuntimeError("GitHub App installations are unreadable")
-        permissions = installation.get("permissions")
-        if not isinstance(permissions, dict):
-            raise RuntimeError("GitHub App installations are unreadable")
-        granted = [
-            name
-            for name in RELEASE_MUTATING_APP_PERMISSIONS
-            if permissions.get(name) not in (None, "read")
-        ]
-        if not granted:
-            continue
-        if installation.get(
-            "repository_selection"
-        ) == "selected" and not _installation_covers_repository(
-            installation_id, repository
-        ):
-            continue
-        raise RuntimeError(
-            "GitHub App installation "
-            f"{installation.get('app_slug', 'with an unknown slug')} holds "
-            f"{', '.join(granted)} write access that can reach the "
-            "distribution repository; uninstall it or exclude the repository "
-            "before publication"
-        )
 
 
 def resolve_release_target_commit(repository: str, branch: str) -> str:
@@ -731,7 +794,14 @@ def _describe_claimed_tag_state(repository: str, tag: str, commit_sha: str) -> s
     return f"the current state of the claimed tag {tag} could not be read"
 
 
-def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
+def publish(
+    repository: str,
+    version: str,
+    files: list[Path],
+    changelog: Path,
+    first_writer_proof: object,
+    second_writer_proof: object,
+) -> str:
     if not is_valid_release_version(version):
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     if shutil.which("gh") is None:
@@ -741,7 +811,9 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     assert_immutable_release_enforcement(repository)
     tag = f"v{version}"
     assert_release_tag_protection(repository, tag)
-    assert_sole_publisher_write_access(repository)
+    first_proof_time = assert_sole_publisher_write_access(
+        repository, first_writer_proof, proof_label="first"
+    )
     assert_unclaimed_distribution_release(repository, tag)
     assert_unclaimed_distribution_tag(repository, tag)
     release_commit = resolve_release_target_commit(repository, default_branch)
@@ -785,7 +857,13 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     # final read before the irreversible edit. From that read to the edit the
     # proven sole-writer boundary is what keeps the assets frozen, and the
     # server-side tag ruleset proven before the claim keeps the tag frozen.
-    assert_sole_publisher_write_access(repository)
+    second_proof_time = assert_sole_publisher_write_access(
+        repository, second_writer_proof, proof_label="second"
+    )
+    if second_proof_time <= first_proof_time or second_writer_proof == first_writer_proof:
+        raise RuntimeError(
+            "publication requires a fresh second owner attestation, not a replay"
+        )
     assert_owned_distribution_tag(repository, tag, release_commit)
     try:
         _assert_release_assets(repository, tag, files, draft=True)
@@ -845,6 +923,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", required=True)
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
+    parser.add_argument(
+        "--writer-inventory-proof",
+        action="append",
+        default=[],
+        metavar="JSON",
+        help="two fresh owner-attested complete App inventories: pre-draft, then pre-public",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     if not is_valid_release_version(args.version):
@@ -863,7 +948,18 @@ def main() -> int:
                 "byte-exact; nothing was published."
             )
             return 0
-        print(publish(args.repository, args.version, files, changelog))
+        if len(args.writer_inventory_proof) != 2:
+            raise RuntimeError(
+                "publication requires exactly two --writer-inventory-proof files; "
+                "dry-run performs no external side effects and does not require them"
+            )
+        first_proof, second_proof = (
+            load_owner_attested_writer_proof(path)
+            for path in args.writer_inventory_proof
+        )
+        print(publish(
+            args.repository, args.version, files, changelog, first_proof, second_proof
+        ))
     except (OSError, RuntimeError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
     return 0

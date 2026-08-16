@@ -24,13 +24,20 @@ upload начинается последним, но `gh` загружает ass
 byte-exact (имя, размер, SHA-256), и только затем становится public и latest —
 поэтому `latest` никогда не указывает на ещё не готовые установщики.
 Перед необратимым `--draft=false` publisher дополнительно доказывает
-sole-writer boundary (FAN-1276): никакой другой аккаунт не может переписать
-draft assets — репозиторий принадлежит самому публикатору, других
-collaborators и pending invitations нет, deploy keys только read-only, и ни
-одна GitHub App installation с contents/administration write не покрывает
-репозиторий, — и повторно byte-exact сверяет все draft assets последним
-чтением перед публичным edit. Подмена файла после последней чистой проверки
-останавливает публикацию, пока release ещё draft.
+sole-writer boundary (FAN-1276/FAN-2829): никакой другой аккаунт не может
+переписать draft assets — репозиторий принадлежит самому публикатору, других
+collaborators и pending invitations нет, deploy keys только read-only. Полный
+список GitHub Apps фиксирует владелец в двух fresh JSON-attestations из
+`Settings → Applications`: `GET /user/installations` от `ghu_` показывает лишь
+установки текущего App и не является доказательством для аккаунта. Каждый
+файл привязан к account/repository/time/complete inventory; второй новее
+первого, оба не старше двух минут, а selected installation содержит полный
+список repositories. Любой App с contents/administration write, неполный,
+просроченный, повторный или malformed файл блокирует запуск либо public edit.
+Затем publisher повторно byte-exact сверяет все draft assets последним чтением
+перед публичным edit. Подмена файла после последней чистой проверки
+останавливает публикацию, пока release ещё draft. Аттестации, cookies и токены
+не сохраняются в git, Multica или логах.
 
 ## Клиентский контракт
 
