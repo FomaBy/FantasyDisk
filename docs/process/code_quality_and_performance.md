@@ -98,4 +98,6 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 cache generations и отсутствие per-frame deep copies/introspection. Wall-clock
 threshold в shared CI допустим только как дополнительный сигнал из-за шумности.
 Финальная Windows release-проверка всё равно включает профиль на реальном Windows
-устройстве и не подменяется macOS headless.
+устройстве и не подменяется macOS headless. С FAN-2798 она обязана включать
+заполненный перф-раздел по `docs/qa/perf-checklist.md` (метрики M1–M5 с числами);
+вердикт Windows-проверки без него неполный.
