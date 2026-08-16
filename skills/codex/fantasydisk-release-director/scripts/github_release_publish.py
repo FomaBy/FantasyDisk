@@ -431,8 +431,7 @@ def _assert_owner_attested_writer_proof(
         installation_id = installation.get("id")
         permissions = installation.get("permissions")
         if (
-            type(installation_id) is not int
-            or installation_id <= 0
+            type(installation_id) is not int or installation_id <= 0
             or installation_id in seen_ids
             or not isinstance(installation.get("app_slug"), str)
             or not installation["app_slug"]
