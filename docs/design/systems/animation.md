@@ -36,6 +36,49 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
+- FAN-2602 (2026-08-17) reviewed the live Knight pack that SCRUM-869 left in
+  place (SCRUM-430 source, PixelLab character
+  `c1a7d633-7353-4861-aea3-8d937b601cba`, `walking-6-frames` refresh) and
+  **rejected it** — 4 of the 8 locomotion rows fail the acceptance bar.
+  `move_west` (all 6 frames) and `move_south_west` (all 6 frames) are
+  byte-identical horizontal mirrors of `move_east`/`move_south_east` — confirmed
+  at the raw PixelLab source PNG level (mean abs delta `0.000`), not a runtime
+  normalization artifact. The manifest's `scrum869_refresh` shows why: the
+  walking-6-frames export for this character contains only five animation
+  folders, and `selected_animation_folders` maps `west` to the same folder as
+  `east` (`animating-ac2f8738`) and `south-west` to the same as `south-east`
+  (`animating-59e5cb6d`); a fresh download of the character export on
+  2026-08-17 confirms the mirrored rows are all that PixelLab currently serves.
+  `move_north_east` and `move_north_west` additionally fail the identity-stability
+  band: `north-east` drops the spread crimson cape entirely on move frames
+  `01`–`02` (dangling front sash instead) and regains it on `03`–`05`
+  (alpha-area max/min `1.32`, single-frame jumps `16.4%`/`17.0%`), and
+  `north-west` switches between a narrow trailing silhouette on `00`–`02` and a
+  wide cape-spread pose with raised arms on `03`–`05` (max/min `1.56`,
+  mid-loop jump `43.7%`, wrap jump `28.4%`) — the FAN-2606 mid-loop morph
+  pattern. `animation_roster_audit.py` independently flags
+  `move_north`/`walk_north` (`wrap diff 20 vs mean step 10`) and
+  `move_north_west`/`walk_north_west` (`32 vs 17`); the `north` flag is the
+  coarse ratio-vs-mean guard on a calm row (area steps `1.0`–`7.5%`, max/min
+  `1.11`, largest jump at the wrap seam only), while the `north_west` flag
+  matches the real morph above. Everything else passes: all 8 idle rotations are
+  true distinct art (idle `west` vs flipped `east` delta `7.03`, `north-west`
+  vs flipped `north-east` `7.49` — no idle mirror stand-in), `south`/`east`/
+  `north` locomotion rows are stable (max/min `1.07`–`1.11`), all 56 runtime
+  frames are 512 px canvases with visible height `245`, footline pinned at
+  `y=504` (0 px drift) and binary alpha `{0,255}`, `knight_spriteframes.tres`
+  holds only `idle`/`move`/`walk` × 8 directions + 3 south aliases (1-frame
+  idle, 6-frame locomotion at 10 fps, `walk_*` aliasing the `move_*` sources,
+  no attack/cast/death row, all 56 textures from `knight_pixellab/`), the body
+  rig forces `flip_h = false` on directional rows, and `alpha_bbox_report.json`
+  covers all 56 frames, so PixelLab provenance is complete. Hero Select only
+  cycles the clean idle frames, so it is unaffected. Fixing the pack needs a
+  PixelLab regeneration pass (`animate_character`, mode v3, 6 frames, cape kept
+  constant across frames) for the four rejected move rows plus re-normalization
+  — an `art_assets`-lane pass with PixelLab MCP access, not a runtime change
+  (FAN-2595/FAN-2606 → FAN-2845/FAN-2855 pattern). Evidence:
+  `tools/build_fan2602_knight_animation_review.py`, sheets under
+  `docs/design/previews/fan2602_knight_*`.
 - FAN-2606 (2026-08-17) reviewed the live Sniper pack that SCRUM-869 left in
   place (SCRUM-433 source, PixelLab character
   `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) and rejected it: `south`,
