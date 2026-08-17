@@ -355,7 +355,11 @@ func _test_homunculus_vial() -> void:
 	var host := await _make_host()
 	var tank := _add_ally(host)
 	var caster := _add_ally(host)
+	# A pool the whole cascade fits inside: the escalation is asserted as an exact
+	# formula, so an overkill clamp would hide the very bonus under test.
 	var mob := _add_enemy(host, host.global_position + Vector2.RIGHT * 120.0, "")
+	mob.health = 1000000.0
+	mob.max_health = 1000000.0
 	var boss := _add_enemy(host, host.global_position + Vector2.LEFT * 120.0, Activation.BOSS_GROUP)
 
 	var controller := Controller.new(host, _registry)
@@ -386,8 +390,8 @@ func _test_homunculus_vial() -> void:
 	for beat_index in beats:
 		expected += stomp * (1.0 + bonus * float(beat_index))
 	_advance(activation, float(params["beat_interval"]) * float(beats) + 0.05)
-	_check(is_equal_approx(100.0 - mob.health, expected),
-		"the cascade must escalate every stomp, removed %.3f vs %.3f" % [100.0 - mob.health, expected])
+	_check(is_equal_approx(1000000.0 - mob.health, expected),
+		"the cascade must escalate every stomp, removed %.3f vs %.3f" % [1000000.0 - mob.health, expected])
 	_check(is_equal_approx(100.0 - boss.health, 100.0 * EXPECTED_BOSS_CAP),
 		"stomps must share one boss budget, removed %.2f" % (100.0 - boss.health))
 	_check(is_equal_approx(float(activation.target_value(mob, HomunculusVial.TOXIN_KEY, 0.0)), float(beats)),

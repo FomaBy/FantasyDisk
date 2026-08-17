@@ -61,8 +61,10 @@ inward and transmute it in one capped blast.
 - `stateful_target_ledger` records the caught set once under
   `philosopher_crystal`.
 - At `pull_at` (0.5 s — the manifest release beat) each recorded target takes an
-  inward `apply_control` impulse of `pull_force` plus the crystal lock, which is
-  declared to expire as the blast lands.
+  inward `apply_control` impulse of `pull_force` plus the crystal lock. The lock
+  runs for `crystal_status.duration` (0.8 s), so it expires exactly as the blast
+  lands at 1.3 s rather than 0.1 s before it — FAN-2527 closed that gap, in which
+  a pulled enemy was already free to walk out of the pentagram it was caught in.
 - At `detonate_at` (1.3 s — the active beat) the blast consumes each mark and
   deals `damage` once. The cast recovers until `recover_at` (2.2 s).
 
@@ -97,6 +99,12 @@ to the full radius across its `tick_count` ticks.
 stack in the activation target ledger, up to `dissolve_stack_cap`. A tick's
 damage is scaled by `1 + dissolve_bonus * stacks`, so the lake bites harder the
 longer a target stands in it. The stack lives and dies with the activation.
+
+`dissolve_stack_cap` is 9 — one below `tick_count`, which is the highest stack a
+target can carry into a tick of this pour. It used to be 5, so the escalation
+saturated halfway through the lake's own cast and the last five ticks were flat;
+FAN-2527 raised the ceiling to the length of the pour it belongs to.
+`chemist_balance_test.gd` holds it there.
 
 **Capped charge conversion.** The `owner_resource_conversion` primitive is now
 part of the shared activation, so the accepted "converts measured outcomes into
@@ -150,6 +158,83 @@ is untouched — every profile binds the existing `legacy_charge` policy, so
 `UltimateChargeLedger` still spends the charge exactly once and still allows one
 activation per encounter, and charge still survives battles, acts and Continue.
 
+## Power corridor (FAN-2527)
+
+The corridor is `UltimateChargeBudget.POWER_SECONDS_MIN..MAX` — one activation is
+worth 20…35 s of the weapon's OWN normal output — and the live reading of it is
+the solo `effect_total` of
+`scripts/ultimates/balance/ultimate_effectiveness_runner.gd`.
+
+**The finding.** All three executors price damage as `context.damage * damage`,
+i.e. off the equipped weapon's PER-HIT channel. Inside the Chemist that channel
+spans 53.24 / 4.41 / 3.18 (`blast_powder` is a direct-AoE weapon at
+`damage_multiplier` 2.60, while `acid_flask` 0.24 and `homunculus_vial` 0.90 carry
+their real DPS in pool-tick and summon channels an ultimate never reads), yet the
+three power budgets are nearly identical because they are priced off
+`reference_solo_dps`, which is ~31…32 for all three. The coefficients were
+authored before FAN-2516 existed, against the assumption that per-hit damage is
+comparable across a trio; two of the three therefore sat at 10% and 56% of their
+own corridor floor. **A Chemist coefficient is only readable next to its weapon's
+per-hit damage** — that is why 4.2, 7.6 and 39.0 are the same amount of power.
+
+Baseline is the committed `build/ultimate_effectiveness_baseline.json`
+(FAN-2516 at `5e96dd1f`); final is the same instrument after this card. The other
+48 rows are bit-identical, so `regressions()` stays clean without a rewritten
+baseline.
+
+| Weapon | corridor | solo effect before → after | of budget | boss cap ratio |
+| --- | --- | --- | --- | --- |
+| `blast_powder` | 624.6 … 1093.0 | 890.35 → 890.45 | 0.81 | 0.247 → 0.247 |
+| `acid_flask` | 643.4 … 1126.0 | 66.31 → 889.25 | 0.79 | 0.059 → 0.790 |
+| `homunculus_vial` | 645.4 … 1129.5 | 363.22 → 888.79 | 0.79 | 0.019 → 0.484 |
+
+Charge cadence is untouched: all three stay at 4 normal encounters to ready and
+32.7 charge per neutral normal encounter, inside the frozen 25…35 corridor.
+
+**`blast_powder`'s boss ratio is an explicit exception.** It was already inside
+its corridor, so its coefficient did not move. 620 of its 890 solo effect is
+displacement, and the declared boss policy resists displacement at 0.25 and
+refuses the movement lock outright — so a boss keeps only the transmutation half
+of a pull-and-transmute cast, and the row spends a quarter of its boss allowance
+by construction. Lifting the coefficient until the boss allowance bound would
+either push the solo row past its corridor ceiling or make the per-target cap the
+de-facto flat damage number, which would end build scaling against normal
+enemies. The class's boss answer is `acid_flask` (0.790) and its crowd answer is
+the pentagram; that split is the trio identity, not a gap.
+
+**Niches after the correction**, each measured on a channel the other two do not
+use: `blast_powder` is the only movement lock and the strongest per-target
+displacement (620); `acid_flask` is pure damage with no control or summon channel
+at all, the widest reach (16 probes struck) and the class's boss answer;
+`homunculus_vial` is the only summon window and the widest crowd hold (14 probes,
+16.8 control-seconds at 20 targets). `chemist_balance_test.gd` asserts exactly
+that split, so a later retune cannot quietly collapse two of the three into one.
+
+## Timing and mechanic contract for the visual cards
+
+The three downstream animation cards inherit this contract unchanged. **No beat
+moved in FAN-2527** — every `timing_seconds` value in
+`docs/design/references/weapon_ultimates/chemist/manifest.json` is still the beat
+the executor fires on, so no capture, contact sheet or timeline needs re-shooting
+for balance reasons:
+
+| Weapon | windup | release | active | recovery | cancel | what the beats carry |
+| --- | --- | --- | --- | --- | --- | --- |
+| `blast_powder` | 0.00 | 0.50 pull + crystal lock | 1.30 transmute | 2.20 | 3.40 | one inward yank, then ONE blast; the lock now holds the full 0.50 → 1.30 window |
+| `acid_flask` | 0.00 | 0.75 pour | 1.60 | 3.70 | 4.80 | 10 ticks at 0.25 s (1.00 → 3.25), each harder than the last for the WHOLE pour, then the pillars |
+| `homunculus_vial` | 0.00 | 0.90 fuse + taunt | 1.70 | 4.20 | 5.40 | 3 stomps at 0.85 s (1.75 / 2.60 / 3.45), each carrying one more cascade stack |
+
+What changed for presentation, and only this:
+
+- `blast_powder`'s crystal lock is 0.8 s instead of 0.7 s, so the frozen-crystal
+  read must stay on screen until the transmutation frame instead of releasing
+  just before it.
+- `acid_flask`'s corrosion escalates on all ten ticks instead of the first five —
+  the lake's colour/intensity ramp should keep climbing to the last tick rather
+  than flattening at the halfway point.
+- `homunculus_vial`'s stomps are ~26x heavier; the impact language is unchanged,
+  the hit weight is not.
+
 ## Lifecycle inventory
 
 `tests/ultimates/tracked_tween_natural_completion_test.gd` requires one
@@ -187,3 +272,13 @@ resistance, the per-target and boss caps, actual-HP attribution, mark and charge
 idempotency, the dissolve/cascade stack ceilings, status-residue freedom and the
 cancel paths. `tracked_tween_natural_completion_test.gd` covers the same three
 pairs end to end on the real Player.
+
+`tests/ultimates/chemist_balance_test.gd` (FAN-2527) is the closed-form twin of
+the live instrument: it reads the shipped declarations through the real discovery
+pass, rebuilds each solo activation channel by channel off the RUNTIME damage
+anchor (the CLASS damage parameter — `blast_powder` attacks as physical but its
+ultimate scales from `magic_damage`, so the weapon key would price it against a
+channel the cast never uses), and asserts the corridor, the single class boss cap,
+the burst archetype, the dissolve ceiling and the three niches. It reproduces the
+live numbers exactly (890.45 / 889.25 / 888.79) and goes red for a runaway lake
+coefficient, so a retune fails in seconds instead of only in the 51-row run.
