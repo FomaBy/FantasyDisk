@@ -1,0 +1,62 @@
+{
+  "character_id": "mini_rot_hound",
+  "pixellab_character_id": "73b7080a-741b-4f80-8699-28b0674149ee",
+  "generated_at": "2026-08-17",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle) + template walk-6-frames (move) + v3 custom (attack/hit/death/skill_shadow_strike)",
+  "body_type": "quadruped (dog template)",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walk-6-frames",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "lunging bite attack, jaws snapping forward aggressively",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, recoiling with a pained snarl",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "collapsing and dying, crumbling and falling apart to the ground, rotting body giving out",
+      "fps": 10.0
+    },
+    "skill_shadow_strike": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "explosive shadow pounce lunge attack, dashing forward with a dark trailing energy, teeth bared for a vicious strike",
+      "fps": 12.0,
+      "note": "runtime alias for the shared night_stalker elite behavior attack_id=shadow_strike"
+    }
+  },
+  "notes": "First FAN-2519 explicit-eight-direction pack for a mini-elite. 8 idle rotations + 8x6 move/attack/death frames + 8x4 hit frames + 8x6 skill_shadow_strike frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
+}

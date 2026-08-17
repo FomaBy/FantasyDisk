@@ -331,6 +331,46 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   and the animated body inherits the actor's process mode — combat-world
   pause freezes eight-direction visuals with their owner, and all resolver
   state lives in body metas that die with the actor on death/despawn.
+- FAN-2628 (2026-08-17) delivers the first live FAN-2519 pack:
+  `mini_elite/mini_rot_hound`. PixelLab MCP quadruped character
+  `73b7080a-741b-4f80-8699-28b0674149ee` (dog template, standard-mode 8
+  rotations) plus five animation groups — `move` (template
+  `walk-6-frames`, 6f), `attack` (v3 custom "lunging bite attack", 6f),
+  `hit` (v3 custom flinch, 4f), `death` (v3 custom collapse, 6f), and
+  `skill_shadow_strike` (v3 custom shadow pounce, 6f) — each generated for
+  all 8 directions. Source frames live under
+  `assets/sprites/elites/pixellab/mini_rot_hound/` with `manifest.json` and
+  `alpha_bbox_report.json`; runtime frames are transparent `512x512`
+  canvases under `assets/sprites/elites/full_frame/mini_rot_hound/`
+  normalized to `245px` visible height / `32px` bottom padding (fleet
+  standard), except the last 2-4 `death_<dir>` frames whose splayed
+  four-limb collapse pose is wider than tall and is instead scaled to fit
+  the `512px` canvas width, so those frames read shorter than `245px` while
+  the footline (`bottom_padding=32`) stays pinned. `mini_rot_hound_spriteframes.tres`
+  exposes exactly `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` / `skill_shadow_strike_<dir>` for all 8 directions (48 rows,
+  no undirected fallback rows) and the registry entry sets
+  `explicit_eight_directions: true`. `mini_rot_hound` shares the
+  `night_stalker` elite behavior (`elite_attack_id=shadow_strike`); the
+  generic `attack_<dir>` rows cover the direct `_play_rig_action("attack",
+  ...)` calls in `_strike_shadow_strike`, and `skill_shadow_strike_<dir>`
+  covers the phased `night_stalker:shadow_strike:<windup|strike|recover>`
+  state key from `_play_elite_attack_phase_animation` (the resolver's
+  colon-split candidate ladder matches `skill_shadow_strike` for all three
+  phases, so one row set covers the whole attack). `hit`/`death` resolve
+  through the plain `"hit"`/`"death"` requests in `enemy.gd`. Old
+  non-directional pack (`attack_primary`, `move`, `death`, `skill_rot_lunge`,
+  `skill_bleed_howl`) is backed up under
+  `docs/design/backups/fan2628_mini_rot_hound_pre_directional/` — its
+  `skill_rot_lunge`/`skill_bleed_howl` rows were never live (the shared
+  night_stalker resolver never requested those names). Build tooling:
+  `tools/build_fan2628_mini_rot_hound_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack
+  (`Eight-direction live packs audited: 1`),
+  `tests/full_frame_registry_integrity_test.gd` passes, and
+  `build/qa/animation_roster_audit/` carries the contact sheet + findings.
+  AI, collision, damage and encounter timing are unchanged — registry-only
+  visual integration.
 
 ## Player Motion
 
