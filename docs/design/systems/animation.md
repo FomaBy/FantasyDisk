@@ -51,7 +51,20 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   directions, i.e. an `art_assets` pass — not a runtime change. Evidence:
   `tools/build_fan2606_sniper_animation_review.py`,
   `tools/capture_fan2606_sniper_walk.gd`, sheets under
-  `docs/design/previews/fan2606_sniper_*`.
+  `docs/design/previews/fan2606_sniper_*` (regenerated per revision; they always
+  describe the pack at the commit that contains them).
+- FAN-2606 re-review after the FAN-2845 regeneration (`c1fc219e`) — `north` and
+  `west` are now clean and accepted; `north-east` and `north-west` still drift
+  and stay rejected. `north-east` loses the cloak on move frames `00`–`01` and
+  regains it from `02`; `north-west` carries a wide cape plus orange arm/leg
+  straps on `00`–`02` and drops both on `03`–`05`. Both breaks are in the new
+  PixelLab source rows (`4b1c980c-…`, `98195326-…`), not in normalization —
+  `assets/sprites/characters/pixellab/sniper/` shows the same split before the
+  512 px pass. Useful calibration from this pack: within a move row the
+  alpha-area max/min ratio is `1.05`–`1.18` for every accepted direction and
+  `1.24` / `1.38` for the two rejected ones, and the largest single-frame area
+  jump is `≤14.3%` accepted vs `20.6%` / `31.4%` rejected. The bands are too
+  close to gate on automatically — treat them as review aids, not a threshold.
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated

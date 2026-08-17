@@ -5,7 +5,7 @@ Renders the acceptance evidence the card asks for, straight from the runtime
 PNGs the game plays (assets/sprites/characters/full_frame/sniper_pixellab):
 
   - fan2606_sniper_8dir_contact.png  8 direction rows x (idle + move 00..05)
-  - fan2606_sniper_morph_<dir>.png   2x zoom rows for the failing directions
+  - fan2606_sniper_row_<dir>.png     2x zoom of each FAN-2845 regenerated row
 
 Deterministic and read-only; nothing is auto-fixed.
 
@@ -26,8 +26,8 @@ OUT_DIR = ROOT / "docs/design/previews"
 # Clockwise runtime order (manifest "directions"); rows read top to bottom.
 DIRECTIONS = ["south", "south-east", "east", "north-east",
               "north", "north-west", "west", "south-west"]
-# Directions whose move row breaks identity mid-loop (see the card evidence).
-MORPH_DIRECTIONS = ["north-east", "north", "north-west", "west"]
+# Rows FAN-2845 regenerated; zoomed because they carry the review decision.
+REVIEW_DIRECTIONS = ["north-east", "north", "north-west", "west"]
 # Tight window on the 512x512 runtime canvas: visible art is 245 px tall,
 # bottom-aligned with 32 px padding and centred on x=255.
 CROP = (170, 230, 345, 485)
@@ -65,10 +65,10 @@ def main() -> int:
     grid([row_frames(direction) for direction in DIRECTIONS]).save(contact)
     print(f"contact sheet: {contact.relative_to(ROOT)}")
 
-    for direction in MORPH_DIRECTIONS:
-        zoom = OUT_DIR / f"fan2606_sniper_morph_{direction.replace('-', '_')}.png"
+    for direction in REVIEW_DIRECTIONS:
+        zoom = OUT_DIR / f"fan2606_sniper_row_{direction.replace('-', '_')}.png"
         grid([row_frames(direction)], scale=2).save(zoom)
-        print(f"morph zoom:    {zoom.relative_to(ROOT)}")
+        print(f"row zoom:      {zoom.relative_to(ROOT)}")
     return 0
 
 

@@ -6,6 +6,9 @@ extends SceneTree
 ## one row per direction, one column per walk frame, so the loop itself is
 ## reviewable and not just the middle frame the FAN-2518 gallery freezes.
 ## Needs a real renderer: --headless uses the dummy driver and cannot screenshot.
+## After checking out a revision that changed the frames, run an import pass
+## first (Godot --headless --path . --import --quit) or the capture silently
+## renders the stale import cache instead of the checked-out PNGs.
 ## Run: Godot --path . --script res://tools/capture_fan2606_sniper_walk.gd
 ## Output: build/qa/fan2606_sniper/sniper_walk_1920x1080_page<n>.png
 
