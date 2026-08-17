@@ -362,6 +362,19 @@ static func play_state(animated_body: AnimatedSprite2D, requested_state: String,
 	return true
 
 
+# FAN-2519: фактическая резолвнутая строка последнего запроса состояния
+# (8-направленные паки играют `death_<suffix>` последнего ракурса); мету
+# берём только если последний запрос действительно совпадает с искомым
+# состоянием, и падаем обратно на безнаправленную строку при её отсутствии.
+static func resolved_last_row(animated_body: AnimatedSprite2D, requested_state: String, frames: SpriteFrames) -> String:
+	var row := requested_state
+	if str(animated_body.get_meta("last_requested_state", "")) == requested_state:
+		row = str(animated_body.get_meta("last_resolved_state", requested_state))
+	if not frames.has_animation(row):
+		row = requested_state
+	return row
+
+
 static func has_state(animated_body: AnimatedSprite2D, requested_state: String) -> bool:
 	if animated_body == null or animated_body.sprite_frames == null:
 		return false

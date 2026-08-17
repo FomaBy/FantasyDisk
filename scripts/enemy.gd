@@ -796,14 +796,8 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 		rig.visible = false
 	FullFrameAnimationRegistry.play_state(body, "death", Vector2.ZERO)
 	var frames := body.sprite_frames
-	# FAN-2519: длительность считаем по фактической резолвнутой death-строке
-	# (8-направленные паки играют `death_<suffix>` последнего ракурса); мету
-	# берём только если последний запрос действительно был death.
-	var death_row := "death"
-	if str(body.get_meta("last_requested_state", "")) == "death":
-		death_row = str(body.get_meta("last_resolved_state", "death"))
-	if not frames.has_animation(death_row):
-		death_row = "death"
+	# FAN-2519: длительность — по фактической резолвнутой death-строке.
+	var death_row := FullFrameAnimationRegistry.resolved_last_row(body, "death", frames)
 	var fps: float = maxf(frames.get_animation_speed(death_row), 1.0)
 	var count: int = maxi(frames.get_frame_count(death_row), 1)
 	var max_duration := 2.4 if was_boss else 1.2
