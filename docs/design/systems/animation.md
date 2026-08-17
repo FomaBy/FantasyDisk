@@ -102,6 +102,31 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `tools/capture_fan2597_doctor_walk.gd`, sheets under
   `docs/design/previews/fan2597_doctor_*`, captures under
   `build/qa/fan2597_doctor/` (captures are build artifacts, not committed).
+- FAN-2594 (2026-08-17) audited the live Biologist pack (SCRUM-421 source,
+  SCRUM-869 refresh, PixelLab character
+  `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`) and **accepted it unchanged** — no
+  regeneration pass was needed. All 16 direction anchors (8 idle + 8 move `00`)
+  hash distinct and no direction equals another flipped, so every row is real
+  art, not a mirror stand-in. Every runtime frame is 245 px visible height on a
+  512 px canvas with the footline pinned at `y=496` and pivot `x≈256`; the
+  `.tres` maps all 27 rows (`idle`/`move`/`walk` × 8 + 3 south aliases) to that
+  direction's own textures at the fleet-standard 1-frame idle / 6-frame 10 fps
+  locomotion timing. `animation_roster_audit.py` reports zero biologist
+  findings; alpha-area max/min spans `1.07`–`1.23` with the largest single-frame
+  jump `19.1%` (`west`, profile gait sway — matches the accepted doctor `west`
+  at `1.23` and stays under the FAN-2606 rejection examples). Attack stays
+  weapon-owned: the body pack holds no attack rows and the body rig forces
+  `flip_h = false` on directional rows. Residuals (review-aid, below the
+  FAN-2606 silhouette-flicker bar, colour-level only): the `west` hood-front
+  element
+  reads as a cream vial on move `00`–`02` and an exposed cheek on `03`–`05`
+  (~6×7 px at live scale), and the `north-west` satchel flap flips dark/lit at
+  the same stride boundary; both are within-silhouette tone changes an
+  `art_assets` pass could clean up if the pack is ever revisited. Evidence:
+  `tools/build_fan2594_biologist_animation_review.py`,
+  `tools/capture_fan2594_biologist_walk.gd`, sheets under
+  `docs/design/previews/fan2594_biologist_*`, captures under
+  `build/qa/fan2594_biologist/` (build artifacts, not committed).
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
