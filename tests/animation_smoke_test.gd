@@ -1141,16 +1141,35 @@ func _test_full_frame_animation_registry() -> void:
 		if enemy_frames == null:
 			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
 			continue
-		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
-			if not enemy_frames.has_animation(animation_name):
-				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
-			elif enemy_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
-		if not enemy_frames.get_animation_loop("move"):
-			_fail("Expected %s move to loop." % enemy_id)
-		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
-			if enemy_frames.get_animation_loop(one_shot_name):
-				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
+		# FAN-2618: branch on the registry's own explicit_eight_directions flag,
+		# not a hardcoded ID list, so the next converted standard_monster falls
+		# into the directional contract automatically instead of re-breaking
+		# this test (mirrors the FAN-2901 mini-elite pattern below).
+		var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+		if enemy_is_directional:
+			for state_name in ["idle", "move", "attack", "hit", "death"]:
+				var enemy_state_should_loop: bool = state_name in ["idle", "move"]
+				var enemy_expected_frames := 4 if state_name == "hit" else (1 if state_name == "idle" else 6)
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var enemy_directional_row := "%s_%s" % [state_name, dir_suffix]
+					if not enemy_frames.has_animation(enemy_directional_row):
+						_fail("Expected %s SpriteFrames to expose %s." % [enemy_id, enemy_directional_row])
+					else:
+						if enemy_frames.get_animation_loop(enemy_directional_row) != enemy_state_should_loop:
+							_fail("Expected %s %s loop to be %s." % [enemy_id, enemy_directional_row, str(enemy_state_should_loop)])
+						if enemy_frames.get_frame_count(enemy_directional_row) != enemy_expected_frames:
+							_fail("Expected %s %s to have %d frames." % [enemy_id, enemy_directional_row, enemy_expected_frames])
+		else:
+			for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
+				if not enemy_frames.has_animation(animation_name):
+					_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
+				elif enemy_frames.get_frame_count(animation_name) != 6:
+					_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
+			if not enemy_frames.get_animation_loop("move"):
+				_fail("Expected %s move to loop." % enemy_id)
+			for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
+				if enemy_frames.get_animation_loop(one_shot_name):
+					_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
 		if enemy_id == "winged_spark":
 			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
 				_fail("Expected winged_spark hover_flap to have 6 frames.")
@@ -1195,15 +1214,29 @@ func _test_full_frame_animation_registry() -> void:
 		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
 			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
 		if enemy_full_frame_body != null:
-			for animation_name in ["move", "attack_primary", "hit", "death"]:
-				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
-					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
-			if enemy_full_frame_body.animation != "move":
-				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
-			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
-				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
-			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
-				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
+			var enemy_scene_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+			if enemy_scene_is_directional:
+				for state_name in ["idle", "move", "hit", "death"]:
+					if not enemy_full_frame_body.sprite_frames.has_animation("%s_west" % state_name):
+						_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+				if enemy_full_frame_body.animation != "idle_west":
+					_fail("Expected %s enemy FullFrameBody to start in idle_west (last-facing default)." % enemy_id)
+				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack", Vector2.RIGHT):
+					_fail("Expected %s FullFrameBody to play attack." % enemy_id)
+				if enemy_full_frame_body.animation != "attack_east":
+					_fail("Expected %s attack to resolve to attack_east, got %s." % [enemy_id, enemy_full_frame_body.animation])
+				if enemy_full_frame_body.flip_h:
+					_fail("Expected %s eight-direction full-frame art to never mirror via flip_h." % enemy_id)
+			else:
+				for animation_name in ["move", "attack_primary", "hit", "death"]:
+					if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
+						_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+				if enemy_full_frame_body.animation != "move":
+					_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
+				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+					_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+				if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+					_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
 		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
 		if enemy_static_body != null and enemy_static_body.visible:
 			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
