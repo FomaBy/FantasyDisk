@@ -82,6 +82,38 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2599 (2026-08-17) audited the live Elementalist pack (SCRUM-801, PixelLab
+  character `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`) and **rejected it**:
+  `south-east` is the only identity-stable row; the other seven break identity
+  between move frames `02` and `03` — frames `00`–`02` and `03`–`05` are two
+  different costumes of the same silhouette. `north` is the worst: `00`–`02`
+  walk in a caped-idle-mismatching short tunic with bare trousers, `03`–`05`
+  regain the full-length cape. `east` swaps a fur-collared long coat for an
+  armored short jacket with a pauldron; `west`, `north-east`, `north-west`,
+  `south` and `south-west` show the same two-block split (opaque-color
+  histogram distance between neighbour move frames: `5.8`–`27%` inside a block
+  vs `36.5`–`67.3%` at the `02`→`03` and `05`→`00` seams). The baked green
+  hand-glow the SCRUM-801 `v3_character_state_empty_hands_cleanup` pass was
+  meant to remove is also still present on every idle and on the `03`–`05`
+  blocks, and disappears with the costume swap, so a 10 fps walk flickers both
+  outfit and glow ~1.7x per second. The defect is in the 240 px PixelLab source
+  rows (`assets/sprites/characters/pixellab/elementalist/` shows the identical
+  seam values), not in runtime normalization: `512x512` canvas, footline
+  `y=471`–`472`, pivot `x=255.5`–`256.0` and visible height `245`–`247` px are
+  stable across all 56 frames, the `.tres` maps every direction to its own
+  textures with no mirror stand-in (`animation_roster_audit.py` flags only the
+  seam as loop discontinuity on `south`/`south-east`/`north`), and Hero Select
+  is unaffected because its preview cycles only the eight idle frames. Fixing
+  it needs a regenerated PixelLab pack, i.e. an `art_assets` pass — and since
+  the pinned character ID above returns 404 (SCRUM-869 blocker list), that pass
+  must create a new PixelLab character and re-pin provenance; runtime
+  normalization must then follow the FAN-2606/FAN-2855 lesson before the art
+  reaches the screen. Evidence:
+  `tools/build_fan2599_elementalist_animation_review.py`,
+  `tools/capture_fan2599_elementalist_walk.gd`, sheets under
+  `docs/design/previews/fan2599_elementalist_*`, captures under
+  `build/qa/fan2599_elementalist/` (captures are build artifacts, not
+  committed).
 - FAN-2598 (2026-08-17) audited the live Druid pack (SCRUM-426, PixelLab
   character `4078113b-fece-4087-a035-9ed3714a6514`) and **accepted it
   unchanged** — no regeneration pass was needed. All 8 idle rotations and all
