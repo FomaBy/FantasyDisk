@@ -5,6 +5,9 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.64, 0.64)  # SCRUM-823: lock-step with player.gd visual-only bump.
 
 
+var _failed := false
+
+
 func _initialize() -> void:
 	_test_player_animation()
 	_test_enemy_projectile_sprite()
@@ -18,13 +21,16 @@ func _initialize() -> void:
 	_test_elite_attack_phase_animation()
 	_test_hit_death_states()
 	_test_death_ghost()
+	if _failed:
+		quit(1)
+		return
 	print("Animation smoke test passed.")
-	quit()
+	quit(0)
 
 
 func _fail(message: String) -> void:
 	push_error(message)
-	quit(1)
+	_failed = true
 
 
 func _test_character_full_frame_alpha_matte() -> void:
