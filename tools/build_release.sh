@@ -243,6 +243,8 @@ for required_input in \
   tools/build_release.sh \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
+  tools/release_scope_guard.py \
+  tools/release_scope_manifest.json \
   tools/release_version_contract.py \
   tools/release_version_mapping.py \
   tools/scan_release_secrets.py \
@@ -291,6 +293,15 @@ if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.p
   exit 2
 fi
 IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
+
+echo "==> Проверка release scope ${SOURCE_LABEL}"
+if ! python3 "${WORKTREE_DIR}/tools/release_scope_guard.py" \
+  --version "${VERSION}" \
+  --root "${WORKTREE_DIR}" \
+  --manifest "${WORKTREE_DIR}/tools/release_scope_manifest.json"; then
+  echo "    ERROR: snapshot содержит контент, закреплённый за более поздней версией"
+  exit 2
+fi
 
 echo "==> Проверка честной маркировки macOS-канала в клиенте ${SOURCE_LABEL}"
 CLIENT_MACOS_CHANNEL="$(sed -n 's/^const MACOS_UPDATE_CHANNEL := "\([a-z]*\)".*$/\1/p' \

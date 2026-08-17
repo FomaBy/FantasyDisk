@@ -3094,6 +3094,8 @@ class CandidatePreSignVerificationTests(unittest.TestCase):
         "project.godot",
         "scripts/update_manager.gd",
         "tools/build_release.sh",
+        "tools/release_scope_guard.py",
+        "tools/release_scope_manifest.json",
         "tools/release_version_contract.py",
         "tools/release_version_mapping.py",
     )
