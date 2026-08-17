@@ -65,6 +65,23 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `1.24` / `1.38` for the two rejected ones, and the largest single-frame area
   jump is `≤14.3%` accepted vs `20.6%` / `31.4%` rejected. The bands are too
   close to gate on automatically — treat them as review aids, not a threshold.
+- FAN-2606 accepted the Sniper pack after FAN-2855 (`c8c4326f`) regenerated
+  `north-east` / `north-west` in `mode=v3` with the action description pinning
+  cloak and straps. FAN-2855 wrote **source frames only** — the manifest's old
+  "runtime integration files intentionally untouched" note meant the game still
+  played the rejected FAN-2845 rows — so FAN-2606 normalized those two rows into
+  the runtime pack with `tools/normalize_pixellab_rows.py`, which reuses
+  `normalize_frame()` from the importer instead of re-deriving the maths.
+  Re-normalizing the two untouched idle frames reproduced the committed runtime
+  PNGs byte-for-byte, which is the check that the parameters were right. All
+  eight rows now sit in the stable band (area max/min `1.05`–`1.18`, largest
+  single-frame jump `≤14.3%`) and `animation_roster_audit.py` reports zero sniper
+  findings. **Any source-pack regeneration needs this normalization step before
+  the art reaches the screen** — that is the gap this card hit twice.
+  Residual: `north-west` is the calmest row in the pack (mean per-step diff
+  `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
+  view than a three-quarter one; consistent and artifact-free, but the weakest
+  row if the pack is ever revisited.
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
