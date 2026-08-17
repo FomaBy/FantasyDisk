@@ -82,6 +82,26 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2597 (2026-08-17) audited the live Doctor pack (SCRUM-705 v3 redraw,
+  PixelLab character `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) and **accepted it
+  unchanged** — no regeneration pass was needed. The card's open question was
+  `north`: the manifest carries a real PixelLab `north` animation
+  (`cc8114ed-774d-4acb-b86e-0a82a7b8fae0`) and the frames confirm it — a true
+  back view (hood rear, no beak), pixel-distinct from every other direction,
+  not a mirror stand-in: all 16 direction anchors (8 idle + 8 move `00`) hash
+  distinct, and no direction equals another flipped. Every runtime frame is
+  244 px visible height on a 512 px canvas with the footline pinned at `y=480`.
+  `animation_roster_audit.py` reports zero doctor findings (the perceptual
+  loop-continuity check passes all eight rows); alpha-area max/min spans
+  `1.07`–`1.30` (`east`/`west` widest from profile gait sway — review-aid
+  territory per the FAN-2606 calibration note, not a rejection signal), and the
+  live 720p/1080p captures show identity-stable, artifact-free loops. Attack
+  stays weapon-owned: `doctor_spriteframes.tres` holds only
+  `idle`/`move`/`walk` × 8 directions and the body rig forces `flip_h = false`
+  on directional rows. Evidence: `tools/build_fan2597_doctor_animation_review.py`,
+  `tools/capture_fan2597_doctor_walk.gd`, sheets under
+  `docs/design/previews/fan2597_doctor_*`, captures under
+  `build/qa/fan2597_doctor/` (captures are build artifacts, not committed).
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
