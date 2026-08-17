@@ -16,18 +16,21 @@
   "weapons": [
     {
       "weapon_id": "thief_coin_pouch",
+      "title": "Джекпот Короля",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
       "timing_seconds": {"windup": 0.0, "release": 0.30, "active": 0.72, "recovery": 4.20, "cancel": 4.85},
       "performance": {"max_visual_nodes": 13, "crowd_cap": 13}
     },
     {
       "weapon_id": "thief_shadow_cloak",
+      "title": "Безмолвный Приговор",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
       "timing_seconds": {"windup": 0.0, "release": 0.46, "active": 0.88, "recovery": 3.18, "cancel": 3.74},
       "performance": {"max_visual_nodes": 8, "crowd_cap": 13}
     },
     {
       "weapon_id": "thief_smoke_bomb",
+      "title": "Идеальное Ограбление",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
       "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.16, "recovery": 5.22, "cancel": 5.82},
       "performance": {"max_visual_nodes": 7, "crowd_cap": 13}

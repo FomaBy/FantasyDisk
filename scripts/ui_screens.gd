@@ -6223,24 +6223,19 @@ func _codex_character_sections(character: Dictionary) -> Array:
 		weapon_lines.append({"title": str(weapon.get("title", "")), "text": weapon_text})
 	if not weapon_lines.is_empty():
 		sections.append({"heading": "Оружие", "lines": weapon_lines})
-	# Ультимейт: описание + реальные параметры конфига (только присутствующие).
-	var ultimate: Dictionary = character.get("ultimate", {})
-	if not ultimate.is_empty():
-		var ultimate_lines := [{"title": str(ultimate.get("title", "")), "text": str(ultimate.get("description", ""))}]
-		var ultimate_bits := PackedStringArray()
-		if float(ultimate.get("radius", 0.0)) > 0.0:
-			ultimate_bits.append("радиус %d" % int(ultimate["radius"]))
-		if float(ultimate.get("damage", 0.0)) > 0.0:
-			ultimate_bits.append("урон ×%.2f" % float(ultimate["damage"]))
-		if float(ultimate.get("duration", 0.0)) > 0.0:
-			ultimate_bits.append("длительность %.1f с" % float(ultimate["duration"]))
-		if int(ultimate.get("target_count", 0)) > 0:
-			ultimate_bits.append("до %d целей" % int(ultimate["target_count"]))
-		if float(ultimate.get("heal_ratio", 0.0)) > 0.0:
-			ultimate_bits.append("лечение %d%% урона" % int(roundf(float(ultimate["heal_ratio"]) * 100.0)))
-		if not ultimate_bits.is_empty():
-			ultimate_lines.append("Параметры: %s." % "; ".join(ultimate_bits))
-		sections.append({"heading": "Ультимейт", "lines": ultimate_lines})
+	# FAN-2515: у каждого оружия своя ульта из канонического реестра — Кодекс
+	# показывает ровно то, что увидят HUD и досье паузы при этом выборе.
+	var ultimate_lines := []
+	for weapon in character.get("weapons", []):
+		var ultimate: Dictionary = (weapon as Dictionary).get("ultimate", {})
+		if ultimate.is_empty():
+			continue
+		ultimate_lines.append({
+			"title": "%s — %s" % [str((weapon as Dictionary).get("title", "")), str(ultimate.get("title", ""))],
+			"text": str(ultimate.get("description", "")),
+		})
+	if not ultimate_lines.is_empty():
+		sections.append({"heading": "Ультимейты", "lines": ultimate_lines})
 	# Классовые вознесения: реальные титулы ступеней из ASCENSION_LEVELS.
 	var ascension_levels: Array = game.PROGRESSION_DATA.ascension_levels(character_id)
 	if not ascension_levels.is_empty():
@@ -6391,11 +6386,11 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"Сильное: %s" % character["strengths"],
 			"Слабое: %s" % character["weaknesses"],
 		]
-		var ultimate: Dictionary = character.get("ultimate", {})
-		if not ultimate.is_empty():
-			body_lines.append("Ульта: %s — %s" % [ultimate.get("title", ""), ultimate.get("description", "")])
 		for weapon in character["weapons"]:
 			body_lines.append("• %s — %s" % [weapon["title"], weapon["description"]])
+			var ultimate: Dictionary = (weapon as Dictionary).get("ultimate", {})
+			if not ultimate.is_empty():
+				body_lines.append("   Ульта «%s» — %s" % [ultimate.get("title", ""), ultimate.get("description", "")])
 		var texture: Texture2D = null
 		if str(character["sprite"]) != "" and ResourceLoader.exists(str(character["sprite"])):
 			texture = game._cached_texture(str(character["sprite"]))

@@ -11,6 +11,7 @@
   "weapons": [
     {
       "weapon_id": "sniper_deadeye_rifle",
+      "title": "Выстрел Мертвого Глаза",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
       "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 0.78, "recovery": 1.4, "cancel": 1.85},
@@ -19,6 +20,7 @@
     },
     {
       "weapon_id": "sniper_spotter_scope",
+      "title": "Прицел Наводчика",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
       "timing_seconds": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
@@ -27,6 +29,7 @@
     },
     {
       "weapon_id": "sniper_shatter_rounds",
+      "title": "Осколочные Патроны",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
       "timing_seconds": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},

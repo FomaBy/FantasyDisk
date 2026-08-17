@@ -13,11 +13,13 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 const PackageDiscovery := preload(
 	"res://scripts/ultimates/registry/weapon_ultimate_package_discovery.gd"
 )
+const Text := preload("res://scripts/ultimates/registry/weapon_ultimate_text.gd")
 
 var _documents: Array = []
 var _profiles_by_key: Dictionary = {}
 var _canonical_pairs: Dictionary = {}
 var _errors: Array[String] = []
+var _text_errors: Array[String] = []
 var _package_errors: Array[String] = []
 var _package_executors: Dictionary = {}
 var _package_pairs: Dictionary = {}
@@ -36,10 +38,12 @@ func load_catalog(weapons_by_class: Dictionary) -> void:
 	_package_pairs.clear()
 	_canonical_pairs = Schema.canonical_pairs(weapons_by_class)
 	_errors.clear()
+	_text_errors.clear()
 	_read_documents()
 	_errors.append_array(Schema.validate_documents(_documents, weapons_by_class))
 	if _errors.is_empty():
 		_profiles_by_key = Schema.index_documents(_documents)
+		_apply_canonical_text()
 		var discovery := PackageDiscovery.new()
 		discovery.discover(_profiles_by_key)
 		_package_errors = discovery.validation_errors()
@@ -60,6 +64,19 @@ func validation_errors() -> Array[String]:
 
 func package_validation_errors() -> Array[String]:
 	return _package_errors.duplicate()
+
+
+func text_validation_errors() -> Array[String]:
+	return _text_errors.duplicate()
+
+
+## Player-facing title/mechanics of the SELECTED weapon ultimate. Empty only
+## when the pair is not canonical — the legacy class ultimate is never a text
+## fallback here.
+func ultimate_text(class_id: String, weapon_id: String) -> Dictionary:
+	var profile := catalog_profile_for(class_id, weapon_id)
+	var text = profile.get("text")
+	return text if text is Dictionary else {}
 
 
 func profile_count() -> int:
@@ -184,6 +201,19 @@ func documents_for_tests() -> Array:
 
 func canonical_pairs_for_tests() -> Dictionary:
 	return _canonical_pairs.duplicate(true)
+
+
+## Canonical text rides on the profile itself, so every consumer that already
+## resolves a profile — HUD, Codex, pause dossier, package overlays — reads the
+## same title/mechanics for the same pair.
+func _apply_canonical_text() -> void:
+	var text_records := Text.records()
+	_text_errors = Text.validate_records(_profiles_by_key.keys(), text_records)
+	for raw_key in _profiles_by_key.keys():
+		var key := str(raw_key)
+		var record = text_records.get(key)
+		(_profiles_by_key[key] as Dictionary)["text"] = \
+			(record as Dictionary).duplicate() if record is Dictionary else {}
 
 
 func _read_documents() -> void:
