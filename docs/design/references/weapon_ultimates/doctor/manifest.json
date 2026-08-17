@@ -50,7 +50,15 @@
         "recovery": "weapon_ultimate.phase.doctor.restore_potion.recover",
         "cancel": "weapon_ultimate.phase.doctor.restore_potion.cleanup"
       },
-      "performance": {"max_visual_nodes": 5, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {"max_visual_nodes": 5, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"},
+      "quality": {
+        "max_viewport_coverage_ratio": 0.12,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the outer pool rim and the shield crystal hold a steady contrast edge in place of the shatter kick",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
     },
     {
       "weapon_id": "plague_syringe",
@@ -67,7 +75,15 @@
         "recovery": "weapon_ultimate.phase.doctor.plague_syringe.recover",
         "cancel": "weapon_ultimate.phase.doctor.plague_syringe.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"},
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "each infection wave marks its ring in a held colour step instead of the expanding pulse",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
     },
     {
       "weapon_id": "bone_saw",
@@ -84,7 +100,15 @@
         "recovery": "weapon_ultimate.phase.doctor.bone_saw.recover",
         "cancel": "weapon_ultimate.phase.doctor.bone_saw.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"},
+      "quality": {
+        "max_viewport_coverage_ratio": 0.1,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the saw orbit holds a constant radius and the sparks fade in place of the cut kick",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
     }
   ],
   "evidence": {
