@@ -203,6 +203,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.48, 0.48),
 			"position": Vector2(0.0, -54.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"mini_shadow_devourer": {
 			"frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres",

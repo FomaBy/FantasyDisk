@@ -1,0 +1,284 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_00.png" id="1_mrh1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_01.png" id="2_mrh2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_02.png" id="3_mrh3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_03.png" id="4_mrh4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_04.png" id="5_mrh5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_05.png" id="6_mrh6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_00.png" id="7_mrh7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_01.png" id="8_mrh8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_02.png" id="9_mrh9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_03.png" id="10_mrh10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_04.png" id="11_mrh11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_05.png" id="12_mrh12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_00.png" id="13_mrh13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_01.png" id="14_mrh14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_02.png" id="15_mrh15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_03.png" id="16_mrh16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_04.png" id="17_mrh17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_05.png" id="18_mrh18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_00.png" id="19_mrh19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_01.png" id="20_mrh20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_02.png" id="21_mrh21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_03.png" id="22_mrh22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_04.png" id="23_mrh23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_05.png" id="24_mrh24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_00.png" id="25_mrh25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_01.png" id="26_mrh26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_02.png" id="27_mrh27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_03.png" id="28_mrh28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_04.png" id="29_mrh29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_05.png" id="30_mrh30"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_mrh1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_mrh2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_mrh3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_mrh4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_mrh5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_mrh6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_mrh1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_mrh2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_mrh3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_mrh4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_mrh5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_mrh6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_mrh7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_mrh8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_mrh9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_mrh10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_mrh11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_mrh12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_mrh13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_mrh14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_mrh15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_mrh16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_mrh17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_mrh18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_mrh19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_mrh20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_mrh21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_mrh22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_mrh23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_mrh24")
+}
+],
+"loop": false,
+"name": &"skill_rot_lunge",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_mrh19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_mrh20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_mrh21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_mrh22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_mrh23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_mrh24")
+}
+],
+"loop": false,
+"name": &"attack_rot_lunge",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_mrh25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_mrh26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_mrh27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_mrh28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_mrh29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_mrh30")
+}
+],
+"loop": false,
+"name": &"skill_bleed_howl",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_mrh25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_mrh26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_mrh27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_mrh28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_mrh29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_mrh30")
+}
+],
+"loop": false,
+"name": &"attack_bleed_howl",
+"speed": 12.0
+}
+]
