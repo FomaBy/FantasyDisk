@@ -46,7 +46,7 @@
         }
       },
       "crystal_status": {
-        "duration": 0.7,
+        "duration": 0.8,
         "movement_locked": true,
         "speed_multiplier": 0.45
       }
