@@ -144,6 +144,21 @@ restores the parked pair from the snapshot. Nothing is instantiated to replace
 them, so the pair cannot be duplicated and cannot be lost, and a cancel reaches
 the same restore path as a completed cast.
 
+**Presentation (FAN-2552).** The avatar plays a 9-frame PixelLab `animate_image`
+stomp cycle (job `331684be-2ee9-43cd-8eb6-842051201a17`, seed 2552) whose frame
+0 is the accepted `ally_homunculus.png` identity unchanged; the pack, its alpha
+report and the rebuild tool live in
+`assets/sprites/effects/ultimates/chemist/homunculus_vial/` and
+`tools/build_fan2552_homunculus_vial_ultimate_pack.py`. Each slam frame lands
+exactly on a mechanics beat (1.75 s, 2.60 s, 3.45 s), the stomp rings and toxic
+cascade pulse per beat, and the one-off `VialBurst` marks the 0.9 s release —
+`chemist_ultimate_timelines.gd` holds the frame track to those beats. The
+declared `quality` caps come from the scene's own geometry against the 1152x648
+worst-case viewport: the taunt halo and stomp ring reach 219 px (210 px radius
+plus half the 18 px stroke), a 438 px bounding square, 0.257 of the viewport —
+declared 0.26; the avatar peaks at 185x231 px scaled 1.7, 0.165. The scene
+drives no camera shake and no full-screen flash, so both flash caps are 0.0.
+
 ## Class trio
 
 All three declare the same `total_boss_cap` 0.10 — the Chemist

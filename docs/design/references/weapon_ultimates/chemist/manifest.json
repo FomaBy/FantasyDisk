@@ -12,9 +12,21 @@
     "mechanics_status": "damage, taunt, armor dissolve, charges, and ownership remain owned by FAN-1483; this package binds frozen phase IDs only"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_usage": "not_required_no_new_source_frames",
-    "new_pixellab_assets": [],
+    "route": "pixellab_animation_frames_plus_reused_approved_assets",
+    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552); blast_powder and acid_flask still reuse accepted assets only",
+    "new_pixellab_assets": [
+      {
+        "weapon_id": "homunculus_vial",
+        "tool": "animate_image",
+        "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+        "seed": 2552,
+        "frame_count": 9,
+        "identity_source": "assets/sprites/allies/ally_homunculus.png",
+        "frames_dir": "assets/sprites/effects/ultimates/chemist/homunculus_vial",
+        "asset_manifest": "assets/sprites/effects/ultimates/chemist/homunculus_vial/manifest.json",
+        "rebuild_tool": "tools/build_fan2552_homunculus_vial_ultimate_pack.py"
+      }
+    ],
     "reused_sources": {
       "blast_powder": {
         "source_path": "assets/sprites/effects/vfx_weapon_blast_powder.png",
@@ -29,7 +41,7 @@
       "homunculus_vial": {
         "source_path": "assets/sprites/allies/ally_homunculus.png",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
-        "note": "Accepted homunculus, tank, and caster sprites are reused for the fusion/split presentation."
+        "note": "Accepted tank and caster sprites are reused for the fusion/split pair; the avatar now plays the FAN-2552 PixelLab stomp cycle whose frame 0 is the accepted ally_homunculus identity."
       }
     }
   },
@@ -122,6 +134,14 @@
         "crowd_cap": 14,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.26,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the alchemical circle and taunt halo hold steady contrast rings and the avatar marks each stomp with a held brightness step instead of expanding rings",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
       }
     }
   ],

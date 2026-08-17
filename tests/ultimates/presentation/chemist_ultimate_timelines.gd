@@ -54,6 +54,8 @@ const PANEL_CONTENT_MARGIN_RATIO := 0.03
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
+const AVATAR_FRAME_COUNT := 9
+const AVATAR_SLAM_BEATS := [1.75, 2.6, 3.45]
 
 
 class HandleProbe extends RefCounted:
@@ -92,8 +94,19 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must identify approved-asset reuse", errors)
-	_expect((provenance.get("new_pixellab_assets", null) is Array) and (provenance.get("new_pixellab_assets") as Array).is_empty(), "no new PixelLab asset IDs should be declared", errors)
+	_expect(str(provenance.get("route", "")).contains("pixellab"), "provenance route must own the new PixelLab frames", errors)
+	var new_assets := provenance.get("new_pixellab_assets", []) as Array
+	_expect(new_assets.size() == 1, "exactly one new PixelLab asset pack should be declared", errors)
+	var pack := (new_assets[0] if new_assets.size() == 1 else {}) as Dictionary
+	_expect(str(pack.get("weapon_id", "")) == "homunculus_vial", "the new PixelLab pack must belong to homunculus_vial", errors)
+	_expect(not str(pack.get("job_id", "")).is_empty() and pack.get("seed", null) != null, "the new PixelLab pack must record its job id and seed", errors)
+	for index in AVATAR_FRAME_COUNT:
+		_expect(
+			FileAccess.file_exists("res://%s/avatar_stomp_%02d.png" % [str(pack.get("frames_dir", "")), index]),
+			"avatar stomp frame %02d must exist" % index,
+			errors
+		)
+	_expect(FileAccess.file_exists("res://%s" % str(pack.get("asset_manifest", ""))), "avatar pack asset manifest must exist", errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
@@ -133,12 +146,35 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(timeline != null and timeline.has_animation(&"ultimate"), "%s must expose an ultimate animation" % weapon_id, errors)
 	if timeline != null and timeline.has_animation(&"ultimate"):
 		_expect(is_equal_approx(timeline.get_animation(&"ultimate").length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation must end at cancel" % weapon_id, errors)
+		if weapon_id == "homunculus_vial":
+			_check_avatar_frame_track(timeline.get_animation(&"ultimate"), errors)
 	_expect(str(instance.get_meta("ultimate_id", "")) == "chemist/%s" % weapon_id, "%s scene must retain exact profile key" % weapon_id, errors)
 	for field in ["silhouette", "motion_path", "impact_language"]:
 		_expect(not str(instance.get_meta(field, "")).is_empty(), "%s %s declaration missing" % [weapon_id, field], errors)
 	_expect(instance.get_child_count() <= int(instance.get_meta("crowd_cap", 0)), "%s visible scene nodes must stay within crowd cap" % weapon_id, errors)
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) <= int(instance.get_meta("crowd_cap", 0)), "%s declared visual budget must stay within crowd cap" % weapon_id, errors)
 	instance.queue_free()
+
+
+## The FAN-2552 avatar plays its PixelLab stomp cycle through a discrete
+## texture track, and each slam frame lands exactly on a mechanics beat
+## (fuse_at + beat_interval * n), so presentation and damage read as one hit.
+func _check_avatar_frame_track(animation: Animation, errors: Array[String]) -> void:
+	var track := animation.find_track("Avatar:texture", Animation.TYPE_VALUE)
+	_expect(track != -1, "homunculus avatar must animate its stomp frames", errors)
+	if track == -1:
+		return
+	_expect(animation.value_track_get_update_mode(track) == Animation.UPDATE_DISCRETE, "avatar frame track must switch textures discretely", errors)
+	var distinct := {}
+	for key_index in animation.track_get_key_count(track):
+		var texture := animation.track_get_key_value(track, key_index) as Texture2D
+		if texture != null:
+			distinct[texture.resource_path] = true
+	_expect(distinct.size() == AVATAR_FRAME_COUNT, "avatar frame track must play all %d stomp frames" % AVATAR_FRAME_COUNT, errors)
+	for beat_time in AVATAR_SLAM_BEATS:
+		var key := animation.track_find_key(track, float(beat_time), Animation.FIND_MODE_NEAREST)
+		var on_beat := key != -1 and absf(animation.track_get_key_time(track, key) - float(beat_time)) < 0.01
+		_expect(on_beat, "an avatar frame key must land on the %.2fs stomp beat" % float(beat_time), errors)
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:
