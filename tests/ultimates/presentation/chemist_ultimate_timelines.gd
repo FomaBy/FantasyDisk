@@ -17,7 +17,7 @@ const PACKS := [
 		"title": "BLAST POWDER — PENTAGRAM",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.78, 0.28),
-		"required_nodes": ["PowderPentagram/PentagramLines", "PowderPentagram/PowderOne", "CrystalImplosion", "TransmutationBlast", "GoldRadiance"],
+		"required_nodes": ["PhilosophersRitual", "GoldRadiance"],
 	},
 	{
 		"weapon_id": "acid_flask",
@@ -92,11 +92,27 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must identify approved-asset reuse", errors)
-	_expect((provenance.get("new_pixellab_assets", null) is Array) and (provenance.get("new_pixellab_assets") as Array).is_empty(), "no new PixelLab asset IDs should be declared", errors)
+	var route := str(provenance.get("route", ""))
+	var new_assets := provenance.get("new_pixellab_assets", []) as Array
+	if not new_assets.is_empty():
+		_expect(route.contains("pixellab"), "a manifest with new PixelLab frames must declare a pixellab route", errors)
+		var pixellab_weapons := {}
+		for raw_asset in new_assets:
+			var asset := raw_asset as Dictionary
+			var weapon_id := str(asset.get("weapon_id", ""))
+			pixellab_weapons[weapon_id] = true
+			_expect(not str(asset.get("pixel_lab_object_id", "")).is_empty(), "%s PixelLab object id must be recorded" % weapon_id, errors)
+			_expect(not str(asset.get("pixel_lab_animation_group_id", "")).is_empty(), "%s PixelLab animation group id must be recorded" % weapon_id, errors)
+			var frame_count := int(asset.get("frame_count", 0))
+			_expect(frame_count >= 4, "%s PixelLab animation must declare a real frame count" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_spriteframes", ""))), "%s runtime SpriteFrames must exist" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_scene", ""))), "%s runtime scene must exist" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("provenance_manifest", ""))), "%s provenance manifest must exist" % weapon_id, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
+		if source.is_empty():
+			continue
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("source_path", ""))), "%s reused source must exist" % weapon_id, errors)
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("runtime_scene", ""))), "%s runtime scene must exist" % weapon_id, errors)
 
@@ -284,6 +300,8 @@ static func capture_item_bounds(scene: Node2D, item: CanvasItem) -> Rect2:
 	var local_rect := Rect2()
 	if item is Sprite2D:
 		local_rect = (item as Sprite2D).get_rect()
+	elif item is AnimatedSprite2D:
+		local_rect = _animated_sprite_rect(item as AnimatedSprite2D)
 	elif item is Line2D:
 		local_rect = _rect_from_points((item as Line2D).points).grow((item as Line2D).width * 0.5)
 	elif item is Polygon2D:
@@ -316,6 +334,17 @@ static func is_capture_item_visible(item: CanvasItem, scene: Node2D) -> bool:
 	if item is Line2D and (item as Line2D).default_color.a <= CAPTURE_ALPHA_EPSILON:
 		return false
 	return true
+
+
+static func _animated_sprite_rect(sprite: AnimatedSprite2D) -> Rect2:
+	var frames := sprite.sprite_frames
+	if frames == null or not frames.has_animation(sprite.animation):
+		return Rect2()
+	var texture := frames.get_frame_texture(sprite.animation, sprite.frame)
+	if texture == null:
+		return Rect2()
+	var size := texture.get_size()
+	return Rect2(-size * 0.5, size)
 
 
 static func _rect_from_points(points: PackedVector2Array) -> Rect2:

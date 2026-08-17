@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2550",
+  "weapon": "chemist/blast_powder",
+  "title": "Философский Взрыв",
+  "generated_at": "2026-08-18T01:40:00Z",
+  "config_smoke": "PASS: PIXELLAB_BEARER_TOKEN via env; python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "generation": {
+    "route": "pixellab_new_isolated_animation_frames",
+    "tool": "PixelLab MCP (https://api.pixellab.ai/mcp)",
+    "object": {
+      "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+      "create_tool": "create_1_direction_object",
+      "create_params": {
+        "size": 256,
+        "view": "top-down",
+        "description": "dark fantasy pixel art alchemical ritual magic circle seen straight from above: a glowing pentagram of gold runes with five small round powder kegs sitting at its points, each keg glowing a different alchemical color, faint crystal shards rising at the rim, centered composition, isolated game VFX sprite, no characters, no text"
+      }
+    },
+    "animation": {
+      "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+      "animate_tool": "animate_object",
+      "mode": "v3",
+      "frame_count": 9,
+      "frame_url_template": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb/animations/014007c5-57e8-4b05-9db1-f383d58affb7/unknown/{i}.png",
+      "animation_description": "the five powder kegs ignite one after another with colored sparks, the pentagram runes brighten and rotate slightly, then everything is pulled inward into a tight dark crystal at the center, and finally the crystal bursts into one big bright gold-white transmutation explosion with radiating light rays and drifting sparkles that fade out"
+    },
+    "reproducibility": {
+      "generation_script": "tools/fan2550_blast_powder_pixellab.py",
+      "replay_note": "PIXELLAB_BEARER_TOKEN env + --object-id replays download/manifest only; fresh IDs come from a new create_1_direction_object run. PixelLab object auto-delete window is 8 hours; the downloaded frames in source/ are the durable record."
+    }
+  },
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_blast_powder",
+    "source_frames": [
+      "blast_powder_f0.png",
+      "blast_powder_f1.png",
+      "blast_powder_f2.png",
+      "blast_powder_f3.png",
+      "blast_powder_f4.png",
+      "blast_powder_f5.png",
+      "blast_powder_f6.png",
+      "blast_powder_f7.png",
+      "blast_powder_f8.png"
+    ],
+    "frame_size": "256x256 RGBA, transparent background, stable identity across frames (same circle/keg pivots)",
+    "runtime_frames_dir": "assets/sprites/effects/fan2550_blast_powder_ultimate",
+    "runtime_spriteframes": "assets/sprites/effects/fan2550_blast_powder_ultimate/blast_powder_ultimate_spriteframes.tres",
+    "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+    "normalized_by": "bit-exact copy of the PixelLab frames (already 256x256 full-frame RGBA); no crop, no matte, no palette shift"
+  },
+  "phase_binding": {
+    "windup": {"seconds": 0.0, "frames": "0-1 (kegs idle, first ignitions)"},
+    "release": {"seconds": 0.5, "frames": "2-4 (five-beat ignition, pentagram brightens and rotates)"},
+    "active": {"seconds": 1.3, "frames": "5-6 (inward crystal implosion)"},
+    "recovery": {"seconds": 2.2, "frames": "7-8 (gold-white transmutation blast, radiance, fade)"},
+    "cancel": {"seconds": 3.4, "frames": "alpha reaches zero; Timeline releases every handle"}
+  },
+  "distinctness": "acid_flask is one colossal emerald flask and a green lake; homunculus_vial is an emerald avatar fusion; blast_powder is the only gold-rune pentagram with five multicolor kegs and a gold-white crystal implosion blast",
+  "verification": {
+    "commands": [
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"},
+      {"command": "windowed capture: python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/chemist_ultimate_contact_capture.gd"}
+    ]
+  }
+}
