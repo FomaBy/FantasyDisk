@@ -49,10 +49,10 @@
     "south": "ec776d9f-7b17-464f-b9a5-b42d3a4d32e1",
     "south-east": "0d9d7ed8-090d-4aac-a5ad-cfa5995fc838",
     "east": "e153c518-6278-43e3-8eb4-e1985a533751",
-    "north-east": "45bfb0f6-43af-40c6-a02c-2141b4ae8fe8",
-    "north": "c7dc0de9-b152-48c8-83d4-e6be5ad6f694",
-    "north-west": "a3f4f308-6f46-4254-8c9d-19cf12ba787f",
-    "west": "27bd236b-c324-4902-8966-f733fc2a25c8",
+    "north-east": "4b1c980c-6652-4037-8721-2517cdbd7cc4",
+    "north": "dbfc7655-eab3-44fe-a19c-07b4c61487ec",
+    "north-west": "98195326-b6d8-4dac-9fa9-df9afcd3548c",
+    "west": "f5ef0019-e427-4fb7-972d-610001471248",
     "south-west": "d6a85668-4c5d-4287-95d0-95b7b38dbbae"
   },
   "prompt": "FantasyDisk playable Sniper marksman, cold blue-steel hooded sharpshooter, empty hands, no held items, no rifle/gun/bow/crossbow/scope/weapon/tool/floating reticle, low top-down D&D dark fantasy pixel art, transparent background.",
@@ -74,5 +74,6 @@
   "spriteframes": "assets/sprites/characters/sniper_spriteframes.tres",
   "qa_report": "build/qa/scrum433_sniper_pixellab/sniper_pixellab_bbox_report.json",
   "preview_contact_sheet": "build/qa/scrum433_sniper_pixellab/sniper_pixellab_contact.png",
-  "notes": "Design/source-pack phase only. Shared runtime integration files are intentionally untouched for the serial integration pass."
+  "notes": "Design/source-pack phase only. Shared runtime integration files are intentionally untouched for the serial integration pass.",
+  "fan_2845_regen": "2026-08-17 re-generated move rows north, north-east, north-west, west via animate_character template walking-6-frames (ai_freedom=0, group a0dd6486-4271-4de2-a88a-501257af2b31) after FAN-2606 flagged mid-step identity drift; north-west was re-rolled once after the first pass still drifted (cloak/strap vs bracer). South, south-east, east, south-west rows untouched."
 }
