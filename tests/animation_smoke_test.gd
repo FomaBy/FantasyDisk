@@ -1316,9 +1316,9 @@ func _test_full_frame_animation_registry() -> void:
 		},
 		"mini_rot_hound": {
 			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_rot_lunge", "skill_bleed_howl"],
-			"phase_state": "mini_rot_hound:rot_lunge:windup",
-			"phase_resolved": "skill_rot_lunge",
+			"skill_states": ["skill_shadow_strike"],
+			"phase_state": "mini_rot_hound:shadow_strike:windup",
+			"phase_resolved": "skill_shadow_strike",
 		},
 		"mini_shadow_devourer": {
 			"path": "res://scenes/EliteStalker.tscn",
@@ -1333,38 +1333,59 @@ func _test_full_frame_animation_registry() -> void:
 		if mini_frames == null:
 			_fail("Expected full-frame registry to resolve %s mini-elite SpriteFrames." % mini_id)
 			continue
-		for animation_name in ["move", "attack", "attack_primary"]:
-			if not mini_frames.has_animation(animation_name):
-				_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
-			elif mini_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
-		if not mini_frames.get_animation_loop("move"):
-			_fail("Expected %s mini-elite move to loop." % mini_id)
-		if mini_id in ["mini_scavenger_reaper", "mini_plague_bellringer", "mini_bone_warden", "mini_spark_wight", "mini_rot_hound", "mini_shadow_devourer"]:
+		# FAN-2901: branch on the registry's own explicit_eight_directions flag,
+		# not a hardcoded ID list, so the next converted mini-elite falls into
+		# the directional contract automatically instead of re-breaking this test.
+		var mini_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", mini_id).get("explicit_eight_directions", false))
+		if mini_is_directional:
+			for state_name in ["idle", "move", "attack", "hit", "death"]:
+				var state_should_loop: bool = state_name in ["idle", "move"]
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var directional_row := "%s_%s" % [state_name, dir_suffix]
+					if not mini_frames.has_animation(directional_row):
+						_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, directional_row])
+					elif mini_frames.get_animation_loop(directional_row) != state_should_loop:
+						_fail("Expected %s mini-elite %s loop to be %s." % [mini_id, directional_row, str(state_should_loop)])
+			for skill_state in mini_info["skill_states"]:
+				var mini_skill_base := str(skill_state)
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var mini_skill_row := "%s_%s" % [mini_skill_base, dir_suffix]
+					if not mini_frames.has_animation(mini_skill_row):
+						_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_row])
+					elif mini_frames.get_animation_loop(mini_skill_row):
+						_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_row])
+		else:
+			for animation_name in ["move", "attack", "attack_primary"]:
+				if not mini_frames.has_animation(animation_name):
+					_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
+				elif mini_frames.get_frame_count(animation_name) != 6:
+					_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
+			if not mini_frames.get_animation_loop("move"):
+				_fail("Expected %s mini-elite move to loop." % mini_id)
 			if not mini_frames.has_animation("death"):
 				_fail("Expected %s mini-elite SpriteFrames to expose death after SCRUM-370 death integration." % mini_id)
 			elif mini_frames.get_frame_count("death") != 6:
 				_fail("Expected %s mini-elite death to have 6 frames." % mini_id)
-		for one_shot_name in ["attack", "attack_primary", "death"]:
-			if not mini_frames.has_animation(one_shot_name):
-				continue
-			if mini_frames.get_animation_loop(one_shot_name):
-				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
-		for skill_state in mini_info["skill_states"]:
-			var mini_skill_name := str(skill_state)
-			var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
-			if not mini_frames.has_animation(mini_skill_name):
-				_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
-			elif mini_frames.get_frame_count(mini_skill_name) != 6:
-				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
-			if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
-				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
-			if not mini_frames.has_animation(mini_attack_alias):
-				_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
-			elif mini_frames.get_frame_count(mini_attack_alias) != 6:
-				_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
-			if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
-				_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
+			for one_shot_name in ["attack", "attack_primary", "death"]:
+				if not mini_frames.has_animation(one_shot_name):
+					continue
+				if mini_frames.get_animation_loop(one_shot_name):
+					_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
+			for skill_state in mini_info["skill_states"]:
+				var mini_skill_name := str(skill_state)
+				var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
+				if not mini_frames.has_animation(mini_skill_name):
+					_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
+				elif mini_frames.get_frame_count(mini_skill_name) != 6:
+					_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
+				if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
+					_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
+				if not mini_frames.has_animation(mini_attack_alias):
+					_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
+				elif mini_frames.get_frame_count(mini_attack_alias) != 6:
+					_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
+				if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
+					_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
 
 		var mini_scene := load(str(mini_info["path"])) as PackedScene
 		var mini := mini_scene.instantiate()
@@ -1380,10 +1401,17 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s mini_elite_kind to select mini-specific SpriteFrames, got %s." % [mini_id, str(mini_body.get_meta("entity_id", ""))])
 			if not FullFrameAnimationRegistry.play_state(mini_body, str(mini_info["phase_state"]), Vector2.RIGHT):
 				_fail("Expected %s mini-elite phase state to resolve through the full-frame registry." % mini_id)
-			if mini_body.animation != str(mini_info["phase_resolved"]):
-				_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, str(mini_info["phase_resolved"]), mini_body.animation])
-			if not mini_body.flip_h:
-				_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
+			if mini_is_directional:
+				var mini_expected_directional_animation := "%s_east" % str(mini_info["phase_resolved"])
+				if mini_body.animation != mini_expected_directional_animation:
+					_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, mini_expected_directional_animation, mini_body.animation])
+				if mini_body.flip_h:
+					_fail("Expected %s mini-elite eight-direction full-frame art to never mirror via flip_h." % mini_id)
+			else:
+				if mini_body.animation != str(mini_info["phase_resolved"]):
+					_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, str(mini_info["phase_resolved"]), mini_body.animation])
+				if not mini_body.flip_h:
+					_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
 		var mini_static_body := mini.get_node_or_null("Body") as CanvasItem
 		if mini_static_body != null and mini_static_body.visible:
 			_fail("Expected %s mini-elite full-frame visual to hide the static body fallback." % mini_id)
