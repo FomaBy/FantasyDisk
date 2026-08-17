@@ -170,6 +170,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"winged_spark": {
 			"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",

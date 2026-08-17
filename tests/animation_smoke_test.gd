@@ -1148,6 +1148,7 @@ func _test_full_frame_animation_registry() -> void:
 		# ships the animated frames alone, so the declaration follows the art back.
 		"ash_marksman": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+		"bone_shaman": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"rift_shieldbearer": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"void_mage": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
