@@ -1,0 +1,43 @@
+feat(FAN-2532): rebalance the engineer weapon-ultimate trio into its power corridor
+
+The live FAN-2516 instrument showed engineer_sentry_wrench at 1.9% and
+engineer_pressure_mines at 23% of their own corridor floor. Same root cause as the
+Chemist trio in FAN-2527: all three executors price damage as context.damage *
+damage, i.e. off the equipped weapon's PER-HIT channel, which inside the Engineer
+spans 2.50 / 10.39 / 38.45 while the three power budgets are nearly identical
+because they are priced off reference_solo_dps (~44..45 for all three). The wrench
+and the drone carry their real DPS in turret and orbit-contact summon channels an
+ultimate never reads; the coefficients predate the instrument and assumed a
+comparable anchor.
+
+- engineer_sentry_wrench: damage 0.55 -> 62.0. Solo effect 16.98 -> 1243.69
+  (0.787 of budget), boss cap ratio 0.007 -> 0.783. It is the only cast in the
+  class with no per-target cap, so it stays the one that can spend its whole
+  budget on a single target.
+- engineer_pressure_mines: damage 1.2 -> 8.0. Solo effect 200.56 -> 1025.64.
+  A single covered target would take 1230.4, but the field's declared
+  target_cap_fraction 0.65 bounds it at 1009.65 — solo and elite read the cap,
+  not the coefficient, which is the anti-one-shot identity of a mine field.
+  The coefficient is readable where the cap does not bind: boss 0.119 -> 0.792
+  and 10293.56 applied across 17 of 20 probes.
+- engineer_repair_drone: coefficients unchanged. Its declared repair channel
+  measured exactly 0.00 because repair_targets() read host.player — the Player
+  adapter's own field, not one of the ten contract methods — so a host that
+  stands in for the hero silently lost the whole channel instead of failing
+  closed. It now falls back to the host, and ultimate_host_repair() still owns
+  eligibility. Healing 0.00 -> 41.79. Its 1.085 ceiling overshoot is documented
+  as an explicit exception: 1560 of its 1706 solo effect is knockback impulse the
+  instrument counts in pixels, while its HP-denominated save is 93.71 against a
+  reference EHP of 83.57 — the decisive defensive save its control_save archetype
+  asks for, and the channel neither sibling has.
+
+No beat, formation, radius, count or interval moved, so the three downstream
+visual-animation cards inherit the timing contract unchanged. The other 48 rows
+are bit-identical and regressions() stays clean, so the committed baseline is not
+rewritten; two runs of the report are bit-identical.
+
+Adds tests/ultimates/engineer_balance_test.gd, the closed-form twin of the live
+instrument (1243.69 / 1706.21 / 1025.65 exactly), which rebuilds the hex and the
+seeded mine field with the shipped pattern_points primitive rather than a private
+copy, asserts the corridor, the bounded drone exception, the per-target cap and
+the three non-duplicated niches, and goes red for a runaway coefficient.

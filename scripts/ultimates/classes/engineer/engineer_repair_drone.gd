@@ -165,9 +165,13 @@ static func repair_targets(activation) -> Array[Node]:
 	var host := activation.get("host") as Node
 	if host == null or not is_instance_valid(host):
 		return targets
-	var player := host.get("player") as Node
-	if player != null and is_instance_valid(player):
-		targets.append(player)
+	# `player` is the Player adapter's own field, not part of the host contract, so
+	# a host that stands in for the hero itself must still be offered the pulse —
+	# ultimate_host_repair() is what decides eligibility, and it fails closed.
+	var hero := host.get("player") as Node
+	if hero == null or not is_instance_valid(hero):
+		hero = host
+	targets.append(hero)
 	if host.has_method("ultimate_host_summons"):
 		for raw_device in host.call("ultimate_host_summons", "engineer_devices") as Array:
 			var device := raw_device as Node

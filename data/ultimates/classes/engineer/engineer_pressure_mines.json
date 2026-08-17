@@ -22,7 +22,7 @@
       "chain_radius": 155,
       "chain_count": 2,
       "blast_radius": 135,
-      "damage": 1.2,
+      "damage": 8.0,
       "chain_falloff": 0.65,
       "target_cap_fraction": 0.65,
       "target_cap_flat": 0

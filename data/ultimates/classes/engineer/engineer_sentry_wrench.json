@@ -15,7 +15,7 @@
       "volley_count": 8,
       "volley_interval": 0.55,
       "corridor_half_width": 76,
-      "damage": 0.55,
+      "damage": 62.0,
       "target_limit": 0
     }
   },

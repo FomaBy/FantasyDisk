@@ -38,6 +38,14 @@ player-owned permanent device and reports actual HP restored, so overheal and
 foreign devices spend no budget. At 4.30s the final pulse adds five scaled
 damage units of flat absorption for 1.20s. Activation shutdown unwinds it.
 
+The hero the pulse is offered to is the host's `player` when the host has one,
+and otherwise the host itself. `player` is the Player adapter's own field rather
+than one of the ten contract methods, so before FAN-2532 a host that stands in
+for the hero — the FAN-2516 measuring host does exactly that — silently lost the
+entire repair channel instead of failing closed. Eligibility is still decided
+where it belongs, in `ultimate_host_repair`, which refuses anything that is
+neither the hero nor a device it owns.
+
 ### Pressure mines
 
 The shared seeded-annulus primitive places 16 mines between 80px and 260px.
@@ -94,9 +102,108 @@ unwinds. All three rows retain the Engineer `control_save` archetype, exceed its
 4.0s minimum, price power at the frozen 20–35 seconds of their own output, and
 declare the same 8% boss cap.
 
+## Power corridor (FAN-2532)
+
+The corridor is `UltimateChargeBudget.POWER_SECONDS_MIN..MAX` — one activation is
+worth 20…35 s of the weapon's OWN normal output — and the live reading of it is
+the solo `effect_total` of
+`scripts/ultimates/balance/ultimate_effectiveness_runner.gd`.
+
+**The finding.** The same root cause the Chemist trio had in FAN-2527: all three
+executors price damage as `context.damage * damage`, i.e. off the equipped
+weapon's PER-HIT channel, which inside the Engineer spans 2.50 / 10.39 / 38.45,
+while the three power budgets are nearly identical because they are priced off
+`reference_solo_dps`, which is ~44…45 for all three. The spread is not an
+accident: `engineer_sentry_wrench` (`damage_multiplier` 0.55) and
+`engineer_repair_drone` (2.40) carry their real DPS in turret and orbit-contact
+summon channels an ultimate never reads, while `engineer_pressure_mines` (3.60)
+is a direct-blast weapon. The coefficients were authored before FAN-2516 existed,
+against the assumption that per-hit damage is comparable across a trio, so the
+hex crossfire sat at 1.9% of its own corridor floor. **An Engineer coefficient is
+only readable next to its weapon's per-hit damage** — that is why 62.0 and 8.0
+are the same amount of power.
+
+Baseline is the committed `build/ultimate_effectiveness_baseline.json`
+(FAN-2516 at `5e96dd1f`); final is the same instrument after this card. The other
+48 rows are bit-identical, so `regressions()` stays clean without a rewritten
+baseline.
+
+| Weapon | corridor | solo effect before → after | of budget | boss cap ratio |
+| --- | --- | --- | --- | --- |
+| `engineer_sentry_wrench` | 902.8 … 1579.9 | 16.98 → 1243.69 | 0.787 | 0.007 → 0.783 |
+| `engineer_repair_drone` | 899.0 … 1573.2 | 1664.43 → 1706.21 | 1.085 | 0.026 → 0.026 |
+| `engineer_pressure_mines` | 887.6 … 1553.3 | 200.56 → 1025.64 | 0.660 | 0.119 → 0.792 |
+
+Charge cadence is untouched: all three stay at 4 normal encounters to ready and
+33.22 charge per neutral normal encounter, inside the frozen 25…35 corridor.
+
+**The mine field lands on its own cap, and that is the design.** `damage` 8.0
+would put a single covered target at 1230.4, but the field's declared
+`target_cap_fraction` 0.65 bounds any one target at 65% of its max health —
+1009.65 against a probe carrying exactly one power budget. Solo and elite
+therefore read the cap, not the coefficient, which is the field's anti-one-shot
+identity: a full detonation always takes 65% off a single enemy and never kills
+it alone. Raising the fraction to clear the corridor midpoint was rejected — it
+is the bound, not a tuning knob. The coefficient is instead readable where the
+cap does not bind, on the boss row (0.792) and across a pack (17 of 20 probes,
+10293.56 applied), and `engineer_balance_test.gd` asserts the cap stays the
+binding constraint so a later retune cannot quietly turn it into flat damage.
+
+**`engineer_repair_drone`'s ceiling overshoot is an explicit exception.** Its
+coefficients did not move. 1560 of its 1706 solo effect is knockback impulse,
+which the instrument sums into `effect_total` in pixels next to HP-denominated
+channels; on HP-denominated channels alone the row is 134.2 — 40.50 ram damage,
+41.79 repair and 51.93 flat absorption. Read as the defensive save its
+`control_save` archetype asks for, that is 93.71 HP of repair plus absorption
+against a reference EHP of 83.57, i.e. more than one hero health bar, and it is
+the only row in the class that has such a channel at all. Its low boss ratio is
+the same statement from the other side: the declared boss policy resists
+displacement at 0.10 and refuses the movement lock, so a boss keeps only the
+40.50 ram damage and the save the drone spends on its owner. The class's boss
+answers are the hex (0.783) and the field (0.792); the drone is the survival
+answer, and that split is the trio identity, not a gap.
+`engineer_balance_test.gd` bounds the exception at 1.10× the ceiling and asserts
+the save stays worth a full health bar, so it cannot grow into a second damage
+ultimate.
+
+**Niches after the correction**, each measured on a channel the other two do not
+use: `engineer_sentry_wrench` is the only cast with no per-target cap at all, so
+it is the one that can spend its whole budget on one target across 4.60 s of
+sustained volleys; `engineer_repair_drone` is the only repair, absorption and
+displacement channel, and the only one that does not scale past its declared
+four-target intercept (162.01 applied at 5, 10 and 20 probes alike);
+`engineer_pressure_mines` has the widest reach in the class (17 of 20 probes) and
+is the only cast bounded per target. `engineer_balance_test.gd` asserts exactly
+that split, so a later retune cannot quietly collapse two of the three into one.
+
+## Timing and mechanic contract for the visual cards
+
+The three downstream animation cards inherit this contract unchanged. **No beat
+moved in FAN-2532** — every `timing_seconds` value in
+`docs/design/references/weapon_ultimates/engineer/manifest.json` is still the beat
+the executor fires on, and no formation, radius, count, interval or cast length
+changed, so no capture, contact sheet or timeline needs re-shooting for balance
+reasons:
+
+| Weapon | windup | release | active | recovery | cancel | what the beats carry |
+| --- | --- | --- | --- | --- | --- | --- |
+| `engineer_sentry_wrench` | 0.00 | 0.35 six pylons rise | 0.70 | 4.60 | 5.10 | 8 synchronized volleys at 0.55 s along the three chords of a FIXED hex, then a 0.75 s hold |
+| `engineer_repair_drone` | 0.00 | 0.55 swarm unwinds | 1.05 | 5.40 | 6.10 | 6 ram waves at 0.55 s on at most 4 targets, repair pulse each wave, dome at 4.30 s for 1.20 s |
+| `engineer_pressure_mines` | 0.00 | 0.90 mines burrow up | 1.70 | 3.10 | 3.60 | arm at 0.70 s, finale from 1.70 s outer-to-inner at 0.10 s, 0.80 s tail |
+
+What changed for presentation, and only this: nothing. The hex still rises in
+place on its fixed 210 px hexagon, the swarm still runs six waves and one dome,
+and the field still detonates sixteen seeded mines outer-to-inner. The three
+rebalanced numbers are a damage coefficient, a damage coefficient and a repair
+target lookup; none of them is readable on screen as a shape, a position or a
+beat. What IS readable is intensity: the hex and the field now remove real health
+per hit, so their beam and blast reads should carry the weight of a payoff rather
+than of a tick.
+
 ## Executable evidence
 
 ```text
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/engineer_balance_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/registry_contract_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/engineer_ultimate_mechanics_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd
