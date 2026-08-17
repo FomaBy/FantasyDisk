@@ -102,6 +102,30 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `tools/capture_fan2597_doctor_walk.gd`, sheets under
   `docs/design/previews/fan2597_doctor_*`, captures under
   `build/qa/fan2597_doctor/` (captures are build artifacts, not committed).
+- FAN-2601 (2026-08-17) audited the live Guitarist pack (SCRUM-797 accepted
+  PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d`, held-guitar
+  silhouette) and **accepted it unchanged** — no regeneration pass was needed.
+  All 16 direction anchors (8 idle + 8 move `00`) hash distinct and no
+  direction equals another flipped, so every direction is explicit, with no
+  accidental mirror substitution; `north` is a true back view. Visible height
+  spans `244`–`246` px on the 512 px canvas with the footline within
+  `y=399..401` (≤2 px wander); alpha-area max/min spans `1.07`–`1.29` across
+  rows (profile rows widest from gait sway — review-aid territory per the
+  FAN-2606 calibration note). `animation_roster_audit.py` reports only
+  perceptual loop-wrap notes on `move`/`walk` `south` (wrap `29` vs mean step
+  `14`, the same double-step wrap class other accepted heroes carry, e.g.
+  knight `32/17`, assassin `16/9`); the contact sheets and live 720p/1080p
+  captures show identity-stable, artifact-free loops, and the focused gates
+  (`animation_smoke_test`, `playable_character_directional_spriteframes_test`,
+  `hero_select_guitarist_pixellab_preview_test`,
+  `character_sprite_registry_alignment_test`, `runtime_smoke_test`) all pass.
+  Attack stays weapon-owned: `guitarist_spriteframes.tres` holds only
+  `idle`/`move`/`walk` × 8 directions (27 animations, 56 frames, all from
+  `guitarist_pixellab`) and `_update_sprite_facing` forces `flip_h = false`
+  on directional rows. Evidence: `tools/build_fan2601_guitarist_animation_review.py`,
+  `tools/capture_fan2601_guitarist_walk.gd`, sheets under
+  `docs/design/previews/fan2601_guitarist_*`, captures under
+  `build/qa/fan2601_guitarist/` (captures are build artifacts, not committed).
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
