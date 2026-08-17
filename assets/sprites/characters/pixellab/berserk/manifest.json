@@ -42,11 +42,19 @@
     },
     "strict_size_contract": "PASS: every idle/move runtime alpha bbox is 245 px high; no frame is below 230 px or above 260 px."
   },
-  "empty_hands": true,
-  "no_baked_weapon_or_held_prop": true,
+  "empty_hands": false,
+  "no_baked_weapon_or_held_prop": false,
+  "rejected_rows": [
+    "south",
+    "south-east",
+    "north-east",
+    "north",
+    "west"
+  ],
   "qa_notes": [
     "North-west move uses PixelLab v3 custom replacement f82b711b-d1e1-4ffa-907c-75046dda6934, source frames 1..6, after deleting failed walking-6-frames north-west because frames 0..2 baked a hammer-like prop.",
-    "Visual QA contact sheet inspected after replacement; accepted as empty-handed PixelLab output."
+    "Visual QA contact sheet inspected after replacement; accepted as empty-handed PixelLab output.",
+    "FAN-2593 review: the empty_hands / no_baked_weapon_or_held_prop claims above only ever held for north-west. north-east move 00-02 carry a cleaver/axe/blade, north move 00-02 a sword/axe and west move 00-02 a dagger/hammer, so both flags are now false and rejected_rows lists the rows an art pass must regenerate. north-east/north also change costume mid-loop and south/south-east gain a second shoulder pauldron between move 02 and 03; east, north-west and south-west are accepted. Frames are unchanged by this review — see docs/design/systems/animation.md and docs/design/previews/fan2593_berserk_*."
   ],
   "directions": [
     "south",

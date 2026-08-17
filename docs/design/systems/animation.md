@@ -82,6 +82,50 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2593 (2026-08-17) reviewed the live Berserk pack (SCRUM-703 source,
+  PixelLab character `8486ce45-f749-4c63-9a6d-f0477d619c2d`) and rejected it:
+  `east`, `north-west` and `south-west` are clean, the other five break identity
+  mid-loop. `north-east` is the worst — move `00`–`02` wear a navy harness with a
+  fur pauldron and carry a held cleaver/axe/blade, `03`–`05` are a bare-chested
+  figure in blue denim, and `04` drops the cape entirely (alpha area `17185` vs
+  `25263` on `03`, a `32%` collapse); neither half matches the caped idle.
+  `north` carries three costumes: caped idle, olive tunic over navy leggings with
+  a held sword/axe on `00`–`02`, maroon trousers on `03`–`05`. `west` holds a
+  dagger/hammer prop on `00`–`02` and drops it from `03`. `south` and
+  `south-east` gain a second silver horse-head pauldron between move `02` and
+  `03`. The held props also contradict the weapon-owned attack contract and the
+  manifest's own `empty_hands` / `no_baked_weapon_or_held_prop` flags: SCRUM-703
+  caught this defect only in the north-west row and replaced that one, so the
+  claim was never true pack-wide. FAN-2593 corrects those two flags to name the
+  rejected rows; the frames are untouched.
+- FAN-2593 runtime side is correct and unchanged, so the fix is regenerated
+  PixelLab rows for those five directions — an `art_assets` pass, not a runtime
+  change. The `.tres` maps 56 distinct textures across its 27 rows with no
+  direction sharing a frame (no mirror stand-in), canvas is `512x512`, visible
+  height `245 px`, footline `y=480` and pivot `x` `255.5`–`256.0` hold across all
+  56 frames, `walk_<dir>` aliases `move_<dir>`, generic `idle`/`move`/`walk` fall
+  back to south, `_facing_direction` updates only while moving so a stopped hero
+  keeps its last-facing idle, body attack rows are absent with
+  `USE_ATTACK_ANIMATION` off, and Hero Select cycles only the eight (clean) idle
+  frames — the walk defect never reaches that screen. The SCRUM-869 "Berserk
+  missing south movement" blocker above describes the refresh package, not this
+  pack: the live SCRUM-703 rows are complete in all eight directions.
+- FAN-2593 calibration: the FAN-2606 area bands do not separate this pack.
+  `south` sits at max/min `1.032` with a `2.6%` largest single-frame jump —
+  inside the accepted band — and still swaps a pauldron, while `north-east`
+  (`1.655` / `48.2%`) and `south-east` (`1.309` / `26.0%`) fall outside it. Area
+  metrics stay review aids; the verdict is visual. `animation_roster_audit.py`
+  reports four Berserk findings, all loop discontinuity on `south_east` /
+  `south_west` (wrap diff `32`/`25` vs mean step `16`/`15`), and no stray alpha
+  or pivot drift — it cannot see costume or prop morph at all.
+- FAN-2593 evidence: `tools/build_actor_animation_review.py` and
+  `tools/capture_actor_walk.gd`, actor-parameterized successors to the per-card
+  FAN-2606 scripts so the rest of the 0.3.1 roster needs no further copies, with
+  sheets under `docs/design/previews/fan2593_berserk_*` — including a source-row
+  sheet showing the same splits in the `252 px` PixelLab source before
+  normalization. Gate: `tests/berserk_pixellab_pack_test.gd` locks the row set,
+  frame counts, canvas/footline/pivot geometry, absent attack rows and the
+  no-shared-texture rule; identity is deliberately left to visual review.
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
