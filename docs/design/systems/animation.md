@@ -82,6 +82,43 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2596 (2026-08-17) audited the live Dark Mage pack (SCRUM-704 240–250 px
+  redraw, PixelLab character `9bb0eca8-5afe-49d4-8e56-7115a45efdcc`,
+  `walking-6-frames`) and **accepted it unchanged** — no regeneration pass was
+  needed. All 8 idle rotations and all 8 × 6 move rows are explicit: every
+  `dark_mage_*_west*` frame is pixel-distinct from its east counterpart flipped
+  (mean abs delta `3.55`–`7.57`, zero identical frames, so no mirror
+  substitution), and `north` is a true back view. Normalization is exact rather
+  than merely stable: every one of the 56 runtime frames is a 512 px canvas with
+  visible height `246` and the footline pinned at `y=480` (**0 px** drift), and
+  alpha is fully binary (only value `255`, no anti-aliased fringe or stray
+  specks). `alpha_bbox_report.json` covers all 56 frames, so PixelLab provenance
+  is complete. Attack stays weapon-owned: `dark_mage_spriteframes.tres` holds
+  only `idle`/`move`/`walk` × 8 directions (1-frame idle, 6-frame locomotion at
+  10 fps, `walk_*` aliasing the `move_*` sources), no `attack`/`cast`/`death`
+  row, all 56 textures drawn from `dark_mage_pixellab/`, and the body rig forces
+  `flip_h = false` on directional rows (`player.gd::_update_sprite_facing`).
+  Evidence: `tools/build_fan2596_dark_mage_animation_review.py`,
+  `tools/capture_fan2596_dark_mage_walk.gd`, sheets under
+  `docs/design/previews/fan2596_dark_mage_*`, captures under
+  `build/qa/fan2596_dark_mage/` (captures are build artifacts, not committed).
+  Two findings were investigated and knowingly accepted rather than hidden:
+  (1) `animation_roster_audit.py` flags `move_north`/`walk_north` as a loop
+  discontinuity (`wrap diff 14 vs mean step 6`), but that is the coarse
+  ratio-vs-mean guard misfiring on the calmest row in the pack — the wrap step
+  (`3.59`) is *smaller* than the row's own largest inner step (`3.69`, frame
+  `02→03`), so the loop is continuous and the ratio only trips because the back
+  view has the least visible limb motion; (2) the hand aura is uneven across
+  directions — six face/side rows carry the violet aura through the walk cycle,
+  `north` legitimately hides both hands behind the cloak, but `south` walks with
+  both hands lowered and no aura at all even though its idle has it, and a
+  ~16 px cyan eye glow appears in only `south` frames `03..05` and `south-east`
+  frames `00..02`. Both are per-direction generation variance in a "subtle
+  controlled arcane aura around empty open hands" the manifest prompt defines as
+  an effect, not a held prop; both are invisible at the live combat scale
+  (`0.7168`) in the 720p/1080p captures. Consistent and artifact-free otherwise,
+  but the `south` locomotion row is the weakest row if the pack is ever
+  revisited by the art lane.
 - FAN-2598 (2026-08-17) audited the live Druid pack (SCRUM-426, PixelLab
   character `4078113b-fece-4087-a035-9ed3714a6514`) and **accepted it
   unchanged** — no regeneration pass was needed. All 8 idle rotations and all
