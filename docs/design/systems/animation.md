@@ -127,6 +127,39 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `tools/capture_fan2594_biologist_walk.gd`, sheets under
   `docs/design/previews/fan2594_biologist_*`, captures under
   `build/qa/fan2594_biologist/` (build artifacts, not committed).
+- FAN-2595 (2026-08-17) audited the live Chemist pack (SCRUM-423 source,
+  SCRUM-869 refresh, PixelLab character `c7fe44d3-1f15-45a1-b762-b2862833b151`)
+  against the 0.3.1 eight-direction acceptance bar and **rejects it unchanged**
+  — the fix is regenerated art, not a runtime change. South, south-east, north,
+  south-west idle/move/walk rows are clean and every idle pose is distinct art
+  (no direction equals another flipped). But `north-east`/`north-west` move
+  frames `01` and `04` are byte-identical horizontal mirrors of each other, and
+  `east`/`west` move frame `03` is the same defect on a second pair — walk
+  aliases move, so `walk_north_east`, `walk_north_west`, `walk_east`,
+  `walk_west` carry the same swapped frames. This is baked into the PixelLab
+  **source** rows (`assets/sprites/characters/pixellab/chemist/`), not the
+  importer: the manifest's `scrum869_refresh.selected_animation_folders`
+  confirms `north-east`/`north-west` share one download folder
+  (`animating-d9b3a385`) and `east`/`west` share another (`animating`), and a
+  shared source folder is normal for this pipeline (the accepted FAN-2594
+  Biologist pack has the same pattern with zero identical frames) — the defect
+  is specific to Chemist producing literal duplicate-mirrored frames at those
+  three indices instead of independent art for both sides. Runtime mapping
+  itself is otherwise correct: all 27 `.tres` rows point to their own
+  direction's textures, footline (`y=507`–`509`) and pivot (`x≈256`) hold
+  across all 56 frames, `animation_roster_audit.py` reports zero chemist
+  findings (loop-continuity/stray-alpha checks do not catch cross-direction
+  mirrors), alpha-area ratios stay in the accepted `1.06`–`1.17` band, attack
+  stays weapon-owned (no `attack`/`attack_primary` row in the body pack), and
+  Hero Select only cycles the clean idle frames. **Fix requires a PixelLab
+  regeneration pass** (`animate_character`, mode v3, frame_count 6) for the
+  `north-east`, `north-west`, `east`, and `west` move rows on the existing
+  character UUID, followed by re-normalization into the runtime pack —
+  PixelLab MCP access is outside the delivery session that ran this audit, so
+  the card returns for a regeneration follow-up per the FAN-2606/FAN-2855
+  precedent instead of attempting an unauthorized/unverified manual API call.
+  Evidence: `tools/build_fan2595_chemist_animation_review.py`, sheets under
+  `docs/design/previews/fan2595_chemist_*`.
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
