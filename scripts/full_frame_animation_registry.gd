@@ -87,6 +87,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.38, 0.38),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"ash_marksman": {
 			"frames": "res://assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres",

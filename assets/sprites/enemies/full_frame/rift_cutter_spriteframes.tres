@@ -1,179 +1,1724 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_00.png" id="1_rc0"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_01.png" id="2_rc1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_02.png" id="3_rc2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_03.png" id="4_rc3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_04.png" id="5_rc4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_primary_05.png" id="6_rc5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_00.png" id="7_rc6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_01.png" id="8_rc7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_02.png" id="9_rc8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_03.png" id="10_rc9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_04.png" id="11_rc10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_05.png" id="12_rc11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_00.png" id="13_rc12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_01.png" id="14_rc13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_02.png" id="15_rc14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_03.png" id="16_rc15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_04.png" id="17_rc16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_05.png" id="18_rc17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_00.png" id="19_rc18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_01.png" id="20_rc19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_02.png" id="21_rc20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_03.png" id="22_rc21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_04.png" id="23_rc22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_05.png" id="24_rc23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_00.png" id="1_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_01.png" id="2_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_02.png" id="3_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_03.png" id="4_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_00.png" id="5_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_01.png" id="6_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_02.png" id="7_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_03.png" id="8_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png" id="9_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_01.png" id="10_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_02.png" id="11_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_03.png" id="12_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_00.png" id="13_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_01.png" id="14_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_02.png" id="15_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_03.png" id="16_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_00.png" id="17_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_01.png" id="18_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_02.png" id="19_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_03.png" id="20_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_00.png" id="21_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_01.png" id="22_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_02.png" id="23_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_03.png" id="24_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_00.png" id="25_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_01.png" id="26_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_02.png" id="27_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_03.png" id="28_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_00.png" id="29_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_01.png" id="30_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_02.png" id="31_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_03.png" id="32_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_00.png" id="33_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_01.png" id="34_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_02.png" id="35_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_03.png" id="36_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_04.png" id="37_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_05.png" id="38_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_00.png" id="39_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_01.png" id="40_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_02.png" id="41_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_03.png" id="42_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_04.png" id="43_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_05.png" id="44_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_00.png" id="45_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_01.png" id="46_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_02.png" id="47_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_03.png" id="48_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_04.png" id="49_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_05.png" id="50_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_00.png" id="51_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_01.png" id="52_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_02.png" id="53_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_03.png" id="54_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_04.png" id="55_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_05.png" id="56_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_00.png" id="57_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_01.png" id="58_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_02.png" id="59_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_03.png" id="60_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_04.png" id="61_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_05.png" id="62_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_00.png" id="63_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_01.png" id="64_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_02.png" id="65_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_03.png" id="66_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_04.png" id="67_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_05.png" id="68_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_00.png" id="69_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_01.png" id="70_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_02.png" id="71_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_03.png" id="72_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_04.png" id="73_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_05.png" id="74_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_00.png" id="75_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_01.png" id="76_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_02.png" id="77_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_03.png" id="78_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_04.png" id="79_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_05.png" id="80_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_00.png" id="81_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_01.png" id="82_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_02.png" id="83_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_03.png" id="84_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_04.png" id="85_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_05.png" id="86_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_00.png" id="87_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_01.png" id="88_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_02.png" id="89_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_03.png" id="90_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_04.png" id="91_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_05.png" id="92_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png" id="93_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png" id="94_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png" id="95_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png" id="96_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png" id="97_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png" id="98_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_00.png" id="99_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_01.png" id="100_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_02.png" id="101_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_03.png" id="102_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_04.png" id="103_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_05.png" id="104_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_00.png" id="105_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_01.png" id="106_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_02.png" id="107_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_03.png" id="108_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_04.png" id="109_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_05.png" id="110_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_00.png" id="111_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_01.png" id="112_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_02.png" id="113_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_03.png" id="114_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_04.png" id="115_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_05.png" id="116_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_00.png" id="117_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_01.png" id="118_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_02.png" id="119_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_03.png" id="120_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_04.png" id="121_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_05.png" id="122_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_00.png" id="123_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_01.png" id="124_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_02.png" id="125_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_03.png" id="126_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_04.png" id="127_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_05.png" id="128_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_00.png" id="129_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_01.png" id="130_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_02.png" id="131_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_03.png" id="132_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_04.png" id="133_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_05.png" id="134_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_00.png" id="135_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_01.png" id="136_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_02.png" id="137_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_03.png" id="138_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_04.png" id="139_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_05.png" id="140_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_00.png" id="141_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_01.png" id="142_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_02.png" id="143_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_03.png" id="144_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_04.png" id="145_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_05.png" id="146_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_00.png" id="147_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_01.png" id="148_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_02.png" id="149_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_03.png" id="150_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_04.png" id="151_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_05.png" id="152_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_00.png" id="153_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_01.png" id="154_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_02.png" id="155_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_03.png" id="156_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_04.png" id="157_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_05.png" id="158_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_00.png" id="159_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_01.png" id="160_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_02.png" id="161_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_03.png" id="162_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_04.png" id="163_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_05.png" id="164_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_00.png" id="165_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_01.png" id="166_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_02.png" id="167_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_03.png" id="168_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_04.png" id="169_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_05.png" id="170_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_00.png" id="171_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_01.png" id="172_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_02.png" id="173_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_03.png" id="174_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_04.png" id="175_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_05.png" id="176_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_00.png" id="177_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_01.png" id="178_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_02.png" id="179_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_03.png" id="180_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_04.png" id="181_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_05.png" id="182_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_00.png" id="183_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_01.png" id="184_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_02.png" id="185_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_03.png" id="186_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_04.png" id="187_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_05.png" id="188_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_00.png" id="189_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_01.png" id="190_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_02.png" id="191_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_03.png" id="192_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_04.png" id="193_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_05.png" id="194_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_00.png" id="195_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_01.png" id="196_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_02.png" id="197_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_03.png" id="198_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_04.png" id="199_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_05.png" id="200_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_00.png" id="201_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_01.png" id="202_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_02.png" id="203_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_03.png" id="204_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_04.png" id="205_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_05.png" id="206_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_00.png" id="207_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_01.png" id="208_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_02.png" id="209_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_03.png" id="210_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_04.png" id="211_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_05.png" id="212_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_00.png" id="213_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_01.png" id="214_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_02.png" id="215_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_03.png" id="216_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_04.png" id="217_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_05.png" id="218_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_00.png" id="219_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_01.png" id="220_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_02.png" id="221_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_03.png" id="222_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_04.png" id="223_rc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_05.png" id="224_rc"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_rc0")
+"texture": ExtResource("9_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_rc1")
+"texture": ExtResource("10_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_rc2")
+"texture": ExtResource("11_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_rc3")
+"texture": ExtResource("12_rc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_rc4")
+"texture": ExtResource("46_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("6_rc5")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_rc0")
+"texture": ExtResource("47_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_rc1")
+"texture": ExtResource("48_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_rc2")
+"texture": ExtResource("49_rc")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_rc3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_rc4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_rc5")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_rc18")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_rc19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_rc20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_rc21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_rc22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_rc23")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_rc12")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_rc13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_rc14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_rc15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_rc16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_rc17")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_rc6")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_rc7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_rc8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_rc9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_rc10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_rc11")
-}
-],
+"texture": ExtResource("50_rc")
+}],
 "loop": true,
 "name": &"move",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rc")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("141_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_rc")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("189_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_rc")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rc")
+}],
+"loop": false,
+"name": &"attack_primary",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_rc")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_rc")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rc")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_rc")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("177_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_rc")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rc")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_rc")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_rc")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rc")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("135_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_rc")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("183_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_rc")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rc")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_rc")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_rc")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rc")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("141_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_rc")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("189_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_rc")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rc")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_rc")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_rc")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rc")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("147_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_rc")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("195_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_rc")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rc")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_rc")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_rc")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_rc")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_rc")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_rc")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_rc")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_rc")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_rc")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("111_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_rc")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("159_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_rc")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("207_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_rc")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("111_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_rc")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_rc")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_rc")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_rc")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("165_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_rc")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("213_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_rc")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_rc")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_rc")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 4.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_rc")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_rc")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("171_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_rc")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("219_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_rc")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_rc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_rc")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 10.0
+}
+]

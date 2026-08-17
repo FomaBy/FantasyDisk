@@ -104,7 +104,8 @@
   {
     "id": "rift_cutter",
     "group": "monster",
-    "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres"
+    "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "ash_marksman",

@@ -182,6 +182,19 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   registry coverage. `winged_spark` preserves the accepted source `hover_flap`
   row as a looped runtime state and exposes `hit` as a visual alias to keep the
   existing enemy hit-state contract.
+- FAN-2609 (2026-08-17) replaces `rift_cutter`'s single-facing pack (SCRUM-363,
+  horizontal flip only) with the first `standard_monster` pack on the FAN-2519
+  8-direction contract: PixelLab MCP character `4582ea80-53e5-4fbc-865b-838ff48a12e5`
+  ("Rift Cutter"), explicit `idle`/`move`/`attack_primary`/`hit`/`death` rows
+  per octant (`east, south_east, south, south_west, west, north_west, north,
+  north_east`), 4-frame breathing idle and 6-frame move/attack/hit/death at a
+  shared `384x384` runtime canvas. `rift_cutter` is not a flying identity, so
+  no `hover` row was added. The registry entry now sets
+  `explicit_eight_directions: true`, which forces `flip_h=false` and disables
+  the mirrored-fallback path for this actor. Source manifest, PixelLab job IDs
+  and the south-facing reference crop are under
+  `docs/design/references/fan2609_rift_cutter/`; recursive roster audit
+  (`tools/animation_roster_audit.py`) reports zero findings for `rift_cutter`.
 
 ## Full-Frame State Registry
 

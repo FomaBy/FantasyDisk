@@ -1150,6 +1150,18 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected winged_spark hover_flap to have 6 frames.")
 			elif not enemy_frames.get_animation_loop("hover_flap"):
 				_fail("Expected winged_spark hover_flap to loop.")
+			if enemy_id == "rift_cutter":
+				# FAN-2609: explicit 8-direction runtime contract — every state must
+				# expose all eight `<state>_<suffix>` rows, never a mirrored fallback.
+				for state_name in ["idle", "move", "attack_primary", "hit", "death"]:
+					if not FullFrameAnimationRegistry.has_full_directional_rows(enemy_frames, state_name):
+						_fail("Expected rift_cutter %s to expose all eight directional rows." % state_name)
+				for suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					if enemy_frames.get_frame_count("idle_%s" % suffix) != 4:
+						_fail("Expected rift_cutter idle_%s to have 4 frames." % suffix)
+					for state_name in ["move", "attack_primary", "hit", "death"]:
+						if enemy_frames.get_frame_count("%s_%s" % [state_name, suffix]) != 6:
+							_fail("Expected rift_cutter %s_%s to have 6 frames." % [state_name, suffix])
 	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
 		_fail("Expected missing full-frame registry entries to return null.")
 
@@ -1196,7 +1208,12 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
 			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
 				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
-			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+			if FullFrameAnimationRegistry.uses_explicit_eight_directions(enemy_full_frame_body):
+				# FAN-2609: explicit 8-direction actors never flip; facing right resolves
+				# to the explicit east row instead of a mirrored west/south surrogate.
+				if enemy_full_frame_body.animation != "attack_primary_east" or enemy_full_frame_body.flip_h:
+					_fail("Expected %s attack_primary to resolve to attack_primary_east without flip." % enemy_id)
+			elif enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
 				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
 		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
 		if enemy_static_body != null and enemy_static_body.visible:
