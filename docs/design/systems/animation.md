@@ -82,6 +82,22 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2598 (2026-08-17) audited the live Druid pack (SCRUM-426, PixelLab
+  character `4078113b-fece-4087-a035-9ed3714a6514`) and **accepted it
+  unchanged** — no regeneration pass was needed. All 8 idle rotations and all
+  8 × 6 `walking-6-frames` move rows are explicit: every `druid_*_west*` frame
+  is pixel-distinct from its east counterpart flipped (no mirror substitution),
+  and `north` is a true back view. Every runtime frame is a 512 px transparent
+  canvas with the footline stable at `y≈486-487` (bbox drift ≤1 px) and
+  horizontal anchor drift within normal gait sway. `animation_roster_audit.py`
+  reports zero druid findings; live 720p/1080p captures show identity-stable,
+  artifact-free loops. Attack stays weapon-owned: `druid_spriteframes.tres`
+  holds only `idle`/`move`/`walk` × 8 directions (1-frame idle, 6-frame
+  locomotion at 10 fps) and the body rig forces `flip_h = false` on directional
+  rows. Evidence: `tools/build_fan2598_druid_animation_review.py`,
+  `tools/capture_fan2598_druid_walk.gd`, sheets under
+  `docs/design/previews/fan2598_druid_*`, captures under
+  `build/qa/fan2598_druid/` (captures are build artifacts, not committed).
 - FAN-2597 (2026-08-17) audited the live Doctor pack (SCRUM-705 v3 redraw,
   PixelLab character `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) and **accepted it
   unchanged** — no regeneration pass was needed. The card's open question was
