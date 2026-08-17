@@ -82,6 +82,34 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2600 (2026-08-17) reviewed the live Engineer pack (SCRUM-428 source,
+  PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621`) and rejected six of
+  the eight move rows. The eight idle rotations are genuine, mutually consistent
+  and clean — Hero Select, which cycles only idle frames, is unaffected — and
+  the `south` / `south-east` move rows hold identity. But `east`, `north-east`,
+  `north-west` and `south-west` swap outfit/gear at the half-cycle seam
+  (slim green bodysuit vs strapped leather cuirass; barrel backpack vs vest;
+  the hip sword vanishing mid-loop), `north` flickers its shoulder cape and
+  skirt across the loop, and the `move_west` row is a **byte-exact mirror of
+  `move_east`** — an accidental mirror substitution sitting next to a genuine
+  west idle, inheriting east's morph on top. The defect is in the PixelLab
+  source rows (identical seams in `assets/sprites/characters/pixellab/engineer/`
+  at 248px), so the fix is regenerated art, not a runtime change. Two known
+  complications for the regeneration pass: PixelLab reports Engineer `north`
+  movement-row data as missing/incomplete (see the SCRUM-869 blocker list
+  above), and the Engineer runtime pack is still the raw source `x2`
+  (footline floating at y `358..376`, height `226..250`, pivot x `241..269`)
+  because SCRUM-869 never refreshed it — integration of regenerated rows must
+  run `tools/normalize_pixellab_rows.py` over **all eight rows** to land the
+  pack on the shared contract (`245` px visible height, bottom padding `32`,
+  centred x) the other heroes use. Runtime grounding
+  (`player_sprite_grounding.gd`) pins each frame's alpha bottom, so the
+  floating footline is invisible in-game today, but the horizontal pivot wander
+  is not compensated. Evidence:
+  `tools/build_fan2600_engineer_animation_review.py`,
+  `tools/capture_fan2600_engineer_walk.gd`, sheets under
+  `docs/design/previews/fan2600_engineer_*` (regenerated per revision; they
+  always describe the pack at the commit that contains them).
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
