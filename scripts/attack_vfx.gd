@@ -27,6 +27,38 @@ const RING_RADIUS := 104.0
 # sound_wave.png arc center at x=26.
 const WAVE_ORIGIN_X := 26.0
 const WEAPON_SIGNATURE_PATH := "res://assets/sprites/effects/vfx_weapon_%s.png"
+# FAN-3010: единственное правило поиска анимированного пака, соглашение
+# Combat VFX Art Standard v1.2 (docs/design/systems/weapon_ultimate_presentation.md):
+# assets/sprites/effects/<class>/<weapon>/<effect>/<effect>_spriteframes.tres.
+const EFFECT_PACK_PATH := "res://assets/sprites/effects/%s/%s/%s/%s_spriteframes.tres"
+const WEAPON_SIGNATURE_EFFECT := "weapon_signature"
+# Девять общих семейств обычных атак; имя семейства — это же <effect> в пути пака.
+const EFFECT_FAMILIES: Array[String] = [
+	"slash",
+	"hammer_slam",
+	"orb_projectile",
+	"projectile_trace",
+	"orb_burst",
+	"beam",
+	"sound_wave_blast",
+	"ring_pulse",
+	"curse_skull",
+]
+# Стандарт v1.2: повторяющиеся удары могут стартовать с разного кадра. Выключено
+# там, где фиксированный первый кадр несёт читаемость — летящий снаряд, луч и
+# череп должны появляться одинаково, иначе теряется момент вылета.
+const START_FRAME_VARIATION := {
+	"weapon_signature": true,
+	"slash": true,
+	"hammer_slam": true,
+	"orb_burst": true,
+	"ring_pulse": true,
+	"sound_wave_blast": true,
+	"orb_projectile": false,
+	"projectile_trace": false,
+	"beam": false,
+	"curse_skull": false,
+}
 const INTENSITY_RGB_MULT := 0.88
 const INTENSITY_SATURATION := 0.78
 const INTENSITY_ALPHA_MULT := 0.62
@@ -49,21 +81,105 @@ static func _combat_holder(name: String, layer: int) -> Node2D:
 	return holder
 
 
-static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
-	var sprite := Sprite2D.new()
-	sprite.texture = texture
+## Пак есть — играем flipbook, пака нет — временно та же статичная текстура.
+## Возвращает SpriteFrames или null; сам путь строится ровно по соглашению v1.2.
+static func effect_pack(class_id: String, weapon_id: String, effect: String) -> SpriteFrames:
+	if class_id.is_empty() or weapon_id.is_empty() or effect.is_empty():
+		return null
+	var path := EFFECT_PACK_PATH % [class_id, weapon_id, effect, effect]
+	if not ResourceLoader.exists(path):
+		return null
+	return load(path) as SpriteFrames
+
+
+## Класс героя, от которого идёт удар — первый сегмент пути пака.
+## Пусто (нет владельца или свойства) — значит остаёмся на статичном фолбэке.
+static func owner_class_id(owner_node: Node) -> String:
+	if owner_node == null:
+		return ""
+	var raw = owner_node.get("character_id")
+	return str(raw) if raw != null else ""
+
+
+static func _additive_material() -> CanvasItemMaterial:
 	var material := CanvasItemMaterial.new()
 	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sprite.material = material
-	sprite.modulate = _calmed_color(color)
-	return sprite
+	return material
 
 
-static func _normal_sprite(texture: Texture2D, color: Color) -> Sprite2D:
-	var sprite := Sprite2D.new()
-	sprite.texture = texture
-	sprite.modulate = color
-	return sprite
+# FAN-3010: одна фигура на обе ветки. Без пака это в точности прежний Sprite2D.
+# С паком — AnimatedSprite2D внутри Node2D-обёртки, отмасштабированный под след
+# статичной текстуры: вся геометрия, тайминги, твины и blend-режимы вызывающего
+# кода продолжают работать с теми же числами.
+static func _figure(texture: Texture2D, color: Color, additive: bool, pack: SpriteFrames, start_frame: int) -> Node2D:
+	var tint := _calmed_color(color) if additive else color
+	if pack == null:
+		var sprite := Sprite2D.new()
+		sprite.texture = texture
+		sprite.modulate = tint
+		if additive:
+			sprite.material = _additive_material()
+		return sprite
+
+	var animation := _pack_animation(pack)
+	var flipbook := AnimatedSprite2D.new()
+	flipbook.sprite_frames = pack
+	flipbook.scale = _pack_fit_scale(pack, texture)
+	if additive:
+		flipbook.material = _additive_material()
+	flipbook.play(animation)
+	flipbook.frame = start_frame
+	var holder := Node2D.new()
+	holder.modulate = tint
+	holder.add_child(flipbook)
+	return holder
+
+
+static func _additive_sprite(texture: Texture2D, color: Color, pack: SpriteFrames = null, start_frame := 0) -> Node2D:
+	return _figure(texture, color, true, pack, start_frame)
+
+
+static func _normal_sprite(texture: Texture2D, color: Color, pack: SpriteFrames = null, start_frame := 0) -> Node2D:
+	return _figure(texture, color, false, pack, start_frame)
+
+
+static func _pack_animation(pack: SpriteFrames) -> StringName:
+	var names := pack.get_animation_names()
+	if names.is_empty() or names.has("default"):
+		return &"default"
+	return StringName(names[0])
+
+
+static func _pack_frame_size(pack: SpriteFrames) -> Vector2:
+	var animation := _pack_animation(pack)
+	if pack.get_frame_count(animation) <= 0:
+		return Vector2.ONE
+	var frame := pack.get_frame_texture(animation, 0)
+	return frame.get_size() if frame != null else Vector2.ONE
+
+
+static func _pack_fit_scale(pack: SpriteFrames, texture: Texture2D) -> Vector2:
+	if texture == null:
+		return Vector2.ONE
+	var frame_size := _pack_frame_size(pack)
+	var target := texture.get_size()
+	return Vector2(target.x / maxf(frame_size.x, 1.0), target.y / maxf(frame_size.y, 1.0))
+
+
+# Один стартовый кадр на весь эффект: слои одной фигуры обязаны идти синхронно.
+static func _start_frame(pack: SpriteFrames, effect: String) -> int:
+	if pack == null or not bool(START_FRAME_VARIATION.get(effect, false)):
+		return 0
+	return randi() % maxi(pack.get_frame_count(_pack_animation(pack)), 1)
+
+
+# Шлейф снаряда снимает кадр с самой фигуры — иначе призраки анимированного
+# снаряда застыли бы на первом кадре, чего статичный шлейф никогда не делал.
+static func _figure_frame(figure: Node2D) -> int:
+	if figure.get_child_count() == 0:
+		return 0
+	var flipbook := figure.get_child(0) as AnimatedSprite2D
+	return flipbook.frame if flipbook != null else 0
 
 
 static func _calmed_color(color: Color, alpha_multiplier := 1.0) -> Color:
@@ -86,14 +202,19 @@ static func weapon_signature(
 	weapon_texture: Texture2D = null,
 	weapon_rotation := 0.0,
 	weapon_scale := 0.58,
-	weapon_offset := Vector2.ZERO
+	weapon_offset := Vector2.ZERO,
+	class_id := ""
 ) -> Node2D:
-	var texture_path := WEAPON_SIGNATURE_PATH % weapon_id
-	if not ResourceLoader.exists(texture_path):
-		return null
-	var texture := load(texture_path) as Texture2D
-	if texture == null:
-		return null
+	var pack := effect_pack(class_id, weapon_id, WEAPON_SIGNATURE_EFFECT)
+	var texture: Texture2D = null
+	if pack == null:
+		var texture_path := WEAPON_SIGNATURE_PATH % weapon_id
+		if not ResourceLoader.exists(texture_path):
+			return null
+		texture = load(texture_path) as Texture2D
+		if texture == null:
+			return null
+	var start_frame := _start_frame(pack, WEAPON_SIGNATURE_EFFECT)
 
 	var holder := _combat_holder("WeaponSignatureVfx_%s" % weapon_id, 9)
 	scene.add_child(holder)
@@ -104,19 +225,17 @@ static func weapon_signature(
 	holder.set_meta("release_travel_px", WEAPON_RELEASE_TRAVEL_PX)
 	holder.set_meta("damage_zone_overlay", false)
 
-	var shadow := Sprite2D.new()
+	var shadow := _normal_sprite(texture, Color(0.02, 0.015, 0.012, WEAPON_SIGNATURE_SHADOW_ALPHA), pack, start_frame)
 	shadow.name = "WeaponSignatureShadow"
-	shadow.texture = texture
-	shadow.modulate = Color(0.02, 0.015, 0.012, WEAPON_SIGNATURE_SHADOW_ALPHA)
 	shadow.scale = Vector2.ONE * 0.90
 	shadow.z_index = -1
 	holder.add_child(shadow)
 
-	var sprite := _normal_sprite(texture, Color(color.r, color.g, color.b, WEAPON_SIGNATURE_BODY_ALPHA))
+	var sprite := _normal_sprite(texture, Color(color.r, color.g, color.b, WEAPON_SIGNATURE_BODY_ALPHA), pack, start_frame)
 	sprite.name = "WeaponSignatureBody"
 	holder.add_child(sprite)
 
-	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, WEAPON_SIGNATURE_RIM_ALPHA))
+	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, WEAPON_SIGNATURE_RIM_ALPHA), pack, start_frame)
 	rim.name = "WeaponSignatureRim"
 	rim.scale = Vector2.ONE * 1.02
 	rim.z_index = 1
@@ -138,7 +257,8 @@ static func weapon_signature(
 	# the damage area. Radius only selects a small readability band; gameplay
 	# geometry remains in the weapon scripts and is not encoded in this scale.
 	var compact_diameter := clampf(radius * 0.45, WEAPON_RELEASE_MIN_DIAMETER, WEAPON_RELEASE_MAX_DIAMETER)
-	var texture_diameter := maxf(texture.get_size().x, texture.get_size().y)
+	var footprint := texture.get_size() if texture != null else _pack_frame_size(pack)
+	var texture_diameter := maxf(footprint.x, footprint.y)
 	var base_scale := compact_diameter / maxf(texture_diameter, 1.0)
 	holder.scale = Vector2.ONE * base_scale * 0.72
 	holder.set_meta("release_diameter_px", compact_diameter)
@@ -158,28 +278,32 @@ static func weapon_signature(
 	return holder
 
 
-static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0, lateral_scale := 1.0, visual_sweep_degrees := 0.0) -> Node2D:
+static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0, lateral_scale := 1.0, visual_sweep_degrees := 0.0, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("SlashVfx", 11)
 	holder.set_meta("visual_lateral_scale", lateral_scale)
 	holder.set_meta("visual_sweep_degrees", visual_sweep_degrees)
 	owner_node.add_child(holder)
+	var start_frame := _start_frame(pack, "slash")
 
 	# Непрозрачный подслой дает дуге контраст на светлом фоне.
-	var body := Sprite2D.new()
-	body.texture = SLASH_TEXTURE
+	var body := _normal_sprite(
+		SLASH_TEXTURE,
+		_calmed_color(Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.44)),
+		pack,
+		start_frame
+	)
 	body.position = Vector2(SLASH_TEXTURE.get_width() * 0.5 - SLASH_ORIGIN_X, 0.0)
 	body.rotation = sprite_rotation
-	body.modulate = _calmed_color(Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.44))
 	body.z_index = -1
 	holder.add_child(body)
 
 	var tint := Color(color.r, color.g, color.b, 0.9)
-	var sprite := _additive_sprite(SLASH_TEXTURE, tint)
+	var sprite := _additive_sprite(SLASH_TEXTURE, tint, pack, start_frame)
 	sprite.position = body.position
 	sprite.rotation = sprite_rotation
 	holder.add_child(sprite)
 
-	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.28))
+	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.28), pack, start_frame)
 	ghost.position = sprite.position
 	ghost.rotation = sprite_rotation
 	ghost.scale = Vector2(0.92, 1.06)
@@ -202,12 +326,13 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	return holder
 
 
-static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: Color) -> Node2D:
+static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: Color, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("HammerSlamVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
-	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.95))
+	# Пак рисует сам удар; кольцо-ударная волна, пыль и блики остаются общими.
+	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.95), pack, _start_frame(pack, "hammer_slam"))
 	flash.scale = Vector2.ONE * (radius / 90.0)
 	flash.z_index = 2
 	holder.add_child(flash)
@@ -252,7 +377,7 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 	return holder
 
 
-static func orb_projectile(scene: Node, start: Vector2, color: Color, profile := {}, travel_direction := Vector2.RIGHT) -> Node2D:
+static func orb_projectile(scene: Node, start: Vector2, color: Color, profile := {}, travel_direction := Vector2.RIGHT, pack: SpriteFrames = null) -> Node2D:
 	var visual_id := str(profile.get("visual_id", "")) if profile is Dictionary else ""
 	var holder := _combat_holder("PlayerProjectile_%s" % (visual_id if not visual_id.is_empty() else "DevFallback"), 11)
 	scene.add_child(holder)
@@ -266,12 +391,12 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color, profile :=
 	if orientation != "non_directional":
 		holder.rotation = direction.angle() + deg_to_rad(float(profile.get("rotation_offset_degrees", 0.0)))
 
-	var orb := Sprite2D.new()
 	var asset_path := str(profile.get("asset_path", "")) if profile is Dictionary else ""
 	var profile_texture := load(asset_path) as Texture2D if not asset_path.is_empty() else null
-	orb.texture = profile_texture if profile_texture != null else ORB_TEXTURE
+	var orb_texture: Texture2D = profile_texture if profile_texture != null else ORB_TEXTURE
+	var orb := _normal_sprite(orb_texture, Color(1.0, 1.0, 1.0, 1.0), pack, _start_frame(pack, "orb_projectile"))
 	var display_size: Vector2 = profile.get("display_size", Vector2(46.0, 46.0)) if profile is Dictionary else Vector2(46.0, 46.0)
-	var texture_size := orb.texture.get_size() if orb.texture != null else Vector2.ONE
+	var texture_size := orb_texture.get_size() if orb_texture != null else Vector2.ONE
 	var base_scale := Vector2(display_size.x / maxf(texture_size.x, 1.0), display_size.y / maxf(texture_size.y, 1.0))
 	orb.scale = base_scale
 	holder.add_child(orb)
@@ -297,10 +422,13 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color, profile :=
 		var current_holder := instance_from_id(holder_id) as Node2D
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
-		var ghost := Sprite2D.new()
+		var ghost := _normal_sprite(
+			orb_texture,
+			_calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.34)),
+			pack,
+			_figure_frame(orb)
+		)
 		ghost.process_mode = Node.PROCESS_MODE_PAUSABLE
-		ghost.texture = orb.texture
-		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.34))
 		ghost.scale = base_scale * 0.72
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
@@ -315,21 +443,22 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color, profile :=
 	return holder
 
 
-static func projectile_trace(scene: Node, start: Vector2, finish: Vector2, color: Color, profile: Dictionary, duration := 0.14) -> Node2D:
+static func projectile_trace(scene: Node, start: Vector2, finish: Vector2, color: Color, profile: Dictionary, duration := 0.14, pack: SpriteFrames = null) -> Node2D:
 	var direction := finish - start
-	var holder := orb_projectile(scene, start, color, profile, direction)
+	var holder := orb_projectile(scene, start, color, profile, direction, pack)
 	var move := holder.create_tween()
 	move.tween_property(holder, "global_position", finish, maxf(duration, 0.04)).set_trans(Tween.TRANS_LINEAR)
 	move.tween_callback(holder.queue_free)
 	return holder
 
 
-static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Color) -> Node2D:
+static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Color, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("VoidBurstVfx", 11)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
-	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.82))
+	# Пак рисует сам взрыв; расходящееся кольцо и клочья остаются общими.
+	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.82), pack, _start_frame(pack, "orb_burst"))
 	flash.scale = Vector2.ONE * (radius / 110.0)
 	holder.add_child(flash)
 
@@ -362,7 +491,7 @@ static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Co
 	return holder
 
 
-static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, color: Color) -> Node2D:
+static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, color: Color, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("BeamVfx", 12)
 	scene.add_child(holder)
 	holder.global_position = start
@@ -370,7 +499,8 @@ static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, col
 	holder.rotation = delta.angle()
 
 	var length: float = max(delta.length(), 8.0)
-	var sprite := _additive_sprite(BEAM_TEXTURE, Color(color.r, color.g, color.b, 0.78))
+	# Пак рисует сам луч; дульная вспышка и вспышка попадания остаются общими.
+	var sprite := _additive_sprite(BEAM_TEXTURE, Color(color.r, color.g, color.b, 0.78), pack, _start_frame(pack, "beam"))
 	sprite.position = Vector2(length * 0.5, 0.0)
 	sprite.scale = Vector2(length / 256.0, max(width / 64.0, 0.35) * BEAM_VISUAL_WIDTH_MULT)
 	holder.add_child(sprite)
@@ -392,13 +522,14 @@ static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, col
 	return holder
 
 
-static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, reach: float, color: Color) -> Node2D:
+static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, reach: float, color: Color, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("SoundWaveVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = start
 	holder.rotation = direction.angle()
 
-	var sprite := _additive_sprite(WAVE_TEXTURE, Color(color.r, color.g, color.b, 0.74))
+	# Пак рисует саму волну; вылетающие ноты остаются общими.
+	var sprite := _additive_sprite(WAVE_TEXTURE, Color(color.r, color.g, color.b, 0.74), pack, _start_frame(pack, "sound_wave_blast"))
 	sprite.position = Vector2(WAVE_TEXTURE.get_width() * 0.5 - WAVE_ORIGIN_X, 0.0)
 	holder.add_child(sprite)
 	var wave_scale: float = max(reach, 120.0) / 150.0
@@ -428,12 +559,13 @@ static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, re
 	return holder
 
 
-static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: Color, with_notes := false) -> Node2D:
+static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: Color, with_notes := false, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("RingPulseVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
-	var ring := _additive_sprite(RING_TEXTURE, Color(color.r, color.g, color.b, 0.85))
+	# Пак рисует само кольцо; центральная вспышка и ноты остаются общими.
+	var ring := _additive_sprite(RING_TEXTURE, Color(color.r, color.g, color.b, 0.85), pack, _start_frame(pack, "ring_pulse"))
 	ring.scale = Vector2.ONE * (radius * 0.3 / RING_RADIUS)
 	holder.add_child(ring)
 
@@ -468,7 +600,7 @@ static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: C
 	return holder
 
 
-static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Color, travel_time: float, on_hit: Callable, profile := {}) -> Node2D:
+static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Color, travel_time: float, on_hit: Callable, profile := {}, pack: SpriteFrames = null) -> Node2D:
 	var holder := _combat_holder("CurseSkullVfx", 11)
 	scene.add_child(holder)
 	holder.global_position = start
@@ -483,12 +615,13 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 	glow.z_index = -1
 	holder.add_child(glow)
 
-	var skull := Sprite2D.new()
 	var asset_path := str(profile.get("asset_path", "")) if profile is Dictionary else ""
 	var profile_texture := load(asset_path) as Texture2D if not asset_path.is_empty() else null
-	skull.texture = profile_texture if profile_texture != null else SKULL_TEXTURE
+	var skull_texture: Texture2D = profile_texture if profile_texture != null else SKULL_TEXTURE
+	# Пак рисует сам череп; ореол остаётся общим.
+	var skull := _normal_sprite(skull_texture, Color(1.0, 1.0, 1.0, 1.0), pack, _start_frame(pack, "curse_skull"))
 	var display_size: Vector2 = profile.get("display_size", Vector2(34.0, 34.0)) if profile is Dictionary else Vector2(34.0, 34.0)
-	var texture_size := skull.texture.get_size() if skull.texture != null else Vector2.ONE
+	var texture_size := skull_texture.get_size() if skull_texture != null else Vector2.ONE
 	skull.scale = Vector2(display_size.x / maxf(texture_size.x, 1.0), display_size.y / maxf(texture_size.y, 1.0))
 	holder.add_child(skull)
 
@@ -506,11 +639,14 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 		var current_holder := instance_from_id(holder_id) as Node2D
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
-		var ghost := Sprite2D.new()
+		var ghost := _normal_sprite(
+			skull_texture,
+			_calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.30)),
+			pack,
+			_figure_frame(skull)
+		)
 		ghost.process_mode = Node.PROCESS_MODE_PAUSABLE
-		ghost.texture = skull.texture
 		ghost.scale = skull_scale * 0.85
-		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.30))
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
 		ghost.global_position = current_holder.global_position
