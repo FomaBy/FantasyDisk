@@ -181,9 +181,10 @@ const FULL_FRAME_SPRITEFRAMES := {
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
-			"scale": Vector2(0.62, 0.62),
+			"scale": Vector2(2.48, 2.48),
 			"position": Vector2(0.0, -76.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"plague_prophet": {
 			"frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
