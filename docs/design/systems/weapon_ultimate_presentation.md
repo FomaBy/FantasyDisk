@@ -133,25 +133,65 @@ Re-derived for the v2 scale from the enforced constants in
 `UltimateVisualDirectionContract` and the orphan/budget history in this area
 (FAN-2350, FAN-2359, FAN-2431/FAN-2452):
 
-- **Visual nodes**: the per-activation ceiling stays `32` drawn nodes
-  (`MAX_VISUAL_NODES_CEILING`), with declared `max_visual_nodes <= crowd_cap
-  <= 32`. The live roster peaks at 26 drawn nodes; the v2 backdrop treatment
-  and first-impact flash consume at most 2 of the 6 headroom nodes as
-  screen-space layers, and the weapon-silhouette core replaces the v1 core
-  nodes rather than adding to them. A longer envelope raises on-screen time,
-  not concurrency, so the ceiling does not grow.
-- **Materials**: at most `16` unique materials/shaders per activation, of
-  which at most `2` may cover the full viewport (the backdrop darken/flash
-  layers). This bounds 2K fill-rate and batch count over the longer `2.5–4.0 s`
-  window; nodes share materials rather than instancing per node.
-- **Allocations**: one `PackedScene` instantiation per activation, performed
-  before gameplay activation; zero node or material allocations during
-  `release`/`active`/`recovery`; every animation/VFX/SFX handle is released at
-  `finish` (`cancel`, `death`, `node_end`) with zero orphan handles, as the
-  timeline contract already proves on fixtures.
-- **Readability**: opaque coverage of one activation stays `<= 0.35` of the
-  viewport and the HUD bands stay clear, so full-screen presence is delivered
-  by the translucent backdrop plus an arena-wide but non-opaque footprint.
+- **Visual nodes** — *machine-gated, declaration and actual count*: the
+  per-activation ceiling stays `32` drawn nodes (`MAX_VISUAL_NODES_CEILING`),
+  with declared `max_visual_nodes <= crowd_cap <= 32`. The live roster peaks at
+  26 drawn nodes; the v2 backdrop treatment and first-impact flash consume at
+  most 2 of the 6 headroom nodes as screen-space layers, and the
+  weapon-silhouette core replaces the v1 core nodes rather than adding to them.
+  A longer envelope raises on-screen time, not concurrency, so the ceiling does
+  not grow. The declaration is validated by
+  `UltimateVisualDirectionContract._check_budget()`; the actual drawn count is
+  rejected live by `WeaponUltimatePresentationRuntime._within_declared_budget()`
+  and asserted on the instantiated scene by
+  `weapon_ultimate_presentation_budget_test.gd`.
+- **Materials** — *machine-gated for every pair outside
+  `PRESENTATION_V2_MIGRATION_ALLOWLIST`, declaration and actual count*: at most
+  `16` unique materials/shaders per activation
+  (`MAX_UNIQUE_MATERIALS_CEILING`), of which at most `2` may cover the full
+  viewport (`MAX_FULLSCREEN_MATERIALS_CEILING`, the backdrop darken/flash
+  layers). This bounds 2K fill-rate and batch count over the longer
+  `2.5–4.0 s` window; nodes share materials rather than instancing per node. A
+  migrated pair declares `max_unique_materials` and `max_fullscreen_materials`
+  in its manifest `performance` block and in its scene metadata; a missing,
+  non-positive or above-ceiling number fails closed, and so does a full-screen
+  count larger than the unique count it is drawn from. The actual counts are
+  measured off the instantiated scene by
+  `UltimateVisualDirectionContract.material_counts()` and asserted against the
+  declared budget. A pair still inside the allowlist is v1 and owes no material
+  declaration, so the rule binds exactly when a rework card takes its pair out
+  of the ratchet — one shrinking list, not two.
+- **Allocations** — *review-gated*: one `PackedScene` instantiation per
+  activation, performed before gameplay activation; zero node or material
+  allocations during `release`/`active`/`recovery`; every animation/VFX/SFX
+  handle is released at `finish` (`cancel`, `death`, `node_end`) with zero
+  orphan handles. Only the handle release is machine-proven, and on timeline
+  fixtures; the per-phase allocation counts are not asserted.
+- **Readability** — *declaration machine-gated, rendered result review-gated*:
+  opaque coverage of one activation stays `<= 0.35` of the viewport
+  (`MAX_VIEWPORT_COVERAGE_RATIO`) and the HUD bands stay clear, so full-screen
+  presence is delivered by the translucent backdrop plus an arena-wide but
+  non-opaque footprint. `_check_quality()` range-checks the declared
+  `max_viewport_coverage_ratio` and requires `hud_bands_clear`; nothing measures
+  the coverage a frame actually renders, so the contact sheets stay the
+  evidence for it.
+
+### What "covers the full viewport" means to the material gate
+
+A material counts as full-screen when it is carried by a `CanvasItem` under a
+`CanvasLayer` inside the activation scene: screen space is the one
+full-viewport property readable off an instantiated scene without rendering it,
+because such a layer draws in viewport coordinates whatever the camera does. A
+v2 backdrop or first-impact flash therefore has to be authored as a
+`CanvasLayer` child, which is what makes it a screen-space layer in the first
+place.
+
+The rule is deliberately narrow. It over-counts a small screen-space overlay —
+strict in the fail-closed direction — and it cannot see a world-space node
+scaled over the viewport, a material created during `begin()`, or a shader that
+only becomes full-screen at runtime. Those remain review-gated: the counted
+surface is the authored tree's canvas materials plus `GPUParticles2D` process
+materials, nothing else.
 
 Reduced-motion and photosensitivity remain mandatory and are satisfiable at
 the v2 scale: the reduced-motion substitute keeps its phase timing (so the
