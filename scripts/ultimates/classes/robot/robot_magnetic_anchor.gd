@@ -10,6 +10,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.robot.robot_magnetic_anchor"
 const EXECUTOR_ID := "weapon_ultimate.executor.robot.robot_magnetic_anchor"
 const SELF_PATH := "res://scripts/ultimates/classes/robot/robot_magnetic_anchor.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/robot/robot_magnetic_anchor.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -33,6 +34,9 @@ static func execute(activation) -> float:
 		return 0.0
 	if not activation.set_control_resistance_policy(_control_policy()):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = center
 	activation.present(EXECUTOR_ID + ".windup", {
 		"position": center, "radius": activation.param_float("radius", 250.0), "shape": "ring_pulse",
 	})

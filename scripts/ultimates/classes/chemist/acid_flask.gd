@@ -23,6 +23,7 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 
 const PROFILE_ID := "weapon_ultimate.profile.chemist.acid_flask"
 const EXECUTOR_ID := "weapon_ultimate.executor.chemist.acid_flask"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/chemist/acid_flask.tscn"
 
 const CHARGE_RESOURCE_ID := "chemist_acid_flask.charge"
 const DISSOLVE_KEY := "acid_dissolve"
@@ -76,6 +77,9 @@ static func anchor(activation: Activation) -> Vector2:
 
 static func execute(activation: Activation) -> float:
 	var centre := anchor(activation)
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = centre
 	var lake_radius := activation.param_float("lake_radius", 0.0)
 	var ticks := maxi(activation.param_int("tick_count", 1), 1)
 	var interval := maxf(activation.param_float("tick_interval", 0.05), 0.05)

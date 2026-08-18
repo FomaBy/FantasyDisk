@@ -4,6 +4,7 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 
 const PROFILE_ID := "weapon_ultimate.profile.soldier.soldier_rifle"
 const EXECUTOR_ID := "weapon_ultimate.executor.soldier.soldier_rifle"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/soldier/soldier_rifle.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -50,6 +51,9 @@ static func execute(activation) -> float:
 		"limit": activation.param_int("target_limit", 3),
 	}):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	var sequence := Library.normalize_params("aimed_sequence", {
 		"radius": aim_range,
 		"damage": activation.param_float("damage", 33.5),

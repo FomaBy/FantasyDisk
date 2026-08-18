@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.doctor.restore_potion"
 const EXECUTOR_ID := "weapon_ultimate.executor.doctor.restore_potion"
 const SELF_PATH := "res://scripts/ultimates/classes/doctor/restore_potion.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/doctor/restore_potion.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -32,6 +33,9 @@ static func execute(activation) -> float:
 		return 0.0
 	if not activation.configure_repair(activation.scaled_damage("repair_total", 10.0)):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = point
 	activation.present(EXECUTOR_ID + ".release", {"position": point, "radius": 48.0, "shape": "orb_burst"})
 	var tween: Tween = activation.track_tween()
 	if tween == null:

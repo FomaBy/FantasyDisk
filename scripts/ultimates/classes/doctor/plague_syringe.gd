@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.doctor.plague_syringe"
 const EXECUTOR_ID := "weapon_ultimate.executor.doctor.plague_syringe"
 const SELF_PATH := "res://scripts/ultimates/classes/doctor/plague_syringe.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/doctor/plague_syringe.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -35,6 +36,9 @@ static func execute(activation) -> float:
 	var patient := initial[0] as Node2D
 	if patient == null:
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = patient.global_position
 	var state := {"infected": [patient], "spread_once": {}, "patient": patient}
 	activation.present(EXECUTOR_ID + ".inject", {"position": patient.global_position, "radius": 52.0, "shape": "orb_burst"})
 	var tween: Tween = activation.track_tween()

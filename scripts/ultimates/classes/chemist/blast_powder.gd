@@ -21,6 +21,7 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 
 const PROFILE_ID := "weapon_ultimate.profile.chemist.blast_powder"
 const EXECUTOR_ID := "weapon_ultimate.executor.chemist.blast_powder"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/chemist/blast_powder.tscn"
 
 const CRYSTAL_KEY := "philosopher_crystal"
 const CRYSTALLIZE_EVENT := "chemist.blast_powder.crystallize"
@@ -97,6 +98,9 @@ static func prepare(activation: Activation) -> bool:
 static func execute(activation: Activation) -> float:
 	prepare(activation)
 	var origin := activation.origin()
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = origin
 	var crystallized: Array = (activation.primitive_value("targets", []) as Array).duplicate()
 	activation.present(EXECUTOR_ID, {
 		"shape": "ring_pulse",

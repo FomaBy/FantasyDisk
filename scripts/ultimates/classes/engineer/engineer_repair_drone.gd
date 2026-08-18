@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_repair_drone"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_repair_drone"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_repair_drone.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/engineer/engineer_repair_drone.tscn"
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
@@ -38,6 +39,9 @@ static func execute(activation) -> float:
 		return 0.0
 	var formation_radius: float = activation.param_float("formation_radius", 150.0)
 	decorate_and_place(devices, ring_points(activation.origin(), drone_count, formation_radius))
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	if not activation.configure_repair(activation.scaled_damage("repair_total", 8.0)):
 		return 0.0
 	if not activation.set_control_resistance_policy({

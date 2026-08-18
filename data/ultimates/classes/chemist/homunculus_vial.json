@@ -17,7 +17,7 @@
     "strategy_id": "weapon_ultimate.executor.chemist.homunculus_vial",
     "params": {
       "summon_group": "allies",
-      "avatar_scene": "res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+      "avatar_scene": "res://scripts/ultimates/classes/chemist/homunculus_vial.tscn",
       "fuse_at": 0.9,
       "taunt_radius": 420.0,
       "taunt_force": 340.0,

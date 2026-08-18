@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.electric_guitar"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.electric_guitar"
 const SELF_PATH := "res://scripts/ultimates/classes/guitarist/electric_guitar.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/guitarist/electric_guitar.tscn"
 const RIFF_LEDGER_KEY := "guitarist_last_chord_riff"
 
 const CONTROL_POLICY := {
@@ -58,6 +59,9 @@ static func execute(activation) -> float:
 		return 0.0
 	var center: Vector2 = aim["target"]
 	var direction: Vector2 = aim["direction"]
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = center
 	var state := {"center": center, "strips_fired": 0, "intersections": 0}
 	activation.set_primitive_state({"guitarist_last_chord": state})
 	var tween = activation.track_tween()

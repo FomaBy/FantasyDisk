@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.robot.robot_hydraulic_press"
 const EXECUTOR_ID := "weapon_ultimate.executor.robot.robot_hydraulic_press"
 const SELF_PATH := "res://scripts/ultimates/classes/robot/robot_hydraulic_press.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/robot/robot_hydraulic_press.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -26,6 +27,9 @@ static func execute(activation) -> float:
 	if direction.length_squared() <= 0.001 or not activation.set_control_resistance_policy(_control_policy()):
 		return 0.0
 	activation.set_primitive_state({"robot_press_direction": direction.normalized()})
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	activation.present(EXECUTOR_ID + ".windup", {
 		"position": activation.origin(), "radius": activation.param_float("half_width", 150.0), "shape": "beam",
 		"from": activation.origin(), "to": activation.origin() + direction * activation.param_float("length", 430.0),

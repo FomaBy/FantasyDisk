@@ -5,7 +5,8 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 const PROFILE_ID := "weapon_ultimate.profile.soldier.soldier_grenade"
 const EXECUTOR_ID := "weapon_ultimate.executor.soldier.soldier_grenade"
 const SELF_PATH := "res://scripts/ultimates/classes/soldier/soldier_grenade.gd"
-const GRENADE_SCENE := "res://scripts/ultimates/classes/soldier/temporary_soldier_grenade.tscn"
+const GRENADE_SCENE := "res://scripts/ultimates/classes/soldier/soldier_grenade_charge.tscn"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/soldier/soldier_grenade.tscn"
 const TARGET_KEY := "soldier_grenade_armed"
 
 
@@ -58,6 +59,11 @@ static func execute(activation) -> float:
 		"target_limit": activation.param_int("target_limit", 26),
 	}):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		var centre = activation.primitive_value("target")
+		if centre is Vector2:
+			(presentation as Node2D).global_position = centre
 	var deploy := Library.normalize_params("deploy_summon", {
 		"scene": GRENADE_SCENE,
 		"count": count,

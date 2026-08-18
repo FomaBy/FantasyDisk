@@ -9,6 +9,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.robot.robot_reactor_core"
 const EXECUTOR_ID := "weapon_ultimate.executor.robot.robot_reactor_core"
 const SELF_PATH := "res://scripts/ultimates/classes/robot/robot_reactor_core.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/robot/robot_reactor_core.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -26,6 +27,9 @@ static func parameter_contract() -> Dictionary:
 
 
 static func execute(activation) -> float:
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	activation.present(EXECUTOR_ID + ".windup", {"position": activation.origin(), "radius": 104.0, "shape": "ring_pulse"})
 	vent_wave(activation, 0)
 	var tween: Tween = activation.track_tween()

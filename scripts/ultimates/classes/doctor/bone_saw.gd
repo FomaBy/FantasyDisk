@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.doctor.bone_saw"
 const EXECUTOR_ID := "weapon_ultimate.executor.doctor.bone_saw"
 const SELF_PATH := "res://scripts/ultimates/classes/doctor/bone_saw.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/doctor/bone_saw.tscn"
 
 
 static func parameter_contract() -> Dictionary:
@@ -27,6 +28,9 @@ static func parameter_contract() -> Dictionary:
 static func execute(activation) -> float:
 	if not activation.configure_repair(activation.scaled_damage("repair_total", 10.0)):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	var state := {"vitality": 0.0}
 	activation.present(EXECUTOR_ID + ".stance", {"position": activation.origin(), "radius": 110.0, "shape": "ring_pulse"})
 	var tween: Tween = activation.track_tween()

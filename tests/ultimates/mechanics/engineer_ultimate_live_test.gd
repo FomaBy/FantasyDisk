@@ -60,9 +60,15 @@ func _test_live_cast(spec: Dictionary, registry) -> void:
 	_check(controller.is_active(), "%s must leave a live generic activation" % weapon_id)
 	var activation = controller.active_activation()
 	var spawned: Array[Node] = activation.spawned_for_tests() if activation != null else []
-	_check(spawned.size() == int(spec["count"]),
-		"%s must atomically deploy %d temporary devices" % [weapon_id, int(spec["count"])])
+	# FAN-2985: the activation also owns one presentation carrier; the device
+	# contract below is about the deploy set only.
+	var devices: Array[Node] = []
 	for node in spawned:
+		if node.has_meta("engineer_ultimate_device"):
+			devices.append(node)
+	_check(devices.size() == int(spec["count"]),
+		"%s must atomically deploy %d temporary devices" % [weapon_id, int(spec["count"])])
+	for node in devices:
 		_check(node.get_meta("engineer_ultimate_device", "") == spec["device"],
 			"%s must preserve its temporary-device identity" % weapon_id)
 	_check(is_zero_approx(float(player.get("ultimate_charge"))),

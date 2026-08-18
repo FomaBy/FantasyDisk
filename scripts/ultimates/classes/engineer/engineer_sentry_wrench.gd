@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_sentry_wrench"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_sentry_wrench"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/engineer/engineer_sentry_wrench.tscn"
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
@@ -34,6 +35,9 @@ static func execute(activation) -> float:
 		"arc_degrees": 360.0,
 	})
 	decorate_and_place(devices, points)
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	activation.present(EXECUTOR_ID + ".deploy", {
 		"position": activation.origin(),
 		"radius": activation.param_float("formation_radius", 210.0),

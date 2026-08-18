@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_pressure_mines"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_pressure_mines"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/engineer/engineer_pressure_mines.tscn"
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
@@ -50,6 +51,9 @@ static func execute(activation) -> float:
 	if points.size() != count or devices.size() != count:
 		return 0.0
 	decorate_and_place(devices, points)
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	if not activation.set_per_target_damage_cap(
 		activation.param_float("target_cap_fraction", 0.65),
 		activation.param_float("target_cap_flat", 0.0)

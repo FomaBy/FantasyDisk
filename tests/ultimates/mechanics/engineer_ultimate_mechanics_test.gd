@@ -144,9 +144,10 @@ func _test_sentry_hex_and_cleanup() -> void:
 	_check(controller.activate(CLASS_ID, SENTRY), "sentry package must activate")
 	var activation = controller.active_activation()
 	var spawned: Array[Node] = activation.spawned_for_tests()
-	_check(spawned.size() == 6, "sentry must atomically deploy six temporary pylons")
+	var devices := _device_nodes(spawned)
+	_check(devices.size() == 6, "sentry must atomically deploy six temporary pylons")
 	var positions := {}
-	for node in spawned:
+	for node in devices:
 		var device := node as Node2D
 		positions[device.global_position.round()] = true
 		_check(device.get_meta("engineer_ultimate_device", "") == "sentry",
@@ -186,7 +187,8 @@ func _test_drone_intercept_repair_and_shield() -> void:
 	_check(controller.activate(CLASS_ID, DRONES), "repair-drone package must activate")
 	var activation = controller.active_activation()
 	var spawned: Array[Node] = activation.spawned_for_tests()
-	_check(spawned.size() == 12, "repair swarm must atomically deploy twelve microdrones")
+	_check(_device_nodes(spawned).size() == 12,
+		"repair swarm must atomically deploy twelve microdrones")
 	_check(normal.knockback_impulses.size() == 1 and epic.knockback_impulses.size() == 1,
 		"the first capped intercept wave must reach both nearby targets")
 	if not normal.knockback_impulses.is_empty() and not epic.knockback_impulses.is_empty():
@@ -221,7 +223,7 @@ func _test_seeded_mine_chain_and_finale() -> void:
 	var state: Dictionary = activation.primitive_value("engineer_mine_state", {})
 	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
 	var spawned: Array[Node] = activation.spawned_for_tests()
-	_check(points.size() == 16 and spawned.size() == 16,
+	_check(points.size() == 16 and _device_nodes(spawned).size() == 16,
 		"minefield must deploy all sixteen deterministic smart mines")
 	var first_points: PackedVector2Array = activation.pattern_points(Vector2.ZERO, "seeded_annulus", {
 		"count": 16, "inner_radius": 80.0, "outer_radius": 260.0, "seed": 1466,
@@ -297,6 +299,16 @@ func _drop(host: Host) -> void:
 	if host != null and is_instance_valid(host):
 		host.queue_free()
 	await process_frame
+
+
+## FAN-2985: the activation also owns one presentation carrier; the device
+## contracts above are about the deploy set only.
+func _device_nodes(spawned: Array[Node]) -> Array[Node]:
+	var devices: Array[Node] = []
+	for node in spawned:
+		if node.has_meta("engineer_ultimate_device"):
+			devices.append(node)
+	return devices
 
 
 func _check(condition: bool, message: String) -> void:

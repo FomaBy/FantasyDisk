@@ -3,6 +3,7 @@ extends RefCounted
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.sound_amp"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.sound_amp"
 const SELF_PATH := "res://scripts/ultimates/classes/guitarist/sound_amp.gd"
+const EFFECT_SCENE := "res://scripts/ultimates/classes/guitarist/sound_amp.tscn"
 
 const CONTROL_POLICY := {
 	"normal": {"displacement_multiplier": 1.0, "duration_multiplier": 1.0, "allow_movement_lock": false, "allow_execute": true},
@@ -37,6 +38,9 @@ static func execute(activation) -> float:
 		activation.param_float("per_target_cap_flat", 0.0)
 	) or not activation.set_control_resistance_policy(CONTROL_POLICY):
 		return 0.0
+	var presentation = activation.spawn(EFFECT_SCENE)
+	if presentation is Node2D:
+		(presentation as Node2D).global_position = activation.origin()
 	var state := {"points": _amp_points(activation), "pulses": 0, "linked": false}
 	activation.set_primitive_state({"guitarist_wall_of_sound": state})
 	var tween = activation.track_tween()
