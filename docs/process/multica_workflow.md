@@ -148,6 +148,26 @@ and Qwen launches the dedicated DevOps issue. DevOps:
 3. Merges without content edits.
 4. Fetches `origin/dev` and verifies the approved SHA is reachable.
 
+### Checking mergeability without leaking a commit onto `dev` (FAN-3034)
+
+A conflict/mergeability probe must never produce a commit that a later `git
+push` can land on `dev` — including under a placeholder message such as
+"TEST MERGE - will discard". Any commit reachable from `dev`'s history is
+permanent per this project's no-rewrite rule (`## Запреты` in
+`docs/process/versioning_and_branching.md`); a throwaway label does not make
+it safe to push and does not entitle anyone to revert it later.
+
+- Prefer the GitHub API/PR `mergeable`/`mergeable_state` field — it never
+  touches local `dev`.
+- If a local probe is required, run it without creating a landable commit:
+  `git merge --no-commit --no-ff <candidate>`, inspect the result, then
+  `git merge --abort` (or run it in a disposable clone/worktree that is never
+  the target of `git push`).
+- Never `git push` a commit produced by a conflict probe, whatever its
+  message says. The commit that reaches `dev` must be created fresh, at push
+  time, with a real integration message (`Merge FAN-XXXX: ... into dev`), not
+  reused from an earlier throwaway check.
+
 Do not require post-merge CI, merge-tree, tree/blob/patch equivalence, or a
 separate merge-ref artifact dossier for ordinary gameplay integration. A clean
 operator mirror may be fast-forwarded best-effort; WIP means skip it without a
