@@ -81,7 +81,68 @@ is however many blade bites the declared round-robin actually clears through
 | Раскол Четырёх Сторон | 1.001 | 0.961 | 27.54s | 20 |
 
 The class-trio composite is `solo 0.998 / AoE 0.957 / crowd 1.000 /
-total 0.985`, inside the `0.90…1.10` corridor.
+total 0.985`, inside the `0.90…1.10` corridor. These rows come from the
+closed-form fixture proof above, whose axe probe sits at 20% health and
+therefore admits the execute; the live 51-row corridor reading is the
+next section.
+
+## Power corridor (FAN-2525)
+
+The corridor is `UltimateChargeBudget.POWER_SECONDS_MIN..MAX` — one activation
+is worth 20…35 s of the weapon's OWN normal output — and the live reading of it
+is the solo `effect_total` of
+`scripts/ultimates/balance/ultimate_effectiveness_runner.gd` (51 rows, solo /
+crowd 5 / 10 / 20 / elite / boss).
+
+**The finding.** The live instrument measures every probe at full health, and
+the shared control policy denies the execute to epic and boss tiers, so the
+axe's declared finisher channel is unreadable by every one of the six
+scenarios: the loop's price was carried by the two passes alone. At the shipped
+`outbound_damage 17 / return_damage 27` those two passes measured 789.42 —
+0.8% above the 783.0 floor — while the closed-form table above (0.995) assumed
+the execute lands. The arithmetic correction reprices the loop's own always-
+readable channel: `outbound_damage` 17 → 20, `return_damage` 27 → 32. Nothing
+else moved — no timing, no cap, no threshold, no execute coefficient.
+
+| Weapon | corridor | solo effect before → after | of budget | boss cap ratio |
+| --- | ---: | ---: | ---: | ---: |
+| `sword` | 784.4 … 1372.7 | 1080.15 → 1080.15 | 0.787 | 0.784 |
+| `axe` | 783.0 … 1370.25 | 789.42 → 932.19 | 0.680 | 0.573 → 0.677 |
+| `hammer` | 782.4 … 1369.2 | 1213.98 → 1213.98 | 0.887 | 0.549 |
+
+Baseline is the committed `build/ultimate_effectiveness_baseline.json`; final
+is the same instrument after this card. The other 48 rows are bit-identical and
+`regressions()` stays clean, so the committed baseline is not rewritten. Crowd
+evidence: crowd_20 15209.88 / 15831.19 / 22074.64 — the hammer clears the
+widest crowd, the sword the longest control uptime, exactly as declared.
+
+**Two bounded exceptions.** The axe is the class finisher: its execute channel
+(16 at ≤30% health, normal tier only) is unreadable by construction on every
+probe tier, so the corridor is priced by its loop passes; the twin bounds those
+passes at ≥ 0.33 of the budget so the finisher trade can never quietly decay
+into a hole. The hammer is the control identity: 460 of its 1213.98 solo effect
+is stagger/launch displacement its own boss policy scales to ×0.1, and its
+damage-only channel (751.58 = 19.2 s) sits below the floor by design; the twin
+bounds that channel at ≥ 0.33 of the budget on the venom_wire precedent. The
+class boss answers are the whirlwind (0.784) and the repriced loop (0.677).
+
+**Niches after the correction**, each on a channel the other two do not use:
+`sword` is the widest (24) and longest (7.45 s) crowd orbit with the only
+slow-field; `axe` is the heaviest single contact (return 32 > cross 25 > quake
+18) with the only low-health execute; `hammer` is the only staggering/launching
+burst and the shortest (3.4 s). The deterministic corridor proof is
+`tests/ultimates/berserk_balance_test.gd`, the closed-form twin of the live
+instrument (1080.15 / 932.19 / 1213.98 exactly); it rebuilds the blade
+round-robin, the loop corridor and the world-cardinal lanes from the shipped
+statics and goes red for a round-robin that never re-arms.
+
+**Timing contract for the downstream visual-animation cards
+(FAN-2544/FAN-2545/FAN-2546).** No beat moved: Алый Вихрь stays 0.6 s release +
+11 sweeps × 0.55 s + the collapsing cross, Петля Палача stays 0.45 s release +
+2.2 s outbound + 2.4 s return + 3.2 s mark, Раскол Четырёх Сторон stays 0.7 s
+release + 3 ordered beats × 0.85 s. The only change is numeric: the loop's two
+contact hits are priced 20/32 instead of 17/27. The three cards inherit the
+timing contract unchanged.
 
 ## Verification
 
@@ -89,6 +150,7 @@ total 0.985`, inside the `0.90…1.10` corridor.
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_package_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_live_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_balance_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/berserk_balance_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/tracked_tween_natural_completion_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/executor_contract_audit_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/balance_harness_test.gd
