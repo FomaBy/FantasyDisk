@@ -82,7 +82,13 @@
         "cancel": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.cleanup"
       },
       "pivot": [0.5, 0.85],
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 16},
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 16,
+        "max_unique_materials": 4,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "declared proactively per FAN-2972: every node uses the default CanvasItem material; the translucent BackdropDim polygon is the only viewport-scale layer (v2 caps: 16 unique / 2 fullscreen)"
+      },
       "presence": {
         "fullscreen_footprint": true,
         "backdrop": "darken",
@@ -94,11 +100,6 @@
         "cast_pose_id": "cast_pose.engineer.wrench_overhead_brace",
         "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
         "class_palette_id": "class_palette.engineer.workshop_teal"
-      },
-      "material_budget": {
-        "max_unique_materials": 4,
-        "max_fullscreen_materials": 1,
-        "note": "declared proactively per FAN-2972: every node uses the default CanvasItem material; the translucent BackdropDim polygon is the only viewport-scale layer (v2 caps: 16 unique / 2 fullscreen)"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.1,

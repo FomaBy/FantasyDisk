@@ -85,9 +85,9 @@
       "performance": {
         "max_visual_nodes": 14,
         "crowd_cap": 24,
+        "max_unique_materials": 16,
+        "max_fullscreen_materials": 2,
         "material_budget": {
-          "max_unique_materials": 16,
-          "max_fullscreen_materials": 2,
           "measured_unique_materials": 2,
           "measured_fullscreen_materials": 1
         },
