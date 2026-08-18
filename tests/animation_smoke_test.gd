@@ -1136,6 +1136,15 @@ func _test_full_frame_animation_registry() -> void:
 		"bone_shaman": "res://scenes/EnemyBoneShaman.tscn",
 		"winged_spark": "res://scenes/EnemyFlyingRunner.tscn",
 	}
+	# FAN-3040: octant row lengths are pack-authored art, not a shared contract —
+	# the single hardcoded shape below expected 1/6/6/4/6 for every directional
+	# enemy, which only ever matched bone_caller (FAN-2613). Declare the length
+	# each pack actually ships so the per-octant assertion stays exact.
+	var directional_enemy_row_frames := {
+		"rift_cutter": {"idle": 4, "move": 6, "attack": 6, "hit": 6, "death": 6},
+		"ash_marksman": {"idle": 1, "move": 6, "attack": 7, "hit": 5, "death": 7},
+		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
 		if enemy_frames == null:
@@ -1147,9 +1156,12 @@ func _test_full_frame_animation_registry() -> void:
 		# this test (mirrors the FAN-2901 mini-elite pattern below).
 		var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
 		if enemy_is_directional:
+			var enemy_row_frames: Dictionary = directional_enemy_row_frames.get(enemy_id, {})
+			if enemy_row_frames.is_empty():
+				_fail("Expected %s to declare its directional row lengths in directional_enemy_row_frames." % enemy_id)
 			for state_name in ["idle", "move", "attack", "hit", "death"]:
 				var enemy_state_should_loop: bool = state_name in ["idle", "move"]
-				var enemy_expected_frames := 4 if state_name == "hit" else (1 if state_name == "idle" else 6)
+				var enemy_expected_frames := int(enemy_row_frames.get(state_name, 0))
 				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
 					var enemy_directional_row := "%s_%s" % [state_name, dir_suffix]
 					if not enemy_frames.has_animation(enemy_directional_row):
@@ -1175,6 +1187,18 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected winged_spark hover_flap to have 6 frames.")
 			elif not enemy_frames.get_animation_loop("hover_flap"):
 				_fail("Expected winged_spark hover_flap to loop.")
+		if enemy_id == "rift_cutter":
+			# FAN-2609: explicit 8-direction runtime contract — every state must
+			# expose all eight `<state>_<suffix>` rows, never a mirrored fallback.
+			for state_name in ["idle", "move", "attack_primary", "hit", "death"]:
+				if not FullFrameAnimationRegistry.has_full_directional_rows(enemy_frames, state_name):
+					_fail("Expected rift_cutter %s to expose all eight directional rows." % state_name)
+			for suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				if enemy_frames.get_frame_count("idle_%s" % suffix) != 4:
+					_fail("Expected rift_cutter idle_%s to have 4 frames." % suffix)
+				for state_name in ["move", "attack_primary", "hit", "death"]:
+					if enemy_frames.get_frame_count("%s_%s" % [state_name, suffix]) != 6:
+						_fail("Expected rift_cutter %s_%s to have 6 frames." % [state_name, suffix])
 	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
 		_fail("Expected missing full-frame registry entries to return null.")
 
@@ -1227,6 +1251,14 @@ func _test_full_frame_animation_registry() -> void:
 					_fail("Expected %s attack to resolve to attack_east, got %s." % [enemy_id, enemy_full_frame_body.animation])
 				if enemy_full_frame_body.flip_h:
 					_fail("Expected %s eight-direction full-frame art to never mirror via flip_h." % enemy_id)
+				# FAN-2609/FAN-2889: a pack that also ships the attack_primary alias per
+				# octant must resolve that alias through its own east row, never through
+				# a mirrored surrogate of another facing.
+				if enemy_full_frame_body.sprite_frames.has_animation("attack_primary_east"):
+					if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+						_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+					if enemy_full_frame_body.animation != "attack_primary_east" or enemy_full_frame_body.flip_h:
+						_fail("Expected %s attack_primary to resolve to attack_primary_east without flip." % enemy_id)
 			else:
 				for animation_name in ["move", "attack_primary", "hit", "death"]:
 					if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
@@ -1843,7 +1875,11 @@ func _test_death_ghost() -> void:
 	enemy.call("_update_movement_animation", 0.1)
 	enemy.call("take_damage", 9999.0)
 	var full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-	if full_frame_body == null or full_frame_body.animation != "death":
+	# FAN-2609: Enemy.tscn drives rift_cutter, an explicit 8-direction actor, so
+	# death resolves through a directional `death_<suffix>` row, not the flat literal.
+	var death_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", "rift_cutter").get("explicit_eight_directions", false))
+	var death_row_ok := full_frame_body != null and (full_frame_body.animation.begins_with("death_") if death_is_directional else full_frame_body.animation == "death")
+	if not death_row_ok:
 		_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
 	if holder.get_node_or_null("DeathGhostRig") != null:
 		_fail("Expected full-frame enemy death to avoid duplicate death ghost fallback.")
