@@ -54,5 +54,27 @@
       "fps": 10.0
     }
   },
-  "notes": "FAN-2646: replaces the four static directional PNGs (homunculus_tank_{south,north,east,west}.png) with a full FAN-2519 explicit-eight-direction animated pack for chemist_homunculus/homunculus_tank. 8 idle rotations + 8x6 move/attack/hit frames + 8x7 death frames, all normalized to 208px visible height on a transparent 256x256 canvas (bottom_padding=24), matching the ally_homunculus/druid_ghost_* runtime canvas convention. The legacy static PNGs and their ALLY_VISUAL_PATHS / DIRECTIONAL_ALLY_VISUAL_PATHS fallback entries are left in place as the safe-degrade path if the animated pack ever fails to resolve."
+  "notes": "FAN-2646: replaces the four static directional PNGs (homunculus_tank_{south,north,east,west}.png) with a full FAN-2519 explicit-eight-direction animated pack for chemist_homunculus/homunculus_tank. 8 idle rotations + 8x6 move/attack/hit frames + 8x7 death frames, all normalized to 208px visible height on a transparent 256x256 canvas (bottom_padding=24), matching the ally_homunculus/druid_ghost_* runtime canvas convention. The legacy static PNGs and their ALLY_VISUAL_PATHS / DIRECTIONAL_ALLY_VISUAL_PATHS fallback entries are left in place as the safe-degrade path if the animated pack ever fails to resolve.",
+  "rework_fan2938": {
+    "rework_for_issue": "FAN-2938",
+    "source_qa_verdict": "FAN-2779 FAILED on candidate 314decb21130e3b58b394c28ab535a0bed439664: death_north_06 and death_north_east_03 had opaque pixels touching the 256x256 canvas edge (clipped fists).",
+    "generated_at": "2026-08-18",
+    "regenerated_rows": ["death_north", "death_north_east"],
+    "pixellab_character_id": "ba67707b-3f05-44f4-b7d9-b1b554e45695",
+    "animation_group_id": "f1a03896-c987-4719-b655-156e35814f9f",
+    "death_north": {
+      "mode": "template",
+      "template_animation_id": "falling-back-death",
+      "ai_freedom": 180,
+      "frame_count": 7,
+      "fps": 10.0
+    },
+    "death_north_east": {
+      "mode": "v3",
+      "action_description": "taking a fatal hit and collapsing straight down into a compact crumpled heap on the ground, body curled inward, knees drawn toward the chest, arms folded close against the torso, narrow silhouette with wide empty margin on every side of the frame, never sprawled flat or spread out sideways",
+      "frame_count": 6,
+      "fps": 10.0
+    },
+    "normalization_note": "Same alpha-bbox scale-to-fit-208px-visible-height contract as the rest of the pack, with a 6px canvas margin cap on the width-bound scale term (effective max scaled width 244px instead of 256px) applied to these two rows only, so a fully splayed/lying final death frame keeps a visible gutter instead of touching x=0/x=255 exactly. All 204 previously-accepted frames are untouched (verified byte-identical to candidate 314decb2 by construction: no other files were written)."
+  }
 }

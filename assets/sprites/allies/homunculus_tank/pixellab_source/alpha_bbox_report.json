@@ -5681,24 +5681,24 @@
         64
       ],
       "source_alpha_bbox": [
-        16,
-        6,
-        54,
-        62
+        15,
+        5,
+        52,
+        61
       ],
       "source_alpha_bbox_size": [
-        38,
+        37,
         56
       ],
       "scale": 3.7142857142857144,
       "resized_visible_size": [
-        141,
+        137,
         208
       ],
       "runtime_alpha_bbox": [
-        58,
+        60,
         24,
-        199,
+        197,
         232
       ]
     },
@@ -5711,23 +5711,23 @@
       ],
       "source_alpha_bbox": [
         16,
-        5,
+        4,
         52,
         60
       ],
       "source_alpha_bbox_size": [
         36,
-        55
+        56
       ],
-      "scale": 3.7818181818181817,
+      "scale": 3.7142857142857144,
       "resized_visible_size": [
-        136,
+        134,
         208
       ],
       "runtime_alpha_bbox": [
-        60,
+        61,
         24,
-        196,
+        195,
         232
       ]
     },
@@ -5740,23 +5740,23 @@
       ],
       "source_alpha_bbox": [
         7,
-        6,
-        61,
+        7,
+        57,
         60
       ],
       "source_alpha_bbox_size": [
-        54,
-        54
+        50,
+        53
       ],
-      "scale": 3.8518518518518516,
+      "scale": 3.9245283018867925,
       "resized_visible_size": [
-        208,
+        196,
         208
       ],
       "runtime_alpha_bbox": [
+        30,
         24,
-        24,
-        232,
+        226,
         232
       ]
     },
@@ -5769,23 +5769,23 @@
       ],
       "source_alpha_bbox": [
         9,
-        4,
-        52,
-        58
+        3,
+        50,
+        59
       ],
       "source_alpha_bbox_size": [
-        43,
-        54
+        41,
+        56
       ],
-      "scale": 3.8518518518518516,
+      "scale": 3.7142857142857144,
       "resized_visible_size": [
-        166,
+        152,
         208
       ],
       "runtime_alpha_bbox": [
-        45,
+        52,
         24,
-        211,
+        204,
         232
       ]
     },
@@ -5797,24 +5797,24 @@
         64
       ],
       "source_alpha_bbox": [
-        2,
+        4,
         0,
-        47,
-        52
+        45,
+        51
       ],
       "source_alpha_bbox_size": [
-        45,
-        52
+        41,
+        51
       ],
-      "scale": 4.0,
+      "scale": 4.078431372549019,
       "resized_visible_size": [
-        180,
+        167,
         208
       ],
       "runtime_alpha_bbox": [
-        38,
+        44,
         24,
-        218,
+        211,
         232
       ]
     },
@@ -5828,22 +5828,22 @@
       "source_alpha_bbox": [
         0,
         0,
-        47,
+        46,
         53
       ],
       "source_alpha_bbox_size": [
-        47,
+        46,
         53
       ],
       "scale": 3.9245283018867925,
       "resized_visible_size": [
-        184,
+        181,
         208
       ],
       "runtime_alpha_bbox": [
-        36,
+        38,
         24,
-        220,
+        219,
         232
       ]
     },
@@ -5856,23 +5856,23 @@
       ],
       "source_alpha_bbox": [
         0,
-        8,
+        7,
         50,
-        48
+        49
       ],
       "source_alpha_bbox_size": [
         50,
-        40
+        42
       ],
-      "scale": 5.12,
+      "scale": 4.88,
       "resized_visible_size": [
-        256,
+        244,
         205
       ],
       "runtime_alpha_bbox": [
-        0,
+        6,
         27,
-        256,
+        250,
         232
       ]
     }
@@ -5882,28 +5882,28 @@
       "source": "homunculus_tank_death_north_east_00.png",
       "runtime": "homunculus_tank_death_north_east_00.png",
       "source_size": [
-        64,
-        64
+        84,
+        84
       ],
       "source_alpha_bbox": [
-        16,
-        4,
-        49,
-        62
+        19,
+        13,
+        60,
+        71
       ],
       "source_alpha_bbox_size": [
-        33,
+        41,
         58
       ],
       "scale": 3.586206896551724,
       "resized_visible_size": [
-        118,
+        147,
         208
       ],
       "runtime_alpha_bbox": [
-        69,
+        54,
         24,
-        187,
+        201,
         232
       ]
     },
@@ -5911,28 +5911,28 @@
       "source": "homunculus_tank_death_north_east_01.png",
       "runtime": "homunculus_tank_death_north_east_01.png",
       "source_size": [
-        64,
-        64
+        84,
+        84
       ],
       "source_alpha_bbox": [
-        21,
-        4,
-        44,
-        62
+        22,
+        14,
+        62,
+        71
       ],
       "source_alpha_bbox_size": [
-        23,
-        58
+        40,
+        57
       ],
-      "scale": 3.586206896551724,
+      "scale": 3.6491228070175437,
       "resized_visible_size": [
-        82,
+        146,
         208
       ],
       "runtime_alpha_bbox": [
-        87,
+        55,
         24,
-        169,
+        201,
         232
       ]
     },
@@ -5940,28 +5940,28 @@
       "source": "homunculus_tank_death_north_east_02.png",
       "runtime": "homunculus_tank_death_north_east_02.png",
       "source_size": [
-        64,
-        64
+        84,
+        84
       ],
       "source_alpha_bbox": [
-        13,
-        3,
-        64,
-        62
+        25,
+        18,
+        66,
+        71
       ],
       "source_alpha_bbox_size": [
-        51,
-        59
+        41,
+        53
       ],
-      "scale": 3.5254237288135593,
+      "scale": 3.9245283018867925,
       "resized_visible_size": [
-        180,
+        161,
         208
       ],
       "runtime_alpha_bbox": [
-        38,
+        48,
         24,
-        218,
+        209,
         232
       ]
     },
@@ -5969,78 +5969,20 @@
       "source": "homunculus_tank_death_north_east_03.png",
       "runtime": "homunculus_tank_death_north_east_03.png",
       "source_size": [
-        64,
-        64
+        84,
+        84
       ],
       "source_alpha_bbox": [
-        3,
-        10,
-        64,
-        58
+        19,
+        22,
+        71,
+        72
       ],
       "source_alpha_bbox_size": [
-        61,
-        48
+        52,
+        50
       ],
-      "scale": 4.19672131147541,
-      "resized_visible_size": [
-        256,
-        201
-      ],
-      "runtime_alpha_bbox": [
-        0,
-        31,
-        256,
-        232
-      ]
-    },
-    {
-      "source": "homunculus_tank_death_north_east_04.png",
-      "runtime": "homunculus_tank_death_north_east_04.png",
-      "source_size": [
-        64,
-        64
-      ],
-      "source_alpha_bbox": [
-        0,
-        0,
-        58,
-        53
-      ],
-      "source_alpha_bbox_size": [
-        58,
-        53
-      ],
-      "scale": 3.9245283018867925,
-      "resized_visible_size": [
-        228,
-        208
-      ],
-      "runtime_alpha_bbox": [
-        14,
-        24,
-        242,
-        232
-      ]
-    },
-    {
-      "source": "homunculus_tank_death_north_east_05.png",
-      "runtime": "homunculus_tank_death_north_east_05.png",
-      "source_size": [
-        64,
-        64
-      ],
-      "source_alpha_bbox": [
-        2,
-        1,
-        56,
-        53
-      ],
-      "source_alpha_bbox_size": [
-        54,
-        52
-      ],
-      "scale": 4.0,
+      "scale": 4.16,
       "resized_visible_size": [
         216,
         208
@@ -6049,6 +5991,64 @@
         20,
         24,
         236,
+        232
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_04.png",
+      "runtime": "homunculus_tank_death_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        34,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        36
+      ],
+      "scale": 4.4363636363636365,
+      "resized_visible_size": [
+        244,
+        160
+      ],
+      "runtime_alpha_bbox": [
+        6,
+        72,
+        250,
+        232
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_05.png",
+      "runtime": "homunculus_tank_death_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        41,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        31
+      ],
+      "scale": 3.8125,
+      "resized_visible_size": [
+        244,
+        118
+      ],
+      "runtime_alpha_bbox": [
+        6,
+        114,
+        250,
         232
       ]
     }
