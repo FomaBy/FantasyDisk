@@ -98,6 +98,28 @@ def _parse_object_text(text):
     return info
 
 
+def _animation_group_ready(info):
+    """True when there is no animation group yet, or every group is terminal.
+
+    The object itself can report status "completed" while an animation job
+    just queued on it is still running — the object-level status alone is not
+    proof the animation frames exist yet.
+    """
+    animations = info.get("animations")
+    if not animations:
+        return True
+    for anim in animations:
+        if not isinstance(anim, dict):
+            continue
+        group_status = anim.get("status")
+        if group_status is not None:
+            if group_status not in ("completed", "failed"):
+                return False
+        elif not anim.get("frames"):
+            return False
+    return True
+
+
 def wait_status(object_id, bearer, timeout_s, interval_s, call_fn=call,
                 sleep_fn=time.sleep, clock=time.time, log=print):
     """Poll object status in a bounded loop until terminal state or the hard ceiling.
@@ -116,7 +138,7 @@ def wait_status(object_id, bearer, timeout_s, interval_s, call_fn=call,
             info = _parse_object_text(raw_text)
             info["_raw"] = raw_text
         status = info.get("status")
-        if status in ("completed", "failed"):
+        if status in ("completed", "failed") and _animation_group_ready(info):
             return info
         log("status=%s progress=%s" % (status, info.get("progress")))
         if clock() >= deadline:
@@ -143,7 +165,10 @@ def extract_frame_urls(obj, frame_count):
         for line in (anim_entry.get("_raw") or "").splitlines():
             line = line.strip()
             if "{i}.png" in line and "http" in line:
-                template = line.split(" ")[0]
+                for part in line.split():
+                    if part.startswith("http"):
+                        template = part
+                        break
                 if "(i=" in line:
                     frame_total = int(line.split("i=0..")[1].split(")")[0]) + 1
         if template:
@@ -235,7 +260,7 @@ def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
         log("ERROR: %s" % exc)
         return EXIT_API_ERROR
 
-    if len(frames) != args.frame_count:
+    if len(frames) < args.frame_count:
         log("ERROR: incomplete pack: downloaded %d frames, expected %d (object %s)"
             % (len(frames), args.frame_count, object_id))
         return EXIT_INCOMPLETE
