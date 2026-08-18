@@ -115,7 +115,7 @@ func _initialize() -> void:
 	await _test_scarlet_whirlwind()
 	await _test_execution_loop()
 	await _test_fourfold_rift()
-	await _test_global_crowd_caps()
+	await _test_trio_reaches_every_enemy()
 	await _test_ordered_composition_fails_closed()
 	await _test_real_player_path()
 	_test_charge_contract()
@@ -227,11 +227,14 @@ func _test_execution_loop() -> void:
 		"the axe must fly to the arena edge along the aim")
 	_advance(activation, 0.46)
 	_check((effect.get("beat_trace_for_tests") as Array) == ["outbound"]
-		and int(effect.get("marked_count_for_tests")) == 4,
-		"the outbound pass must mark exactly the corridor, got %s" % [effect.get("marked_count_for_tests")])
-	_check(aside.received.is_empty(), "a target beside the corridor must stay untouched")
+		and int(effect.get("marked_count_for_tests")) == 5,
+		"the outbound pass must mark every live enemy, got %s" % [effect.get("marked_count_for_tests")])
+	# Ultimate Direction v2: the outbound floor is map-wide, so a silhouette
+	# well beside the corridor still takes the pass — and only the pass.
+	_check(aside.received.size() == 1,
+		"a target beside the corridor must take the outbound pass and no return")
 	_check(low.received.size() == 1 and boss.received.size() == 1,
-		"the outbound pass must land once on every corridor target")
+		"the outbound pass must land once on every live enemy")
 	_advance(activation, 2.21)
 	_check((effect.get("beat_trace_for_tests") as Array) == ["outbound", "turn"],
 		"the loop must turn at the arena edge before returning")
@@ -273,20 +276,24 @@ func _test_fourfold_rift() -> void:
 	_advance(activation, 0.71)
 	_check(activation.composition_trace_for_tests() == ["cardinal_lanes"],
 		"the rift must open on the cardinal beat")
-	_check(cardinal.received.size() == 1 and diagonal.received.is_empty(),
-		"the cardinal beat must hit the world axes and spare the diagonals")
+	# Ultimate Direction v2: every beat reaches every live enemy — lane
+	# membership is attribution, so the diagonal silhouette takes the cardinal
+	# beat too, wherever it stands.
+	_check(cardinal.received.size() == 1 and diagonal.received.size() == 1
+		and epic.received.size() == 1 and boss.received.size() == 1,
+		"the cardinal beat must reach every live enemy on the map")
 	_advance(activation, 0.86)
 	_check(activation.composition_trace_for_tests() == ["cardinal_lanes", "diagonal_lanes"],
 		"the second beat must be the diagonals")
-	_check(diagonal.received.size() == 1,
-		"the diagonal beat must reach the targets the cardinal lanes missed")
+	_check(diagonal.received.size() == 2,
+		"the diagonal beat must reach every live enemy again")
 	_advance(activation, 0.86)
 	_check(activation.composition_trace_for_tests()
 		== ["cardinal_lanes", "diagonal_lanes", "central_quake"],
 		"the rift must close on the central quake")
 	_check(not activation.composition_aborted(), "the declared order must not abort itself")
 	_check(int(effect.get("staggered_count_for_tests")) == 4,
-		"the quake must stagger every target inside its radius")
+		"the quake must stagger every live enemy on the map")
 	_check(cardinal.knockbacks.size() == 1
 		and is_equal_approx(cardinal.knockbacks[0].length(), 460.0),
 		"a normal target must take the full stagger launch")
@@ -312,47 +319,35 @@ func _test_fourfold_rift() -> void:
 	await _drop(host)
 
 
-func _test_global_crowd_caps() -> void:
-	var sword_host := _host()
-	var sword_controller := Controller.new(sword_host, _registry)
-	_check(sword_controller.activate(CLASS_ID, "sword"), "Scarlet Whirlwind must activate")
-	var sword_activation = sword_controller.active_activation()
-	var sword_effect := _effect(sword_activation)
-	var sword_cap: int = sword_activation.param_int("crowd_cap", 0)
-	for axis in Sword.cross_axes(Vector2.RIGHT):
-		for index in int(ceil(float(sword_cap + 4) / 4.0)):
-			_target(sword_host, axis * (105.0 + float(index) * 28.0))
-	sword_effect.call("cross_slash")
-	_check(_mechanic_target_count(sword_host.fixture_targets, "scarlet_whirlwind_cross") == sword_cap,
-		"the synchronized cross must cap its unique target union at %d" % sword_cap)
-	var sword_calls := sword_host.damage_calls
-	sword_effect.call("cross_slash")
-	_check(sword_host.damage_calls == sword_calls,
-		"the synchronized cross must stay idempotent after reaching its global cap")
-	sword_controller.cancel()
-	await process_frame
-	await _drop(sword_host)
-
-	var hammer_host := _host()
-	var hammer_controller := Controller.new(hammer_host, _registry)
-	_check(hammer_controller.activate(CLASS_ID, "hammer"), "Fourfold Rift must activate")
-	var hammer_activation = hammer_controller.active_activation()
-	var hammer_effect := _effect(hammer_activation)
-	var hammer_cap: int = hammer_activation.param_int("crowd_cap", 0)
-	var targets_per_lane := int(ceil(float(hammer_cap + 4) / 4.0))
-	for step in 2:
-		for axis in Hammer.lane_axes(step):
-			for index in targets_per_lane:
-				_target(hammer_host, axis * (150.0 + float(index) * 60.0))
-	hammer_effect.call("beat", 0)
-	hammer_effect.call("beat", 1)
-	_check(_mechanic_target_count(hammer_host.fixture_targets, "fourfold_rift_cardinal_lanes")
-		== hammer_cap, "the cardinal lanes must share one %d-target cap" % hammer_cap)
-	_check(_mechanic_target_count(hammer_host.fixture_targets, "fourfold_rift_diagonal_lanes")
-		== hammer_cap, "the diagonal lanes must share one %d-target cap" % hammer_cap)
-	hammer_controller.cancel()
-	await process_frame
-	await _drop(hammer_host)
+## Ultimate Direction v2 (FAN-2953): no count-shaped cap survives in the trio.
+## Each weapon is cast against a crowd far larger than its old cap plus one
+## silhouette parked thousands of pixels off-screen, and every one of them has
+## to end the cast damaged.
+func _test_trio_reaches_every_enemy() -> void:
+	for weapon_id in WEAPONS:
+		var host := _host()
+		for index in 28:
+			_target(host, Vector2(0.0, -270.0 + float(index) * 20.0))
+		_target(host, Vector2(5000.0, -4000.0))
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id),
+			"%s map-wide fixture must activate" % weapon_id)
+		var activation = controller.active_activation()
+		# Past the longest declared cast in the trio (the whirlwind's 7.45 s),
+		# so a sequence that resolves only on its final beat is measured after
+		# that beat.
+		_advance(activation, 8.0)
+		var reached := 0
+		for raw_target in host.fixture_targets:
+			if not (raw_target as Target).received.is_empty():
+				reached += 1
+		_check(reached == host.fixture_targets.size(),
+			"%s must reach every live enemy on the map, got %d of %d" % [
+				weapon_id, reached, host.fixture_targets.size(),
+			])
+		controller.cancel()
+		await process_frame
+		await _drop(host)
 
 
 ## The order is the mechanic: a beat that arrives out of turn aborts the
@@ -484,20 +479,6 @@ func _removed_health(targets: Array[Node2D]) -> float:
 	for target in targets:
 		removed += target.removed_by_damage
 	return removed
-
-
-func _mechanic_target_count(targets: Array[Node2D], mechanic: String) -> int:
-	var count := 0
-	for target in targets:
-		var hits := 0
-		for received in target.received:
-			if str((received.get("feedback", {}) as Dictionary).get("ultimate_mechanic", "")) \
-					== mechanic:
-				hits += 1
-		_check(hits <= 1, "%s must not hit one target twice" % mechanic)
-		if hits == 1:
-			count += 1
-	return count
 
 
 func _drop(host: Host) -> void:

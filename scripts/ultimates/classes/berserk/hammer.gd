@@ -6,6 +6,11 @@ extends Node2D
 ## the four diagonals, then one central quake that staggers and launches what
 ## survived. The order is the mechanic, so a beat that arrives out of turn
 ## aborts the composition instead of resolving on its own.
+##
+## Ultimate Direction v2 (FAN-2953): every beat reaches every live enemy on the
+## map, on screen and off — the ground lanes and the quake ring are
+## presentation, never reach. Lane membership is attribution only; the stagger
+## launches every survivor straight away from the hero.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
@@ -32,7 +37,6 @@ static func parameter_contract() -> Dictionary:
 		"lane_length": {"type": "number", "minimum": 1.0},
 		"lane_half_width": {"type": "number", "minimum": 1.0},
 		"quake_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"cardinal_damage": {"type": "number", "minimum": 0.0},
 		"diagonal_damage": {"type": "number", "minimum": 0.0},
 		"quake_damage": {"type": "number", "minimum": 0.0},
@@ -118,33 +122,18 @@ func _lanes(step: int) -> void:
 	var center: Vector2 = _activation.origin()
 	global_position = center
 	var length: float = _activation.param_float("lane_length", 460.0)
-	var half_width: float = _activation.param_float("lane_half_width", 96.0)
-	var crowd_cap: int = _activation.param_int("crowd_cap", 20)
 	var step_id := str(STEPS[step])
 	var damage_key := "cardinal_damage" if step == 0 else "diagonal_damage"
 	var fallback := 12.0 if step == 0 else 13.0
 	_activation.present(EXECUTOR_ID + "." + step_id, {
 		"position": center, "radius": length, "shape": "rift_lanes",
 	})
-	var targets: Array[Node] = []
-	var seen := {}
-	for axis in lane_axes(step):
-		for raw_target in _activation.targets_in_corridor(
-			center, axis, length, half_width, 0
-		):
-			var target := raw_target as Node
-			if target == null or not is_instance_valid(target) \
-					or seen.has(target.get_instance_id()):
-				continue
-			seen[target.get_instance_id()] = true
-			targets.append(target)
-			if targets.size() >= crowd_cap:
-				break
-		if targets.size() >= crowd_cap:
-			break
-	# One cap and event id per beat: the four lanes are one synchronized
-	# impact, including where they overlap at the hero.
-	for target in targets:
+	# One event id per beat: the four lanes are one synchronized impact. Lane
+	# membership is attribution, so the beat itself walks every live enemy.
+	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
+		var target := raw_target as Node
+		if target == null or not is_instance_valid(target):
+			continue
 		lane_hits_for_tests += 1
 		_deal(
 			target,
@@ -162,9 +151,7 @@ func _central_quake() -> void:
 	_activation.present(EXECUTOR_ID + ".central_quake", {
 		"position": center, "radius": radius, "shape": "quake_ring",
 	})
-	for raw_target in _activation.select_targets(
-		center, radius, _activation.param_int("crowd_cap", 20), "nearest"
-	):
+	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue

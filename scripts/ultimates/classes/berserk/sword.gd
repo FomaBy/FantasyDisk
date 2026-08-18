@@ -6,6 +6,11 @@ extends Node2D
 ## to exactly one blade, and a blade may not touch the same target again before
 ## its own cooldown elapsed. The cast ends with the blades collapsing inward
 ## into an aim-oriented cross slash.
+##
+## Ultimate Direction v2 (FAN-2953): every sweep bites every live enemy on the
+## map, on screen and off — the expanding orbit is presentation, never reach.
+## The cross stays geometric: the sweeps are the guaranteed floor, the collapse
+## is the aimed bonus layered on top of it.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
@@ -34,7 +39,6 @@ static func parameter_contract() -> Dictionary:
 		"blade_hit_cooldown": {"type": "number", "minimum": 0.0},
 		"orbit_start_radius": {"type": "number", "minimum": 1.0},
 		"orbit_end_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"blade_damage": {"type": "number", "minimum": 0.0},
 		"cross_at": {"type": "number", "minimum": 0.0},
 		"cross_length": {"type": "number", "minimum": 1.0},
@@ -138,9 +142,7 @@ func sweep_blade(index: int) -> void:
 	})
 	var cooldown: float = _activation.param_float("blade_hit_cooldown", 1.65)
 	var ledger_key := "whirlwind_blade_%d" % blade
-	for raw_target in _activation.select_targets(
-		center, radius, _activation.param_int("crowd_cap", 24), "nearest"
-	):
+	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -171,7 +173,6 @@ func cross_slash() -> void:
 	global_position = center
 	var length: float = _activation.param_float("cross_length", 300.0)
 	var half_width: float = _activation.param_float("cross_half_width", 92.0)
-	var crowd_cap: int = _activation.param_int("crowd_cap", 24)
 	_activation.present(EXECUTOR_ID + ".cross", {
 		"position": center, "radius": length, "shape": "cross_slash",
 	})
@@ -187,11 +188,9 @@ func cross_slash() -> void:
 				continue
 			seen[target.get_instance_id()] = true
 			targets.append(target)
-			if targets.size() >= crowd_cap:
-				break
-		if targets.size() >= crowd_cap:
-			break
-	# One cap and event id for the synchronized cross, including arm overlap.
+	# One event id for the synchronized cross, including arm overlap. The cross
+	# is the aimed bonus on top of the sweeps' map-wide floor, so it stays
+	# geometric and unbounded in count.
 	for target in targets:
 		_deal(
 			target,

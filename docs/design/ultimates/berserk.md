@@ -56,16 +56,17 @@ execute.
 
 ## Caps and balance
 
-| Weapon | Lifetime | Crowd | Additional hard caps |
-| --- | ---: | ---: | --- |
-| Алый Вихрь | 7.45s | 24 | 3 blades, 11 sweeps, 2.2s per-blade cooldown, 1 cross |
-| Петля Палача | 5.85s | 18 | 2 passes, 1 execute, 30% execute threshold |
-| Раскол Четырёх Сторон | 3.40s | 20 | 3 ordered beats, 4 lanes each, 1 quake |
+| Weapon | Lifetime | Coverage | Additional hard caps |
+| --- | ---: | --- | --- |
+| Алый Вихрь | 7.45s | every live enemy | 3 blades, 11 sweeps, 2.2s per-blade cooldown, 1 cross |
+| Петля Палача | 5.85s | every live enemy | 2 passes, 1 execute, 30% execute threshold |
+| Раскол Четырёх Сторон | 3.40s | every live enemy | 3 ordered beats, 4 lanes each, 1 quake |
 
 Each lifetime equals the authorized `recovery` timing in
 `docs/design/references/weapon_ultimates/berserk/manifest.json`, and the package
-test reads both the lifetime and the crowd cap back from that manifest instead
-of duplicating them.
+test reads the lifetime back from that manifest instead of duplicating it. The
+manifest's `performance.crowd_cap` is a purely visual budget (FAN-1541); since
+FAN-2953 no mechanics reach cap exists — every live enemy is reached.
 
 The focused balance proof derives base Berserk physical damage and the selected
 weapon's `ultimate_multiplier`, measures every declared coefficient against its
@@ -74,17 +75,17 @@ runaway-blade negative control. The sword coefficient is not a free number: it
 is however many blade bites the declared round-robin actually clears through
 `blade_ready`.
 
-| Weapon | Solo / budget midpoint | 3-target AoE / midpoint | One-activation power | Crowd |
+| Weapon | Solo / budget midpoint | 3-target AoE / midpoint | One-activation power | Per-enemy floor share |
 | --- | ---: | ---: | ---: | ---: |
-| Алый Вихрь | 0.998 | 0.957 | 27.44s | 24 |
-| Петля Палача | 0.995 | 0.952 | 27.35s | 18 |
-| Раскол Четырёх Сторон | 1.001 | 0.961 | 27.54s | 20 |
+| Алый Вихрь | 1.102 | 1.056 | 41.31s | 0.701 |
+| Петля Палача | 1.167 | 1.118 | 43.76s | 0.375 |
+| Раскол Четырёх Сторон | 0.820 | 0.787 | 30.74s | 1.000 |
 
-The class-trio composite is `solo 0.998 / AoE 0.957 / crowd 1.000 /
-total 0.985`, inside the `0.90…1.10` corridor. These rows come from the
-closed-form fixture proof above, whose axe probe sits at 20% health and
-therefore admits the execute; the live 51-row corridor reading is the
-next section.
+The class-trio composite is `solo 1.030 / AoE 0.987`, inside the `0.90…1.10`
+corridor (the AoE average carries the rift's documented displacement-paid
+discount below). These rows come from the runtime fixture proof above,
+re-measured after the FAN-2953 map-wide conversion and re-pricing; the live
+51-row corridor reading is the next section.
 
 ## Power corridor (FAN-2525)
 
@@ -127,10 +128,10 @@ bounds that channel at ≥ 0.33 of the budget on the venom_wire precedent. The
 class boss answers are the whirlwind (0.784) and the repriced loop (0.677).
 
 **Niches after the correction**, each on a channel the other two do not use:
-`sword` is the widest (24) and longest (7.45 s) crowd orbit with the only
-slow-field; `axe` is the heaviest single contact (return 32 > cross 25 > quake
-18) with the only low-health execute; `hammer` is the only staggering/launching
-burst and the shortest (3.4 s). The deterministic corridor proof is
+`sword` is the longest (7.45 s) multi-hit crowd orbit with the only slow-field;
+`axe` is the heaviest single contact (return 50 > cross 41 > quake 21) with the
+only low-health execute; `hammer` is the only staggering/launching burst and
+the shortest (3.4 s). The deterministic corridor proof is
 `tests/ultimates/berserk_balance_test.gd`, the closed-form twin of the live
 instrument (1080.15 / 932.19 / 1213.98 exactly); it rebuilds the blade
 round-robin, the loop corridor and the world-cardinal lanes from the shipped
@@ -143,6 +144,32 @@ statics and goes red for a round-robin that never re-arms.
 release + 3 ordered beats × 0.85 s. The only change is numeric: the loop's two
 contact hits are priced 20/32 instead of 17/27. The three cards inherit the
 timing contract unchanged.
+
+## Map-wide coverage (FAN-2953, Ultimate Direction v2)
+
+The three executors left capped targeting: every sweep of the whirlwind and
+every rift beat bites every live enemy (lane membership and the orbit radii are
+presentation, never reach), the loop's outbound pass strikes and marks the
+whole map with the return corridor as the aimed bonus that carries the execute,
+and the whirlwind's cross stays geometric on top of the sweeps' guaranteed
+floor. The count-shaped `crowd_cap` parameter is gone from all three contracts
+and data profiles; per-target shaping (per-blade cooldown, double-pass cap,
+execute threshold) and the frozen `total_boss_cap 0.10` / charge economy are
+untouched.
+
+The trio sat below the FAN-2949 re-derived 30–45 s corridor (the same finding
+the assassin conversion had), so the coverage change re-priced the always-
+readable channels: `blade_damage` 11 → 16 and `cross_damage` 25 → 41,
+`outbound_damage` 20 → 30 and `return_damage` 32 → 50, and the rift's three
+beats 12/13/18 → 13/14/21 (its damage-only channel now includes the diagonal
+beat every enemy takes). Closed-form solo effects: 1080.15 → 1624.14 /
+932.19 → 1431.87 / 1213.98 → 1664.92, all inside 1174…1765. The per-enemy
+floor is asserted under crowd pressure at counts 1…1000 in
+`tests/ultimates/berserk_balance_test.gd`, and the live trio-reach proof lives
+in `tests/ultimates/mechanics/berserk_live_test.gd`. The committed
+`build/ultimate_effectiveness_baseline.json` was rebuilt: only the three
+berserk rows moved, the other 48 rows are bit-identical, and the charge economy
+plus `total_boss_cap` are unchanged on every row.
 
 ## Verification
 
