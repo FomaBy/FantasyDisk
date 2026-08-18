@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T15:22:35Z",
+  "object": {
+    "pixel_lab_object_id": "924eecb2-9ef6-48f1-a955-9c494c3eec16",
+    "pixel_lab_animation_group_id": "5d981a76-890c-4168-80c4-754e99e11074",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "sword_cast_flash_f00.png",
+      "bytes": 13576,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f01.png",
+      "bytes": 15267,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f02.png",
+      "bytes": 9604,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f03.png",
+      "bytes": 13010,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f04.png",
+      "bytes": 14006,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f05.png",
+      "bytes": 14362,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f06.png",
+      "bytes": 10736,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f07.png",
+      "bytes": 8379,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_cast_flash_f08.png",
+      "bytes": 5183,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

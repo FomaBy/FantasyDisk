@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T15:39:46Z",
+  "object": {
+    "pixel_lab_object_id": "d3b5e910-d879-4389-b8cd-c5aaaeeaddae",
+    "pixel_lab_animation_group_id": "05ef1335-b4e5-4cb8-a84c-7af4b2239b23",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "axe_victim_impact_f00.png",
+      "bytes": 18274,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f01.png",
+      "bytes": 20258,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f02.png",
+      "bytes": 16877,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f03.png",
+      "bytes": 15861,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f04.png",
+      "bytes": 10421,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f05.png",
+      "bytes": 8186,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f06.png",
+      "bytes": 8126,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f07.png",
+      "bytes": 5636,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_victim_impact_f08.png",
+      "bytes": 3018,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

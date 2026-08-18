@@ -1,0 +1,46 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_00.png" id="1_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_01.png" id="2_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_02.png" id="3_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_03.png" id="4_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_04.png" id="5_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_05.png" id="6_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_06.png" id="7_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_07.png" id="8_frame"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_08.png" id="9_frame"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_frame")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_frame")
+}],
+"loop": false,
+"name": &"cast_flash",
+"speed": 14.0
+}]

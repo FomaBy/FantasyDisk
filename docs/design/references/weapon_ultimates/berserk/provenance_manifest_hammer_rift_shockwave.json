@@ -1,0 +1,71 @@
+{
+  "tool": "tools/pixellab_generate_pack.py + tools/pixellab_wait_animation_frames.py (fallback fetch, FAN-3005 known_limitation)",
+  "issue": "FAN-3032 (rework of FAN-3005, QA FAN-3011 FAILED)",
+  "generated_at": "2026-08-18T17:49:35Z",
+  "object": {
+    "pixel_lab_object_id": "d6316431-906e-4fbe-b3c9-0628582822b6",
+    "pixel_lab_animation_group_id": "a44b7f01-152f-4be1-8332-08613aed0e0d",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "create_params": {
+      "size": 256,
+      "view": "top-down",
+      "description": "one single big heavy dark iron war hammer head lying flat at the center of a fresh magical ground rift, dark fantasy pixel art seen directly from above, a bold clearly readable dark iron hammer head silhouette at the center with jagged glowing red-orange cracks radiating outward from underneath it across the ground, one centered composition, empty background beyond the cracks, no character, no hands, no other weapons, no border decoration, no text"
+    },
+    "animate_params": {
+      "mode": "v3",
+      "frame_count": 8,
+      "animation_description": "the dark iron hammer head keeps exactly the same size, shape and position at the center in every frame, always a clearly readable bold silhouette; the glowing red-orange crack pattern radiating out from underneath it visibly expands and rolls outward frame by frame, each frame shows the cracks reaching noticeably further from the center than the frame before, starting as a small tight crack pattern close to the hammer in the first frame and ending as a wide expanded crack pattern reaching much further out near the edge of the image in the last frame; the glow brightens as the cracks expand outward; the total glowing area clearly and continuously grows larger from the first frame to the last frame, never staying the same size twice in a row; nothing else appears, nothing is added and nothing leaves the frame"
+    }
+  },
+  "frames": [
+    {
+      "file": "hammer_rift_shockwave_f00.png",
+      "bytes": 17856,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f01.png",
+      "bytes": 26247,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f02.png",
+      "bytes": 23789,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f03.png",
+      "bytes": 25555,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f04.png",
+      "bytes": 23166,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f05.png",
+      "bytes": 25819,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f06.png",
+      "bytes": 23512,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f07.png",
+      "bytes": 23390,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f08.png",
+      "bytes": 18907,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "rework_note": "QA FAN-3011 FAILED the previous candidate (object 78d75a8c) for 9 nearly-identical frames (alpha>10 area spread ~8%, no visible trend). Regenerated with an explicit 'cracks visibly expand and roll outward frame by frame, area continuously grows' clause while keeping the hammer readability fix from the FAN-3005 1st-attempt lesson; alpha>10 area per frame now [16159, 19078, 21347, 21175, 20162, 23091, 23541, 18745, 15530] px - spread ~41%, hammer silhouette stays fixed while the crack/glow pattern visibly pulses and shifts shape every frame (not a static repeat).",
+  "auth": "PIXELLAB_BEARER_TOKEN env, resolved from AUTH_HEADER in ~/.codex/config.toml; never committed, never printed"
+}
