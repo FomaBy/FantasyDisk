@@ -840,7 +840,8 @@ Elementalist and Robot to the same live PixelLab directional runtime contract.
 Accepted PixelLab character IDs are Soldier
 `72b487d3-feea-4012-b39f-b59ba24f7f11`, Thief
 `02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f`, Elementalist
-`7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`, and Robot
+`4b01496c-09c9-4cc8-8913-a9feee4e3a69` (FAN-2879 replaced the deleted/404
+`7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`), and Robot
 `37c6ccf2-ab40-4c89-83a3-db8365f85257`. Source idle rotations, movement frames
 and `manifest.json` live under
 `assets/sprites/characters/pixellab/{soldier,thief,elementalist,robot}/`;
