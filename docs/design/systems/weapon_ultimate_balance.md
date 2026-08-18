@@ -8,8 +8,9 @@ code — see "Runtime adoption" below.
 
 The goal this contract encodes: an ultimate is **rare and very strong**. A
 neutral build prepares it across 3–4 normal encounters, charge survives the
-whole run, and one activation is worth 20–35 seconds of the weapon's own normal
-output — capped so it can never delete a boss.
+whole run, and one activation reaches **every live enemy in the encounter**
+(FAN-2944 Ultimate Direction v2) with a budget worth 1.0–1.5 × the live
+standard-monster HP present — capped so it can never delete a boss.
 
 ## Where it lives
 
@@ -112,21 +113,95 @@ Three findings drove this shape:
   further income still buys exactly one cast.
 * **An active ultimate earns nothing.** The payoff window cannot pay for itself.
 
+## Map-wide coverage (v2)
+
+Ultimate Direction v2 (FAN-2944) makes reach part of the numeric contract:
+
+* **Damage ultimates** deal their damage to **ALL live enemies in the
+  encounter** — on-screen and off-screen.
+* **Control / utility ultimates** apply their effect to **ALL enemies**.
+* **Summon / buff ultimates** produce arena-scale presence.
+
+**Hard target-count caps are prohibited.** A count cap is any parameter that
+bounds *how many* enemies an activation can reach. Named precisely, so the
+per-class conversion cards cannot strip the wrong parameter:
+
+* **Prohibited (count-shaped):** `target_cap`, `impale_target_cap`,
+  `dive_target_cap`, `counter_target_cap`, `analysis_target_cap`,
+  `intercept_target_cap`, `hunt_splash_target_cap`, and any sibling identifier
+  containing `target_cap` that does not end in `_fraction` or `_flat`.
+* **Allowed (per-target damage shaping, not a count cap):**
+  `per_target_cap_fraction`, `per_target_cap_flat` — and their un-prefixed
+  engine forms `target_cap_fraction` / `target_cap_flat`. These shape how much
+  damage each struck target takes; they never bound how many are reached.
+* **Wave/sequence exception:** a sequencing structure (mark-then-dive, repeated
+  passes) may keep an internal per-wave count only if the **full sequence
+  provably reaches every live enemy inside the active window**. The conversion
+  card for such a class must show that proof; the param scan cannot, which is
+  why satisfaction is declared per class (see the ratchet below).
+
+The harness encodes this as `coverage=all_enemies`: every fixture row declares
+it (`row.coverage` in the report), and `Harness.coverage_violations()` scans the
+real executor sources under `scripts/ultimates/classes/` for count-shaped
+parameters. Because the 51 executors still carry count caps today, the source
+scan ships behind `COVERAGE_MIGRATION_ALLOWLIST` with the same semantics
+`ContactSheetBeatsContract.MIGRATION_ALLOWLIST` uses:
+
+* seeded with **all 17 classes**, each entry carrying a stated reason;
+* it **only ever shrinks** — each per-class conversion card removes its own
+  entry; the **target state is empty**;
+* an entry naming no class package, an entry stating no reason, and an entry
+  for a class that already satisfies v2 (clean sources **and** listed in
+  `COVERAGE_V2_CLASSES`, the per-class conversion ledger) **fails as stale**;
+* a class outside the allowlist is asserted against v2 and **fails closed**
+  (`coverage.conversion_missing` / `coverage.count_cap`).
+
 ## Power corridor
 
-One activation is worth `POWER_SECONDS_MIN … POWER_SECONDS_MAX` (20…35) seconds
-of the weapon's own normal output, published per row as
-`power_budget_min` / `power_budget_max`. The three weapons of a class price
-their ultimates against **their own** solo output, so the trio keeps its
-solo / AoE / defense identity instead of collapsing onto one shared number; the
-fixtures also publish `reference_aoe_dps` and `reference_ehp` for the crowd-clear
-and survivability sides of that trio.
+One activation is priced against the **live standard-monster HP present in the
+encounter**, not as a flat number of seconds of the weapon's own output:
+
+```
+power_budget = k × (live standard-monster HP in the encounter),  k ∈ [1.0, 1.5]
+```
+
+The normalized encounter contains exactly the HP the weapon's own reference
+output clears inside the canonical window (`BALANCE_WINDOW_SECONDS`, 30 s), and
+that pool **is** `enemy_count ×` one standard monster's HP. So the published
+per-row `power_budget_min` / `power_budget_max` are
+`POWER_CORRIDOR_K_MIN/MAX × reference_solo_dps × 30 s` — kept in the constants
+as `POWER_SECONDS_MIN/MAX = 30.0/45.0` for the consumers that price rows and
+probe pools in seconds.
+
+Measured across all 51 rows (reference solo output spans 14.86 … 85.98 dps):
+
+| Metric | Measured |
+| --- | --- |
+| live standard-monster pool per encounter | 445.8 … 2579.4 HP |
+| one activation (`k = 1.0 … 1.5`) | 445.8 … 3869.1 HP |
+| previous flat corridor (20–35 s) | 0.67 … 1.17 × the pool — could not deliver "standard monsters on screen predominantly die" |
+
+**Per-enemy floor, and why it holds at any crowd size.** Every enemy is
+guaranteed at least `PER_ENEMY_FLOOR_FRACTION (0.5) ×` a standard monster's max
+HP from one activation. Because the budget is `k × pool` and
+`pool = enemy_count ×` one standard monster's HP, the per-enemy share is
+`k ×` one standard monster's HP for **every** count — an unbounded enemy count
+cannot dilute it. The floor holds exactly because
+`POWER_CORRIDOR_K_MIN (1.0) ≥ PER_ENEMY_FLOOR_FRACTION (0.5)`; a flat absolute
+budget cannot do this, since a fixed total divided by an unbounded count breaks
+the floor. `Budget.per_enemy_guarantee()` publishes the bound and the harness
+test re-checks it at counts 1 … 1000.
+
+The three weapons of a class price their ultimates against **their own** solo
+output, so the trio keeps its solo / AoE / defense identity instead of
+collapsing onto one shared number; the fixtures also publish `reference_aoe_dps`
+and `reference_ehp` for the crowd-clear and survivability sides of that trio.
 
 Two archetypes, decided by the class's existing ultimate `duration`:
 
 | Archetype | Classes | Contract |
 | --- | --- | --- |
-| `burst` | duration 0 | Damage worth 20–35 s of the weapon's own output |
+| `burst` | duration 0 | Damage worth k ∈ [1.0, 1.5] × the live standard-monster pool |
 | `control_save` | berserk, robot, engineer, knight, druid | An equally decisive control/defensive window, at least 4.0 s long |
 
 The corridor is the **neutral** budget. `derived_parameters.ultimate_multiplier`
@@ -143,6 +218,13 @@ may remove — not per hit. `UltimateActivation` already implements the budget;
 the fixtures publish the number per row (0.07 … 0.11, from the class's declared
 `boss_cap`, clamped to 0.05 … 0.15) so a class pack cannot widen it per weapon.
 The harness rejects a class that declares more than one cap across its trio.
+
+**Boss HP is excluded from the standard-monster pool the corridor prices**
+(FAN-2949). The boss scenario asserts `total_boss_cap` (frozen at
+0.05 … 0.15, per-activation, whole-activation) **only**: the part of the
+activation budget the boss cap refuses (`Budget.boss_capped_budget()`) is
+explicitly **not** a corridor violation. Without that exclusion the harness
+would report a false red on every boss row the moment the corridor rises.
 
 ## Persistence
 
@@ -166,11 +248,15 @@ player.
 
 `Harness.measure()` produces the report; `Harness.violations()` judges any
 report it is handed. They are separate on purpose: `balance_harness_test.gd`
-feeds `violations()` nine deliberately tampered reports (row removed, corridor
+feeds `violations()` ten deliberately tampered reports (row removed, corridor
 broken, cap exceeded, cadence shortened, activation gate opened, overkill
-inflated, taken channel overrun, boss cap widened, trio ratio broken) and fails
-if any of them stays green. A harness that cannot go red would be inherited
-green by all 17 class packs.
+inflated, taken channel overrun, boss cap widened, trio ratio broken, coverage
+declaration weakened) and fails if any of them stays green. The coverage ratchet
+has its own negative controls: a class taken out of the allowlist before its
+conversion lands, a count-carrying class released from it, a stale entry for an
+already-converted class, a reason-less entry, and an entry naming no class all
+fail closed. A harness that cannot go red would be inherited green by all 17
+class packs.
 
 The encounter model is normalized: an encounter contains exactly the HP its own
 reference output clears inside the canonical window
