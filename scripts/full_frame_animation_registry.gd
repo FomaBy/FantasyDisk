@@ -137,11 +137,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -42.0),
 			"source_faces_left": true,
 		},
+		# FAN-2616: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"rift_shieldbearer": {
 			"frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
 			"scale": Vector2(0.42, 0.42),
 			"position": Vector2(0.0, -50.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"small_biter": {
 			"frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
