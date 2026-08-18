@@ -432,24 +432,24 @@
         64
       ],
       "source_alpha_bbox": [
-        17,
-        7,
-        40,
+        19,
+        9,
+        43,
         56
       ],
       "source_alpha_bbox_size": [
-        23,
-        49
+        24,
+        47
       ],
-      "scale": 5.0,
+      "scale": 5.212765957446808,
       "resized_visible_size": [
-        115,
+        125,
         245
       ],
       "runtime_alpha_bbox": [
-        198,
+        194,
         235,
-        313,
+        319,
         480
       ]
     },
@@ -461,24 +461,24 @@
         64
       ],
       "source_alpha_bbox": [
-        17,
-        7,
-        43,
-        55
+        19,
+        8,
+        46,
+        56
       ],
       "source_alpha_bbox_size": [
-        26,
+        27,
         48
       ],
       "scale": 5.104166666666667,
       "resized_visible_size": [
-        133,
+        138,
         245
       ],
       "runtime_alpha_bbox": [
-        190,
+        187,
         235,
-        323,
+        325,
         480
       ]
     },
@@ -490,24 +490,24 @@
         64
       ],
       "source_alpha_bbox": [
-        17,
-        7,
-        43,
-        55
+        19,
+        8,
+        44,
+        56
       ],
       "source_alpha_bbox_size": [
-        26,
+        25,
         48
       ],
       "scale": 5.104166666666667,
       "resized_visible_size": [
-        133,
+        128,
         245
       ],
       "runtime_alpha_bbox": [
-        190,
+        192,
         235,
-        323,
+        320,
         480
       ]
     },
@@ -519,24 +519,24 @@
         64
       ],
       "source_alpha_bbox": [
-        17,
-        7,
-        40,
+        19,
+        8,
+        43,
         56
       ],
       "source_alpha_bbox_size": [
-        23,
-        49
+        24,
+        48
       ],
-      "scale": 5.0,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        115,
+        122,
         245
       ],
       "runtime_alpha_bbox": [
-        198,
+        195,
         235,
-        313,
+        317,
         480
       ]
     },
@@ -548,24 +548,24 @@
         64
       ],
       "source_alpha_bbox": [
-        16,
-        7,
-        50,
+        15,
+        8,
+        49,
         56
       ],
       "source_alpha_bbox_size": [
         34,
-        49
+        48
       ],
-      "scale": 5.0,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        170,
+        174,
         245
       ],
       "runtime_alpha_bbox": [
-        171,
+        169,
         235,
-        341,
+        343,
         480
       ]
     },
@@ -578,23 +578,23 @@
       ],
       "source_alpha_bbox": [
         16,
-        7,
-        44,
-        55
+        8,
+        49,
+        56
       ],
       "source_alpha_bbox_size": [
-        28,
+        33,
         48
       ],
       "scale": 5.104166666666667,
       "resized_visible_size": [
-        143,
+        168,
         245
       ],
       "runtime_alpha_bbox": [
-        184,
+        172,
         235,
-        327,
+        340,
         480
       ]
     }
@@ -960,24 +960,24 @@
         64
       ],
       "source_alpha_bbox": [
-        16,
-        10,
+        19,
+        9,
         46,
-        56
+        57
       ],
       "source_alpha_bbox_size": [
-        30,
-        46
+        27,
+        48
       ],
-      "scale": 5.326086956521739,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        160,
+        138,
         245
       ],
       "runtime_alpha_bbox": [
-        176,
+        187,
         235,
-        336,
+        325,
         480
       ]
     },
@@ -989,24 +989,24 @@
         64
       ],
       "source_alpha_bbox": [
-        15,
-        10,
+        20,
+        9,
         45,
-        56
+        53
       ],
       "source_alpha_bbox_size": [
-        30,
-        46
+        25,
+        44
       ],
-      "scale": 5.326086956521739,
+      "scale": 5.568181818181818,
       "resized_visible_size": [
-        160,
+        139,
         245
       ],
       "runtime_alpha_bbox": [
-        176,
+        186,
         235,
-        336,
+        325,
         480
       ]
     },
@@ -1018,24 +1018,24 @@
         64
       ],
       "source_alpha_bbox": [
-        20,
-        10,
-        48,
-        57
+        18,
+        9,
+        45,
+        56
       ],
       "source_alpha_bbox_size": [
-        28,
+        27,
         47
       ],
       "scale": 5.212765957446808,
       "resized_visible_size": [
-        146,
+        141,
         245
       ],
       "runtime_alpha_bbox": [
-        183,
+        186,
         235,
-        329,
+        327,
         480
       ]
     },
@@ -1047,24 +1047,24 @@
         64
       ],
       "source_alpha_bbox": [
-        18,
-        10,
-        45,
+        19,
+        9,
+        46,
         57
       ],
       "source_alpha_bbox_size": [
         27,
-        47
+        48
       ],
-      "scale": 5.212765957446808,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        141,
+        138,
         245
       ],
       "runtime_alpha_bbox": [
-        186,
+        187,
         235,
-        327,
+        325,
         480
       ]
     },
@@ -1076,24 +1076,24 @@
         64
       ],
       "source_alpha_bbox": [
-        19,
-        10,
-        46,
+        18,
+        9,
+        45,
         57
       ],
       "source_alpha_bbox_size": [
         27,
-        47
+        48
       ],
-      "scale": 5.212765957446808,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        141,
+        138,
         245
       ],
       "runtime_alpha_bbox": [
-        186,
+        187,
         235,
-        327,
+        325,
         480
       ]
     },
@@ -1105,24 +1105,24 @@
         64
       ],
       "source_alpha_bbox": [
-        22,
-        10,
+        18,
+        9,
         45,
         57
       ],
       "source_alpha_bbox_size": [
-        23,
-        47
+        27,
+        48
       ],
-      "scale": 5.212765957446808,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        120,
+        138,
         245
       ],
       "runtime_alpha_bbox": [
-        196,
+        187,
         235,
-        316,
+        325,
         480
       ]
     }
@@ -1136,24 +1136,24 @@
         64
       ],
       "source_alpha_bbox": [
+        15,
         8,
-        7,
         45,
-        55
+        53
       ],
       "source_alpha_bbox_size": [
-        37,
-        48
+        30,
+        45
       ],
-      "scale": 5.104166666666667,
+      "scale": 5.444444444444445,
       "resized_visible_size": [
-        189,
+        163,
         245
       ],
       "runtime_alpha_bbox": [
-        162,
+        174,
         235,
-        351,
+        337,
         480
       ]
     },
@@ -1165,24 +1165,24 @@
         64
       ],
       "source_alpha_bbox": [
+        15,
         8,
-        7,
         45,
-        56
+        54
       ],
       "source_alpha_bbox_size": [
-        37,
-        49
+        30,
+        46
       ],
-      "scale": 5.0,
+      "scale": 5.326086956521739,
       "resized_visible_size": [
-        185,
+        160,
         245
       ],
       "runtime_alpha_bbox": [
-        164,
+        176,
         235,
-        349,
+        336,
         480
       ]
     },
@@ -1194,24 +1194,24 @@
         64
       ],
       "source_alpha_bbox": [
+        15,
         8,
-        7,
-        46,
-        55
+        45,
+        54
       ],
       "source_alpha_bbox_size": [
-        38,
-        48
+        30,
+        46
       ],
-      "scale": 5.104166666666667,
+      "scale": 5.326086956521739,
       "resized_visible_size": [
-        194,
+        160,
         245
       ],
       "runtime_alpha_bbox": [
-        159,
+        176,
         235,
-        353,
+        336,
         480
       ]
     },
@@ -1223,24 +1223,24 @@
         64
       ],
       "source_alpha_bbox": [
-        9,
-        7,
+        10,
+        8,
         45,
-        57
+        54
       ],
       "source_alpha_bbox_size": [
-        36,
-        50
+        35,
+        46
       ],
-      "scale": 4.9,
+      "scale": 5.326086956521739,
       "resized_visible_size": [
-        176,
+        186,
         245
       ],
       "runtime_alpha_bbox": [
-        168,
+        163,
         235,
-        344,
+        349,
         480
       ]
     },
@@ -1253,23 +1253,23 @@
       ],
       "source_alpha_bbox": [
         9,
-        7,
-        45,
-        57
+        8,
+        46,
+        54
       ],
       "source_alpha_bbox_size": [
-        36,
-        50
+        37,
+        46
       ],
-      "scale": 4.9,
+      "scale": 5.326086956521739,
       "resized_visible_size": [
-        176,
+        197,
         245
       ],
       "runtime_alpha_bbox": [
-        168,
+        158,
         235,
-        344,
+        355,
         480
       ]
     },
@@ -1282,23 +1282,23 @@
       ],
       "source_alpha_bbox": [
         9,
-        7,
-        45,
-        57
+        8,
+        46,
+        54
       ],
       "source_alpha_bbox_size": [
-        36,
-        50
+        37,
+        46
       ],
-      "scale": 4.9,
+      "scale": 5.326086956521739,
       "resized_visible_size": [
-        176,
+        197,
         245
       ],
       "runtime_alpha_bbox": [
-        168,
+        158,
         235,
-        344,
+        355,
         480
       ]
     }

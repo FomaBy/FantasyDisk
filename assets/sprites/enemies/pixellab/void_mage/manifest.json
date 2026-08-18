@@ -51,5 +51,5 @@
       "fps": 10.0
     }
   },
-  "notes": "FAN-2614: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/void_mage. 8 idle rotations (1f) + 8x6 move frames + 8x6 attack frames + 8x4 hit frames + 8x6 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. void_mage is ground-based (no hover)."
+  "notes": "FAN-2614: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/void_mage. 8 idle rotations (1f) + 8x6 move frames + 8x6 attack frames + 8x4 hit frames + 8x6 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. void_mage is ground-based (no hover). FAN-3052: re-animated move west/north-west/south-east (walking-6-frames, same animation group) to fix inconsistent pink-item visibility across frames within a direction row; other directions/states untouched."
 }
