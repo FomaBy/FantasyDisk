@@ -5,7 +5,13 @@
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
     "profile_source": "data/ultimates/schema/v1/classes/chemist.json",
-    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
     "max_timeline_seconds": 10.0,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
@@ -13,8 +19,9 @@
   },
   "generator_provenance": {
     "route": "pixellab_animation_frames_plus_reused_approved_assets",
-    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552); blast_powder and acid_flask still reuse accepted assets only",
+    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552) plus a new transparent-frame animation source for blast_powder via PixelLab MCP (create_1_direction_object + animate_object, FAN-2550); acid_flask still reuses accepted assets only",
     "new_pixellab_assets": [
+
       {
         "weapon_id": "homunculus_vial",
         "tool": "animate_image",
@@ -25,14 +32,24 @@
         "frames_dir": "assets/sprites/effects/ultimates/chemist/homunculus_vial",
         "asset_manifest": "assets/sprites/effects/ultimates/chemist/homunculus_vial/manifest.json",
         "rebuild_tool": "tools/build_fan2552_homunculus_vial_ultimate_pack.py"
+      },
+
+      {
+        "weapon_id": "blast_powder",
+        "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+        "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_blast_powder",
+        "runtime_spriteframes": "assets/sprites/effects/fan2550_blast_powder_ultimate/blast_powder_ultimate_spriteframes.tres",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+        "generation_script": "tools/fan2550_blast_powder_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
       }
     ],
     "reused_sources": {
-      "blast_powder": {
-        "source_path": "assets/sprites/effects/vfx_weapon_blast_powder.png",
-        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
-        "note": "Accepted Chemist powder VFX is reused for the five-charge pentagram and transmutation blast."
-      },
       "acid_flask": {
         "source_path": "assets/sprites/effects/vfx_weapon_acid_flask.png",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
@@ -68,12 +85,23 @@
         "recovery": "weapon_ultimate.phase.chemist.blast_powder.recover",
         "cancel": "weapon_ultimate.phase.chemist.blast_powder.cleanup"
       },
-      "pivot": [0.5, 0.5],
+      "pivot": [
+        0.5,
+        0.5
+      ],
       "performance": {
         "max_visual_nodes": 9,
         "crowd_cap": 18,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the pentagram circle and the five kegs hold steady glow edges in place of the rotation and implosion pull",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.18
       }
     },
     {
@@ -98,12 +126,23 @@
         "recovery": "weapon_ultimate.phase.chemist.acid_flask.recover",
         "cancel": "weapon_ultimate.phase.chemist.acid_flask.cleanup"
       },
-      "pivot": [0.5, 0.58],
+      "pivot": [
+        0.5,
+        0.58
+      ],
       "performance": {
         "max_visual_nodes": 9,
         "crowd_cap": 16,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the acid lake keeps a calm static shoreline and slow bubble drift in place of the pour wave and pillar bursts",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
       }
     },
     {
@@ -128,7 +167,10 @@
         "recovery": "weapon_ultimate.phase.chemist.homunculus_vial.recover",
         "cancel": "weapon_ultimate.phase.chemist.homunculus_vial.cleanup"
       },
-      "pivot": [0.5, 0.62],
+      "pivot": [
+        0.5,
+        0.62
+      ],
       "performance": {
         "max_visual_nodes": 8,
         "crowd_cap": 14,
