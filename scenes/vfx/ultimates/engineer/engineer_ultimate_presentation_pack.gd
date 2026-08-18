@@ -31,6 +31,29 @@ const WEAPON_IDS: Array[String] = [SENTRY_WRENCH, REPAIR_DRONE, PRESSURE_MINES]
 ## a single cast into an unbounded sprite burst.
 const MAX_ELEMENTS_PER_ULTIMATE := 16
 
+## Weapons whose formation element is an animated frame pack instead of a single
+## forged frame. Every frame shares one canvas and one pivot, so switching the
+## texture animates the element without moving it.
+##
+## `engineer_sentry_wrench` plays the FAN-2565 PixelLab deploy cycle: the pylon
+## stands up, fires, and vents. A weapon absent from this map keeps its single
+## forged frame, which is why `element_runtime_path()` still answers for all
+## three and the driver needs no per-weapon branch.
+const ANIMATION_FRAMES := {
+	SENTRY_WRENCH: {
+		"runtime_directory": "res://assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/",
+		"source_directory": "res://docs/design/references/weapon_ultimates/engineer/source/pixellab_sentry_wrench/",
+		"runtime_prefix": "sentry_pylon_%02d.png",
+		"source_prefix": "sentry_pylon_f%02d.png",
+		"count": 9,
+	},
+}
+
+## Firing beats the sentry crossfire shows during `active`. It mirrors the
+## `volley_count` of the frozen executor params so a muzzle flash lands on each
+## volley; it drives presentation frames only and changes no mechanic.
+const SENTRY_VOLLEY_BEATS := 8
+
 ## Per-weapon class-local presentation data.
 ##
 ## `timing` holds phase start timestamps in seconds. The shared schema requires
@@ -124,11 +147,57 @@ static func weapon_config(weapon_id: String) -> Dictionary:
 
 
 static func element_source_path(weapon_id: String) -> String:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if not frames.is_empty():
+		return _frame_path(frames, "source_directory", "source_prefix", 0)
 	return "%s%s_source.png" % [ASSET_DIRECTORY, str(weapon_config(weapon_id).get("element", ""))]
 
 
+## The element frame the pack identifies the weapon by. For an animated weapon
+## that is frame 0 of its pack, so silhouette, pivot and readability checks keep
+## reading one canonical frame.
 static func element_runtime_path(weapon_id: String) -> String:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if not frames.is_empty():
+		return _frame_path(frames, "runtime_directory", "runtime_prefix", 0)
 	return "%s%s.png" % [ASSET_DIRECTORY, str(weapon_config(weapon_id).get("element", ""))]
+
+
+## Every runtime frame of the weapon, in play order. A weapon without an
+## animation pack answers with its single element frame.
+static func element_frame_paths(weapon_id: String) -> Array[String]:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if frames.is_empty():
+		return [element_runtime_path(weapon_id)] as Array[String]
+	var paths: Array[String] = []
+	for index in int(frames.get("count", 0)):
+		paths.append(_frame_path(frames, "runtime_directory", "runtime_prefix", index))
+	return paths
+
+
+## The frame index the element shows at `phase_name`/`progress`.
+##
+## The pylon stands up through windup and release, cycles its firing frames once
+## per executor volley while the crossfire holds, then plays shutdown and vent
+## on the way out — so the frame a player sees always names the phase.
+static func frame_index(weapon_id: String, phase_name: String, progress: float) -> int:
+	if not ANIMATION_FRAMES.has(weapon_id):
+		return 0
+	var t := clampf(progress, 0.0, 1.0)
+	match phase_name:
+		"release":
+			return 1
+		"active":
+			return 2 + int(t * float(SENTRY_VOLLEY_BEATS) * 4.0) % 4
+		"recovery":
+			return 6
+		"cancel":
+			return 7 + int(round(t))
+	return 0
+
+
+static func _frame_path(frames: Dictionary, directory_key: String, prefix_key: String, index: int) -> String:
+	return "%s%s" % [str(frames.get(directory_key, "")), str(frames.get(prefix_key, "")) % index]
 
 
 static func accepted_vfx_path(weapon_id: String) -> String:

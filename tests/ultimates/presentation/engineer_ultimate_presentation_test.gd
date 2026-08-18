@@ -13,8 +13,10 @@ const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_pr
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const Pack := preload("res://scenes/vfx/ultimates/engineer/engineer_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd")
+const CaptureSpec := preload("res://tests/ultimates/presentation/engineer_ultimate_capture_spec.gd")
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/engineer.json"
+const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/engineer/manifest.json"
 const SCENE_PATHS := {
 	Pack.SENTRY_WRENCH: "res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
 	Pack.REPAIR_DRONE: "res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
@@ -50,6 +52,8 @@ func _initialize() -> void:
 	_test_distinct_timelines(manifests, errors)
 	_test_distinct_element_frames(errors)
 	_test_performance_and_readability(errors)
+	_test_animation_pack(errors)
+	_test_capture_evidence(errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_test_scene_lifecycle(registry, str(weapon_id), errors)
 
@@ -235,6 +239,103 @@ func _test_performance_and_readability(errors: Array[String]) -> void:
 				"%s must stay readable at %dp (%.1f px)" % [key, height, scaled],
 				errors
 			)
+
+
+## FAN-2565: the sentry wrench plays a real animation source rather than one
+## held frame — every frame is a distinct file on one canvas, the whole pack is
+## reachable from the five phases, and the frames carry the clean transparency
+## an isolated PixelLab source has to have.
+func _test_animation_pack(errors: Array[String]) -> void:
+	var pack: Dictionary = Pack.ANIMATION_FRAMES[Pack.SENTRY_WRENCH]
+	var paths := Pack.element_frame_paths(Pack.SENTRY_WRENCH)
+	var expected := int(pack.get("count", 0))
+	_expect(paths.size() == expected, "sentry wrench must publish %d animation frames" % expected, errors)
+
+	var digests := {}
+	var canvas := Vector2i.ZERO
+	for index in paths.size():
+		var path := paths[index]
+		var source := "%s%s" % [str(pack.get("source_directory", "")), str(pack.get("source_prefix", "")) % index]
+		_expect(FileAccess.file_exists(path), "missing animation frame %s" % path, errors)
+		_expect(FileAccess.file_exists(source), "missing PixelLab source frame %s" % source, errors)
+		digests[FileAccess.get_sha256(path)] = true
+		var texture: Texture2D = load(path)
+		if texture == null:
+			errors.append("animation frame must import: %s" % path)
+			continue
+		var image := texture.get_image()
+		if canvas == Vector2i.ZERO:
+			canvas = image.get_size()
+		_expect(image.get_size() == canvas, "every animation frame shares one canvas: %s" % path, errors)
+		var used := image.get_used_rect()
+		_expect(
+			used.position.x > 0 and used.position.y >= 0 and used.end.x < canvas.x and used.end.y <= canvas.y,
+			"animation frame must not touch the canvas edge: %s" % path,
+			errors
+		)
+		_expect(_semi_transparent_pixels(image) == 0, "animation frame must keep binary alpha: %s" % path, errors)
+	_expect(digests.size() == paths.size(), "every animation frame must be a distinct file", errors)
+
+	# Each phase names a frame, and the five phases together play the whole pack.
+	var reached := {}
+	for phase_name in PHASE_ORDER:
+		for sample in 33:
+			var index := Pack.frame_index(Pack.SENTRY_WRENCH, phase_name, float(sample) / 32.0)
+			_expect(index >= 0 and index < paths.size(), "%s frame index %d is out of range" % [phase_name, index], errors)
+			reached[index] = true
+	_expect(reached.size() == paths.size(), "the five phases must play all %d frames, reached %d" % [paths.size(), reached.size()], errors)
+	_expect(
+		Pack.frame_index(Pack.SENTRY_WRENCH, "windup", 0.0) != Pack.frame_index(Pack.SENTRY_WRENCH, "recovery", 0.0),
+		"windup and recovery must not show the same frame",
+		errors
+	)
+	for weapon_id in [Pack.REPAIR_DRONE, Pack.PRESSURE_MINES]:
+		_expect(
+			Pack.element_frame_paths(str(weapon_id)).size() == 1,
+			"%s must keep its single forged element frame" % weapon_id,
+			errors
+		)
+
+
+## AC: the four supported live-capture viewports are committed, declared by the
+## manifest, and each file really is the viewport it claims.
+func _test_capture_evidence(errors: Array[String]) -> void:
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
+	if not parsed is Dictionary:
+		errors.append("cannot read the engineer reference manifest")
+		return
+	var evidence: Dictionary = (parsed as Dictionary).get("evidence", {})
+	var declared: Array = evidence.get("contact_sheets", [])
+	_expect(
+		str(evidence.get("capture_script", "")) == "tests/ultimates/presentation/engineer_ultimate_contact_capture.gd",
+		"manifest must name the live capture script",
+		errors
+	)
+	_expect(declared.size() == CaptureSpec.CAPTURES.size(), "manifest must declare every capture viewport", errors)
+	for raw_capture in CaptureSpec.CAPTURES:
+		var capture := raw_capture as Dictionary
+		var path := str(capture["path"])
+		var size := capture["size"] as Vector2i
+		_expect(declared.has(path.trim_prefix("res://")), "manifest must declare %s" % path, errors)
+		if not FileAccess.file_exists(path):
+			errors.append("missing live capture %s" % path)
+			continue
+		var image := Image.load_from_file(path)
+		_expect(
+			image != null and image.get_size() == size,
+			"%s must be captured at %dx%d" % [path, size.x, size.y],
+			errors
+		)
+
+
+func _semi_transparent_pixels(image: Image) -> int:
+	var count := 0
+	for y in image.get_height():
+		for x in image.get_width():
+			var alpha := image.get_pixel(x, y).a
+			if alpha > 0.0 and alpha < 1.0:
+				count += 1
+	return count
 
 
 ## AC3: pause freezes the timeline and every cleanup reason releases handles

@@ -26,6 +26,7 @@ signal timeline_finished(reason: String)
 var _timeline = null
 var _manifest: Dictionary = {}
 var _elements: Array[Sprite2D] = []
+var _frames: Array[Texture2D] = []
 
 
 func _ready() -> void:
@@ -118,10 +119,14 @@ func _notification(what: int) -> void:
 
 func _build_elements() -> void:
 	_clear_elements()
-	var texture: Texture2D = load(Pack.element_runtime_path(weapon_id))
-	if texture == null:
-		push_error("EngineerUltimateTimelineScene: missing runtime frame for %s" % weapon_id)
-		return
+	_frames.clear()
+	for path in Pack.element_frame_paths(weapon_id):
+		var frame: Texture2D = load(path)
+		if frame == null:
+			push_error("EngineerUltimateTimelineScene: missing runtime frame %s" % path)
+			return
+		_frames.append(frame)
+	var texture: Texture2D = _frames[0]
 	var pivot: Dictionary = _manifest.get("pivot", {})
 	var formation: Dictionary = Pack.weapon_config(weapon_id).get("formation", {})
 	var count := mini(int(formation.get("count", 0)), Pack.MAX_ELEMENTS_PER_ULTIMATE)
@@ -149,7 +154,12 @@ func _apply_formation(elapsed: float) -> void:
 	if _elements.is_empty():
 		return
 	var phase := Pack.phase_at(weapon_id, elapsed)
-	var points := Pack.formation_points(weapon_id, str(phase.get("name", "")), float(phase.get("progress", 0.0)))
+	var phase_name := str(phase.get("name", ""))
+	var progress := float(phase.get("progress", 0.0))
+	var points := Pack.formation_points(weapon_id, phase_name, progress)
+	# The frame is a pure function of the timeline, so a paused timeline holds
+	# its frame and the contact sheet shows the frame the scene plays.
+	var frame: Texture2D = _frames[mini(Pack.frame_index(weapon_id, phase_name, progress), _frames.size() - 1)]
 	for index in _elements.size():
 		var sprite := _elements[index]
 		if index >= points.size():
@@ -157,6 +167,7 @@ func _apply_formation(elapsed: float) -> void:
 			continue
 		var point: Dictionary = points[index]
 		var alpha := float(point.get("alpha", 1.0))
+		sprite.texture = frame
 		sprite.visible = alpha > 0.0
 		sprite.position = point.get("position", Vector2.ZERO)
 		sprite.scale = Vector2.ONE * float(point.get("scale", 1.0))

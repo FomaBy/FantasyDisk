@@ -39,16 +39,22 @@ func _initialize() -> void:
 	var errors: Array[String] = []
 	for row in rows:
 		var weapon_id := str(Pack.WEAPON_IDS[row])
-		var texture: Texture2D = load(Pack.element_runtime_path(weapon_id))
-		if texture == null:
-			errors.append("missing runtime frame for %s" % weapon_id)
+		var frames: Array[Image] = []
+		for path in Pack.element_frame_paths(weapon_id):
+			var texture: Texture2D = load(path)
+			if texture == null:
+				errors.append("missing runtime frame %s" % path)
+				break
+			var frame := texture.get_image()
+			frame.convert(Image.FORMAT_RGBA8)
+			frames.append(frame)
+		if frames.size() != Pack.element_frame_paths(weapon_id).size():
 			continue
-		var element := texture.get_image()
-		element.convert(Image.FORMAT_RGBA8)
 		var pivot: Dictionary = Pack.weapon_config(weapon_id).get("pivot", {})
 		for column in columns:
 			var phase_name := PHASE_ORDER[column / SAMPLES_PER_PHASE]
 			var progress := float(column % SAMPLES_PER_PHASE) / float(maxi(SAMPLES_PER_PHASE - 1, 1))
+			var element := frames[mini(Pack.frame_index(weapon_id, phase_name, progress), frames.size() - 1)]
 			_draw_cell(sheet, Vector2i(column, row), column % SAMPLES_PER_PHASE == 0)
 			_draw_formation(sheet, Vector2i(column, row), element, pivot, weapon_id, phase_name, progress)
 
