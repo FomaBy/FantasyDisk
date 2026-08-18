@@ -2132,24 +2132,24 @@
         68
       ],
       "source_alpha_bbox": [
-        12,
+        21,
         12,
         52,
-        58
+        56
       ],
       "source_alpha_bbox_size": [
-        40,
-        46
+        31,
+        44
       ],
-      "scale": 5.326086956521739,
+      "scale": 5.568181818181818,
       "resized_visible_size": [
-        213,
+        173,
         245
       ],
       "runtime_alpha_bbox": [
-        150,
+        170,
         235,
-        363,
+        343,
         480
       ]
     },
@@ -2308,24 +2308,24 @@
         68
       ],
       "source_alpha_bbox": [
-        22,
         13,
+        9,
         45,
-        53
+        52
       ],
       "source_alpha_bbox_size": [
-        23,
-        40
+        32,
+        43
       ],
-      "scale": 6.125,
+      "scale": 5.6976744186046515,
       "resized_visible_size": [
-        141,
+        182,
         245
       ],
       "runtime_alpha_bbox": [
-        186,
+        165,
         235,
-        327,
+        347,
         480
       ]
     },
