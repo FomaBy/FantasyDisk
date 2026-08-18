@@ -31,7 +31,6 @@ const V2_SEED_REASON := "shipped under the v1 envelope before FAN-2948; awaiting
 ## pair outside it is asserted against the full v2 contract fail-closed. Each
 ## class rework card removes its own entries.
 const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
-	"assassin/chakrams": V2_SEED_REASON,
 	"assassin/shadow_daggers": V2_SEED_REASON,
 	"assassin/venom_wire": V2_SEED_REASON,
 	"berserk/sword": V2_SEED_REASON,

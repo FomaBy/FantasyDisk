@@ -11,7 +11,6 @@ const REQUIRED_PHASES: Array[String] = ["release", "active", "recovery"]
 # This list only shrinks as class packages adopt FRAMES_BY_CLASS. The target is
 # an empty list; a complete declaration left here fails the shared invariant.
 const MIGRATION_ALLOWLIST: Array[String] = [
-	"assassin",
 	"berserk",
 	"biologist",
 	"chemist",
@@ -30,6 +29,23 @@ const MIGRATION_ALLOWLIST: Array[String] = [
 ]
 
 const FRAMES_BY_CLASS := {
+	"assassin": {
+		"chakrams": [
+			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropDarken", "ImpactFlash", "Orbit/MoonOne", "Orbit/MoonEight"]},
+			{"phase": "active", "time": 2.4, "required_nodes": ["BackdropDarken", "Orbit/MoonFour", "ReturnCrescents"]},
+			{"phase": "recovery", "time": 3.2, "required_nodes": ["Orbit/MoonOne", "ReturnCrescents"]},
+		],
+		"shadow_daggers": [
+			{"phase": "release", "time": 0.5, "required_nodes": ["FreezeMarks", "Afterimages/BackstabOne"]},
+			{"phase": "active", "time": 2.0, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
+			{"phase": "recovery", "time": 5.2, "required_nodes": ["FreezeMarks", "FinalReveal"]},
+		],
+		"venom_wire": [
+			{"phase": "release", "time": 0.7, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
+			{"phase": "active", "time": 2.4, "required_nodes": ["HexWeb", "SnapCollapse"]},
+			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
+		],
+	},
 	"doctor": {
 		"restore_potion": [
 			{"phase": "release", "time": 1.35, "required_nodes": ["GiantFlask", "GlassImpact"]},

@@ -6,11 +6,13 @@ ultimate profiles. It does not alter gameplay, balance data, the shared
 presentation manifest, or the runtime adapter.
 
 `manifest.json` records the exact frozen Cast phase IDs and all five required
-presentation phase groups. The longest timeline is 7.6 seconds, below the
+presentation phase groups. The longest timeline is 6.2 seconds, below the
 10-second presentation-contract cap.
 
-- Chakrams: eight moon discs tighten into orbit, fan out on compass arcs, and
-  return as a pale crescent cut.
+- Chakrams (v2, FAN-2956): the arena backdrop darkens while a hero cast gleam
+  winds up, then eight moon discs fan out on an arena-wide compass sweep with a
+  first-impact flash and return as a pale crescent cut — 3.6 s total, the first
+  pair off `PRESENTATION_V2_MIGRATION_ALLOWLIST`.
 - Shadow daggers: freeze marks and violet afterimages resolve in a single
   crimson slash reveal.
 - Venom wire: six anchors hold a green hex web before its poison snap-collapse.
