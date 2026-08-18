@@ -1,0 +1,1236 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_east.png" id="1_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_east.png" id="2_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south.png" id="3_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_west.png" id="4_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_west.png" id="5_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_west.png" id="6_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north.png" id="7_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_east.png" id="8_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_00.png" id="9_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_01.png" id="10_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_02.png" id="11_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_03.png" id="12_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_04.png" id="13_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_05.png" id="14_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_00.png" id="15_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_01.png" id="16_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_02.png" id="17_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_03.png" id="18_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_04.png" id="19_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_05.png" id="20_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_00.png" id="21_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_01.png" id="22_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_02.png" id="23_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_03.png" id="24_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_04.png" id="25_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_05.png" id="26_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_00.png" id="27_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_01.png" id="28_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_02.png" id="29_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_03.png" id="30_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_04.png" id="31_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_05.png" id="32_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_00.png" id="33_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_01.png" id="34_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_02.png" id="35_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_03.png" id="36_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_04.png" id="37_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_05.png" id="38_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_00.png" id="39_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_01.png" id="40_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_02.png" id="41_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_03.png" id="42_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_04.png" id="43_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_05.png" id="44_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_00.png" id="45_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_01.png" id="46_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_02.png" id="47_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_03.png" id="48_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_04.png" id="49_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_05.png" id="50_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_00.png" id="51_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_01.png" id="52_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_02.png" id="53_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_03.png" id="54_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_04.png" id="55_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_05.png" id="56_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_00.png" id="57_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_01.png" id="58_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_02.png" id="59_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_03.png" id="60_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_04.png" id="61_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_05.png" id="62_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_00.png" id="63_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_01.png" id="64_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_02.png" id="65_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_03.png" id="66_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_04.png" id="67_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_05.png" id="68_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_00.png" id="69_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_01.png" id="70_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_02.png" id="71_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_03.png" id="72_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_04.png" id="73_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_05.png" id="74_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_00.png" id="75_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_01.png" id="76_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_02.png" id="77_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_03.png" id="78_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_04.png" id="79_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_05.png" id="80_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_00.png" id="81_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_01.png" id="82_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_02.png" id="83_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_03.png" id="84_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_04.png" id="85_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_05.png" id="86_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_00.png" id="87_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_01.png" id="88_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_02.png" id="89_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_03.png" id="90_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_04.png" id="91_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_05.png" id="92_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_00.png" id="93_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_01.png" id="94_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_02.png" id="95_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_03.png" id="96_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_04.png" id="97_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_05.png" id="98_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_00.png" id="99_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_01.png" id="100_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_02.png" id="101_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_03.png" id="102_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_04.png" id="103_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_05.png" id="104_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_00.png" id="105_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_01.png" id="106_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_02.png" id="107_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_03.png" id="108_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_04.png" id="109_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_05.png" id="110_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_00.png" id="111_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_01.png" id="112_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_02.png" id="113_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_03.png" id="114_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_04.png" id="115_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_05.png" id="116_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_00.png" id="117_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_01.png" id="118_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_02.png" id="119_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_03.png" id="120_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_04.png" id="121_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_05.png" id="122_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_00.png" id="123_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_01.png" id="124_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_02.png" id="125_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_03.png" id="126_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_04.png" id="127_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_05.png" id="128_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_00.png" id="129_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_01.png" id="130_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_02.png" id="131_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_03.png" id="132_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_04.png" id="133_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_05.png" id="134_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_00.png" id="135_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_01.png" id="136_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_02.png" id="137_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_03.png" id="138_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_04.png" id="139_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_05.png" id="140_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_00.png" id="141_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_01.png" id="142_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_02.png" id="143_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_03.png" id="144_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_04.png" id="145_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_05.png" id="146_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_00.png" id="147_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_01.png" id="148_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_02.png" id="149_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_03.png" id="150_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_04.png" id="151_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_05.png" id="152_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_00.png" id="153_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_01.png" id="154_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_02.png" id="155_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_03.png" id="156_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_04.png" id="157_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_05.png" id="158_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_06.png" id="159_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_00.png" id="160_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_01.png" id="161_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_02.png" id="162_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_03.png" id="163_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_04.png" id="164_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_05.png" id="165_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_06.png" id="166_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_00.png" id="167_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_01.png" id="168_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_02.png" id="169_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_03.png" id="170_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_04.png" id="171_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_05.png" id="172_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_06.png" id="173_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_00.png" id="174_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_01.png" id="175_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_02.png" id="176_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_03.png" id="177_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_04.png" id="178_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_05.png" id="179_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_00.png" id="180_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_01.png" id="181_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_02.png" id="182_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_03.png" id="183_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_04.png" id="184_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_05.png" id="185_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_06.png" id="186_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_00.png" id="187_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_01.png" id="188_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_02.png" id="189_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_03.png" id="190_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_04.png" id="191_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_05.png" id="192_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_06.png" id="193_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_00.png" id="194_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_01.png" id="195_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_02.png" id="196_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_03.png" id="197_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_04.png" id="198_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_05.png" id="199_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_06.png" id="200_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_00.png" id="201_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_01.png" id="202_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_02.png" id="203_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_03.png" id="204_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_04.png" id="205_ht"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_05.png" id="206_ht"]
+
+[resource]
+animations = [
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ht")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ht")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ht")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ht")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_ht")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_ht")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_ht")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_ht")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ht")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ht")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ht")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_ht")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_ht")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_ht")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_ht")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_ht")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_ht")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_ht")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_ht")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_ht")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_ht")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_ht")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_ht")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_ht")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_ht")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("111_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_ht")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_ht")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_ht")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_ht")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("135_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_ht")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("141_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_ht")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("147_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_ht")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_ht")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("160_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_ht")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_ht")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("174_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_ht")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("180_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_ht")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("187_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_ht")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("194_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_ht")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_ht")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_ht")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]
