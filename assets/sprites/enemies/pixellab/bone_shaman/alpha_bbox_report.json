@@ -1660,78 +1660,80 @@
       "source": "bone_shaman_attack_east_00.png",
       "runtime": "bone_shaman_attack_east_00.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        15,
-        8,
-        54,
-        75
+        17,
+        2,
+        41,
+        64
       ],
       "source_alpha_bbox_size": [
-        39,
-        67
+        24,
+        62
       ],
-      "scale": 3.656716417910448,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        143,
+        95,
         245
       ],
       "runtime_alpha_bbox": [
-        184,
+        208,
         235,
-        327,
+        303,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_east_01.png",
       "runtime": "bone_shaman_attack_east_01.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
         16,
-        12,
-        54,
-        75
+        2,
+        56,
+        64
       ],
       "source_alpha_bbox_size": [
-        38,
-        63
+        40,
+        62
       ],
-      "scale": 3.888888888888889,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        148,
+        158,
         245
       ],
       "runtime_alpha_bbox": [
-        182,
+        177,
         235,
-        330,
+        335,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_east_02.png",
       "runtime": "bone_shaman_attack_east_02.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        23,
-        17,
-        71,
-        75
+        5,
+        0,
+        58,
+        64
       ],
       "source_alpha_bbox_size": [
-        48,
-        58
+        53,
+        64
       ],
-      "scale": 4.224137931034483,
+      "scale": 3.828125,
       "resized_visible_size": [
         203,
         245
@@ -1741,94 +1743,98 @@
         235,
         357,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_east_03.png",
       "runtime": "bone_shaman_attack_east_03.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        19,
-        20,
-        76,
-        75
+        12,
+        7,
+        59,
+        63
       ],
       "source_alpha_bbox_size": [
-        57,
-        55
+        47,
+        56
       ],
-      "scale": 4.454545454545454,
+      "scale": 4.375,
       "resized_visible_size": [
-        254,
+        206,
         245
       ],
       "runtime_alpha_bbox": [
-        129,
+        153,
         235,
-        383,
+        359,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_east_04.png",
       "runtime": "bone_shaman_attack_east_04.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
+        11,
         13,
-        21,
-        60,
-        75
+        61,
+        63
       ],
       "source_alpha_bbox_size": [
-        47,
-        54
+        50,
+        50
       ],
-      "scale": 4.537037037037037,
+      "scale": 4.9,
       "resized_visible_size": [
-        213,
+        245,
         245
       ],
       "runtime_alpha_bbox": [
-        150,
+        134,
         235,
-        363,
+        379,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_east_05.png",
       "runtime": "bone_shaman_attack_east_05.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        13,
-        21,
-        72,
-        75
+        17,
+        2,
+        41,
+        63
       ],
       "source_alpha_bbox_size": [
-        59,
-        54
+        24,
+        61
       ],
-      "scale": 4.537037037037037,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        268,
+        96,
         245
       ],
       "runtime_alpha_bbox": [
-        122,
+        208,
         235,
-        390,
+        304,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     }
   ],
   "attack_south_east": [
@@ -2369,25 +2375,26 @@
       ],
       "source_alpha_bbox": [
         35,
-        15,
+        13,
         59,
-        77
+        79
       ],
       "source_alpha_bbox_size": [
         24,
-        62
+        66
       ],
-      "scale": 3.9516129032258065,
+      "scale": 3.712121212121212,
       "resized_visible_size": [
-        95,
+        89,
         245
       ],
       "runtime_alpha_bbox": [
-        208,
+        212,
         235,
-        303,
+        301,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_west_01.png",
@@ -2397,26 +2404,27 @@
         92
       ],
       "source_alpha_bbox": [
-        34,
-        14,
+        32,
+        12,
         59,
-        77
+        81
       ],
       "source_alpha_bbox_size": [
-        25,
-        63
+        27,
+        69
       ],
-      "scale": 3.888888888888889,
+      "scale": 3.550724637681159,
       "resized_visible_size": [
-        97,
+        96,
         245
       ],
       "runtime_alpha_bbox": [
         208,
         235,
-        305,
+        304,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_west_02.png",
@@ -2426,26 +2434,27 @@
         92
       ],
       "source_alpha_bbox": [
-        28,
-        15,
-        59,
-        77
+        10,
+        17,
+        80,
+        74
       ],
       "source_alpha_bbox_size": [
-        31,
-        62
+        70,
+        57
       ],
-      "scale": 3.9516129032258065,
+      "scale": 4.298245614035087,
       "resized_visible_size": [
-        122,
+        301,
         245
       ],
       "runtime_alpha_bbox": [
-        195,
+        106,
         235,
-        317,
+        407,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_west_03.png",
@@ -2455,26 +2464,27 @@
         92
       ],
       "source_alpha_bbox": [
-        13,
-        18,
-        78,
-        77
+        14,
+        20,
+        75,
+        76
       ],
       "source_alpha_bbox_size": [
-        65,
-        59
+        61,
+        56
       ],
-      "scale": 4.1525423728813555,
+      "scale": 4.375,
       "resized_visible_size": [
-        270,
+        267,
         245
       ],
       "runtime_alpha_bbox": [
-        121,
+        122,
         235,
-        391,
+        389,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_west_04.png",
@@ -2484,26 +2494,27 @@
         92
       ],
       "source_alpha_bbox": [
-        13,
-        18,
-        78,
-        77
+        14,
+        21,
+        81,
+        78
       ],
       "source_alpha_bbox_size": [
-        65,
-        59
+        67,
+        57
       ],
-      "scale": 4.1525423728813555,
+      "scale": 4.298245614035087,
       "resized_visible_size": [
-        270,
+        288,
         245
       ],
       "runtime_alpha_bbox": [
-        121,
+        112,
         235,
-        391,
+        400,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_west_05.png",
@@ -2513,26 +2524,27 @@
         92
       ],
       "source_alpha_bbox": [
-        13,
-        18,
-        78,
-        77
+        14,
+        21,
+        75,
+        75
       ],
       "source_alpha_bbox_size": [
-        65,
-        59
+        61,
+        54
       ],
-      "scale": 4.1525423728813555,
+      "scale": 4.537037037037037,
       "resized_visible_size": [
-        270,
+        277,
         245
       ],
       "runtime_alpha_bbox": [
-        121,
+        118,
         235,
-        391,
+        395,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     }
   ],
   "attack_north_west": [
@@ -2716,175 +2728,181 @@
       "source": "bone_shaman_attack_north_00.png",
       "runtime": "bone_shaman_attack_north_00.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        14,
-        12,
-        70,
-        74
+        2,
+        1,
+        58,
+        62
       ],
       "source_alpha_bbox_size": [
         56,
-        62
+        61
       ],
-      "scale": 3.9516129032258065,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        221,
+        225,
         245
       ],
       "runtime_alpha_bbox": [
-        146,
+        144,
         235,
-        367,
+        369,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_01.png",
       "runtime": "bone_shaman_attack_north_01.png",
       "source_size": [
-        88,
-        88
-      ],
-      "source_alpha_bbox": [
-        13,
-        10,
-        71,
-        74
-      ],
-      "source_alpha_bbox_size": [
-        58,
+        64,
         64
       ],
-      "scale": 3.828125,
+      "source_alpha_bbox": [
+        2,
+        0,
+        59,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        62
+      ],
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        222,
+        225,
         245
       ],
       "runtime_alpha_bbox": [
-        145,
+        144,
         235,
-        367,
+        369,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_02.png",
       "runtime": "bone_shaman_attack_north_02.png",
       "source_size": [
-        88,
-        88
-      ],
-      "source_alpha_bbox": [
-        16,
-        10,
-        71,
-        74
-      ],
-      "source_alpha_bbox_size": [
-        55,
+        64,
         64
       ],
-      "scale": 3.828125,
+      "source_alpha_bbox": [
+        1,
+        1,
+        62,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        61
+      ],
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        211,
+        245,
         245
       ],
       "runtime_alpha_bbox": [
-        150,
+        134,
         235,
-        361,
+        379,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_03.png",
       "runtime": "bone_shaman_attack_north_03.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        25,
-        15,
-        68,
-        74
+        2,
+        1,
+        58,
+        62
       ],
       "source_alpha_bbox_size": [
-        43,
-        59
+        56,
+        61
       ],
-      "scale": 4.1525423728813555,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        179,
+        225,
         245
       ],
       "runtime_alpha_bbox": [
-        166,
+        144,
         235,
-        345,
+        369,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_04.png",
       "runtime": "bone_shaman_attack_north_04.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        26,
-        16,
-        69,
-        74
+        2,
+        1,
+        58,
+        62
       ],
       "source_alpha_bbox_size": [
-        43,
-        58
+        56,
+        61
       ],
-      "scale": 4.224137931034483,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        182,
+        225,
         245
       ],
       "runtime_alpha_bbox": [
-        165,
+        144,
         235,
-        347,
+        369,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_05.png",
       "runtime": "bone_shaman_attack_north_05.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        26,
-        16,
-        68,
-        74
+        2,
+        1,
+        58,
+        62
       ],
       "source_alpha_bbox_size": [
-        42,
-        58
+        56,
+        61
       ],
-      "scale": 4.224137931034483,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        177,
+        225,
         245
       ],
       "runtime_alpha_bbox": [
-        168,
+        144,
         235,
-        345,
+        369,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     }
   ],
   "attack_north_east": [
@@ -2892,175 +2910,181 @@
       "source": "bone_shaman_attack_north_east_00.png",
       "runtime": "bone_shaman_attack_north_east_00.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        26,
-        14,
-        66,
-        74
+        10,
+        1,
+        53,
+        62
       ],
       "source_alpha_bbox_size": [
-        40,
-        60
+        43,
+        61
       ],
-      "scale": 4.083333333333333,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        163,
+        173,
         245
       ],
       "runtime_alpha_bbox": [
-        174,
+        170,
         235,
-        337,
+        343,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_east_01.png",
       "runtime": "bone_shaman_attack_north_east_01.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        26,
-        14,
-        67,
-        74
+        4,
+        2,
+        60,
+        62
       ],
       "source_alpha_bbox_size": [
-        41,
+        56,
         60
       ],
       "scale": 4.083333333333333,
       "resized_visible_size": [
-        167,
+        229,
         245
       ],
       "runtime_alpha_bbox": [
-        172,
+        142,
         235,
-        339,
+        371,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_east_02.png",
       "runtime": "bone_shaman_attack_north_east_02.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        21,
         10,
-        67,
-        73
+        5,
+        64,
+        62
       ],
       "source_alpha_bbox_size": [
-        46,
-        63
+        54,
+        57
       ],
-      "scale": 3.888888888888889,
+      "scale": 4.298245614035087,
       "resized_visible_size": [
-        179,
+        232,
         245
       ],
       "runtime_alpha_bbox": [
-        166,
+        140,
         235,
-        345,
+        372,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_east_03.png",
       "runtime": "bone_shaman_attack_north_east_03.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        31,
-        16,
-        57,
-        74
+        10,
+        9,
+        64,
+        64
       ],
       "source_alpha_bbox_size": [
-        26,
-        58
+        54,
+        55
       ],
-      "scale": 4.224137931034483,
+      "scale": 4.454545454545454,
       "resized_visible_size": [
-        110,
+        241,
         245
       ],
       "runtime_alpha_bbox": [
-        201,
+        136,
         235,
-        311,
+        377,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_east_04.png",
       "runtime": "bone_shaman_attack_north_east_04.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        21,
-        16,
-        73,
-        74
+        14,
+        5,
+        59,
+        62
       ],
       "source_alpha_bbox_size": [
-        52,
-        58
+        45,
+        57
       ],
-      "scale": 4.224137931034483,
+      "scale": 4.298245614035087,
       "resized_visible_size": [
-        220,
+        193,
         245
       ],
       "runtime_alpha_bbox": [
-        146,
+        160,
         235,
-        366,
+        353,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     },
     {
       "source": "bone_shaman_attack_north_east_05.png",
       "runtime": "bone_shaman_attack_north_east_05.png",
       "source_size": [
-        88,
-        88
+        64,
+        64
       ],
       "source_alpha_bbox": [
-        22,
-        16,
-        75,
-        74
+        10,
+        1,
+        53,
+        62
       ],
       "source_alpha_bbox_size": [
-        53,
-        58
+        43,
+        61
       ],
-      "scale": 4.224137931034483,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        224,
+        173,
         245
       ],
       "runtime_alpha_bbox": [
-        144,
+        170,
         235,
-        368,
+        343,
         480
-      ]
+      ],
+      "runtime_alpha_bbox_bottom": 480
     }
   ],
   "hit_east": [
