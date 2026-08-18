@@ -13,6 +13,8 @@ extends RefCounted
 ## Every violation is reported as "<gate>.<code>: <detail>", so a caller can
 ## group findings by gate through gate_of().
 
+const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+
 const MANIFEST_ROOT := "res://docs/design/references/weapon_ultimates"
 
 ## The five presentation phases, in the order a cast plays them. `cancel` is the
@@ -46,6 +48,14 @@ const REQUIRED_CAPTURES := {
 ## add on top of a crowd. Runtime counts the real nodes against the same numbers.
 const MAX_VISUAL_NODES_CEILING := 32
 const CROWD_CAP_CEILING := 32
+
+## The material half of the same budget: distinct materials/shaders one
+## activation may carry, and how many of those may cover the full viewport (the
+## backdrop darken/flash layers). Enforced only for a pair that has left
+## Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, so a v1 package is never forced
+## to declare materials and the rule arrives exactly when a package goes v2.
+const MAX_UNIQUE_MATERIALS_CEILING := 16
+const MAX_FULLSCREEN_MATERIALS_CEILING := 2
 
 ## Readability: the fraction of the viewport one activation may cover opaquely.
 ## Above this the HUD and the crowd stop being readable at 1152x648.
@@ -125,7 +135,11 @@ static func load_manifest(class_id: String) -> Dictionary:
 
 
 ## Every gate for one class, as "<gate>.<code>: <detail>" entries.
-static func violations(class_id: String, manifest: Dictionary) -> Array[String]:
+static func violations(
+	class_id: String,
+	manifest: Dictionary,
+	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST
+) -> Array[String]:
 	var errors: Array[String] = []
 	if manifest.is_empty():
 		errors.append("phases.manifest_missing: %s" % class_id)
@@ -137,7 +151,7 @@ static func violations(class_id: String, manifest: Dictionary) -> Array[String]:
 		var key := "%s/%s" % [class_id, str(weapon.get("weapon_id", ""))]
 		_check_phases(weapon, key, errors)
 		_check_cleanup(weapon, key, errors)
-		_check_budget(weapon, key, errors)
+		_check_budget(weapon, key, allowlist, errors)
 		_check_quality(weapon, key, errors)
 	_check_direction(weapons, class_id, errors)
 	_check_capture(manifest, class_id, errors)
@@ -201,11 +215,18 @@ static func _check_cleanup(weapon: Dictionary, key: String, errors: Array[String
 
 
 ## Declared visual budgets bound what one activation adds on top of a crowd.
-static func _check_budget(weapon: Dictionary, key: String, errors: Array[String]) -> void:
+static func _check_budget(
+	weapon: Dictionary,
+	key: String,
+	allowlist: Dictionary,
+	errors: Array[String]
+) -> void:
 	var performance: Variant = weapon.get("performance")
 	if not performance is Dictionary:
 		errors.append("budget.missing: %s" % key)
 		return
+	if not allowlist.has(key):
+		_check_material_budget(performance as Dictionary, key, errors)
 	var max_visual_nodes: Variant = (performance as Dictionary).get("max_visual_nodes")
 	var crowd_cap: Variant = (performance as Dictionary).get("crowd_cap")
 	if not _is_whole_number(max_visual_nodes) or int(max_visual_nodes) <= 0:
@@ -229,6 +250,125 @@ static func _check_budget(weapon: Dictionary, key: String, errors: Array[String]
 			"budget.crowd_cap_ceiling: %s declares %d over %d"
 			% [key, int(crowd_cap), CROWD_CAP_CEILING]
 		)
+
+
+## The declared material budget, validated exactly like max_visual_nodes: a
+## missing, non-positive or above-ceiling number fails closed, and so does a
+## full-screen count larger than the unique count it is drawn from. The same
+## declaration arrives from a manifest `performance` block and from the scene
+## metadata of an instantiated activation, so both read one validator.
+static func _check_material_budget(declaration: Dictionary, key: String, errors: Array[String]) -> void:
+	var unique: Variant = declaration.get("max_unique_materials")
+	var fullscreen: Variant = declaration.get("max_fullscreen_materials")
+	if not _is_whole_number(unique) or int(unique) <= 0:
+		errors.append("budget.max_unique_materials: %s declares %s" % [key, str(unique)])
+		return
+	if not _is_whole_number(fullscreen) or int(fullscreen) <= 0:
+		errors.append("budget.max_fullscreen_materials: %s declares %s" % [key, str(fullscreen)])
+		return
+	if int(unique) > MAX_UNIQUE_MATERIALS_CEILING:
+		errors.append(
+			"budget.max_unique_materials_ceiling: %s declares %d over %d"
+			% [key, int(unique), MAX_UNIQUE_MATERIALS_CEILING]
+		)
+	if int(fullscreen) > MAX_FULLSCREEN_MATERIALS_CEILING:
+		errors.append(
+			"budget.max_fullscreen_materials_ceiling: %s declares %d over %d"
+			% [key, int(fullscreen), MAX_FULLSCREEN_MATERIALS_CEILING]
+		)
+	if int(fullscreen) > int(unique):
+		errors.append(
+			"budget.material_relation: %s max_fullscreen_materials %d exceeds max_unique_materials %d"
+			% [key, int(fullscreen), int(unique)]
+		)
+
+
+## The actual material counts of an instantiated activation against the budget
+## its scene metadata declares. The caller owns the instance: this contract
+## still instantiates nothing, it only walks the tree it is handed. A pair
+## inside the migration allowlist is v1 and reports nothing.
+static func scene_material_violations(
+	scene: Node,
+	key: String,
+	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST
+) -> Array[String]:
+	var errors: Array[String] = []
+	if allowlist.has(key):
+		return errors
+	if scene == null or not is_instance_valid(scene):
+		errors.append("budget.scene_missing: %s" % key)
+		return errors
+	var declared_unique: Variant = _declared_meta(scene, "max_unique_materials")
+	var declared_fullscreen: Variant = _declared_meta(scene, "max_fullscreen_materials")
+	_check_material_budget(
+		{"max_unique_materials": declared_unique, "max_fullscreen_materials": declared_fullscreen},
+		key,
+		errors
+	)
+	if not errors.is_empty():
+		return errors
+	var counts := material_counts(scene)
+	if int(counts["unique"]) > int(declared_unique):
+		errors.append(
+			"budget.unique_materials_actual: %s carries %d over its declared %d"
+			% [key, int(counts["unique"]), int(declared_unique)]
+		)
+	if int(counts["fullscreen"]) > int(declared_fullscreen):
+		errors.append(
+			"budget.fullscreen_materials_actual: %s carries %d over its declared %d"
+			% [key, int(counts["fullscreen"]), int(declared_fullscreen)]
+		)
+	return errors
+
+
+## A missing scene declaration reads as null, the same "not declared" value the
+## manifest path produces, without Object.get_meta pushing its own error.
+static func _declared_meta(scene: Node, key: String) -> Variant:
+	return scene.get_meta(key) if scene.has_meta(key) else null
+
+
+## Materials an instantiated activation actually carries, as
+## {"unique": int, "fullscreen": int}.
+##
+## "Covers the full viewport" is read as screen space: a CanvasItem under a
+## CanvasLayer inside the activation draws in viewport coordinates regardless of
+## camera, which is the one full-viewport property readable off a scene without
+## rendering it. The rule over-counts a small screen-space overlay and does not
+## see a world-space node stretched over the viewport, so it is deliberately
+## strict on what it does count and silent on what it cannot; the remainder
+## stays review-gated. Materials created during begin() are not visible here
+## either: this counts the authored tree.
+static func material_counts(root: Node) -> Dictionary:
+	var unique := {}
+	var fullscreen := {}
+	_collect_materials(root, false, unique, fullscreen)
+	return {"unique": unique.size(), "fullscreen": fullscreen.size()}
+
+
+static func _collect_materials(
+	node: Node,
+	screen_space: bool,
+	unique: Dictionary,
+	fullscreen: Dictionary
+) -> void:
+	var in_screen_space := screen_space or node is CanvasLayer
+	for material in _node_materials(node):
+		unique[material.get_instance_id()] = true
+		if in_screen_space:
+			fullscreen[material.get_instance_id()] = true
+	for child in node.get_children():
+		_collect_materials(child, in_screen_space, unique, fullscreen)
+
+
+## Every material resource one node contributes: its canvas material, plus the
+## particle process shader, which is a distinct program on the same activation.
+static func _node_materials(node: Node) -> Array[Material]:
+	var materials: Array[Material] = []
+	if node is CanvasItem and (node as CanvasItem).material != null:
+		materials.append((node as CanvasItem).material)
+	if node is GPUParticles2D and (node as GPUParticles2D).process_material != null:
+		materials.append((node as GPUParticles2D).process_material)
+	return materials
 
 
 ## Sibling distinctness: the three weapons of a class read differently on
