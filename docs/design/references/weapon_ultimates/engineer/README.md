@@ -9,7 +9,7 @@ stay owned by the v1 weapon-ultimate registry.
 
 | Weapon | Title | Silhouette | Motion | Impact |
 | --- | --- | --- | --- | --- |
-| `engineer_sentry_wrench` | Крепость за Секунду | tall narrow pylon, hexagonal turret head | ground tap, six pylons rise in place on a fixed hexagon | synchronized turret volleys along hex chords |
+| `engineer_sentry_wrench` | Гнездо Часовых | tall narrow pylon, hexagonal turret head | ground tap, six pylons rise in place on a fixed hexagon | synchronized turret volleys along hex chords |
 | `engineer_repair_drone` | Рой Аварийного Ремонта | wide flat rotor bar over a small orb body | canister column unwinds into two counter-phased helix strands | alternating intercept and ram streaks, then a protective dome |
 | `engineer_pressure_mines` | Минное Поле Омега | squat prong-topped dome on a wide base plate | blueprint lattice flashes, mines burrow up in place | ordered outer-to-inner chain detonation |
 
@@ -17,6 +17,39 @@ The three are deliberately not one timeline in three colors. They differ in
 element proportion (0.417 / 2.019 / 1.333 width-to-height), formation kind
 (fixed hexagon / travelling helix / static lattice), rhythm shape, and impact
 sound. `engineer_ultimate_presentation_test.gd` fails if any of those collapse.
+
+## Animation source (FAN-2565, `engineer_sentry_wrench`)
+
+The sentry wrench no longer holds one forged frame. Its element is a nine-frame
+transparent animation generated with PixelLab MCP — `create_1_direction_object`
+plus `animate_object`, mode `v3`, 256x256, view `sidescroller` — object
+`7a713b53-f9bb-477c-b478-b4096bc17c33`, animation group
+`1fda802e-eb3c-4d18-b304-09de5d50b521`. `provenance_manifest_sentry_wrench.json`
+records the exact prompts, every frame digest, and the measured pack quality.
+
+The frames are not played by an `AnimatedSprite2D`: `frame_index()` maps the
+phase and its progress to a frame, so the frame is a pure function of the
+timeline. A paused timeline therefore holds its frame with no extra pause
+handling, and the contact sheet renders the frame the scene plays.
+
+| Phase | Frames | What it shows |
+| --- | --- | --- |
+| windup | 0 | the folded pylon, still a blueprint ghost |
+| release | 1 | the pylon standing up as the hexagon seats |
+| active | 2..5, cycled | one muzzle flash per executor volley, 8 volleys |
+| recovery | 6 | barrels cool, the head starts to fold |
+| cancel | 7, 8 | shutdown vent as the ring folds out |
+
+Runtime frames are the 256x256 source cropped to ONE shared rect — the union of
+all nine alpha boxes, so the pivot never moves — then downscaled 2x with nearest
+sampling to 76x118, which is the size band the forged 49x112 pylon used. Measured
+on the committed pack: 9/9 distinct frames, 0 semi-transparent pixels (no matte
+or halo), pivot drift 2.43 x 5.75 px, largest stray island 17 px (the vent puff),
+and no frame touches the canvas edge.
+
+The forged `engineer_sentry_pylon` frames stay in the repository and in
+`manifest.json`: `engineer_ultimate_source_forge.gd` emits all three class
+elements in one pass, and the other two weapons still use theirs.
 
 ## Phase rhythm
 
@@ -87,7 +120,7 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/engineer_ultimate_presentation_test.gd
 ```
 
-Regenerate the element frames and the contact sheet:
+Regenerate the element frames and the class contact sheet:
 
 ```bash
 python3 tools/godot_gate.py --headless --path . \
@@ -96,5 +129,28 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://scenes/vfx/ultimates/engineer/engineer_ultimate_contact_sheet.gd
 ```
 
+Re-shoot the four live captures. A `SubViewport` cannot render under
+`--headless`, so this one runs windowed:
+
+```bash
+python3 tools/godot_gate.py --path . \
+  --script res://tests/ultimates/presentation/engineer_ultimate_contact_capture.gd
+```
+
+Regenerate the sentry-wrench animation source and its runtime pack. The first
+command is one blocking call of roughly ten minutes and needs
+`PIXELLAB_BEARER_TOKEN`; the second is local and needs no credential:
+
+```bash
+python3 tools/fan2565_sentry_wrench_pixellab.py \
+  --source-dir docs/design/references/weapon_ultimates/engineer/source/pixellab_sentry_wrench \
+  --manifest-out docs/design/references/weapon_ultimates/engineer/provenance_manifest_sentry_wrench.json
+python3 tools/fan2565_sentry_wrench_runtime_pack.py \
+  --source-dir docs/design/references/weapon_ultimates/engineer/source/pixellab_sentry_wrench \
+  --runtime-dir assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy \
+  --manifest docs/design/references/weapon_ultimates/engineer/provenance_manifest_sentry_wrench.json
+```
+
 `manifest.json` records source/runtime paths, canvases, and sha256 digests for
-every generated frame, plus the accepted assets this pack reuses unmodified.
+every generated frame, the PixelLab provenance of the sentry pack, the four live
+capture viewports, plus the accepted assets this pack reuses unmodified.
