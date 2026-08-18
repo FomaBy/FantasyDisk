@@ -18,8 +18,8 @@
     "mechanics_status": "damage, taunt, armor dissolve, charges, and ownership remain owned by FAN-1483; this package binds frozen phase IDs only"
   },
   "generator_provenance": {
-    "route": "pixellab_animation_frames_plus_reused_approved_assets",
-    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552) plus a new transparent-frame animation source for blast_powder via PixelLab MCP (create_1_direction_object + animate_object, FAN-2550); acid_flask still reuses accepted assets only",
+    "route": "pixellab_animation_frames_for_every_chemist_weapon",
+    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552) plus new transparent-frame animation sources via PixelLab MCP (create_1_direction_object + animate_object) for blast_powder (FAN-2550) and acid_flask (FAN-2551); no Chemist weapon reuses a static accepted asset any more",
     "new_pixellab_assets": [
 
       {
@@ -47,14 +47,24 @@
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
         "generation_script": "tools/fan2550_blast_powder_pixellab.py",
         "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
+      },
+
+      {
+        "weapon_id": "acid_flask",
+        "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
+        "pixel_lab_animation_group_id": "5062e756-6788-40a5-a555-56a92217da32",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_acid_flask",
+        "runtime_spriteframes": "assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_spriteframes.tres",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+        "generation_script": "tools/fan2551_acid_flask_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_acid_flask.json"
       }
     ],
     "reused_sources": {
-      "acid_flask": {
-        "source_path": "assets/sprites/effects/vfx_weapon_acid_flask.png",
-        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
-        "note": "Accepted Chemist acid-flask VFX is reused for the giant cracked flask; lake and pillars are native vector VFX."
-      },
       "homunculus_vial": {
         "source_path": "assets/sprites/allies/ally_homunculus.png",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",

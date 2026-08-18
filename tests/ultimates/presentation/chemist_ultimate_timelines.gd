@@ -26,7 +26,7 @@ const PACKS := [
 		"title": "ACID FLASK — TSAR LAKE",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.58, 1.0, 0.34),
-		"required_nodes": ["PourArc", "AcidWave", "AcidLake", "ChargePillars/PillarTwo", "EvaporationSmoke"],
+		"required_nodes": ["TsarFlask", "ChargePillars/PillarTwo", "EvaporationSmoke"],
 	},
 	{
 		"weapon_id": "homunculus_vial",
@@ -119,7 +119,8 @@ func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_spriteframes", ""))), "%s runtime SpriteFrames must exist" % weapon_id, errors)
 			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_scene", ""))), "%s runtime scene must exist" % weapon_id, errors)
 			_expect(FileAccess.file_exists("res://%s" % str(asset.get("provenance_manifest", ""))), "%s provenance manifest must exist" % weapon_id, errors)
-	_expect(pixellab_weapons.has("homunculus_vial") and pixellab_weapons.has("blast_powder"), "both homunculus_vial and blast_powder PixelLab packs must be declared", errors)
+	for weapon_id in WEAPON_IDS:
+		_expect(pixellab_weapons.has(weapon_id), "%s PixelLab pack must be declared" % weapon_id, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
