@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2541",
+  "weapon": "assassin/chakrams",
+  "title": "Восемь Лун",
+  "generated_at": "2026-08-18T04:53:58Z",
+  "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "generation": {
+    "route": "pixellab_new_isolated_animation_frames",
+    "tool": "PixelLab MCP (https://api.pixellab.ai/mcp)",
+    "object": {
+      "pixel_lab_object_id": "defd0c32-6ceb-47aa-b791-02edaa7f93c5",
+      "create_tool": "create_1_direction_object",
+      "create_params": {
+        "size": 256,
+        "view": "top-down",
+        "description": "one single silver crescent-moon throwing chakram, a flat round razor ring with a crescent moon cut into it, dark fantasy pixel art seen straight from above, cold pale silver metal with a faint violet sheen on the sharpened edge, only this one ring exists in the image, one centered object, nothing around it, empty background, no second ring, no hands, no characters, no scattered blades, no extra props, no border decoration, no text"
+      }
+    },
+    "animation": {
+      "pixel_lab_animation_group_id": "b8cddfa4-f173-4785-a4b1-afb7f4ab8986",
+      "frame_path_group_id": "1f23d1a8-522b-4e27-9cf2-4453eebb5b52",
+      "animate_tool": "animate_object",
+      "mode": "v3",
+      "frame_count": 9,
+      "frame_url_template": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/defd0c32-6ceb-47aa-b791-02edaa7f93c5/animations/1f23d1a8-522b-4e27-9cf2-4453eebb5b52/unknown/{i}.png",
+      "animation_description": "the chakram ring keeps exactly the same shape, size, thickness and pale silver colors in every frame and stays centered in the same place; only the light moves: a pale violet-white moon glow travels around the sharpened outer edge like a crescent sweeping around the ring, the inner crescent cut brightens and dims as the glow passes it, faint motion streaks trail the spin, nothing else appears and nothing leaves the frame"
+    }
+  },
+  "direction_notes": [
+    "The isolated source is one chakram ring, not the eight-disc formation: the eight moons are composed at runtime by the scene, so a single ring keeps identity stable and costs one texture set.",
+    "frame_count is requested as 8 for a 256x256 object; PixelLab returns 8 generated frames plus the stored reference frame = 9, matching the accepted FAN-2550/FAN-2551 packs.",
+    "The animation description pins shape, size, thickness, colour and position so only the moon glow travels; this is what keeps identity, silhouette and pivot stable across the cycle.",
+    "tools/pixellab_generate_pack.py created the object and queued the animate job, then exited 5 ('no animation frame URLs') because its text-report parser keeps only status/progress/urls: the queued job lives in the report's 'pending jobs' section, so the object's own 'status: completed' reads as terminal while the animation is still at 12%. tools/fan2541_chakrams_pixellab.py waits on the animation frames themselves and downloaded the same job's output; no asset was substituted."
+  ],
+  "reproducibility": {
+    "generation_script": "tools/fan2541_chakrams_pixellab.py",
+    "create_command": "python3 tools/pixellab_generate_pack.py --source-dir <dir> --manifest-out <json> --frame-count 8 --size 256 --view top-down --animate-mode v3 --description <create_params.description> --animation-description <animation.animation_description>",
+    "fetch_command": "python3 tools/fan2541_chakrams_pixellab.py --object-id defd0c32-6ceb-47aa-b791-02edaa7f93c5 --group-id b8cddfa4-f173-4785-a4b1-afb7f4ab8986 --source-dir <dir> --manifest-out <json> --frame-prefix chakram_moon_f --frame-count 9",
+    "replay_note": "Auth resolves through tools/pixellab_auth_smoke.read_auth_header (AUTH_HEADER, PIXELLAB_BEARER_TOKEN, or ~/.codex/config.toml). PixelLab objects auto-delete after 8 hours, so the downloaded frames under source/ are the durable record; a replay regenerates, it does not restore."
+  },
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_chakrams",
+    "source_frames": [
+      "chakram_moon_f00.png",
+      "chakram_moon_f01.png",
+      "chakram_moon_f02.png",
+      "chakram_moon_f03.png",
+      "chakram_moon_f04.png",
+      "chakram_moon_f05.png",
+      "chakram_moon_f06.png",
+      "chakram_moon_f07.png",
+      "chakram_moon_f08.png"
+    ],
+    "frame_bytes": {
+      "chakram_moon_f00.png": 21439,
+      "chakram_moon_f01.png": 29323,
+      "chakram_moon_f02.png": 27379,
+      "chakram_moon_f03.png": 26593,
+      "chakram_moon_f04.png": 27326,
+      "chakram_moon_f05.png": 26803,
+      "chakram_moon_f06.png": 25755,
+      "chakram_moon_f07.png": 27447,
+      "chakram_moon_f08.png": 27786
+    },
+    "runtime_dir": "assets/sprites/effects/fan2541_chakrams_ultimate",
+    "runtime_spriteframes": "assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres",
+    "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+    "runtime_animation": "eight_moons"
+  },
+  "frame_verification": {
+    "size_px": "256x256",
+    "frame_count": 9,
+    "background": "fully transparent: max alpha on every frame border is 0",
+    "matte_or_halo": "none: 0 semi-transparent pixels across all frames (binary alpha)",
+    "crop": "none: every frame bounding box is inset from all four edges",
+    "identity_stability": "opaque area 35259-35691 px (1.2% spread) across the 9 frames"
+  },
+  "auth": "PIXELLAB_BEARER_TOKEN env / ~/.codex/config.toml (never committed, never printed)"
+}
