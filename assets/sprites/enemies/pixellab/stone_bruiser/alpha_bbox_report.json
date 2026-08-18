@@ -3217,22 +3217,22 @@
       "source_alpha_bbox": [
         25,
         16,
-        52,
+        54,
         64
       ],
       "source_alpha_bbox_size": [
-        27,
+        29,
         48
       ],
       "scale": 5.104166666666667,
       "resized_visible_size": [
-        138,
+        148,
         245
       ],
       "runtime_alpha_bbox": [
-        187,
+        182,
         235,
-        325,
+        330,
         480
       ]
     },
@@ -3275,22 +3275,22 @@
       "source_alpha_bbox": [
         27,
         16,
-        53,
+        55,
         64
       ],
       "source_alpha_bbox_size": [
-        26,
+        28,
         48
       ],
       "scale": 5.104166666666667,
       "resized_visible_size": [
-        133,
+        143,
         245
       ],
       "runtime_alpha_bbox": [
-        190,
+        184,
         235,
-        323,
+        327,
         480
       ]
     }
@@ -3334,15 +3334,44 @@
       ],
       "source_alpha_bbox": [
         32,
-        17,
-        46,
+        16,
+        51,
         64
       ],
       "source_alpha_bbox_size": [
-        14,
-        47
+        19,
+        48
       ],
-      "scale": 5.212765957446808,
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        97,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_02.png",
+      "runtime": "stone_bruiser_hit_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        27,
+        43,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        11,
+        37
+      ],
+      "scale": 6.621621621621622,
       "resized_visible_size": [
         73,
         245
@@ -3355,35 +3384,6 @@
       ]
     },
     {
-      "source": "stone_bruiser_hit_east_02.png",
-      "runtime": "stone_bruiser_hit_east_02.png",
-      "source_size": [
-        76,
-        76
-      ],
-      "source_alpha_bbox": [
-        28,
-        12,
-        54,
-        64
-      ],
-      "source_alpha_bbox_size": [
-        26,
-        52
-      ],
-      "scale": 4.711538461538462,
-      "resized_visible_size": [
-        122,
-        245
-      ],
-      "runtime_alpha_bbox": [
-        195,
-        235,
-        317,
-        480
-      ]
-    },
-    {
       "source": "stone_bruiser_hit_east_03.png",
       "runtime": "stone_bruiser_hit_east_03.png",
       "source_size": [
@@ -3391,24 +3391,24 @@
         76
       ],
       "source_alpha_bbox": [
-        28,
-        8,
-        54,
+        32,
+        20,
+        55,
         64
       ],
       "source_alpha_bbox_size": [
-        26,
-        56
+        23,
+        44
       ],
-      "scale": 4.375,
+      "scale": 5.568181818181818,
       "resized_visible_size": [
-        114,
+        128,
         245
       ],
       "runtime_alpha_bbox": [
-        199,
+        192,
         235,
-        313,
+        320,
         480
       ]
     },
@@ -5589,21 +5589,21 @@
         18,
         23,
         49,
-        58
+        60
       ],
       "source_alpha_bbox_size": [
         31,
-        35
+        37
       ],
-      "scale": 7.0,
+      "scale": 6.621621621621622,
       "resized_visible_size": [
-        217,
+        205,
         245
       ],
       "runtime_alpha_bbox": [
-        148,
+        154,
         235,
-        365,
+        359,
         480
       ]
     },
@@ -5618,21 +5618,21 @@
         13,
         22,
         53,
-        58
+        64
       ],
       "source_alpha_bbox_size": [
         40,
-        36
+        42
       ],
-      "scale": 6.805555555555555,
+      "scale": 5.833333333333333,
       "resized_visible_size": [
-        272,
+        233,
         245
       ],
       "runtime_alpha_bbox": [
-        120,
+        140,
         235,
-        392,
+        373,
         480
       ]
     },
@@ -5647,21 +5647,21 @@
         10,
         18,
         56,
-        59
+        60
       ],
       "source_alpha_bbox_size": [
         46,
-        41
+        42
       ],
-      "scale": 5.975609756097561,
+      "scale": 5.833333333333333,
       "resized_visible_size": [
-        275,
+        268,
         245
       ],
       "runtime_alpha_bbox": [
-        118,
+        122,
         235,
-        393,
+        390,
         480
       ]
     },
@@ -5675,22 +5675,22 @@
       "source_alpha_bbox": [
         8,
         15,
-        58,
-        60
+        59,
+        62
       ],
       "source_alpha_bbox_size": [
-        50,
-        45
+        51,
+        47
       ],
-      "scale": 5.444444444444445,
+      "scale": 5.212765957446808,
       "resized_visible_size": [
-        272,
+        266,
         245
       ],
       "runtime_alpha_bbox": [
-        120,
+        123,
         235,
-        392,
+        389,
         480
       ]
     },
@@ -5705,21 +5705,21 @@
         7,
         14,
         59,
-        60
+        61
       ],
       "source_alpha_bbox_size": [
         52,
-        46
+        47
       ],
-      "scale": 5.326086956521739,
+      "scale": 5.212765957446808,
       "resized_visible_size": [
-        277,
+        271,
         245
       ],
       "runtime_alpha_bbox": [
-        118,
+        120,
         235,
-        395,
+        391,
         480
       ]
     }
@@ -6609,24 +6609,24 @@
         72
       ],
       "source_alpha_bbox": [
-        27,
-        10,
-        46,
+        20,
+        8,
+        47,
         61
       ],
       "source_alpha_bbox_size": [
-        19,
-        51
+        27,
+        53
       ],
-      "scale": 4.803921568627451,
+      "scale": 4.622641509433962,
       "resized_visible_size": [
-        91,
+        125,
         245
       ],
       "runtime_alpha_bbox": [
-        210,
+        194,
         235,
-        301,
+        319,
         480
       ]
     },
@@ -6667,24 +6667,24 @@
         72
       ],
       "source_alpha_bbox": [
-        21,
-        10,
+        19,
+        13,
         51,
         61
       ],
       "source_alpha_bbox_size": [
-        30,
-        51
+        32,
+        48
       ],
-      "scale": 4.803921568627451,
+      "scale": 5.104166666666667,
       "resized_visible_size": [
-        144,
+        163,
         245
       ],
       "runtime_alpha_bbox": [
-        184,
+        174,
         235,
-        328,
+        337,
         480
       ]
     },
@@ -6728,21 +6728,21 @@
         11,
         30,
         60,
-        61
+        62
       ],
       "source_alpha_bbox_size": [
         49,
-        31
+        32
       ],
-      "scale": 7.903225806451613,
+      "scale": 7.65625,
       "resized_visible_size": [
-        387,
+        375,
         245
       ],
       "runtime_alpha_bbox": [
-        62,
+        68,
         235,
-        449,
+        443,
         480
       ]
     },
