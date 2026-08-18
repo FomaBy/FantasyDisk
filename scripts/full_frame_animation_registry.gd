@@ -39,6 +39,15 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -10.0),
 			"source_faces_left": true,
 		},
+		# FAN-2646: dedicated 8-direction pack replacing the four static
+		# homunculus_tank_{south,north,east,west}.png directional stills.
+		"homunculus_tank": {
+			"frames": "res://assets/sprites/allies/homunculus_tank_spriteframes.tres",
+			"scale": Vector2(0.34, 0.34),
+			"position": Vector2(0.0, -10.0),
+			"source_faces_left": true,
+			"explicit_eight_directions": true,
+		},
 		"leadership_echo": {
 			"frames": "res://assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
 			"scale": Vector2(0.34, 0.34),

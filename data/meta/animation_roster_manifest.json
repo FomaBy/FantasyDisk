@@ -298,7 +298,8 @@
   {
     "id": "homunculus_tank",
     "group": "homunculus",
-    "frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres"
+    "frames": "res://assets/sprites/allies/homunculus_tank_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "homunculus_caster",

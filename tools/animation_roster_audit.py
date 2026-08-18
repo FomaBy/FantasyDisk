@@ -101,7 +101,8 @@ ROSTER = (
        for s in ["druid_ghost_wolf", "druid_ghost_bear", "druid_ghost_panther",
                  "druid_ghost_stag", "druid_ghost_lion"]]
     + [{"id": "homunculus_tank", "group": "homunculus",
-        "frames": f"{AL}/ally_homunculus_spriteframes.tres"},
+        "frames": f"{AL}/homunculus_tank_spriteframes.tres",
+        "directional": True},
        {"id": "homunculus_caster", "group": "homunculus",
         "frames": f"{AL}/ally_homunculus_spriteframes.tres"}]
 )
