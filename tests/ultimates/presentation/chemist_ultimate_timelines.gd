@@ -13,11 +13,11 @@ const PACKS := [
 	{
 		"weapon_id": "blast_powder",
 		"scene": SCENES["blast_powder"],
-		"time": 1.6,
-		"title": "BLAST POWDER — PENTAGRAM",
+		"time": 1.45,
+		"title": "BLAST POWDER — PHILOSOPHERS' EXPLOSION",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.78, 0.28),
-		"required_nodes": ["PhilosophersRitual", "GoldRadiance"],
+		"required_nodes": ["BackdropVeil", "AlchemistGlow", "PhilosophersRitual", "PentagramSigil", "GoldRadiance"],
 	},
 	{
 		"weapon_id": "acid_flask",
@@ -81,6 +81,7 @@ func _initialize() -> void:
 	_expect(packages.size() == 3, "manifest must contain exactly three Chemist packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
@@ -215,6 +216,45 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 			_expect((handle as HandleProbe).released == 1, "%s %s must release each handle once" % [weapon_id, reason], errors)
 
 
+## FAN-2957: the v2 presentation contract for the migrated blast_powder pair.
+## The envelope itself is asserted by the shared distinctness test once the
+## allowlist entry is gone; this gate owns the class-local declarations that
+## make the effect full-screen and identity-bearing.
+func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
+	_expect(not package.is_empty(), "blast_powder package must exist for the v2 gate", errors)
+	if package.is_empty():
+		return
+	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	root.add_child(scene)
+	var presence := package.get("presence", {}) as Dictionary
+	_expect(presence.get("fullscreen_footprint") == true, "blast_powder must declare a fullscreen footprint", errors)
+	_expect(str(presence.get("backdrop", "")) == "darken", "blast_powder must declare the darken backdrop", errors)
+	_expect(presence.get("camera_shake") == true, "blast_powder must declare camera shake", errors)
+	var hitstop := float(presence.get("hitstop_ms", 0.0))
+	_expect(hitstop >= 80.0 and hitstop <= 150.0, "blast_powder hitstop must stay in the 80-150ms corridor", errors)
+	_expect(presence.get("sfx_ducking") == true, "blast_powder must declare SFX ducking", errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "blast_powder must declare its hero cast pose", errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "blast_powder weapon silhouette asset must exist: %s" % silhouette, errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "blast_powder must resolve its class palette", errors)
+	var performance := package.get("performance", {}) as Dictionary
+	_expect(int(performance.get("material_budget", 0)) > 0, "blast_powder must declare a positive material budget", errors)
+	var veil := scene.get_node_or_null("BackdropVeil") as CanvasItem
+	_expect(veil != null and veil.visible, "blast_powder must carry a backdrop veil node", errors)
+	if veil != null:
+		_expect(bool(veil.get_meta("fullscreen_layer", false)), "the backdrop veil must be marked as the fullscreen layer", errors)
+	_expect(int(scene.get_meta("material_budget", 0)) == int(performance.get("material_budget", -1)), "scene and manifest material budgets must agree", errors)
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var driver := scene.get_script() as GDScript
+	_expect(is_equal_approx(float(timing.get("release", -1.0)), float(driver.get_script_constant_map().get("RELEASE_AT", -1.0))), "scene driver release beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("active", -1.0)), float(driver.get_script_constant_map().get("IMPACT_AT", -1.0))), "scene driver impact beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("recovery", -1.0)), float(driver.get_script_constant_map().get("RECOVERY_AT", -1.0))), "scene driver recovery beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("cancel", -1.0)), float(driver.get_script_constant_map().get("CANCEL_AT", -1.0))), "scene driver cancel beat must match the manifest", errors)
+	_expect(is_equal_approx(float(driver.get_script_constant_map().get("HITSTOP_MS", -1.0)), hitstop), "scene driver hitstop must match the declared presence value", errors)
+	scene.queue_free()
+
+
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 	for field in ["silhouette", "motion_path", "timing_rhythm", "impact_language"]:
 		var values := {}
@@ -239,7 +279,8 @@ func _check_capture_composition(errors: Array[String]) -> void:
 			for raw_path in pack.get("required_nodes", []) as Array:
 				var item := scene.get_node_or_null(str(raw_path)) as CanvasItem
 				_expect(item != null and is_capture_item_visible(item, scene), "%s required item must be visible: %s" % [context, raw_path], errors)
-				if item != null:
+				var is_fullscreen_layer := item != null and bool(item.get_meta("fullscreen_layer", false))
+				if item != null and not is_fullscreen_layer:
 					_expect(zone.grow(0.5).encloses(transformed_capture_bounds(capture_item_bounds(scene, item), scene)), "%s item must fit its panel: %s" % [context, raw_path], errors)
 			scene.queue_free()
 
@@ -324,7 +365,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene):
+			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene) \
+					and not bool(child.get_meta("fullscreen_layer", false)):
 				var item_bounds := capture_item_bounds(scene, child as CanvasItem)
 				if item_bounds.has_area():
 					bounds = item_bounds if not found else bounds.merge(item_bounds)
