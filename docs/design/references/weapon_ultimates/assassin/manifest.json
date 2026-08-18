@@ -16,15 +16,27 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
-    "new_pixellab_assets": [],
-    "reused_sources": {
-      "chakrams": {
-        "source_path": "assets/sprites/weapons/chakrams.png",
+    "route": "pixellab_animation_source_for_chakrams_reused_approved_assets_for_the_other_two",
+    "pixellab_mcp": "invoked for assassin/chakrams (FAN-2541): a new transparent-frame animation source via create_1_direction_object + animate_object; shadow_daggers and venom_wire still compose their approved project weapon sprite at runtime and are untouched by this card",
+    "new_pixellab_assets": [
+      {
+        "weapon_id": "chakrams",
+        "issue": "FAN-2541",
+        "pixel_lab_object_id": "defd0c32-6ceb-47aa-b791-02edaa7f93c5",
+        "pixel_lab_animation_group_id": "b8cddfa4-f173-4785-a4b1-afb7f4ab8986",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_chakrams",
+        "runtime_spriteframes": "assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
-        "note": "Approved project weapon sprite; the eight-disc formation is composed at runtime."
-      },
+        "generation_script": "tools/fan2541_chakrams_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_chakrams.json",
+        "note": "The isolated source is one moon-chakram ring; the eight-disc compass formation stays a runtime composition, so the ring identity is generated once and instanced eight times."
+      }
+    ],
+    "reused_sources": {
       "shadow_daggers": {
         "source_path": "assets/sprites/weapons/shadow_daggers.png",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
@@ -64,6 +76,15 @@
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "return_pass_damage_owner": "mechanics FAN-1473"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.12,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the eight moon-discs hold their compass ring at a steady expanded radius and the return crescent fades in as a static pale arc, replacing the orbit spin and the per-disc glow sweep",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn coverage 0.118 of a 1152x648 viewport at t=4.80s; drawn box x=379..772 y=127..520 leaves 127px clear above and 128px below for the HUD bands (tests/ultimates/presentation/assassin_ultimate_contact_capture.gd resolutions)"
       }
     },
     {

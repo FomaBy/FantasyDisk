@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/weapons/chakrams.png" id="1_chakrams"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres" id="1_moon_frames"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -45,6 +45,102 @@ tracks/2/keys = {
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.6, 0.0]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Orbit/MoonOne:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 3, 7, 2, 6, 1, 3]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Orbit/MoonTwo:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 4, 8, 3, 7, 2, 4]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Orbit/MoonThree:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [2, 3, 5, 0, 4, 8, 3, 5]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Orbit/MoonFour:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [3, 4, 6, 1, 5, 0, 4, 6]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Orbit/MoonFive:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 7, 2, 6, 1, 5, 7]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Orbit/MoonSix:frame")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 8, 3, 7, 2, 6, 8]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Orbit/MoonSeven:frame")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 0, 4, 8, 3, 7, 0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Orbit/MoonEight:frame")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2.2, 3.5, 4.8, 6.9, 7.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [7, 8, 1, 5, 0, 4, 8, 1]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_eight_moons"]
 _data = {"ultimate": SubResource("Animation_eight_moons")}
@@ -72,67 +168,83 @@ antialiased = true
 
 [node name="Orbit" type="Node2D" parent="."]
 
-[node name="MoonOne" type="Sprite2D" parent="Orbit"]
+[node name="MoonOne" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 0
 position = Vector2(70, 0)
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.96)
 
-[node name="MoonTwo" type="Sprite2D" parent="Orbit"]
+[node name="MoonTwo" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 1
 position = Vector2(49, 49)
 rotation = 0.78
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.9)
 
-[node name="MoonThree" type="Sprite2D" parent="Orbit"]
+[node name="MoonThree" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 2
 position = Vector2(0, 70)
 rotation = 1.57
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.84)
 
-[node name="MoonFour" type="Sprite2D" parent="Orbit"]
+[node name="MoonFour" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 3
 position = Vector2(-49, 49)
 rotation = 2.35
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.78)
 
-[node name="MoonFive" type="Sprite2D" parent="Orbit"]
+[node name="MoonFive" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 4
 position = Vector2(-70, 0)
 rotation = 3.14
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.72)
 
-[node name="MoonSix" type="Sprite2D" parent="Orbit"]
+[node name="MoonSix" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 5
 position = Vector2(-49, -49)
 rotation = 3.92
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.78)
 
-[node name="MoonSeven" type="Sprite2D" parent="Orbit"]
+[node name="MoonSeven" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 6
 position = Vector2(0, -70)
 rotation = 4.71
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.84)
 
-[node name="MoonEight" type="Sprite2D" parent="Orbit"]
+[node name="MoonEight" type="AnimatedSprite2D" parent="Orbit"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_chakrams")
+sprite_frames = ExtResource("1_moon_frames")
+animation = &"eight_moons"
+frame = 7
 position = Vector2(49, -49)
 rotation = 5.49
-scale = Vector2(0.26, 0.26)
+scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.9)
 
 [node name="ReturnCrescents" type="Line2D" parent="."]

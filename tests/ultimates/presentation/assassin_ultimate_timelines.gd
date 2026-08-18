@@ -20,6 +20,16 @@ const CAPTURES := [
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
+const PIXELLAB_WEAPON_IDS := ["chakrams"]
+const REUSED_WEAPON_IDS := ["shadow_daggers", "venom_wire"]
+const GENERATED_ANIMATIONS := {"chakrams": "eight_moons"}
+const GENERATED_FRAME_SIZE := Vector2i(256, 256)
+const GENERATED_SPRITE_PATHS := {
+	"chakrams": [
+		"Orbit/MoonOne", "Orbit/MoonTwo", "Orbit/MoonThree", "Orbit/MoonFour",
+		"Orbit/MoonFive", "Orbit/MoonSix", "Orbit/MoonSeven", "Orbit/MoonEight",
+	],
+}
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const PHASE_BINDINGS := {"windup": "windup", "release": "execute", "active": "active", "recovery": "recover", "cancel": "cleanup"}
 const MAX_TIMELINE_SECONDS := 10.0
@@ -60,16 +70,79 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must explain the no-new-raster route", errors)
+	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_chakrams_reused_approved_assets_for_the_other_two", "provenance must explain the mixed PixelLab/reuse route", errors)
 	var created = provenance.get("new_pixellab_assets", [])
-	_expect(created is Array and (created as Array).is_empty(), "no PixelLab asset may be declared when no raster was generated", errors)
+	_expect(created is Array and (created as Array).size() == PIXELLAB_WEAPON_IDS.size(), "provenance must declare exactly the PixelLab-generated weapons", errors)
+	var generated := {}
+	for raw_asset in created as Array:
+		if raw_asset is Dictionary:
+			generated[str((raw_asset as Dictionary).get("weapon_id", ""))] = raw_asset as Dictionary
+	for weapon_id in PIXELLAB_WEAPON_IDS:
+		var asset := generated.get(str(weapon_id), {}) as Dictionary
+		_expect(not asset.is_empty(), "%s must declare its PixelLab provenance" % weapon_id, errors)
+		if asset.is_empty():
+			continue
+		for id_field in ["pixel_lab_object_id", "pixel_lab_animation_group_id"]:
+			_expect(not str(asset.get(id_field, "")).is_empty(), "%s must record its %s" % [weapon_id, id_field], errors)
+		for path_field in ["source_dir", "runtime_spriteframes", "runtime_scene", "generation_script", "provenance_manifest"]:
+			var path := str(asset.get(path_field, ""))
+			_expect(not path.is_empty() and (FileAccess.file_exists("res://%s" % path) or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://%s" % path))), "%s %s must exist: %s" % [weapon_id, path_field, path], errors)
+		_check_generated_frames(str(weapon_id), asset, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
-	for weapon_id in WEAPON_IDS:
+	_expect(not sources.has("chakrams"), "chakrams must no longer be declared as a reused static asset", errors)
+	for weapon_id in REUSED_WEAPON_IDS:
 		var source := sources.get(str(weapon_id), {}) as Dictionary
 		var source_path := str(source.get("source_path", ""))
 		var runtime_scene := str(source.get("runtime_scene", ""))
 		_expect(not source_path.is_empty() and FileAccess.file_exists("res://%s" % source_path), "%s approved source must exist" % weapon_id, errors)
 		_expect(not runtime_scene.is_empty() and FileAccess.file_exists("res://%s" % runtime_scene), "%s runtime scene must exist" % weapon_id, errors)
+
+
+func _check_generated_frames(weapon_id: String, asset: Dictionary, errors: Array[String]) -> void:
+	var frames := ResourceLoader.load("res://%s" % str(asset.get("runtime_spriteframes", ""))) as SpriteFrames
+	_expect(frames != null, "%s runtime SpriteFrames must load" % weapon_id, errors)
+	if frames == null:
+		return
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	_expect(frames.has_animation(animation_name), "%s SpriteFrames must expose the %s animation" % [weapon_id, animation_name], errors)
+	if not frames.has_animation(animation_name):
+		return
+	_expect(frames.get_frame_count(animation_name) == int(asset.get("frame_count", -1)), "%s must ship the declared frame count" % weapon_id, errors)
+	# Every generated frame must be a real transparent-background texture: an
+	# opaque or missing frame means the pack was substituted or lost its alpha.
+	for frame_index in frames.get_frame_count(animation_name):
+		var texture := frames.get_frame_texture(animation_name, frame_index)
+		_expect(texture != null, "%s frame %d must have a texture" % [weapon_id, frame_index], errors)
+		if texture == null:
+			continue
+		var image := texture.get_image()
+		_expect(image != null and image.get_size() == GENERATED_FRAME_SIZE, "%s frame %d must keep the generated frame size" % [weapon_id, frame_index], errors)
+		if image != null:
+			image.decompress()
+			_expect(image.get_pixel(0, 0).a == 0.0 and image.get_pixel(image.get_width() - 1, image.get_height() - 1).a == 0.0, "%s frame %d must keep a transparent background" % [weapon_id, frame_index], errors)
+
+
+func _check_generated_binding(weapon_id: String, instance: Node2D, errors: Array[String]) -> void:
+	var expected_frames := "res://%s" % str(((_generated_asset(weapon_id)) as Dictionary).get("runtime_spriteframes", ""))
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	var bound := 0
+	for node_path in GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array:
+		var sprite := instance.get_node_or_null(str(node_path)) as AnimatedSprite2D
+		_expect(sprite != null, "%s generated sprite missing: %s" % [weapon_id, node_path], errors)
+		if sprite == null:
+			continue
+		_expect(sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_frames, "%s %s must bind its own generated SpriteFrames" % [weapon_id, node_path], errors)
+		_expect(sprite.animation == animation_name, "%s %s must play the %s animation" % [weapon_id, node_path, animation_name], errors)
+		bound += 1
+	_expect(bound == (GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array).size(), "%s must bind every generated sprite" % weapon_id, errors)
+
+
+func _generated_asset(weapon_id: String) -> Dictionary:
+	var manifest := _load_json(MANIFEST_PATH, [] as Array[String])
+	for raw_asset in (manifest.get("generator_provenance", {}) as Dictionary).get("new_pixellab_assets", []) as Array:
+		if raw_asset is Dictionary and str((raw_asset as Dictionary).get("weapon_id", "")) == weapon_id:
+			return raw_asset as Dictionary
+	return {}
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -112,6 +185,8 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(_visual_node_count(instance) <= int(instance.get_meta("max_visual_nodes", 0)), "%s scene must stay within its visual-node budget" % weapon_id, errors)
 	for node_path in REQUIRED_NODES.get(weapon_id, []) as Array:
 		_expect(instance.get_node_or_null(str(node_path)) != null, "%s required silhouette node missing: %s" % [weapon_id, node_path], errors)
+	if GENERATED_SPRITE_PATHS.has(weapon_id):
+		_check_generated_binding(weapon_id, instance, errors)
 	instance.queue_free()
 
 
