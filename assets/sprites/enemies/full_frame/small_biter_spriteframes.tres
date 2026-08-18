@@ -1,179 +1,1126 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_00.png" id="1_sm1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_01.png" id="2_sm2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_02.png" id="3_sm3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_03.png" id="4_sm4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_04.png" id="5_sm5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_primary_05.png" id="6_sm6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_00.png" id="7_sm7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_01.png" id="8_sm8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_02.png" id="9_sm9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_03.png" id="10_sm10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_04.png" id="11_sm11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_05.png" id="12_sm12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_00.png" id="13_sm13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_01.png" id="14_sm14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_02.png" id="15_sm15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_03.png" id="16_sm16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_04.png" id="17_sm17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_05.png" id="18_sm18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_00.png" id="19_sm19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_01.png" id="20_sm20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_02.png" id="21_sm21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_03.png" id="22_sm22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_04.png" id="23_sm23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_05.png" id="24_sm24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_east.png" id="1_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_east.png" id="2_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south.png" id="3_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_west.png" id="4_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_west.png" id="5_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_west.png" id="6_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north.png" id="7_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_east.png" id="8_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_00.png" id="9_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_01.png" id="10_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_02.png" id="11_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_03.png" id="12_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_04.png" id="13_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_05.png" id="14_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_00.png" id="15_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_01.png" id="16_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_02.png" id="17_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_03.png" id="18_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_04.png" id="19_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_05.png" id="20_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_00.png" id="21_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_01.png" id="22_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_02.png" id="23_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_03.png" id="24_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_04.png" id="25_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_05.png" id="26_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_00.png" id="27_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_01.png" id="28_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_02.png" id="29_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_03.png" id="30_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_04.png" id="31_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_05.png" id="32_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_00.png" id="33_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_01.png" id="34_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_02.png" id="35_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_03.png" id="36_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_04.png" id="37_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_05.png" id="38_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_00.png" id="39_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_01.png" id="40_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_02.png" id="41_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_03.png" id="42_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_04.png" id="43_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_05.png" id="44_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_00.png" id="45_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_01.png" id="46_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_02.png" id="47_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_03.png" id="48_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_04.png" id="49_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_05.png" id="50_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_00.png" id="51_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_01.png" id="52_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_02.png" id="53_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_03.png" id="54_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_04.png" id="55_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_05.png" id="56_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_00.png" id="57_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_01.png" id="58_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_02.png" id="59_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_03.png" id="60_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_04.png" id="61_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_05.png" id="62_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_00.png" id="63_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_01.png" id="64_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_02.png" id="65_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_03.png" id="66_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_04.png" id="67_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_05.png" id="68_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_00.png" id="69_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_01.png" id="70_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_02.png" id="71_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_03.png" id="72_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_04.png" id="73_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_05.png" id="74_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_00.png" id="75_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_01.png" id="76_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_02.png" id="77_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_03.png" id="78_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_04.png" id="79_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_05.png" id="80_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_00.png" id="81_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_01.png" id="82_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_02.png" id="83_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_03.png" id="84_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_04.png" id="85_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_05.png" id="86_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_00.png" id="87_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_01.png" id="88_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_02.png" id="89_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_03.png" id="90_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_04.png" id="91_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_05.png" id="92_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_00.png" id="93_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_01.png" id="94_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_02.png" id="95_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_03.png" id="96_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_04.png" id="97_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_05.png" id="98_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_00.png" id="99_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_01.png" id="100_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_02.png" id="101_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_03.png" id="102_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_04.png" id="103_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_05.png" id="104_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_00.png" id="105_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_01.png" id="106_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_02.png" id="107_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_03.png" id="108_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_00.png" id="109_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_01.png" id="110_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_02.png" id="111_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_03.png" id="112_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_00.png" id="113_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_01.png" id="114_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_02.png" id="115_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_03.png" id="116_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_00.png" id="117_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_01.png" id="118_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_02.png" id="119_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_03.png" id="120_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_00.png" id="121_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_01.png" id="122_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_02.png" id="123_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_03.png" id="124_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_00.png" id="125_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_01.png" id="126_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_02.png" id="127_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_03.png" id="128_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_00.png" id="129_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_01.png" id="130_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_02.png" id="131_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_03.png" id="132_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_00.png" id="133_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_01.png" id="134_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_02.png" id="135_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_03.png" id="136_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_00.png" id="137_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_01.png" id="138_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_02.png" id="139_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_03.png" id="140_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_04.png" id="141_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_05.png" id="142_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_00.png" id="143_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_01.png" id="144_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_02.png" id="145_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_03.png" id="146_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_04.png" id="147_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_05.png" id="148_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_00.png" id="149_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_01.png" id="150_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_02.png" id="151_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_03.png" id="152_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_04.png" id="153_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_05.png" id="154_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_00.png" id="155_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_01.png" id="156_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_02.png" id="157_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_03.png" id="158_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_04.png" id="159_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_05.png" id="160_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_00.png" id="161_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_01.png" id="162_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_02.png" id="163_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_03.png" id="164_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_04.png" id="165_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_05.png" id="166_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_00.png" id="167_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_01.png" id="168_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_02.png" id="169_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_03.png" id="170_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_04.png" id="171_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_05.png" id="172_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_00.png" id="173_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_01.png" id="174_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_02.png" id="175_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_03.png" id="176_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_04.png" id="177_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_05.png" id="178_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_00.png" id="179_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_01.png" id="180_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_02.png" id="181_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_03.png" id="182_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_04.png" id="183_sbf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_05.png" id="184_sbf"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_sm1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sm2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sm3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sm4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sm5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sm6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_sm1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sm2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sm3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sm4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sm5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sm6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_sm19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_sm20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_sm21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_sm22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_sm23")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_sm24")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_sm13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_sm14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_sm15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_sm16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_sm17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_sm18")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_sm7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_sm8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_sm9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_sm10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_sm11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_sm12")
-}
-],
+"texture": ExtResource("1_sbf")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_sbf")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sbf")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_sbf")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_sbf")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_sbf")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_sbf")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_sbf")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sbf")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_sbf")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_sbf")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_sbf")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_sbf")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_sbf")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_sbf")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_sbf")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_sbf")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_sbf")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_sbf")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_sbf")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_sbf")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_sbf")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_sbf")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_sbf")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_sbf")
+}],
+"loop": false,
+"name": &"hit_east",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_sbf")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_sbf")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_sbf")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("121_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_sbf")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_sbf")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_sbf")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_sbf")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_sbf")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_sbf")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_sbf")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_sbf")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_sbf")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_sbf")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_sbf")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_sbf")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_sbf")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]

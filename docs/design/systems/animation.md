@@ -424,6 +424,32 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   registry's own `explicit_eight_directions` flag instead of a hardcoded ID
   list. AI, collision, damage and encounter timing are unchanged —
   registry-only visual integration.
+- FAN-2617 (2026-08-19) converts `standard_monster/small_biter`. PixelLab MCP
+  quadruped character `82c57fa2-24d0-4b48-8857-589738999078` (dog template,
+  68x68px low top-down, standard-mode 8 rotations) plus four animation
+  groups — `move` (template `walk-6-frames`, 6f), `attack` (v3 custom
+  "lunging forward and snapping jaws in a vicious bite attack", 7f incl.
+  PixelLab's default reference frame), `hit` (v3 custom flinch, 5f incl.
+  reference), `death` (v3 custom collapse, 7f incl. reference) — each
+  generated for all 8 directions (no `skill_*`/hover row: small_biter is a
+  ground-crawling quadruped biter, not a winged actor). Source frames live
+  under `assets/sprites/enemies/pixellab/small_biter/` with `manifest.json`
+  and `alpha_bbox_report.json`; runtime frames are transparent `512x512`
+  canvases under `assets/sprites/enemies/full_frame/small_biter/` normalized
+  to `245px` visible height / `32px` bottom padding (fleet standard, same
+  maths as FAN-2628/FAN-2613). `small_biter_spriteframes.tres` exposes
+  exactly `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` for all 8 directions (40 rows, no undirected fallback rows)
+  and the registry entry sets `explicit_eight_directions: true`. Old
+  non-directional pack (flat `move`/`attack`/`attack_primary`/`hit`/`death`,
+  single east-facing source with flip-based mirroring) is backed up under
+  `docs/design/backups/fan2617_small_biter_pre_directional/`. Build tooling:
+  `tools/build_fan2617_small_biter_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack,
+  `tests/full_frame_registry_integrity_test.gd` and
+  `tests/animation_smoke_test.gd` pass, and `build/qa/animation_roster_audit/`
+  carries the contact sheets. AI, collision, damage and encounter timing are
+  unchanged — registry-only visual integration.
 
 ## Player Motion
 
