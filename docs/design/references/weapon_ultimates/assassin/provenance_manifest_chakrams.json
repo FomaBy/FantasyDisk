@@ -4,6 +4,22 @@
   "weapon": "assassin/chakrams",
   "title": "Восемь Лун",
   "generated_at": "2026-08-18T04:53:58Z",
+  "v2_presentation_rework": {
+    "issue": "FAN-2956",
+    "date": "2026-08-18",
+    "contract": "Ultimate Direction v2 (FAN-2944 §1/§3.1, delivered by FAN-2948)",
+    "timing_seconds": {"windup": 0.0, "release": 0.8, "active": 1.6, "recovery": 3.0, "cancel": 3.6},
+    "asset_decision": "no new PixelLab generation: the FAN-2541 nine-frame moon-ring pack (object defd0c32-6ceb-47aa-b791-02edaa7f93c5, animation group b8cddfa4-f173-4785-a4b1-afb7f4ab8986) already carries the arena-wide v2 scale and the 3.6 s envelope, because the eight-disc formation, arena footprint, backdrop darken and first-impact flash are runtime composition in the scene; only the scene timeline, manifest declarations and captures were rebuilt",
+    "new_scene_nodes": ["BackdropDarken", "ImpactFlash"],
+    "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 110, "time_scale_dip": 0.45, "sfx_ducking": true},
+    "identity": {
+      "cast_pose_id": "weapon_ultimate.cast_pose.assassin.moonlit_orbit_stance",
+      "weapon_silhouette_asset": "res://assets/sprites/weapons/chakrams.png",
+      "class_palette_id": "assassin_violet_moonlight_palette"
+    },
+    "material_budget": {"max_unique_materials": 16, "max_fullscreen_materials": 2, "measured_unique_materials": 2, "measured_fullscreen_materials": 1},
+    "allowlist": "assassin/chakrams removed from PRESENTATION_V2_MIGRATION_ALLOWLIST in scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd"
+  },
   "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
   "generation": {
     "route": "pixellab_new_isolated_animation_frames",

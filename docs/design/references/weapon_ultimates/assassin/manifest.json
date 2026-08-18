@@ -65,15 +65,15 @@
       "weapon_id": "chakrams",
       "title": "Восемь Лун",
       "scene_path": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
-      "silhouette": "eight silver moon-discs in a compass orbit",
-      "motion_path": "tight orbit expands to eight radial arcs then crescent return stack",
-      "impact_language": "eight-way disc launch and returning crescent cut",
+      "silhouette": "eight silver moon-discs in a compass orbit over a darkened arena",
+      "motion_path": "hero cast gleam, tight orbit expands to an arena-wide eight-lane compass sweep, then crescent return stack",
+      "impact_language": "backdrop darkens, eight-way disc launch with first-impact flash and returning crescent cut",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.5,
-        "active": 1.0,
-        "recovery": 6.9,
-        "cancel": 7.6
+        "release": 0.8,
+        "active": 1.6,
+        "recovery": 3.0,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.chakrams.windup",
@@ -83,19 +83,38 @@
         "cancel": "weapon_ultimate.phase.assassin.chakrams.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 12,
+        "max_visual_nodes": 14,
         "crowd_cap": 24,
+        "material_budget": {
+          "max_unique_materials": 16,
+          "max_fullscreen_materials": 2,
+          "measured_unique_materials": 2,
+          "measured_fullscreen_materials": 1
+        },
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "return_pass_damage_owner": "mechanics FAN-1473"
       },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.45,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.moonlit_orbit_stance",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/chakrams.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
       "quality": {
-        "max_viewport_coverage_ratio": 0.12,
+        "max_viewport_coverage_ratio": 0.3,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the eight moon-discs hold their compass ring at a steady expanded radius and the return crescent fades in as a static pale arc, replacing the orbit spin and the per-disc glow sweep",
+        "reduced_motion_substitute": "the translucent arena backdrop and hero cast gleam hold one static intensity, the eight moon-discs hold their compass ring at a steady expanded radius on a single generated frame, and the return crescent fades in as a static pale arc, replacing the orbit spin, the per-disc glow sweep, the first-impact flash and the camera shake",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "peak drawn coverage 0.118 of a 1152x648 viewport at t=4.80s; drawn box x=379..772 y=127..520 leaves 127px clear above and 128px below for the HUD bands (tests/ultimates/presentation/assassin_ultimate_contact_capture.gd resolutions)"
+        "measurement": "the backdrop darken layer reaches modulate alpha 0.45 over a 2400x1400 arena rect and the first-impact flash decays from alpha 0.8 to 0 in 0.35s as a one-shot, so translucent presence spans the viewport while the opaque core (orbit plus crescents) stays under 0.30 of a 1152x648 viewport; the flash never repeats (0 Hz) and the single additive flash frame stays under the 0.25 repeating-coverage cap (tests/ultimates/presentation/assassin_ultimate_contact_capture.gd resolutions)"
       }
     },
     {
