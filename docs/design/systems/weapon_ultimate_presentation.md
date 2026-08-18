@@ -350,6 +350,81 @@ unconverted classes; it only shrinks and its target state is empty. A class
 outside it fails closed on a missing phase or frame-local node requirement, and
 a complete declaration left inside it fails as a stale ratchet entry.
 
+## Per-victim impact (FAN-3008)
+
+The activation scene owns the caster-side spectacle; the hit itself is read on
+each victim. `UltimateVictimImpactPlayer`
+(`scripts/ultimates/presentation/victim_impact_player.gd`) is the one service
+every ultimate scene uses for that, so a retrofit card wires three lines and
+nothing else:
+
+```gdscript
+var impacts := UltimateVictimImpactPlayer.new()
+add_child(impacts)                                   # freed with the scene
+impacts.play(impact_frames, hit_enemies, cast_position)
+```
+
+- `play(frames: SpriteFrames, victims: Array, cast_position: Vector2) -> Dictionary`
+  schedules one burst per victim and returns the plan (`stagger_frames`,
+  `degraded`, `burst_seconds`, node counters) for activation diagnostics.
+  `frames` is the class impact pack; art ships it, this service never
+  substitutes a placeholder.
+- The node ticks itself in `_process`; a headless fixture calls
+  `advance(delta)` instead. `finish()` releases every burst and frees the pool.
+  `snapshot()` returns the same diagnostic Dictionary at any time.
+- Each victim gets the **existing** white flash: the service calls the enemy's
+  own `_show_hit_flash()`, gated by its own `_combat_feedback_enabled()`. It
+  draws no flash of its own and never skips one — the flash fires before the
+  burst node is even acquired, so pool pressure and degradation cannot take it
+  away. Both names are asserted by the budget test. A public wrapper on
+  `Enemy` would be the nicer entry point, but `scripts/enemy.gd` sits exactly on
+  its shrink-only line ratchet, so it belongs to the card that splits that file.
+
+**Ripple.** Victims are sorted by distance from the cast point and split into at
+most 8 distance waves; consecutive waves are staggered by 3-8 frames
+(`RIPPLE_BUDGET_FRAMES / (waves - 1)`, clamped), so the impact reads as one wave
+leaving the hero and a large crowd never stretches the ultimate.
+
+**Budget.** Impact sprites are victim-side feedback in the same contour as the
+enemy hit flash, not part of the activation's declared `max_visual_nodes`. Their
+ceiling is the pool: a map-wide ultimate creates at most `POOL_CAP` nodes at any
+crowd size, and reuses them for the rest. Both constants are measured, not
+chosen — the sweep is reprinted by
+`tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd` on
+every run (60 fps steps, victims placed farthest-first):
+
+| victims | created nodes | peak concurrent bursts | stagger | degraded |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | 1 | 3 | no |
+| 8 | 5 | 5 | 6 | no |
+| 24 | 15 | 15 | 6 | no |
+| 38 | 24 | 24 | 6 | no |
+| 48 (`max_active_cap`) | 24 | 24 | 6 | yes |
+
+- `POOL_CAP = 24` — the measured peak of the reduced variant at the largest
+  scenario crowd (48 = `main.gd` `WAVE_SETTINGS.max_active_cap`), which stays
+  inside the 32-node crowd ceiling one activation may already draw.
+- `DEGRADE_VICTIM_THRESHOLD = 38` — measured: 38 victims still peak at 24
+  full-size bursts, 39 peak at 25 and would force the pool to cut a live burst
+  short. Above the threshold the reduced variant runs (0.60 scale, 0.30 s
+  instead of 0.45 s, i.e. fewer frames at the same rate), which brings the peak
+  back to 24 at 48 victims. The pool therefore recycles nothing anywhere in the
+  scenario range.
+
+Only the scheduling half is machine-measured; GPU fill-rate of the shipped
+impact packs stays review-gated, like the rest of the rendered result.
+
+**Area telegraphs are flavour, not the read.** Because the hit now reads on the
+victim, a blinking area rectangle may no longer be how an ultimate shows its
+reach. `UltimateVisualDirectionContract.scene_telegraph_violations()` walks an
+instantiated activation and fails closed when an area rectangle (a world-space
+`Line2D`/`Polygon2D` rectangle, `ColorRect`/`ReferenceRect`, or a node in the
+`ultimate_area_telegraph` group) is the only drawn effect
+(`telegraph.only_read`), is more than half the drawn nodes
+(`telegraph.dominant`), or alternates visibility three or more times in one
+animation (`telegraph.blink`). A single fade in and out beside real effects is
+two alternations and stays allowed.
+
 ## Timeline lifecycle and integration boundary
 
 `WeaponUltimatePresentationTimeline` gives adapters a small testable lifecycle:
@@ -382,7 +457,14 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd
 ```
+
+The budget test additionally owns the per-victim impact contract: it prints the
+pool/degradation sweep above, asserts the flash fires once per victim in every
+mode, and proves the area-telegraph gate goes red on a scene whose blinking
+frame is the read.
 
 The first test verifies all 51 immutable presentation IDs, the migration
 allowlist integrity, and the fixture cleanup, pause, and headless obligations.
