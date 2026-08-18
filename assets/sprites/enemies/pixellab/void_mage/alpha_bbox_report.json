@@ -1,0 +1,5418 @@
+{
+  "idle_east": [
+    {
+      "source": "void_mage_idle_east.png",
+      "runtime": "void_mage_idle_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        132,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "void_mage_idle_south_east.png",
+      "runtime": "void_mage_idle_south_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        7,
+        55,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        201,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        357,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "void_mage_idle_south.png",
+      "runtime": "void_mage_idle_south.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        6,
+        55,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        221,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        367,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "void_mage_idle_south_west.png",
+      "runtime": "void_mage_idle_south_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        7,
+        49,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "void_mage_idle_west.png",
+      "runtime": "void_mage_idle_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "void_mage_idle_north_west.png",
+      "runtime": "void_mage_idle_north_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        6,
+        50,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "void_mage_idle_north.png",
+      "runtime": "void_mage_idle_north.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        8,
+        55,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        221,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        367,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "void_mage_idle_north_east.png",
+      "runtime": "void_mage_idle_north_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        7,
+        55,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        195,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        353,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "void_mage_move_east_00.png",
+      "runtime": "void_mage_move_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        40,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        110,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_east_01.png",
+      "runtime": "void_mage_move_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        42,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_east_02.png",
+      "runtime": "void_mage_move_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_east_03.png",
+      "runtime": "void_mage_move_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_east_04.png",
+      "runtime": "void_mage_move_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        42,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_east_05.png",
+      "runtime": "void_mage_move_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        40,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "void_mage_move_south_east_00.png",
+      "runtime": "void_mage_move_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        40,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_east_01.png",
+      "runtime": "void_mage_move_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        43,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_east_02.png",
+      "runtime": "void_mage_move_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        43,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_east_03.png",
+      "runtime": "void_mage_move_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        40,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_east_04.png",
+      "runtime": "void_mage_move_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        7,
+        50,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_east_05.png",
+      "runtime": "void_mage_move_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        7,
+        44,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "void_mage_move_south_00.png",
+      "runtime": "void_mage_move_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        46,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_01.png",
+      "runtime": "void_mage_move_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_02.png",
+      "runtime": "void_mage_move_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        5,
+        41,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        86,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        213,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_03.png",
+      "runtime": "void_mage_move_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        44,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_04.png",
+      "runtime": "void_mage_move_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_05.png",
+      "runtime": "void_mage_move_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        5,
+        47,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        132,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "void_mage_move_south_west_00.png",
+      "runtime": "void_mage_move_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        8,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_west_01.png",
+      "runtime": "void_mage_move_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        8,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_west_02.png",
+      "runtime": "void_mage_move_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_west_03.png",
+      "runtime": "void_mage_move_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_west_04.png",
+      "runtime": "void_mage_move_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_south_west_05.png",
+      "runtime": "void_mage_move_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "void_mage_move_west_00.png",
+      "runtime": "void_mage_move_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_west_01.png",
+      "runtime": "void_mage_move_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_west_02.png",
+      "runtime": "void_mage_move_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        10,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_west_03.png",
+      "runtime": "void_mage_move_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_west_04.png",
+      "runtime": "void_mage_move_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_west_05.png",
+      "runtime": "void_mage_move_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        10,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "void_mage_move_north_west_00.png",
+      "runtime": "void_mage_move_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        7,
+        45,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_west_01.png",
+      "runtime": "void_mage_move_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        7,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_west_02.png",
+      "runtime": "void_mage_move_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        7,
+        46,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_west_03.png",
+      "runtime": "void_mage_move_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        7,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_west_04.png",
+      "runtime": "void_mage_move_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        7,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_west_05.png",
+      "runtime": "void_mage_move_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        7,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "void_mage_move_north_00.png",
+      "runtime": "void_mage_move_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_01.png",
+      "runtime": "void_mage_move_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_02.png",
+      "runtime": "void_mage_move_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_03.png",
+      "runtime": "void_mage_move_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_04.png",
+      "runtime": "void_mage_move_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_05.png",
+      "runtime": "void_mage_move_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "void_mage_move_north_east_00.png",
+      "runtime": "void_mage_move_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        52,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_east_01.png",
+      "runtime": "void_mage_move_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_east_02.png",
+      "runtime": "void_mage_move_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        53,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_east_03.png",
+      "runtime": "void_mage_move_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        51,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_east_04.png",
+      "runtime": "void_mage_move_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        51,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_move_north_east_05.png",
+      "runtime": "void_mage_move_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        52,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "void_mage_attack_east_00.png",
+      "runtime": "void_mage_attack_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_east_01.png",
+      "runtime": "void_mage_attack_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        52,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_east_02.png",
+      "runtime": "void_mage_attack_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        56,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        182,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_east_03.png",
+      "runtime": "void_mage_attack_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        68,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        255,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_east_04.png",
+      "runtime": "void_mage_attack_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        68,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        260,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        386,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_east_05.png",
+      "runtime": "void_mage_attack_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        68,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        260,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        386,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "void_mage_attack_south_east_00.png",
+      "runtime": "void_mage_attack_south_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        60,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_east_01.png",
+      "runtime": "void_mage_attack_south_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        58,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_east_02.png",
+      "runtime": "void_mage_attack_south_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        10,
+        9,
+        59,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_east_03.png",
+      "runtime": "void_mage_attack_south_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        59,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        227,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_east_04.png",
+      "runtime": "void_mage_attack_south_east_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        60,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        255,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_east_05.png",
+      "runtime": "void_mage_attack_south_east_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "void_mage_attack_south_00.png",
+      "runtime": "void_mage_attack_south_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_01.png",
+      "runtime": "void_mage_attack_south_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        58,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_02.png",
+      "runtime": "void_mage_attack_south_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        62,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_03.png",
+      "runtime": "void_mage_attack_south_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        8,
+        62,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_04.png",
+      "runtime": "void_mage_attack_south_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        63,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_05.png",
+      "runtime": "void_mage_attack_south_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        65,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        255,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        383,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "void_mage_attack_south_west_00.png",
+      "runtime": "void_mage_attack_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        53,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_west_01.png",
+      "runtime": "void_mage_attack_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        53,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_west_02.png",
+      "runtime": "void_mage_attack_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        55,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        188,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_west_03.png",
+      "runtime": "void_mage_attack_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        59,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_west_04.png",
+      "runtime": "void_mage_attack_south_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        63,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        223,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_south_west_05.png",
+      "runtime": "void_mage_attack_south_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        58,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "void_mage_attack_west_00.png",
+      "runtime": "void_mage_attack_west_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        51,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        140,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_west_01.png",
+      "runtime": "void_mage_attack_west_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        51,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_west_02.png",
+      "runtime": "void_mage_attack_west_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        52,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_west_03.png",
+      "runtime": "void_mage_attack_west_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        9,
+        13,
+        54,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        221,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_west_04.png",
+      "runtime": "void_mage_attack_west_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        57,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        221,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_west_05.png",
+      "runtime": "void_mage_attack_west_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        58,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "void_mage_attack_north_west_00.png",
+      "runtime": "void_mage_attack_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        58,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_west_01.png",
+      "runtime": "void_mage_attack_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        13,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_west_02.png",
+      "runtime": "void_mage_attack_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        59,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_west_03.png",
+      "runtime": "void_mage_attack_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        56,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        251,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_west_04.png",
+      "runtime": "void_mage_attack_north_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        56,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_west_05.png",
+      "runtime": "void_mage_attack_north_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        56,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "void_mage_attack_north_00.png",
+      "runtime": "void_mage_attack_north_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        61,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_01.png",
+      "runtime": "void_mage_attack_north_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        11,
+        60,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_02.png",
+      "runtime": "void_mage_attack_north_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        54,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        195,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_03.png",
+      "runtime": "void_mage_attack_north_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        15,
+        54,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        169,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_04.png",
+      "runtime": "void_mage_attack_north_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        58,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_05.png",
+      "runtime": "void_mage_attack_north_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        57,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "void_mage_attack_north_east_00.png",
+      "runtime": "void_mage_attack_north_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        57,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_east_01.png",
+      "runtime": "void_mage_attack_north_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        54,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_east_02.png",
+      "runtime": "void_mage_attack_north_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        56,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_east_03.png",
+      "runtime": "void_mage_attack_north_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        53,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_east_04.png",
+      "runtime": "void_mage_attack_north_east_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_attack_north_east_05.png",
+      "runtime": "void_mage_attack_north_east_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        57,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "void_mage_hit_east_00.png",
+      "runtime": "void_mage_hit_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        52,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_east_01.png",
+      "runtime": "void_mage_hit_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        13,
+        53,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_east_02.png",
+      "runtime": "void_mage_hit_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        14,
+        55,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_east_03.png",
+      "runtime": "void_mage_hit_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        54,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "void_mage_hit_south_east_00.png",
+      "runtime": "void_mage_hit_south_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        205,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_east_01.png",
+      "runtime": "void_mage_hit_south_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_east_02.png",
+      "runtime": "void_mage_hit_south_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        58,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        256,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        384,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_east_03.png",
+      "runtime": "void_mage_hit_south_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        60,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "void_mage_hit_south_00.png",
+      "runtime": "void_mage_hit_south_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        15,
+        60,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_01.png",
+      "runtime": "void_mage_hit_south_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_02.png",
+      "runtime": "void_mage_hit_south_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_03.png",
+      "runtime": "void_mage_hit_south_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        60,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "void_mage_hit_south_west_00.png",
+      "runtime": "void_mage_hit_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_west_01.png",
+      "runtime": "void_mage_hit_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        188,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_west_02.png",
+      "runtime": "void_mage_hit_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        55,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_south_west_03.png",
+      "runtime": "void_mage_hit_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        53,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "void_mage_hit_west_00.png",
+      "runtime": "void_mage_hit_west_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        50,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        140,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_west_01.png",
+      "runtime": "void_mage_hit_west_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        50,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_west_02.png",
+      "runtime": "void_mage_hit_west_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        50,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_west_03.png",
+      "runtime": "void_mage_hit_west_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        50,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "void_mage_hit_north_west_00.png",
+      "runtime": "void_mage_hit_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        55,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        204,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_west_01.png",
+      "runtime": "void_mage_hit_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        58,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_west_02.png",
+      "runtime": "void_mage_hit_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_west_03.png",
+      "runtime": "void_mage_hit_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        58,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "void_mage_hit_north_00.png",
+      "runtime": "void_mage_hit_north_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        14,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_01.png",
+      "runtime": "void_mage_hit_north_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        61,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_02.png",
+      "runtime": "void_mage_hit_north_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_03.png",
+      "runtime": "void_mage_hit_north_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        9,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "void_mage_hit_north_east_00.png",
+      "runtime": "void_mage_hit_north_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_east_01.png",
+      "runtime": "void_mage_hit_north_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_east_02.png",
+      "runtime": "void_mage_hit_north_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        57,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_hit_north_east_03.png",
+      "runtime": "void_mage_hit_north_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        56,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "void_mage_death_east_00.png",
+      "runtime": "void_mage_death_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        118,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_east_01.png",
+      "runtime": "void_mage_death_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        52,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_east_02.png",
+      "runtime": "void_mage_death_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        58,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_east_03.png",
+      "runtime": "void_mage_death_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        60,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        214,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_east_04.png",
+      "runtime": "void_mage_death_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        8,
+        24,
+        64,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        312,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        235,
+        412,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_east_05.png",
+      "runtime": "void_mage_death_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        5,
+        28,
+        69,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        39
+      ],
+      "scale": 6.282051282051282,
+      "resized_visible_size": [
+        402,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        55,
+        235,
+        457,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "void_mage_death_south_east_00.png",
+      "runtime": "void_mage_death_south_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        59,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_east_01.png",
+      "runtime": "void_mage_death_south_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        60,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_east_02.png",
+      "runtime": "void_mage_death_south_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        59,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        234,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        139,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_east_03.png",
+      "runtime": "void_mage_death_south_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        18,
+        57,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        41
+      ],
+      "scale": 5.975609756097561,
+      "resized_visible_size": [
+        227,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_east_04.png",
+      "runtime": "void_mage_death_south_east_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        17,
+        15,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_east_05.png",
+      "runtime": "void_mage_death_south_east_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        14,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        208,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        360,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "void_mage_death_south_00.png",
+      "runtime": "void_mage_death_south_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_01.png",
+      "runtime": "void_mage_death_south_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        14,
+        62,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_02.png",
+      "runtime": "void_mage_death_south_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        234,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        139,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_03.png",
+      "runtime": "void_mage_death_south_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        15,
+        58,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_04.png",
+      "runtime": "void_mage_death_south_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        57,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_05.png",
+      "runtime": "void_mage_death_south_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        58,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "void_mage_death_south_west_00.png",
+      "runtime": "void_mage_death_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        56,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_west_01.png",
+      "runtime": "void_mage_death_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        15,
+        56,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_west_02.png",
+      "runtime": "void_mage_death_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        192,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_west_03.png",
+      "runtime": "void_mage_death_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        19,
+        54,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_west_04.png",
+      "runtime": "void_mage_death_south_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        15,
+        54,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_south_west_05.png",
+      "runtime": "void_mage_death_south_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "void_mage_death_west_00.png",
+      "runtime": "void_mage_death_west_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        49,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_west_01.png",
+      "runtime": "void_mage_death_west_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        50,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_west_02.png",
+      "runtime": "void_mage_death_west_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        52,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_west_03.png",
+      "runtime": "void_mage_death_west_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        13,
+        20,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_west_04.png",
+      "runtime": "void_mage_death_west_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        11,
+        21,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        292,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        235,
+        402,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_west_05.png",
+      "runtime": "void_mage_death_west_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        63,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        313,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        235,
+        413,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "void_mage_death_north_west_00.png",
+      "runtime": "void_mage_death_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        57,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_west_01.png",
+      "runtime": "void_mage_death_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        58,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_west_02.png",
+      "runtime": "void_mage_death_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        59,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        40
+      ],
+      "scale": 6.125,
+      "resized_visible_size": [
+        288,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        400,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_west_03.png",
+      "runtime": "void_mage_death_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        18,
+        61,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        40
+      ],
+      "scale": 6.125,
+      "resized_visible_size": [
+        294,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        109,
+        235,
+        403,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_west_04.png",
+      "runtime": "void_mage_death_north_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        21,
+        58,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        32
+      ],
+      "scale": 7.65625,
+      "resized_visible_size": [
+        283,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_west_05.png",
+      "runtime": "void_mage_death_north_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        59,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        33
+      ],
+      "scale": 7.424242424242424,
+      "resized_visible_size": [
+        297,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        108,
+        235,
+        405,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "void_mage_death_north_00.png",
+      "runtime": "void_mage_death_north_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        16,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_01.png",
+      "runtime": "void_mage_death_north_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        18,
+        55,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_02.png",
+      "runtime": "void_mage_death_north_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        19,
+        55,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_03.png",
+      "runtime": "void_mage_death_north_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        22,
+        19,
+        54,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        39
+      ],
+      "scale": 6.282051282051282,
+      "resized_visible_size": [
+        201,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_04.png",
+      "runtime": "void_mage_death_north_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        19,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        35
+      ],
+      "scale": 7.0,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_05.png",
+      "runtime": "void_mage_death_north_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        19,
+        60,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        38
+      ],
+      "scale": 6.447368421052632,
+      "resized_visible_size": [
+        290,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        235,
+        401,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "void_mage_death_north_east_00.png",
+      "runtime": "void_mage_death_north_east_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        12,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        204,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_east_01.png",
+      "runtime": "void_mage_death_north_east_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        59,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_east_02.png",
+      "runtime": "void_mage_death_north_east_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        58,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        214,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_east_03.png",
+      "runtime": "void_mage_death_north_east_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        58,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_east_04.png",
+      "runtime": "void_mage_death_north_east_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        59,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "void_mage_death_north_east_05.png",
+      "runtime": "void_mage_death_north_east_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        60,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    }
+  ]
+}
