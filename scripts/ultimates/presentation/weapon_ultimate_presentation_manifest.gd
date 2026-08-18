@@ -78,7 +78,9 @@ static func manifest_for_profile(profile: Dictionary) -> Dictionary:
 	}
 	# v2 presence/identity declarations pass through only when the class-local
 	# record ships them, so v1 manifests keep their exact shape until reworked.
-	for block in ["presence", "identity"]:
+	# `quality` rides along so the runtime can honor the declared flash budget
+	# (`full_screen_flash_hz`, `max_flash_coverage_ratio`).
+	for block in ["presence", "identity", "quality"]:
 		if local.has(block):
 			manifest[block] = local[block]
 	return manifest
@@ -130,7 +132,7 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 		"max_visual_nodes": max_visual_nodes,
 		"crowd_cap": crowd_cap,
 	}
-	for block in ["presence", "identity"]:
+	for block in ["presence", "identity", "quality"]:
 		if weapon.get(block) is Dictionary:
 			record[block] = (weapon[block] as Dictionary).duplicate(true)
 	return record
