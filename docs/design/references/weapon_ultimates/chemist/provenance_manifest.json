@@ -50,19 +50,52 @@
     "normalized_by": "bit-exact copy of the PixelLab frames (already 256x256 full-frame RGBA); no crop, no matte, no palette shift"
   },
   "phase_binding": {
-    "windup": {"seconds": 0.0, "frames": "0-1 (kegs idle, first ignitions)"},
-    "release": {"seconds": 0.5, "frames": "2-4 (five-beat ignition, pentagram brightens and rotates)"},
-    "active": {"seconds": 1.3, "frames": "5-6 (inward crystal implosion)"},
-    "recovery": {"seconds": 2.2, "frames": "7-8 (gold-white transmutation blast, radiance, fade)"},
-    "cancel": {"seconds": 3.4, "frames": "alpha reaches zero; Timeline releases every handle"}
+    "windup": {
+      "seconds": 0.0,
+      "frames": "0-3 (kegs idle, then the five charges ignite one after another)"
+    },
+    "release": {
+      "seconds": 0.95,
+      "frames": "4-5 (pentagram brightens and rotates through the cast ceremony)"
+    },
+    "active": {
+      "seconds": 1.3,
+      "frames": "6-8 (inward crystal implosion into the gold-white transmutation blast)"
+    },
+    "recovery": {
+      "seconds": 2.9,
+      "frames": "8 held (radiance decays while the sigil sweeps outward and evaporates)"
+    },
+    "cancel": {
+      "seconds": 3.6,
+      "frames": "alpha reaches zero; Timeline releases every handle"
+    }
   },
   "distinctness": "acid_flask is one colossal emerald flask and a green lake; homunculus_vial is an emerald avatar fusion; blast_powder is the only gold-rune pentagram with five multicolor kegs and a gold-white crystal implosion blast",
   "verification": {
     "commands": [
-      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd"},
-      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd"},
-      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"},
-      {"command": "windowed capture: python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/chemist_ultimate_contact_capture.gd"}
+      {
+        "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd"
+      },
+      {
+        "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd"
+      },
+      {
+        "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"
+      },
+      {
+        "command": "windowed capture: python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/chemist_ultimate_contact_capture.gd"
+      }
     ]
+  },
+  "v2_presentation_rework": {
+    "card": "FAN-2957",
+    "reworked_at": "2026-08-18",
+    "decision": "the FAN-2550 PixelLab frames carry the v2 envelope: no new PixelLab job; beats re-spaced to 0.95/1.3/2.9/3.6s, arena-wide sigil scale, full-screen backdrop veil, hero glow, camera shake, 110ms hitstop and SFX ducking",
+    "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+    "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+    "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+    "scene_driver": "scenes/vfx/ultimates/chemist/chemist_blast_powder_v2.gd",
+    "asset_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
   }
 }

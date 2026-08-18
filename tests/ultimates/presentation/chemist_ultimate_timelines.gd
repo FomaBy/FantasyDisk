@@ -13,11 +13,11 @@ const PACKS := [
 	{
 		"weapon_id": "blast_powder",
 		"scene": SCENES["blast_powder"],
-		"time": 1.6,
-		"title": "BLAST POWDER — PENTAGRAM",
+		"time": 1.45,
+		"title": "BLAST POWDER — PHILOSOPHERS' EXPLOSION",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.78, 0.28),
-		"required_nodes": ["PhilosophersRitual", "GoldRadiance"],
+		"required_nodes": ["BackdropVeil", "AlchemistGlow", "PhilosophersRitual", "PentagramSigil", "GoldRadiance"],
 	},
 	{
 		"weapon_id": "acid_flask",
@@ -56,6 +56,14 @@ const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
 const AVATAR_FRAME_COUNT := 9
 const AVATAR_SLAM_BEATS := [1.75, 2.6, 3.45]
+## Manual stepping budget for the blast_powder driver gate: one step is finer
+## than every device window, and the shake window is the driver's own constant.
+const DRIVER_STEP := 0.01
+const DRIVER_SHAKE_WINDOW := 0.55
+const DRIVER_DUCK_DB := -9.0
+
+
+var _blast_package := {}
 
 
 class HandleProbe extends RefCounted:
@@ -81,6 +89,7 @@ func _initialize() -> void:
 	_expect(packages.size() == 3, "manifest must contain exactly three Chemist packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
@@ -88,8 +97,21 @@ func _initialize() -> void:
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Chemist ultimate timelines passed (distinct scenes, frozen phases, lifecycle, text fit, and evidence).")
+	_blast_package = packages.get("blast_powder", {}) as Dictionary
+
+
+## _initialize runs before the root window joins the tree, so nothing added
+## there gets _ready, autoplay or a current camera. The driver gate needs all
+## three, so it runs on the first real frame instead.
+func _process(_delta: float) -> bool:
+	var errors: Array[String] = []
+	_check_blast_driver(_blast_package, errors)
+	if not errors.is_empty():
+		_finish(errors)
+		return true
+	print("Chemist ultimate timelines passed (distinct scenes, frozen phases, lifecycle, driver devices, text fit, and evidence).")
 	quit(0)
+	return true
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
@@ -215,6 +237,173 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 			_expect((handle as HandleProbe).released == 1, "%s %s must release each handle once" % [weapon_id, reason], errors)
 
 
+## FAN-2957: the v2 presentation contract for the migrated blast_powder pair.
+## The envelope itself is asserted by the shared distinctness test once the
+## allowlist entry is gone; this gate owns the class-local declarations that
+## make the effect full-screen and identity-bearing.
+func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
+	_expect(not package.is_empty(), "blast_powder package must exist for the v2 gate", errors)
+	if package.is_empty():
+		return
+	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	root.add_child(scene)
+	var presence := package.get("presence", {}) as Dictionary
+	_expect(presence.get("fullscreen_footprint") == true, "blast_powder must declare a fullscreen footprint", errors)
+	_expect(str(presence.get("backdrop", "")) == "darken", "blast_powder must declare the darken backdrop", errors)
+	_expect(presence.get("camera_shake") == true, "blast_powder must declare camera shake", errors)
+	var hitstop := float(presence.get("hitstop_ms", 0.0))
+	_expect(hitstop >= 80.0 and hitstop <= 150.0, "blast_powder hitstop must stay in the 80-150ms corridor", errors)
+	_expect(presence.get("sfx_ducking") == true, "blast_powder must declare SFX ducking", errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "blast_powder must declare its hero cast pose", errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "blast_powder weapon silhouette asset must exist: %s" % silhouette, errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "blast_powder must resolve its class palette", errors)
+	var performance := package.get("performance", {}) as Dictionary
+	_expect(int(performance.get("max_unique_materials", 0)) > 0, "blast_powder must declare a positive material budget", errors)
+	_expect(int(performance.get("max_fullscreen_materials", 0)) > 0, "blast_powder must declare its full-screen material budget", errors)
+	var veil := scene.get_node_or_null("BackdropVeil") as CanvasItem
+	_expect(veil != null and veil.visible, "blast_powder must carry a backdrop veil node", errors)
+	if veil != null:
+		_expect(bool(veil.get_meta("fullscreen_layer", false)), "the backdrop veil must be marked as the fullscreen layer", errors)
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(
+			int(scene.get_meta(budget_key, 0)) == int(performance.get(budget_key, -1)),
+			"scene and manifest must agree on %s" % budget_key,
+			errors
+		)
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var driver := scene.get_script() as GDScript
+	_expect(is_equal_approx(float(timing.get("release", -1.0)), float(driver.get_script_constant_map().get("RELEASE_AT", -1.0))), "scene driver release beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("active", -1.0)), float(driver.get_script_constant_map().get("IMPACT_AT", -1.0))), "scene driver impact beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("recovery", -1.0)), float(driver.get_script_constant_map().get("RECOVERY_AT", -1.0))), "scene driver recovery beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("cancel", -1.0)), float(driver.get_script_constant_map().get("CANCEL_AT", -1.0))), "scene driver cancel beat must match the manifest", errors)
+	_expect(is_equal_approx(float(driver.get_script_constant_map().get("HITSTOP_MS", -1.0)), hitstop), "scene driver hitstop must match the declared presence value", errors)
+	scene.queue_free()
+
+
+## FAN-2987: the four driver-owned devices the manifest cannot assert, proven by
+## stepping the live scene. Each one shipped broken once, so each one is gated:
+## pause must not touch a property AnimationPlayer does not have, the shake must
+## obey the player's setting, overlapping casts must hand the SFX bus back, and
+## the envelope must end where the manifest says it does.
+func _check_blast_driver(package: Dictionary, errors: Array[String]) -> void:
+	if package.is_empty():
+		return
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	_check_driver_pause(errors)
+	_check_driver_shake_setting(float(timing.get("active", 1.3)), errors)
+	_check_driver_sfx_overlap(float(timing.get("release", 0.95)), errors)
+	_check_driver_envelope(float(timing.get("cancel", 3.6)), errors)
+
+
+func _check_driver_pause(errors: Array[String]) -> void:
+	var scene := _driver_scene()
+	var timeline := scene.get_node("Timeline") as AnimationPlayer
+	_expect(timeline.is_playing(), "the blast_powder timeline must autoplay", errors)
+	scene.set_paused(true)
+	_expect(not timeline.is_playing(), "pause must hold the drawn timeline", errors)
+	scene.set_paused(false)
+	_expect(timeline.is_playing(), "unpause must resume the drawn timeline", errors)
+	_release_driver_scene(scene)
+
+
+## The player's screen_shake toggle is the whole gate: with it off the effect may
+## not move the camera by a single pixel, exactly like enemy.gd slam shake.
+func _check_driver_shake_setting(impact_at: float, errors: Array[String]) -> void:
+	var camera := Camera2D.new()
+	root.add_child(camera)
+	camera.make_current()
+	var restore: Variant = root.get_meta("screen_shake") if root.has_meta("screen_shake") else null
+	for shake_enabled in [true, false]:
+		root.set_meta("screen_shake", shake_enabled)
+		camera.offset = Vector2.ZERO
+		var scene := _driver_scene()
+		var veil := scene.get_node("BackdropVeil") as CanvasItem
+		_expect(
+			is_equal_approx(veil.self_modulate.a, 1.0) == shake_enabled,
+			"the declared reduced-motion fade must follow the screen_shake setting",
+			errors
+		)
+		var peak := 0.0
+		var elapsed := 0.0
+		while elapsed < impact_at + DRIVER_SHAKE_WINDOW:
+			scene._process(DRIVER_STEP)
+			elapsed += DRIVER_STEP
+			peak = maxf(peak, camera.offset.length())
+		if shake_enabled:
+			_expect(peak > 0.0, "the impact must shake the camera while screen_shake is on", errors)
+		else:
+			_expect(is_zero_approx(peak), "screen_shake off must leave the camera at 0.000 px, saw %.3f px" % peak, errors)
+		_release_driver_scene(scene)
+	if restore == null:
+		root.remove_meta("screen_shake")
+	else:
+		root.set_meta("screen_shake", restore)
+	root.remove_child(camera)
+	camera.free()
+
+
+## Two casts crossing over: the second one must not record the already-ducked
+## level as the value to restore, and the earlier one finishing first must not
+## strand the bus below its pre-cast volume.
+func _check_driver_sfx_overlap(release_at: float, errors: Array[String]) -> void:
+	var created := AudioServer.get_bus_index("SFX") == -1
+	if created:
+		AudioServer.add_bus(AudioServer.bus_count)
+		AudioServer.set_bus_name(AudioServer.bus_count - 1, "SFX")
+	var bus := AudioServer.get_bus_index("SFX")
+	var before := AudioServer.get_bus_volume_db(bus)
+	var first := _driver_scene()
+	var second := _driver_scene()
+	first._process(release_at + DRIVER_STEP)
+	second._process(release_at + DRIVER_STEP)
+	_expect(
+		is_equal_approx(AudioServer.get_bus_volume_db(bus), before + DRIVER_DUCK_DB),
+		"overlapping casts must duck the SFX bus once, saw %.2f dB" % AudioServer.get_bus_volume_db(bus),
+		errors
+	)
+	_release_driver_scene(first)
+	_release_driver_scene(second)
+	_expect(
+		is_equal_approx(AudioServer.get_bus_volume_db(bus), before),
+		"overlapping casts must hand the SFX bus back at %.2f dB, saw %.2f dB" % [before, AudioServer.get_bus_volume_db(bus)],
+		errors
+	)
+	if created:
+		AudioServer.remove_bus(bus)
+
+
+## The hitstop freeze may not be added on top of the declared envelope: the
+## driver stops exactly at the manifest cancel, freeze included.
+func _check_driver_envelope(cancel_at: float, errors: Array[String]) -> void:
+	var scene := _driver_scene()
+	var elapsed := 0.0
+	while scene.is_processing() and elapsed < cancel_at * 2.0:
+		scene._process(DRIVER_STEP)
+		elapsed += DRIVER_STEP
+	_expect(
+		absf(elapsed - cancel_at) <= DRIVER_STEP * 2.0,
+		"the driver envelope must end at the declared %.2fs cancel, ended at %.3fs" % [cancel_at, elapsed],
+		errors
+	)
+	_release_driver_scene(scene)
+
+
+func _driver_scene() -> Node2D:
+	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	root.add_child(scene)
+	return scene
+
+
+## queue_free() only lands at the end of the frame, long after the next check
+## reads the SFX bus, so every stepped instance releases its devices explicitly.
+func _release_driver_scene(scene: Node2D) -> void:
+	scene.finish("node_end")
+	root.remove_child(scene)
+	scene.free()
+
+
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 	for field in ["silhouette", "motion_path", "timing_rhythm", "impact_language"]:
 		var values := {}
@@ -239,7 +428,8 @@ func _check_capture_composition(errors: Array[String]) -> void:
 			for raw_path in pack.get("required_nodes", []) as Array:
 				var item := scene.get_node_or_null(str(raw_path)) as CanvasItem
 				_expect(item != null and is_capture_item_visible(item, scene), "%s required item must be visible: %s" % [context, raw_path], errors)
-				if item != null:
+				var is_fullscreen_layer := item != null and bool(item.get_meta("fullscreen_layer", false))
+				if item != null and not is_fullscreen_layer:
 					_expect(zone.grow(0.5).encloses(transformed_capture_bounds(capture_item_bounds(scene, item), scene)), "%s item must fit its panel: %s" % [context, raw_path], errors)
 			scene.queue_free()
 
@@ -324,7 +514,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene):
+			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene) \
+					and not bool(child.get_meta("fullscreen_layer", false)):
 				var item_bounds := capture_item_bounds(scene, child as CanvasItem)
 				if item_bounds.has_area():
 					bounds = item_bounds if not found else bounds.merge(item_bounds)
