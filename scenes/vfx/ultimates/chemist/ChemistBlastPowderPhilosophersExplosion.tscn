@@ -154,7 +154,8 @@ metadata/motion_path = "charges ignite during the cast ceremony, lock into a pen
 metadata/impact_language = "one crystalline implosion into a gold-white transmutation flash that darkens and shakes the whole screen"
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 18
-metadata/material_budget = 1
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
 [node name="BackdropVeil" type="Polygon2D" parent="."]
 z_index = 30

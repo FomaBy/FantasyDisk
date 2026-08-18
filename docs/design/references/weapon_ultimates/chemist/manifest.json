@@ -111,15 +111,16 @@
       "performance": {
         "max_visual_nodes": 6,
         "crowd_cap": 18,
-        "material_budget": 1,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage",
-        "v2_budget_note": "FAN-2957 re-derivation: 5 drawn nodes (backdrop veil, hero glow, PixelLab frames, pentagram sigil, gold radiance) under a 6-node cap; one shared additive CanvasItemMaterial declares the material budget"
+        "v2_budget_note": "FAN-2957 re-derivation: 5 drawn nodes (backdrop veil, hero glow, PixelLab frames, pentagram sigil, gold radiance) under a 6-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.3,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the pentagram sigil and hero glow hold steady edges and one held brightness step in place of the rotation sweep, implosion pull and screen shake; the single flash becomes a calm fade",
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the impact shake, and the release flash plays as a calm fade — backdrop veil and gold radiance keep every beat at a damped peak",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 1.0,
