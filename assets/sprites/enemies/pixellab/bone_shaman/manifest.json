@@ -22,6 +22,24 @@
     "north",
     "north-east"
   ],
+  "animation_group_ids": {
+    "move": "18998370-89ac-47e4-99de-d8c8c81013d3",
+    "attack": "ccd339c7-27b0-4762-82a1-c5ec712e02a2",
+    "hit": "78df8f82-3393-4474-b997-a3c4dabb0b45",
+    "death": "e7541097-9650-4e8f-9eed-301337b93855"
+  },
+  "fan2912_rework": {
+    "rework_for": "FAN-2618 candidate 38e0752b36c318dd86c70b9039b85fbac06637f5, rejected by QA FAN-2752",
+    "regenerated_rows": ["attack_west", "attack_east", "attack_north", "attack_north_east"],
+    "reason": "identity substitution, missing/flickering staff, in-row viewpoint rotation, static frames read as no attack",
+    "jobs": {
+      "attack_west": {"mode": "v3", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "a473dcc5-8ed5-4498-8824-912539dc8f02", "source_frame_indices": [1, 2, 3, 4, 5, 6]},
+      "attack_east": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "b5022c4a-af9f-4b41-bf2a-8d2a8e714e4a", "source_frame_indices": [0, 3, 6, 9, 12, 15]},
+      "attack_north": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "41030a2e-cd4e-4f35-a102-1d37cefd088b", "source_frame_indices": [0, 3, 6, 9, 12, 15]},
+      "attack_north_east": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "bdae2049-8965-44aa-9876-5934529f194e", "source_frame_indices": [0, 3, 6, 9, 12, 15]}
+    },
+    "notes": "v3 mode failed identity/staff readability twice on east/north/north-east; escalated to pro mode (cross-direction reference, 16 fixed frames for this 64px canvas), then evenly sampled 6 of the 16 frames to match the existing attack frame-count/fps contract. west passed on the first v3 attempt."
+  },
   "states": {
     "idle": {
       "frame_count": 1,
