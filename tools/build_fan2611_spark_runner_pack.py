@@ -125,6 +125,29 @@ def normalize_frame(source_path: Path, dest_path: Path) -> dict:
     }
 
 
+def check_equal_frame_counts(state: str, frame_counts: dict[str, int]) -> None:
+    """Raise if a state's per-direction frame counts disagree.
+
+    A silent count mismatch is exactly how FAN-2611/FAN-3045 slipped past
+    review: the builder wrote whatever PixelLab returned per direction with
+    no equal-count assertion, so five rows shipped one frame short.
+    """
+    distinct_counts = set(frame_counts.values())
+    if len(distinct_counts) <= 1:
+        return
+    expected = max(distinct_counts, key=lambda c: list(frame_counts.values()).count(c))
+    offenders = ", ".join(
+        f"{direction} ({count}f)"
+        for direction, count in frame_counts.items()
+        if count != expected
+    )
+    raise RuntimeError(
+        f"frame count mismatch for state '{state}': expected {expected} frames "
+        f"in every direction, but {offenders} disagree. Generate the missing "
+        f"frame(s) — do not copy an adjacent frame or silently pad the pack."
+    )
+
+
 def frame_block(resource_ids: list[str], speed: float, loop: bool, name: str) -> str:
     frames = ",\n".join(
         '{\n"duration": 1.0,\n"texture": ExtResource("%s")\n}' % rid for rid in resource_ids
@@ -189,6 +212,7 @@ def main() -> int:
     for state, timing in STATE_TIMING.items():
         if state == "idle":
             continue
+        check_equal_frame_counts(state, {d: len(animations[state][d]) for d in DIRECTIONS})
         for direction in DIRECTIONS:
             s = suffix(direction)
             urls = animations[state][direction]

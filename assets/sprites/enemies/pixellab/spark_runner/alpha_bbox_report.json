@@ -920,6 +920,35 @@
         301,
         342
       ]
+    },
+    {
+      "source": "spark_runner_move_south_west_05.png",
+      "runtime": "spark_runner_move_south_west_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        25,
+        129,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        75
+      ],
+      "scale": 2.4266666666666667,
+      "resized_visible_size": [
+        231,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        160,
+        307,
+        342
+      ]
     }
   ],
   "move_west": [
@@ -2825,6 +2854,35 @@
         328,
         342
       ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_06.png",
+      "runtime": "spark_runner_attack_north_west_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        49,
+        49,
+        165,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        116,
+        87
+      ],
+      "scale": 2.0919540229885056,
+      "resized_visible_size": [
+        243,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        313,
+        342
+      ]
     }
   ],
   "attack_north": [
@@ -2997,6 +3055,35 @@
       ],
       "runtime_alpha_bbox": [
         110,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_06.png",
+      "runtime": "spark_runner_attack_north_06.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        30,
+        28,
+        115,
+        121
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        93
+      ],
+      "scale": 1.956989247311828,
+      "resized_visible_size": [
+        166,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        109,
         160,
         275,
         342
@@ -3175,6 +3262,35 @@
         26,
         160,
         358,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_06.png",
+      "runtime": "spark_runner_attack_north_east_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        58,
+        163,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        135,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        319,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        32,
+        160,
+        351,
         342
       ]
     }
@@ -5529,6 +5645,35 @@
     {
       "source": "spark_runner_death_north_west_05.png",
       "runtime": "spark_runner_death_north_west_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        23,
+        86,
+        164,
+        142
+      ],
+      "source_alpha_bbox_size": [
+        141,
+        56
+      ],
+      "scale": 2.723404255319149,
+      "resized_visible_size": [
+        384,
+        153
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        189,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_06.png",
+      "runtime": "spark_runner_death_north_west_06.png",
       "source_size": [
         188,
         188

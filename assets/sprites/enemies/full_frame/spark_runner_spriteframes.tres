@@ -203,6 +203,11 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_04.png" id="201_sr"]
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_05.png" id="202_sr"]
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_06.png" id="203_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_05.png" id="204_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_06.png" id="205_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_06.png" id="206_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_06.png" id="207_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_06.png" id="208_sr"]
 
 [resource]
 animations = [
@@ -385,6 +390,10 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("31_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_sr")
 }],
 "loop": true,
 "name": &"move_south_west",
@@ -695,6 +704,10 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("96_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_sr")
 }],
 "loop": false,
 "name": &"attack_north_west",
@@ -724,6 +737,10 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("102_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_sr")
 }],
 "loop": false,
 "name": &"attack_north",
@@ -753,6 +770,10 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("108_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_sr")
 }],
 "loop": false,
 "name": &"attack_north_east",
@@ -1147,6 +1168,10 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("189_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_sr")
 }],
 "loop": false,
 "name": &"death_north_west",
