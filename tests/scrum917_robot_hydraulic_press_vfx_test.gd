@@ -189,15 +189,14 @@ func _test_visual_scene_geometry_and_timing() -> bool:
 		return _fail("PixelLab jaws must rotate 90 degrees onto the perpendicular compression axis.")
 	if sprite.scale.distance_to(Vector2(300.0 / 256.0, 430.0 / 256.0)) > 0.001:
 		return _fail("PixelLab source scale must exactly map to 430x300 geometry.")
-	var upper := effect.get_node("UpperJaw") as Line2D
-	var lower := effect.get_node("LowerJaw") as Line2D
-	if not is_equal_approx(upper.position.y, -150.0) or not is_equal_approx(lower.position.y, 150.0):
-		return _fail("Force jaws must start on opposite full-width corridor edges.")
+	# FAN-2981: the corridor must be carried by the authored PixelLab frames
+	# alone — no Line2D/Polygon2D zone markup may remain in the press VFX.
+	for child in effect.get_children():
+		if child is Line2D or child is Polygon2D:
+			return _fail("Press VFX must stay free of zone markup nodes.")
 	await create_timer(0.22).timeout
 	if not bool(effect.get_meta("active_frame_reached", false)) or sprite.frame < EXPECTED_ACTIVE_FRAME:
 		return _fail("PixelLab active crush frame did not reach the 0.20s hit marker.")
-	if absf(upper.position.y + 60.0) > 3.0 or absf(lower.position.y - 60.0) > 3.0:
-		return _fail("Force jaws did not converge side-to-centre by hit time.")
 	# Calibrator must widen only the visual corridor width while preserving length.
 	var calibrated := packed.instantiate() as Node2D
 	root.add_child(calibrated)

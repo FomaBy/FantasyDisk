@@ -3,15 +3,14 @@ extends Node2D
 
 ## Animator-only SCRUM-895 weapon readability. Damage membership remains in
 ## BerserkWeapon; this node mirrors its sweep radius/angle without changing it.
+## FAN-2981: the sector is expressed only by the shared AttackVfx slash layer
+## plus the PixelLab axe ghost — no Line2D/Polygon2D zone markup.
 
 const EFFECT_ID := "berserk_axe_pixel_lab_cleave"
 const PIXELLAB_OBJECT_ID := "d5452069-7d6e-4646-8b9d-379f0c332f17"
 const PIXELLAB_ANIMATION_GROUP_ID := "7e9c7287-d8f0-4461-844e-c1e0bfc5e817"
 const FRAME_COUNT := 8
 
-@onready var sector_fill: Polygon2D = $SectorFill
-@onready var outer_arc: Line2D = $OuterArc
-@onready var inner_trail: Line2D = $InnerTrail
 @onready var weapon_pivot: Node2D = $WeaponPivot
 @onready var axe_ghost: AnimatedSprite2D = $WeaponPivot/AxeGhost
 
@@ -33,7 +32,7 @@ func configure(
 	radius: float,
 	sweep_degrees: float,
 	duration: float,
-	color: Color
+	_color: Color
 ) -> void:
 	_ensure_nodes()
 	if axe_ghost == null:
@@ -43,23 +42,6 @@ func configure(
 	_radius = maxf(radius, 32.0)
 	_sweep_degrees = clampf(sweep_degrees, 20.0, 220.0)
 	var half_sweep := deg_to_rad(_sweep_degrees * 0.5)
-	var zone_points := PackedVector2Array([Vector2.ZERO])
-	var arc_points := PackedVector2Array()
-	var inner_points := PackedVector2Array()
-	for index in range(25):
-		var angle := lerpf(-half_sweep, half_sweep, float(index) / 24.0)
-		var outer := Vector2.from_angle(angle) * _radius
-		zone_points.append(outer)
-		arc_points.append(outer)
-		inner_points.append(Vector2.from_angle(angle) * _radius * 0.62)
-	sector_fill.polygon = zone_points
-	sector_fill.color = Color(color.r, color.g, color.b, 0.075)
-	outer_arc.points = arc_points
-	outer_arc.default_color = Color(1.0, 0.46, 0.16, 0.58)
-	outer_arc.width = 7.0
-	inner_trail.points = inner_points
-	inner_trail.default_color = Color(0.82, 0.16, 0.06, 0.34)
-	inner_trail.width = 4.0
 
 	weapon_pivot.rotation = -half_sweep
 	axe_ghost.position = Vector2(_radius * 0.43, 0.0)
@@ -82,9 +64,6 @@ func configure(
 
 
 func _ensure_nodes() -> void:
-	if sector_fill == null: sector_fill = get_node_or_null("SectorFill") as Polygon2D
-	if outer_arc == null: outer_arc = get_node_or_null("OuterArc") as Line2D
-	if inner_trail == null: inner_trail = get_node_or_null("InnerTrail") as Line2D
 	if weapon_pivot == null: weapon_pivot = get_node_or_null("WeaponPivot") as Node2D
 	if axe_ghost == null: axe_ghost = get_node_or_null("WeaponPivot/AxeGhost") as AnimatedSprite2D
 

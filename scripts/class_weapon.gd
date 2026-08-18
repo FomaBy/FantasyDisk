@@ -3296,18 +3296,12 @@ func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
 	field_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(field_id))
 
 
-# Разметка квадрата: 4 грани + руны четырёх стихий по углам. Полупрозрачно и
-# под врагами (z_index поля 3), чтобы зона читалась квадратом, но не закрывала бой.
+# FAN-2981: квадрат читается только текстурными рунами четырёх стихий по углам
+# (под врагами, z_index поля 3). Линейная разметка граней удаллена — зона
+# унифицирована по образцу меча: нарисованный спрайт, без Line2D-схем.
 func _draw_square_field(field_root: Node2D, half_size: float) -> void:
 	var corners := [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]
 	for corner_index in range(4):
-		var edge_start: Vector2 = (corners[corner_index] as Vector2) * half_size
-		var edge_end: Vector2 = (corners[(corner_index + 1) % 4] as Vector2) * half_size
-		var edge := Line2D.new()
-		edge.points = PackedVector2Array([edge_start, edge_end])
-		edge.width = 6.0
-		edge.default_color = Color(visual_color.r, visual_color.g, visual_color.b, 0.34)
-		field_root.add_child(edge)
 		var rune := Sprite2D.new()
 		rune.name = "ElementRune%d" % corner_index
 		rune.texture = _weapon_visual_texture()
