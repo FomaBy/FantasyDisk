@@ -97,11 +97,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
 		},
+		# FAN-2610: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"ash_marksman": {
 			"frames": "res://assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres",
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -42.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"spark_runner": {
 			"frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
