@@ -1,11 +1,30 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_spriteframes.tres" id="1_lake_frames"]
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/chemist/chemist_acid_flask_v2.gd" id="2_v2_driver"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/impact_ring.png" id="3_ring_texture"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+width = 256
+height = 256
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(1, 1, 1, 0.72, 1, 1, 1, 0.9, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+width = 128
+height = 128
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.38, 1, 1, 1, 0)
 
 [sub_resource type="Animation" id="Animation_tsar_flask"]
 resource_name = "ultimate"
@@ -92,7 +111,7 @@ tracks/6/keys = {
 "times": PackedFloat32Array(0, 0.85, 1.0, 2.2, 3.35, 3.95),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.4, 0.4), Vector2(0.8, 0.8), Vector2(1.1, 1.1), Vector2(1.9, 1.9), Vector2(2.4, 2.4), Vector2(2.6, 2.6)]
+"values": [Vector2(0.92, 0.92), Vector2(1.83, 1.83), Vector2(2.52, 2.52), Vector2(4.35, 4.35), Vector2(5.49, 5.49), Vector2(5.95, 5.95)]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
@@ -147,14 +166,18 @@ metadata/max_fullscreen_materials = 1
 
 [node name="BackdropVeil" type="Polygon2D" parent="."]
 z_index = 30
+texture = SubResource("GradientTexture2D_veil")
 polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+uv = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
 color = Color(0.02, 0.05, 0.03, 0)
 metadata/fullscreen_layer = true
 
 [node name="AcidSurgeGlow" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
 z_index = 40
+texture = SubResource("GradientTexture2D_glow")
 polygon = PackedVector2Array(0, -46, 33, -33, 46, 0, 33, 33, 0, 46, -33, 33, -46, 0, -33, -33)
+uv = PackedVector2Array(0.5, 0, 0.86, 0.14, 1, 0.5, 0.86, 0.86, 0.5, 1, 0.14, 0.86, 0, 0.5, 0.14, 0.14)
 color = Color(0.62, 1, 0.4, 0)
 
 [node name="TsarFlask" type="AnimatedSprite2D" parent="."]
@@ -165,14 +188,11 @@ frame = 8
 scale = Vector2(1.35, 1.35)
 modulate = Color(1, 1, 1, 0)
 
-[node name="LakeRing" type="Line2D" parent="."]
+[node name="LakeRing" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
 z_index = 35
-points = PackedVector2Array(0, -238, 150, -170, 238, -40, 196, 120, 60, 236, -110, 214, -232, 80, -214, -120, -90, -236, 0, -238)
-width = 12.0
-default_color = Color(0.6, 1, 0.38, 0.9)
-closed = true
-antialiased = true
+texture = ExtResource("3_ring_texture")
+modulate = Color(0.6, 1, 0.38, 0)
 modulate = Color(1, 1, 1, 0)
 
 [node name="ChargePillars" type="Node2D" parent="."]
