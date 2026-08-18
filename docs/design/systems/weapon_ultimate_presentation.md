@@ -11,6 +11,112 @@ selected weapon-owned scene separately from normal attacks.
 for the existing profile, presentation, animation, VFX, SFX, and Cast lifecycle
 IDs. This package derives from those IDs and must not rename them.
 
+## Combat VFX art standard (v1.2, owner mandate 2026-08-18)
+
+Companion to Ultimate Direction v2 (FAN-2944); mandate history and retrofit
+plan live on FAN-3002. v1 banned primitives, v1.1 added per-victim impact,
+v1.2 made PixelLab the only production route and extended scope to basic
+attacks. The sections below are the current, merged text.
+
+### No naked primitives in combat presentation
+
+`ColorRect`, `Polygon2D`, untextured `Line2D` and flat `draw_*` calls
+(`draw_circle`, `draw_rect`, `draw_polygon`, `draw_line`, `draw_arc`) are
+banned as VISIBLE combat effects. The ban covers both authored `.tscn` nodes
+and nodes constructed from GDScript at runtime. Masks and shader inputs under
+a texture are allowed; a `Line2D` carrying a texture is a textured stroke, not
+a naked primitive.
+
+The rule is machine-enforced by `tests/combat_primitive_ratchet_test.gd`,
+which scans combat scenes and combat scripts for both authored nodes and
+runtime construction. Existing violators live in its `SCENE_ALLOWLIST` /
+`SCRIPT_ALLOWLIST` — a ratchet with the same rules as
+`ContactSheetBeatsContract.MIGRATION_ALLOWLIST`:
+
+- both lists only shrink; the target state is empty;
+- a violation outside the lists fails, and so does a violation count that grew
+  inside them;
+- a stale entry — the violator was fixed or deleted but the entry remains, or
+  its count dropped — fails until the entry shrinks with the fix;
+- entries record exact violation counts measured on `dev @ 13c0855d`; each
+  FAN-3002 retrofit card removes its own entries.
+
+### Production route: PixelLab animated pack → flipbook scene
+
+Every combat visual effect — basic-attack strikes, projectiles, hits,
+ultimates, per-victim impacts, cast flashes — is produced through one route.
+Manual procedural effects and static single-frame stand-ins are outside it; an
+exception exists only by explicit owner decision. The reference precedent is
+FAN-3005 (berserk); the process replicates from it unchanged:
+
+1. The art lane (`art_assets`, PixelLab MCP) generates an ANIMATED pack:
+   6–12+ frames for bursts/impacts/auras; repeated strikes may vary the start
+   frame. The PixelLab token lives only in the artist's env, never in the
+   repository or comments.
+2. Frames land under `assets/sprites/effects/<class>/<weapon>/<effect>/`
+   together with an `<effect>_spriteframes.tres` `SpriteFrames` resource built
+   from them.
+3. The scene assembles the effect as a flipbook: `AnimatedSprite2D` playing
+   that `SpriteFrames` resource — not a tinted primitive, not a stretched
+   static sprite.
+4. The scene is wired through the existing presentation manifest for its exact
+   `(class_id, weapon_id)` pair. Presentation, animation, VFX and SFX IDs and
+   the event phases do not change; only the scene content does.
+5. Contact-sheet evidence (see "Contact-sheet beat evidence" below) is
+   acceptable only when its `release`/`active`/`recovery` frames show the
+   DRAWN animation frames; primitive stand-ins in a sheet fail review.
+
+Mandatory techniques: weapon-shaped smears/arcs for melee (the weapon
+silhouette IS the effect, tying into the v2 identity block); additive blending
+plus glow for energy and magic; a 1–2 frame white-flash shader on the damaged
+enemy; dissolve for deaths and effect expiry. Hi-res overlays stay allowed per
+Direction v2. The quality bar is "bright and spectacular": saturated class
+colors, glow, readable motion. Reference for "how it should look":
+`assets/sprites/effects/vfx_weapon_shadow_daggers.png` and the shadow-daggers
+packs; the berserk screenshot on FAN-3005 is the anti-reference.
+
+### Per-victim impact
+
+1. Every damaging or controlling ultimate plays a short impact ON each enemy
+   it touches: a 0.3–0.6 s flipbook burst in the ultimate's style plus the
+   standard 1–2 frame white flash on the victim's sprite. The victims, not a
+   drawn zone, communicate the ultimate's coverage.
+2. Area telegraphs are demoted: blinking rectangles and area overlays as the
+   primary read are banned; a short stylized ground/ambient effect remains
+   allowed as flavour.
+3. Performance contract (coverage = every enemy on the map): impact instances
+   are pooled; impacts stagger 3–8 frames in a wave outward from the hero
+   (which also reads better); under heavy enemy counts the impact degrades to
+   a reduced variant, but the white flash is never dropped.
+
+### Basic attacks are in scope
+
+The standard covers ALL basic-attack effects — projectiles, melee strikes and
+hit effects — not only ultimates. Non-conforming effects join the FAN-3002
+retrofit plan in the same per-class batches.
+
+### Combat vs UI boundary
+
+The ban covers combat presentation only. UI and other non-combat imagery are
+exempt by explicit design-review boundary, never via the ratchet allowlists:
+`scripts/ui/` and `scenes/ui/` entirely, plus `scripts/ui_screens.gd`,
+`scripts/route_map_screen.gd`, `scripts/pause_stats_menu.gd` (and
+`scenes/PauseStatsMenu.tscn`), `scripts/enemy_health_bar.gd`, and
+`scripts/cutout_rig_2d.gd` (the character-rig ground shadow is character
+rendering, not a combat effect). UI primitives never enter the allowlists.
+Extending the exemption list is a design decision recorded here and in the
+test's `NON_COMBAT_EXEMPT_*` constants — it is not a way to ship a combat
+primitive, and the grep scope must not be widened or narrowed blindly. The
+scan scope is `scenes/**` and `scripts/**`; combat code does not live outside
+those roots.
+
+Focused verification:
+
+```bash
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/combat_primitive_ratchet_test.gd
+```
+
 ## Manifest contract
 
 `WeaponUltimatePresentationManifest.catalog_for_registry()` creates one entry
