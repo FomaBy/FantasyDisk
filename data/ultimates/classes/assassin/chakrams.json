@@ -24,7 +24,7 @@
       "outbound_duration": 0.5,
       "return_steps": 6,
       "return_step_interval": 0.12,
-      "return_curve_offset": 132.0,
+      "return_curve_offset": 90.0,
       "pass_damage": 120.0,
       "secondary_damage_ratio": 0.12,
       "execute_threshold": 0.25
