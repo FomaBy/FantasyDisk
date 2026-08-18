@@ -1,0 +1,6114 @@
+{
+  "idle_east": [
+    {
+      "source": "ash_marksman_idle_east.png",
+      "runtime": "ash_marksman_idle_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "ash_marksman_idle_south_east.png",
+      "runtime": "ash_marksman_idle_south_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "ash_marksman_idle_south.png",
+      "runtime": "ash_marksman_idle_south.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "ash_marksman_idle_south_west.png",
+      "runtime": "ash_marksman_idle_south_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "ash_marksman_idle_west.png",
+      "runtime": "ash_marksman_idle_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "ash_marksman_idle_north_west.png",
+      "runtime": "ash_marksman_idle_north_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "ash_marksman_idle_north.png",
+      "runtime": "ash_marksman_idle_north.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        12,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "ash_marksman_idle_north_east.png",
+      "runtime": "ash_marksman_idle_north_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "ash_marksman_move_east_00.png",
+      "runtime": "ash_marksman_move_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        70,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_east_01.png",
+      "runtime": "ash_marksman_move_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        68,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_east_02.png",
+      "runtime": "ash_marksman_move_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        68,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_east_03.png",
+      "runtime": "ash_marksman_move_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        69,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_east_04.png",
+      "runtime": "ash_marksman_move_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        70,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_east_05.png",
+      "runtime": "ash_marksman_move_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        69,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "ash_marksman_move_south_east_00.png",
+      "runtime": "ash_marksman_move_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_east_01.png",
+      "runtime": "ash_marksman_move_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        69,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_east_02.png",
+      "runtime": "ash_marksman_move_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        69,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_east_03.png",
+      "runtime": "ash_marksman_move_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_east_04.png",
+      "runtime": "ash_marksman_move_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_east_05.png",
+      "runtime": "ash_marksman_move_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "ash_marksman_move_south_00.png",
+      "runtime": "ash_marksman_move_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        69,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_01.png",
+      "runtime": "ash_marksman_move_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        68,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_02.png",
+      "runtime": "ash_marksman_move_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_03.png",
+      "runtime": "ash_marksman_move_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        68,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        152,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_04.png",
+      "runtime": "ash_marksman_move_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_05.png",
+      "runtime": "ash_marksman_move_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        69,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "ash_marksman_move_south_west_00.png",
+      "runtime": "ash_marksman_move_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        66,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_west_01.png",
+      "runtime": "ash_marksman_move_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_west_02.png",
+      "runtime": "ash_marksman_move_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_west_03.png",
+      "runtime": "ash_marksman_move_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_west_04.png",
+      "runtime": "ash_marksman_move_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        67,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_south_west_05.png",
+      "runtime": "ash_marksman_move_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        67,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "ash_marksman_move_west_00.png",
+      "runtime": "ash_marksman_move_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_west_01.png",
+      "runtime": "ash_marksman_move_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        66,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_west_02.png",
+      "runtime": "ash_marksman_move_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        67,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        158,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_west_03.png",
+      "runtime": "ash_marksman_move_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_west_04.png",
+      "runtime": "ash_marksman_move_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_west_05.png",
+      "runtime": "ash_marksman_move_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        66,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "ash_marksman_move_north_west_00.png",
+      "runtime": "ash_marksman_move_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        67,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_west_01.png",
+      "runtime": "ash_marksman_move_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        67,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_west_02.png",
+      "runtime": "ash_marksman_move_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_west_03.png",
+      "runtime": "ash_marksman_move_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        67,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_west_04.png",
+      "runtime": "ash_marksman_move_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_west_05.png",
+      "runtime": "ash_marksman_move_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        67,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "ash_marksman_move_north_00.png",
+      "runtime": "ash_marksman_move_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        12,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_01.png",
+      "runtime": "ash_marksman_move_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        12,
+        66,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_02.png",
+      "runtime": "ash_marksman_move_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        12,
+        67,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        119,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_03.png",
+      "runtime": "ash_marksman_move_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        12,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_04.png",
+      "runtime": "ash_marksman_move_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        12,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        124,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_05.png",
+      "runtime": "ash_marksman_move_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        12,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "ash_marksman_move_north_east_00.png",
+      "runtime": "ash_marksman_move_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_east_01.png",
+      "runtime": "ash_marksman_move_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        70,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_east_02.png",
+      "runtime": "ash_marksman_move_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        71,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_east_03.png",
+      "runtime": "ash_marksman_move_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        72,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_east_04.png",
+      "runtime": "ash_marksman_move_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        70,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_move_north_east_05.png",
+      "runtime": "ash_marksman_move_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        71,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "ash_marksman_attack_east_00.png",
+      "runtime": "ash_marksman_attack_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_01.png",
+      "runtime": "ash_marksman_attack_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_02.png",
+      "runtime": "ash_marksman_attack_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        17,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_03.png",
+      "runtime": "ash_marksman_attack_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_04.png",
+      "runtime": "ash_marksman_attack_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        16,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        192,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_05.png",
+      "runtime": "ash_marksman_attack_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        17,
+        81,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_east_06.png",
+      "runtime": "ash_marksman_attack_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        17,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        231,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        371,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "ash_marksman_attack_south_east_00.png",
+      "runtime": "ash_marksman_attack_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_01.png",
+      "runtime": "ash_marksman_attack_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        164,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        338,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_02.png",
+      "runtime": "ash_marksman_attack_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        80,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        195,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_03.png",
+      "runtime": "ash_marksman_attack_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        82,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        205,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_04.png",
+      "runtime": "ash_marksman_attack_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        80,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_05.png",
+      "runtime": "ash_marksman_attack_south_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        18,
+        85,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_east_06.png",
+      "runtime": "ash_marksman_attack_south_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        18,
+        82,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "ash_marksman_attack_south_00.png",
+      "runtime": "ash_marksman_attack_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_01.png",
+      "runtime": "ash_marksman_attack_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_02.png",
+      "runtime": "ash_marksman_attack_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        15,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_03.png",
+      "runtime": "ash_marksman_attack_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_04.png",
+      "runtime": "ash_marksman_attack_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        16,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_05.png",
+      "runtime": "ash_marksman_attack_south_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_06.png",
+      "runtime": "ash_marksman_attack_south_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        132,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "ash_marksman_attack_south_west_00.png",
+      "runtime": "ash_marksman_attack_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_01.png",
+      "runtime": "ash_marksman_attack_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_02.png",
+      "runtime": "ash_marksman_attack_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_03.png",
+      "runtime": "ash_marksman_attack_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_04.png",
+      "runtime": "ash_marksman_attack_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        16,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_05.png",
+      "runtime": "ash_marksman_attack_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        16,
+        75,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        175,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_south_west_06.png",
+      "runtime": "ash_marksman_attack_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        16,
+        75,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "ash_marksman_attack_west_00.png",
+      "runtime": "ash_marksman_attack_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_01.png",
+      "runtime": "ash_marksman_attack_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_02.png",
+      "runtime": "ash_marksman_attack_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        23,
+        17,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_03.png",
+      "runtime": "ash_marksman_attack_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_04.png",
+      "runtime": "ash_marksman_attack_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        77,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_05.png",
+      "runtime": "ash_marksman_attack_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        77,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_west_06.png",
+      "runtime": "ash_marksman_attack_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "ash_marksman_attack_north_west_00.png",
+      "runtime": "ash_marksman_attack_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_01.png",
+      "runtime": "ash_marksman_attack_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_02.png",
+      "runtime": "ash_marksman_attack_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        18,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        179,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_03.png",
+      "runtime": "ash_marksman_attack_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_04.png",
+      "runtime": "ash_marksman_attack_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_05.png",
+      "runtime": "ash_marksman_attack_north_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_west_06.png",
+      "runtime": "ash_marksman_attack_north_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        23,
+        10,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        75
+      ],
+      "scale": 3.2666666666666666,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "ash_marksman_attack_north_00.png",
+      "runtime": "ash_marksman_attack_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_01.png",
+      "runtime": "ash_marksman_attack_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_02.png",
+      "runtime": "ash_marksman_attack_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_03.png",
+      "runtime": "ash_marksman_attack_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_04.png",
+      "runtime": "ash_marksman_attack_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        126,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_05.png",
+      "runtime": "ash_marksman_attack_north_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        16,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        136,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_06.png",
+      "runtime": "ash_marksman_attack_north_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        17,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "ash_marksman_attack_north_east_00.png",
+      "runtime": "ash_marksman_attack_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        71,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_01.png",
+      "runtime": "ash_marksman_attack_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        72,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_02.png",
+      "runtime": "ash_marksman_attack_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        25,
+        15,
+        72,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_03.png",
+      "runtime": "ash_marksman_attack_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        24,
+        15,
+        70,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_04.png",
+      "runtime": "ash_marksman_attack_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        23,
+        15,
+        71,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_05.png",
+      "runtime": "ash_marksman_attack_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        74,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_attack_north_east_06.png",
+      "runtime": "ash_marksman_attack_north_east_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        22,
+        15,
+        75,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "ash_marksman_hit_east_00.png",
+      "runtime": "ash_marksman_hit_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_east_01.png",
+      "runtime": "ash_marksman_hit_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        19,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_east_02.png",
+      "runtime": "ash_marksman_hit_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_east_03.png",
+      "runtime": "ash_marksman_hit_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        23,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_east_04.png",
+      "runtime": "ash_marksman_hit_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        21,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "ash_marksman_hit_south_east_00.png",
+      "runtime": "ash_marksman_hit_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_east_01.png",
+      "runtime": "ash_marksman_hit_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        17,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_east_02.png",
+      "runtime": "ash_marksman_hit_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        21,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_east_03.png",
+      "runtime": "ash_marksman_hit_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        24,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_east_04.png",
+      "runtime": "ash_marksman_hit_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        23,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "ash_marksman_hit_south_00.png",
+      "runtime": "ash_marksman_hit_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_01.png",
+      "runtime": "ash_marksman_hit_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        15,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        152,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_02.png",
+      "runtime": "ash_marksman_hit_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_03.png",
+      "runtime": "ash_marksman_hit_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        26,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_04.png",
+      "runtime": "ash_marksman_hit_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        22,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "ash_marksman_hit_south_west_00.png",
+      "runtime": "ash_marksman_hit_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_west_01.png",
+      "runtime": "ash_marksman_hit_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_west_02.png",
+      "runtime": "ash_marksman_hit_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        21,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_west_03.png",
+      "runtime": "ash_marksman_hit_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_south_west_04.png",
+      "runtime": "ash_marksman_hit_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        77,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "ash_marksman_hit_west_00.png",
+      "runtime": "ash_marksman_hit_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_west_01.png",
+      "runtime": "ash_marksman_hit_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_west_02.png",
+      "runtime": "ash_marksman_hit_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        21,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_west_03.png",
+      "runtime": "ash_marksman_hit_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_west_04.png",
+      "runtime": "ash_marksman_hit_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "ash_marksman_hit_north_west_00.png",
+      "runtime": "ash_marksman_hit_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_west_01.png",
+      "runtime": "ash_marksman_hit_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        68,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_west_02.png",
+      "runtime": "ash_marksman_hit_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_west_03.png",
+      "runtime": "ash_marksman_hit_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_west_04.png",
+      "runtime": "ash_marksman_hit_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        21,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "ash_marksman_hit_north_00.png",
+      "runtime": "ash_marksman_hit_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_01.png",
+      "runtime": "ash_marksman_hit_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_02.png",
+      "runtime": "ash_marksman_hit_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        158,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_03.png",
+      "runtime": "ash_marksman_hit_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        22,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_04.png",
+      "runtime": "ash_marksman_hit_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "ash_marksman_hit_north_east_00.png",
+      "runtime": "ash_marksman_hit_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        71,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_east_01.png",
+      "runtime": "ash_marksman_hit_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        72,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_east_02.png",
+      "runtime": "ash_marksman_hit_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        70,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_east_03.png",
+      "runtime": "ash_marksman_hit_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        22,
+        69,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_hit_north_east_04.png",
+      "runtime": "ash_marksman_hit_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "ash_marksman_death_east_00.png",
+      "runtime": "ash_marksman_death_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_01.png",
+      "runtime": "ash_marksman_death_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_02.png",
+      "runtime": "ash_marksman_death_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        21,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_03.png",
+      "runtime": "ash_marksman_death_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        28,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_04.png",
+      "runtime": "ash_marksman_death_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        40,
+        80,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        294,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        109,
+        235,
+        403,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_05.png",
+      "runtime": "ash_marksman_death_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        44,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        41
+      ],
+      "scale": 5.975609756097561,
+      "resized_visible_size": [
+        382,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        235,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_east_06.png",
+      "runtime": "ash_marksman_death_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        46,
+        85,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        40
+      ],
+      "scale": 6.125,
+      "resized_visible_size": [
+        410,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        51,
+        235,
+        461,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "ash_marksman_death_south_east_00.png",
+      "runtime": "ash_marksman_death_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_01.png",
+      "runtime": "ash_marksman_death_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        77,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        169,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_02.png",
+      "runtime": "ash_marksman_death_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_03.png",
+      "runtime": "ash_marksman_death_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        36,
+        22,
+        83,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_04.png",
+      "runtime": "ash_marksman_death_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        30,
+        83,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_05.png",
+      "runtime": "ash_marksman_death_south_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        55,
+        83,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        31
+      ],
+      "scale": 7.903225806451613,
+      "resized_visible_size": [
+        498,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        7,
+        235,
+        505,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_east_06.png",
+      "runtime": "ash_marksman_death_south_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        65,
+        87,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        22
+      ],
+      "scale": 7.211267605633803,
+      "resized_visible_size": [
+        512,
+        159
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        321,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "ash_marksman_death_south_00.png",
+      "runtime": "ash_marksman_death_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_01.png",
+      "runtime": "ash_marksman_death_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        72,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_02.png",
+      "runtime": "ash_marksman_death_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_03.png",
+      "runtime": "ash_marksman_death_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        19,
+        77,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_04.png",
+      "runtime": "ash_marksman_death_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        79,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_05.png",
+      "runtime": "ash_marksman_death_south_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        81,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_06.png",
+      "runtime": "ash_marksman_death_south_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        82,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "ash_marksman_death_south_west_00.png",
+      "runtime": "ash_marksman_death_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_01.png",
+      "runtime": "ash_marksman_death_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_02.png",
+      "runtime": "ash_marksman_death_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        68,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_03.png",
+      "runtime": "ash_marksman_death_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        18,
+        67,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_04.png",
+      "runtime": "ash_marksman_death_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        18,
+        65,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_05.png",
+      "runtime": "ash_marksman_death_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        23,
+        17,
+        67,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_south_west_06.png",
+      "runtime": "ash_marksman_death_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        17,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "ash_marksman_death_west_00.png",
+      "runtime": "ash_marksman_death_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_01.png",
+      "runtime": "ash_marksman_death_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_02.png",
+      "runtime": "ash_marksman_death_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        20,
+        76,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        179,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_03.png",
+      "runtime": "ash_marksman_death_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        23,
+        32,
+        84,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        293,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        235,
+        403,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_04.png",
+      "runtime": "ash_marksman_death_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        47,
+        84,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        37
+      ],
+      "scale": 6.621621621621622,
+      "resized_visible_size": [
+        450,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        31,
+        235,
+        481,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_05.png",
+      "runtime": "ash_marksman_death_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        61,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        24
+      ],
+      "scale": 7.757575757575758,
+      "resized_visible_size": [
+        512,
+        186
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        294,
+        512,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_west_06.png",
+      "runtime": "ash_marksman_death_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        19,
+        61,
+        83,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        25
+      ],
+      "scale": 8.0,
+      "resized_visible_size": [
+        512,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        280,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "ash_marksman_death_north_west_00.png",
+      "runtime": "ash_marksman_death_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_01.png",
+      "runtime": "ash_marksman_death_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        75,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_02.png",
+      "runtime": "ash_marksman_death_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        18,
+        78,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        191,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_03.png",
+      "runtime": "ash_marksman_death_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        27,
+        83,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        273,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_04.png",
+      "runtime": "ash_marksman_death_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        36,
+        83,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        310,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        101,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_05.png",
+      "runtime": "ash_marksman_death_north_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        47,
+        85,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        37
+      ],
+      "scale": 6.621621621621622,
+      "resized_visible_size": [
+        464,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        24,
+        235,
+        488,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_west_06.png",
+      "runtime": "ash_marksman_death_north_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        13,
+        57,
+        85,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        29
+      ],
+      "scale": 7.111111111111111,
+      "resized_visible_size": [
+        512,
+        206
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        274,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "ash_marksman_death_north_00.png",
+      "runtime": "ash_marksman_death_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_01.png",
+      "runtime": "ash_marksman_death_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        34,
+        14,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_02.png",
+      "runtime": "ash_marksman_death_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_03.png",
+      "runtime": "ash_marksman_death_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        22,
+        77,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_04.png",
+      "runtime": "ash_marksman_death_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        32,
+        80,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        270,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        121,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_05.png",
+      "runtime": "ash_marksman_death_north_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        18,
+        37,
+        81,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        351,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        235,
+        431,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_06.png",
+      "runtime": "ash_marksman_death_north_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        12,
+        37,
+        81,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        384,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        235,
+        448,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "ash_marksman_death_north_east_00.png",
+      "runtime": "ash_marksman_death_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        71,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_01.png",
+      "runtime": "ash_marksman_death_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        72,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_02.png",
+      "runtime": "ash_marksman_death_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        22,
+        18,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        191,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_03.png",
+      "runtime": "ash_marksman_death_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        21,
+        21,
+        68,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_04.png",
+      "runtime": "ash_marksman_death_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        21,
+        26,
+        66,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_05.png",
+      "runtime": "ash_marksman_death_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        37,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "ash_marksman_death_north_east_06.png",
+      "runtime": "ash_marksman_death_north_east_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        18,
+        49,
+        77,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        34
+      ],
+      "scale": 7.205882352941177,
+      "resized_visible_size": [
+        425,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        44,
+        235,
+        469,
+        480
+      ]
+    }
+  ]
+}
