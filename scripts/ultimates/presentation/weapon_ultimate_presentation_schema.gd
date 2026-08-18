@@ -11,6 +11,79 @@ const SCHEMA_PATH := "res://data/ultimates/presentation_schema/v1/weapon_ultimat
 const EXPECTED_SCHEMA_VERSION := 1
 const ACTION_ULTIMATE := "ultimate"
 
+## Ultimate Direction v2 (FAN-2944 §1/§3.1) envelope and presence ranges. All
+## five timing values are cumulative beat timestamps, so the ranges below are
+## checked on beat differences, never on raw timestamps.
+const V2_TOTAL_RANGE_SECONDS := [2.5, 4.0]
+const V2_WINDUP_RANGE_SECONDS := [0.6, 1.0]
+const V2_MIN_ACTIVE_WINDOW_SECONDS := 1.2
+const V2_HITSTOP_RANGE_MS := [80.0, 150.0]
+const V2_TIME_SCALE_DIP_RANGE := [0.3, 0.5]
+const V2_BACKDROP_TREATMENTS: Array[String] = ["darken", "flash"]
+const V2_EPSILON := 0.000001
+
+const V2_SEED_REASON := "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
+
+## Ratchet with the same rules as ContactSheetBeatsContract.MIGRATION_ALLOWLIST
+## and the timing test's PARITY_EXEMPTIONS: it only shrinks, its target state is
+## empty, an entry for a pair that already satisfies the v2 contract fails as
+## stale, an entry naming no registry pair or stating no reason fails, and a
+## pair outside it is asserted against the full v2 contract fail-closed. Each
+## class rework card removes its own entries.
+const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
+	"assassin/chakrams": V2_SEED_REASON,
+	"assassin/shadow_daggers": V2_SEED_REASON,
+	"assassin/venom_wire": V2_SEED_REASON,
+	"berserk/sword": V2_SEED_REASON,
+	"berserk/axe": V2_SEED_REASON,
+	"berserk/hammer": V2_SEED_REASON,
+	"biologist/biologist_spore_lens": V2_SEED_REASON,
+	"biologist/biologist_sample_injector": V2_SEED_REASON,
+	"biologist/biologist_symbiote_seed": V2_SEED_REASON,
+	"chemist/blast_powder": V2_SEED_REASON,
+	"chemist/acid_flask": V2_SEED_REASON,
+	"chemist/homunculus_vial": V2_SEED_REASON,
+	"dark_mage/dark_book": V2_SEED_REASON,
+	"dark_mage/cursed_skull": V2_SEED_REASON,
+	"dark_mage/dark_wand": V2_SEED_REASON,
+	"doctor/restore_potion": V2_SEED_REASON,
+	"doctor/plague_syringe": V2_SEED_REASON,
+	"doctor/bone_saw": V2_SEED_REASON,
+	"druid/summon_amulet": V2_SEED_REASON,
+	"druid/briar_staff": V2_SEED_REASON,
+	"druid/raven_totem": V2_SEED_REASON,
+	"elementalist/elementalist_orb_ring": V2_SEED_REASON,
+	"elementalist/elementalist_prism_focus": V2_SEED_REASON,
+	"elementalist/elementalist_meteor_core": V2_SEED_REASON,
+	"engineer/engineer_sentry_wrench": V2_SEED_REASON,
+	"engineer/engineer_repair_drone": V2_SEED_REASON,
+	"engineer/engineer_pressure_mines": V2_SEED_REASON,
+	"guitarist/electric_guitar": V2_SEED_REASON,
+	"guitarist/bass_guitar": V2_SEED_REASON,
+	"guitarist/sound_amp": V2_SEED_REASON,
+	"knight/long_spear": V2_SEED_REASON,
+	"knight/tower_shield": V2_SEED_REASON,
+	"knight/holy_flail": V2_SEED_REASON,
+	"priest/priest_reliquary": V2_SEED_REASON,
+	"priest/priest_censer": V2_SEED_REASON,
+	"priest/priest_chime": V2_SEED_REASON,
+	"ranger/moon_crossbow": V2_SEED_REASON,
+	"ranger/storm_longbow": V2_SEED_REASON,
+	"ranger/hunter_trap": V2_SEED_REASON,
+	"robot/robot_magnetic_anchor": V2_SEED_REASON,
+	"robot/robot_hydraulic_press": V2_SEED_REASON,
+	"robot/robot_reactor_core": V2_SEED_REASON,
+	"sniper/sniper_deadeye_rifle": V2_SEED_REASON,
+	"sniper/sniper_spotter_scope": V2_SEED_REASON,
+	"sniper/sniper_shatter_rounds": V2_SEED_REASON,
+	"soldier/soldier_rifle": V2_SEED_REASON,
+	"soldier/soldier_grenade": V2_SEED_REASON,
+	"soldier/soldier_bayonet": V2_SEED_REASON,
+	"thief/thief_coin_pouch": V2_SEED_REASON,
+	"thief/thief_shadow_cloak": V2_SEED_REASON,
+	"thief/thief_smoke_bomb": V2_SEED_REASON,
+}
+
 static var _schema_cache: Dictionary = {}
 
 
@@ -34,7 +107,11 @@ static func profile_key(class_id: String, weapon_id: String) -> String:
 	return "%s/%s" % [class_id, weapon_id]
 
 
-static func validate_manifest(manifest: Dictionary, expected_profile: Dictionary = {}) -> Array[String]:
+static func validate_manifest(
+	manifest: Dictionary,
+	expected_profile: Dictionary = {},
+	allowlist: Dictionary = PRESENTATION_V2_MIGRATION_ALLOWLIST
+) -> Array[String]:
 	var errors: Array[String] = []
 	var schema := schema_document()
 	if schema.is_empty():
@@ -42,11 +119,15 @@ static func validate_manifest(manifest: Dictionary, expected_profile: Dictionary
 		return errors
 	if int(schema.get("schema_version", 0)) != EXPECTED_SCHEMA_VERSION:
 		_add_error(errors, "presentation.schema.version", "expected %d" % EXPECTED_SCHEMA_VERSION)
-	_validate_manifest(manifest, expected_profile, schema, {}, errors)
+	_validate_manifest(manifest, expected_profile, schema, {}, allowlist, errors)
 	return errors
 
 
-static func validate_catalog(manifests: Array, expected_profiles: Dictionary) -> Array[String]:
+static func validate_catalog(
+	manifests: Array,
+	expected_profiles: Dictionary,
+	allowlist: Dictionary = PRESENTATION_V2_MIGRATION_ALLOWLIST
+) -> Array[String]:
 	var errors: Array[String] = []
 	var schema := schema_document()
 	if schema.is_empty():
@@ -76,7 +157,7 @@ static func validate_catalog(manifests: Array, expected_profiles: Dictionary) ->
 		if not expected_profile is Dictionary:
 			_add_error(errors, "presentation.profile.unknown", key)
 			expected_profile = {}
-		_validate_manifest(manifest, expected_profile as Dictionary, schema, seen_ids, errors)
+		_validate_manifest(manifest, expected_profile as Dictionary, schema, seen_ids, allowlist, errors)
 
 	for expected_key in expected_profiles.keys():
 		if not seen_keys.has(expected_key):
@@ -89,6 +170,7 @@ static func _validate_manifest(
 	expected_profile: Dictionary,
 	schema: Dictionary,
 	seen_ids: Dictionary,
+	allowlist: Dictionary,
 	errors: Array[String]
 ) -> void:
 	if int(manifest.get("schema_version", 0)) != EXPECTED_SCHEMA_VERSION:
@@ -146,6 +228,147 @@ static func _validate_manifest(
 	_validate_timing(manifest.get("timing", {}), manifest.get("phases", []), schema, profile_key_value, errors)
 	if str(manifest.get("headless_fallback", "")) != str(schema.get("headless_fallback", "")):
 		_add_error(errors, "presentation.headless_fallback", profile_key_value)
+
+	var catalog_scope := seen_ids.has("__catalog_tracking__")
+	if allowlist.has(profile_key_value):
+		# Stale-entry detection only runs with catalog scope so the runtime
+		# single-manifest path never rejects a live activation over the ratchet.
+		if catalog_scope and _v2_violations(manifest, profile_key_value, seen_ids, false).is_empty():
+			_add_error(errors, "presentation.v2_allowlist.stale", "%s already satisfies the v2 contract" % profile_key_value)
+	else:
+		errors.append_array(_v2_violations(manifest, profile_key_value, seen_ids, catalog_scope))
+
+
+## Every allowlist entry must name a live registry pair and state a reason.
+## Enforced by the shared contract test on the full catalog, exactly like the
+## other ratchets; kept here so tests can also prove it goes red.
+static func allowlist_integrity_errors(
+	expected_profiles: Dictionary,
+	allowlist: Dictionary = PRESENTATION_V2_MIGRATION_ALLOWLIST
+) -> Array[String]:
+	var errors: Array[String] = []
+	for raw_key in allowlist:
+		var key := str(raw_key)
+		if not expected_profiles.has(key):
+			_add_error(errors, "presentation.v2_allowlist.unknown", key)
+		if str(allowlist[raw_key]).strip_edges().is_empty():
+			_add_error(errors, "presentation.v2_allowlist.reason", key)
+	return errors
+
+
+## The v2 envelope on the cumulative beat timestamps. Public so the shared
+## timing distinctness test asserts the identical ranges on class declarations.
+static func v2_envelope_errors(raw_timing, profile_key_value: String) -> Array[String]:
+	var errors: Array[String] = []
+	if not raw_timing is Dictionary:
+		_add_error(errors, "presentation.v2.timing", profile_key_value)
+		return errors
+	var timing := raw_timing as Dictionary
+	for name in ["windup", "release", "recovery", "cancel"]:
+		if not _is_number(timing.get(name)):
+			_add_error(errors, "presentation.v2.timing", "%s/%s" % [profile_key_value, name])
+			return errors
+	var windup := float(timing["windup"])
+	var release := float(timing["release"])
+	var recovery := float(timing["recovery"])
+	var cancel := float(timing["cancel"])
+	var total := cancel - windup
+	if total + V2_EPSILON < float(V2_TOTAL_RANGE_SECONDS[0]) or total - V2_EPSILON > float(V2_TOTAL_RANGE_SECONDS[1]):
+		_add_error(errors, "presentation.v2.total_range", "%s is %.2fs" % [profile_key_value, total])
+	var windup_window := release - windup
+	if windup_window + V2_EPSILON < float(V2_WINDUP_RANGE_SECONDS[0]) \
+			or windup_window - V2_EPSILON > float(V2_WINDUP_RANGE_SECONDS[1]):
+		_add_error(errors, "presentation.v2.windup_range", "%s is %.2fs" % [profile_key_value, windup_window])
+	if recovery - release + V2_EPSILON < V2_MIN_ACTIVE_WINDOW_SECONDS:
+		_add_error(errors, "presentation.v2.active_window", "%s is %.2fs" % [profile_key_value, recovery - release])
+	if cancel - recovery <= V2_EPSILON:
+		_add_error(errors, "presentation.v2.recovery_window", "%s has no visible recovery" % profile_key_value)
+	return errors
+
+
+static func _v2_violations(
+	manifest: Dictionary,
+	profile_key_value: String,
+	seen_ids: Dictionary,
+	register: bool
+) -> Array[String]:
+	var violations := v2_envelope_errors(manifest.get("timing", {}), profile_key_value)
+	_v2_check_presence(manifest.get("presence"), profile_key_value, violations)
+	_v2_check_identity(manifest, profile_key_value, seen_ids, register, violations)
+	return violations
+
+
+static func _v2_check_presence(raw_presence, profile_key_value: String, violations: Array[String]) -> void:
+	if not raw_presence is Dictionary:
+		_add_error(violations, "presentation.v2.presence", profile_key_value)
+		return
+	var presence := raw_presence as Dictionary
+	if presence.get("fullscreen_footprint") != true:
+		_add_error(violations, "presentation.v2.footprint", profile_key_value)
+	if not V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))):
+		_add_error(violations, "presentation.v2.backdrop", profile_key_value)
+	if presence.get("camera_shake") != true:
+		_add_error(violations, "presentation.v2.camera_shake", profile_key_value)
+	var hitstop = presence.get("hitstop_ms")
+	if not _is_number(hitstop) or float(hitstop) < float(V2_HITSTOP_RANGE_MS[0]) \
+			or float(hitstop) > float(V2_HITSTOP_RANGE_MS[1]):
+		_add_error(violations, "presentation.v2.hitstop", "%s declares %s" % [profile_key_value, str(hitstop)])
+	if presence.has("time_scale_dip"):
+		var dip = presence["time_scale_dip"]
+		if not _is_number(dip) or float(dip) < float(V2_TIME_SCALE_DIP_RANGE[0]) \
+				or float(dip) > float(V2_TIME_SCALE_DIP_RANGE[1]):
+			_add_error(violations, "presentation.v2.time_scale_dip", "%s declares %s" % [profile_key_value, str(dip)])
+	if presence.get("sfx_ducking") != true:
+		_add_error(violations, "presentation.v2.sfx_ducking", profile_key_value)
+
+
+static func _v2_check_identity(
+	manifest: Dictionary,
+	profile_key_value: String,
+	seen_ids: Dictionary,
+	register: bool,
+	violations: Array[String]
+) -> void:
+	var raw_identity = manifest.get("identity")
+	if not raw_identity is Dictionary:
+		_add_error(violations, "presentation.v2.identity", profile_key_value)
+		return
+	var identity := raw_identity as Dictionary
+	var class_id := str(manifest.get("class_id", ""))
+	var catalog_scope := seen_ids.has("__catalog_tracking__")
+
+	var cast_pose := str(identity.get("cast_pose_id", ""))
+	if cast_pose.is_empty() or _contains_placeholder(cast_pose):
+		_add_error(violations, "presentation.v2.cast_pose", profile_key_value)
+	elif catalog_scope:
+		# The cast pose is hero-specific: one class may share it across its
+		# trio, a second class reusing it fails closed.
+		var pose_key := "v2_cast_pose::%s" % cast_pose
+		if seen_ids.has(pose_key) and str(seen_ids[pose_key]) != class_id:
+			_add_error(violations, "presentation.v2.cast_pose_reuse", "%s reuses %s" % [profile_key_value, cast_pose])
+		elif register:
+			seen_ids[pose_key] = class_id
+
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	if not _is_valid_resource_path(silhouette) or _contains_placeholder(silhouette) \
+			or not FileAccess.file_exists(silhouette):
+		_add_error(violations, "presentation.v2.weapon_silhouette", "%s: %s" % [profile_key_value, silhouette])
+	elif catalog_scope:
+		# A generic burst asset reused across two (class_id, weapon_id) keys
+		# fails closed: the weapon silhouette is the visual core per pair.
+		var burst_key := "v2_silhouette::%s" % silhouette
+		if seen_ids.has(burst_key) and str(seen_ids[burst_key]) != profile_key_value:
+			_add_error(
+				violations,
+				"presentation.v2.generic_burst",
+				"%s and %s share %s" % [profile_key_value, str(seen_ids[burst_key]), silhouette]
+			)
+		elif register:
+			seen_ids[burst_key] = profile_key_value
+
+	var palette := str(identity.get("class_palette_id", ""))
+	if palette.is_empty() or _contains_placeholder(palette):
+		_add_error(violations, "presentation.v2.class_palette", profile_key_value)
 
 
 static func _validate_id(

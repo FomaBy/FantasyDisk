@@ -49,7 +49,7 @@ static func manifest_for_profile(profile: Dictionary) -> Dictionary:
 	var cast_phases: Dictionary = profile.get("cast_phases", {})
 	var scene_path := str(local.get("scene_path", ""))
 	var timing: Dictionary = local.get("timing", {}) as Dictionary
-	return {
+	var manifest := {
 		"schema_version": Schema.EXPECTED_SCHEMA_VERSION,
 		"class_id": class_id,
 		"key": {
@@ -76,6 +76,12 @@ static func manifest_for_profile(profile: Dictionary) -> Dictionary:
 			"crowd_cap": int(local.get("crowd_cap", 0)),
 		},
 	}
+	# v2 presence/identity declarations pass through only when the class-local
+	# record ships them, so v1 manifests keep their exact shape until reworked.
+	for block in ["presence", "identity"]:
+		if local.has(block):
+			manifest[block] = local[block]
+	return manifest
 
 
 static func _asset(id: String, path: String) -> Dictionary:
@@ -117,13 +123,17 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 	var crowd_cap := int((performance as Dictionary).get("crowd_cap", 0))
 	if max_visual_nodes > 0 and crowd_cap > 0 and max_visual_nodes > crowd_cap:
 		return {}
-	return {
+	var record := {
 		"scene_path": scene_path,
 		"timing": normalized_timing,
 		"pivot": weapon.get("pivot", {}),
 		"max_visual_nodes": max_visual_nodes,
 		"crowd_cap": crowd_cap,
 	}
+	for block in ["presence", "identity"]:
+		if weapon.get(block) is Dictionary:
+			record[block] = (weapon[block] as Dictionary).duplicate(true)
+	return record
 
 
 static func _weapon_record(document: Dictionary, weapon_id: String) -> Dictionary:

@@ -38,11 +38,130 @@ ready profile.
 `WeaponUltimatePresentationSchema` fails closed for a missing resource,
 duplicate presentation/animation/VFX/SFX ID, placeholder reuse, invalid source
 or runtime path, and invalid pivot or timing. It validates the full 51-entry
-catalog against the registry rather than accepting a class fallback.
+catalog against the registry rather than accepting a class fallback. The v2
+envelope, presence and identity requirements below fail closed the same way,
+ratcheted by `PRESENTATION_V2_MIGRATION_ALLOWLIST`.
+
+## Presentation envelope v2 (FAN-2944 §1)
+
+Timing values are cumulative beat timestamps on one timeline, so every v2
+range below is a beat difference. For each `(class_id, weapon_id)` pair that
+has left the migration allowlist:
+
+- total presentation (`cancel - windup`) is `2.5–4.0 s`;
+- the windup cast ceremony (`release - windup`) is `0.6–1.0 s`;
+- the release burst plus the `active`/`impact` window (`recovery - release`)
+  covers at least `1.2 s`;
+- recovery is visible: `cancel - recovery` is strictly greater than zero.
+
+The envelope is enforced twice on the same numbers:
+`WeaponUltimatePresentationSchema.v2_envelope_errors()` inside catalog and
+manifest validation, and the shared timing distinctness test on the class
+timing declarations. The `10.0 s` schema timeline ceiling stays the absolute
+bound for v1 and v2 alike.
+
+Pairwise per-class distinctness is preserved unchanged by v2: every weapon
+pair still differs by at least `0.1` seconds in both total length (`cancel`)
+and active window (`recovery - active`), for allowlisted and migrated pairs
+alike.
+
+## Two independent clocks
+
+`2.5–4.0 s` is the PRESENTATION envelope: how long the cast ceremony, effect
+and recovery stay on screen. It does not shorten and must never be asserted
+against the `control_save` gameplay window (`>= 4.0 s` in
+`weapon_ultimate_balance.md`). A `control_save` ultimate keeps its gameplay
+effect (slow, shield, zone) active for `>= 4.0 s` while its presentation
+timeline may already have finished; the two clocks are independent and no
+harness may compare one against the other.
+
+## Full-screen presence and weight (FAN-2944 §3.1)
+
+A migrated pair declares a `presence` block in its class-local
+`manifest.json` weapon record; the bridge passes it through and the schema
+fails closed exactly like the pivot/timing checks on a missing or
+out-of-range declaration:
+
+- `fullscreen_footprint: true` — the VFX footprint spans the arena/viewport
+  (delivered translucently; the opaque-coverage and HUD-band caps below stay
+  binding);
+- `backdrop: "darken" | "flash"` — full-screen backdrop treatment;
+- `camera_shake: true`;
+- `hitstop_ms` — `80–150` on the first impact;
+- `time_scale_dip` — optional; when declared, `0.3–0.5`x at the windup peak;
+- `sfx_ducking: true` — other SFX duck during release.
+
+Hitstop, camera shake, time-scale dip and SFX ducking are node-free runtime
+effects: they declare weight, not extra visual nodes.
+
+## Identity (FAN-2944 §3.1)
+
+A migrated pair also declares an `identity` block; each field fails closed
+when missing, placeholder-like, or reused where reuse is forbidden:
+
+- `cast_pose_id` — the hero-specific cast pose. One class may share it across
+  its weapon trio; a second class reusing it fails closed;
+- `weapon_silhouette_asset` — an existing `res://` asset whose weapon
+  silhouette is the visual core of the effect. A generic burst asset reused
+  across two different `(class_id, weapon_id)` keys fails closed
+  (`presentation.v2.generic_burst`);
+- `class_palette_id` — the class palette the effect resolves its colors from.
+
+## PRESENTATION_V2_MIGRATION_ALLOWLIST
+
+Turning the v2 ranges on without a ratchet would make `dev` red for every
+already-merged v1 package until all 51 are reworked, so the v2 contract ships
+behind `WeaponUltimatePresentationSchema.PRESENTATION_V2_MIGRATION_ALLOWLIST`,
+a ratchet with the same rules as `ContactSheetBeatsContract.MIGRATION_ALLOWLIST`
+and the timing test's `PARITY_EXEMPTIONS`:
+
+- it is seeded with every `(class_id, weapon_id)` pair shipped under v1 and
+  only ever shrinks; its target state is empty;
+- an entry for a pair that already satisfies the full v2 contract fails as
+  stale;
+- an entry naming no registry pair, or stating no reason, fails;
+- a pair outside the allowlist is asserted against the full v2 contract and
+  fails closed.
+
+Each animation or rework card removes its own entry when its pair reaches v2.
+Stale-entry detection runs in catalog scope (tests) only, so the runtime
+single-manifest path never rejects a live activation over the ratchet itself.
+
+## Per-effect budget for a full-screen 2.5–4.0 s effect
+
+Re-derived for the v2 scale from the enforced constants in
+`UltimateVisualDirectionContract` and the orphan/budget history in this area
+(FAN-2350, FAN-2359, FAN-2431/FAN-2452):
+
+- **Visual nodes**: the per-activation ceiling stays `32` drawn nodes
+  (`MAX_VISUAL_NODES_CEILING`), with declared `max_visual_nodes <= crowd_cap
+  <= 32`. The live roster peaks at 26 drawn nodes; the v2 backdrop treatment
+  and first-impact flash consume at most 2 of the 6 headroom nodes as
+  screen-space layers, and the weapon-silhouette core replaces the v1 core
+  nodes rather than adding to them. A longer envelope raises on-screen time,
+  not concurrency, so the ceiling does not grow.
+- **Materials**: at most `16` unique materials/shaders per activation, of
+  which at most `2` may cover the full viewport (the backdrop darken/flash
+  layers). This bounds 2K fill-rate and batch count over the longer `2.5–4.0 s`
+  window; nodes share materials rather than instancing per node.
+- **Allocations**: one `PackedScene` instantiation per activation, performed
+  before gameplay activation; zero node or material allocations during
+  `release`/`active`/`recovery`; every animation/VFX/SFX handle is released at
+  `finish` (`cancel`, `death`, `node_end`) with zero orphan handles, as the
+  timeline contract already proves on fixtures.
+- **Readability**: opaque coverage of one activation stays `<= 0.35` of the
+  viewport and the HUD bands stay clear, so full-screen presence is delivered
+  by the translucent backdrop plus an arena-wide but non-opaque footprint.
+
+Reduced-motion and photosensitivity remain mandatory and are satisfiable at
+the v2 scale: the reduced-motion substitute keeps its phase timing (so the
+envelope holds), replaces camera shake and the time-scale dip with static
+treatments, and renders `backdrop: "flash"` as a one-shot; flashes stay under
+the WCAG 2.3.1 `3 Hz` threshold and a repeating flash may not exceed `0.25`
+viewport coverage. A `darken` backdrop plus silhouette core meets every cap.
 
 Pairwise timing distinctness within a class is part of this presentation
-contract: every weapon pair must differ by at least `0.1` seconds in both total
-length (`cancel`) and active window (`recovery - active`). The shared
+contract (v2 keeps it unchanged, see above). The shared
 `weapon_ultimate_timing_distinctness_test.gd` puts every class directory in one
 named bucket: `checked` when it reads `weapons[].timing_seconds` or an existing
 `scenes/vfx/ultimates/<class>/*.timeline.json` `manifest.timing`; `skipped` only
@@ -112,12 +231,18 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation_contract_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation_contract_validator_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
 ```
 
-The first test verifies all 51 immutable presentation IDs and the fixture
-cleanup, pause, and headless obligations. The mutation suite separately proves
-missing/duplicate phases, missing assets, duplicate IDs, placeholder reuse,
-invalid paths, pivots, and timing fail closed.
+The first test verifies all 51 immutable presentation IDs, the migration
+allowlist integrity, and the fixture cleanup, pause, and headless obligations.
+The mutation suite separately proves missing/duplicate phases, missing assets,
+duplicate IDs, placeholder reuse, invalid paths, pivots, and timing fail
+closed, and carries one negative control per v2 assertion (envelope, presence,
+identity, ratchet) so every new check is proven able to go red.
 
 Every class-local presentation package must machine-check the measured title
 and panel-label rectangles against their sheet or panel bounds at 648p, 720p,

@@ -51,6 +51,21 @@ func _initialize() -> void:
 		_expect(_phase_names(manifest) == ["windup", "release", "active", "recovery", "cancel"], "%s phase order must be complete" % key, errors)
 	_expect(presentation_ids.size() == 51, "all 51 presentation IDs must be distinct", errors)
 
+	var allowlist_errors := Schema.allowlist_integrity_errors(expected_profiles)
+	_expect(
+		allowlist_errors.is_empty(),
+		"v2 migration allowlist must name live registry pairs with reasons; got %s" % [allowlist_errors],
+		errors
+	)
+	var v1_pairs := 0
+	for raw_key in catalog.keys():
+		if Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(str(raw_key)):
+			v1_pairs += 1
+	print("Presentation v2 migration allowlist: %d/%d pair(s) still on the v1 envelope; the ratchet only shrinks and its target state is empty." % [
+		v1_pairs,
+		catalog.size(),
+	])
+
 	var first_manifest: Dictionary = catalog["berserk/sword"]
 	_test_headless_no_op(first_manifest, errors)
 	_test_pause_freezes_timeline(first_manifest, errors)

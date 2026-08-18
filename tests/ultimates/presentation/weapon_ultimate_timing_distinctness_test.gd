@@ -1,5 +1,6 @@
 extends SceneTree
 
+const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const MANIFEST_ROOT := "res://docs/design/references/weapon_ultimates"
 const TIMELINE_ROOT := "res://scenes/vfx/ultimates"
 const MIN_RHYTHM_DELTA_SECONDS := 0.1
@@ -37,6 +38,8 @@ func _initialize() -> void:
 	var parity_classes: Array[String] = []
 	var exempt_classes: Array[String] = []
 	var parity_weapons := 0
+	var v2_enforced_weapons := 0
+	var v2_allowlisted_weapons := 0
 	var compared_weapons := {}
 	var class_directories := DirAccess.get_directories_at(MANIFEST_ROOT)
 	class_directories.sort()
@@ -62,6 +65,16 @@ func _initialize() -> void:
 						if compared_weapons.has(key):
 							errors.append("duplicate compared weapon: %s" % key)
 						compared_weapons[key] = true
+						# The v2 envelope is ratcheted: a pair still on the
+						# migration allowlist keeps its v1 timing; a pair
+						# outside it is asserted against the v2 ranges.
+						if Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key):
+							v2_allowlisted_weapons += 1
+						else:
+							v2_enforced_weapons += 1
+							errors.append_array(Schema.v2_envelope_errors(
+								(raw_weapon as Dictionary).get("timing_seconds"), key
+							))
 					_check_class(class_id, weapons, errors)
 				else:
 					uncovered_classes.append("%s (%s)" % [class_id, reason])
@@ -89,6 +102,10 @@ func _initialize() -> void:
 		", ".join(parity_classes) if not parity_classes.is_empty() else "none",
 		exempt_classes.size(),
 		", ".join(exempt_classes) if not exempt_classes.is_empty() else "none",
+	])
+	print("Weapon ultimate v2 envelope coverage: %d weapon(s) enforced against the 2.5-4.0s envelope; %d still on the v1 migration allowlist (target: 0)." % [
+		v2_enforced_weapons,
+		v2_allowlisted_weapons,
 	])
 	if checked_classes.is_empty():
 		errors.append("zero classes declare weapons[].timing_seconds")
@@ -311,6 +328,12 @@ func _assert_fail_closed_contract(errors: Array[String]) -> void:
 	(renamed[0] as Dictionary)["weapon_id"] = "d"
 	if _timing_agreement_error(complete, renamed).is_empty():
 		errors.append("manifest/second-source weapon-set drift must fail closed")
+	var v1_scale := {"windup": 0.0, "release": 0.2, "active": 0.4, "recovery": 0.8, "cancel": 1.0}
+	if Schema.v2_envelope_errors(v1_scale, "self-check").is_empty():
+		errors.append("v1-scale timing must violate the v2 envelope")
+	var v2_scale := {"windup": 0.0, "release": 0.8, "active": 1.6, "recovery": 2.4, "cancel": 3.0}
+	if not Schema.v2_envelope_errors(v2_scale, "self-check").is_empty():
+		errors.append("v2-scale timing must satisfy the v2 envelope")
 
 
 func _check_class(class_id: String, weapons: Array, errors: Array[String]) -> void:
