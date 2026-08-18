@@ -15,8 +15,7 @@
       "volley_count": 8,
       "volley_interval": 0.55,
       "corridor_half_width": 76,
-      "damage": 62.0,
-      "target_limit": 0
+      "damage": 85.0
     }
   },
   "total_boss_cap": 0.08,

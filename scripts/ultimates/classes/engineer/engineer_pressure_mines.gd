@@ -1,5 +1,15 @@
 extends RefCounted
 
+## Инженер / Прессующие мины — «Умное минное поле».
+##
+## Ultimate Direction v2 (FAN-2955): every detonation is an arena-wide pressure
+## wave that reaches every live enemy, and the sixteen seeded mines all detonate
+## exactly once inside the active window — the local chain first, the finale
+## outer-to-inner for whatever is left. `blast_radius` is what the wave looks
+## like, never how far it reaches. The field's one bound is per TARGET, not per
+## count: `target_cap_fraction` keeps a single enemy from being finished by one
+## activation, which is the field's anti-one-shot identity.
+
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_pressure_mines"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_pressure_mines"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd"
@@ -101,6 +111,8 @@ static func smart_chain(activation, state: Dictionary) -> void:
 	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
 	var trigger_index := -1
 	for index in points.size():
+		# The plate asks "is anyone standing on this mine", so one hit answers it.
+		# It selects which mine goes off early, never how many enemies it reaches.
 		if not activation.targets(
 			points[index], activation.param_float("trigger_radius", 90.0), 1
 		).is_empty():
@@ -158,7 +170,7 @@ static func detonate_mine(
 		return
 	detonated[index] = true
 	(state.get("trace", []) as Array).append({"phase": phase, "index": index, "position": points[index]})
-	for raw_target in activation.targets(points[index], blast_radius, 0):
+	for raw_target in activation.select_targets(points[index], INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(

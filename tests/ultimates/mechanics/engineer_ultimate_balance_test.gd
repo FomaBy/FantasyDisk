@@ -102,22 +102,27 @@ func _check_weapon(
 func _check_identity(weapon_id: String, params: Dictionary, errors: Array[String]) -> void:
 	match weapon_id:
 		"engineer_sentry_wrench":
+			# FAN-2955: reach is map-wide, so the hex declares no count at all —
+			# the chords are the geometric bonus, not the bound.
 			_expect(int(params.get("volley_count", 0)) == 8 \
 				and float(params.get("corridor_half_width", 0.0)) > 0.0 \
-				and int(params.get("target_limit", -1)) == 0,
+				and not params.has("target_limit"),
 				"sentry must retain uncapped synchronized corridor crossfire", errors)
 		"engineer_repair_drone":
 			_expect(int(params.get("drone_count", 0)) == 12 \
-				and int(params.get("intercept_target_cap", 0)) == 4 \
+				and not params.has("intercept_target_cap") \
 				and float(params.get("repair_total", 0.0)) > 0.0 \
 				and float(params.get("shield", 0.0)) > 0.0,
-				"repair drones must retain capped intercept, repair, and shield axes", errors)
+				"repair drones must retain uncapped intercept, repair, and shield axes", errors)
 		"engineer_pressure_mines":
+			# The per-TARGET damage cap survives the conversion: it is the field's
+			# anti-one-shot bound, never a bound on how many enemies it reaches.
 			_expect(int(params.get("mine_count", 0)) == 16 \
 				and int(params.get("seed", 0)) == 1466 \
 				and int(params.get("chain_count", 0)) == 2 \
-				and is_equal_approx(float(params.get("target_cap_fraction", 0.0)), 0.65),
-				"pressure mines must retain deterministic capped local-chain AoE", errors)
+				and is_equal_approx(float(params.get("target_cap_fraction", 0.0)), 0.75),
+				"pressure mines must retain deterministic per-target-capped local-chain AoE",
+				errors)
 
 
 func _check_charge_contract(weapon_id: String, row: Dictionary, errors: Array[String]) -> void:
