@@ -6,7 +6,7 @@ extends RefCounted
 ## asserts is the geometry the committed PNGs were rendered with.
 
 const CAPTURE_ROOT := "res://docs/design/references/weapon_ultimates/engineer/"
-const SHEET_TITLE := "ENGINEER SENTRY WRENCH — «КРЕПОСТЬ ЗА СЕКУНДУ» — LIVE PHASE TIMELINE"
+const SHEET_TITLE := "ENGINEER SENTRY WRENCH — «ГНЕЗДО ЧАСОВЫХ» v2 — LIVE PHASE TIMELINE"
 
 ## The four supported viewports of the shared visual-direction contract.
 const CAPTURES := [
@@ -20,11 +20,11 @@ const CAPTURES := [
 ## The last panel is driven into `active` and then cancelled, so it shows what
 ## the cleanup path leaves behind.
 const PANELS := [
-	{"phase": "windup", "time": 0.20, "title": "WINDUP 0.20s"},
-	{"phase": "release", "time": 0.52, "title": "RELEASE 0.52s"},
-	{"phase": "active", "time": 2.40, "title": "ACTIVE 2.40s"},
-	{"phase": "recovery", "time": 4.85, "title": "RECOVERY 4.85s"},
-	{"phase": "cancel", "time": 2.40, "title": "CANCEL CLEANUP", "cancel": true},
+	{"phase": "windup", "time": 0.45, "title": "WINDUP 0.45s"},
+	{"phase": "release", "time": 0.95, "title": "RELEASE 0.95s"},
+	{"phase": "active", "time": 2.20, "title": "ACTIVE 2.20s"},
+	{"phase": "recovery", "time": 3.40, "title": "RECOVERY 3.40s"},
+	{"phase": "cancel", "time": 2.20, "title": "CANCEL CLEANUP", "cancel": true},
 ]
 
 const PANEL_CENTER_Y_RATIO := 0.53

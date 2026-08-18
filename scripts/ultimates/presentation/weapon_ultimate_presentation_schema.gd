@@ -53,7 +53,6 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"elementalist/elementalist_orb_ring": V2_SEED_REASON,
 	"elementalist/elementalist_prism_focus": V2_SEED_REASON,
 	"elementalist/elementalist_meteor_core": V2_SEED_REASON,
-	"engineer/engineer_sentry_wrench": V2_SEED_REASON,
 	"engineer/engineer_repair_drone": V2_SEED_REASON,
 	"engineer/engineer_pressure_mines": V2_SEED_REASON,
 	"guitarist/electric_guitar": V2_SEED_REASON,

@@ -46,6 +46,15 @@ const FRAMES_BY_CLASS := {
 			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
 		],
 	},
+	# engineer stays on MIGRATION_ALLOWLIST until its whole trio declares
+	# beats; engineer_sentry_wrench declares its v2 beats now (FAN-2960).
+	"engineer": {
+		"engineer_sentry_wrench": [
+			{"phase": "release", "time": 0.95, "required_nodes": ["BackdropDim", "WrenchSigil", "Pylon0"]},
+			{"phase": "active", "time": 2.20, "required_nodes": ["BackdropDim", "WrenchSigil", "CrossfireChord0", "Pylon0"]},
+			{"phase": "recovery", "time": 3.40, "required_nodes": ["BackdropDim", "WrenchSigil", "Pylon0"]},
+		],
+	},
 	"doctor": {
 		"restore_potion": [
 			{"phase": "release", "time": 1.35, "required_nodes": ["GiantFlask", "GlassImpact"]},

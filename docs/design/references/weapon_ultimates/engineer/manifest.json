@@ -27,6 +27,7 @@
     "runtime": "alpha-trimmed crop of the same frame with 2px padding, no rescale, so no source pixel is lost"
   },
   "generator_provenance": {
+    "fan2960_presentation_rework": "the v2 rebuild (FAN-2960) reuses the FAN-2565 9-frame PixelLab deploy pack unchanged: frame selection is phase-relative, so the longer v2 envelope replays the same source frames; the identity sigil layer reuses the accepted SCRUM-746 weapon-silhouette asset vfx_weapon_engineer_sentry_wrench.png; no new PixelLab asset was generated",
     "route": "pixellab_new_isolated_animation_frames_plus_forged_elements",
     "pixellab_usage": "engineer_sentry_wrench ships a new 9-frame transparent animation source generated through PixelLab MCP (create_1_direction_object + animate_object, FAN-2565); engineer_repair_drone and engineer_pressure_mines still use the deterministic in-repo geometry forge and generated no PixelLab asset",
     "new_pixellab_assets": [
@@ -67,11 +68,12 @@
       "weapon_id": "engineer_sentry_wrench",
       "title": "Гнездо Часовых",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-      "silhouette": "six tall narrow pylons with hexagonal turret heads standing on a fixed hexagon",
-      "motion_path": "ground tap, six pylons rise in place on a fixed hexagon, crossfire holds, then the ring folds inward",
-      "timing_rhythm": "shortest telegraph of the class, snap deployment, then the longest held crossfire",
-      "impact_language": "synchronized muzzle volleys along the hex chords, then a shutdown vent",
-      "timing_seconds": {"windup": 0.0, "release": 0.35, "active": 0.70, "recovery": 4.60, "cancel": 5.10},
+      "presentation_direction_version": "v2 (FAN-2944 §1/§3.1, reworked by FAN-2960)",
+      "silhouette": "colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon",
+      "motion_path": "wrench sigil rises over the hero while pylon ghosts sweep out to arena seats, slams at release, crossfire holds the frame, then the ring folds inward",
+      "timing_rhythm": "0.8s cast ceremony, hitstop slam, then the longest held crossfire of the class inside a 3.8s envelope",
+      "impact_language": "hitstop slam of the wrench sigil, synchronized muzzle volleys along arena-wide hex chords, then a shutdown vent",
+      "timing_seconds": {"windup": 0.0, "release": 0.8, "active": 1.15, "recovery": 3.1, "cancel": 3.8},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.windup",
         "release": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.execute",
@@ -80,11 +82,29 @@
         "cancel": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.cleanup"
       },
       "pivot": [0.5, 0.85],
-      "performance": {"max_visual_nodes": 6, "crowd_cap": 16},
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 16,
+        "max_unique_materials": 4,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "declared proactively per FAN-2972: every node uses the default CanvasItem material; the translucent BackdropDim polygon is the only viewport-scale layer (v2 caps: 16 unique / 2 fullscreen)"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.wrench_overhead_brace",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
       "quality": {
         "max_viewport_coverage_ratio": 0.1,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the six pylons hold their deployed frame with a steady lens glow instead of playing the firing cycle and the fold-out vent",
+        "reduced_motion_substitute": "the six pylons hold their deployed frame with a steady lens glow, the wrench sigil hovers static over the hero, and the backdrop holds one steady dim instead of the firing cycle, camera shake and hitstop",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.06

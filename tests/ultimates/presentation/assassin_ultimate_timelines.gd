@@ -267,7 +267,7 @@ func _check_v2_chakrams(package: Dictionary, errors: Array[String]) -> void:
 	_expect(str(identity.get("cast_pose_id", "")).begins_with("weapon_ultimate.cast_pose.assassin."), "chakrams identity.cast_pose_id must be the assassin cast pose", errors)
 	_expect(str(identity.get("weapon_silhouette_asset", "")) == V2_SILHOUETTE_ASSET and FileAccess.file_exists(V2_SILHOUETTE_ASSET), "chakrams identity.weapon_silhouette_asset must be its own weapon sprite", errors)
 	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "chakrams identity.class_palette_id must be declared", errors)
-	var materials := (package.get("performance", {}) as Dictionary).get("material_budget", {}) as Dictionary
+	var materials := package.get("performance", {}) as Dictionary
 	_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "chakrams must declare a material budget ahead of the FAN-2972 assert", errors)
 
 
