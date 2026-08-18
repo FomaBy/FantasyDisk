@@ -54,6 +54,7 @@ func _initialize() -> void:
 	_test_performance_and_readability(errors)
 	_test_animation_pack(errors)
 	_test_capture_evidence(errors)
+	_test_v2_overlay(registry, errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_test_scene_lifecycle(registry, str(weapon_id), errors)
 
@@ -326,6 +327,73 @@ func _test_capture_evidence(errors: Array[String]) -> void:
 			"%s must be captured at %dx%d" % [path, size.x, size.y],
 			errors
 		)
+
+
+## FAN-2960: the sentry wrench is the first v2 pair — its scene builds the
+## declared full-screen layers, they follow the timeline as pure functions, and
+## every cleanup reason frees them together with the formation sprites.
+func _test_v2_overlay(registry, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(Pack.SENTRY_WRENCH, "")))
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	scene.begin(registry, _probes(), 0)
+	for node_name in ["BackdropDim", "WrenchSigil", "CrossfireChord0", "CrossfireChord1", "CrossfireChord2"]:
+		_expect(scene.get_node_or_null(node_name) != null, "sentry v2 scene must build %s" % node_name, errors)
+	_expect(
+		_live_canvas_items(scene) == 11,
+		"sentry v2 scene must own 11 drawing nodes (6 pylons + 5 overlay), got %d" % _live_canvas_items(scene),
+		errors
+	)
+
+	var backdrop := scene.get_node_or_null("BackdropDim") as Polygon2D
+	var sigil := scene.get_node_or_null("WrenchSigil") as Sprite2D
+	if backdrop != null and sigil != null:
+		scene.step(0.45)
+		var windup_alpha := backdrop.color.a
+		_expect(windup_alpha > 0.0, "backdrop must dim in during the cast ceremony", errors)
+		scene.step(0.60)
+		_expect(backdrop.color.a > windup_alpha, "backdrop must hold its release peak", errors)
+		_expect(sigil.visible and sigil.modulate.a > 0.9, "wrench sigil must lead the release", errors)
+
+	# Repeated activation rebuilds the layers instead of stacking them.
+	scene.begin(registry, _probes(), 0)
+	_expect(
+		_live_canvas_items(scene) == 11,
+		"repeated activation must rebuild the v2 layers, got %d" % _live_canvas_items(scene),
+		errors
+	)
+	scene.free()
+
+	for reason in TimelineScene.CLEANUP_REASONS:
+		var cleanup_scene := packed.instantiate() as Node2D
+		root.add_child(cleanup_scene)
+		cleanup_scene.begin(registry, _probes(), 0)
+		cleanup_scene.step(2.0)
+		cleanup_scene.finish(str(reason))
+		_expect(
+			_live_canvas_items(cleanup_scene) == 0,
+			"%s must free every v2 overlay with the sprites" % reason,
+			errors
+		)
+		cleanup_scene.free()
+
+	# The two v1 siblings keep their exact scene shape until their own cards.
+	for weapon_id in [Pack.REPAIR_DRONE, Pack.PRESSURE_MINES]:
+		var sibling := (load(str(SCENE_PATHS.get(str(weapon_id), ""))) as PackedScene).instantiate() as Node2D
+		root.add_child(sibling)
+		sibling.begin(registry, _probes(), 0)
+		_expect(sibling.get_node_or_null("BackdropDim") == null, "%s must not gain v2 overlay nodes" % weapon_id, errors)
+		sibling.free()
+
+
+## Children that would still draw: not yet queued for deletion.
+func _live_canvas_items(scene: Node2D) -> int:
+	var count := 0
+	for child in scene.get_children():
+		var item := child as CanvasItem
+		if item != null and not item.is_queued_for_deletion():
+			count += 1
+	return count
 
 
 func _semi_transparent_pixels(image: Image) -> int:

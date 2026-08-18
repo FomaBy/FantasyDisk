@@ -9,7 +9,7 @@ stay owned by the v1 weapon-ultimate registry.
 
 | Weapon | Title | Silhouette | Motion | Impact |
 | --- | --- | --- | --- | --- |
-| `engineer_sentry_wrench` | Гнездо Часовых | tall narrow pylon, hexagonal turret head | ground tap, six pylons rise in place on a fixed hexagon | synchronized turret volleys along hex chords |
+| `engineer_sentry_wrench` | Гнездо Часовых | colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon | wrench sigil rises over the hero while pylon ghosts sweep to arena seats, slams at release, crossfire holds | hitstop slam of the wrench sigil, synchronized turret volleys along arena-wide hex chords |
 | `engineer_repair_drone` | Рой Аварийного Ремонта | wide flat rotor bar over a small orb body | canister column unwinds into two counter-phased helix strands | alternating intercept and ram streaks, then a protective dome |
 | `engineer_pressure_mines` | Минное Поле Омега | squat prong-topped dome on a wide base plate | blueprint lattice flashes, mines burrow up in place | ordered outer-to-inner chain detonation |
 
@@ -58,13 +58,34 @@ monotonic and inside `max_timeline_seconds = 10.0`.
 
 | Weapon | windup | release | active | recovery | cancel | total |
 | --- | --- | --- | --- | --- | --- | --- |
-| `engineer_sentry_wrench` | 0.00 | 0.35 | 0.70 | 4.60 | 5.10 | 5.10 |
+| `engineer_sentry_wrench` | 0.00 | 0.80 | 1.15 | 3.10 | 3.80 | 3.80 |
 | `engineer_repair_drone` | 0.00 | 0.55 | 1.05 | 5.40 | 6.10 | 6.10 |
 | `engineer_pressure_mines` | 0.00 | 0.90 | 1.70 | 3.10 | 3.60 | 3.60 |
 
-The wrench telegraphs briefly and holds the longest crossfire, the swarm opens
-slowest and trails the longest dome, and the mine field telegraphs longest and
-detonates in the shortest burst.
+The wrench runs the Ultimate Direction v2 envelope (FAN-2944 §1, reworked by
+FAN-2960): a 0.8s cast ceremony, a 2.3s release-plus-crossfire window, and a
+0.7s visible fold-out inside a 3.8s total. The swarm opens slowest and trails
+the longest dome, and the mine field telegraphs longest and detonates in the
+shortest burst; both still ship their v1 rhythm and stay on
+`PRESENTATION_V2_MIGRATION_ALLOWLIST` until their own rework cards.
+
+## Ultimate Direction v2 (`engineer_sentry_wrench`, FAN-2960)
+
+The sentry wrench is the first pair off the v2 migration allowlist. On top of
+the pylon formation the scene driver builds three declared full-screen layers,
+all pure functions of the timeline: `BackdropDim` (translucent viewport-scale
+darken, peak alpha 0.42), three `CrossfireChord` lines through the hero that
+extend past the arena seats, and `WrenchSigil` — the accepted SCRUM-746
+weapon-silhouette asset `vfx_weapon_engineer_sentry_wrench.png` raised over the
+hero during the cast ceremony and slammed at release as the identity core. At
+the release beat the driver applies the declared weight: a 110 ms hitstop
+(real-time dip, `combat_director` idiom), a player-camera shake honouring the
+`screen_shake` setting, and an -8 dB SFX-bus duck released at recovery. All
+weight effects are skipped headless, and every overlay node is freed on
+`cancel`, `death`, and `node_end` exactly like the formation sprites. The
+`presence`/`identity` declarations live in the weapon record of
+`manifest.json` and in the pack `WEAPONS` map; the schema fails closed on them
+now that the pair is off the allowlist.
 
 Each presentation phase references the exact frozen `phase_id` from
 `data/ultimates/schema/v1/classes/engineer.json` through the schema bindings
