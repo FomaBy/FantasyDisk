@@ -3,6 +3,7 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/chemist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/chemist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const WEAPON_IDS := ["blast_powder", "acid_flask", "homunculus_vial"]
 const SCENES := {
 	"blast_powder": preload("res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn"),
@@ -22,11 +23,11 @@ const PACKS := [
 	{
 		"weapon_id": "acid_flask",
 		"scene": SCENES["acid_flask"],
-		"time": 2.3,
+		"time": 3.3,
 		"title": "ACID FLASK — TSAR LAKE",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.58, 1.0, 0.34),
-		"required_nodes": ["TsarFlask", "ChargePillars/PillarTwo", "EvaporationSmoke"],
+		"required_nodes": ["TsarFlask", "LakeRing", "ChargePillars/PillarTwo", "EvaporationSmoke"],
 	},
 	{
 		"weapon_id": "homunculus_vial",
@@ -64,6 +65,7 @@ const DRIVER_DUCK_DB := -9.0
 
 
 var _blast_package := {}
+var _acid_package := {}
 
 
 class HandleProbe extends RefCounted:
@@ -90,6 +92,7 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
+	_check_acid_v2(packages.get("acid_flask", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
@@ -98,6 +101,7 @@ func _initialize() -> void:
 		_finish(errors)
 		return
 	_blast_package = packages.get("blast_powder", {}) as Dictionary
+	_acid_package = packages.get("acid_flask", {}) as Dictionary
 
 
 ## _initialize runs before the root window joins the tree, so nothing added
@@ -106,6 +110,7 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	var errors: Array[String] = []
 	_check_blast_driver(_blast_package, errors)
+	_check_acid_driver(_acid_package, errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return true
@@ -242,28 +247,50 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 ## allowlist entry is gone; this gate owns the class-local declarations that
 ## make the effect full-screen and identity-bearing.
 func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
-	_expect(not package.is_empty(), "blast_powder package must exist for the v2 gate", errors)
+	_check_weapon_v2("blast_powder", package, errors)
+
+
+## FAN-2958: the same v2 contract for the migrated acid_flask pair, plus the
+## pair-local proof that its own PixelLab frames are the visual core and that
+## the migration ratchet entry is really gone.
+func _check_acid_v2(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_v2("acid_flask", package, errors)
+	_expect(
+		not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("chemist/acid_flask"),
+		"chemist/acid_flask must have left the v2 migration allowlist",
+		errors
+	)
+	var silhouette := str((package.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	_expect(
+		silhouette.contains("fan2551_acid_flask_ultimate"),
+		"acid_flask weapon silhouette must be its own FAN-2551 PixelLab frame: %s" % silhouette,
+		errors
+	)
+
+
+func _check_weapon_v2(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	_expect(not package.is_empty(), "%s package must exist for the v2 gate" % weapon_id, errors)
 	if package.is_empty():
 		return
-	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	var scene := SCENES[weapon_id].instantiate() as Node2D
 	root.add_child(scene)
 	var presence := package.get("presence", {}) as Dictionary
-	_expect(presence.get("fullscreen_footprint") == true, "blast_powder must declare a fullscreen footprint", errors)
-	_expect(str(presence.get("backdrop", "")) == "darken", "blast_powder must declare the darken backdrop", errors)
-	_expect(presence.get("camera_shake") == true, "blast_powder must declare camera shake", errors)
+	_expect(presence.get("fullscreen_footprint") == true, "%s must declare a fullscreen footprint" % weapon_id, errors)
+	_expect(str(presence.get("backdrop", "")) == "darken", "%s must declare the darken backdrop" % weapon_id, errors)
+	_expect(presence.get("camera_shake") == true, "%s must declare camera shake" % weapon_id, errors)
 	var hitstop := float(presence.get("hitstop_ms", 0.0))
-	_expect(hitstop >= 80.0 and hitstop <= 150.0, "blast_powder hitstop must stay in the 80-150ms corridor", errors)
-	_expect(presence.get("sfx_ducking") == true, "blast_powder must declare SFX ducking", errors)
+	_expect(hitstop >= 80.0 and hitstop <= 150.0, "%s hitstop must stay in the 80-150ms corridor" % weapon_id, errors)
+	_expect(presence.get("sfx_ducking") == true, "%s must declare SFX ducking" % weapon_id, errors)
 	var identity := package.get("identity", {}) as Dictionary
-	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "blast_powder must declare its hero cast pose", errors)
+	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "%s must declare its hero cast pose" % weapon_id, errors)
 	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
-	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "blast_powder weapon silhouette asset must exist: %s" % silhouette, errors)
-	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "blast_powder must resolve its class palette", errors)
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "%s weapon silhouette asset must exist: %s" % [weapon_id, silhouette], errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s must resolve its class palette" % weapon_id, errors)
 	var performance := package.get("performance", {}) as Dictionary
-	_expect(int(performance.get("max_unique_materials", 0)) > 0, "blast_powder must declare a positive material budget", errors)
-	_expect(int(performance.get("max_fullscreen_materials", 0)) > 0, "blast_powder must declare its full-screen material budget", errors)
+	_expect(int(performance.get("max_unique_materials", 0)) > 0, "%s must declare a positive material budget" % weapon_id, errors)
+	_expect(int(performance.get("max_fullscreen_materials", 0)) > 0, "%s must declare its full-screen material budget" % weapon_id, errors)
 	var veil := scene.get_node_or_null("BackdropVeil") as CanvasItem
-	_expect(veil != null and veil.visible, "blast_powder must carry a backdrop veil node", errors)
+	_expect(veil != null and veil.visible, "%s must carry a backdrop veil node" % weapon_id, errors)
 	if veil != null:
 		_expect(bool(veil.get_meta("fullscreen_layer", false)), "the backdrop veil must be marked as the fullscreen layer", errors)
 	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
@@ -287,20 +314,28 @@ func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
 ## pause must not touch a property AnimationPlayer does not have, the shake must
 ## obey the player's setting, overlapping casts must hand the SFX bus back, and
 ## the envelope must end where the manifest says it does.
-func _check_blast_driver(package: Dictionary, errors: Array[String]) -> void:
+func _check_weapon_driver(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
 	if package.is_empty():
 		return
 	var timing := package.get("timing_seconds", {}) as Dictionary
-	_check_driver_pause(errors)
-	_check_driver_shake_setting(float(timing.get("active", 1.3)), errors)
-	_check_driver_sfx_overlap(float(timing.get("release", 0.95)), errors)
-	_check_driver_envelope(float(timing.get("cancel", 3.6)), errors)
+	_check_driver_pause(weapon_id, errors)
+	_check_driver_shake_setting(weapon_id, float(timing.get("active", 1.3)), errors)
+	_check_driver_sfx_overlap(weapon_id, float(timing.get("release", 0.95)), errors)
+	_check_driver_envelope(weapon_id, float(timing.get("cancel", 3.6)), errors)
 
 
-func _check_driver_pause(errors: Array[String]) -> void:
-	var scene := _driver_scene()
+func _check_blast_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("blast_powder", package, errors)
+
+
+func _check_acid_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("acid_flask", package, errors)
+
+
+func _check_driver_pause(weapon_id: String, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
 	var timeline := scene.get_node("Timeline") as AnimationPlayer
-	_expect(timeline.is_playing(), "the blast_powder timeline must autoplay", errors)
+	_expect(timeline.is_playing(), "the %s timeline must autoplay" % weapon_id, errors)
 	scene.set_paused(true)
 	_expect(not timeline.is_playing(), "pause must hold the drawn timeline", errors)
 	scene.set_paused(false)
@@ -310,7 +345,7 @@ func _check_driver_pause(errors: Array[String]) -> void:
 
 ## The player's screen_shake toggle is the whole gate: with it off the effect may
 ## not move the camera by a single pixel, exactly like enemy.gd slam shake.
-func _check_driver_shake_setting(impact_at: float, errors: Array[String]) -> void:
+func _check_driver_shake_setting(weapon_id: String, impact_at: float, errors: Array[String]) -> void:
 	var camera := Camera2D.new()
 	root.add_child(camera)
 	camera.make_current()
@@ -318,7 +353,7 @@ func _check_driver_shake_setting(impact_at: float, errors: Array[String]) -> voi
 	for shake_enabled in [true, false]:
 		root.set_meta("screen_shake", shake_enabled)
 		camera.offset = Vector2.ZERO
-		var scene := _driver_scene()
+		var scene := _driver_scene(weapon_id)
 		var veil := scene.get_node("BackdropVeil") as CanvasItem
 		_expect(
 			is_equal_approx(veil.self_modulate.a, 1.0) == shake_enabled,
@@ -347,15 +382,15 @@ func _check_driver_shake_setting(impact_at: float, errors: Array[String]) -> voi
 ## Two casts crossing over: the second one must not record the already-ducked
 ## level as the value to restore, and the earlier one finishing first must not
 ## strand the bus below its pre-cast volume.
-func _check_driver_sfx_overlap(release_at: float, errors: Array[String]) -> void:
+func _check_driver_sfx_overlap(weapon_id: String, release_at: float, errors: Array[String]) -> void:
 	var created := AudioServer.get_bus_index("SFX") == -1
 	if created:
 		AudioServer.add_bus(AudioServer.bus_count)
 		AudioServer.set_bus_name(AudioServer.bus_count - 1, "SFX")
 	var bus := AudioServer.get_bus_index("SFX")
 	var before := AudioServer.get_bus_volume_db(bus)
-	var first := _driver_scene()
-	var second := _driver_scene()
+	var first := _driver_scene(weapon_id)
+	var second := _driver_scene(weapon_id)
 	first._process(release_at + DRIVER_STEP)
 	second._process(release_at + DRIVER_STEP)
 	_expect(
@@ -376,8 +411,8 @@ func _check_driver_sfx_overlap(release_at: float, errors: Array[String]) -> void
 
 ## The hitstop freeze may not be added on top of the declared envelope: the
 ## driver stops exactly at the manifest cancel, freeze included.
-func _check_driver_envelope(cancel_at: float, errors: Array[String]) -> void:
-	var scene := _driver_scene()
+func _check_driver_envelope(weapon_id: String, cancel_at: float, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
 	var elapsed := 0.0
 	while scene.is_processing() and elapsed < cancel_at * 2.0:
 		scene._process(DRIVER_STEP)
@@ -390,8 +425,8 @@ func _check_driver_envelope(cancel_at: float, errors: Array[String]) -> void:
 	_release_driver_scene(scene)
 
 
-func _driver_scene() -> Node2D:
-	var scene := SCENES["blast_powder"].instantiate() as Node2D
+func _driver_scene(weapon_id: String) -> Node2D:
+	var scene := SCENES[weapon_id].instantiate() as Node2D
 	root.add_child(scene)
 	return scene
 

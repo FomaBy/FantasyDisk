@@ -39,7 +39,6 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"biologist/biologist_spore_lens": V2_SEED_REASON,
 	"biologist/biologist_sample_injector": V2_SEED_REASON,
 	"biologist/biologist_symbiote_seed": V2_SEED_REASON,
-	"chemist/acid_flask": V2_SEED_REASON,
 	"chemist/homunculus_vial": V2_SEED_REASON,
 	"dark_mage/dark_book": V2_SEED_REASON,
 	"dark_mage/cursed_skull": V2_SEED_REASON,
