@@ -1,0 +1,56 @@
+{
+  "character_id": "stone_bruiser",
+  "pixellab_character_id": "acc9d3d5-8c44-448f-be81-6583bb91b2c0",
+  "generated_at": "2026-08-18",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations) + template walking-6-frames (move) + v3 custom (attack/hit/death)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walking-6-frames",
+      "fps": 9.0,
+      "action_description": "lumbering forward slowly, heavy stone footsteps"
+    },
+    "attack": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "heavy overhead smash with both boulder fists",
+      "fps": 10.0
+    },
+    "hit": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "recoiling backward from a heavy blow, cracks flashing across the stone body",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 9,
+      "mode": "v3",
+      "action_description": "crumbling and collapsing into a pile of rubble",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2612: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/stone_bruiser. 8 idle rotations + 8x6 move frames + 8x7 attack frames + 8x7 hit frames + 8x9 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
+}

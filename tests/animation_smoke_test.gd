@@ -1141,6 +1141,21 @@ func _test_full_frame_animation_registry() -> void:
 		if enemy_frames == null:
 			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
 			continue
+		# FAN-2612: branch on the registry's own explicit_eight_directions flag,
+		# not a hardcoded ID list (same generalization FAN-2901 applied to
+		# mini-elites), so a directional standard enemy is checked for its
+		# actual per-direction rows instead of the flat aliases it no longer has.
+		var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+		if enemy_is_directional:
+			for state_name in ["idle", "move", "attack", "hit", "death"]:
+				var state_should_loop: bool = state_name in ["idle", "move"]
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var directional_row := "%s_%s" % [state_name, dir_suffix]
+					if not enemy_frames.has_animation(directional_row):
+						_fail("Expected %s SpriteFrames to expose %s." % [enemy_id, directional_row])
+					elif enemy_frames.get_animation_loop(directional_row) != state_should_loop:
+						_fail("Expected %s %s loop to be %s." % [enemy_id, directional_row, str(state_should_loop)])
+			continue
 		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
 			if not enemy_frames.has_animation(animation_name):
 				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
@@ -1194,7 +1209,18 @@ func _test_full_frame_animation_registry() -> void:
 		var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
 		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
 			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
-		if enemy_full_frame_body != null:
+		var enemy_is_directional_scene := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+		if enemy_full_frame_body != null and enemy_is_directional_scene:
+			if not FullFrameAnimationRegistry.has_full_directional_rows(enemy_full_frame_body.sprite_frames, "move"):
+				_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames with full directional move rows." % enemy_id)
+			var enemy_start_animation := str(enemy_full_frame_body.animation)
+			if not (enemy_start_animation.begins_with("move_") or enemy_start_animation.begins_with("idle_")):
+				_fail("Expected %s enemy FullFrameBody to start in a directional move_<dir>/idle_<dir> animation, got %s." % [enemy_id, enemy_start_animation])
+			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+			if enemy_full_frame_body.animation != "attack_east" or enemy_full_frame_body.flip_h:
+				_fail("Expected %s directional attack_primary to resolve to attack_east without flip." % enemy_id)
+		elif enemy_full_frame_body != null:
 			for animation_name in ["move", "attack_primary", "hit", "death"]:
 				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
 					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
