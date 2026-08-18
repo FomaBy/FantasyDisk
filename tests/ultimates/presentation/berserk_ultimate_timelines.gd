@@ -4,6 +4,7 @@ const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/berserk.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/berserk/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text_fit.gd")
+const CONTRACT := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const SCENES := {
 	"sword": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
 	"axe": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
@@ -56,6 +57,16 @@ const SHEET_TEXT_MARGIN := 8.0
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
+const PIXELLAB_WEAPON_IDS := ["sword"]
+const REUSED_WEAPON_IDS := ["axe", "hammer"]
+const GENERATED_ANIMATIONS := {"sword": "scarlet_whirlwind"}
+const GENERATED_FRAME_SIZE := Vector2i(256, 256)
+const GENERATED_SPRITE_PATHS := {
+	"sword": ["BladeGhostOne", "BladeGhostTwo", "BladeGhostThree"],
+}
+## Axe and hammer record their measured quality with FAN-2545 and FAN-2546;
+## this card owns the sword record only.
+const QUALITY_WEAPON_IDS := ["sword"]
 
 
 class HandleProbe extends RefCounted:
@@ -82,6 +93,7 @@ func _initialize() -> void:
 	for weapon_id in ["sword", "axe", "hammer"]:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_repeat_activation(errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
@@ -94,17 +106,97 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance route must explain why no new raster source was generated", errors)
+	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_sword_reused_approved_assets_for_the_other_two", "provenance route must explain the mixed PixelLab/reuse route", errors)
 	_expect(str(provenance.get("pixellab_mcp_config_smoke", "")).begins_with("PASS"), "PixelLab MCP config smoke must be recorded as PASS", errors)
+	var created = provenance.get("new_pixellab_assets", [])
+	_expect(created is Array and (created as Array).size() == PIXELLAB_WEAPON_IDS.size(), "provenance must declare exactly the PixelLab-generated weapons", errors)
+	var generated := {}
+	for raw_asset in created as Array:
+		if raw_asset is Dictionary:
+			generated[str((raw_asset as Dictionary).get("weapon_id", ""))] = raw_asset as Dictionary
+	for weapon_id in PIXELLAB_WEAPON_IDS:
+		var asset := generated.get(str(weapon_id), {}) as Dictionary
+		_expect(not asset.is_empty(), "%s must declare its PixelLab provenance" % weapon_id, errors)
+		if asset.is_empty():
+			continue
+		for id_field in ["pixel_lab_object_id", "pixel_lab_animation_group_id"]:
+			_expect(not str(asset.get(id_field, "")).is_empty(), "%s must record its %s" % [weapon_id, id_field], errors)
+		for path_field in ["source_dir", "runtime_spriteframes", "runtime_scene", "generation_script", "provenance_manifest"]:
+			var path := str(asset.get(path_field, ""))
+			_expect(not path.is_empty() and (FileAccess.file_exists("res://%s" % path) or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://%s" % path))), "%s %s must exist: %s" % [weapon_id, path_field, path], errors)
+		_check_generated_frames(str(weapon_id), asset, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
-	for weapon_id in ["sword", "axe", "hammer"]:
+	_expect(not sources.has("sword"), "sword must no longer be declared as a reused static asset", errors)
+	for weapon_id in REUSED_WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("runtime_scene", ""))), "%s runtime scene must be recorded and exist" % weapon_id, errors)
 		_expect(not str(source.get("source_path", "")).is_empty(), "%s source path must be recorded" % weapon_id, errors)
-	for weapon_id in ["axe", "hammer"]:
-		var source := sources.get(weapon_id, {}) as Dictionary
 		_expect(not str(source.get("pixellab_object_id", "")).is_empty(), "%s must retain accepted PixelLab object provenance" % weapon_id, errors)
 		_expect(not str(source.get("pixellab_animation_group_id", "")).is_empty(), "%s must retain accepted PixelLab animation-group provenance" % weapon_id, errors)
+
+
+func _check_generated_frames(weapon_id: String, asset: Dictionary, errors: Array[String]) -> void:
+	var frames := ResourceLoader.load("res://%s" % str(asset.get("runtime_spriteframes", ""))) as SpriteFrames
+	_expect(frames != null, "%s runtime SpriteFrames must load" % weapon_id, errors)
+	if frames == null:
+		return
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	_expect(frames.has_animation(animation_name), "%s SpriteFrames must expose the %s animation" % [weapon_id, animation_name], errors)
+	if not frames.has_animation(animation_name):
+		return
+	_expect(frames.get_frame_count(animation_name) == int(asset.get("frame_count", -1)), "%s must ship the declared frame count" % weapon_id, errors)
+	# Every generated frame must be a real transparent-background texture: an
+	# opaque or missing frame means the pack was substituted or lost its alpha.
+	for frame_index in frames.get_frame_count(animation_name):
+		var texture := frames.get_frame_texture(animation_name, frame_index)
+		_expect(texture != null, "%s frame %d must have a texture" % [weapon_id, frame_index], errors)
+		if texture == null:
+			continue
+		var image := texture.get_image()
+		_expect(image != null and image.get_size() == GENERATED_FRAME_SIZE, "%s frame %d must keep the generated frame size" % [weapon_id, frame_index], errors)
+		if image != null:
+			image.decompress()
+			_expect(image.get_pixel(0, 0).a == 0.0 and image.get_pixel(image.get_width() - 1, image.get_height() - 1).a == 0.0, "%s frame %d must keep a transparent background" % [weapon_id, frame_index], errors)
+
+
+func _check_generated_binding(weapon_id: String, instance: Node2D, errors: Array[String]) -> void:
+	var expected_frames := "res://%s" % str(_generated_asset(weapon_id).get("runtime_spriteframes", ""))
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	var bound := 0
+	for node_path in GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array:
+		var sprite := instance.get_node_or_null(str(node_path)) as AnimatedSprite2D
+		_expect(sprite != null, "%s generated sprite missing: %s" % [weapon_id, node_path], errors)
+		if sprite == null:
+			continue
+		_expect(sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_frames, "%s %s must bind its own generated SpriteFrames" % [weapon_id, node_path], errors)
+		_expect(sprite.animation == animation_name, "%s %s must play the %s animation" % [weapon_id, node_path, animation_name], errors)
+		bound += 1
+	_expect(bound == (GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array).size(), "%s must bind every generated sprite" % weapon_id, errors)
+
+
+func _generated_asset(weapon_id: String) -> Dictionary:
+	var manifest := _load_json(MANIFEST_PATH, [] as Array[String])
+	for raw_asset in (manifest.get("generator_provenance", {}) as Dictionary).get("new_pixellab_assets", []) as Array:
+		if raw_asset is Dictionary and str((raw_asset as Dictionary).get("weapon_id", "")) == weapon_id:
+			return raw_asset as Dictionary
+	return {}
+
+
+## Readability and accessibility gates, held to the same numbers the shared
+## visual-direction contract applies to every other weapon ultimate.
+func _check_quality(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var quality := package.get("quality", {}) as Dictionary
+	_expect(not quality.is_empty(), "%s must declare its measured quality record" % weapon_id, errors)
+	if quality.is_empty():
+		return
+	_expect(float(quality.get("max_viewport_coverage_ratio", 1.0)) <= CONTRACT.MAX_VIEWPORT_COVERAGE_RATIO, "%s drawn coverage must stay within the readability ceiling" % weapon_id, errors)
+	_expect(bool(quality.get("hud_bands_clear", false)), "%s must leave the HUD bands clear" % weapon_id, errors)
+	_expect(not str(quality.get("reduced_motion_substitute", "")).is_empty(), "%s must declare a reduced-motion substitute" % weapon_id, errors)
+	_expect(bool(quality.get("reduced_motion_preserves_timing", false)), "%s reduced-motion substitute must preserve phase timing" % weapon_id, errors)
+	var flash_hz := float(quality.get("full_screen_flash_hz", 99.0))
+	_expect(flash_hz <= CONTRACT.MAX_FLASH_HZ, "%s must stay within the photosensitivity flash ceiling" % weapon_id, errors)
+	_expect(flash_hz == 0.0 or float(quality.get("max_flash_coverage_ratio", 1.0)) <= CONTRACT.MAX_REPEAT_FLASH_COVERAGE_RATIO, "%s repeating flash must stay under the wide-flash coverage ceiling" % weapon_id, errors)
+	_expect(not str(quality.get("measurement", "")).is_empty(), "%s quality record must cite its measurement" % weapon_id, errors)
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -126,6 +218,8 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 		_expect(str(phases.get(phase_name, "")) == expected_phase, "%s %s must bind to frozen Cast phase ID" % [weapon_id, phase_name], errors)
 	_check_scene(weapon_id, package, errors)
 	_check_lifecycle(weapon_id, timing, phases, errors)
+	if QUALITY_WEAPON_IDS.has(weapon_id):
+		_check_quality(weapon_id, package, errors)
 
 
 func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
@@ -145,6 +239,8 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(not str(instance.get_meta("impact_language", "")).is_empty(), "%s impact language declaration missing" % weapon_id, errors)
 	_expect(instance.get_child_count() <= int(instance.get_meta("crowd_cap", 0)), "%s visual-node count must stay within crowd cap" % weapon_id, errors)
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) <= int(instance.get_meta("crowd_cap", 0)), "%s declared visual budget must stay within crowd cap" % weapon_id, errors)
+	if GENERATED_SPRITE_PATHS.has(weapon_id):
+		_check_generated_binding(weapon_id, instance, errors)
 	instance.queue_free()
 
 
@@ -173,6 +269,26 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 		_expect(cleanup_timeline.active_handle_count() == 0, "%s %s cleanup must release all handles" % [weapon_id, reason], errors)
 		for handle in cleanup_handles.values():
 			_expect((handle as HandleProbe).released == 1, "%s %s cleanup must release each handle exactly once" % [weapon_id, reason], errors)
+
+
+## Repeated activation and scene exit must leave nothing behind. The sword pack
+## binds a shared SpriteFrames, so a leaked blade would pin its textures too.
+func _check_repeat_activation(errors: Array[String]) -> void:
+	for weapon_id in ["sword", "axe", "hammer"]:
+		var scene := SCENES.get(weapon_id) as PackedScene
+		if scene == null:
+			continue
+		var baseline := Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+		for activation in 3:
+			var instance := scene.instantiate() as Node2D
+			root.add_child(instance)
+			var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+			if timeline != null and timeline.has_animation(&"ultimate"):
+				timeline.play(&"ultimate")
+				timeline.seek(4.0, true)
+			root.remove_child(instance)
+			instance.free()
+		_expect(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT) <= baseline, "%s repeated activation and scene exit must leave no orphan nodes" % weapon_id, errors)
 
 
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:

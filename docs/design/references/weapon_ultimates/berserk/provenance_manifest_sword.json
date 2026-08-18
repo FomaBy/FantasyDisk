@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2544",
+  "weapon": "berserk/sword",
+  "title": "Алый Вихрь",
+  "generated_at": "2026-08-18T07:28:00Z",
+  "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "generation": {
+    "route": "pixellab_new_isolated_animation_frames",
+    "tool": "PixelLab MCP (https://api.pixellab.ai/mcp)",
+    "object": {
+      "pixel_lab_object_id": "7d9d666b-bb9a-438b-ba5a-7fea130c9681",
+      "create_tool": "create_1_direction_object",
+      "create_params": {
+        "size": 256,
+        "view": "top-down",
+        "description": "one single spectral two-handed greatsword, dark fantasy pixel art seen straight from above, translucent scarlet-red ghost steel blade with a bright white-hot cutting edge and a dark iron crossguard and grip, the sword points straight up, only this one sword exists in the image, one centered object, nothing around it, empty background, no hands, no character, no second sword, no scattered blades, no props, no border decoration, no text"
+      }
+    },
+    "animation": {
+      "pixel_lab_animation_group_id": "385cfae2-cc60-4e7f-b3fe-9bc42c0b4890",
+      "frame_path_group_id": "6a5a186a-79ee-45c7-960f-b740f03f1c03",
+      "animate_tool": "animate_object",
+      "mode": "v3",
+      "frame_count": 9,
+      "frame_url_template": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/7d9d666b-bb9a-438b-ba5a-7fea130c9681/animations/6a5a186a-79ee-45c7-960f-b740f03f1c03/unknown/{i}.png",
+      "animation_description": "every frame shows the same burning red spectral blade: the whole blade is made of deep crimson red fire with a bright white-hot core running up its centre, and the dark iron crossguard and grip stay exactly the same; the red flame along the edges of the blade flickers gently and faint red embers drift upward along it; the outline, width, length, proportions and position of the blade are identical in every frame"
+    }
+  },
+  "rejected_animation_groups": [
+    {
+      "pixel_lab_animation_group_id": "908bfb62-0d57-481b-962f-053d4a84717a",
+      "animation_description": "the greatsword keeps exactly the same shape, size, length, proportions and scarlet colors in every frame and stays centered in the same place pointing straight up; only the light moves: a bright white-hot glow runs up the cutting edge from the crossguard to the tip and fades out, the translucent scarlet ghost body pulses faintly brighter and dimmer as the glow passes it, thin red motion streaks trail along the flat of the blade, nothing else appears, nothing is added and nothing leaves the frame",
+      "rejected_because": "identity morph: frames 2-3 replaced the scarlet ghost blade with a grey stone blade and widened the blade into a lumpy blob; measured opaque-area spread 24.7% across the nine frames"
+    },
+    {
+      "pixel_lab_animation_group_id": "c6eb0b43-b9ba-45a0-b4be-f90dfecec67e",
+      "animation_description": "the blade body stays exactly the same translucent scarlet red in every single frame and never turns grey, silver, white, stone or steel; the greatsword keeps exactly the same outline, width, length, proportions, dark iron crossguard and grip, and stays centered in the same place pointing straight up; the only thing that changes is a bright white-hot highlight that travels up the thin cutting edge from the crossguard to the tip and fades out; the blade never widens, never grows lumps, never changes material and never fills with a different colour; nothing else appears, nothing is added and nothing leaves the frame",
+      "rejected_because": "same identity morph in frames 3-5 despite explicit negative colour wording; measured opaque-area spread 4.6%. Naming the unwanted materials did not suppress them"
+    }
+  ],
+  "direction_notes": [
+    "The isolated source is one scarlet spectral greatsword, not the three-blade formation: the whirlwind is composed at runtime by the scene, so a single blade keeps identity stable and costs one texture set.",
+    "frame_count is requested as 8 for a 256x256 object; PixelLab returns 8 generated frames plus the stored reference frame = 9, matching the accepted FAN-2541/FAN-2550/FAN-2551 packs.",
+    "Two animation groups were rejected on identity morph before this one was accepted. What fixed it was dropping every negative colour word and describing the blade positively as red fire with a white-hot core: naming grey/silver/stone/steel appears to prime exactly the material it forbids.",
+    "The accepted animation only moves light and flame along a fixed outline, which is what keeps identity, silhouette and pivot stable: the opaque bounding box is pixel-identical (98,15)-(158,241) on all nine frames.",
+    "Because the object then owned three animation groups, both tools/pixellab_generate_pack.py and tools/fan2541_chakrams_pixellab.py re-downloaded the FIRST group in the report — the rejected one — while reporting success. tools/fan2544_sword_pixellab.py takes --group-id and downloads exactly the named group; the substitution was caught by comparing checksums against the archived rejected frames."
+  ],
+  "reproducibility": {
+    "generation_script": "tools/fan2544_sword_pixellab.py",
+    "create_command": "python3 tools/pixellab_generate_pack.py --source-dir <dir> --manifest-out <json> --frame-count 8 --size 256 --view top-down --animate-mode v3 --description <create_params.description> --animation-description <animation.animation_description>",
+    "fetch_command": "python3 tools/fan2544_sword_pixellab.py --object-id 7d9d666b-bb9a-438b-ba5a-7fea130c9681 --group-id 385cfae2-cc60-4e7f-b3fe-9bc42c0b4890 --source-dir <dir> --manifest-out <json> --frame-prefix scarlet_blade_f --frame-count 9",
+    "replay_note": "Auth resolves through tools/pixellab_auth_smoke.read_auth_header (AUTH_HEADER, PIXELLAB_BEARER_TOKEN, or ~/.codex/config.toml). PixelLab objects auto-delete after 8 hours, so the downloaded frames under source/ are the durable record; a replay regenerates, it does not restore."
+  },
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/berserk/source/pixellab_sword",
+    "source_frames": [
+      "scarlet_blade_f00.png",
+      "scarlet_blade_f01.png",
+      "scarlet_blade_f02.png",
+      "scarlet_blade_f03.png",
+      "scarlet_blade_f04.png",
+      "scarlet_blade_f05.png",
+      "scarlet_blade_f06.png",
+      "scarlet_blade_f07.png",
+      "scarlet_blade_f08.png"
+    ],
+    "frame_bytes": {
+      "scarlet_blade_f00.png": 5832,
+      "scarlet_blade_f01.png": 6264,
+      "scarlet_blade_f02.png": 5096,
+      "scarlet_blade_f03.png": 5075,
+      "scarlet_blade_f04.png": 4821,
+      "scarlet_blade_f05.png": 4773,
+      "scarlet_blade_f06.png": 4939,
+      "scarlet_blade_f07.png": 4595,
+      "scarlet_blade_f08.png": 4389
+    },
+    "runtime_dir": "assets/sprites/effects/fan2544_sword_ultimate",
+    "runtime_spriteframes": "assets/sprites/effects/fan2544_sword_ultimate/sword_ultimate_spriteframes.tres",
+    "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+    "runtime_animation": "scarlet_whirlwind"
+  },
+  "frame_verification": {
+    "size_px": "256x256",
+    "frame_count": 9,
+    "background": "fully transparent: max alpha on every frame border is 0",
+    "matte_or_halo": "none: 0 semi-transparent pixels across all frames (binary alpha)",
+    "crop": "none: every frame bounding box is inset from all four edges",
+    "identity_stability": "opaque bounding box is pixel-identical (98,15)-(158,241) on all 9 frames; opaque area 5344-5475 px (2.4% spread)"
+  },
+  "auth": "PIXELLAB_BEARER_TOKEN env / ~/.codex/config.toml (never committed, never printed)"
+}

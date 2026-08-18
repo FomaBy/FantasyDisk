@@ -16,15 +16,28 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
+    "route": "pixellab_animation_source_for_sword_reused_approved_assets_for_the_other_two",
     "pixellab_mcp_config_smoke": "PASS get_balance",
-    "new_pixellab_assets": [],
-    "reused_sources": {
-      "sword": {
-        "source_path": "assets/sprites/weapons/two_handed_sword.png",
+    "pixellab_mcp": "invoked for berserk/sword (FAN-2544): a new transparent-frame animation source via create_1_direction_object + animate_object; axe and hammer keep their accepted SCRUM-895 packs and are untouched by this card",
+    "new_pixellab_assets": [
+      {
+        "weapon_id": "sword",
+        "issue": "FAN-2544",
+        "pixel_lab_object_id": "7d9d666b-bb9a-438b-ba5a-7fea130c9681",
+        "pixel_lab_animation_group_id": "385cfae2-cc60-4e7f-b3fe-9bc42c0b4890",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/berserk/source/pixellab_sword",
+        "runtime_spriteframes": "assets/sprites/effects/fan2544_sword_ultimate/sword_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
-        "note": "Approved project weapon sprite; no new isolated source frame was created."
-      },
+        "generation_script": "tools/fan2544_sword_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/berserk/provenance_manifest_sword.json",
+        "note": "The isolated source is one scarlet spectral greatsword; the three-blade whirlwind stays a runtime composition, so the blade identity is generated once and instanced three times."
+      }
+    ],
+    "reused_sources": {
       "axe": {
         "source_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_00.png .. _07.png",
         "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
@@ -68,6 +81,15 @@
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "per_blade_hit_cooldown_owner": "mechanics FAN-1462"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the three scarlet blades hold their expanded orbit radius as still ghosts and the inward cross-slash fades in as a static pale cross, replacing the orbit spiral and the per-blade flame flicker",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.2711 of a 1152x648 viewport at t=3.80s; hero-centred box x=404..822 y=82..566 leaves 82px clear above and below and stops 330px short of the right edge, where the ultimate HUD widget is anchored (TOP_RIGHT, offset -24,88). Scene geometry is unchanged by FAN-2544: the generated 256x256 frames occupy the same sprite rect at the same 0.44 scale as the sprite they replaced"
       }
     },
     {
