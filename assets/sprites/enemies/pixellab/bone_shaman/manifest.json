@@ -38,7 +38,18 @@
       "attack_north": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "41030a2e-cd4e-4f35-a102-1d37cefd088b", "source_frame_indices": [0, 3, 6, 9, 12, 15]},
       "attack_north_east": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "bdae2049-8965-44aa-9876-5934529f194e", "source_frame_indices": [0, 3, 6, 9, 12, 15]}
     },
-    "notes": "v3 mode failed identity/staff readability twice on east/north/north-east; escalated to pro mode (cross-direction reference, 16 fixed frames for this 64px canvas), then evenly sampled 6 of the 16 frames to match the existing attack frame-count/fps contract. west passed on the first v3 attempt."
+    "notes": "v3 mode failed identity/staff readability twice on east/north/north-east; escalated to pro mode (cross-direction reference, 16 fixed frames for this 64px canvas), then evenly sampled 6 of the 16 frames to match the existing attack frame-count/fps contract. west passed on the first v3 attempt, but that v3 attack_west job (a473dcc5) was later found by QA FAN-2913 to rotate to face-camera from frame 3 onward, superseded below."
+  },
+  "fan3036_rework": {
+    "rework_for": "FAN-2912 candidate 39f87d77ef79a0fec2554f0f8fb028aeab46f8a3, rejected by QA FAN-2913",
+    "regenerated_rows": ["attack_west"],
+    "reason": "attack_west stayed in side profile for frames 1-2 then rotated to face the camera from frame 3 through 6, violating the single-viewpoint-per-row acceptance criterion",
+    "attempts": [
+      {"job_id": "55e73c9e-1791-4d07-b44b-0c3aaa70331a", "mode": "v3", "outcome": "rejected: fixed profile held, but lost the skull mask/identity in frames 4-6 (magic-flare action_description overwhelmed the character)"},
+      {"job_id": "7f107fa1-2a2b-4048-b4b3-33071f379659", "mode": "v3", "outcome": "rejected: reproduced the original face-camera rotation from frame 4 despite explicit profile-lock wording in the prompt"},
+      {"job_id": "fea8f1f5-5ef9-49fe-9685-9a90d5c63a39", "mode": "v3 interpolation", "outcome": "accepted", "custom_start_frame": "character rotation image for west", "end_frame": "character rotation image for west (same anchor)", "source_frame_indices": [0, 1, 2, 3, 4, 5]}
+    ],
+    "notes": "Free-form action_description alone was insufficient to hold the viewpoint across all 6 frames in v3 mode; anchoring both custom_start_frame and end_frame to the existing west rotation image forced the interpolation to keep the same side-on camera framing throughout. Only attack_west/00-05 in pixellab/ and full_frame/ plus this manifest changed; attack_east/north/north_east and all non-attack states are untouched (verified via git diff against 39f87d77ef79a0fec2554f0f8fb028aeab46f8a3)."
   },
   "states": {
     "idle": {

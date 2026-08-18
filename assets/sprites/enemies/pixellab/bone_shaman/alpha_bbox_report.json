@@ -2370,28 +2370,28 @@
       "source": "bone_shaman_attack_west_00.png",
       "runtime": "bone_shaman_attack_west_00.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        35,
-        13,
-        59,
-        79
+        20,
+        16,
+        44,
+        78
       ],
       "source_alpha_bbox_size": [
         24,
-        66
+        62
       ],
-      "scale": 3.712121212121212,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        89,
+        95,
         245
       ],
       "runtime_alpha_bbox": [
-        212,
+        208,
         235,
-        301,
+        303,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
@@ -2400,28 +2400,28 @@
       "source": "bone_shaman_attack_west_01.png",
       "runtime": "bone_shaman_attack_west_01.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        32,
-        12,
-        59,
-        81
+        20,
+        16,
+        44,
+        78
       ],
       "source_alpha_bbox_size": [
-        27,
-        69
+        24,
+        62
       ],
-      "scale": 3.550724637681159,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        96,
+        95,
         245
       ],
       "runtime_alpha_bbox": [
         208,
         235,
-        304,
+        303,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
@@ -2430,28 +2430,28 @@
       "source": "bone_shaman_attack_west_02.png",
       "runtime": "bone_shaman_attack_west_02.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        10,
-        17,
-        80,
-        74
+        19,
+        16,
+        45,
+        77
       ],
       "source_alpha_bbox_size": [
-        70,
-        57
+        26,
+        61
       ],
-      "scale": 4.298245614035087,
+      "scale": 4.016393442622951,
       "resized_visible_size": [
-        301,
+        104,
         245
       ],
       "runtime_alpha_bbox": [
-        106,
+        204,
         235,
-        407,
+        308,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
@@ -2460,28 +2460,28 @@
       "source": "bone_shaman_attack_west_03.png",
       "runtime": "bone_shaman_attack_west_03.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        14,
-        20,
-        75,
-        76
+        16,
+        16,
+        45,
+        78
       ],
       "source_alpha_bbox_size": [
-        61,
-        56
+        29,
+        62
       ],
-      "scale": 4.375,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        267,
+        115,
         245
       ],
       "runtime_alpha_bbox": [
-        122,
+        198,
         235,
-        389,
+        313,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
@@ -2490,28 +2490,28 @@
       "source": "bone_shaman_attack_west_04.png",
       "runtime": "bone_shaman_attack_west_04.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        14,
-        21,
-        81,
+        16,
+        16,
+        45,
         78
       ],
       "source_alpha_bbox_size": [
-        67,
-        57
+        29,
+        62
       ],
-      "scale": 4.298245614035087,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        288,
+        115,
         245
       ],
       "runtime_alpha_bbox": [
-        112,
+        198,
         235,
-        400,
+        313,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
@@ -2520,28 +2520,28 @@
       "source": "bone_shaman_attack_west_05.png",
       "runtime": "bone_shaman_attack_west_05.png",
       "source_size": [
-        92,
+        64,
         92
       ],
       "source_alpha_bbox": [
-        14,
         21,
-        75,
-        75
+        16,
+        45,
+        78
       ],
       "source_alpha_bbox_size": [
-        61,
-        54
+        24,
+        62
       ],
-      "scale": 4.537037037037037,
+      "scale": 3.9516129032258065,
       "resized_visible_size": [
-        277,
+        95,
         245
       ],
       "runtime_alpha_bbox": [
-        118,
+        208,
         235,
-        395,
+        303,
         480
       ],
       "runtime_alpha_bbox_bottom": 480
