@@ -4,6 +4,8 @@ extends Node2D
 ## Animator-owned visual choreography for SCRUM-917. This node contains no
 ## damage, targeting, compression displacement, cooldown or balance logic.
 ## The live hit remains in ClassWeapon at the existing 0.20 second delay.
+## FAN-2981: the corridor is expressed by the authored PixelLab compression
+## frames alone — the former Line2D rails/jaws/axis were zone markup.
 
 signal crush_frame_reached
 
@@ -20,11 +22,6 @@ const FINISH_FADE_SECONDS := 0.08
 @export var auto_free_on_finish := true
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
-@onready var upper_jaw: Line2D = $UpperJaw
-@onready var lower_jaw: Line2D = $LowerJaw
-@onready var upper_pressure: Line2D = $UpperPressure
-@onready var lower_pressure: Line2D = $LowerPressure
-@onready var impact_axis: Line2D = $ImpactAxis
 
 var _configured := false
 var _crush_emitted := false
@@ -77,48 +74,18 @@ func configure(
 		animated_sprite.sprite_frames.get_animation_speed(&"compress"), 0.001
 	)
 
-	var half_length := _corridor_length * 0.5
-	var half_width := _corridor_width * 0.5
-	var centre_half := minf(_centre_width * 0.5, half_width * 0.72)
-	var rail_color := Color(color.r, color.g, color.b, minf(color.a, 0.34))
-	var pressure_color := Color(0.28, 0.94, 0.88, 0.30)
-	for jaw in [upper_jaw, lower_jaw]:
-		jaw.points = PackedVector2Array([Vector2(-half_length, 0.0), Vector2(half_length, 0.0)])
-		jaw.default_color = rail_color
-		jaw.width = clampf(_corridor_width * 0.055, 10.0, 18.0)
-	for pressure in [upper_pressure, lower_pressure]:
-		pressure.points = PackedVector2Array([Vector2(-half_length, 0.0), Vector2(half_length, 0.0)])
-		pressure.default_color = pressure_color
-		pressure.width = clampf(_corridor_width * 0.025, 5.0, 10.0)
-	impact_axis.points = PackedVector2Array([Vector2(-half_length, 0.0), Vector2(half_length, 0.0)])
-	impact_axis.width = clampf(_centre_width * 0.16, 10.0, 20.0)
-	impact_axis.default_color = Color(0.52, 1.0, 0.94, 0.0)
-
-	upper_jaw.position.y = -half_width
-	lower_jaw.position.y = half_width
-	upper_pressure.position.y = -half_width * 0.72
-	lower_pressure.position.y = half_width * 0.72
-	impact_axis.modulate.a = 0.0
-
 	set_meta("corridor_start", start)
 	set_meta("corridor_finish", finish)
 	set_meta("corridor_length_px", _corridor_length)
 	set_meta("corridor_width_px", _corridor_width)
 	set_meta("centre_width_px", _centre_width)
 	set_meta("active_delay_seconds", _active_delay)
-	set_meta("jaw_start_offset_px", half_width)
-	set_meta("jaw_impact_offset_px", centre_half)
 	set_meta("compression_axis", "perpendicular_to_attack")
 	set_meta("active_frame_reached", false)
 
-	var squeeze := create_tween()
-	squeeze.set_parallel(true)
-	squeeze.tween_property(upper_jaw, "position:y", -centre_half, _active_delay).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	squeeze.tween_property(lower_jaw, "position:y", centre_half, _active_delay).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	squeeze.tween_property(upper_pressure, "position:y", -centre_half * 0.25, _active_delay).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	squeeze.tween_property(lower_pressure, "position:y", centre_half * 0.25, _active_delay).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	squeeze.tween_property(impact_axis, "modulate:a", 0.72, 0.035).set_delay(maxf(_active_delay - 0.025, 0.0))
-	squeeze.chain().tween_property(impact_axis, "modulate:a", 0.0, FINISH_FADE_SECONDS)
+	var fade := create_tween()
+	fade.tween_interval(maxf(_active_delay - 0.025, 0.0))
+	fade.tween_property(self, "modulate:a", 0.0, FINISH_FADE_SECONDS).set_delay(0.035)
 
 	_configured = true
 	animated_sprite.play(&"compress")
