@@ -156,6 +156,14 @@ scan ships behind `COVERAGE_MIGRATION_ALLOWLIST` with the same semantics
 * a class outside the allowlist is asserted against v2 and **fails closed**
   (`coverage.conversion_missing` / `coverage.count_cap`).
 
+**Converted so far:** `assassin` (FAN-2952) — 16 entries remain. A conversion
+card should note that the source scan is a cheap extra, not the proof: it only
+recognises `*target_cap*` siblings, and a class whose caps are named otherwise
+(the Assassin's were `target_count`, `target_limit`, `targets_per_lane`) passes
+the scan before it is converted. The per-class card owes the real statement —
+that every live enemy is reached and the per-enemy floor holds under crowd
+pressure — in its own focused test.
+
 ## Power corridor
 
 One activation is priced against the **live standard-monster HP present in the

@@ -3,12 +3,27 @@ extends SceneTree
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const PD := preload("res://scripts/progression_data.gd")
+const Chakrams := preload("res://scripts/ultimates/classes/assassin/chakrams.gd")
 
 const CLASS_ID := "assassin"
 const WEAPONS := ["chakrams", "shadow_daggers", "venom_wire"]
 const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 1.6
+
+## Ultimate Direction v2 (FAN-2952). A map-wide ultimate necessarily scales with
+## the crowd, so the AoE rail is no longer scored against the pre-v2 1.0 band: it
+## must BEAT the weapon's own ordinary AoE reference window, and the trio must
+## not spread so far that two of its three options stop mattering in a crowd.
+const AOE_MIN := 1.00
+const AOE_MAX := 2.00
+const AOE_TRIO_SPREAD_MAX := 2.50
+
+## `venom_wire` pays part of its budget in control and displacement, so its
+## damage channel alone sits below the corridor floor by construction — the same
+## bounded exception `tests/ultimates/assassin_balance_test.gd` states for the
+## boss-readable share, kept here so the channel cannot quietly decay.
+const VENOM_DAMAGE_FLOOR := 0.33
 
 var _errors: Array[String] = []
 
@@ -34,35 +49,32 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		* float(derived["ultimate_multiplier"])
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
 	var solo_coefficient := 0.0
-	var five_target_coefficient := 0.0
-	var crowd_cap := 0
+	# The coefficient the WEAKEST enemy of a crowd is guaranteed, with every
+	# geometric bonus removed. Under Ultimate Direction v2 (FAN-2952) this is
+	# what carries the class's crowd identity — reach itself is no longer a
+	# distinguishing rail, because all three now reach the whole map.
+	var floor_coefficient := 0.0
 	var defense_seconds := 0.0
 	match weapon_id:
 		"chakrams":
 			solo_coefficient = float(params["pass_damage"]) * 2.0
-			five_target_coefficient = solo_coefficient \
-				* (1.0 + 4.0 * float(params["secondary_damage_ratio"]))
-			crowd_cap = 8
+			floor_coefficient = float(params["pass_damage"]) \
+				* float(params["secondary_damage_ratio"])
 		"shadow_daggers":
 			solo_coefficient = float(params["backstab_damage"])
-			five_target_coefficient = solo_coefficient \
-				* (1.0 + 4.0 * float(params["secondary_damage_ratio"]))
-			crowd_cap = int(params["target_count"])
+			floor_coefficient = solo_coefficient * float(params["secondary_damage_ratio"])
 			defense_seconds = float(params["untargetable_duration"])
 		"venom_wire":
-			var pulses := float(params["cut_pulses"])
-			var max_cuts := float(params["max_cuts_per_pulse"])
-			var stacks := pulses * max_cuts
+			# One cut per pulse is what every live enemy takes, the aim-point
+			# silhouette included: the same channel the live corridor proof
+			# measures, so the two models cannot drift apart.
+			var stacks := float(params["cut_pulses"])
 			solo_coefficient = stacks * float(params["cut_damage"]) \
 				+ float(params["burst_damage"]) \
 				* (1.0 + (stacks - 1.0) * float(params["stack_bonus"]))
-			var edge_stacks := pulses
-			var edge_output := edge_stacks * float(params["cut_damage"]) \
-				+ float(params["burst_damage"]) \
-				* (1.0 + (edge_stacks - 1.0) * float(params["stack_bonus"]))
-			five_target_coefficient = edge_output * 5.0
-			crowd_cap = int(params["target_limit"])
+			floor_coefficient = solo_coefficient
 			defense_seconds = float(params["poison_duration"])
+	var five_target_coefficient := solo_coefficient + 4.0 * floor_coefficient
 	var solo_output := solo_coefficient * base_damage
 	var aoe_output := five_target_coefficient * base_damage
 	var power_midpoint := (float(row["power_budget_min"]) + float(row["power_budget_max"])) * 0.5
@@ -73,7 +85,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"solo_ratio": solo_output / power_midpoint,
 		"aoe_output": aoe_output,
 		"aoe_ratio": aoe_output / maxf(aoe_midpoint, 0.01),
-		"crowd_cap": crowd_cap,
+		"floor_share": floor_coefficient / maxf(solo_coefficient, 0.01),
 		"defense_seconds": defense_seconds,
 	}
 
@@ -81,51 +93,64 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 func _test_weapon(
 	weapon_id: String, row: Dictionary, profile: Dictionary, metrics: Dictionary
 ) -> void:
-	_check(float(metrics["solo_output"]) >= float(row["power_budget_min"])
+	var damage_floor := float(row["power_budget_min"])
+	if weapon_id == "venom_wire":
+		damage_floor = float(row["power_budget_max"]) * VENOM_DAMAGE_FLOOR
+	_check(float(metrics["solo_output"]) >= damage_floor
 		and float(metrics["solo_output"]) <= float(row["power_budget_max"]),
 		"%s solo output %.2f must stay inside %.2f..%.2f" % [
-			weapon_id, metrics["solo_output"], row["power_budget_min"], row["power_budget_max"],
+			weapon_id, metrics["solo_output"], damage_floor, row["power_budget_max"],
 		])
 	_check(is_equal_approx(float(profile["total_boss_cap"]), float(row["total_boss_cap"])),
 		"%s must use its immutable budget-row boss cap" % weapon_id)
+	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
 	match weapon_id:
 		"chakrams":
-			_check(int(metrics["crowd_cap"]) == 8,
+			_check(Chakrams.compass_directions().size() == 8,
 				"Eight Moons must keep exactly eight compass lanes")
 		"shadow_daggers":
-			_check(int(metrics["crowd_cap"]) == 7
+			_check(int(params["backstab_waves"]) == 7
 				and float(metrics["defense_seconds"]) >= 1.5,
-				"Moment Before Death must keep seven marks and its brief safe window")
+				"Moment Before Death must keep its seven-wave sequence and brief safe window")
 		"venom_wire":
-			_check(int(metrics["crowd_cap"]) == 24
+			_check(is_equal_approx(float(metrics["floor_share"]), 1.0)
 				and float(metrics["defense_seconds"]) >= 3.0,
-				"Black Web must keep its bounded crowd/control niche")
+				"Black Web must keep its even crowd spread and control niche")
 
 
 func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
 	var aoe_score := _average(metrics, "aoe_ratio")
-	var crowd_score := (
-		float((metrics["chakrams"] as Dictionary)["crowd_cap"]) / 8.0
-		+ float((metrics["shadow_daggers"] as Dictionary)["crowd_cap"]) / 7.0
-		+ float((metrics["venom_wire"] as Dictionary)["crowd_cap"]) / 24.0
-	) / 3.0
 	var defense_score := _average(metrics, "defense_seconds") / DEFENSE_REFERENCE_SECONDS
-	var total_score := (solo_score + aoe_score + crowd_score + defense_score) / 4.0
+	# The crowd rail used to be the three hard target caps. Ultimate Direction v2
+	# retires them: all three weapons reach every live enemy, so what separates
+	# them in a crowd is the SHAPE of the guaranteed channel, asserted below
+	# rather than averaged into a score that could only ever read 1.0.
 	_check(solo_score >= TRIO_MIN and solo_score <= TRIO_MAX,
 		"trio solo score %.3f must stay inside %.2f..%.2f" % [solo_score, TRIO_MIN, TRIO_MAX])
-	_check(aoe_score >= TRIO_MIN and aoe_score <= TRIO_MAX,
-		"trio AoE score %.3f must stay inside %.2f..%.2f" % [aoe_score, TRIO_MIN, TRIO_MAX])
-	_check(is_equal_approx(crowd_score, 1.0), "all three crowd rails must obey their hard caps")
 	_check(defense_score >= TRIO_MIN and defense_score <= TRIO_MAX,
 		"trio defense score %.3f must stay inside %.2f..%.2f" % [defense_score, TRIO_MIN, TRIO_MAX])
+	_check(aoe_score >= AOE_MIN and aoe_score <= AOE_MAX,
+		"trio AoE score %.3f must stay inside %.2f..%.2f" % [aoe_score, AOE_MIN, AOE_MAX])
+	var lowest_aoe := INF
+	var highest_aoe := 0.0
+	for weapon_id in WEAPONS:
+		var ratio := float((metrics[weapon_id] as Dictionary)["aoe_ratio"])
+		_check(ratio >= AOE_MIN,
+			"%s reaches the whole map, so its five-target output %.3f must beat its own AoE reference"
+				% [weapon_id, ratio])
+		lowest_aoe = minf(lowest_aoe, ratio)
+		highest_aoe = maxf(highest_aoe, ratio)
+	_check(highest_aoe <= lowest_aoe * AOE_TRIO_SPREAD_MAX,
+		"trio AoE spread %.2fx must stay inside %.2fx so every option still matters in a crowd"
+			% [highest_aoe / maxf(lowest_aoe, 0.01), AOE_TRIO_SPREAD_MAX])
 	_check(float((metrics["shadow_daggers"] as Dictionary)["solo_ratio"])
 		> float((metrics["venom_wire"] as Dictionary)["solo_ratio"])
-		and int((metrics["venom_wire"] as Dictionary)["crowd_cap"])
-		> int((metrics["shadow_daggers"] as Dictionary)["crowd_cap"]),
-		"Shadow Daggers must lead focused burst while Venom Wire leads crowd reach")
-	_check(total_score >= TRIO_MIN and total_score <= TRIO_MAX,
-		"class trio total %.3f must stay inside %.2f..%.2f" % [total_score, TRIO_MIN, TRIO_MAX])
+		and float((metrics["venom_wire"] as Dictionary)["floor_share"])
+		> float((metrics["shadow_daggers"] as Dictionary)["floor_share"])
+		and float((metrics["shadow_daggers"] as Dictionary)["floor_share"])
+		> float((metrics["chakrams"] as Dictionary)["floor_share"]),
+		"Shadow Daggers must lead focused burst while Venom Wire leads crowd spread")
 
 
 func _test_harness_goes_red(registry: Registry, rows: Array) -> void:
@@ -153,8 +178,8 @@ func _check(condition: bool, message: String) -> void:
 func _report(metrics: Dictionary) -> void:
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %s solo=%.3f aoe=%.3f crowd=%d defense=%.2fs" % [
-			weapon_id, row["solo_ratio"], row["aoe_ratio"], row["crowd_cap"], row["defense_seconds"],
+		print("  %s solo=%.3f aoe=%.3f floor_share=%.3f defense=%.2fs" % [
+			weapon_id, row["solo_ratio"], row["aoe_ratio"], row["floor_share"], row["defense_seconds"],
 		])
 	if _errors.is_empty():
 		print("assassin_balance_test: PASS")

@@ -45,7 +45,6 @@ static func parameter_contract() -> Dictionary:
 		"orbit_radius": {"type": "number", "minimum": 0.0},
 		"trajectory_length": {"type": "number", "minimum": 0.01},
 		"lane_half_width": {"type": "number", "minimum": 0.0},
-		"targets_per_lane": {"type": "integer", "minimum": 1},
 		"orbit_duration": {"type": "number", "minimum": 0.0},
 		"outbound_duration": {"type": "number", "minimum": 0.0},
 		"return_steps": {"type": "integer", "minimum": 2},
@@ -127,22 +126,30 @@ static func curved_return_path(
 	return path
 
 
+## Ultimate Direction v2 (FAN-2952): the eight lanes decide WHICH chakram claims
+## an enemy and how its hit is attributed — never whether it is reached. Every
+## live enemy on the map takes the outbound pass, on screen and off; the curved
+## return is the geometric second hit layered on top of that floor.
+##
+## The fan is still walked lane by lane, nearest silhouette first inside a lane,
+## so the duel target the first chakram claims is the same one the corridor
+## sweep claimed before the conversion — and it is deterministic, because the
+## activation hands its targets over in a stable order.
 func launch() -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var origin: Vector2 = _activation.origin()
-	var length: float = _activation.param_float("trajectory_length", 520.0)
-	for lane in compass_directions().size():
-		var direction := compass_directions()[lane]
-		for raw_target in _activation.targets_in_corridor(
-			origin,
-			direction,
-			length,
-			_activation.param_float("lane_half_width", 48.0),
-			_activation.param_int("targets_per_lane", 4)
-		):
+	var fan: Array[Array] = []
+	for _lane in compass_directions().size():
+		fan.append([])
+	for raw_target in _activation.select_targets(origin, INF, 0, "nearest"):
+		var target := raw_target as Node2D
+		if _alive(target):
+			fan[lane_for(origin, target.global_position)].append(target)
+	for lane in fan.size():
+		for raw_target in fan[lane]:
 			var target := raw_target as Node2D
-			if not _alive(target) or _outbound_hit_ids.has(target.get_instance_id()):
+			if _outbound_hit_ids.has(target.get_instance_id()):
 				continue
 			_outbound_hit_ids[target.get_instance_id()] = true
 			if _primary_target_id == 0:
@@ -155,6 +162,15 @@ func launch() -> void:
 				"ultimate_mechanic": "eight_moons_outbound",
 				"compass_lane": lane,
 			})
+
+
+## The compass lane an enemy belongs to: the nearest of the eight launch
+## directions. Lane membership is attribution, not admission.
+static func lane_for(origin: Vector2, position: Vector2) -> int:
+	var offset := position - origin
+	if offset.length_squared() <= 0.001:
+		return 0
+	return posmod(roundi(offset.angle() / (TAU / 8.0)), 8)
 
 
 func return_step(step: int) -> void:
@@ -171,7 +187,7 @@ func return_step(step: int) -> void:
 			offset,
 			offset.length(),
 			_activation.param_float("lane_half_width", 48.0),
-			_activation.param_int("targets_per_lane", 4)
+			0
 		):
 			var target := raw_target as Node2D
 			if not _alive(target) or _return_hit_ids.has(target.get_instance_id()):

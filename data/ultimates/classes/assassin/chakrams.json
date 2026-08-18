@@ -19,14 +19,13 @@
       "orbit_radius": 72.0,
       "trajectory_length": 520.0,
       "lane_half_width": 48.0,
-      "targets_per_lane": 4,
       "orbit_duration": 0.5,
       "outbound_duration": 0.5,
       "return_steps": 6,
       "return_step_interval": 0.12,
       "return_curve_offset": 90.0,
-      "pass_damage": 120.0,
-      "secondary_damage_ratio": 0.12,
+      "pass_damage": 163.0,
+      "secondary_damage_ratio": 0.41,
       "execute_threshold": 0.25
     }
   },
