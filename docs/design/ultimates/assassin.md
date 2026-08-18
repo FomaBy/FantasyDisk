@@ -9,9 +9,9 @@ code is changed.
 
 | Weapon | Ultimate | Mechanical role |
 | --- | --- | --- |
-| `chakrams` | Восемь Лун | Eight chakrams orbit once, launch along the eight compass lanes, and follow curved paths back to the hero. Only targets marked on the outbound pass can be struck on return; a marked normal enemy at or below 25% health is executed. Secondary lanes retain 12% damage so the pattern keeps broad reach without multiplying focused output. |
-| `shadow_daggers` | Момент Перед Смертью | Up to seven highest-health silhouettes are marked before a sequential backstab run. The owner leases the existing untargetable gate for the sequence. Each backstab stores damage in the activation ledger; the final reveal resolves every surviving mark on the same frame, with one focused mark and 10% secondary marks. |
-| `venom_wire` | Черная Паутина | Six anchors form one hex web: six perimeter edges and three crossing chords. Three cut pulses admit at most three wire intersections per target, pull normal enemies, and lease poison/slow. One toxin burst consumes the bounded stack count; epic and boss targets keep damage but reject displacement. |
+| `chakrams` | Восемь Лун | Eight chakrams orbit once, launch along the eight compass lanes, and follow curved paths back to the hero. The outbound pass strikes EVERY live enemy on the map; the lane an enemy belongs to decides which chakram claims it and how the hit is attributed, never whether it is reached. Only targets the curved return re-enters are struck a second time; a marked normal enemy at or below 25% health is executed. Silhouettes outside the duel keep 41% damage, the guaranteed per-enemy floor. |
+| `shadow_daggers` | Момент Перед Смертью | EVERY live enemy on the map is marked, ordered by health, before a fixed seven-wave backstab run: wave `w` serves every mark with `index % 7 == w`, so the whole crowd is reached inside one constant active window. The owner leases the existing untargetable gate for the sequence. Each backstab stores damage in the activation ledger; the final reveal resolves every surviving mark on the same frame, with one focused mark and 21% secondary marks. |
+| `venom_wire` | Черная Паутина | Six anchors form one hex web: six perimeter edges and three crossing chords. Three cut pulses cut EVERY live enemy on the map at least once, wherever it stands; the nine wires raise that to one cut per crossing, bounded at three per target per pulse. Normal enemies are pulled and leased poison/slow. One toxin burst consumes the stack count; epic and boss targets keep damage but reject displacement. |
 
 The runtime scenes under `scripts/ultimates/classes/assassin/` own mechanics and
 embed the accepted Assassin presentation scene as a child. Every deferred hit
@@ -45,35 +45,49 @@ idempotency, applied-HP attribution and the whole-cast boss budget.
 
 | Weapon | Lifetime | Crowd | Additional hard caps |
 | --- | ---: | ---: | --- |
-| Chakrams | 0.5s orbit + 0.5s outbound + 6×0.12s return | 8 compass lanes | one outbound and one return hit per target; normal-only execute at ≤25% health |
-| Shadow Daggers | 0.45s mark + 7×0.16s backstabs + 0.15s reveal | 7 marks | one stored hit per mark; one simultaneous reveal; 1.75s untargetable lease |
-| Venom Wire | 3×0.35s cuts + toxin burst | 24 targets | 6 anchors; 9 segments; 3 cuts per target per pulse; one burst per admitted target |
+| Chakrams | 0.5s orbit + 0.5s outbound + 6×0.12s return | every live enemy | one outbound and one return hit per target; normal-only execute at ≤25% health |
+| Shadow Daggers | 0.45s mark + 7×0.16s backstab waves + 0.15s reveal | every live enemy | one stored hit per mark; one simultaneous reveal; 1.75s untargetable lease |
+| Venom Wire | 3×0.35s cuts + toxin burst | every live enemy | 6 anchors; 9 segments; 3 cuts per target per pulse; one burst per cut target |
+
+None of the three carries a target-count cap any more. What remains in the
+"additional" column is per-target shaping — how much a struck silhouette takes,
+never how many are struck.
 
 ## Balance evidence
 
 Before this package, all three catalog entries were `declared` and had no
-executable weapon-level output to measure. The ready-package proof now derives
-live weapon damage and `ultimate_multiplier` from ProgressionData, prices each
-activation against the frozen 20–35 second budget, and measures the declared
-coefficients instead of accepting a hand-authored score.
+executable weapon-level output to measure. The ready-package proof derives live
+weapon damage and `ultimate_multiplier` from ProgressionData, prices each
+activation against the corridor (30–45 s of the weapon's own output since
+FAN-2949), and measures the declared coefficients instead of accepting a
+hand-authored score.
 
-| Weapon | Solo / budget midpoint | Five-target AoE / midpoint | Crowd cap | Defense |
+| Weapon | Solo / budget midpoint | Five-target AoE / reference | Guaranteed per-enemy share | Defense |
 | --- | ---: | ---: | ---: | ---: |
-| Chakrams | 1.002 | 0.885 | 8 | — |
-| Shadow Daggers | 1.051 | 0.876 | 7 | 1.75s untargetable |
-| Venom Wire | 0.904 | 1.378 | 24 | 3.0s poison/slow |
+| Chakrams | 0.998 | 1.084 | 0.205 | — |
+| Shadow Daggers | 1.000 | 1.095 | 0.210 | 1.75s untargetable |
+| Venom Wire | 0.775 | 2.310 | 1.000 | 3.0s poison/slow |
 
-Shadow Daggers leads focused burst, Chakrams provides the even outward/return
-duel, and Venom Wire trades solo share for the widest crowd reach and strongest
-area control. The class composite is 1.005 across solo, AoE, capped crowd and
-defense axes, inside the project 0.90–1.10 corridor. The balance test also
-mutates stored backstab damage to 600 and requires the proof to go red, which
-prevents an inherited always-green result.
+Shadow Daggers leads focused burst, Chakrams provides the outward/return duel,
+and Venom Wire trades solo share for the evenest crowd spread and the strongest
+area control. The crowd axis used to be the three hard target caps; Ultimate
+Direction v2 retires them, so what separates the three in a crowd is the share
+of the focused hit every other enemy is guaranteed — the fourth column. Solo and
+defense stay inside the project 0.90–1.10 corridor; the AoE rail is scored
+against a widened 1.00–2.00 band with a bounded trio spread, because an ultimate
+that reaches the whole map necessarily scales with the crowd. The balance test
+also mutates stored backstab damage to 600 and requires the proof to go red,
+which prevents an inherited always-green result.
 
 ## Power corridor (FAN-2524)
 
+> Historical record of the FAN-2524 geometry fix. Its corridor (20…35 s) and its
+> target caps were superseded by FAN-2949 and FAN-2952 — see
+> **Map-wide coverage** below for the numbers that hold today. The geometric
+> finding itself still stands and is still guarded by the same red-test control.
+
 The corridor is `UltimateChargeBudget.POWER_SECONDS_MIN..MAX` — one activation
-is worth 20…35 s of the weapon's OWN normal output — and the live reading of it
+was worth 20…35 s of the weapon's OWN normal output — and the live reading of it
 is the solo `effect_total` of
 `scripts/ultimates/balance/ultimate_effectiveness_runner.gd`.
 
@@ -135,6 +149,81 @@ Eight Moons stays 0.5 s orbit + 0.5 s outbound + 6 × 0.12 s return steps
 visual change is the Eight Moons return arc: its control-point offset is now
 90 (was 132), a visibly curved but shallower path whose lateral deviation
 peaks at 45 px.
+
+## Map-wide coverage (FAN-2952, Ultimate Direction v2)
+
+Owner directive FAN-2944 §2 makes reach part of the numeric contract, and
+FAN-2949 published the rule plus the re-derived corridor. This card converts the
+Assassin trio to it. The trio's design is not re-opened: the three niches, the
+cast beats, the boss cap and the charge economy are the FAN-2524 ones.
+
+**What was stripped.** `shadow_daggers.radius` (520) and `.target_count` (7),
+`chakrams.targets_per_lane` (4) and `venom_wire.target_limit` (24). Per-target
+shaping stays: `secondary_damage_ratio`, `max_cuts_per_pulse`, `stack_bonus`.
+
+**How each weapon reaches the map now.**
+
+* `shadow_daggers` marks every live enemy through the activation itself. The
+  `priority_target_selector` primitive could not express it — its contract
+  requires a finite radius — so the ordered set is read straight from
+  `select_targets(origin, INF, 0, "highest_hp")`. The sequence became a FIXED
+  seven waves partitioning the mark list (`index % waves == wave`), which is the
+  wave/sequence exception the contract allows: the full sequence provably serves
+  every mark, and the declared cast stops moving with the crowd size (it is now
+  1.72 s at any count, where before it shrank to 0.76 s against one enemy).
+* `chakrams` strikes every live enemy on the outbound pass, walked lane by lane
+  and nearest-first inside a lane, so the duel target the first chakram claims is
+  the one the old corridor sweep claimed. The curved return is unchanged and is
+  now the geometric BONUS on top of the guaranteed outbound floor.
+* `venom_wire` cuts every live enemy once per pulse wherever it stands; the nine
+  wires raise that to one cut per crossing, still bounded per target per pulse.
+  The poison is leased once per silhouette instead of being re-written on every
+  pulse — an identical status three times over bought nothing but a refreshed
+  timer, and at map-wide reach it is a whole crowd's worth of dictionaries.
+
+**Re-measured on the live 51-row instrument** against the FAN-2949 corridor
+(`k ∈ [1.0, 1.5]` × the live standard-monster pool). `struck` is probes damaged
+out of probes present:
+
+| Weapon | corridor | solo effect | solo | 5 | 10 | 20 | boss cap ratio |
+| --- | --- | ---: | --- | --- | --- | --- | ---: |
+| `chakrams` | 2149.8 … 3224.7 | 2684.02 | 1/1 | 3→5 | 6→10 | 10→20 | 0.613 → 0.832 |
+| `shadow_daggers` | 2148.0 … 3222.0 | 2685.22 | 1/1 | 5/5 | 7→10 | 7→20 | 0.642 → 0.833 |
+| `venom_wire` | 2153.7 … 3230.6 | 2691.22 | 1/1 | 5/5 | 10/10 | 19→20 | 0.283 → 0.646 |
+
+Every scenario now strikes the whole formation. The coefficients were re-priced
+onto the re-derived corridor — the trio sat BELOW its floor the moment FAN-2949
+landed (1976.23 / 2070.76 / 1517.16 against a floor of ~2150) — by scaling each
+weapon's own damage channel, so the relative standing of the three is preserved:
+`pass_damage` 120 → 163, `backstab_damage` 256 → 332, `cut_damage` 42 → 96 and
+`burst_damage` 210 → 480. Secondary ratios rose to carry the per-enemy floor:
+`chakrams` 0.12 → 0.41, `shadow_daggers` 0.10 → 0.21.
+
+**Per-enemy floor, measured under crowd pressure.** Every live enemy is
+guaranteed `PER_ENEMY_FLOOR_FRACTION (0.5) ×` one standard monster's max HP.
+`tests/ultimates/assassin_balance_test.gd` asserts it at counts
+1, 2, 5, 10, 20, 100 and 1000 against the shipped pool rather than a literal, so
+the floor moves with the corridor. The binding case is two enemies, where the
+floor is a quarter of the pool: `chakrams` delivers 550.02 against 537.45,
+`shadow_daggers` 563.69 against 537.00, and `venom_wire` — which hands every
+enemy the same full cut/burst it hands the one in front of it — 2087.22 against
+538.43. That even spread is what carries the Black Web's crowd niche now that a
+target cap no longer can.
+
+**Frozen things, proven unchanged.** Across all 51 rows `total_boss_cap`,
+`encounters_to_ready`, `normal_charge`, `elite_charge`, `reference_solo_dps`,
+`power_budget_min/max` and `power_archetype` are identical before and after;
+the Assassin trio stays at 4 normal encounters to ready and 32.70 charge per
+neutral normal encounter. `balance_charge_economy_test.gd` is untouched and
+green. The other 48 baseline rows are bit-identical, so `regressions()` is clean
+without a `regression_reason`.
+
+**Ratchet.** `assassin` has left `COVERAGE_MIGRATION_ALLOWLIST` and is the first
+entry of `COVERAGE_V2_CLASSES`. The shared FAN-2949 source scan only recognises
+`*target_cap*` siblings and never could have seen this class's `target_count` /
+`target_limit` / `targets_per_lane` names, so the corridor proof asserts the
+absence of count-shaped parameters over the Assassin's own vocabulary too,
+across both the executor contracts and the shipped parameters.
 
 ## Verification
 

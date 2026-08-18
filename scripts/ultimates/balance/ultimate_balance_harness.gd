@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"assassin": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"berserk": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"chemist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -54,7 +53,15 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## conversion card has landed HERE and its executor sources carry no count
 ## caps. Source cleanliness alone is not satisfaction — an executor whose
 ## params merely lack a count cap has not thereby declared map-wide reach.
-const COVERAGE_V2_CLASSES: Array[String] = []
+##
+## `assassin` (FAN-2952): the trio reaches every live enemy through the
+## activation itself rather than a radius or a count — `shadow_daggers` marks
+## the whole map and serves it in a fixed wave sequence, `chakrams` strikes
+## every enemy on its outbound pass and layers the curved return on top, and
+## `venom_wire` cuts every enemy once per pulse before the wire crossings raise
+## it. The per-enemy floor is proven under crowd pressure in
+## `tests/ultimates/assassin_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

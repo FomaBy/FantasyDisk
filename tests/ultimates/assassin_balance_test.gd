@@ -47,6 +47,23 @@ const COMPASS_LANES := 8
 ## the boss-readable share can never quietly decay below a third of the budget.
 const VENOM_BOSS_FLOOR := 0.33
 
+## FAN-2952 / Ultimate Direction v2. The per-enemy floor is asserted under real
+## crowd pressure rather than assumed: at every count the weakest enemy in the
+## encounter still has to clear `Budget.PER_ENEMY_FLOOR_FRACTION` of one
+## standard monster's max HP. 1000 mirrors the count the shared harness proof
+## walks to, so the class statement and the contract statement stop at the same
+## place.
+const CROWD_COUNTS := [1, 2, 5, 10, 20, 100, 1000]
+
+## Count-shaped parameter names, in the vocabulary this class actually used.
+## The shared FAN-2949 scan only recognises `*target_cap*` siblings, and the
+## Assassin's caps were named `target_count`, `targets_per_lane` and
+## `target_limit` — so the conversion proves the statement over its own names
+## too instead of inheriting a green the shared scan could not have produced.
+const COUNT_SHAPED_PATTERN := \
+	"[A-Za-z0-9_]*(target_cap|target_count|target_limit|targets_per|max_targets)[A-Za-z0-9_]*"
+const COUNT_SHAPED_ALLOWED_SUFFIXES := ["_fraction", "_flat"]
+
 var _errors: Array[String] = []
 var _geometry := Activation.new(null, {}, 0.0)
 
@@ -62,6 +79,8 @@ func _initialize() -> void:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
 		metrics[weapon_id] = _measure(weapon_id, row, profiles.get(weapon_id, {}) as Dictionary)
 		_test_weapon(weapon_id, row, metrics[weapon_id])
+		_test_per_enemy_floor(weapon_id, row, metrics[weapon_id])
+	_test_no_count_caps(profiles)
 	_test_trio(profiles, metrics)
 	_test_goes_red(profiles, rows)
 	_report(metrics)
@@ -102,6 +121,11 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var displacement := 0.0
 	var passes := 0
 	var cast_seconds := 0.0
+	# The damage the WEAKEST enemy of a crowd takes from one activation — the
+	# guaranteed part of the cast, with every geometric bonus removed. Under
+	# Ultimate Direction v2 this is the number the per-enemy floor is asserted
+	# against, so it is derived here next to the solo channel it belongs to.
+	var floor_damage := 0.0
 	match weapon_id:
 		"chakrams":
 			# The aim-lane chakram marks the probe on the way out; the second,
@@ -111,32 +135,38 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 			# duel silently halved.
 			passes = 1 + (1 if _return_reaches(params, SOLO_PROBE) else 0)
 			damage = float(passes) * base * float(params.get("pass_damage", 0.0))
+			# A silhouette no return path re-enters still takes the outbound
+			# pass at the secondary ratio: v2 reach with the curve as the bonus.
+			floor_damage = base * float(params.get("pass_damage", 0.0)) \
+				* float(params.get("secondary_damage_ratio", 0.0))
 			cast_seconds = float(params.get("orbit_duration", 0.0)) \
 				+ float(params.get("outbound_duration", 0.0)) \
 				+ float(params.get("return_steps", 0)) \
 				* float(params.get("return_step_interval", 0.0))
 		"shadow_daggers":
 			# Solo, only the focused mark exists: one stored backstab revealed
-			# once. The declared cast shortens with the target count.
+			# once. The cast is the FIXED wave sequence, so it no longer moves
+			# with the size of the crowd.
 			passes = 1
 			damage = base * float(params.get("backstab_damage", 0.0))
+			floor_damage = damage * float(params.get("secondary_damage_ratio", 0.0))
 			cast_seconds = float(params.get("mark_delay", 0.0)) \
-				+ float(params.get("backstab_interval", 0.0)) \
+				+ float(_activation_int(params, "backstab_waves")) \
+				* float(params.get("backstab_interval", 0.0)) \
 				+ float(params.get("reveal_delay", 0.0))
 		"venom_wire":
-			# Only wire segments crossing the probe cut it, once per pulse up to
-			# the per-pulse cap; the burst consumes the accumulated stacks.
-			var cuts_per_pulse := mini(
-				_wires_crossing(params, SOLO_PROBE),
+			# Every live enemy takes one cut per pulse wherever it stands; the
+			# wires it actually crosses raise that, bounded by the per-pulse
+			# shaping cap. The burst consumes the accumulated stacks.
+			var pulses := _activation_int(params, "cut_pulses")
+			var cuts_per_pulse := clampi(
+				maxi(_wires_crossing(params, SOLO_PROBE), 1),
+				1,
 				_activation_int(params, "max_cuts_per_pulse")
 			)
-			var pulses := _activation_int(params, "cut_pulses")
-			var stacks := float(pulses * cuts_per_pulse)
 			passes = cuts_per_pulse
-			damage = float(pulses * cuts_per_pulse) * base * float(params.get("cut_damage", 0.0))
-			if stacks > 0.0:
-				damage += base * float(params.get("burst_damage", 0.0)) \
-					* (1.0 + maxf(stacks - 1.0, 0.0) * float(params.get("stack_bonus", 0.0)))
+			damage = _venom_damage(params, base, pulses, cuts_per_pulse)
+			floor_damage = _venom_damage(params, base, pulses, 1)
 			control = float(params.get("poison_duration", 0.0))
 			displacement = float(pulses) * minf(
 				float(params.get("pull_strength", 0.0)), SOLO_PROBE.length()
@@ -144,6 +174,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 			cast_seconds = float(pulses) * float(params.get("cut_interval", 0.0))
 	return {
 		"damage": damage,
+		"floor_damage": floor_damage,
 		"control": control,
 		"displacement": displacement,
 		"passes": passes,
@@ -151,6 +182,19 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"solo_effect": damage + control + displacement + 1.0,
 		"cast_seconds": cast_seconds,
 	}
+
+
+## The Black Web's damage channel for a target cut `cuts_per_pulse` times in
+## each of `pulses` pulses: the cuts themselves plus the stack-scaled burst.
+static func _venom_damage(
+	params: Dictionary, base: float, pulses: int, cuts_per_pulse: int
+) -> float:
+	var stacks := float(pulses * cuts_per_pulse)
+	if stacks <= 0.0:
+		return 0.0
+	return stacks * base * float(params.get("cut_damage", 0.0)) \
+		+ base * float(params.get("burst_damage", 0.0)) \
+		* (1.0 + (stacks - 1.0) * float(params.get("stack_bonus", 0.0)))
 
 
 static func _activation_int(params: Dictionary, key: String) -> int:
@@ -223,6 +267,52 @@ func _test_weapon(weapon_id: String, row: Dictionary, metrics: Dictionary) -> vo
 			])
 
 
+## Ultimate Direction v2: with the whole corridor budget spread over `count`
+## live standard monsters, no enemy may end below `PER_ENEMY_FLOOR_FRACTION` of
+## one standard monster's max HP. The pool is the shipped one, so the floor moves
+## with the corridor instead of being restated here as a literal.
+func _test_per_enemy_floor(weapon_id: String, row: Dictionary, metrics: Dictionary) -> void:
+	var pool := Budget.live_standard_pool(float(row["reference_solo_dps"]))
+	for count in CROWD_COUNTS:
+		# At a count of one the weakest enemy IS the focused target; from two up
+		# it is a silhouette carrying only the guaranteed channel.
+		var delivered := float(metrics["damage"]) if count == 1 else float(metrics["floor_damage"])
+		var floor_share := Budget.PER_ENEMY_FLOOR_FRACTION * pool / float(count)
+		_check(delivered >= floor_share - 0.001,
+			"%s leaves an enemy at %.2f against a %d-enemy floor of %.2f" % [
+				weapon_id, delivered, count, floor_share,
+			])
+
+
+## No count-shaped parameter may survive the conversion, in the executor's own
+## declared contract or in the parameters actually shipped for it.
+func _test_no_count_caps(profiles: Dictionary) -> void:
+	for weapon_id in WEAPONS:
+		var executor = load("%s/%s/%s.gd" % [SCRIPT_ROOT, CLASS_ID, weapon_id])
+		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
+		_check(not contract.is_empty(), "%s must declare a parameter contract" % weapon_id)
+		for source in [contract.keys(), _params(profiles, weapon_id).keys()]:
+			for raw_key in source:
+				var offenders := _count_shaped_names(str(raw_key))
+				_check(offenders.is_empty(),
+					"%s still carries the count-shaped parameter %s" % [weapon_id, str(offenders)])
+
+
+static func _count_shaped_names(text: String) -> Array[String]:
+	var found: Array[String] = []
+	var pattern := RegEx.create_from_string(COUNT_SHAPED_PATTERN)
+	for raw_match in pattern.search_all(text):
+		var name := str((raw_match as RegExMatch).get_string())
+		var shaping := false
+		for suffix in COUNT_SHAPED_ALLOWED_SUFFIXES:
+			if name.ends_with(suffix):
+				shaping = true
+				break
+		if not shaping and not found.has(name):
+			found.append(name)
+	return found
+
+
 func _test_trio(profiles: Dictionary, metrics: Dictionary) -> void:
 	var chakrams := metrics["chakrams"] as Dictionary
 	var daggers := metrics["shadow_daggers"] as Dictionary
@@ -246,9 +336,14 @@ func _test_trio(profiles: Dictionary, metrics: Dictionary) -> void:
 	_check(float(venom["control"]) > 0.0 and float(venom["displacement"]) > 0.0
 		and is_zero_approx(float(chakrams["control"])) and is_zero_approx(float(chakrams["displacement"])),
 		"only the Black Web may control and displace")
-	_check(_activation_int(venom_params, "target_limit")
-		> _activation_int(dagger_params, "target_count"),
-		"the Black Web must keep the widest crowd reach in the trio")
+	# All three now reach the whole map, so crowd identity is no longer a cap but
+	# the SHAPE of the guaranteed channel: the Black Web hands every enemy the
+	# same full cut/burst it hands the one in front of it, while the two burst
+	# weapons concentrate on their focused mark and leave the rest a fraction.
+	_check(is_equal_approx(float(venom["floor_damage"]), float(venom["damage"]))
+		and float(daggers["floor_damage"]) < float(daggers["damage"]) * 0.5
+		and float(chakrams["floor_damage"]) < float(chakrams["damage"]) * 0.5,
+		"the Black Web must keep the evenest crowd spread in the trio")
 
 
 ## A harness that cannot go red would be inherited green by every later retune.
@@ -283,8 +378,8 @@ func _check(condition: bool, message: String) -> void:
 func _report(metrics: Dictionary) -> void:
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %s solo_effect=%.2f (damage=%.2f control=%.2f displacement=%.1f passes=%d) cast=%.2fs" % [
-			weapon_id, row["solo_effect"], row["damage"], row["control"],
+		print("  %s solo_effect=%.2f (damage=%.2f floor=%.2f control=%.2f displacement=%.1f passes=%d) cast=%.2fs" % [
+			weapon_id, row["solo_effect"], row["damage"], row["floor_damage"], row["control"],
 			row["displacement"], row["passes"], row["cast_seconds"],
 		])
 	if _errors.is_empty():

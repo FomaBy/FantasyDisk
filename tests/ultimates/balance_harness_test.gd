@@ -330,9 +330,17 @@ func _check_coverage_ratchet(errors: Array[String]) -> void:
 	var ratchet_errors := Harness.coverage_violations(sources)
 	_expect(
 		ratchet_errors.is_empty(),
-		"coverage ratchet must be clean while every class is allowlisted: %s" % str(ratchet_errors.slice(0, 6)),
+		"coverage ratchet must be clean for the allowlist plus the converted ledger: %s" % str(ratchet_errors.slice(0, 6)),
 		errors
 	)
+	# The ratchet only ever shrinks: every converted class has left the allowlist
+	# and every remaining entry is still awaiting its own conversion card.
+	for class_id in Harness.COVERAGE_V2_CLASSES:
+		_expect(
+			not (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).has(class_id),
+			"converted class %s must have left the allowlist" % str(class_id),
+			errors
+		)
 	# The named count caps and their siblings must be caught; per-target damage
 	# shaping must not be.
 	var scan := Harness.count_cap_params(
@@ -358,9 +366,18 @@ func _check_coverage_ratchet(errors: Array[String]) -> void:
 	_expect_ratchet_violation(sources, with_count_caps, [], "coverage.count_cap", errors)
 
 	# Stale entry: a converted, clean class must not still be allowlisted.
+	# `thief` is still awaiting its own card, so it stands in for the next class
+	# whose conversion lands without its allowlist entry being retired.
 	_expect_ratchet_violation(
-		sources, Harness.COVERAGE_MIGRATION_ALLOWLIST.duplicate(), ["assassin"],
+		sources, Harness.COVERAGE_MIGRATION_ALLOWLIST.duplicate(), ["thief"],
 		"coverage.allowlist_stale", errors
+	)
+	# The converted ledger is load-bearing, not decorative: dropping the already
+	# converted `assassin` from it leaves the class outside the allowlist with no
+	# declaration, which fails closed.
+	_expect_ratchet_violation(
+		sources, Harness.COVERAGE_MIGRATION_ALLOWLIST.duplicate(), [],
+		"coverage.conversion_missing", errors
 	)
 	# Reason required.
 	var no_reason := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
