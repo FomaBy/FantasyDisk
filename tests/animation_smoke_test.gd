@@ -1204,7 +1204,12 @@ func _test_full_frame_animation_registry() -> void:
 			for animation_name in ["move", "attack_primary", "hit", "death"]:
 				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
 					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
-			if enemy_full_frame_body.animation != "move":
+			if FullFrameAnimationRegistry.uses_explicit_eight_directions(enemy_full_frame_body):
+				# FAN-2889: explicit 8-direction actors resolve idle/move through a
+				# directional `<state>_<suffix>` row instead of the flat literal.
+				if not (enemy_full_frame_body.animation.begins_with("idle_") or enemy_full_frame_body.animation.begins_with("move_")):
+					_fail("Expected %s enemy FullFrameBody to start in a directional idle/move animation." % enemy_id)
+			elif enemy_full_frame_body.animation != "move":
 				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
 			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
 				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
@@ -1793,7 +1798,14 @@ func _test_death_ghost() -> void:
 	enemy.call("_update_movement_animation", 0.1)
 	enemy.call("take_damage", 9999.0)
 	var full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-	if full_frame_body == null or full_frame_body.animation != "death":
+	if full_frame_body == null:
+		_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
+	elif FullFrameAnimationRegistry.uses_explicit_eight_directions(full_frame_body):
+		# FAN-2889: explicit 8-direction actors resolve death through a
+		# directional `death_<suffix>` row instead of the flat literal.
+		if not full_frame_body.animation.begins_with("death_"):
+			_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
+	elif full_frame_body.animation != "death":
 		_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
 	if holder.get_node_or_null("DeathGhostRig") != null:
 		_fail("Expected full-frame enemy death to avoid duplicate death ghost fallback.")
