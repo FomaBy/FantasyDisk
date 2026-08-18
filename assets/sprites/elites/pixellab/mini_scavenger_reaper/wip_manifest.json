@@ -1,0 +1,73 @@
+{
+  "issue": "FAN-2624",
+  "status": "WIP — PixelLab jobs partially generated, NOT yet downloaded/normalized/integrated",
+  "pixellab_character_id": "3d2c3c13-ed23-4784-add8-2e446a567a8b",
+  "character_mode": "v3 reference-image identity match (40x40 source ref cropped/quantized from assets/sprites/elites/mini_scavenger_reaper.png)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "size": "40x40px",
+  "resume_instructions": "Do NOT re-run create_character — reuse pixellab_character_id above with get_character() to inspect current job status, then continue queuing remaining animate_character calls listed below. Once ALL states/directions show status completed for every direction, run tools/build_fan2624_mini_scavenger_reaper_pack.py against a saved get_character() text dump to download, normalize (512x512 canvas, 245px visible height, 32px bottom padding) and write assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres + manifest.json + alpha_bbox_report.json. Then set full_frame_animation_registry.gd elite.mini_scavenger_reaper entry explicit_eight_directions=true and run the focused animation smoke (tests/animation_smoke_test.gd already branches on explicit_eight_directions for mini_scavenger_reaper — no test-file edits needed).",
+  "states": {
+    "idle": {
+      "status": "COMPLETE",
+      "source": "character rotations (8/8 directions)",
+      "note": "single-frame idle_<dir> row per direction, speed 1.0 loop true"
+    },
+    "move": {
+      "status": "IN_PROGRESS",
+      "animation_group_id": "07f8082d-731a-44fb-a44c-cbd9559936b6",
+      "mode": "template",
+      "template_animation_id": "walking-6-frames",
+      "frame_count": 6,
+      "directions_done_at_handoff": ["south-east", "west", "south-west", "east", "north", "south"],
+      "directions_pending_at_handoff": ["north-east", "north-west"],
+      "resume_action": "poll get_character; if north-east/north-west not yet completed, just wait — job already queued, no new call needed"
+    },
+    "attack": {
+      "status": "IN_PROGRESS",
+      "animation_group_id": "60f5e9f1-2e0e-4d5c-bf44-72c229210b1a",
+      "mode": "v3",
+      "action_description": "reaper scythe-claw slashing attack, quick lunging strike forward",
+      "frame_count": 6,
+      "directions_queued": ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"],
+      "resume_action": "poll get_character; all 8 directions already queued, no new call needed",
+      "alias_needed": "attack_primary_<dir> duplicate row per direction (same frames as attack_<dir>)"
+    },
+    "hit": {
+      "status": "PARTIAL",
+      "animation_group_id": "97b7ec92-4d05-4f1c-abfa-7d98d8186b49",
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, recoiling briefly",
+      "frame_count": 4,
+      "directions_queued": ["south", "south-west", "west", "north-west", "north"],
+      "directions_NOT_queued": ["north-east", "east", "south-east"],
+      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='hit', animation_group_id='97b7ec92-4d05-4f1c-abfa-7d98d8186b49', directions=['north-east','east','south-east'], frame_count=4) once job slots free up"
+    },
+    "death": {
+      "status": "NOT_STARTED",
+      "mode": "v3",
+      "action_description": "collapsing and dying, crumbling and falling to the ground",
+      "frame_count": 6,
+      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='death', directions=[all 8], frame_count=6)"
+    },
+    "skill_reaping_dash": {
+      "status": "NOT_STARTED",
+      "mode": "v3",
+      "action_description": "fast arcing dash attack, scything through the air while lunging forward",
+      "frame_count": 6,
+      "alias_needed": "attack_reaping_dash_<dir> duplicate row per direction",
+      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='skill_reaping_dash', directions=[all 8], frame_count=6)"
+    },
+    "skill_bleed_finish": {
+      "status": "NOT_STARTED",
+      "mode": "v3",
+      "action_description": "finishing blow on a wounded target, downward reaping strike",
+      "frame_count": 6,
+      "alias_needed": "attack_bleed_finish_<dir> duplicate row per direction",
+      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='skill_bleed_finish', directions=[all 8], frame_count=6)"
+    }
+  },
+  "job_slot_note": "PixelLab enforces a 20 concurrent-job cap; batch remaining animate_character calls in groups and poll between batches.",
+  "registry_change_pending": "scripts/full_frame_animation_registry.gd FULL_FRAME_SPRITEFRAMES.elite.mini_scavenger_reaper needs explicit_eight_directions: true added once the SpriteFrames resource is rebuilt with directional rows (currently still the old flat non-directional pack — untouched, still functions as fallback).",
+  "runtime_untouched": "No changes made yet to assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres or scripts/full_frame_animation_registry.gd — current in-game visuals are unaffected."
+}
