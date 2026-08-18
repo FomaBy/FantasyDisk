@@ -14,6 +14,8 @@ const PD := preload("res://scripts/progression_data.gd")
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
 const Harness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 
+const CLASS_EXECUTOR_ROOT := "res://scripts/ultimates/classes"
+
 
 func _initialize() -> void:
 	var errors: Array[String] = []
@@ -34,6 +36,8 @@ func _initialize() -> void:
 	_check_neutral_corridor(report, errors)
 	_check_build_and_atlas_scenarios(report, errors)
 	_check_power_and_boss_caps(report, errors)
+	_check_v2_coverage_corridor(report, errors)
+	_check_coverage_ratchet(errors)
 	_check_harness_can_fail(report, errors)
 
 	if not errors.is_empty():
@@ -68,6 +72,17 @@ func _print_measured_spread(report: Array) -> void:
 	print("  neutral elite charge  %.2f..%.2f (corridor %.0f-%.0f, cap %.0f)" % [elite.x, elite.y, Budget.ELITE_CORRIDOR_MIN, Budget.ELITE_CORRIDOR_MAX, Budget.ELITE_ENCOUNTER_CAP])
 	print("  neutral readiness     %d..%d normal encounters" % [ready_min, ready_max])
 	print("  reference solo output %.2f..%.2f dps normalized to one corridor" % [reference.x, reference.y])
+	print(
+		"  v2 power corridor   live pool %.1f..%.1f HP -> one activation %.1f..%.1f HP (k %.1f-%.1f x live pool)"
+		% [
+			reference.x * Budget.NORMAL_ENCOUNTER_SECONDS,
+			reference.y * Budget.NORMAL_ENCOUNTER_SECONDS,
+			reference.x * Budget.POWER_SECONDS_MIN,
+			reference.y * Budget.POWER_SECONDS_MAX,
+			Budget.POWER_CORRIDOR_K_MIN,
+			Budget.POWER_CORRIDOR_K_MAX,
+		]
+	)
 
 
 ## The class packs consume the fixtures; a pack must not be able to widen its own
@@ -201,9 +216,14 @@ func _check_power_and_boss_caps(report: Array, errors: Array[String]) -> void:
 		var key := str(row["key"])
 		var reference := float(row["reference_solo_dps"])
 		_expect(
-			is_equal_approx(float(row["power_budget_min"]), reference * 20.0)
-				and is_equal_approx(float(row["power_budget_max"]), reference * 35.0),
-			"%s power budget must be 20-35s of its own output" % key,
+			is_equal_approx(float(row["power_budget_min"]), reference * Budget.POWER_SECONDS_MIN)
+				and is_equal_approx(float(row["power_budget_max"]), reference * Budget.POWER_SECONDS_MAX),
+			"%s power budget must be %.1f-%.1fs of its own output" % [key, Budget.POWER_SECONDS_MIN, Budget.POWER_SECONDS_MAX],
+			errors
+		)
+		_expect(
+			str(row.get("coverage", "")) == Budget.COVERAGE_ALL_ENEMIES,
+			"%s must declare coverage=%s" % [key, Budget.COVERAGE_ALL_ENEMIES],
 			errors
 		)
 		if str(row["power_archetype"]) == Budget.POWER_ARCHETYPE_CONTROL_SAVE:
@@ -241,6 +261,165 @@ func _check_power_and_boss_caps(report: Array, errors: Array[String]) -> void:
 				"%s must publish AoE and defense budgets" % str(row["key"]),
 				errors
 			)
+
+
+## FAN-2949: the re-derived value corridor and the boss-cap exclusion.
+func _check_v2_coverage_corridor(report: Array, errors: Array[String]) -> void:
+	# The corridor is k x the live standard-monster pool, and the per-enemy
+	# floor holds at any enemy count exactly because k_min is at or above the
+	# floor fraction: pool = enemy_count x one standard monster's HP, so the
+	# per-enemy share is k x one standard monster's HP for every count.
+	_expect(
+		Budget.POWER_CORRIDOR_K_MIN >= Budget.PER_ENEMY_FLOOR_FRACTION,
+		"k_min %.2f must be >= the per-enemy floor fraction %.2f" % [
+			Budget.POWER_CORRIDOR_K_MIN, Budget.PER_ENEMY_FLOOR_FRACTION
+		],
+		errors
+	)
+	_expect(
+		is_equal_approx(Budget.POWER_SECONDS_MIN, Budget.POWER_CORRIDOR_K_MIN * Budget.NORMAL_ENCOUNTER_SECONDS)
+			and is_equal_approx(Budget.POWER_SECONDS_MAX, Budget.POWER_CORRIDOR_K_MAX * Budget.NORMAL_ENCOUNTER_SECONDS),
+		"POWER_SECONDS must stay k x the canonical encounter window",
+		errors
+	)
+	var row := report[0] as Dictionary
+	var reference := float(row["reference_solo_dps"])
+	var pool := Budget.live_standard_pool(reference)
+	var budget_min := float(row["power_budget_min"])
+	# The floor is provably independent of the crowd size: spread the corridor
+	# budget over any count, the per-enemy guarantee stays >= k_min standard
+	# monsters' HP, which is >= the 0.5 floor.
+	for enemy_count in [1, 5, 20, 100, 1000]:
+		var guarantee := Budget.per_enemy_guarantee(budget_min, pool, enemy_count)
+		_expect(
+			is_equal_approx(guarantee, Budget.POWER_CORRIDOR_K_MIN * pool / float(enemy_count)),
+			"per-enemy guarantee must be k x one standard monster at count %d" % enemy_count,
+			errors
+		)
+		_expect(
+			guarantee >= Budget.PER_ENEMY_FLOOR_FRACTION * pool / float(enemy_count) - 0.001,
+			"per-enemy floor broken at count %d" % enemy_count,
+			errors
+		)
+	# Boss-cap exclusion: the cap may refuse most of the activation budget
+	# (boss pool far larger than the corridor, cap at its minimum) and that
+	# refusal is NOT a corridor violation — the boss scenario asserts
+	# total_boss_cap only.
+	var capped := report.duplicate(true)
+	for raw_row in capped:
+		(raw_row as Dictionary)["total_boss_cap"] = Budget.BOSS_CAP_MIN
+	var capped_errors := Harness.violations(capped)
+	for violation in capped_errors:
+		_expect(
+			not str(violation).begins_with("row.power_budget")
+				and not str(violation).begins_with("class.trio_power_ratio"),
+			"boss-cap refusal surfaced as a corridor violation: %s" % str(violation),
+			errors
+		)
+	_expect(
+		Budget.boss_capped_budget(budget_min, pool * 10.0, Budget.BOSS_CAP_MIN) < budget_min,
+		"the control must actually exercise a refusing boss cap",
+		errors
+	)
+
+
+## FAN-2949: the coverage ratchet over the real class executor sources.
+func _check_coverage_ratchet(errors: Array[String]) -> void:
+	var sources := _class_executor_sources(errors)
+	_expect(sources.size() == 17, "must discover 17 class packages, got %d" % sources.size(), errors)
+	var ratchet_errors := Harness.coverage_violations(sources)
+	_expect(
+		ratchet_errors.is_empty(),
+		"coverage ratchet must be clean while every class is allowlisted: %s" % str(ratchet_errors.slice(0, 6)),
+		errors
+	)
+	# The named count caps and their siblings must be caught; per-target damage
+	# shaping must not be.
+	var scan := Harness.count_cap_params(
+		'"target_cap" "impale_target_cap" "dive_target_cap" "counter_target_cap" '
+		+ '"analysis_target_cap" "intercept_target_cap" "per_target_cap_fraction" '
+		+ '"per_target_cap_flat" "target_cap_fraction" "target_cap_flat"'
+	)
+	_expect(
+		str(scan) == str(["analysis_target_cap", "counter_target_cap", "dive_target_cap", "impale_target_cap", "intercept_target_cap", "target_cap"]),
+		"count-cap scan must separate count caps from damage shaping, got %s" % str(scan),
+		errors
+	)
+
+	# Fail closed: a class taken out of the allowlist before its conversion
+	# lands is red (not converted), and a count-carrying one is red twice.
+	var missing_conversion := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
+	missing_conversion.erase("berserk")
+	_expect_ratchet_violation(
+		sources, missing_conversion, [], "coverage.conversion_missing", errors
+	)
+	var with_count_caps := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
+	with_count_caps.erase("druid")
+	_expect_ratchet_violation(sources, with_count_caps, [], "coverage.count_cap", errors)
+
+	# Stale entry: a converted, clean class must not still be allowlisted.
+	_expect_ratchet_violation(
+		sources, Harness.COVERAGE_MIGRATION_ALLOWLIST.duplicate(), ["assassin"],
+		"coverage.allowlist_stale", errors
+	)
+	# Reason required.
+	var no_reason := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
+	no_reason["berserk"] = "   "
+	_expect_ratchet_violation(
+		sources, no_reason, [], "coverage.allowlist_reason_missing", errors
+	)
+	# An entry naming no class package fails.
+	var unknown := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
+	unknown["__no_such_class__"] = "reason"
+	_expect_ratchet_violation(
+		sources, unknown, [], "coverage.allowlist_unknown", errors
+	)
+
+
+func _class_executor_sources(errors: Array[String]) -> Dictionary:
+	var sources := {}
+	var root := DirAccess.open(CLASS_EXECUTOR_ROOT)
+	if root == null:
+		errors.append("cannot open %s" % CLASS_EXECUTOR_ROOT)
+		return sources
+	root.list_dir_begin()
+	var class_dir_name := root.get_next()
+	while not class_dir_name.is_empty():
+		if root.current_is_dir() and not class_dir_name.begins_with("."):
+			var source := ""
+			var package := DirAccess.open(CLASS_EXECUTOR_ROOT.path_join(class_dir_name))
+			package.list_dir_begin()
+			var file_name := package.get_next()
+			while not file_name.is_empty():
+				if file_name.ends_with(".gd"):
+					var path := CLASS_EXECUTOR_ROOT.path_join(class_dir_name).path_join(file_name)
+					source += "\n" + FileAccess.get_file_as_string(path)
+				file_name = package.get_next()
+			package.list_dir_end()
+			sources[class_dir_name] = source
+		class_dir_name = root.get_next()
+	root.list_dir_end()
+	return sources
+
+
+func _expect_ratchet_violation(
+	sources: Dictionary,
+	allowlist: Dictionary,
+	converted: Array[String],
+	expected_code: String,
+	errors: Array[String]
+) -> void:
+	var found := Harness.coverage_violations(sources, allowlist, converted)
+	var matched := false
+	for violation in found:
+		if str(violation).begins_with(expected_code):
+			matched = true
+			break
+	_expect(
+		matched,
+		"coverage ratchet stayed green on tampered '%s' (reported %s)" % [expected_code, str(found.slice(0, 4))],
+		errors
+	)
 
 
 ## Negative controls. Each tampered report must produce at least one violation
@@ -284,6 +463,9 @@ func _check_harness_can_fail(report: Array, errors: Array[String]) -> void:
 	)
 	_expect_violation(report, "class.trio_power_ratio", errors, func(copy: Array) -> void:
 		(copy[7] as Dictionary)["power_budget_max"] = float((copy[7] as Dictionary)["power_budget_max"]) * 4.0
+	)
+	_expect_violation(report, "row.coverage", errors, func(copy: Array) -> void:
+		(copy[8] as Dictionary)["coverage"] = "nearest_8"
 	)
 
 

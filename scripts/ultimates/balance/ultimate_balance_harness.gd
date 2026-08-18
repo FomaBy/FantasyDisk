@@ -22,6 +22,49 @@ const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.
 const REFERENCE_MAX_HEALTH := 100.0
 const READY_SEARCH_LIMIT := 24
 
+## FAN-2949 coverage ratchet. The 51 executors still carry count caps, so the
+## `coverage=all_enemies` assertion ships behind this migration allowlist with
+## the same semantics `ContactSheetBeatsContract.MIGRATION_ALLOWLIST` uses:
+## seeded with every class, it only ever shrinks (each per-class conversion card
+## removes its own entry; the target state is EMPTY). An entry that names no
+## class package, an entry that states no reason, and an entry for a class that
+## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
+## fail. A class outside the allowlist is asserted against v2 and fails closed.
+const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
+	"assassin": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"berserk": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"chemist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"engineer": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"knight": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"robot": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"sniper": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"thief": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+}
+
+## The per-class conversion ledger: a class satisfies v2 coverage only when its
+## conversion card has landed HERE and its executor sources carry no count
+## caps. Source cleanliness alone is not satisfaction — an executor whose
+## params merely lack a count cap has not thereby declared map-wide reach.
+const COVERAGE_V2_CLASSES: Array[String] = []
+
+## A count-shaped parameter bounds HOW MANY enemies an activation can reach
+## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
+## analysis_target_cap, intercept_target_cap, hunt_splash_target_cap and any
+## sibling). Per-target DAMAGE shaping is not a count cap and stays allowed:
+## per_target_cap_fraction, per_target_cap_flat — any `*_target_cap_fraction`
+## or `*_target_cap_flat` shapes damage per target instead of bounding reach.
+const COUNT_CAP_PARAM_PATTERN := "[A-Za-z0-9_]*target_cap[A-Za-z0-9_]*"
+const COUNT_CAP_SHAPING_SUFFIXES := ["_fraction", "_flat"]
+
 ## `output_factor` > 1 is attempted damage beyond the HP present (overkill);
 ## `health_bars_lost` overrides the neutral damage-taken profile.
 const SCENARIOS := [
@@ -68,6 +111,7 @@ static func measure(rows: Array) -> Array[Dictionary]:
 				"charge_per_removed_hp": float(row.get("charge_per_removed_hp", 0.0)),
 				"total_boss_cap": float(row.get("total_boss_cap", 0.0)),
 				"power_archetype": str(row.get("power_archetype", "")),
+				"coverage": str(row.get("coverage", "")),
 				"power_budget_min": float(row.get("power_budget_min", 0.0)),
 				"power_budget_max": float(row.get("power_budget_max", 0.0)),
 				"control_save_seconds": float(row.get("control_save_seconds", 0.0)),
@@ -118,6 +162,16 @@ static func _check_row(row: Dictionary, errors: Array[String]) -> void:
 	var boss_cap := float(row.get("total_boss_cap", 0.0))
 	if boss_cap < Budget.BOSS_CAP_MIN or boss_cap > Budget.BOSS_CAP_MAX:
 		errors.append("row.total_boss_cap: %s = %.3f outside [%.2f, %.2f]" % [key, boss_cap, Budget.BOSS_CAP_MIN, Budget.BOSS_CAP_MAX])
+	# FAN-2949: boss HP is excluded from the standard-monster pool the power
+	# corridor prices. The boss scenario asserts total_boss_cap ONLY — the part
+	# of the activation budget the boss cap refuses (see
+	# Budget.boss_capped_budget) is explicitly NOT a corridor violation, or
+	# every boss row would go falsely red the moment the corridor rises.
+
+	if str(row.get("coverage", "")) != Budget.COVERAGE_ALL_ENEMIES:
+		errors.append(
+			"row.coverage: %s = '%s' must be '%s'" % [key, str(row.get("coverage", "")), Budget.COVERAGE_ALL_ENEMIES]
+		)
 
 	var archetype := str(row.get("power_archetype", ""))
 	if archetype != Budget.POWER_ARCHETYPE_BURST and archetype != Budget.POWER_ARCHETYPE_CONTROL_SAVE:
@@ -128,6 +182,9 @@ static func _check_row(row: Dictionary, errors: Array[String]) -> void:
 
 	var power_min := float(row.get("power_budget_min", 0.0))
 	var power_max := float(row.get("power_budget_max", 0.0))
+	# FAN-2949: POWER_SECONDS_* are k x the canonical encounter window, so this
+	# is the k in [POWER_CORRIDOR_K_MIN, POWER_CORRIDOR_K_MAX] corridor against
+	# the live standard-monster pool (reference output x window seconds).
 	if not is_equal_approx(power_min, reference_dps * Budget.POWER_SECONDS_MIN):
 		errors.append("row.power_budget_min: %s must be %.1fs of its own output" % [key, Budget.POWER_SECONDS_MIN])
 	if not is_equal_approx(power_max, reference_dps * Budget.POWER_SECONDS_MAX):
@@ -305,3 +362,65 @@ static func _activations_in_one_encounter(row: Dictionary, scenario: Dictionary)
 static func _run_encounter_without_reset(ledger: Ledger, row: Dictionary, scenario: Dictionary) -> void:
 	var hp_pool := float(row.get("reference_solo_dps", 0.0)) * Budget.NORMAL_ENCOUNTER_SECONDS
 	ledger.add_removed_health(hp_pool * maxf(float(scenario.get("output_factor", 1.0)), 0.0))
+
+
+## The `coverage=all_enemies` assertion (FAN-2949). `class_sources` maps
+## class_id -> the concatenated executor source of that class package (the
+## caller gathers it; the harness only judges, like `violations()`). Overrides
+## exist so the negative controls can exercise the ratchet itself.
+static func coverage_violations(
+	class_sources: Dictionary,
+	allowlist: Dictionary = COVERAGE_MIGRATION_ALLOWLIST,
+	converted: Array[String] = COVERAGE_V2_CLASSES
+) -> Array[String]:
+	var errors: Array[String] = []
+	for raw_class_id in allowlist.keys():
+		var class_id := str(raw_class_id)
+		if not class_sources.has(class_id):
+			errors.append("coverage.allowlist_unknown: entry '%s' names no class package" % class_id)
+		elif str(allowlist[raw_class_id]).strip_edges().is_empty():
+			errors.append("coverage.allowlist_reason_missing: entry '%s' states no reason" % class_id)
+
+	for raw_class_id in class_sources.keys():
+		var class_id := str(raw_class_id)
+		var source := str(class_sources[raw_class_id])
+		var caps := count_cap_params(source)
+		var clean := caps.is_empty()
+		var is_converted := converted.has(class_id)
+		if allowlist.has(class_id):
+			# Stale entry: the class already satisfies v2, so its allowlist
+			# entry must be gone — the allowlist only ever shrinks.
+			if clean and is_converted:
+				errors.append(
+					"coverage.allowlist_stale: %s already satisfies coverage=%s; remove its entry" % [class_id, Budget.COVERAGE_ALL_ENEMIES]
+				)
+			continue
+		# Outside the allowlist the class is asserted against v2 and fails
+		# closed: converted AND clean, or red.
+		if not is_converted:
+			errors.append(
+				"coverage.conversion_missing: %s is outside the allowlist but not in COVERAGE_V2_CLASSES" % class_id
+			)
+		if not clean:
+			errors.append(
+				"coverage.count_cap: %s declares count-shaped parameters %s — prohibited by coverage=%s" % [class_id, str(caps), Budget.COVERAGE_ALL_ENEMIES]
+			)
+	return errors
+
+
+## Every count-shaped parameter name in an executor source. Per-target damage
+## shaping (`*_target_cap_fraction`, `*_target_cap_flat`) is not a count cap.
+static func count_cap_params(source: String) -> Array[String]:
+	var pattern := RegEx.create_from_string(COUNT_CAP_PARAM_PATTERN)
+	var found: Array[String] = []
+	for raw_match in pattern.search_all(source):
+		var param := str((raw_match as RegExMatch).get_string())
+		var is_shaping := false
+		for suffix in COUNT_CAP_SHAPING_SUFFIXES:
+			if param.ends_with(suffix):
+				is_shaping = true
+				break
+		if not is_shaping and not found.has(param):
+			found.append(param)
+	found.sort()
+	return found
