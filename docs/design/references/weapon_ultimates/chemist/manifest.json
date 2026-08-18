@@ -21,7 +21,6 @@
     "route": "pixellab_animation_frames_for_every_chemist_weapon",
     "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552) plus new transparent-frame animation sources via PixelLab MCP (create_1_direction_object + animate_object) for blast_powder (FAN-2550) and acid_flask (FAN-2551); no Chemist weapon reuses a static accepted asset any more",
     "new_pixellab_assets": [
-
       {
         "weapon_id": "homunculus_vial",
         "tool": "animate_image",
@@ -33,7 +32,6 @@
         "asset_manifest": "assets/sprites/effects/ultimates/chemist/homunculus_vial/manifest.json",
         "rebuild_tool": "tools/build_fan2552_homunculus_vial_ultimate_pack.py"
       },
-
       {
         "weapon_id": "blast_powder",
         "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
@@ -48,7 +46,6 @@
         "generation_script": "tools/fan2550_blast_powder_pixellab.py",
         "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
       },
-
       {
         "weapon_id": "acid_flask",
         "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
@@ -70,23 +67,35 @@
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
         "note": "Accepted tank and caster sprites are reused for the fusion/split pair; the avatar now plays the FAN-2552 PixelLab stomp cycle whose frame 0 is the accepted ally_homunculus identity."
       }
-    }
+    },
+    "v2_presentation_reworks": [
+      {
+        "weapon_id": "blast_powder",
+        "card": "FAN-2957",
+        "decision": "existing FAN-2550 PixelLab frames carry the v2 scale and length: slower beat spacing, arena-wide sigil scale-up, full-screen backdrop veil, hero glow highlight; no new PixelLab job required",
+        "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+        "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_blast_powder_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
+      }
+    ]
   },
   "weapons": [
     {
       "weapon_id": "blast_powder",
       "title": "Философский Взрыв",
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
-      "silhouette": "five multicolor alchemical charges around a pentagram",
-      "motion_path": "five charges ignite, rotate into a pentagram, then pull inward",
-      "timing_rhythm": "quick five-beat ignition, sharp crystal contraction, then one bright outward release",
-      "impact_language": "crystal implosion becomes one gold-white transmutation blast",
+      "silhouette": "arena-wide violet-gold pentagram with five multicolor alchemical charges at its points",
+      "motion_path": "charges ignite during the cast ceremony, lock into a pentagram, freeze the arena at the impact beat, then the sigil sweeps outward and evaporates",
+      "timing_rhythm": "0.95s alchemical cast ceremony with the hero spotlit, one crystalline implosion into a hitstop-anchored gold-white flash at 1.3s, then a long visible recovery as the sigil evaporates",
+      "impact_language": "one crystalline implosion into a gold-white transmutation flash that darkens and shakes the whole screen",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.5,
+        "release": 0.95,
         "active": 1.3,
-        "recovery": 2.2,
-        "cancel": 3.4
+        "recovery": 2.9,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.blast_powder.windup",
@@ -100,18 +109,33 @@
         0.5
       ],
       "performance": {
-        "max_visual_nodes": 9,
+        "max_visual_nodes": 6,
         "crowd_cap": 18,
+        "material_budget": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage"
+        "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage",
+        "v2_budget_note": "FAN-2957 re-derivation: 5 drawn nodes (backdrop veil, hero glow, PixelLab frames, pentagram sigil, gold radiance) under a 6-node cap; one shared additive CanvasItemMaterial declares the material budget"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.3,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the pentagram circle and the five kegs hold steady glow edges in place of the rotation and implosion pull",
+        "reduced_motion_substitute": "the pentagram sigil and hero glow hold steady edges and one held brightness step in place of the rotation sweep, implosion pull and screen shake; the single flash becomes a calm fade",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
-        "max_flash_coverage_ratio": 0.18
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating release flash at 0 Hz; WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.alchemist_surge",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2550_blast_powder_ultimate/blast_powder_ultimate_05.png",
+        "class_palette_id": "palette.chemist.violet_gold_alchemy"
       }
     },
     {
