@@ -16,8 +16,8 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "pixellab_animation_source_for_chakrams_reused_approved_assets_for_the_other_two",
-    "pixellab_mcp": "invoked for assassin/chakrams (FAN-2541): a new transparent-frame animation source via create_1_direction_object + animate_object; shadow_daggers and venom_wire still compose their approved project weapon sprite at runtime and are untouched by this card",
+    "route": "pixellab_animation_source_for_chakrams_and_shadow_daggers_reused_approved_asset_for_venom_wire",
+    "pixellab_mcp": "invoked for assassin/chakrams (FAN-2541) and assassin/shadow_daggers (FAN-2542): new transparent-frame animation sources via create_1_direction_object + animate_object; venom_wire still composes its approved project weapon sprite at runtime and is untouched by those cards",
     "new_pixellab_assets": [
       {
         "weapon_id": "chakrams",
@@ -34,14 +34,25 @@
         "generation_script": "tools/fan2541_chakrams_pixellab.py",
         "provenance_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_chakrams.json",
         "note": "The isolated source is one moon-chakram ring; the eight-disc compass formation stays a runtime composition, so the ring identity is generated once and instanced eight times."
+      },
+      {
+        "weapon_id": "shadow_daggers",
+        "issue": "FAN-2542",
+        "pixel_lab_object_id": "7e33b12d-e6cf-41d6-acaf-a96687ebbcee",
+        "pixel_lab_animation_group_id": "ddc3b13c-51ee-4290-9547-76a6c24cae5d",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_shadow_daggers",
+        "runtime_spriteframes": "assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres",
+        "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+        "generation_script": "tools/fan2541_chakrams_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_shadow_daggers.json",
+        "note": "The isolated source is one shadow dagger whose violet edge glow pulses in place; the four backstab afterimages stay a runtime composition, so the blade identity is generated once and instanced four times with staggered frame phases."
       }
     ],
     "reused_sources": {
-      "shadow_daggers": {
-        "source_path": "assets/sprites/weapons/shadow_daggers.png",
-        "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-        "note": "Approved project weapon sprite; afterimages and slash reveal are composed at runtime."
-      },
       "venom_wire": {
         "source_path": "assets/sprites/weapons/venom_wire.png",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
@@ -113,6 +124,15 @@
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "marked_damage_owner": "mechanics FAN-1473"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.14,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the four dagger afterimages hold one steady generated frame instead of stepping through the edge-glow cycle and the crimson reveal fades in as a static slash, replacing the per-dagger pulse sweep and the reveal flash-off",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0002,
+        "measurement": "peak drawn coverage 0.138 of a 1152x648 viewport, constant across the timeline because the local desaturation panel is the drawn footprint; its box x=358..793 y=206..441 leaves 206px clear above and 207px below for the HUD bands. Lit effect area (luminance > 0.15) rises 0.0024 -> 0.0089 across windup/release/active, peaks at 0.0288 on the reveal beat t=3.85s and decays to 0.0018 at cleanup t=5.80s; pixels above luminance 0.75 never exceed 0.0002 of the viewport, so there is no full-screen flash"
       }
     },
     {

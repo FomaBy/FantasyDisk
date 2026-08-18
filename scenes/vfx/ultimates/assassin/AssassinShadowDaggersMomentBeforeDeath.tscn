@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/weapons/shadow_daggers.png" id="1_daggers"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres" id="1_dagger_frames"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -45,6 +45,54 @@ tracks/2/keys = {
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.42, 0.0]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Afterimages/BackstabOne:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 4, 6, 8, 3, 5]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Afterimages/BackstabTwo:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [2, 3, 4, 6, 8, 1, 5, 7]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Afterimages/BackstabThree:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 6, 8, 1, 3, 7, 0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Afterimages/BackstabFour:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 8, 1, 3, 5, 0, 2]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_moment_before_death"]
 _data = {"ultimate": SubResource("Animation_moment_before_death")}
@@ -71,37 +119,45 @@ antialiased = true
 
 [node name="Afterimages" type="Node2D" parent="."]
 
-[node name="BackstabOne" type="Sprite2D" parent="Afterimages"]
+[node name="BackstabOne" type="AnimatedSprite2D" parent="Afterimages"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_daggers")
+sprite_frames = ExtResource("1_dagger_frames")
+animation = &"backstab_afterimages"
+frame = 0
 position = Vector2(-132, -34)
-rotation = -0.52
-scale = Vector2(0.34, 0.34)
-modulate = Color(0.46, 0.12, 0.86, 0.72)
+rotation = 1.82
+scale = Vector2(0.58, 0.58)
+modulate = Color(0.86, 0.62, 1, 0.95)
 
-[node name="BackstabTwo" type="Sprite2D" parent="Afterimages"]
+[node name="BackstabTwo" type="AnimatedSprite2D" parent="Afterimages"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_daggers")
+sprite_frames = ExtResource("1_dagger_frames")
+animation = &"backstab_afterimages"
+frame = 2
 position = Vector2(130, -20)
-rotation = 0.58
-scale = Vector2(0.34, 0.34)
-modulate = Color(0.62, 0.18, 1, 0.82)
+rotation = -1.72
+scale = Vector2(0.58, 0.58)
+modulate = Color(0.95, 0.72, 1, 1)
 
-[node name="BackstabThree" type="Sprite2D" parent="Afterimages"]
+[node name="BackstabThree" type="AnimatedSprite2D" parent="Afterimages"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_daggers")
+sprite_frames = ExtResource("1_dagger_frames")
+animation = &"backstab_afterimages"
+frame = 4
 position = Vector2(-96, 76)
-rotation = -1.02
-scale = Vector2(0.29, 0.29)
-modulate = Color(0.38, 0.08, 0.72, 0.66)
+rotation = 0.9
+scale = Vector2(0.5, 0.5)
+modulate = Color(0.78, 0.5, 1, 0.88)
 
-[node name="BackstabFour" type="Sprite2D" parent="Afterimages"]
+[node name="BackstabFour" type="AnimatedSprite2D" parent="Afterimages"]
 material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_daggers")
+sprite_frames = ExtResource("1_dagger_frames")
+animation = &"backstab_afterimages"
+frame = 6
 position = Vector2(100, 72)
-rotation = 1.12
-scale = Vector2(0.29, 0.29)
-modulate = Color(0.72, 0.26, 1, 0.76)
+rotation = -0.95
+scale = Vector2(0.5, 0.5)
+modulate = Color(0.92, 0.68, 1, 0.92)
 
 [node name="FinalReveal" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
