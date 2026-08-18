@@ -78,6 +78,16 @@
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
         "scene_driver": "scenes/vfx/ultimates/chemist/chemist_blast_powder_v2.gd",
         "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
+      },
+      {
+        "weapon_id": "acid_flask",
+        "card": "FAN-2958",
+        "decision": "existing FAN-2551 PixelLab frames carry the v2 scale and length: slower beat spacing, arena-wide lake shoreline scale-up, full-screen backdrop veil, hero glow highlight; no new PixelLab job required",
+        "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
+        "pixel_lab_animation_group_id": "5062e756-6788-40a5-a555-56a92217da32",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_acid_flask_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_acid_flask.json"
       }
     ]
   },
@@ -145,14 +155,14 @@
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
       "silhouette": "one colossal cracked flask flooding an irregular green acid lake",
       "motion_path": "flask tip pours forward, a wave expands outward, then pillars bubble from the lake",
-      "timing_rhythm": "heavy flask reveal, broad flood, sustained bubbling pillars, then a slow evaporation",
+      "timing_rhythm": "0.85s cast ceremony with the hero spotlit under the raised colossal flask, one acid-white impact flash at 1.0s when the pour lands its first corrosion tick, a long sustained corrosion window, then a visible evaporation recovery",
       "impact_language": "corrosive flood, capped charge pillars, and evaporation smoke",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.75,
-        "active": 1.6,
-        "recovery": 3.7,
-        "cancel": 4.8
+        "release": 0.85,
+        "active": 1.0,
+        "recovery": 3.35,
+        "cancel": 3.95
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.acid_flask.windup",
@@ -168,16 +178,32 @@
       "performance": {
         "max_visual_nodes": 9,
         "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime"
+        "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime",
+        "v2_budget_note": "FAN-2958 re-derivation: 8 drawn nodes (backdrop veil, hero glow, PixelLab frames, arena-wide lake shoreline, three charge pillars, evaporation smoke) under a 9-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.32,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the acid lake keeps a calm static shoreline and slow bubble drift in place of the pour wave and pillar bursts",
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the impact shake, and the release flash plays as a calm fade — backdrop veil and acid surge glow keep every beat at a damped peak",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
-        "max_flash_coverage_ratio": 0.0
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating acid-white release flash at 0 Hz; WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.tsar_flask_hurl",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_04.png",
+        "class_palette_id": "palette.chemist.viridian_acid"
       }
     },
     {
