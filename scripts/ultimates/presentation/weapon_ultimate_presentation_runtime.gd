@@ -92,6 +92,22 @@ func finish(reason: String) -> void:
 	_scene = null
 
 
+## One executor beat for the live presentation: the authored scene owns what the
+## beat looks like, so returning true is also what keeps the controller's
+## generic primitive off the screen.
+func beat(event_id: String, payload: Dictionary) -> bool:
+	if _timeline == null:
+		return false
+	_timeline.record_beat(event_id, payload)
+	if _scene != null and is_instance_valid(_scene) and _scene.has_method("beat"):
+		_scene.call("beat", event_id, payload)
+	return true
+
+
+func beats() -> Array[Dictionary]:
+	return _timeline.beats() if _timeline != null else [] as Array[Dictionary]
+
+
 func is_active() -> bool:
 	return _timeline != null
 

@@ -19,6 +19,7 @@ var _elapsed := 0.0
 var _state := READY_STATE
 var _handles := {}
 var _emitted_phases := {}
+var _beats: Array[Dictionary] = []
 
 
 ## Pass 1 for deterministic headless behavior, 0 for a fixture timeline, and
@@ -77,6 +78,19 @@ func finish(reason: String) -> Dictionary:
 	return snapshot(reason)
 
 
+## One executor beat routed into this presentation. The headless no-op timeline
+## records it too: the beat reaching the presentation is the contract, drawing
+## it is the authored scene's business.
+func record_beat(event_id: String, payload: Dictionary) -> void:
+	if _state == FINISHED_STATE or event_id.is_empty():
+		return
+	_beats.append({"event_id": event_id, "payload": payload.duplicate(true)})
+
+
+func beats() -> Array[Dictionary]:
+	return _beats.duplicate(true)
+
+
 func active_handle_count() -> int:
 	return _handles.size()
 
@@ -93,5 +107,5 @@ func snapshot(reason := "") -> Dictionary:
 		"elapsed_seconds": _elapsed,
 		"active_handle_count": active_handle_count(),
 		"reason": reason,
-		"events": [],
+		"events": beats(),
 	}

@@ -95,15 +95,9 @@ static func _asset(id: String, path: String) -> Dictionary:
 ## Resolves the one accepted presentation scene and its declared visual budget.
 ## All callers use this exact key; no class/default asset is substituted.
 static func class_weapon_record(class_id: String, weapon_id: String) -> Dictionary:
-	if class_id.is_empty() or weapon_id.is_empty():
+	var document := _document(class_id)
+	if document.is_empty() or weapon_id.is_empty():
 		return {}
-	var document_path := "%s/%s/manifest.json" % [REFERENCE_ROOT, class_id]
-	if not FileAccess.file_exists(document_path):
-		return {}
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(document_path))
-	if not parsed is Dictionary or str((parsed as Dictionary).get("class_id", "")) != class_id:
-		return {}
-	var document: Dictionary = parsed as Dictionary
 	var weapon: Dictionary = _weapon_record(document, weapon_id)
 	var scene_path: String = _resource_path(str(weapon.get("scene_path", "")))
 	if scene_path.is_empty():
@@ -134,6 +128,27 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 		if weapon.get(block) is Dictionary:
 			record[block] = (weapon[block] as Dictionary).duplicate(true)
 	return record
+
+
+## The visual quality budget the weapon declares for itself, resolved without
+## the scene: a weapon may ban flashes whether or not its presentation resolves.
+static func quality_for(class_id: String, weapon_id: String) -> Dictionary:
+	if weapon_id.is_empty():
+		return {}
+	var quality = _weapon_record(_document(class_id), weapon_id).get("quality", {})
+	return (quality as Dictionary).duplicate(true) if quality is Dictionary else {}
+
+
+static func _document(class_id: String) -> Dictionary:
+	if class_id.is_empty():
+		return {}
+	var document_path := "%s/%s/manifest.json" % [REFERENCE_ROOT, class_id]
+	if not FileAccess.file_exists(document_path):
+		return {}
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(document_path))
+	if not parsed is Dictionary or str((parsed as Dictionary).get("class_id", "")) != class_id:
+		return {}
+	return parsed as Dictionary
 
 
 static func _weapon_record(document: Dictionary, weapon_id: String) -> Dictionary:

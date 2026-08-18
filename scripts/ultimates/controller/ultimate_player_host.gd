@@ -18,11 +18,13 @@ extends Node
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const PresentationRuntime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TargetQuery := preload("res://scripts/combat_target_query.gd")
 
 const NODE_NAME := "UltimateHost"
+const FALLBACK_BEAM_WIDTH := 34.0
 const ACTIVATION_LEGACY_FALLBACK := 0
 const ACTIVATION_STARTED := 1
 const ACTIVATION_FAILED := 2
@@ -271,25 +273,58 @@ func ultimate_host_set_active(active: bool) -> void:
 	player.set("_ultimate_active", active)
 
 
-## Presentation stays primitive on purpose: the weapon-ultimate presentation
-## contract is a separate package, so this only maps the geometric shapes the
-## executors describe onto the existing AttackVfx primitives.
-func ultimate_host_present(_event_id: String, payload: Dictionary) -> Node:
+## The beat belongs to the weapon's own presentation: while one is live it takes
+## the executor's event id and nothing generic is drawn over it. The primitive
+## shapes below are only the fallback for a profile that has no authored
+## presentation at all — which is why the weapon-ultimate presentation package
+## replaced, rather than kept, the temporary primitive-only bridge.
+func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
+	if _presentation != null and _presentation.beat(event_id, payload):
+		return null
+	return _present_fallback(event_id, payload)
+
+
+## Fallback drawing. A weapon that declared a zero flash budget in its manifest
+## gets no controller flash, and a shape this path cannot draw is reported
+## instead of silently becoming a ring pulse.
+func _present_fallback(event_id: String, payload: Dictionary) -> Node:
 	var parent := ultimate_host_effect_parent()
-	if parent == null:
+	if parent == null or _manifest_forbids_flash():
 		return null
 	var position: Vector2 = payload.get("position", player.global_position)
 	var radius := float(payload.get("radius", 240.0))
-	match str(payload.get("shape", "ring_pulse")):
+	var shape := str(payload.get("shape", "ring_pulse"))
+	match shape:
+		"ring_pulse":
+			return AttackVfx.ring_pulse(parent, position, radius, _fallback_color(0.40), false)
+		"orb_burst":
+			return AttackVfx.orb_burst(parent, position, radius, _fallback_color(0.44))
 		"beam":
 			return AttackVfx.beam(
 				parent,
 				payload.get("from", player.global_position),
 				payload.get("to", position),
-				34.0,
-				Color(0.86, 0.92, 1.0, 0.42)
+				FALLBACK_BEAM_WIDTH,
+				_fallback_color(0.42)
 			)
-		"orb_burst":
-			return AttackVfx.orb_burst(parent, position, radius, Color(0.62, 0.76, 1.0, 0.44))
-		_:
-			return AttackVfx.ring_pulse(parent, position, radius, Color(0.86, 0.92, 1.0, 0.40), false)
+	push_warning(
+		"UltimateHost: beat '%s' asks for shape '%s', which the primitive fallback cannot draw"
+		% [event_id, shape]
+	)
+	return null
+
+
+func _manifest_forbids_flash() -> bool:
+	var quality := Manifest.quality_for(
+		str(player.get("character_id")), str(player.get("weapon_id"))
+	)
+	return is_zero_approx(float(quality.get("full_screen_flash_hz", 1.0))) \
+		and is_zero_approx(float(quality.get("max_flash_coverage_ratio", 1.0)))
+
+
+## Colour belongs to the authored presentation everywhere it exists, so the
+## fallback borrows the equipped weapon's own tint instead of a fixed hue.
+func _fallback_color(alpha: float) -> Color:
+	var weapon = player.get("equipped_weapon")
+	var tint = weapon.get("visual_color") if weapon != null and is_instance_valid(weapon) else null
+	return Color(tint.r, tint.g, tint.b, alpha) if tint is Color else Color(1.0, 1.0, 1.0, alpha)
