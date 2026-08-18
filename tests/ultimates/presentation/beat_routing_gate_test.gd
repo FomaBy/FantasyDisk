@@ -27,6 +27,23 @@ const PresentationManifest := preload(
 
 const HOST_SOURCE_PATH := "res://scripts/ultimates/controller/ultimate_player_host.gd"
 const EXPECTED_PAIR_COUNT := 51
+## FAN-3015: the pairs whose ready package spawns nothing, so the authored
+## scene is the only live effect channel their cast owns. Kept explicit —
+## these are exactly the pairs the ownership contract now leans on.
+const PRESENTATION_ONLY_PAIRS := [
+	["chemist", "acid_flask"],
+	["chemist", "blast_powder"],
+	["doctor", "bone_saw"],
+	["doctor", "plague_syringe"],
+	["doctor", "restore_potion"],
+	["guitarist", "bass_guitar"],
+	["guitarist", "electric_guitar"],
+	["guitarist", "sound_amp"],
+	["robot", "robot_hydraulic_press"],
+	["robot", "robot_magnetic_anchor"],
+	["robot", "robot_reactor_core"],
+	["soldier", "soldier_rifle"],
+]
 
 
 var _errors: Array[String] = []
@@ -57,6 +74,7 @@ func _initialize() -> void:
 	_test_zero_budget_weapons_never_flash()
 	_test_fallback_only_with_declared_budget()
 	_test_unknown_shape_is_refused()
+	await _test_authored_scene_is_the_live_channel_and_is_released()
 
 	_player.queue_free()
 	_holder.queue_free()
@@ -183,6 +201,45 @@ func _test_fallback_only_with_declared_budget() -> void:
 		parent.remove_child(child)
 		child.queue_free()
 	_host._presentation_profile = {}
+
+
+## FAN-3015: a spawnless pair owns exactly one live effect channel — the
+## authored scene — so that scene has to be a real node under the effect parent
+## while the cast runs, and it has to be gone once the host finishes it. Forced
+## non-headless presentation mode instantiates it for real under the headless
+## display server, where the runtime would otherwise take its no-op timeline.
+func _test_authored_scene_is_the_live_channel_and_is_released() -> void:
+	var parent = _host.ultimate_host_effect_parent()
+	_host._presentation = null
+	_host.set("_presentation_headless_mode", 0)
+	for pair in PRESENTATION_ONLY_PAIRS:
+		var class_id := str(pair[0])
+		var weapon_id := str(pair[1])
+		var label := "%s/%s" % [class_id, weapon_id]
+		var baseline: int = parent.get_child_count()
+		var profile: Dictionary = _registry().catalog_profile_for(class_id, weapon_id)
+		if not _host.ultimate_host_begin_presentation(profile):
+			_errors.append("%s: the authored presentation must begin non-headless" % label)
+			continue
+		var scene = _host._presentation._scene as Node
+		_check(scene != null and scene.get_parent() == parent,
+			"%s: the authored scene must be a live node under the effect parent" % label)
+		_check(_host.ultimate_host_presentation_active(),
+			"%s: the host must report the authored scene as a live channel" % label)
+		var children_before: int = parent.get_child_count()
+		_check(_host.ultimate_host_present("fixture.beat", {"shape": "ring_pulse"}) == null \
+				and parent.get_child_count() == children_before,
+			"%s: a beat must not add a node over the live authored scene" % label)
+		_host.ultimate_host_finish_presentation("node_end")
+		_check(not _host.ultimate_host_presentation_active(),
+			"%s: the channel must close when the host finishes the presentation" % label)
+		await process_frame
+		await process_frame
+		_check(scene == null or not is_instance_valid(scene),
+			"%s: the authored scene node must be freed after the cast" % label)
+		_check(parent.get_child_count() == baseline,
+			"%s: no presentation node may outlive the cast" % label)
+	_host.set("_presentation_headless_mode", -1)
 
 
 func _test_unknown_shape_is_refused() -> void:

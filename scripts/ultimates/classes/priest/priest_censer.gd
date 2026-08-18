@@ -103,6 +103,13 @@ func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
 	return _ultimate_host.call("ultimate_host_present", event_id, payload)
 
 
+## Optional host channel, so the proxy forwards it only when the real host
+## exposes it and reports no presentation otherwise.
+func ultimate_host_presentation_active() -> bool:
+	return _ultimate_host.has_method("ultimate_host_presentation_active") \
+		and bool(_ultimate_host.call("ultimate_host_presentation_active"))
+
+
 func ultimate_host_set_active(active: bool) -> void:
 	_ultimate_host.call("ultimate_host_set_active", active)
 

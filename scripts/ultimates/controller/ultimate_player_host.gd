@@ -275,6 +275,14 @@ func ultimate_host_finish_presentation(reason: String) -> void:
 	_presentation_profile = {}
 
 
+## The authored presentation is the cast's live visual channel whenever it is
+## running, and the host owns it: `ultimate_host_finish_presentation` releases
+## its scene handle. The activation reads this to account the channel it is
+## showing without taking a second claim on the node.
+func ultimate_host_presentation_active() -> bool:
+	return _presentation != null and _presentation.is_active()
+
+
 ## Beats belong to the authored presentation: while it is live, `event_id` and
 ## its payload are delivered to it (`present_beat`) and nothing is drawn over
 ## it. The AttackVfx path below is an explicit fallback for the rare cast whose
