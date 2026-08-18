@@ -1,0 +1,59 @@
+{
+  "character_id": "venom_spitter",
+  "pixellab_character_id": "fda221e7-d8b0-40a2-9f4c-a86e790036ea",
+  "generated_at": "2026-08-19",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations) + template walk-6-frames (move) + v3 custom (attack/hit/death)",
+  "body_type": "quadruped (dog template)",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walk-6-frames",
+      "fps": 9.0,
+      "action_description": "creeping forward low to the ground on stubby legs, tail dragging"
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "keep_first_frame": false,
+      "action_description": "lunging forward and spitting a burst of venom from its wide jaws, head snapping back then thrusting out",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "keep_first_frame": false,
+      "action_description": "flinching backward in pain from a hit, recoiling with a jolt, body tensing",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "keep_first_frame": false,
+      "action_description": "slumping down flat and motionless, body sinking low to the ground, head drooping down, defeated",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2615: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/venom_spitter. 8 idle rotations + 8x6 move frames + 8x6 attack frames + 8x4 hit frames + 8x6 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
+}
