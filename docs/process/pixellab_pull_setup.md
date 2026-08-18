@@ -92,3 +92,37 @@ PixelLab auth smoke PASS: get_balance returned a JSON-RPC result.
 
 The smoke script never prints the token. If it fails, follow
 `skills/codex/pixellab_mcp_auth.md` before marking a Multica issue blocked.
+
+## Blocking pack generation (FAN-2924, mandatory for agents)
+
+`tools/pixellab_generate_pack.py` runs the whole generation cycle — create job,
+poll status synchronously to completion, download frames, write the provenance
+manifest — as ONE blocking command. Pixel Artist agents MUST use it for pack
+generation; polling the PixelLab MCP by hand with a self-armed timer is
+forbidden (three orphaned runs: FAN-2608 ×2, FAN-2645).
+
+```bash
+python3 tools/pixellab_generate_pack.py \
+  --source-dir <raw frames dir> \
+  --manifest-out <manifest.json> \
+  --description "<object description>" \
+  --animation-description "<animation description>" \
+  --frame-count 16
+```
+
+Key flags: `--poll-interval` seconds between status polls (default 30),
+`--timeout` hard wall-clock ceiling per job in seconds (default 900 = 15 min),
+`--object-id` to reuse an existing object, `--frame-prefix`, `--size`,
+`--view`, `--animate-mode`.
+
+Exit codes: `0` success; `3` timeout (the unfinished object id and its status
+are printed); `4` API error (create/animate/download failure, JSON-RPC error);
+`5` incomplete pack (fewer frames downloaded than `--frame-count`). On a
+non-zero exit do NOT retry silently: for a timeout, re-run once with
+`--object-id <id from the log>` and a larger `--timeout` — the job keeps
+running server-side; for `4`/`5`, report the error on the Multica card.
+
+The token comes only from env `PIXELLAB_BEARER_TOKEN`; it is never printed,
+written to the manifest, or committed. Import of a downloaded pack into
+runtime assets stays with `tools/update_pixellab_character_animations.py`.
+Mocked no-network self-test: `python3 tools/test_pixellab_generate_pack.py`.
