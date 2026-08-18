@@ -10,8 +10,10 @@ extends SceneTree
 ## Standard and combat-vs-UI boundary:
 ## docs/design/systems/weapon_ultimate_presentation.md.
 
-const SCENE_SCAN_ROOT := "res://scenes"
-const SCRIPT_SCAN_ROOTS: Array[String] = ["res://scripts", "res://scenes"]
+# One shared root list for scenes and scripts: combat .tscn also live under
+# scripts/ultimates/classes/, and two separate constants already drifted once
+# into a fail-open hole (QA FAN-3007).
+const SCAN_ROOTS: Array[String] = ["res://scripts", "res://scenes"]
 
 # Non-combat presentation (UI screens, HUD overlays, character-rig ground
 # shadows) is outside the standard by explicit design-review boundary, never
@@ -97,7 +99,8 @@ func _init() -> void:
 
 	var scene_found := {}
 	var scenes: Array[String] = []
-	_collect_files(SCENE_SCAN_ROOT, "tscn", scenes)
+	for root in SCAN_ROOTS:
+		_collect_files(root, "tscn", scenes)
 	for path in scenes:
 		var count := _scene_primitive_count(path)
 		if count > 0:
@@ -105,7 +108,7 @@ func _init() -> void:
 
 	var script_found := {}
 	var scripts: Array[String] = []
-	for root in SCRIPT_SCAN_ROOTS:
+	for root in SCAN_ROOTS:
 		_collect_files(root, "gd", scripts)
 	for path in scripts:
 		var count := _script_construction_count(path)

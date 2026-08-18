@@ -107,8 +107,9 @@ rendering, not a combat effect). UI primitives never enter the allowlists.
 Extending the exemption list is a design decision recorded here and in the
 test's `NON_COMBAT_EXEMPT_*` constants — it is not a way to ship a combat
 primitive, and the grep scope must not be widened or narrowed blindly. The
-scan scope is `scenes/**` and `scripts/**`; combat code does not live outside
-those roots.
+scan scope is `scenes/**` and `scripts/**` for both `.tscn` scenes and `.gd`
+scripts — combat ultimate scenes also live under `scripts/ultimates/classes/`;
+combat code does not live outside those roots.
 
 Focused verification:
 
