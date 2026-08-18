@@ -1,6 +1,6 @@
 {
   "issue": "FAN-2624",
-  "status": "WIP — PixelLab jobs partially generated, NOT yet downloaded/normalized/integrated",
+  "status": "WIP — PixelLab jobs mostly generated, NOT yet downloaded/normalized/integrated",
   "pixellab_character_id": "3d2c3c13-ed23-4784-add8-2e446a567a8b",
   "character_mode": "v3 reference-image identity match (40x40 source ref cropped/quantized from assets/sprites/elites/mini_scavenger_reaper.png)",
   "body_type": "humanoid",
@@ -14,23 +14,20 @@
       "note": "single-frame idle_<dir> row per direction, speed 1.0 loop true"
     },
     "move": {
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "animation_group_id": "07f8082d-731a-44fb-a44c-cbd9559936b6",
       "mode": "template",
       "template_animation_id": "walking-6-frames",
       "frame_count": 6,
-      "directions_done_at_handoff": ["south-east", "west", "south-west", "east", "north", "south"],
-      "directions_pending_at_handoff": ["north-east", "north-west"],
-      "resume_action": "poll get_character; if north-east/north-west not yet completed, just wait — job already queued, no new call needed"
+      "directions_done": ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"]
     },
     "attack": {
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "animation_group_id": "60f5e9f1-2e0e-4d5c-bf44-72c229210b1a",
       "mode": "v3",
       "action_description": "reaper scythe-claw slashing attack, quick lunging strike forward",
       "frame_count": 6,
-      "directions_queued": ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"],
-      "resume_action": "poll get_character; all 8 directions already queued, no new call needed",
+      "directions_done": ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"],
       "alias_needed": "attack_primary_<dir> duplicate row per direction (same frames as attack_<dir>)"
     },
     "hit": {
@@ -39,24 +36,28 @@
       "mode": "v3",
       "action_description": "flinching backward in pain from a hit, recoiling briefly",
       "frame_count": 4,
-      "directions_queued": ["south", "south-west", "west", "north-west", "north"],
-      "directions_NOT_queued": ["north-east", "east", "south-east"],
-      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='hit', animation_group_id='97b7ec92-4d05-4f1c-abfa-7d98d8186b49', directions=['north-east','east','south-east'], frame_count=4) once job slots free up"
+      "directions_done": ["south", "south-west", "west", "north-west", "north"],
+      "directions_pending_at_handoff": ["north-east", "east", "south-east"],
+      "resume_action": "already queued (3 jobs in flight at handoff, group above) — just poll get_character until done, no new call needed"
     },
     "death": {
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
+      "animation_group_id": "ea61df61-cf57-4780-9222-cd640378492d",
       "mode": "v3",
       "action_description": "collapsing and dying, crumbling and falling to the ground",
       "frame_count": 6,
-      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='death', directions=[all 8], frame_count=6)"
+      "directions_queued": ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"],
+      "resume_action": "already queued (8/8 in flight at handoff) — just poll get_character until done, no new call needed"
     },
     "skill_reaping_dash": {
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
+      "animation_group_id": "fd3358ee-2cfb-4f21-9da1-0533060b41b1",
       "mode": "v3",
       "action_description": "fast arcing dash attack, scything through the air while lunging forward",
       "frame_count": 6,
+      "directions_queued": ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"],
       "alias_needed": "attack_reaping_dash_<dir> duplicate row per direction",
-      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='skill_reaping_dash', directions=[all 8], frame_count=6)"
+      "resume_action": "already queued (8/8 in flight at handoff) — just poll get_character until done, no new call needed"
     },
     "skill_bleed_finish": {
       "status": "NOT_STARTED",
@@ -64,10 +65,14 @@
       "action_description": "finishing blow on a wounded target, downward reaping strike",
       "frame_count": 6,
       "alias_needed": "attack_bleed_finish_<dir> duplicate row per direction",
-      "resume_action": "animate_character(character_id=<above>, action_description=<above>, animation_name='skill_bleed_finish', directions=[all 8], frame_count=6)"
+      "resume_action": "animate_character(character_id=<above>, mode='v3', action_description=<above>, animation_name='skill_bleed_finish', directions=[all 8], frame_count=6) once job slots free up (PixelLab enforces a 20 concurrent-job cap; 19 jobs were in flight at handoff, so wait for those to finish first)"
     }
   },
   "job_slot_note": "PixelLab enforces a 20 concurrent-job cap; batch remaining animate_character calls in groups and poll between batches.",
   "registry_change_pending": "scripts/full_frame_animation_registry.gd FULL_FRAME_SPRITEFRAMES.elite.mini_scavenger_reaper needs explicit_eight_directions: true added once the SpriteFrames resource is rebuilt with directional rows (currently still the old flat non-directional pack — untouched, still functions as fallback).",
-  "runtime_untouched": "No changes made yet to assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres or scripts/full_frame_animation_registry.gd — current in-game visuals are unaffected."
+  "runtime_untouched": "No changes made yet to assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres or scripts/full_frame_animation_registry.gd — current in-game visuals are unaffected.",
+  "relaunch_history": [
+    "Run 1 (2026-08-18T05:07Z): created character, queued idle/move/attack/hit(partial); hit synchronous ceiling; pushed WIP; returned blocked.",
+    "Run 2 (2026-08-18T13:xxZ): resumed same character (no recreate); confirmed move+attack completed server-side since run 1; queued remaining hit directions + death (8/8) + skill_reaping_dash (8/8); hit synchronous ceiling again before skill_bleed_finish could be queued (20-job cap) and before any download/normalize/integrate step; pushed WIP; returned blocked."
+  ]
 }
