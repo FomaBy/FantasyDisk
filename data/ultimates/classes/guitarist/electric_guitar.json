@@ -20,8 +20,8 @@
       "final_delay": 0.24,
       "recovery_tail": 4.0,
       "crowd_cap": 14,
-      "strip_damage": 10.0,
-      "final_damage": 35.0,
+      "strip_damage": 13.5,
+      "final_damage": 47.3,
       "stun_duration": 1.4,
       "per_target_cap_fraction": 0.30,
       "per_target_cap_flat": 0.0

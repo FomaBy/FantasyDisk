@@ -15,7 +15,7 @@
       "chain_cap": 10,
       "release_delay": 0.28,
       "collapse_delay": 0.34,
-      "base_collapse_damage": 18.0,
+      "base_collapse_damage": 24.6,
       "distinct_target_ramp": 0.14,
       "per_target_cap_fraction": 0.65,
       "lifetime": 3.85

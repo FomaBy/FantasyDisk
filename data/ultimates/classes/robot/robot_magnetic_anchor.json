@@ -16,8 +16,8 @@
       "pull_strength": 220.0,
       "release_delay": 0.45,
       "implosion_delay": 0.60,
-      "implosion_damage": 16.0,
-      "emp_damage": 6.0,
+      "implosion_damage": 20.8,
+      "emp_damage": 7.8,
       "emp_radius": 300.0,
       "recovery_tail": 3.70
     }
