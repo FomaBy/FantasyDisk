@@ -24,8 +24,8 @@
     "south": "35e258e1-f2f4-4708-9b87-b2fd546110b4",
     "south-east": "4507537b-b040-42b7-8b9c-29d380edfa52",
     "east": "9a1ad04e-ef85-45c7-a3e5-9d0bcff1630b",
-    "north-east": "ab1ca4fc-fd39-4ba8-bff8-831f759f1f5b",
-    "north": "7ab66f5c-d8b9-4425-b3c5-44af4a20e4f4",
+    "north-east": "e6654ae4-c29b-4fdc-928a-a103e5e8a8fb",
+    "north": "b2b90f43-515c-4d22-bdb4-f03f6ab8664e",
     "north-west": "f114c6b9-ea8b-43b5-abab-e45eccbc7196",
     "west": "88efdb73-d5e3-4b32-a18c-86def3e930ea",
     "south-west": "de4ced24-ff49-4850-ab44-4cc6e7564f19"
@@ -252,6 +252,23 @@
     "runtime_visible_height_target": 245,
     "runtime_bottom_padding": 32,
     "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
+  },
+  "fan2608_loopfix": {
+    "task": "FAN-2608",
+    "regenerated_at": "2026-08-18",
+    "reason": "FAN-2518 audit flagged move/walk loop discontinuity on north and north-east (wrap diff far above mean step); visual review confirmed a mid-cycle cloak pop for both, traced to the animating-3b5a3b8b PixelLab source.",
+    "north": {
+      "pixellab_animation_group_id": "163a6b08-bbfc-4102-8d42-0d6182c8b807",
+      "pixellab_animation_id": "b2b90f43-515c-4d22-bdb4-f03f6ab8664e",
+      "mode": "template (walking-6-frames), reused an existing PixelLab-generated direction from the same no-gear character revision"
+    },
+    "north-east": {
+      "pixellab_animation_group_id": "2e26a78a-9240-489f-a071-5187785467bb",
+      "pixellab_animation_id": "e6654ae4-c29b-4fdc-928a-a103e5e8a8fb",
+      "mode": "v3 custom (action_description=\"walking steadily, cloak flowing naturally with each step\", frame_count=6, keep_first_frame=true, reference frame 0 dropped, frames 1-6 used)",
+      "note": "template mode reproduced the cloak-pop defect on north-east across two attempts (existing groups and a fresh regeneration); escalated to v3 per the quality-escalation ladder."
+    },
     "legacy_or_manual_fallback_used": false
   }
 }
