@@ -1,0 +1,56 @@
+{
+  "character_id": "bone_caller",
+  "pixellab_character_id": "ed447a43-dede-4551-b3c9-d7c651f7886b",
+  "generated_at": "2026-08-18",
+  "source": "PixelLab MCP",
+  "mode": "v3 (idle rotations + move/attack/hit/death, all custom v3)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "shuffling forward at a menacing pace, ragged robe swaying, bone trophy skull swinging on its chain",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "raising the clawed hand and skull trophy overhead then thrusting it forward to unleash a dark summoning curse, purple-green necrotic energy flaring around the skull",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, recoiling with a pained snarl, bones rattling",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "collapsing and dying, crumbling to the ground as the skull trophy drops from its grip and bones scatter",
+      "fps": 10.0
+    }
+  },
+  "notes": "First FAN-2519 explicit-eight-direction pack for standard_monster/bone_caller (FAN-2613). 8 idle rotations + 8x6 move/attack/death frames + 8x4 hit frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. No hover state (bone_caller is ground-based, not flying). Replaces the single west-facing flip-mirrored bone_caller pack."
+}

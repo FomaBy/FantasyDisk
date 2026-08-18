@@ -371,6 +371,37 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   `build/qa/animation_roster_audit/` carries the contact sheet + findings.
   AI, collision, damage and encounter timing are unchanged — registry-only
   visual integration.
+- FAN-2613 (2026-08-18) converts the first `standard_monster`: `enemy/bone_caller`.
+  PixelLab MCP humanoid character `ed447a43-dede-4551-b3c9-d7c651f7886b`
+  (48x48px low top-down, standard-mode 8 rotations) plus four v3 custom
+  animation groups — `move` ("shuffling forward at a menacing pace", 6f),
+  `attack` ("raising the clawed hand and skull trophy...dark summoning
+  curse", 6f), `hit` ("flinching backward in pain", 4f), `death`
+  ("collapsing and dying, crumbling to the ground", 6f) — each generated for
+  all 8 directions (no `skill_*`/hover row: bone_caller is ground-based with
+  no separate skill state). Source frames live under
+  `assets/sprites/enemies/pixellab/bone_caller/` with `manifest.json` and
+  `alpha_bbox_report.json`; runtime frames are transparent `512x512` canvases
+  under `assets/sprites/enemies/full_frame/bone_caller/` normalized to
+  `245px` visible height / `32px` bottom padding (fleet standard); the
+  crumpled final `death_<dir>` poses read shorter than `245px` because their
+  alpha bbox is wider than tall (scaled to fit canvas width instead), same
+  as the FAN-2628 precedent. `bone_caller_spriteframes.tres` exposes exactly
+  `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` / `death_<dir>`
+  for all 8 directions (40 rows, no undirected fallback rows) and the
+  registry entry sets `explicit_eight_directions: true`. Old non-directional
+  pack (flat `move`/`attack`/`attack_primary`/`hit`/`death`, single
+  west-facing source with flip-based mirroring) is backed up under
+  `docs/design/backups/fan2613_bone_caller_pre_directional/`. Build tooling:
+  `tools/build_fan2613_bone_caller_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack
+  (`Eight-direction live packs audited: 2`),
+  `tests/full_frame_registry_integrity_test.gd` and
+  `tests/content_registry_consistency_test.gd` pass, and
+  `tests/animation_smoke_test.gd` was generalized to branch on the
+  registry's own `explicit_eight_directions` flag instead of a hardcoded ID
+  list. AI, collision, damage and encounter timing are unchanged —
+  registry-only visual integration.
 
 ## Player Motion
 
