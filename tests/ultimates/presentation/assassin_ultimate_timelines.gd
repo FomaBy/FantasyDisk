@@ -20,14 +20,18 @@ const CAPTURES := [
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
-const PIXELLAB_WEAPON_IDS := ["chakrams"]
-const REUSED_WEAPON_IDS := ["shadow_daggers", "venom_wire"]
-const GENERATED_ANIMATIONS := {"chakrams": "eight_moons"}
+const PIXELLAB_WEAPON_IDS := ["chakrams", "shadow_daggers"]
+const REUSED_WEAPON_IDS := ["venom_wire"]
+const GENERATED_ANIMATIONS := {"chakrams": "eight_moons", "shadow_daggers": "backstab_afterimages"}
 const GENERATED_FRAME_SIZE := Vector2i(256, 256)
 const GENERATED_SPRITE_PATHS := {
 	"chakrams": [
 		"Orbit/MoonOne", "Orbit/MoonTwo", "Orbit/MoonThree", "Orbit/MoonFour",
 		"Orbit/MoonFive", "Orbit/MoonSix", "Orbit/MoonSeven", "Orbit/MoonEight",
+	],
+	"shadow_daggers": [
+		"Afterimages/BackstabOne", "Afterimages/BackstabTwo",
+		"Afterimages/BackstabThree", "Afterimages/BackstabFour",
 	],
 }
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
@@ -70,7 +74,7 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_chakrams_reused_approved_assets_for_the_other_two", "provenance must explain the mixed PixelLab/reuse route", errors)
+	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_chakrams_and_shadow_daggers_reused_approved_asset_for_venom_wire", "provenance must explain the mixed PixelLab/reuse route", errors)
 	var created = provenance.get("new_pixellab_assets", [])
 	_expect(created is Array and (created as Array).size() == PIXELLAB_WEAPON_IDS.size(), "provenance must declare exactly the PixelLab-generated weapons", errors)
 	var generated := {}
@@ -89,7 +93,8 @@ func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 			_expect(not path.is_empty() and (FileAccess.file_exists("res://%s" % path) or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://%s" % path))), "%s %s must exist: %s" % [weapon_id, path_field, path], errors)
 		_check_generated_frames(str(weapon_id), asset, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
-	_expect(not sources.has("chakrams"), "chakrams must no longer be declared as a reused static asset", errors)
+	for weapon_id in PIXELLAB_WEAPON_IDS:
+		_expect(not sources.has(str(weapon_id)), "%s must no longer be declared as a reused static asset" % weapon_id, errors)
 	for weapon_id in REUSED_WEAPON_IDS:
 		var source := sources.get(str(weapon_id), {}) as Dictionary
 		var source_path := str(source.get("source_path", ""))
@@ -125,6 +130,8 @@ func _check_generated_frames(weapon_id: String, asset: Dictionary, errors: Array
 func _check_generated_binding(weapon_id: String, instance: Node2D, errors: Array[String]) -> void:
 	var expected_frames := "res://%s" % str(((_generated_asset(weapon_id)) as Dictionary).get("runtime_spriteframes", ""))
 	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	var ultimate := timeline.get_animation(&"ultimate") if timeline != null and timeline.has_animation(&"ultimate") else null
 	var bound := 0
 	for node_path in GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array:
 		var sprite := instance.get_node_or_null(str(node_path)) as AnimatedSprite2D
@@ -133,6 +140,9 @@ func _check_generated_binding(weapon_id: String, instance: Node2D, errors: Array
 			continue
 		_expect(sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_frames, "%s %s must bind its own generated SpriteFrames" % [weapon_id, node_path], errors)
 		_expect(sprite.animation == animation_name, "%s %s must play the %s animation" % [weapon_id, node_path, animation_name], errors)
+		# A bound but untracked sprite would freeze on one generated frame, so the
+		# timeline must drive each instance's frame itself.
+		_expect(ultimate != null and ultimate.find_track(NodePath("%s:frame" % node_path), Animation.TYPE_VALUE) >= 0, "%s %s must be driven by its own frame track" % [weapon_id, node_path], errors)
 		bound += 1
 	_expect(bound == (GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array).size(), "%s must bind every generated sprite" % weapon_id, errors)
 
