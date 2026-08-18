@@ -8,6 +8,14 @@
   3. Ошибка API (JSON-RPC error) — ненулевой код EXIT_API_ERROR.
   4. Неполный пак (кадров меньше --frame-count) — ненулевой код EXIT_INCOMPLETE.
 
+FAN-2929 — регрессия трёх дефектов, найденных на живом сервисе:
+  5. Объект "completed", группа анимации ещё "queued" — polling обязан
+     продолжаться, а не завершаться по статусу объекта.
+  6. Строка отчёта "<direction>: <url>" — извлекать URL кадра, а не подпись
+     направления.
+  7. Кадров на один больше --frame-count (референсный кадр режима v3) — код 0,
+     а не EXIT_INCOMPLETE.
+
 Запуск: python3 tools/test_pixellab_generate_pack.py
 """
 
@@ -194,6 +202,72 @@ def case_incomplete_pack(module):
     print("  ok: incomplete pack -> exit %d" % module.EXIT_INCOMPLETE)
 
 
+def case_defect1_animation_group_not_ready(module):
+    """Object status flips to "completed" while its animation group is still queued.
+
+    Regresses wait_status returning on object status alone (dev HEAD line 119):
+    the group has no frames yet, so polling must continue.
+    """
+    state = {"iter": 0}
+
+    def get_object(clock):
+        state["iter"] += 1
+        if state["iter"] == 1:
+            return {"status": "completed"}  # initial object creation, no animation yet
+        if state["iter"] == 2:
+            return {
+                "status": "completed",
+                "animations": [{"id": "anim-1", "status": "queued"}],
+            }
+        return completed_object()
+
+    script = {
+        "create_1_direction_object": {"object_id": "obj-slow"},
+        "get_object": get_object,
+        "animate_object": {"job": "anim"},
+    }
+    code, calls, tmp, downloaded = run_case(module, script)
+    assert code == 0, "expected exit 0, got %s" % code
+    assert calls["log"].count("get_object") == 3, (
+        "expected polling to continue past the queued animation group, calls=%r"
+        % calls["log"]
+    )
+    shutil.rmtree(tmp)
+    print("  ok: animation group still queued -> polling continues past object status")
+
+
+def case_defect2_template_extraction(module):
+    """Template report line "<direction>: <url>" must yield the frame URL, not the label."""
+    obj = {
+        "animations": [{
+            "_raw": "unknown: https://img.example/anim/{i}.png (i=0..3)",
+        }],
+    }
+    urls, kind = module.extract_frame_urls(obj, FRAME_COUNT)
+    assert kind == "template", kind
+    assert urls, "expected extracted frame urls, got none"
+    assert all(u.startswith("https://img.example/anim/") for u in urls), urls
+    assert not any(u.startswith("unknown:") for u in urls), urls
+    print("  ok: report line direction label not mistaken for the frame URL")
+
+
+def case_defect3_reference_frame_extra(module):
+    """v3 returns one reference frame on top of --frame-count; that is success, not incomplete."""
+    def get_object(clock):
+        return completed_object(frame_count=FRAME_COUNT + 1)
+
+    script = {
+        "create_1_direction_object": {"object_id": "obj-extra"},
+        "get_object": get_object,
+        "animate_object": {"job": "anim"},
+    }
+    code, calls, tmp, downloaded = run_case(module, script, frame_count=FRAME_COUNT)
+    assert code == 0, "expected exit 0 with one extra reference frame, got %s" % code
+    assert len(downloaded) == FRAME_COUNT + 1
+    shutil.rmtree(tmp)
+    print("  ok: frame_count+1 frames (v3 reference frame) -> exit 0")
+
+
 def main():
     module = load_module()
     print("FAN-2924 pixellab_generate_pack mocked polling tests:")
@@ -201,6 +275,10 @@ def main():
     case_timeout(module)
     case_api_error(module)
     case_incomplete_pack(module)
+    print("FAN-2929 regression tests:")
+    case_defect1_animation_group_not_ready(module)
+    case_defect2_template_extraction(module)
+    case_defect3_reference_frame_extra(module)
     print("all cases passed")
 
 
