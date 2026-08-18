@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"berserk": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"chemist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -61,7 +60,14 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## `venom_wire` cuts every enemy once per pulse before the wire crossings raise
 ## it. The per-enemy floor is proven under crowd pressure in
 ## `tests/ultimates/assassin_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin"]
+##
+## `berserk` (FAN-2953): every sweep of the Scarlet Whirlwind bites every live
+## enemy with the aimed cross as the geometric bonus, the Executioner's Loop
+## strikes and marks the whole map on its outbound pass with the return leg as
+## the aimed execute bonus, and every Fourfold Rift beat reaches every live
+## enemy with lane membership as attribution. The per-enemy floor is proven
+## under crowd pressure in `tests/ultimates/berserk_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

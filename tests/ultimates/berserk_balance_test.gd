@@ -14,6 +14,13 @@ extends SceneTree
 ## with its own copy of the numbers would agree with itself instead of the
 ## runtime.
 ##
+## Ultimate Direction v2 (FAN-2953): reach is map-wide for all three — the
+## whirlwind's sweeps and both rift lane beats bite every live enemy, the loop's
+## outbound pass strikes and marks the whole map with the return leg as the
+## aimed bonus. The models below therefore assert a per-enemy FLOOR under crowd
+## pressure and prove no count-shaped parameter survives in the class's own
+## vocabulary (`crowd_cap` — which the shared `*target_cap*` scan cannot see).
+##
 ## Run:
 ## python3 tools/godot_gate.py --headless --path . \
 ##   --script res://tests/ultimates/berserk_balance_test.gd
@@ -25,7 +32,6 @@ const Discovery := preload("res://scripts/ultimates/registry/weapon_ultimate_pac
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Schema := preload("res://scripts/ultimates/schema/weapon_ultimate_schema.gd")
 const PD := preload("res://scripts/progression_data.gd")
-const Hammer := preload("res://scripts/ultimates/classes/berserk/hammer.gd")
 
 const CLASS_ID := "berserk"
 const WEAPONS := ["sword", "axe", "hammer"]
@@ -44,6 +50,23 @@ const AXE_BOSS_FLOOR := 0.33
 const HAMMER_DAMAGE_FLOOR := 0.33
 const LATERAL_EPS := 0.001
 
+## FAN-2953 / Ultimate Direction v2. The per-enemy floor is asserted under real
+## crowd pressure rather than assumed: at every count the weakest enemy in the
+## encounter still has to clear `Budget.PER_ENEMY_FLOOR_FRACTION` of one
+## standard monster's max HP. 1000 mirrors the count the shared harness proof
+## walks to, so the class statement and the contract statement stop at the same
+## place.
+const CROWD_COUNTS := [1, 2, 5, 10, 20, 100, 1000]
+
+## Count-shaped parameter names, in the vocabulary this class actually used.
+## The shared FAN-2949 scan only recognises `*target_cap*` siblings, and the
+## Berserk caps were named `crowd_cap` — so the conversion proves the statement
+## over its own names too instead of inheriting a green the shared scan could
+## not have produced.
+const COUNT_SHAPED_PATTERN := \
+	"[A-Za-z0-9_]*(target_cap|target_count|target_limit|targets_per|max_targets|crowd_cap)[A-Za-z0-9_]*"
+const COUNT_SHAPED_ALLOWED_SUFFIXES := ["_fraction", "_flat"]
+
 
 var _errors: Array[String] = []
 
@@ -59,6 +82,8 @@ func _initialize() -> void:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
 		metrics[weapon_id] = _measure(weapon_id, row, profiles.get(weapon_id, {}) as Dictionary)
 		_test_weapon(weapon_id, row, metrics[weapon_id])
+		_test_per_enemy_floor(weapon_id, row, metrics[weapon_id])
+	_test_no_count_caps(profiles)
 	_test_trio(profiles, metrics)
 	_test_goes_red(profiles, rows)
 	_report(metrics)
@@ -99,52 +124,55 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var displacement := 0.0
 	var passes := 0
 	var cast_seconds := 0.0
+	# The damage the WEAKEST enemy of a crowd takes from one activation — the
+	# guaranteed map-wide channel, with every geometric bonus removed. Under
+	# Ultimate Direction v2 this is the number the per-enemy floor is asserted
+	# against, so it is derived here next to the solo channel it belongs to.
+	var floor_damage := 0.0
 	match weapon_id:
 		"sword":
-			# The orbit grows past the probe, so every admitted bite reaches it;
-			# a bite is admitted only when the sweep's own blade has re-armed on
-			# this target. The aim-oriented cross then lands once through it.
+			# Every sweep bites every live enemy; a bite is admitted only when
+			# the sweep's own blade has re-armed on this target. The
+			# aim-oriented cross is the geometric bonus on top of that floor.
 			var bites := _round_robin_bites(params)
 			passes = bites + 1
-			damage = base * (float(bites) * float(params.get("blade_damage", 0.0))
-				+ float(params.get("cross_damage", 0.0)))
+			floor_damage = base * float(bites) * float(params.get("blade_damage", 0.0))
+			damage = floor_damage + base * float(params.get("cross_damage", 0.0))
 			control = float(params.get("vortex_duration", 0.0))
 			cast_seconds = float(params.get("lifetime", 0.0))
 		"axe":
-			# The probe sits inside the corridor on both the outbound and the
-			# return leg. The execute never fires on the instrument's probes: the
-			# solo probe is at full health and epic/boss tiers are denied by the
-			# control policy, so the corridor is priced by the loop's own passes.
-			var outbound_reaches := _corridor_reaches(params, Vector2.ZERO, SOLO_PROBE)
+			# The outbound pass strikes and marks every live enemy; the return
+			# corridor is the aimed bonus the probe also sits inside. The
+			# execute never fires on the instrument's probes: the solo probe is
+			# at full health and epic/boss tiers are denied by the control
+			# policy, so the corridor is priced by the loop's own passes.
 			var return_reaches := _corridor_reaches(
 				params, _edge(params, SOLO_PROBE), SOLO_PROBE
 			)
-			passes = int(outbound_reaches) + int(return_reaches)
-			damage = base * (float(params.get("outbound_damage", 0.0)) * int(outbound_reaches)
-				+ float(params.get("return_damage", 0.0)) * int(return_reaches))
+			passes = 1 + int(return_reaches)
+			floor_damage = base * float(params.get("outbound_damage", 0.0))
+			damage = floor_damage \
+				+ base * float(params.get("return_damage", 0.0)) * int(return_reaches)
 			control = float(params.get("mark_duration", 0.0))
 			cast_seconds = float(params.get("release_delay", 0.0)) \
 				+ float(params.get("outbound_seconds", 0.0)) \
 				+ float(params.get("return_seconds", 0.0))
 		"hammer":
-			# The lanes are world-cardinal, and the probe sits exactly on the
-			# east cardinal lane; the diagonals miss it laterally, and the
-			# central quake reaches it. The stagger launches it the full impulse.
-			var cardinal_hit := false
-			for axis in Hammer.lane_axes(0):
-				if _in_corridor(Vector2.ZERO, axis * float(params.get("lane_length", 0.0)),
-						SOLO_PROBE, float(params.get("lane_half_width", 0.0))):
-					cardinal_hit = true
-			var quake_hit := SOLO_PROBE.length() <= float(params.get("quake_radius", 0.0))
-			passes = int(cardinal_hit) + int(quake_hit)
-			damage = base * (float(params.get("cardinal_damage", 0.0)) * int(cardinal_hit)
-				+ float(params.get("quake_damage", 0.0)) * int(quake_hit))
+			# Every beat reaches every live enemy: both lane beats and the
+			# central quake are the guaranteed floor, and the stagger launches
+			# the full impulse. Lane membership is attribution, never reach.
+			passes = 3
+			damage = base * (float(params.get("cardinal_damage", 0.0))
+				+ float(params.get("diagonal_damage", 0.0))
+				+ float(params.get("quake_damage", 0.0)))
+			floor_damage = damage
 			displacement = float(params.get("stagger_impulse", 0.0))
 			control = float(params.get("stagger_duration", 0.0))
 			cast_seconds = float(params.get("release_delay", 0.0)) \
 				+ 2.0 * float(params.get("beat_interval", 0.0))
 	return {
 		"damage": damage,
+		"floor_damage": floor_damage,
 		"control": control,
 		"displacement": displacement,
 		"passes": passes,
@@ -228,6 +256,52 @@ func _test_weapon(weapon_id: String, row: Dictionary, metrics: Dictionary) -> vo
 			])
 
 
+## Ultimate Direction v2: with the whole corridor budget spread over `count`
+## live standard monsters, no enemy may end below `PER_ENEMY_FLOOR_FRACTION` of
+## one standard monster's max HP. The pool is the shipped one, so the floor
+## moves with the corridor instead of being restated here as a literal.
+func _test_per_enemy_floor(weapon_id: String, row: Dictionary, metrics: Dictionary) -> void:
+	var pool := Budget.live_standard_pool(float(row["reference_solo_dps"]))
+	for count in CROWD_COUNTS:
+		# At a count of one the weakest enemy IS the focused target; from two up
+		# it is a silhouette carrying only the guaranteed channel.
+		var delivered := float(metrics["damage"]) if count == 1 else float(metrics["floor_damage"])
+		var floor_share := Budget.PER_ENEMY_FLOOR_FRACTION * pool / float(count)
+		_check(delivered >= floor_share - 0.001,
+			"%s leaves an enemy at %.2f against a %d-enemy floor of %.2f" % [
+				weapon_id, delivered, count, floor_share,
+			])
+
+
+## No count-shaped parameter may survive the conversion, in the executor's own
+## declared contract or in the parameters actually shipped for it.
+func _test_no_count_caps(profiles: Dictionary) -> void:
+	for weapon_id in WEAPONS:
+		var executor = load("%s/%s/%s.gd" % [SCRIPT_ROOT, CLASS_ID, weapon_id])
+		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
+		_check(not contract.is_empty(), "%s must declare a parameter contract" % weapon_id)
+		for source in [contract.keys(), _params(profiles, weapon_id).keys()]:
+			for raw_key in source:
+				var offenders := _count_shaped_names(str(raw_key))
+				_check(offenders.is_empty(),
+					"%s still carries the count-shaped parameter %s" % [weapon_id, str(offenders)])
+
+
+static func _count_shaped_names(text: String) -> Array[String]:
+	var found: Array[String] = []
+	var pattern := RegEx.create_from_string(COUNT_SHAPED_PATTERN)
+	for raw_match in pattern.search_all(text):
+		var name := str((raw_match as RegExMatch).get_string())
+		var shaping := false
+		for suffix in COUNT_SHAPED_ALLOWED_SUFFIXES:
+			if name.ends_with(suffix):
+				shaping = true
+				break
+		if not shaping and not found.has(name):
+			found.append(name)
+	return found
+
+
 func _test_trio(profiles: Dictionary, metrics: Dictionary) -> void:
 	var sword := metrics["sword"] as Dictionary
 	var axe := metrics["axe"] as Dictionary
@@ -235,13 +309,15 @@ func _test_trio(profiles: Dictionary, metrics: Dictionary) -> void:
 	var sword_params := _params(profiles, "sword")
 	var axe_params := _params(profiles, "axe")
 	var hammer_params := _params(profiles, "hammer")
-	# Non-duplicated niches: one long orbiting crowd whirlwind, one corridor
-	# finisher with the only low-health execute, one staggering launch burst.
-	# Sharing a channel would make the class choice cosmetic.
-	_check(int(sword_params.get("crowd_cap", 0)) > int(axe_params.get("crowd_cap", 0))
-		and int(sword_params.get("crowd_cap", 0)) > int(hammer_params.get("crowd_cap", 0))
-		and float(sword_params.get("lifetime", 0.0)) > float(axe_params.get("lifetime", 0.0)),
-		"the whirlwind must remain the widest and longest crowd option")
+	# Non-duplicated niches: one long orbiting multi-hit crowd whirlwind, one
+	# corridor finisher with the only low-health execute, one staggering launch
+	# burst. Sharing a channel would make the class choice cosmetic. All three
+	# now reach the whole map, so the crowd identity is the SHAPE of the
+	# guaranteed channel, never a reach cap.
+	_check(int(sword["passes"]) > int(hammer["passes"]) and int(sword["passes"]) > int(axe["passes"])
+		and float(sword_params.get("lifetime", 0.0)) > float(axe_params.get("lifetime", 0.0))
+		and float(sword_params.get("lifetime", 0.0)) > float(hammer_params.get("lifetime", 0.0)),
+		"the whirlwind must remain the longest, multi-hit crowd option")
 	_check(float(axe_params.get("return_damage", 0.0)) > float(sword_params.get("cross_damage", 0.0))
 		and float(axe_params.get("return_damage", 0.0)) > float(hammer_params.get("quake_damage", 0.0))
 		and float(axe_params.get("execute_damage", 0.0)) > 0.0
@@ -290,8 +366,8 @@ func _check(condition: bool, message: String) -> void:
 func _report(metrics: Dictionary) -> void:
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %s solo_effect=%.2f (damage=%.2f control=%.2f displacement=%.1f passes=%d) cast=%.2fs" % [
-			weapon_id, row["solo_effect"], row["damage"], row["control"],
+		print("  %s solo_effect=%.2f (damage=%.2f floor=%.2f control=%.2f displacement=%.1f passes=%d) cast=%.2fs" % [
+			weapon_id, row["solo_effect"], row["damage"], row["floor_damage"], row["control"],
 			row["displacement"], row["passes"], row["cast_seconds"],
 		])
 	if _errors.is_empty():

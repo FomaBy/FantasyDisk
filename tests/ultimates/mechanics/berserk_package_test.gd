@@ -29,9 +29,9 @@ const EXPECTED_FAMILIES := [
 	"timed_modifier",
 ]
 const EXPECTED := {
-	"sword": {"blade_count": 3, "sweep_count": 11, "crowd_cap": 24, "lifetime": 7.45},
-	"axe": {"boss_pass_cap": 2, "crowd_cap": 18, "lifetime": 5.85},
-	"hammer": {"crowd_cap": 20, "lifetime": 3.4},
+	"sword": {"blade_count": 3, "sweep_count": 11, "lifetime": 7.45},
+	"axe": {"boss_pass_cap": 2, "lifetime": 5.85},
+	"hammer": {"lifetime": 3.4},
 }
 
 var _errors: Array[String] = []
@@ -104,9 +104,12 @@ func _test_catalog_untouched() -> void:
 				"catalog %s.%s must stay unbound" % [weapon_id, binding])
 
 
-## Each executor lifetime and crowd cap is read back from the authorized
-## presentation manifest instead of being duplicated as a literal here, so a
-## drift on either side reddens rather than quietly diverging.
+## Each executor lifetime is read back from the authorized presentation
+## manifest instead of being duplicated as a literal here, so a drift on either
+## side reddens rather than quietly diverging. The manifest's `performance.
+## crowd_cap` stays a purely VISUAL budget (FAN-1541 presentation ceiling); it
+## no longer names a mechanics reach cap, because Ultimate Direction v2
+## (FAN-2953) removed the trio's count-shaped reach params.
 func _test_authorized_manifest(registry: Registry) -> void:
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
 	_check(parsed is Dictionary, "the authorized Berserk manifest must parse")
@@ -125,8 +128,9 @@ func _test_authorized_manifest(registry: Registry) -> void:
 				weapon_id, timing.get("recovery"), params.get("lifetime"),
 			])
 		var performance := weapon.get("performance", {}) as Dictionary
-		_check(int(params.get("crowd_cap", -1)) == int(performance.get("crowd_cap", 0)),
-			"%s crowd cap must equal the authorized %s" % [weapon_id, performance.get("crowd_cap")])
+		_check(not (params as Dictionary).has("crowd_cap")
+			and int(performance.get("crowd_cap", 0)) > 0,
+			"%s mechanics params must carry no crowd cap while its manifest keeps the visual budget" % weapon_id)
 	for weapon_id in WEAPONS:
 		_check(seen.has(weapon_id), "the manifest must authorize %s" % weapon_id)
 

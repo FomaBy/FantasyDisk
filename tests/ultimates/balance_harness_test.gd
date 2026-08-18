@@ -357,7 +357,7 @@ func _check_coverage_ratchet(errors: Array[String]) -> void:
 	# Fail closed: a class taken out of the allowlist before its conversion
 	# lands is red (not converted), and a count-carrying one is red twice.
 	var missing_conversion := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
-	missing_conversion.erase("berserk")
+	missing_conversion.erase("chemist")
 	_expect_ratchet_violation(
 		sources, missing_conversion, [], "coverage.conversion_missing", errors
 	)
@@ -381,7 +381,7 @@ func _check_coverage_ratchet(errors: Array[String]) -> void:
 	)
 	# Reason required.
 	var no_reason := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
-	no_reason["berserk"] = "   "
+	no_reason["chemist"] = "   "
 	_expect_ratchet_violation(
 		sources, no_reason, [], "coverage.allowlist_reason_missing", errors
 	)

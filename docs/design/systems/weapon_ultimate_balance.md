@@ -156,7 +156,8 @@ scan ships behind `COVERAGE_MIGRATION_ALLOWLIST` with the same semantics
 * a class outside the allowlist is asserted against v2 and **fails closed**
   (`coverage.conversion_missing` / `coverage.count_cap`).
 
-**Converted so far:** `assassin` (FAN-2952) — 16 entries remain. A conversion
+**Converted so far:** `assassin` (FAN-2952), `berserk` (FAN-2953) — 15 entries
+remain. A conversion
 card should note that the source scan is a cheap extra, not the proof: it only
 recognises `*target_cap*` siblings, and a class whose caps are named otherwise
 (the Assassin's were `target_count`, `target_limit`, `targets_per_lane`) passes

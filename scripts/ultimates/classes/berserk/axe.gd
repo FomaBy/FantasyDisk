@@ -7,6 +7,11 @@ extends Node2D
 ## target under the execute threshold takes the finishing blow; resistant tiers
 ## are denied the execute by the control policy and a boss can never be touched
 ## by more than the two declared passes.
+##
+## Ultimate Direction v2 (FAN-2953): the outbound pass is map-wide — every live
+## enemy is marked and struck, on screen and off; the corridor the axe visibly
+## walks is attribution. The return leg stays geometric: it is the aimed bonus
+## on top of the guaranteed outbound floor, and the execute rides only that leg.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
@@ -36,7 +41,6 @@ static func parameter_contract() -> Dictionary:
 		"return_seconds": {"type": "number", "minimum": 0.01},
 		"arena_radius": {"type": "number", "minimum": 1.0},
 		"corridor_half_width": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"outbound_damage": {"type": "number", "minimum": 0.0},
 		"return_damage": {"type": "number", "minimum": 0.0},
 		"execute_damage": {"type": "number", "minimum": 0.0},
@@ -133,7 +137,7 @@ func launch() -> void:
 		"radius": _activation.param_float("corridor_half_width", 130.0),
 		"shape": "axe_pass",
 	})
-	for raw_target in _corridor(source, edge_for_tests - source):
+	for raw_target in _activation.select_targets(source, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "outbound"):
 			continue
@@ -203,7 +207,7 @@ func _corridor(start: Vector2, offset: Vector2) -> Array:
 		offset,
 		offset.length(),
 		_activation.param_float("corridor_half_width", 130.0),
-		_activation.param_int("crowd_cap", 18)
+		0
 	)
 
 
