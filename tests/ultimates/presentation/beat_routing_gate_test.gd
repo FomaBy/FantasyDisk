@@ -108,7 +108,12 @@ func _test_quality_block_reaches_the_runtime_manifest() -> void:
 	var chemist: Dictionary = PresentationManifest.manifest_for_profile(
 		{"class_id": "chemist", "weapon_id": "blast_powder"})
 	var chemist_quality: Dictionary = chemist.get("quality", {})
-	_check(is_equal_approx(float(chemist_quality.get("max_flash_coverage_ratio", 0.0)), 0.18),
+	# The pin tracks the class-local declaration, not a favorite number: FAN-2957
+	# re-declared the release flash at full coverage (a single non-repeating
+	# flash; the WCAG general-flash threshold governs repeats only), so the
+	# pass-through is pinned to that accepted value. Exact-match strength is
+	# unchanged — any manifest/runtime drift from 1.0 still reddens here.
+	_check(is_equal_approx(float(chemist_quality.get("max_flash_coverage_ratio", 0.0)), 1.0),
 		"chemist/blast_powder must pass its declared flash coverage through")
 
 
