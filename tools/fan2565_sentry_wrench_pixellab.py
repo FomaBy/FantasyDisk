@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FAN-2565: PixelLab MCP animation source for engineer/engineer_sentry_wrench «Крепость за Секунду».
+"""FAN-2565: PixelLab MCP animation source for engineer/engineer_sentry_wrench «Гнездо Часовых».
 
 Creates one tall sentry pylon object, animates the deploy -> fire -> fold arc,
 downloads the finished frames and records every PixelLab identifier into a

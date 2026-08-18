@@ -64,7 +64,7 @@ const SENTRY_VOLLEY_BEATS := 8
 ## and detonates in a short burst.
 const WEAPONS := {
 	SENTRY_WRENCH: {
-		"title": "Крепость за Секунду",
+		"title": "Гнездо Часовых",
 		"element": "engineer_sentry_pylon",
 		"sfx_file": "sfx_hit.ogg",
 		"pivot": {"x": 0.5, "y": 0.85},

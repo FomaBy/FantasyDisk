@@ -65,7 +65,7 @@
   "weapons": [
     {
       "weapon_id": "engineer_sentry_wrench",
-      "title": "Крепость за Секунду",
+      "title": "Гнездо Часовых",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
       "silhouette": "six tall narrow pylons with hexagonal turret heads standing on a fixed hexagon",
       "motion_path": "ground tap, six pylons rise in place on a fixed hexagon, crossfire holds, then the ring folds inward",

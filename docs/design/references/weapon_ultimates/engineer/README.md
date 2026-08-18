@@ -9,7 +9,7 @@ stay owned by the v1 weapon-ultimate registry.
 
 | Weapon | Title | Silhouette | Motion | Impact |
 | --- | --- | --- | --- | --- |
-| `engineer_sentry_wrench` | Крепость за Секунду | tall narrow pylon, hexagonal turret head | ground tap, six pylons rise in place on a fixed hexagon | synchronized turret volleys along hex chords |
+| `engineer_sentry_wrench` | Гнездо Часовых | tall narrow pylon, hexagonal turret head | ground tap, six pylons rise in place on a fixed hexagon | synchronized turret volleys along hex chords |
 | `engineer_repair_drone` | Рой Аварийного Ремонта | wide flat rotor bar over a small orb body | canister column unwinds into two counter-phased helix strands | alternating intercept and ram streaks, then a protective dome |
 | `engineer_pressure_mines` | Минное Поле Омега | squat prong-topped dome on a wide base plate | blueprint lattice flashes, mines burrow up in place | ordered outer-to-inner chain detonation |
 
