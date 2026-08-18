@@ -68,21 +68,50 @@ const WEAPONS := {
 		"element": "engineer_sentry_pylon",
 		"sfx_file": "sfx_hit.ogg",
 		"pivot": {"x": 0.5, "y": 0.85},
+		# Ultimate Direction v2 (FAN-2944 §1, reworked by FAN-2960): 0.8s cast
+		# ceremony, 2.3s release+crossfire window, 0.7s visible fold-out.
 		"timing": {
 			"windup": 0.0,
-			"release": 0.35,
-			"active": 0.70,
-			"recovery": 4.60,
-			"cancel": 5.10,
+			"release": 0.8,
+			"active": 1.15,
+			"recovery": 3.1,
+			"cancel": 3.8,
 		},
 		"formation": {
+			# Arena-wide hexagon: the deployed nest frames the whole viewport
+			# instead of the v1 close ring around the hero.
 			"kind": "hex_crossfire",
 			"count": 6,
-			"radius": 108.0,
+			"radius": 520.0,
 		},
-		"silhouette": "tall narrow pylon, hexagonal turret head",
-		"motion": "ground tap, six pylons rise in place on a fixed hexagon, crossfire holds",
-		"impact": "synchronized turret volleys along hex chords",
+		## FAN-2944 §3.1 presence and identity declarations for the migrated
+		## pair; the schema fails closed on them once the pair leaves
+		## PRESENTATION_V2_MIGRATION_ALLOWLIST. The scene driver applies the
+		## declared weight effects at the release beat.
+		"presence": {
+			"fullscreen_footprint": true,
+			"backdrop": "darken",
+			"camera_shake": true,
+			"hitstop_ms": 110,
+			"sfx_ducking": true,
+		},
+		"identity": {
+			"cast_pose_id": "cast_pose.engineer.wrench_overhead_brace",
+			"weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+			"class_palette_id": "class_palette.engineer.workshop_teal",
+		},
+		## Class-local geometry of the v2 full-screen layers. The identity
+		## silhouette asset above is the sigil texture, so the declared visual
+		## core and the rendered one cannot drift apart.
+		"v2_overlay": {
+			"backdrop_half_size": {"x": 1400.0, "y": 800.0},
+			"backdrop_color": {"r": 0.016, "g": 0.043, "b": 0.055},
+			"backdrop_peak_alpha": 0.42,
+			"chord_color": {"r": 0.62, "g": 0.94, "b": 0.86},
+		},
+		"silhouette": "colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon",
+		"motion": "wrench sigil rises over the hero while pylon ghosts sweep out to arena seats, slams at release, crossfire holds the frame",
+		"impact": "hitstop slam of the wrench sigil, then synchronized turret volleys along arena-wide hex chords",
 	},
 	REPAIR_DRONE: {
 		"title": "Рой Аварийного Ремонта",
@@ -227,7 +256,7 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 			"phase_id": str(cast_phases.get(str(binding[1]), "")),
 		})
 
-	return {
+	var manifest := {
 		"schema_version": Schema.EXPECTED_SCHEMA_VERSION,
 		"class_id": CLASS_ID,
 		"key": {
@@ -258,6 +287,12 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 		"timing": (config.get("timing", {}) as Dictionary).duplicate(),
 		"headless_fallback": "no_op",
 	}
+	# v2 presence/identity pass through only for migrated weapons, mirroring
+	# the shared bridge, so v1 siblings keep their exact manifest shape.
+	for block in ["presence", "identity"]:
+		if config.get(block) is Dictionary:
+			manifest[block] = (config[block] as Dictionary).duplicate(true)
+	return manifest
 
 
 static func manifests(registry) -> Dictionary:
@@ -356,14 +391,15 @@ static func _hex_crossfire(count: int, radius: float, phase_name: String, t: flo
 		var rotation := 0.0
 		match phase_name:
 			"windup":
-				# Blueprint ghosts only; the wrench tap still owns the origin.
-				position = seat * lerpf(0.10, 0.35, t)
-				scale = lerpf(0.26, 0.42, t)
-				alpha = lerpf(0.10, 0.30, t)
+				# Cast ceremony: blueprint ghosts sweep from the hero out to
+				# their arena seats, acknowledging the ground they will hold.
+				position = seat * lerpf(0.12, 1.0, ease(t, 0.55))
+				scale = lerpf(0.30, 0.55, t)
+				alpha = lerpf(0.10, 0.38, t)
 			"release":
-				position = seat + Vector2(0.0, lerpf(26.0, 0.0, t))
-				scale = lerpf(0.42, 1.0, ease(t, 0.35))
-				alpha = lerpf(0.30, 1.0, t)
+				position = seat + Vector2(0.0, lerpf(34.0, 0.0, ease(t, 0.35)))
+				scale = lerpf(0.55, 1.0, ease(t, 0.35))
+				alpha = lerpf(0.38, 1.0, t)
 			"active":
 				# Turret heads track priority targets; bodies stay planted.
 				position = seat

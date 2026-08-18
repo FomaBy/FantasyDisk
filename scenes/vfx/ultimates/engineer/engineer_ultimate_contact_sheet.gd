@@ -22,6 +22,11 @@ const CELL := Vector2i(232, 184)
 ## width) still fits inside one cell; cells are clipped as well, so a future
 ## formation cannot silently bleed into its neighbour and misread as motion.
 const VIEW_SCALE := 0.50
+## The FAN-2960 v2 sentry hexagon is arena-wide (520px), so its row renders at
+## its own scale to keep the whole formation inside one cell.
+const VIEW_SCALES := {
+	"engineer_sentry_wrench": 0.15,
+}
 
 const BACKGROUND := Color(0.055, 0.062, 0.078, 1.0)
 const CELL_TINT := Color(0.085, 0.098, 0.120, 1.0)
@@ -102,16 +107,17 @@ func _draw_formation(
 ) -> void:
 	var bounds := Rect2i(cell * CELL, CELL)
 	var center := Vector2(bounds.position) + Vector2(CELL) * 0.5
+	var view_scale := float(VIEW_SCALES.get(weapon_id, VIEW_SCALE))
 	for point in Pack.formation_points(weapon_id, phase_name, progress):
 		var alpha := float(point.get("alpha", 0.0))
-		var scale := float(point.get("scale", 0.0)) * VIEW_SCALE
+		var scale := float(point.get("scale", 0.0)) * view_scale
 		if alpha <= 0.01 or scale <= 0.01:
 			continue
 		var position: Vector2 = point.get("position", Vector2.ZERO)
 		_blit_element(
 			sheet,
 			element,
-			center + position * VIEW_SCALE,
+			center + position * view_scale,
 			scale,
 			alpha,
 			float(point.get("rotation", 0.0)),
