@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2551",
+  "weapon": "chemist/acid_flask",
+  "title": "Царь-Колба",
+  "generated_at": "2026-08-18T01:31:19Z",
+  "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "generation": {
+    "route": "pixellab_new_isolated_animation_frames",
+    "tool": "PixelLab MCP (https://api.pixellab.ai/mcp)",
+    "object": {
+      "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
+      "create_tool": "create_1_direction_object",
+      "create_params": {
+        "size": 256,
+        "view": "top-down",
+        "description": "one single colossal cracked dark-glass alchemy flask lying tilted in the middle of one round pool of glowing acid-green liquid, dark fantasy pixel art seen straight from above, the flask neck pours one thick acid-green stream into the pool, pale green foam shoreline, only these two things exist in the image, one centered object, nothing around it, empty background, no small bottles, no extra props, no scattered items, no border decoration, no characters, no text"
+      }
+    },
+    "animation": {
+      "pixel_lab_animation_group_id": "5062e756-6788-40a5-a555-56a92217da32",
+      "animate_tool": "animate_object",
+      "mode": "v3",
+      "frame_count": 9,
+      "frame_url_template": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/644013e6-0d81-4111-8729-44992f7a0bfa/animations/05cdf757-cdf5-49fa-8942-ad80b3183210/unknown/{i}.png",
+      "animation_description": "the cracked flask stays completely still in the same place with exactly the same shape, size and dark-glass colors in every frame; only the acid-green liquid moves: the poured stream floods the pool outward in one broad wave, then tall bubbling acid pillars rise from the pool and burst, then the pool settles and pale green evaporation smoke drifts up"
+    },
+    "direction_notes": [
+      "The first attempt (object 50dc9c6a-bea6-4998-b981-630680794bc6) was rejected and is not committed: it drew scattered extra vials around the canvas, ran content into all four edges, and morphed the flask into unrelated blue glassware from frame 5 on.",
+      "The accepted run fixes both failures in the prompt rather than in post-processing: the object description constrains the image to one centered flask plus one pool, and the animation description pins the flask still so only the acid-green liquid animates.",
+      "frame_count is capped at 8 for a 256x256 object (PixelLab returns 8 generated frames plus the stored reference frame = 9)."
+    ],
+    "reproducibility": {
+      "generation_script": "tools/fan2551_acid_flask_pixellab.py",
+      "replay_note": "Auth resolves through tools/pixellab_auth_smoke.read_auth_header (AUTH_HEADER, PIXELLAB_BEARER_TOKEN, or ~/.codex/config.toml); --object-id replays download/manifest only, and --skip-animate --group-id resumes an animate job that is already running. PixelLab objects auto-delete after 8 hours, so the downloaded frames in source/ are the durable record."
+    }
+  },
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_acid_flask",
+    "source_frames": [
+      "acid_flask_f00.png",
+      "acid_flask_f01.png",
+      "acid_flask_f02.png",
+      "acid_flask_f03.png",
+      "acid_flask_f04.png",
+      "acid_flask_f05.png",
+      "acid_flask_f06.png",
+      "acid_flask_f07.png",
+      "acid_flask_f08.png"
+    ],
+    "frame_size": "256x256 RGBA, transparent background, binary alpha (no semi-transparent matte or halo), content inset 17..242 px so no frame is cropped at the canvas edge",
+    "frame_identity": "all 9 frames are distinct (sha256) and hold one silhouette: alpha centroid stays within (123.3..130.5, 120.7..128.8) px and every frame is one dominant connected island of 13.9k-26.3k px plus small bubble islands",
+    "runtime_frames_dir": "assets/sprites/effects/fan2551_acid_flask_ultimate",
+    "runtime_spriteframes": "assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_spriteframes.tres",
+    "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+    "normalized_by": "bit-exact copy of the PixelLab frames (already 256x256 full-frame RGBA); no crop, no matte, no palette shift"
+  },
+  "phase_binding": {
+    "windup": {"seconds": 0.0, "frames": "0 (heavy flask reveal, pool still)"},
+    "release": {"seconds": 0.75, "frames": "1-3 (the pour lands and floods the pool outward in one broad wave)"},
+    "active": {"seconds": 1.6, "frames": "4-8 (sustained bubbling, ChargePillars hold the capped charges)"},
+    "recovery": {"seconds": 3.7, "frames": "8 held while alpha falls and EvaporationSmoke peaks (slow evaporation)"},
+    "cancel": {"seconds": 4.8, "frames": "alpha reaches zero; Timeline releases every handle"}
+  },
+  "distinctness": "blast_powder is a gold-rune pentagram with five multicolor kegs on a 3.4s crystal-implosion beat; homunculus_vial is an emerald avatar fusion on a 5.4s convergence-and-split beat; acid_flask is the only one built on a colossal dark-glass cracked flask flooding a wide acid-green lake, on the longest 4.8s heavy-flood-then-evaporation beat, and the only one whose declared flash coverage is exactly 0.0",
+  "accessibility": {
+    "full_screen_flash_hz": 0.0,
+    "max_flash_coverage_ratio": 0.0,
+    "reduced_motion_substitute": "the acid lake keeps a calm static shoreline and slow bubble drift in place of the pour wave and pillar bursts",
+    "note": "The frame track is the only fast channel and it is monotonic (0->8, never reversing), so there is no repeating flash at any rate."
+  },
+  "verification": {
+    "commands": [
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"},
+      {"command": "windowed capture: python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/chemist_ultimate_contact_capture.gd"}
+    ]
+  }
+}
