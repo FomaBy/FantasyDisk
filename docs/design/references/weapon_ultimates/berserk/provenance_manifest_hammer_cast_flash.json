@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T16:04:18Z",
+  "object": {
+    "pixel_lab_object_id": "e581e7ec-edc4-4d91-841c-35c495776850",
+    "pixel_lab_animation_group_id": "30aac9b0-e674-4951-966e-8bd8c00c607c",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "hammer_cast_flash_f00.png",
+      "bytes": 17699,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f01.png",
+      "bytes": 19296,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f02.png",
+      "bytes": 14222,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f03.png",
+      "bytes": 12252,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f04.png",
+      "bytes": 10411,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f05.png",
+      "bytes": 8146,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f06.png",
+      "bytes": 6701,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f07.png",
+      "bytes": 15085,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_cast_flash_f08.png",
+      "bytes": 14122,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T15:49:52Z",
+  "object": {
+    "pixel_lab_object_id": "78d75a8c-3a64-4aa6-838b-84b1d4f65ef7",
+    "pixel_lab_animation_group_id": "a1dfbf48-266f-4ae1-a53b-2535de0a244f",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "hammer_rift_shockwave_f00.png",
+      "bytes": 11245,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f01.png",
+      "bytes": 13768,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f02.png",
+      "bytes": 12362,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f03.png",
+      "bytes": 12662,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f04.png",
+      "bytes": 12483,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f05.png",
+      "bytes": 13081,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f06.png",
+      "bytes": 13388,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f07.png",
+      "bytes": 13341,
+      "url_kind": "template"
+    },
+    {
+      "file": "hammer_rift_shockwave_f08.png",
+      "bytes": 12578,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

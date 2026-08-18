@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3005",
+  "title": "BERSERK VFX ART: PixelLab animated packs — алый вихрь, вспышка каста, per-victim взрыв",
+  "generated_at": "2026-08-18T16:35:00Z",
+  "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "auth_source": "AUTH_HEADER resolved from ~/.codex/config.toml, exported to PIXELLAB_BEARER_TOKEN per-command; never written to disk or printed",
+  "route": "pixellab_new_isolated_animation_frames (create_1_direction_object + animate_object v3), same pattern as FAN-2542/fan2542_shadow_daggers_ultimate",
+  "generation_tooling": {
+    "create_and_queue": "tools/pixellab_generate_pack.py (FAN-2924, mandatory blocking CLI)",
+    "known_limitation": "pixellab_generate_pack.py's post-animate wait step reads get_object's text report, whose animations section is empty until the queued job actually finishes; the object already reports status=completed from creation, so the wait returns early and the tool exits 5 ('no animation frame URLs'). Documented precedent: FAN-2541/FAN-2550/FAN-2551, and now every one of these 9 jobs.",
+    "fallback_fetch": "tools/pixellab_wait_animation_frames.py — new generic version of the FAN-2541 per-task workaround (tools/fan2541_chakrams_pixellab.py), reusing pixellab_generate_pack.call/download/extract_frame_urls, polling get_object until the frame URL template appears and no job is pending. Same blocking contract and exit codes as pixellab_generate_pack.py.",
+    "assembly": "tools/build_fan3005_berserk_vfx_packs.py — copies each pack's frames into assets/sprites/effects/berserk/<weapon>/<effect>/ and writes the SpriteFrames .tres",
+    "import": "Godot.app --headless --path . --import --quit (Godot 4.7.stable) generated all 81 .png.import sidecars"
+  },
+  "generation_params_common": {
+    "create_tool": "create_1_direction_object",
+    "size": 256,
+    "view": "top-down",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "frame_count_requested": 8,
+    "frame_count_returned": "9 (8 animated + 1 stored reference frame, all kept — same convention as FAN-2542)",
+    "note_frame_count_ceiling": "PixelLab rejects frame_count>8 for a 256x256 object (422: 'frame_count 10 too high for 256x256 image. Maximum frame_count: 8')."
+  },
+  "prompt_lessons": [
+    "A prompt phrased only as 'starts small and fades' can return frames whose visible-pixel count is fully transparent at the start/end (hammer/cast_flash, 1st attempt) or non-monotonic/out-of-order in brightness (axe/cast_flash, 1st attempt) — both regenerated with an explicit 'every single frame shows visible glowing light, never a fully empty or nearly-invisible frame' + 'smoothly and monotonically expands/shrinks' clause, which fixed both.",
+    "A rift/shockwave description that only asks for a 'hammer silhouette' embedded in a crater came back with the hammer barely readable under debris; asking explicitly for 'a big heavy war hammer head lying flat ... clearly readable bold silhouette at the center' produced a hammer head that reads clearly in every frame while only the radiating cracks pulse.",
+    "Overlong single-line descriptions (≈480 words) triggered an outright object creation failure (status: failed) once (hammer/rift_shockwave 2nd attempt with an even longer prompt); shortening to ≈380 characters fixed it — keep description/animation-description under roughly 400 characters each.",
+    "These parameters are the reference process for the assassin trio (FAN-3013→FAN-3014) and the remaining 46 scenes."
+  ],
+  "packs": [
+    {"weapon": "sword", "effect": "whirlwind", "object_id": "249be948-22f8-4137-9eb0-32c5bbbf0dcc", "group_id": "de049c3f-3178-4682-a073-1a132c9990dc", "loop": true, "manifest": "provenance_manifest_sword_whirlwind.json"},
+    {"weapon": "sword", "effect": "cast_flash", "object_id": "924eecb2-9ef6-48f1-a955-9c494c3eec16", "group_id": "5d981a76-890c-4168-80c4-754e99e11074", "loop": false, "manifest": "provenance_manifest_sword_cast_flash.json"},
+    {"weapon": "sword", "effect": "victim_explosion", "object_id": "9e0a4744-52f0-4931-a25a-e17ea15b2aa1", "group_id": "99b87171-0535-4eab-bbf9-3fb6c6505b94", "loop": false, "manifest": "provenance_manifest_sword_victim_explosion.json"},
+    {"weapon": "axe", "effect": "execution_slash", "object_id": "40c06315-16cd-4529-adb1-5b662098264a", "group_id": "eab4ccfa-060a-45e0-95cf-1411c092174c", "loop": false, "manifest": "provenance_manifest_axe_execution_slash.json"},
+    {"weapon": "axe", "effect": "cast_flash", "object_id": "64791a38-825a-4882-8e24-0248ad84a533", "group_id": "64e97170-692b-437b-b6a4-37dd48b98eb8", "loop": false, "manifest": "provenance_manifest_axe_cast_flash.json", "note": "regenerated once: 1st attempt (object c38387f0) had a non-monotonic/near-invisible frame"},
+    {"weapon": "axe", "effect": "victim_impact", "object_id": "d3b5e910-d879-4389-b8cd-c5aaaeeaddae", "group_id": "05ef1335-b4e5-4cb8-a84c-7af4b2239b23", "loop": false, "manifest": "provenance_manifest_axe_victim_impact.json"},
+    {"weapon": "hammer", "effect": "rift_shockwave", "object_id": "78d75a8c-3a64-4aa6-838b-84b1d4f65ef7", "group_id": "a1dfbf48-266f-4ae1-a53b-2535de0a244f", "loop": false, "manifest": "provenance_manifest_hammer_rift_shockwave.json", "note": "regenerated twice: 1st attempt (object 972463d0) had a barely-readable hammer silhouette; 2nd attempt object creation failed outright on an overlong prompt"},
+    {"weapon": "hammer", "effect": "cast_flash", "object_id": "e581e7ec-edc4-4d91-841c-35c495776850", "group_id": "30aac9b0-e674-4951-966e-8bd8c00c607c", "loop": false, "manifest": "provenance_manifest_hammer_cast_flash.json", "note": "regenerated once: 1st attempt (object 1b368ee2) had 3 of 9 fully transparent frames"},
+    {"weapon": "hammer", "effect": "victim_impact", "object_id": "43310f72-4d47-4a89-aab6-e6e7ea775ea4", "group_id": "8601d658-b8f0-4605-a4cc-0b72852ee04c", "loop": false, "manifest": "provenance_manifest_hammer_victim_impact.json"}
+  ],
+  "frame_verification": {
+    "method": "PIL: verified every PNG opens, size==256x256 for all frames in all 9 packs, no frame has alpha fully 0 across every pixel, and visible-pixel-count(alpha>40) per frame recorded to confirm a readable grow/shrink or rotate trend (not a single implied step)",
+    "result": "9/9 packs pass: no broken/truncated frame, no fully-blank frame, uniform 256x256 canvas",
+    "godot_open_check": "Godot.app --headless -s <verify script> load()-ed all 9 SpriteFrames .tres as SpriteFrames resources, confirmed 1 animation each with 9 frames, correct loop/speed",
+    "contact_sheet": "docs/design/previews/fan3005_berserk_vfx_contact_sheet.png (9 rows x 9 frame columns)"
+  },
+  "runtime_layout": "assets/sprites/effects/berserk/<sword|axe|hammer>/<effect>/<effect>_NN.png + <effect>_spriteframes.tres",
+  "out_of_scope": "scene wiring (.tscn), runtime attachment, per-victim trigger logic — FAN-3012",
+  "secret_handling": "PIXELLAB_BEARER_TOKEN sourced from ~/.codex/config.toml per command invocation; never committed, never printed, not present in this manifest or any comment"
+}

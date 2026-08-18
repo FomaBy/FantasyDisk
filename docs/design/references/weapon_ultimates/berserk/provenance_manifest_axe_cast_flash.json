@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T16:09:03Z",
+  "object": {
+    "pixel_lab_object_id": "64791a38-825a-4882-8e24-0248ad84a533",
+    "pixel_lab_animation_group_id": "64e97170-692b-437b-b6a4-37dd48b98eb8",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "axe_cast_flash_f00.png",
+      "bytes": 13855,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f01.png",
+      "bytes": 27812,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f02.png",
+      "bytes": 21246,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f03.png",
+      "bytes": 19737,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f04.png",
+      "bytes": 17583,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f05.png",
+      "bytes": 13146,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f06.png",
+      "bytes": 7679,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f07.png",
+      "bytes": 7486,
+      "url_kind": "template"
+    },
+    {
+      "file": "axe_cast_flash_f08.png",
+      "bytes": 4327,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
