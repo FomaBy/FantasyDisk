@@ -36,6 +36,28 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
+- FAN-2879 (2026-08-18) resolves the Elementalist `7a334fc4-...` 404 blocker above
+  and the FAN-2599 evidence-only candidate's live-capture finding (mid-loop
+  identity morph in 7/8 directions, comment `42cbe958`) plus the outstanding
+  SCRUM-801 hand-glow cleanup, in one pass. The dead `pixellab_character_id` was
+  unreachable, so a brand-new PixelLab character (`4b01496c-09c9-4cc8-8913-a9feee4e3a69`,
+  `create_character(mode=pro, n_directions=8)`) replaces it; `7a334fc4-...` is
+  recorded as a second rejected predecessor alongside the original SCRUM-801
+  rejection (`3068581d-...`) in `manifest.json`. All 8 walk directions were
+  requested in a single `animate_character(mode=template,
+  template_animation_id=walking-6-frames)` job/group instead of being stitched
+  from separate per-direction rounds, which is what produced the FAN-2599 seam.
+  Geometry held: `512x512` canvas, `246px` visible height, footline
+  `y=471-472`, pivot `x=255.5-256.0` across all 56 frames (normalized via
+  `tools/update_pixellab_character_animations.py`, `--bottom-padding 40` —
+  the manifest's stale `32` no longer matched the pack's actual footline and
+  was corrected). No hand glow on any idle or move frame. Self-QA flagged one
+  open risk for QA to judge: mirror-pair (east/west,
+  north-east/north-west, south-east/south-west) mean-abs-RGBA-diff measured
+  1.0-5.4 across the 21 idle+move pairs, with the 3 idle pairs (~1.0-1.2)
+  reading below the `>=3.5` honest-pack baseline even though no pair is
+  byte-identical — plausibly a side effect of the character's fairly symmetric
+  idle pose rather than mirrored-copy substitution.
 - FAN-2606 (2026-08-17) reviewed the live Sniper pack that SCRUM-869 left in
   place (SCRUM-433 source, PixelLab character
   `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) and rejected it: `south`,

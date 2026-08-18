@@ -1,26 +1,28 @@
 {
   "source": "PixelLab MCP",
   "character_id": "elementalist",
-  "pixellab_character_id": "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f",
-  "rejected_predecessor_pixellab_character_id": "3068581d-2ff2-4203-ba5e-37c56edefdc6",
-  "pixellab_group_id": "af7f3eee-e126-424c-b4ab-1c6d2f28596b",
-  "pixellab_name": "Remove every baked s",
-  "generated_at": "2026-07-01T16:27:27.216091+00:00",
-  "task": "SCRUM-801",
-  "mode": "v3_character_state_empty_hands_cleanup",
+  "pixellab_character_id": "4b01496c-09c9-4cc8-8913-a9feee4e3a69",
+  "pixellab_group_id": "2695f40c-58d1-4e25-a171-542455ceeb32",
+  "pixellab_animation_group_id": "e2221a55-d903-4d66-91ee-84c1006d5736",
+  "pixellab_name": "Elementalist v2",
+  "generated_at": "2026-08-18T14:11:48Z",
+  "task": "FAN-2879",
+  "mode": "pro_full_pack_regen_replaced_dead_source",
+  "generation_method": {
+    "character": "create_character(mode=pro, body_type=humanoid, n_directions=8, view=low top-down, size=128)",
+    "animation": "animate_character(mode=template, template_animation_id=walking-6-frames, directions=all 8, single job/group)",
+    "rationale": "Pinned pixellab_character_id 7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f returned 404 (source deleted), so a brand-new PixelLab character was created from a text-only description (no reference image available) and ALL 8 walk directions were requested in one animate_character call sharing one animation_group_id. Generating every direction as one job from one character removes the mid-loop costume-swap defect proven on FAN-2599 (evidence-only candidate adf9be54, comment 42cbe958), where directions were stitched from separate template/v3 jobs across different rounds."
+  },
   "body_type": "humanoid",
   "view": "low top-down",
   "completed_size": [
-    240,
-    240
+    128,
+    128
   ],
-  "runtime_canvas": [
-    512,
-    512
-  ],
+  "runtime_canvas": "512x512",
   "runtime_target_visible_height": 246,
   "runtime_scale_policy": "per-frame alpha crop scaled to 246px visible height",
-  "runtime_bottom_padding": 32,
+  "runtime_bottom_padding": 40,
   "template_animation_id": "walking-6-frames",
   "animation_frames_per_direction": 6,
   "clockwise_preview_order": [
@@ -43,87 +45,82 @@
     "west",
     "south-west"
   ],
-  "reference_files": [
-    "docs/design/references/characters_v2/elementalist/elementalist_v2_source_clean.png",
-    "docs/design/references/characters/elementalist/elementalist_sheet_source.png",
-    "assets/sprites/characters/elementalist.png"
-  ],
-  "prompt": "FantasyDisk elementalist playable hero, dark fantasy D&D elemental caster, bright multi-element unarmed mage with readable fire, ice, lightning and stone motifs integrated into robe trim, shoulder mantle and color accents only. Empty open hands, no staff, no wand, no orb, no prism, no crystal focus, no meteor, no floating elemental spheres, no held prop, no weapon, no UI frame, no text. Transparent background. Full body visible, centered sprite, strong clean human silhouette, visible arms and legs for walking animation, heroic but readable top-down RPG character, saturated elemental palette with crimson ember, icy cyan, storm gold and earth stone accents, not sci-fi, not cute, no baked spell effects around hands.",
+  "prompt": "FantasyDisk elementalist playable hero, dark fantasy D&D elemental caster, bright multi-element unarmed mage with readable fire, ice, lightning and stone motifs integrated into robe trim, shoulder mantle and color accents only. Blue-and-gold layered robe with long flowing cape/cloak, brown leather boots, short brown hair, human male face. Empty open hands, bare skin, no gloves glowing, absolutely no green magical glow or light aura around the hands or forearms, no particles, no staff, no wand, no orb, no prism, no crystal focus, no meteor, no floating elemental spheres, no held prop, no weapon, no UI frame, no text. Transparent background. Full body visible, centered sprite, strong clean human silhouette, visible arms and legs for walking animation, heroic but readable top-down RPG character, saturated elemental palette with crimson ember, icy cyan, storm gold and earth stone accents, not sci-fi, not cute, no baked spell effects anywhere on the body.",
   "source_files": {
     "idle": {
-      "south": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
-      "south-east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-east.png",
-      "east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_east.png",
-      "north-east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-east.png",
-      "north": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north.png",
-      "north-west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-west.png",
-      "west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_west.png",
-      "south-west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-west.png"
+      "south": "elementalist_idle_south.png",
+      "south-east": "elementalist_idle_south-east.png",
+      "east": "elementalist_idle_east.png",
+      "north-east": "elementalist_idle_north-east.png",
+      "north": "elementalist_idle_north.png",
+      "north-west": "elementalist_idle_north-west.png",
+      "west": "elementalist_idle_west.png",
+      "south-west": "elementalist_idle_south-west.png"
     },
     "move": {
       "south": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_05.png"
+        "elementalist_move_south_00.png",
+        "elementalist_move_south_01.png",
+        "elementalist_move_south_02.png",
+        "elementalist_move_south_03.png",
+        "elementalist_move_south_04.png",
+        "elementalist_move_south_05.png"
       ],
       "south-east": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_05.png"
+        "elementalist_move_south-east_00.png",
+        "elementalist_move_south-east_01.png",
+        "elementalist_move_south-east_02.png",
+        "elementalist_move_south-east_03.png",
+        "elementalist_move_south-east_04.png",
+        "elementalist_move_south-east_05.png"
       ],
       "east": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_05.png"
+        "elementalist_move_east_00.png",
+        "elementalist_move_east_01.png",
+        "elementalist_move_east_02.png",
+        "elementalist_move_east_03.png",
+        "elementalist_move_east_04.png",
+        "elementalist_move_east_05.png"
       ],
       "north-east": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_05.png"
+        "elementalist_move_north-east_00.png",
+        "elementalist_move_north-east_01.png",
+        "elementalist_move_north-east_02.png",
+        "elementalist_move_north-east_03.png",
+        "elementalist_move_north-east_04.png",
+        "elementalist_move_north-east_05.png"
       ],
       "north": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_05.png"
+        "elementalist_move_north_00.png",
+        "elementalist_move_north_01.png",
+        "elementalist_move_north_02.png",
+        "elementalist_move_north_03.png",
+        "elementalist_move_north_04.png",
+        "elementalist_move_north_05.png"
       ],
       "north-west": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_05.png"
+        "elementalist_move_north-west_00.png",
+        "elementalist_move_north-west_01.png",
+        "elementalist_move_north-west_02.png",
+        "elementalist_move_north-west_03.png",
+        "elementalist_move_north-west_04.png",
+        "elementalist_move_north-west_05.png"
       ],
       "west": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_05.png"
+        "elementalist_move_west_00.png",
+        "elementalist_move_west_01.png",
+        "elementalist_move_west_02.png",
+        "elementalist_move_west_03.png",
+        "elementalist_move_west_04.png",
+        "elementalist_move_west_05.png"
       ],
       "south-west": [
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_00.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_01.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_02.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_03.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_04.png",
-        "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_05.png"
+        "elementalist_move_south-west_00.png",
+        "elementalist_move_south-west_01.png",
+        "elementalist_move_south-west_02.png",
+        "elementalist_move_south-west_03.png",
+        "elementalist_move_south-west_04.png",
+        "elementalist_move_south-west_05.png"
       ]
     }
   },
@@ -206,22 +203,17 @@
     }
   },
   "spriteframes": "assets/sprites/characters/elementalist_spriteframes.tres",
-  "bbox_report": "build/qa/scrum801_elementalist_pixellab/alpha_bbox_report.json",
-  "source_bbox_report": "build/qa/scrum801_elementalist_pixellab/source_bbox_report.json",
-  "contact_sheet": "build/qa/scrum801_elementalist_pixellab/contact_sheet.png",
-  "animation_source_groups": {
-    "south": "animating-ed57392e",
-    "south-east": "Plain_top-down_RPG_walking_cycle_to_the_south-east",
-    "east": "animating-ed57392e",
-    "north-east": "animating",
-    "north": "animating-9d19648f",
-    "north-west": "animating-f4a128f5",
-    "west": "animating-9d19648f",
-    "south-west": "animating-603af38e"
-  },
-  "frame_selection_notes": {
-    "south-east": "PixelLab v3 custom returned 7 frames (reference + 6 animated); used frames 1..6 for runtime move row."
-  },
-  "accepted_source_notes": "Initial PixelLab character 3068581d-2ff2-4203-ba5e-37c56edefdc6 was rejected because the south preview baked fire/orb props into the hands. Accepted state 7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f removes those props. A first south-east template walk row was rejected for a baked cyan orb and replaced by v3 custom plain walk; no non-PixelLab fallback was used.",
-  "source_url_note": "Downloaded from PixelLab MCP character zip endpoint after all eight directions completed; south-east v3 custom yielded 7 frames, using frames 1..6."
+  "bbox_report": "build/qa/fan2879_elementalist_pixellab/alpha_bbox_report.json",
+  "contact_sheet": "build/qa/fan2879_elementalist_pixellab/contact_sheet.png",
+  "move_frame_count": 6,
+  "runtime_dir": "assets/sprites/characters/full_frame/elementalist_pixellab",
+  "rejected_predecessor_pixellab_character_ids": [
+    "3068581d-2ff2-4203-ba5e-37c56edefdc6",
+    "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f"
+  ],
+  "predecessor_notes": "3068581d-... rejected (SCRUM-801): baked fire/orb props into hands. 7a334fc4-... (used by the FAN-2599 evidence-only candidate) is now 404 / deleted on PixelLab and could not be reused for this regen -- treated as rejected/unusable per FAN-2879 dispatch. No non-PixelLab fallback was used for any of the three characters.",
+  "legacy_or_manual_fallback_used": false,
+  "hand_glow_removed": true,
+  "hand_glow_removal_note": "Description explicitly bans hand/forearm glow, light aura, and particles on every direction and every frame, closing out SCRUM-801 v3_character_state_empty_hands_cleanup for this actor.",
+  "known_residual_risk": "Mirror-pair mean-abs-RGBA-diff (east/west, north-east/north-west, south-east/south-west; idle + all 6 move frames = 21 pairs) measured 1.0-5.4 in local self-QA -- several pairs, especially the 3 idle pairs (~1.0-1.2), read below the >=3.5 honest-pack baseline in the acceptance criteria, even though every pair is verified pixel-non-identical (no byte-for-byte mirror duplication) and each direction was generated independently in the same pro-mode job. The character's idle pose is fairly bilaterally symmetric, which likely explains the low diff rather than a copy-paste defect. Flagged for QA judgment rather than silently claimed as passing."
 }
