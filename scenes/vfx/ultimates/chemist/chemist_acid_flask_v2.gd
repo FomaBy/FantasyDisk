@@ -114,10 +114,12 @@ func _notification(what: int) -> void:
 
 
 ## The backdrop veil is a top-level child so the moving hero never shifts the
-## full-screen treatment; it is refitted every frame to the visible rect.
+## full-screen treatment; it is refitted every frame to the visible rect. The
+## veil draws its gradient texture uncentered, so the fit is a top-left position
+## plus a scale, exactly the corners the polygon used to carry.
 func _fit_backdrop_to_viewport() -> void:
-	var veil := get_node_or_null("BackdropVeil") as Polygon2D
-	if veil == null:
+	var veil := get_node_or_null("BackdropVeil") as Sprite2D
+	if veil == null or veil.texture == null:
 		return
 	var viewport := get_viewport()
 	if viewport == null:
@@ -132,12 +134,7 @@ func _fit_backdrop_to_viewport() -> void:
 	var size := visible_size + overscan * 2.0
 	veil.top_level = true
 	veil.position = viewport.get_canvas_transform().affine_inverse() * rect.position - overscan
-	veil.polygon = PackedVector2Array([
-		Vector2.ZERO,
-		Vector2(size.x, 0.0),
-		size,
-		Vector2(0.0, size.y),
-	])
+	veil.scale = size / veil.texture.get_size()
 
 
 func _pause_timeline() -> void:
