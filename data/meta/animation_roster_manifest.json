@@ -221,8 +221,7 @@
   {
     "id": "mini_plague_berserker",
     "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
-    "fallback_of": "plague_prophet"
+    "frames": "res://assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres"
   },
   {
     "id": "mini_void_phantom",

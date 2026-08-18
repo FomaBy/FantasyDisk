@@ -1,0 +1,20 @@
+{
+  "issue": "FAN-2632",
+  "character_id": "mini_plague_berserker",
+  "pixellab_character_id": "9e63a280-524e-492b-9624-8ddbb2744c07",
+  "status_at_ceiling": "PixelLab character rotations (idle, 8 dir) completed; move (8 dir) completed; attack (8 dir) completed; hit (8 dir) completed; death and skill_poison_volley still generating server-side when the FAN-2632 run hit its 15-minute polling ceiling.",
+  "animation_groups": {
+    "move": {"group_id": "02c9ae5a-448f-4a01-9a01-7fe5a9131348", "template_animation_id": "walking-6-frames", "directions_done": 8},
+    "attack": {"group_id": "b2ecd4f3-127f-410e-9eab-ba5a85f41da6", "mode": "v3", "action_description": "aggressive clawing lunge attack, arms swiping forward violently", "frame_count": 6, "directions_done": 8},
+    "hit": {"group_id": "7765d71e-918a-42dd-bcc7-749e233f3fe6", "mode": "v3", "action_description": "flinching backward in pain from a hit, recoiling with a pained snarl", "frame_count": 4, "directions_done": 8},
+    "death": {"group_id": "2d1374db-9df2-4959-83ef-825cc0836710", "mode": "v3", "action_description": "collapsing and dying, bursting with poisonous fumes, plague-ridden body giving out", "frame_count": 6, "directions_done_at_ceiling": 1, "note": "7 remaining directions were in-flight (~4-8min ETA) when polling stopped"},
+    "skill_poison_volley": {"group_id": "06106f2b-504d-4924-9fed-c1e0549e2058", "mode": "v3", "action_description": "lobbing poison vials overhead in an aggressive throwing motion, poison volley cast", "frame_count": 6, "directions_done_at_ceiling": 1, "note": "7 remaining directions were in-flight (~4-8min ETA) when polling stopped"}
+  },
+  "next_run_steps": [
+    "Call mcp__pixellab__get_character(character_id=\"9e63a280-524e-492b-9624-8ddbb2744c07\") to confirm death and skill_poison_volley reached 8/8 directions each (jobs continue server-side between runs).",
+    "If any directions are still missing, requeue only the missing ones via animate_character with the matching animation_group_id/animation_name/action_description/frame_count above (do not start new groups).",
+    "Save the full get_character() text dump to a file and run: python3 tools/build_fan2632_mini_plague_berserker_pack.py <dump.txt> to download, normalize (512x512 canvas, 245px visible height, 32px bottom padding) and write assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres + this directory's manifest.json/alpha_bbox_report.json (the script overwrites this WIP file with the final manifest).",
+    "Run tests/animation_smoke_test.gd, tests/mini_elite_roster_spawn_test.gd, tests/elite_attack_config_safety_test.gd via tools/godot_gate.py.",
+    "Registry (scripts/full_frame_animation_registry.gd), roster manifest (data/meta/animation_roster_manifest.json) and the animation_smoke_test.gd contract entry are already committed on this task branch and expect exactly this spriteframes.tres path/animation names."
+  ]
+}

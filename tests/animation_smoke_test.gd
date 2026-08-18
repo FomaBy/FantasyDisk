@@ -1332,6 +1332,12 @@ func _test_full_frame_animation_registry() -> void:
 			"phase_state": "mini_shadow_devourer:shadow_blink:windup",
 			"phase_resolved": "skill_shadow_blink",
 		},
+		"mini_plague_berserker": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_poison_volley"],
+			"phase_state": "mini_plague_berserker:poison_volley:windup",
+			"phase_resolved": "skill_poison_volley",
+		},
 	}
 	for mini_id in mini_elite_full_frame_scenes.keys():
 		var mini_info: Dictionary = mini_elite_full_frame_scenes[mini_id]

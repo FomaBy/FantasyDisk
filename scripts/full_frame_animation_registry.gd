@@ -211,6 +211,13 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -58.0),
 			"source_faces_left": true,
 		},
+		"mini_plague_berserker": {
+			"frames": "res://assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres",
+			"scale": Vector2(0.50, 0.50),
+			"position": Vector2(0.0, -60.0),
+			"source_faces_left": true,
+			"explicit_eight_directions": true,
+		},
 	},
 	"boss": {
 		"rift_warden": {
