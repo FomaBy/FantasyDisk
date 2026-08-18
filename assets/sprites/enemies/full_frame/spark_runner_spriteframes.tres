@@ -1,179 +1,1221 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_00.png" id="1_sp1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_01.png" id="2_sp2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_02.png" id="3_sp3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_03.png" id="4_sp4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_04.png" id="5_sp5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_05.png" id="6_sp6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_00.png" id="7_sp7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_01.png" id="8_sp8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_02.png" id="9_sp9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_03.png" id="10_sp10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_04.png" id="11_sp11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_05.png" id="12_sp12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_00.png" id="13_sp13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_01.png" id="14_sp14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_02.png" id="15_sp15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_03.png" id="16_sp16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_04.png" id="17_sp17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_05.png" id="18_sp18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_00.png" id="19_sp19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_01.png" id="20_sp20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_02.png" id="21_sp21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_03.png" id="22_sp22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_04.png" id="23_sp23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_05.png" id="24_sp24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_east.png" id="1_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_east.png" id="2_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south.png" id="3_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_west.png" id="4_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_west.png" id="5_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_west.png" id="6_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north.png" id="7_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_east.png" id="8_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_00.png" id="9_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_01.png" id="10_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_02.png" id="11_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_03.png" id="12_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_04.png" id="13_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_05.png" id="14_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_00.png" id="15_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_01.png" id="16_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_02.png" id="17_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_03.png" id="18_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_04.png" id="19_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_05.png" id="20_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_00.png" id="21_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_01.png" id="22_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_02.png" id="23_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_03.png" id="24_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_04.png" id="25_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_05.png" id="26_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_00.png" id="27_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_01.png" id="28_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_02.png" id="29_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_03.png" id="30_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_04.png" id="31_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_00.png" id="32_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_01.png" id="33_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_02.png" id="34_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_03.png" id="35_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_04.png" id="36_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_05.png" id="37_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_00.png" id="38_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_01.png" id="39_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_02.png" id="40_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_03.png" id="41_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_04.png" id="42_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_05.png" id="43_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_00.png" id="44_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_01.png" id="45_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_02.png" id="46_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_03.png" id="47_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_04.png" id="48_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_05.png" id="49_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_00.png" id="50_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_01.png" id="51_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_02.png" id="52_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_03.png" id="53_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_04.png" id="54_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_05.png" id="55_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_00.png" id="56_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_01.png" id="57_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_02.png" id="58_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_03.png" id="59_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_04.png" id="60_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_05.png" id="61_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_06.png" id="62_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_00.png" id="63_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_01.png" id="64_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_02.png" id="65_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_03.png" id="66_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_04.png" id="67_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_05.png" id="68_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_06.png" id="69_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_00.png" id="70_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_01.png" id="71_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_02.png" id="72_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_03.png" id="73_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_04.png" id="74_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_05.png" id="75_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_06.png" id="76_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_00.png" id="77_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_01.png" id="78_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_02.png" id="79_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_03.png" id="80_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_04.png" id="81_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_05.png" id="82_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_06.png" id="83_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_00.png" id="84_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_01.png" id="85_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_02.png" id="86_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_03.png" id="87_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_04.png" id="88_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_05.png" id="89_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_06.png" id="90_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_00.png" id="91_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_01.png" id="92_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_02.png" id="93_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_03.png" id="94_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_04.png" id="95_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_05.png" id="96_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_00.png" id="97_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_01.png" id="98_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_02.png" id="99_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_03.png" id="100_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_04.png" id="101_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_05.png" id="102_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_00.png" id="103_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_01.png" id="104_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_02.png" id="105_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_03.png" id="106_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_04.png" id="107_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_05.png" id="108_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_00.png" id="109_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_01.png" id="110_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_02.png" id="111_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_03.png" id="112_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_04.png" id="113_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_00.png" id="114_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_01.png" id="115_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_02.png" id="116_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_03.png" id="117_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_04.png" id="118_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_00.png" id="119_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_01.png" id="120_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_02.png" id="121_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_03.png" id="122_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_04.png" id="123_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_00.png" id="124_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_01.png" id="125_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_02.png" id="126_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_03.png" id="127_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_04.png" id="128_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_00.png" id="129_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_01.png" id="130_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_02.png" id="131_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_03.png" id="132_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_04.png" id="133_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_00.png" id="134_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_01.png" id="135_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_02.png" id="136_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_03.png" id="137_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_04.png" id="138_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_00.png" id="139_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_01.png" id="140_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_02.png" id="141_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_03.png" id="142_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_04.png" id="143_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_00.png" id="144_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_01.png" id="145_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_02.png" id="146_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_03.png" id="147_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_04.png" id="148_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_00.png" id="149_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_01.png" id="150_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_02.png" id="151_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_03.png" id="152_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_04.png" id="153_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_05.png" id="154_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_06.png" id="155_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_00.png" id="156_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_01.png" id="157_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_02.png" id="158_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_03.png" id="159_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_04.png" id="160_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_05.png" id="161_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_06.png" id="162_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_00.png" id="163_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_01.png" id="164_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_02.png" id="165_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_03.png" id="166_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_04.png" id="167_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_05.png" id="168_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_06.png" id="169_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_00.png" id="170_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_01.png" id="171_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_02.png" id="172_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_03.png" id="173_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_04.png" id="174_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_05.png" id="175_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_06.png" id="176_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_00.png" id="177_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_01.png" id="178_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_02.png" id="179_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_03.png" id="180_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_04.png" id="181_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_05.png" id="182_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_06.png" id="183_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_00.png" id="184_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_01.png" id="185_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_02.png" id="186_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_03.png" id="187_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_04.png" id="188_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_05.png" id="189_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_00.png" id="190_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_01.png" id="191_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_02.png" id="192_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_03.png" id="193_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_04.png" id="194_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_05.png" id="195_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_06.png" id="196_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_00.png" id="197_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_01.png" id="198_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_02.png" id="199_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_03.png" id="200_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_04.png" id="201_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_05.png" id="202_sr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_06.png" id="203_sr"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_sp1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sp2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sp3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sp4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sp5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sp6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_sp1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sp2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sp3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sp4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sp5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sp6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_sp19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_sp20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_sp21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_sp22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_sp23")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_sp24")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_sp13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_sp14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_sp15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_sp16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_sp17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_sp18")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_sp7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_sp8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_sp9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_sp10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_sp11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_sp12")
-}
-],
+"texture": ExtResource("1_sr")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_sr")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sr")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_sr")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_sr")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_sr")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_sr")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_sr")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sr")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_sr")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_sr")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_sr")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("32_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_sr")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("38_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_sr")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_sr")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("50_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("51_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_sr")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("56_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_sr")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_sr")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("70_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_sr")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("77_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_sr")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("84_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_sr")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("91_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_sr")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("97_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_sr")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("103_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_sr")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_sr")
+}],
+"loop": false,
+"name": &"hit_east",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("114_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_sr")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("119_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_sr")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("124_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_sr")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_sr")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("134_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_sr")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("139_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_sr")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("144_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_sr")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_sr")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("156_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_sr")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("163_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_sr")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("170_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_sr")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("177_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_sr")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("184_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_sr")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("190_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_sr")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_sr")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_sr")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]

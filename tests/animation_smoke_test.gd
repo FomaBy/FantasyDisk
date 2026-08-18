@@ -1141,21 +1141,37 @@ func _test_full_frame_animation_registry() -> void:
 		if enemy_frames == null:
 			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
 			continue
-		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
-			if not enemy_frames.has_animation(animation_name):
-				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
-			elif enemy_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
-		if not enemy_frames.get_animation_loop("move"):
-			_fail("Expected %s move to loop." % enemy_id)
-		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
-			if enemy_frames.get_animation_loop(one_shot_name):
-				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
-		if enemy_id == "winged_spark":
-			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
-				_fail("Expected winged_spark hover_flap to have 6 frames.")
-			elif not enemy_frames.get_animation_loop("hover_flap"):
-				_fail("Expected winged_spark hover_flap to loop.")
+		# FAN-2611: branch on the registry's own explicit_eight_directions flag,
+		# not a hardcoded ID list, so directional packs (ash_marksman,
+		# spark_runner) are checked against the FAN-2519 per-direction row
+		# contract instead of a single mirrored animation (mirrors the
+		# FAN-2901 mini-elite branch below).
+		var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+		if enemy_is_directional:
+			for state_name in ["idle", "move", "attack", "hit", "death"]:
+				if not FullFrameAnimationRegistry.has_full_directional_rows(enemy_frames, state_name):
+					_fail("Expected %s SpriteFrames to expose all eight %s direction rows." % [enemy_id, state_name])
+				var enemy_state_should_loop: bool = state_name in ["idle", "move"]
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var enemy_directional_row := "%s_%s" % [state_name, dir_suffix]
+					if enemy_frames.has_animation(enemy_directional_row) and enemy_frames.get_animation_loop(enemy_directional_row) != enemy_state_should_loop:
+						_fail("Expected %s %s loop to be %s." % [enemy_id, enemy_directional_row, str(enemy_state_should_loop)])
+		else:
+			for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
+				if not enemy_frames.has_animation(animation_name):
+					_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
+				elif enemy_frames.get_frame_count(animation_name) != 6:
+					_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
+			if not enemy_frames.get_animation_loop("move"):
+				_fail("Expected %s move to loop." % enemy_id)
+			for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
+				if enemy_frames.get_animation_loop(one_shot_name):
+					_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
+			if enemy_id == "winged_spark":
+				if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
+					_fail("Expected winged_spark hover_flap to have 6 frames.")
+				elif not enemy_frames.get_animation_loop("hover_flap"):
+					_fail("Expected winged_spark hover_flap to loop.")
 	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
 		_fail("Expected missing full-frame registry entries to return null.")
 
@@ -1194,16 +1210,32 @@ func _test_full_frame_animation_registry() -> void:
 		var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
 		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
 			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
+		var enemy_scene_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
 		if enemy_full_frame_body != null:
-			for animation_name in ["move", "attack_primary", "hit", "death"]:
-				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
-					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
-			if enemy_full_frame_body.animation != "move":
-				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
-			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
-				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
-			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
-				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
+			if enemy_scene_is_directional:
+				for animation_name in ["move", "hit", "death"]:
+					if not FullFrameAnimationRegistry.has_state(enemy_full_frame_body, animation_name):
+						_fail("Expected %s enemy FullFrameBody to resolve %s through the directional registry." % [enemy_id, animation_name])
+				# The enemy is stationary here (zero velocity), so _update_movement_animation
+				# resolves the "idle" state, and directional packs carry real idle_<suffix>
+				# rows (unlike non-directional packs, which have no idle row and fall back
+				# to "move").
+				if not enemy_full_frame_body.animation.begins_with("idle_"):
+					_fail("Expected %s enemy FullFrameBody to start in a directional idle animation, got %s." % [enemy_id, enemy_full_frame_body.animation])
+				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+					_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+				if enemy_full_frame_body.animation != "attack_east" or enemy_full_frame_body.flip_h:
+					_fail("Expected %s attack_primary to resolve to attack_east without mirroring." % enemy_id)
+			else:
+				for animation_name in ["move", "attack_primary", "hit", "death"]:
+					if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
+						_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+				if enemy_full_frame_body.animation != "move":
+					_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
+				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+					_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+				if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+					_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
 		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
 		if enemy_static_body != null and enemy_static_body.visible:
 			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
