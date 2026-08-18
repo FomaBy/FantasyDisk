@@ -26,12 +26,12 @@
       "first_impact_delay": 4.7,
       "chain_interval": 0.3,
       "blast_radius": 155.0,
-      "damage": 24.0,
+      "damage": 30.0,
       "crater_delay": 0.4,
       "crater_radius": 190.0,
       "crater_ticks": 3,
       "crater_interval": 0.5,
-      "crater_damage": 1.2,
+      "crater_damage": 1.5,
       "lifetime": 8.4
     }
   },

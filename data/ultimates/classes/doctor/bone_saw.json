@@ -14,7 +14,7 @@
       "target_cap": 8,
       "tick_count": 6,
       "tick_interval": 0.5,
-      "tick_damage": 12.3,
+      "tick_damage": 15.99,
       "drain_ratio": 0.4,
       "repair_total": 10.0,
       "vitality_ratio": 0.4,

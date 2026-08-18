@@ -23,7 +23,7 @@
       "target_limit": 3,
       "volley_count": 3,
       "volley_interval": 1.35,
-      "damage": 33.5,
+      "damage": 42.0,
       "lifetime": 5.6
     }
   },

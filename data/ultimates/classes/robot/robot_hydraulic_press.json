@@ -18,8 +18,8 @@
       "crush_count": 3,
       "crush_interval": 0.30,
       "compression_strength": 180.0,
-      "crush_damage": 7.5,
-      "release_damage": 7.5,
+      "crush_damage": 9.75,
+      "release_damage": 9.75,
       "recovery_tail": 2.43
     }
   },

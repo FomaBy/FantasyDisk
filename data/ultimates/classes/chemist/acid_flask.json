@@ -24,7 +24,7 @@
       "tick_count": 10,
       "tick_interval": 0.25,
       "recover_at": 3.7,
-      "damage": 7.6,
+      "damage": 10.3,
       "dissolve_bonus": 0.14,
       "dissolve_stack_cap": 9,
       "charge_cap_ratio": 8.0,

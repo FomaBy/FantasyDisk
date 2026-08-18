@@ -15,8 +15,8 @@
       "wave_interval": 0.38,
       "range": 300.0,
       "half_width": 90.0,
-      "vent_damage": 6.5,
-      "final_damage": 10.0,
+      "vent_damage": 8.45,
+      "final_damage": 13.0,
       "absorb_flat": 5.0,
       "recovery_tail": 4.50
     }
