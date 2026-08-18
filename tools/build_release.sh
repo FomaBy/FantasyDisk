@@ -243,6 +243,7 @@ for required_input in \
   tools/build_release.sh \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
+  tools/release_notes_visual_claims_guard.py \
   tools/release_scope_guard.py \
   tools/release_scope_manifest.json \
   tools/release_version_contract.py \
@@ -300,6 +301,14 @@ if ! python3 "${WORKTREE_DIR}/tools/release_scope_guard.py" \
   --root "${WORKTREE_DIR}" \
   --manifest "${WORKTREE_DIR}/tools/release_scope_manifest.json"; then
   echo "    ERROR: snapshot содержит контент, закреплённый за более поздней версией"
+  exit 2
+fi
+
+echo "==> Проверка визуальных утверждений release notes ${SOURCE_LABEL}"
+if ! python3 "${WORKTREE_DIR}/tools/release_notes_visual_claims_guard.py" \
+  --version "${VERSION}" \
+  --changelog "${WORKTREE_DIR}/CHANGELOG.md"; then
+  echo "    ERROR: CHANGELOG.md утверждает собственный визуал/раскадровку без ссылки на карточку с пройденной живой QA"
   exit 2
 fi
 
