@@ -1,59 +1,71 @@
 {
-  "tool": "tools/pixellab_wait_animation_frames.py",
-  "generated_at": "2026-08-18T16:04:18Z",
+  "tool": "tools/pixellab_generate_pack.py + tools/pixellab_wait_animation_frames.py (fallback fetch, FAN-3005 known_limitation)",
+  "issue": "FAN-3032 (rework of FAN-3005, QA FAN-3011 FAILED)",
+  "generated_at": "2026-08-18T17:45:51Z",
   "object": {
-    "pixel_lab_object_id": "e581e7ec-edc4-4d91-841c-35c495776850",
-    "pixel_lab_animation_group_id": "30aac9b0-e674-4951-966e-8bd8c00c607c",
+    "pixel_lab_object_id": "dd3e6a2d-f282-4872-8fab-336eea0d1ec6",
+    "pixel_lab_animation_group_id": "0c136e68-09f5-4766-96d8-2e3655225a74",
     "create_tool": "create_1_direction_object",
-    "animate_tool": "animate_object"
+    "animate_tool": "animate_object",
+    "create_params": {
+      "size": 256,
+      "view": "top-down",
+      "description": "one single fiery magical cast-flash burst, dark fantasy pixel art seen directly from above, a solid filled glowing core of saturated red-orange fire with soft blurred edges, warm golden highlights at the very center, one centered symmetric burst on empty background, no hammer, no weapon, no character, no hands, no ground, no other objects, no border decoration, no text"
+    },
+    "animate_params": {
+      "mode": "v3",
+      "frame_count": 8,
+      "animation_description": "a single flash burst with exactly one size arc: it starts as a small dim glowing ember in frame one, rapidly and smoothly grows bigger and brighter every frame until it reaches its single biggest brightest widest point around the middle frame, then smoothly and monotonically shrinks and dims every following frame, ending smaller and dimmer than the peak in the last frame; every frame after the peak is strictly smaller than every frame before it at the same distance from the peak; always a solid filled glowing red-orange core, never a hollow ring, never fully empty or invisible; nothing else appears, nothing is added and nothing leaves the frame"
+    }
   },
   "frames": [
     {
       "file": "hammer_cast_flash_f00.png",
-      "bytes": 17699,
+      "bytes": 14007,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f01.png",
-      "bytes": 19296,
+      "bytes": 21943,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f02.png",
-      "bytes": 14222,
+      "bytes": 13930,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f03.png",
-      "bytes": 12252,
+      "bytes": 12610,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f04.png",
-      "bytes": 10411,
+      "bytes": 12795,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f05.png",
-      "bytes": 8146,
+      "bytes": 11261,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f06.png",
-      "bytes": 6701,
+      "bytes": 7170,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f07.png",
-      "bytes": 15085,
+      "bytes": 5734,
       "url_kind": "template"
     },
     {
       "file": "hammer_cast_flash_f08.png",
-      "bytes": 14122,
+      "bytes": 4280,
       "url_kind": "template"
     }
   ],
   "frame_count": 9,
-  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  "rework_note": "QA FAN-3011 FAILED the previous candidate (object e581e7ec) for a silhouette that flickered between a filled blob and a hollow ring across its 9 frames. Regenerated with an explicit single grow-peak-shrink arc and an explicit 'never a hollow ring' clause; alpha>10 area per frame now [26492, 29624, 30460, 25487, 27765, 23899, 15297, 7812, 2846] px - clean unimodal rise to a peak around frame 2 then a monotonic decay to a small ember, silhouette stays a solid filled burst in every frame.",
+  "auth": "PIXELLAB_BEARER_TOKEN env, resolved from AUTH_HEADER in ~/.codex/config.toml; never committed, never printed"
 }
