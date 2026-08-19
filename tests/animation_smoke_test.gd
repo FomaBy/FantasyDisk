@@ -1145,6 +1145,11 @@ func _test_full_frame_animation_registry() -> void:
 		"ash_marksman": {"idle": 1, "move": 6, "attack": 7, "hit": 5, "death": 7},
 		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+		# FAN-2619: winged_spark is flying, so its idle_<dir> rows carry a
+		# 6-frame hover-flap loop instead of the 1-frame static rotation pose
+		# other directional packs use for idle (a flying actor has no separate
+		# "hover" state name in the resolver).
+		"winged_spark": {"idle": 6, "move": 6, "attack": 6, "hit": 4, "death": 6},
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
@@ -1183,11 +1188,10 @@ func _test_full_frame_animation_registry() -> void:
 			for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
 				if enemy_frames.get_animation_loop(one_shot_name):
 					_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
-		if enemy_id == "winged_spark":
-			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
-				_fail("Expected winged_spark hover_flap to have 6 frames.")
-			elif not enemy_frames.get_animation_loop("hover_flap"):
-				_fail("Expected winged_spark hover_flap to loop.")
+		# FAN-2619: winged_spark converted to the explicit-eight-direction
+		# contract; the old undirected "hover_flap" row (checked here before
+		# FAN-2619) no longer exists -- idle_<dir> above now carries the
+		# hover-flap loop for every direction instead.
 		if enemy_id == "rift_cutter":
 			# FAN-2609: explicit 8-direction runtime contract — every state must
 			# expose all eight `<state>_<suffix>` rows, never a mirrored fallback.

@@ -463,6 +463,36 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   `tests/animation_smoke_test.gd` pass, and `build/qa/animation_roster_audit/`
   carries the contact sheets. AI, collision, damage and encounter timing are
   unchanged — registry-only visual integration.
+- FAN-2619 (2026-08-19) converts the first flying `standard_monster`: `enemy/winged_spark`.
+  PixelLab MCP humanoid character `918ad402-d90d-49bb-ac6a-1897e112cfcb`
+  (64x64px low top-down, v3 mode, 8 rotations) plus five v3 custom animation
+  groups — `idle` ("hovering in place in mid-air, wings flapping steadily up
+  and down, body bobbing gently with each flap, legs dangling loose", 6f),
+  `move` ("flying forward aggressively, powerful wing beats propelling the
+  body ahead...", 6f), `attack` ("lunging forward in mid-air with a vicious
+  clawed swipe attack...", 6f), `hit` ("recoiling in pain from a hit while
+  airborne...", 4f), `death` ("dying and falling out of the sky, wings
+  crumpling and going limp...", 6f) — each generated for all 8 directions (no
+  separate `hover` row: winged_spark is flying, so its `idle_<dir>` rows
+  themselves carry the hover-flap loop instead of a static rest pose; the
+  runtime resolver has no distinct "hover" state name, only `idle`/`move`/
+  `attack`/`hit`/`death`). Source frames live under
+  `assets/sprites/enemies/pixellab/winged_spark/` with `manifest.json` and
+  `alpha_bbox_report.json`; runtime frames are transparent `512x512` canvases
+  under `assets/sprites/enemies/full_frame/winged_spark/` normalized to
+  `245px` visible height / `32px` bottom padding (fleet standard), same as the
+  FAN-2613/FAN-2628 precedent. `winged_spark_spriteframes.tres` exposes
+  exactly `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` for all 8 directions (40 rows, no undirected fallback rows)
+  and the registry entry sets `explicit_eight_directions: true`. Old
+  non-directional pack (flat `move`/`attack_primary`/`hover_flap`/`death`,
+  single west-facing source with flip-based mirroring) is backed up under
+  `docs/design/backups/fan2619_winged_spark_pre_directional/`. Build tooling:
+  `tools/build_fan2619_winged_spark_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack,
+  `tests/full_frame_registry_integrity_test.gd` and
+  `tests/content_registry_consistency_test.gd` pass. AI, collision, damage and
+  encounter timing are unchanged — registry-only visual integration.
 
 ## Player Motion
 
