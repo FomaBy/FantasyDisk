@@ -1,0 +1,67 @@
+{
+  "character_id": "iron_bastion",
+  "pixellab_character_id": "3fbeff55-6030-47be-8e8f-d1a4f3fb11a9",
+  "generated_at": "2026-08-19",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations, 8-dir humanoid) + template walking-8-frames (move) + template taking-punch (hit) + template falling-back-death (death) + v3 custom (attack, skill_shield_block, skill_slam_wave)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south_east",
+    "south",
+    "south_west",
+    "west",
+    "north_west",
+    "north",
+    "north_east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 8,
+      "template_animation_id": "walking-8-frames",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "swinging a heavy spiked flail mace overhead and smashing it down in a crushing strike",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 6,
+      "template_animation_id": "taking-punch",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 7,
+      "template_animation_id": "falling-back-death",
+      "fps": 10.0
+    },
+    "skill_shield_block": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "raising the heavy spiked tower shield up to brace behind it, the shield flaring with dark purple energy",
+      "fps": 12.0,
+      "note": "runtime state for elite_attack_id=shield_block windup/hold phase"
+    },
+    "skill_slam_wave": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "winding up then slamming the tower shield down into the ground, unleashing a ring of dark shockwave energy rippling outward",
+      "fps": 12.0,
+      "note": "runtime state for elite_attack_id=slam_wave windup/strike phase"
+    }
+  },
+  "notes": "FAN-2620: first FAN-2519 explicit-eight-direction pack for a route elite (iron_bastion). Replaces the FAN-2519 SCRUM-368 single west-facing flip-mirrored pack (backed up under docs/design/backups/fan2620_iron_bastion_pre_directional/). 8 idle rotations + 8x8 move + 8x6 attack/hit/skill_shield_block/skill_slam_wave + 8x7 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. No attack_primary/attack_<skill> alias rows (FAN-2613/FAN-2901 precedent: the directional contract drops them, gameplay only ever requests bare attack/skill_<id> state names for directional packs). No hover state (iron_bastion is ground-based, not flying)."
+}

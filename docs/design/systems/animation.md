@@ -437,6 +437,45 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   registry's own `explicit_eight_directions` flag instead of a hardcoded ID
   list. AI, collision, damage and encounter timing are unchanged —
   registry-only visual integration.
+- FAN-2620 (2026-08-19) converts the first route elite: `elite/iron_bastion`
+  (previously the last SCRUM-368 route elite still on a single west-facing
+  flip-mirrored pack, missing `idle`/`hit` coverage entirely). PixelLab MCP
+  humanoid character `3fbeff55-6030-47be-8e8f-d1a4f3fb11a9` (92x92px low
+  top-down, standard-mode 8 rotations) plus template `move`
+  (`walking-8-frames`, 8f), template `hit` (`taking-punch`, 6f), template
+  `death` (`falling-back-death`, 7f) and three v3 custom animation groups —
+  `attack` ("swinging a heavy spiked flail mace overhead...crushing
+  strike"), `skill_shield_block` ("raising the heavy spiked tower shield up
+  to brace behind it...dark purple energy"), `skill_slam_wave` ("winding up
+  then slamming the tower shield down...ring of dark shockwave energy") —
+  each 7f (v3 keeps the reference frame as frame 0), generated for all 8
+  directions (no hover row: iron_bastion is ground-based). Source frames
+  live under `assets/sprites/elites/pixellab/iron_bastion/` with
+  `manifest.json` and `alpha_bbox_report.json`; runtime frames are
+  transparent `512x512` canvases under
+  `assets/sprites/elites/full_frame/iron_bastion/` normalized to `245px`
+  visible height / `32px` bottom padding (fleet standard).
+  `iron_bastion_spriteframes.tres` exposes exactly `idle_<dir>` /
+  `move_<dir>` / `attack_<dir>` / `hit_<dir>` / `death_<dir>` /
+  `skill_shield_block_<dir>` / `skill_slam_wave_<dir>` for all 8 directions
+  (56 rows) — no `attack_primary`/`attack_shield_block`/`attack_slam_wave`
+  alias rows (FAN-2613/FAN-2901 precedent: gameplay only ever requests bare
+  `attack`/`skill_<id>` state names for directional packs) — and the
+  registry entry sets `explicit_eight_directions: true`. Old non-directional
+  pack (flat `attack`/`attack_primary`/`death`/`move`/`skill_shield_block`/
+  `attack_shield_block`/`skill_slam_wave`/`attack_slam_wave`, single
+  west-facing source with flip-based mirroring, no `idle`/`hit` rows) is
+  backed up under `docs/design/backups/fan2620_iron_bastion_pre_directional/`.
+  Build tooling: `tools/build_fan2620_iron_bastion_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack
+  (`Eight-direction live packs audited: 6`),
+  `tests/full_frame_registry_integrity_test.gd` and
+  `tests/content_registry_consistency_test.gd` pass, and
+  `tests/animation_smoke_test.gd` was generalized (route-elite loop) to
+  branch on the registry's own `explicit_eight_directions` flag instead of a
+  hardcoded ID list, matching the FAN-2613/FAN-2901 pattern. AI, collision,
+  damage and encounter timing are unchanged — registry-only visual
+  integration.
 
 ## Player Motion
 

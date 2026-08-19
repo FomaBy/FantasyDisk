@@ -1,0 +1,10090 @@
+{
+  "idle_east": [
+    {
+      "source": "iron_bastion_idle_east.png",
+      "runtime": "iron_bastion_idle_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "iron_bastion_idle_south_east.png",
+      "runtime": "iron_bastion_idle_south_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "iron_bastion_idle_south.png",
+      "runtime": "iron_bastion_idle_south.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "iron_bastion_idle_south_west.png",
+      "runtime": "iron_bastion_idle_south_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "iron_bastion_idle_west.png",
+      "runtime": "iron_bastion_idle_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "iron_bastion_idle_north_west.png",
+      "runtime": "iron_bastion_idle_north_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "iron_bastion_idle_north.png",
+      "runtime": "iron_bastion_idle_north.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        65,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "iron_bastion_idle_north_east.png",
+      "runtime": "iron_bastion_idle_north_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        15,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "iron_bastion_move_east_00.png",
+      "runtime": "iron_bastion_move_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        38,
+        15,
+        56,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        67,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        222,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_01.png",
+      "runtime": "iron_bastion_move_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        59,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        89,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_02.png",
+      "runtime": "iron_bastion_move_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        59,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        117,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_03.png",
+      "runtime": "iron_bastion_move_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        32,
+        15,
+        55,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        88,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        300,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_04.png",
+      "runtime": "iron_bastion_move_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        38,
+        15,
+        56,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        68,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        222,
+        235,
+        290,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_05.png",
+      "runtime": "iron_bastion_move_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        15,
+        61,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_06.png",
+      "runtime": "iron_bastion_move_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        15,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_east_07.png",
+      "runtime": "iron_bastion_move_east_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        15,
+        56,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "iron_bastion_move_south_east_00.png",
+      "runtime": "iron_bastion_move_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        56,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        104,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_01.png",
+      "runtime": "iron_bastion_move_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        61,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_02.png",
+      "runtime": "iron_bastion_move_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        60,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_03.png",
+      "runtime": "iron_bastion_move_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        57,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        109,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_04.png",
+      "runtime": "iron_bastion_move_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        56,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        106,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_05.png",
+      "runtime": "iron_bastion_move_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_06.png",
+      "runtime": "iron_bastion_move_south_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_east_07.png",
+      "runtime": "iron_bastion_move_south_east_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "iron_bastion_move_south_00.png",
+      "runtime": "iron_bastion_move_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        136,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_01.png",
+      "runtime": "iron_bastion_move_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        63,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_02.png",
+      "runtime": "iron_bastion_move_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        63,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_03.png",
+      "runtime": "iron_bastion_move_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        63,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_04.png",
+      "runtime": "iron_bastion_move_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        64,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_05.png",
+      "runtime": "iron_bastion_move_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_06.png",
+      "runtime": "iron_bastion_move_south_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        65,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_07.png",
+      "runtime": "iron_bastion_move_south_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "iron_bastion_move_south_west_00.png",
+      "runtime": "iron_bastion_move_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_01.png",
+      "runtime": "iron_bastion_move_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        69,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_02.png",
+      "runtime": "iron_bastion_move_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        70,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_03.png",
+      "runtime": "iron_bastion_move_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        70,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_04.png",
+      "runtime": "iron_bastion_move_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        70,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_05.png",
+      "runtime": "iron_bastion_move_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        70,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_06.png",
+      "runtime": "iron_bastion_move_south_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        70,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_south_west_07.png",
+      "runtime": "iron_bastion_move_south_west_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        69,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "iron_bastion_move_west_00.png",
+      "runtime": "iron_bastion_move_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_01.png",
+      "runtime": "iron_bastion_move_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        63,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_02.png",
+      "runtime": "iron_bastion_move_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_03.png",
+      "runtime": "iron_bastion_move_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        63,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_04.png",
+      "runtime": "iron_bastion_move_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_05.png",
+      "runtime": "iron_bastion_move_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_06.png",
+      "runtime": "iron_bastion_move_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_west_07.png",
+      "runtime": "iron_bastion_move_west_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "iron_bastion_move_north_west_00.png",
+      "runtime": "iron_bastion_move_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_01.png",
+      "runtime": "iron_bastion_move_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        65,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_02.png",
+      "runtime": "iron_bastion_move_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_03.png",
+      "runtime": "iron_bastion_move_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_04.png",
+      "runtime": "iron_bastion_move_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_05.png",
+      "runtime": "iron_bastion_move_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        64,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_06.png",
+      "runtime": "iron_bastion_move_north_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        64,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_west_07.png",
+      "runtime": "iron_bastion_move_north_west_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "iron_bastion_move_north_00.png",
+      "runtime": "iron_bastion_move_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_01.png",
+      "runtime": "iron_bastion_move_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        132,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_02.png",
+      "runtime": "iron_bastion_move_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_03.png",
+      "runtime": "iron_bastion_move_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_04.png",
+      "runtime": "iron_bastion_move_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        65,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_05.png",
+      "runtime": "iron_bastion_move_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_06.png",
+      "runtime": "iron_bastion_move_north_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        136,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_07.png",
+      "runtime": "iron_bastion_move_north_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "iron_bastion_move_north_east_00.png",
+      "runtime": "iron_bastion_move_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_01.png",
+      "runtime": "iron_bastion_move_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        15,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_02.png",
+      "runtime": "iron_bastion_move_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_03.png",
+      "runtime": "iron_bastion_move_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_04.png",
+      "runtime": "iron_bastion_move_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        66,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_05.png",
+      "runtime": "iron_bastion_move_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        32,
+        15,
+        67,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_06.png",
+      "runtime": "iron_bastion_move_north_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        15,
+        68,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_move_north_east_07.png",
+      "runtime": "iron_bastion_move_north_east_07.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        66,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "iron_bastion_attack_east_00.png",
+      "runtime": "iron_bastion_attack_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_01.png",
+      "runtime": "iron_bastion_attack_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        37,
+        21,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        126,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_02.png",
+      "runtime": "iron_bastion_attack_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        40,
+        20,
+        65,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        94,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        235,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_03.png",
+      "runtime": "iron_bastion_attack_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        17,
+        60,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_04.png",
+      "runtime": "iron_bastion_attack_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        60,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_05.png",
+      "runtime": "iron_bastion_attack_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        40,
+        21,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_east_06.png",
+      "runtime": "iron_bastion_attack_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        38,
+        20,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "iron_bastion_attack_south_east_00.png",
+      "runtime": "iron_bastion_attack_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_01.png",
+      "runtime": "iron_bastion_attack_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        17,
+        61,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_02.png",
+      "runtime": "iron_bastion_attack_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        12,
+        17,
+        60,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_03.png",
+      "runtime": "iron_bastion_attack_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        14,
+        17,
+        60,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_04.png",
+      "runtime": "iron_bastion_attack_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        19,
+        86,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_05.png",
+      "runtime": "iron_bastion_attack_south_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        35,
+        20,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_east_06.png",
+      "runtime": "iron_bastion_attack_south_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        19,
+        85,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "iron_bastion_attack_south_00.png",
+      "runtime": "iron_bastion_attack_south_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_01.png",
+      "runtime": "iron_bastion_attack_south_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        19,
+        74,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        179,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_02.png",
+      "runtime": "iron_bastion_attack_south_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        14,
+        18,
+        77,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        237,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_03.png",
+      "runtime": "iron_bastion_attack_south_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        16,
+        85,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        260,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        386,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_04.png",
+      "runtime": "iron_bastion_attack_south_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        19,
+        19,
+        84,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_05.png",
+      "runtime": "iron_bastion_attack_south_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        21,
+        87,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        217,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_06.png",
+      "runtime": "iron_bastion_attack_south_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        18,
+        89,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        267,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        389,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "iron_bastion_attack_south_west_00.png",
+      "runtime": "iron_bastion_attack_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_01.png",
+      "runtime": "iron_bastion_attack_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        20,
+        74,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_02.png",
+      "runtime": "iron_bastion_attack_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        18,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_03.png",
+      "runtime": "iron_bastion_attack_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        14,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_04.png",
+      "runtime": "iron_bastion_attack_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        42,
+        17,
+        82,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_05.png",
+      "runtime": "iron_bastion_attack_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_south_west_06.png",
+      "runtime": "iron_bastion_attack_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        205,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        359,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "iron_bastion_attack_west_00.png",
+      "runtime": "iron_bastion_attack_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_01.png",
+      "runtime": "iron_bastion_attack_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        65,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_02.png",
+      "runtime": "iron_bastion_attack_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        19,
+        62,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_03.png",
+      "runtime": "iron_bastion_attack_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        14,
+        63,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        110,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_04.png",
+      "runtime": "iron_bastion_attack_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        40,
+        22,
+        87,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_05.png",
+      "runtime": "iron_bastion_attack_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        39,
+        21,
+        82,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_west_06.png",
+      "runtime": "iron_bastion_attack_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        14,
+        20,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "iron_bastion_attack_north_west_00.png",
+      "runtime": "iron_bastion_attack_north_west_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        73,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_01.png",
+      "runtime": "iron_bastion_attack_north_west_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        79,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_02.png",
+      "runtime": "iron_bastion_attack_north_west_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        32,
+        20,
+        83,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_03.png",
+      "runtime": "iron_bastion_attack_north_west_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        39,
+        21,
+        77,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_04.png",
+      "runtime": "iron_bastion_attack_north_west_04.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        7,
+        16,
+        67,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_05.png",
+      "runtime": "iron_bastion_attack_north_west_05.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        21,
+        69,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_west_06.png",
+      "runtime": "iron_bastion_attack_north_west_06.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        19,
+        22,
+        68,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "iron_bastion_attack_north_00.png",
+      "runtime": "iron_bastion_attack_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_01.png",
+      "runtime": "iron_bastion_attack_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_02.png",
+      "runtime": "iron_bastion_attack_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        22,
+        15,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_03.png",
+      "runtime": "iron_bastion_attack_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_04.png",
+      "runtime": "iron_bastion_attack_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        69,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_05.png",
+      "runtime": "iron_bastion_attack_north_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        76,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_06.png",
+      "runtime": "iron_bastion_attack_north_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        73,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "iron_bastion_attack_north_east_00.png",
+      "runtime": "iron_bastion_attack_north_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_01.png",
+      "runtime": "iron_bastion_attack_north_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_02.png",
+      "runtime": "iron_bastion_attack_north_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        19,
+        60,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_03.png",
+      "runtime": "iron_bastion_attack_north_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        19,
+        60,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_04.png",
+      "runtime": "iron_bastion_attack_north_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        19,
+        60,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_05.png",
+      "runtime": "iron_bastion_attack_north_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        20,
+        82,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        223,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_attack_north_east_06.png",
+      "runtime": "iron_bastion_attack_north_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        20,
+        78,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "iron_bastion_hit_east_00.png",
+      "runtime": "iron_bastion_hit_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        20,
+        64,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_east_01.png",
+      "runtime": "iron_bastion_hit_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        10,
+        18,
+        64,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_east_02.png",
+      "runtime": "iron_bastion_hit_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        20,
+        63,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_east_03.png",
+      "runtime": "iron_bastion_hit_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        21,
+        63,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        223,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_east_04.png",
+      "runtime": "iron_bastion_hit_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        22,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        206,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        153,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_east_05.png",
+      "runtime": "iron_bastion_hit_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        6,
+        24,
+        64,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        263,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        387,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "iron_bastion_hit_south_east_00.png",
+      "runtime": "iron_bastion_hit_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        19,
+        63,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_east_01.png",
+      "runtime": "iron_bastion_hit_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        15,
+        63,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_east_02.png",
+      "runtime": "iron_bastion_hit_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        64,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_east_03.png",
+      "runtime": "iron_bastion_hit_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        64,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_east_04.png",
+      "runtime": "iron_bastion_hit_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        18,
+        63,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        205,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_east_05.png",
+      "runtime": "iron_bastion_hit_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        23,
+        77,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "iron_bastion_hit_south_00.png",
+      "runtime": "iron_bastion_hit_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        17,
+        62,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        136,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_01.png",
+      "runtime": "iron_bastion_hit_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        64,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_02.png",
+      "runtime": "iron_bastion_hit_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_03.png",
+      "runtime": "iron_bastion_hit_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        10,
+        62,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_04.png",
+      "runtime": "iron_bastion_hit_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        58,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        106,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_05.png",
+      "runtime": "iron_bastion_hit_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        19,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "iron_bastion_hit_south_west_00.png",
+      "runtime": "iron_bastion_hit_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        57,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_west_01.png",
+      "runtime": "iron_bastion_hit_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        59,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        111,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_west_02.png",
+      "runtime": "iron_bastion_hit_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        16,
+        67,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_west_03.png",
+      "runtime": "iron_bastion_hit_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        15,
+        63,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        113,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_west_04.png",
+      "runtime": "iron_bastion_hit_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        58,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        109,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_south_west_05.png",
+      "runtime": "iron_bastion_hit_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        22,
+        56,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "iron_bastion_hit_west_00.png",
+      "runtime": "iron_bastion_hit_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        75,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_west_01.png",
+      "runtime": "iron_bastion_hit_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        76,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_west_02.png",
+      "runtime": "iron_bastion_hit_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        22,
+        73,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        188,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_west_03.png",
+      "runtime": "iron_bastion_hit_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        72,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        182,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_west_04.png",
+      "runtime": "iron_bastion_hit_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        75,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_west_05.png",
+      "runtime": "iron_bastion_hit_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        19,
+        72,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "iron_bastion_hit_north_west_00.png",
+      "runtime": "iron_bastion_hit_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_west_01.png",
+      "runtime": "iron_bastion_hit_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        75,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_west_02.png",
+      "runtime": "iron_bastion_hit_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        76,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_west_03.png",
+      "runtime": "iron_bastion_hit_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        71,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_west_04.png",
+      "runtime": "iron_bastion_hit_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        15,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_west_05.png",
+      "runtime": "iron_bastion_hit_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        72,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        161,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "iron_bastion_hit_north_00.png",
+      "runtime": "iron_bastion_hit_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        16,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        113,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_01.png",
+      "runtime": "iron_bastion_hit_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        15,
+        56,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_02.png",
+      "runtime": "iron_bastion_hit_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        22,
+        63,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_03.png",
+      "runtime": "iron_bastion_hit_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        18,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_04.png",
+      "runtime": "iron_bastion_hit_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        18,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        105,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_05.png",
+      "runtime": "iron_bastion_hit_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        17,
+        61,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "iron_bastion_hit_north_east_00.png",
+      "runtime": "iron_bastion_hit_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        16,
+        65,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        119,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_east_01.png",
+      "runtime": "iron_bastion_hit_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        32,
+        14,
+        65,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_east_02.png",
+      "runtime": "iron_bastion_hit_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        19,
+        59,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_east_03.png",
+      "runtime": "iron_bastion_hit_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        61,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        127,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_east_04.png",
+      "runtime": "iron_bastion_hit_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        18,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        126,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_hit_north_east_05.png",
+      "runtime": "iron_bastion_hit_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        20,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "iron_bastion_death_east_00.png",
+      "runtime": "iron_bastion_death_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        19,
+        68,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_01.png",
+      "runtime": "iron_bastion_death_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        19,
+        68,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_02.png",
+      "runtime": "iron_bastion_death_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        25,
+        65,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_03.png",
+      "runtime": "iron_bastion_death_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        19,
+        71,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_04.png",
+      "runtime": "iron_bastion_death_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        17,
+        73,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_05.png",
+      "runtime": "iron_bastion_death_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        30,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        41
+      ],
+      "scale": 5.975609756097561,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_east_06.png",
+      "runtime": "iron_bastion_death_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        39,
+        74,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        23
+      ],
+      "scale": 8.39344262295082,
+      "resized_visible_size": [
+        512,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        287,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "iron_bastion_death_south_east_00.png",
+      "runtime": "iron_bastion_death_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        19,
+        67,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        221,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_01.png",
+      "runtime": "iron_bastion_death_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        10,
+        17,
+        64,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        217,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_02.png",
+      "runtime": "iron_bastion_death_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        19,
+        66,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_03.png",
+      "runtime": "iron_bastion_death_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        73,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_04.png",
+      "runtime": "iron_bastion_death_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        18,
+        77,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        279,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_05.png",
+      "runtime": "iron_bastion_death_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        10,
+        24,
+        78,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        387,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        62,
+        235,
+        449,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_east_06.png",
+      "runtime": "iron_bastion_death_south_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        18,
+        78,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        381,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        235,
+        447,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "iron_bastion_death_south_00.png",
+      "runtime": "iron_bastion_death_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        76,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        182,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_01.png",
+      "runtime": "iron_bastion_death_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        58,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        113,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_02.png",
+      "runtime": "iron_bastion_death_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        62,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_03.png",
+      "runtime": "iron_bastion_death_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        16,
+        66,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_04.png",
+      "runtime": "iron_bastion_death_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        18,
+        81,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        273,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_05.png",
+      "runtime": "iron_bastion_death_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        22,
+        78,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_06.png",
+      "runtime": "iron_bastion_death_south_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        7,
+        31,
+        83,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        396,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        235,
+        454,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "iron_bastion_death_south_west_00.png",
+      "runtime": "iron_bastion_death_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        18,
+        87,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        323,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        235,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_01.png",
+      "runtime": "iron_bastion_death_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        16,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_02.png",
+      "runtime": "iron_bastion_death_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        16,
+        84,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        306,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        103,
+        235,
+        409,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_03.png",
+      "runtime": "iron_bastion_death_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        16,
+        78,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_04.png",
+      "runtime": "iron_bastion_death_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        19,
+        86,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        372,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        235,
+        442,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_05.png",
+      "runtime": "iron_bastion_death_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        26,
+        78,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        352,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        235,
+        432,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_south_west_06.png",
+      "runtime": "iron_bastion_death_south_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        0,
+        33,
+        90,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        38
+      ],
+      "scale": 5.688888888888889,
+      "resized_visible_size": [
+        512,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        264,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "iron_bastion_death_west_00.png",
+      "runtime": "iron_bastion_death_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        15,
+        74,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_01.png",
+      "runtime": "iron_bastion_death_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        25,
+        16,
+        59,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_02.png",
+      "runtime": "iron_bastion_death_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        24,
+        71,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        254,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_03.png",
+      "runtime": "iron_bastion_death_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        21,
+        67,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_04.png",
+      "runtime": "iron_bastion_death_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        80,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        311,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_05.png",
+      "runtime": "iron_bastion_death_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        34,
+        76,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        33
+      ],
+      "scale": 7.424242424242424,
+      "resized_visible_size": [
+        431,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        40,
+        235,
+        471,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_west_06.png",
+      "runtime": "iron_bastion_death_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        40,
+        79,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        28
+      ],
+      "scale": 8.533333333333333,
+      "resized_visible_size": [
+        512,
+        239
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        241,
+        512,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "iron_bastion_death_north_west_00.png",
+      "runtime": "iron_bastion_death_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        69,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_01.png",
+      "runtime": "iron_bastion_death_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        66,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_02.png",
+      "runtime": "iron_bastion_death_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        26,
+        69,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        230,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_03.png",
+      "runtime": "iron_bastion_death_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        23,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_04.png",
+      "runtime": "iron_bastion_death_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        57,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_05.png",
+      "runtime": "iron_bastion_death_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        26,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        304,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        235,
+        408,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_west_06.png",
+      "runtime": "iron_bastion_death_north_west_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        37,
+        77,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        33
+      ],
+      "scale": 7.424242424242424,
+      "resized_visible_size": [
+        483,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        14,
+        235,
+        497,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "iron_bastion_death_north_00.png",
+      "runtime": "iron_bastion_death_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        38,
+        15,
+        82,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_01.png",
+      "runtime": "iron_bastion_death_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        37,
+        16,
+        70,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_02.png",
+      "runtime": "iron_bastion_death_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        24,
+        76,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_03.png",
+      "runtime": "iron_bastion_death_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        20,
+        61,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_04.png",
+      "runtime": "iron_bastion_death_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        20,
+        62,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_05.png",
+      "runtime": "iron_bastion_death_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        29,
+        73,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        39
+      ],
+      "scale": 6.282051282051282,
+      "resized_visible_size": [
+        408,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        235,
+        460,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_06.png",
+      "runtime": "iron_bastion_death_north_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        7,
+        38,
+        70,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        40
+      ],
+      "scale": 6.125,
+      "resized_visible_size": [
+        386,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        235,
+        449,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "iron_bastion_death_north_east_00.png",
+      "runtime": "iron_bastion_death_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        38,
+        18,
+        66,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        111,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_01.png",
+      "runtime": "iron_bastion_death_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        36,
+        19,
+        60,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_02.png",
+      "runtime": "iron_bastion_death_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        27,
+        72,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_03.png",
+      "runtime": "iron_bastion_death_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        24,
+        73,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        286,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        113,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_04.png",
+      "runtime": "iron_bastion_death_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        22,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        40
+      ],
+      "scale": 6.125,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_05.png",
+      "runtime": "iron_bastion_death_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        31,
+        62,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        32
+      ],
+      "scale": 7.65625,
+      "resized_visible_size": [
+        337,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_death_north_east_06.png",
+      "runtime": "iron_bastion_death_north_east_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        40,
+        71,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        27
+      ],
+      "scale": 9.074074074074074,
+      "resized_visible_size": [
+        490,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        11,
+        235,
+        501,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_east": [
+    {
+      "source": "iron_bastion_skill_shield_block_east_00.png",
+      "runtime": "iron_bastion_skill_shield_block_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_01.png",
+      "runtime": "iron_bastion_skill_shield_block_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_02.png",
+      "runtime": "iron_bastion_skill_shield_block_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        19,
+        67,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_03.png",
+      "runtime": "iron_bastion_skill_shield_block_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_04.png",
+      "runtime": "iron_bastion_skill_shield_block_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        20,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        222,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_05.png",
+      "runtime": "iron_bastion_skill_shield_block_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        18,
+        84,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_east_06.png",
+      "runtime": "iron_bastion_skill_shield_block_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        19,
+        83,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_south_east": [
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_00.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_01.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_02.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_03.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        80,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_04.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        11,
+        81,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        74
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        175,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_05.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        81,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_east_06.png",
+      "runtime": "iron_bastion_skill_shield_block_south_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        81,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_south": [
+    {
+      "source": "iron_bastion_skill_shield_block_south_00.png",
+      "runtime": "iron_bastion_skill_shield_block_south_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_01.png",
+      "runtime": "iron_bastion_skill_shield_block_south_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        19,
+        72,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        158,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_02.png",
+      "runtime": "iron_bastion_skill_shield_block_south_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        19,
+        73,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_03.png",
+      "runtime": "iron_bastion_skill_shield_block_south_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        75,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_04.png",
+      "runtime": "iron_bastion_skill_shield_block_south_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        76,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        180,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        346,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_05.png",
+      "runtime": "iron_bastion_skill_shield_block_south_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        77,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_06.png",
+      "runtime": "iron_bastion_skill_shield_block_south_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        76,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_south_west": [
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_00.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_01.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_02.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        19,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_03.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        18,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        208,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        360,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_04.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        72
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_05.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        72
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_south_west_06.png",
+      "runtime": "iron_bastion_skill_shield_block_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        15,
+        80,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        203,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        357,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_west": [
+    {
+      "source": "iron_bastion_skill_shield_block_west_00.png",
+      "runtime": "iron_bastion_skill_shield_block_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_01.png",
+      "runtime": "iron_bastion_skill_shield_block_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        35,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        126,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_02.png",
+      "runtime": "iron_bastion_skill_shield_block_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        18,
+        66,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        124,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_03.png",
+      "runtime": "iron_bastion_skill_shield_block_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        61,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_04.png",
+      "runtime": "iron_bastion_skill_shield_block_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        62,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_05.png",
+      "runtime": "iron_bastion_skill_shield_block_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        18,
+        63,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_west_06.png",
+      "runtime": "iron_bastion_skill_shield_block_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        64,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_north_west": [
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_00.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        73,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_01.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        29,
+        22,
+        74,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_02.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        26,
+        24,
+        75,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        191,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_03.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        24,
+        20,
+        76,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        190,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_04.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_04.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        76,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_05.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_05.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        76,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        72
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_west_06.png",
+      "runtime": "iron_bastion_skill_shield_block_north_west_06.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        25,
+        19,
+        76,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_north": [
+    {
+      "source": "iron_bastion_skill_shield_block_north_00.png",
+      "runtime": "iron_bastion_skill_shield_block_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_01.png",
+      "runtime": "iron_bastion_skill_shield_block_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        15,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_02.png",
+      "runtime": "iron_bastion_skill_shield_block_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        13,
+        66,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        131,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_03.png",
+      "runtime": "iron_bastion_skill_shield_block_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        12,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_04.png",
+      "runtime": "iron_bastion_skill_shield_block_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        11,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        131,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_05.png",
+      "runtime": "iron_bastion_skill_shield_block_north_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        14,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_06.png",
+      "runtime": "iron_bastion_skill_shield_block_north_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "skill_shield_block_north_east": [
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_00.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_01.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_02.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_03.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        18,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_04.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_05.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        14,
+        78,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        179,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_shield_block_north_east_06.png",
+      "runtime": "iron_bastion_skill_shield_block_north_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        76,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_east": [
+    {
+      "source": "iron_bastion_skill_slam_wave_east_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        71,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        24,
+        67,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        22,
+        66,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        20,
+        68,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_east_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_south_east": [
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        75,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        19,
+        79,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        171,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        24,
+        76,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        192,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        34,
+        25,
+        71,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        35,
+        23,
+        71,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_east_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        35,
+        23,
+        69,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_south": [
+    {
+      "source": "iron_bastion_skill_slam_wave_south_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        71,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        72,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        19,
+        20,
+        81,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        237,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        20,
+        76,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        77,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_south_west": [
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        78,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        69
+      ],
+      "scale": 3.550724637681159,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        72,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        20,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_south_west_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        20,
+        72,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_west": [
+    {
+      "source": "iron_bastion_skill_slam_wave_west_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        69,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        19,
+        67,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        19,
+        73,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        179,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        18,
+        78,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        64,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_west_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        19,
+        68,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_north_west": [
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        73,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        73,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        73,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        164,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        338,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        25,
+        20,
+        73,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_04.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        71,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        140,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_05.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        32,
+        14,
+        71,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        74
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        129,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_west_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_west_06.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        31,
+        10,
+        72,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        78
+      ],
+      "scale": 3.141025641025641,
+      "resized_visible_size": [
+        129,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_north": [
+    {
+      "source": "iron_bastion_skill_slam_wave_north_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        66,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        145,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        66,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        68
+      ],
+      "scale": 3.6029411764705883,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        30,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        31,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        31,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        31,
+        67,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    }
+  ],
+  "skill_slam_wave_north_east": [
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_00.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        19,
+        73,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_01.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        19,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_02.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        19,
+        19,
+        70,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_03.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        35,
+        22,
+        65,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        117,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_04.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        21,
+        82,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        188,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_05.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        20,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "iron_bastion_skill_slam_wave_north_east_06.png",
+      "runtime": "iron_bastion_skill_slam_wave_north_east_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        33,
+        20,
+        74,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    }
+  ]
+}

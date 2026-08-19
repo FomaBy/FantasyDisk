@@ -169,6 +169,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.70, 0.70),
 			"position": Vector2(0.0, -82.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
