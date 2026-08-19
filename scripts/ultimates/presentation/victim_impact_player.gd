@@ -65,6 +65,7 @@ var pool_cap := POOL_CAP
 var degrade_threshold := DEGRADE_VICTIM_THRESHOLD
 
 var _frames: SpriteFrames = null
+var _pending_seq := 0
 var _pool: Array[AnimatedSprite2D] = []
 var _active: Array[Dictionary] = []
 var _pending: Array[Dictionary] = []
@@ -81,25 +82,45 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
-## Schedule one impact per victim, as a wave running outward from the cast
-## point. Returns the same Dictionary as `snapshot()`, so a caller can log the
-## plan (wave stagger, degradation) without reading this file.
+## Start a fresh ripple: one impact per victim, as a wave running outward from
+## the cast point. Returns the same Dictionary as `snapshot()`, so a caller can
+## log the plan (wave stagger, degradation) without reading this file.
 func play(frames: SpriteFrames, victims: Array, cast_position: Vector2) -> Dictionary:
 	_frames = frames
 	_pending.clear()
 	_peak_active = maxi(_peak_active, _active.size())
+	enqueue(victims, cast_position)
+	return snapshot()
+
+
+## Add one beat's victims to the running ripple. A multi-beat activation
+## (whirlwind sweeps, rift beats) lands beats closer together than the ripple
+## spans, so a later beat must join the queue, never replace it — `play()` is
+## the replace-flavoured entry point for single-burst callers. The wave index
+## keeps counting from the whole ripple's victim total, so an appended beat
+## still staggers outwards from the hero.
+func enqueue(victims: Array, cast_position: Vector2) -> void:
 	var targets := _ordered_victims(victims, cast_position)
-	_victims = targets.size()
+	if targets.is_empty():
+		return
+	_victims += targets.size()
 	_degraded = _victims > degrade_threshold
 	_stagger = stagger_frames(_victims)
-	var waves := wave_count(_victims)
-	for index in _victims:
-		var wave := index * waves / _victims
+	# The new beat's wave starts only after the queued one drains: the joined
+	# ripple then still reads as one cascade running outward from the hero,
+	# never as a nearer victim popping behind an already-fired farther one.
+	var base := 0.0
+	for entry in _pending:
+		base = maxf(base, float(entry["delay"]))
+	var waves := wave_count(targets.size())
+	for index in targets.size():
+		var wave := index * waves / targets.size()
 		_pending.append({
 			"victim": targets[index],
-			"delay": float(wave * _stagger) * FRAME_SECONDS,
+			"delay": base + float(wave * _stagger) * FRAME_SECONDS,
+			"seq": _pending_seq,
 		})
-	return snapshot()
+		_pending_seq += 1
 
 
 ## Drive the ripple. Pending entries are ordered by delay, so the ready ones are

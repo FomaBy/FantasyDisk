@@ -14,6 +14,8 @@ extends Node2D
 ## on top of the guaranteed outbound floor, and the execute rides only that leg.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/berserk/axe/victim_impact/victim_impact_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.berserk.axe"
 const EXECUTOR_ID := "weapon_ultimate.executor.berserk.axe"
@@ -29,6 +31,8 @@ var edge_for_tests := Vector2.ZERO
 var beat_trace_for_tests: Array[String] = []
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 var _resolved_beats := {}
 var _leased_statuses: Array[Dictionary] = []
 
@@ -148,6 +152,7 @@ func launch() -> void:
 			"loop:outbound",
 			"execution_loop_outbound"
 		)
+		_play_impacts([target])
 
 
 func turn() -> void:
@@ -172,6 +177,7 @@ func catch() -> void:
 		"shape": "axe_detonation",
 	})
 	var threshold: float = _activation.param_float("execute_threshold", 0.3)
+	var caught: Array[Node] = []
 	for raw_target in _corridor(edge_for_tests, source - edge_for_tests):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "return"):
@@ -182,6 +188,7 @@ func catch() -> void:
 			"loop:return",
 			"execution_loop_return"
 		)
+		caught.append(target)
 		# The outbound mark already recorded whether this tier may be executed.
 		var marked = _activation.consume_target_value(target, MARK_KEY, "loop:execute", false)
 		if not bool(marked):
@@ -199,6 +206,7 @@ func catch() -> void:
 			"loop:execute",
 			"execution_loop_execute"
 		)
+	_play_impacts(caught)
 
 
 func _corridor(start: Vector2, offset: Vector2) -> Array:
@@ -251,6 +259,23 @@ func _deal(target: Node, amount: float, event_id: String, mechanic: String) -> v
 		ultimate_damage_sink.call(
 			target, amount, {"ultimate_mechanic": mechanic}, event_id, false
 		)
+
+
+## Per-victim read (FAN-3008): every struck enemy pops its own cleaving burst
+## on top of its white hit flash, staggered outward from the hero. The return
+## leg joins the ripple the outbound pass started instead of replacing it.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _live() -> bool:

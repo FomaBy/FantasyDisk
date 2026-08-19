@@ -13,6 +13,8 @@ extends Node2D
 ## launches every survivor straight away from the hero.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/berserk/hammer/victim_impact/victim_impact_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.berserk.hammer"
 const EXECUTOR_ID := "weapon_ultimate.executor.berserk.hammer"
@@ -25,6 +27,8 @@ var staggered_count_for_tests := 0
 var lane_hits_for_tests := 0
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 var _next_step := 0
 var _leased_statuses: Array[Dictionary] = []
 
@@ -130,6 +134,7 @@ func _lanes(step: int) -> void:
 	})
 	# One event id per beat: the four lanes are one synchronized impact. Lane
 	# membership is attribution, so the beat itself walks every live enemy.
+	var crushed: Array[Node] = []
 	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -141,12 +146,15 @@ func _lanes(step: int) -> void:
 			"rift:" + step_id,
 			"fourfold_rift_" + step_id
 		)
+		crushed.append(target)
+	_play_impacts(crushed)
 
 
 func _central_quake() -> void:
 	var center: Vector2 = _activation.origin()
 	global_position = center
 	var radius: float = _activation.param_float("quake_radius", 330.0)
+	var crushed: Array[Node2D] = []
 	var impulse: float = _activation.param_float("stagger_impulse", 460.0)
 	_activation.present(EXECUTOR_ID + ".central_quake", {
 		"position": center, "radius": radius, "shape": "quake_ring",
@@ -155,6 +163,7 @@ func _central_quake() -> void:
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
+		crushed.append(target)
 		var outward := target.global_position - center
 		if outward.length_squared() <= 0.001:
 			outward = Vector2.RIGHT
@@ -179,6 +188,7 @@ func _central_quake() -> void:
 			"rift:central_quake",
 			"fourfold_rift_central_quake"
 		)
+	_play_impacts(crushed)
 
 
 func _lease_status(target: Node, status_id: String) -> void:
@@ -193,6 +203,24 @@ func _deal(target: Node, amount: float, event_id: String, mechanic: String) -> v
 		ultimate_damage_sink.call(
 			target, amount, {"ultimate_mechanic": mechanic}, event_id, false
 		)
+
+
+## Per-victim read (FAN-3008): every crushed enemy pops its own ground-shatter
+## burst on top of its white hit flash, staggered outward from the hero. Beats
+## land closer together than one ripple spans, so each beat joins the running
+## ripple instead of replacing it.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _live() -> bool:

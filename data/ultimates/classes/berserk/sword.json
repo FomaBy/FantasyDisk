@@ -5,21 +5,27 @@
   "profile_id": "weapon_ultimate.profile.berserk.sword",
   "executor_id": "weapon_ultimate.executor.berserk.sword",
   "implementation_state": "ready",
-  "targeting": {"strategy_id": "expanding_blade_orbits", "params": {}},
-  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "targeting": {
+    "strategy_id": "expanding_blade_orbits",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "rare_charge_ledger",
+    "params": {}
+  },
   "executor": {
     "strategy_id": "weapon_ultimate.executor.berserk.sword",
     "params": {
-      "lifetime": 7.45,
-      "release_delay": 0.6,
-      "sweep_interval": 0.55,
-      "sweep_count": 11,
+      "lifetime": 3.1,
+      "release_delay": 0.75,
+      "sweep_interval": 0.45,
+      "sweep_count": 6,
       "blade_count": 3,
-      "blade_hit_cooldown": 2.2,
+      "blade_hit_cooldown": 1.3,
       "orbit_start_radius": 190.0,
       "orbit_end_radius": 420.0,
       "blade_damage": 16.0,
-      "cross_at": 6.9,
+      "cross_at": 3.05,
       "cross_length": 300.0,
       "cross_half_width": 92.0,
       "cross_damage": 41.0,
@@ -30,5 +36,8 @@
     }
   },
   "total_boss_cap": 0.1,
-  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
 }

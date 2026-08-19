@@ -298,6 +298,13 @@ func _test_victim_impact_budget(errors: Array[String]) -> void:
 	# drops only the flash the setting owns.
 	var muted := _run_impacts(8, ImpactPlayer.DEGRADE_VICTIM_THRESHOLD, ImpactPlayer.POOL_CAP, false)
 	_expect(int(muted["flashes"]) == 0, "the combat-feedback setting must still gate the flash", errors)
+
+	# FAN-3012: a multi-beat activation enqueues later beats into the running
+	# ripple. No queued burst may be dropped by the join, and the merged spawn
+	# order must still run outward from the hero.
+	var joined := _run_joined_impacts()
+	_expect(int(joined["flashes"]) == 12, "a joined beat must keep every queued burst: %d flashes" % int(joined["flashes"]), errors)
+	_expect(bool(joined["ordered"]), "a joined beat must not break the outward ripple", errors)
 	_expect(int(muted["created_nodes"]) > 0, "a muted flash must not cancel the impact burst", errors)
 
 	# The map-wide case is the one the card is about: the crowd grows six-fold
@@ -433,6 +440,42 @@ func _run_impacts(victims: int, threshold: int, cap: int, feedback_enabled := tr
 	result["pooled_after_finish"] = int(player.snapshot()["pooled"])
 	player.free()
 	for victim in targets:
+		(victim as Node).free()
+	return result
+
+
+## Two beats of one activation sharing one ripple: the first beat pops six
+## victims, the ripple is advanced halfway, then the second beat's six victims
+## join the still-running queue.
+func _run_joined_impacts() -> Dictionary:
+	var player := ImpactPlayer.new()
+	var flash_log: Array = []
+	var beat_one: Array = []
+	var beat_two: Array = []
+	for index in 6:
+		var near := ImpactVictim.new()
+		near.flash_log = flash_log
+		near.position = Vector2(40.0 + float(index) * 30.0, 0.0)
+		beat_one.append(near)
+		var far := ImpactVictim.new()
+		far.flash_log = flash_log
+		far.position = Vector2(400.0 + float(index) * 30.0, 0.0)
+		beat_two.append(far)
+	player.play(ImpactFrames.make(), beat_one, Vector2.ZERO)
+	var halfway := player.burst_seconds() * 0.5
+	while halfway > 0.0:
+		player.advance(IMPACT_STEP_SECONDS)
+		halfway -= IMPACT_STEP_SECONDS
+	player.enqueue(beat_two, Vector2.ZERO)
+	var remaining := player.burst_seconds() + 1.0
+	while remaining > 0.0:
+		player.advance(IMPACT_STEP_SECONDS)
+		remaining -= IMPACT_STEP_SECONDS
+	var result := player.snapshot()
+	result["ordered"] = _is_outward(flash_log)
+	player.finish()
+	player.free()
+	for victim in beat_one + beat_two:
 		(victim as Node).free()
 	return result
 

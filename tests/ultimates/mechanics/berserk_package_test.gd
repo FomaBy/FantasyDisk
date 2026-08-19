@@ -28,10 +28,13 @@ const EXPECTED_FAMILIES := [
 	"status_zone",
 	"timed_modifier",
 ]
+# FAN-3012: lifetimes follow the authorized presentation manifest recovery
+# beats (2.5-4.0s Direction v2 corridor); the whirlwind compresses into five
+# round-robin sweeps that keep the frozen six-bite / 137-damage coefficient.
 const EXPECTED := {
-	"sword": {"blade_count": 3, "sweep_count": 11, "lifetime": 7.45},
-	"axe": {"boss_pass_cap": 2, "lifetime": 5.85},
-	"hammer": {"lifetime": 3.4},
+	"sword": {"blade_count": 3, "sweep_count": 6, "lifetime": 3.1},
+	"axe": {"boss_pass_cap": 2, "lifetime": 2.7},
+	"hammer": {"lifetime": 2.35},
 }
 
 var _errors: Array[String] = []

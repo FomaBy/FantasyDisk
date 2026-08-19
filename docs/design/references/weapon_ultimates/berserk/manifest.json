@@ -16,7 +16,7 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "pixellab_animation_source_for_sword_reused_approved_assets_for_the_other_two",
+    "route": "pixellab_animation_packs_for_the_whole_trio_fan3005",
     "pixellab_mcp_config_smoke": "PASS get_balance",
     "pixellab_mcp": "invoked for berserk/sword (FAN-2544): a new transparent-frame animation source via create_1_direction_object + animate_object; axe and hammer keep their accepted SCRUM-895 packs and are untouched by this card",
     "new_pixellab_assets": [
@@ -52,22 +52,23 @@
         "pixellab_animation_group_id": "4515832c-5217-444d-a1a4-b25f1090d435",
         "source_manifest": "docs/design/references/scrum895_berserk_axe_hammer_vfx/manifest.json"
       }
-    }
+    },
+    "fan3005_note": "FAN-3012 scene wiring: every berserk ultimate effect is a flipbook from the FAN-3005 packs (assets/sprites/effects/berserk/<weapon>/<effect>/); provenance per pack in provenance_manifest_fan3005_trio.json; the FAN-2544 sword blade-ghost frames remain the orbiting blade identity"
   },
   "weapons": [
     {
       "weapon_id": "sword",
       "title": "Алый Вихрь",
       "scene_path": "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
-      "silhouette": "three spectral two-handed swords",
-      "motion_path": "three expanding orbit spirals around the moving hero, accelerating into an inward cross-slash",
-      "impact_language": "synchronized inward cross-slash",
+      "silhouette": "three spectral two-handed swords in one scarlet vortex",
+      "motion_path": "cast flash ignites a spinning scarlet whirlwind of three orbiting blades that collapses inward in one flare",
+      "impact_language": "per-victim scarlet explosion on every swept enemy",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.6,
-        "active": 0.85,
-        "recovery": 7.45,
-        "cancel": 8.15
+        "release": 0.75,
+        "active": 1.0,
+        "recovery": 3.1,
+        "cancel": 3.8
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.berserk.sword.windup",
@@ -77,34 +78,55 @@
         "cancel": "weapon_ultimate.phase.berserk.sword.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 6,
+        "max_visual_nodes": 8,
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "per_blade_hit_cooldown_owner": "mechanics FAN-1462"
+        "per_blade_hit_cooldown_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 7 drawn nodes (backdrop veil, cast flash, looping whirlwind core, three orbiting blade ghosts, collapse flare) under an 8-node cap; one shared additive CanvasItemMaterial is the whole material budget"
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.28,
+        "max_viewport_coverage_ratio": 0.3,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the three scarlet blades hold their expanded orbit radius as still ghosts and the inward cross-slash fades in as a static pale cross, replacing the orbit spiral and the per-blade flame flicker",
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak, so the whirlwind reads as a calm spin",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "peak drawn box 0.2711 of a 1152x648 viewport at t=3.80s; hero-centred box x=404..822 y=82..566 leaves 82px clear above and below and stops 330px short of the right edge, where the ultimate HUD widget is anchored (TOP_RIGHT, offset -24,88). Scene geometry is unchanged by FAN-2544: the generated 256x256 frames occupy the same sprite rect at the same 0.44 scale as the sprite they replaced"
-      }
+        "measurement": "peak drawn box 0.30 of a 1152x648 viewport at t=2.2s on the regenerated berserk_ultimate_timelines_648p.png contact sheet; HUD bands untouched (ultimates draw between them)"
+      },
+      "timing_rhythm": "0.75s cast ceremony under a scarlet cast flash, the whirlwind bites from 1.0s with a 120ms hitstop, spins and grows to 3.0s, then collapses inward in one flare and recovers",
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/sword/whirlwind/whirlwind_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "packs_fan3005": [
+        "assets/sprites/effects/berserk/sword/whirlwind/whirlwind_spriteframes.tres",
+        "assets/sprites/effects/berserk/sword/cast_flash/cast_flash_spriteframes.tres",
+        "assets/sprites/effects/berserk/sword/victim_explosion/victim_explosion_spriteframes.tres"
+      ]
     },
     {
       "weapon_id": "axe",
       "title": "Петля Палача",
       "scene_path": "scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
-      "silhouette": "single giant spinning execution axe with rune chain",
-      "motion_path": "aimed outward arc to arena edge, turn, then heavy return catch",
-      "impact_language": "outbound execution mark and return detonation",
+      "silhouette": "one giant spinning execution axe whose whole arc is one slash",
+      "motion_path": "cast flash, then one aimed execution arc to the arena edge, a turn burst, and a heavy return catch",
+      "impact_language": "per-victim cleaving burst on every beaten enemy",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.45,
-        "active": 0.75,
-        "recovery": 5.85,
-        "cancel": 6.45
+        "release": 0.65,
+        "active": 0.9,
+        "recovery": 2.7,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.berserk.axe.windup",
@@ -117,22 +139,52 @@
         "max_visual_nodes": 5,
         "crowd_cap": 18,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "boss_double_pass_cap_owner": "mechanics FAN-1462"
-      }
+        "boss_double_pass_cap_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 4 drawn nodes (backdrop veil, cast flash, spinning execution-slash ghost, turn burst) under a 5-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "timing_rhythm": "0.65s cast ceremony, the execution arc bites from 0.9s with a 110ms hitstop, flies to the arena edge, detonates the turn at ~1.7s and lands the heavy return catch before recovery",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.26,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.26 of a 1152x648 viewport at t=1.9s on the regenerated berserk_ultimate_timelines_648p.png contact sheet"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/axe/execution_slash/execution_slash_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "packs_fan3005": [
+        "assets/sprites/effects/berserk/axe/execution_slash/execution_slash_spriteframes.tres",
+        "assets/sprites/effects/berserk/axe/cast_flash/cast_flash_spriteframes.tres",
+        "assets/sprites/effects/berserk/axe/victim_impact/victim_impact_spriteframes.tres"
+      ]
     },
     {
       "weapon_id": "hammer",
       "title": "Раскол Четырёх Сторон",
       "scene_path": "scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
-      "silhouette": "overhead hammer and four ground-rift lanes",
-      "motion_path": "three impact beats: cardinal lanes, diagonal lanes, central quake",
-      "impact_language": "cross, diagonals, then expanding central quake",
+      "silhouette": "one overhead war hammer whose head lies in a pulsing ground rift",
+      "motion_path": "cast flash, then three slam beats: two rift pulses and one central quake",
+      "impact_language": "per-victim ground-shatter burst on every crushed enemy",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.7,
-        "active": 0.96,
-        "recovery": 3.4,
-        "cancel": 4.1
+        "release": 0.9,
+        "active": 1.15,
+        "recovery": 2.35,
+        "cancel": 2.95
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.berserk.hammer.windup",
@@ -145,8 +197,38 @@
         "max_visual_nodes": 6,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "stagger_launch_displacement_owner": "mechanics FAN-1462"
-      }
+        "stagger_launch_displacement_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 5 drawn nodes (backdrop veil, cast flash, two rift pulses, central quake) under a 6-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "timing_rhythm": "0.9s cast ceremony, the first slam bites at 1.15s with a 140ms hitstop, two rift pulses roll out at 1.15s and 1.8s, then the central quake detonates at 2.3s and settles",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.28 of a 1152x648 viewport at t=2.45s on the regenerated berserk_ultimate_timelines_648p.png contact sheet"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/hammer/rift_shockwave/rift_shockwave_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "packs_fan3005": [
+        "assets/sprites/effects/berserk/hammer/rift_shockwave/rift_shockwave_spriteframes.tres",
+        "assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_spriteframes.tres",
+        "assets/sprites/effects/berserk/hammer/victim_impact/victim_impact_spriteframes.tres"
+      ]
     }
   ],
   "evidence": {

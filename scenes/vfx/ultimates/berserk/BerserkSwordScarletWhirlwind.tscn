@@ -1,172 +1,344 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=11 format=3]
 
-[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2544_sword_ultimate/sword_ultimate_spriteframes.tres" id="1_blade_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/sword/cast_flash/cast_flash_spriteframes.tres" id="1_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/sword/whirlwind/whirlwind_spriteframes.tres" id="2_whirlwind"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2544_sword_ultimate/sword_ultimate_spriteframes.tres" id="3_blade_frames"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="4_v2_driver"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.9, 0.9, 0.9, 1, 0.82, 0.82, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_scarlet_whirlwind"]
 resource_name = "ultimate"
-length = 8.15
+length = 3.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("BladeGhostOne:position")
+tracks/0/path = NodePath("BackdropVeil:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.7, 1.0, 1.6, 3.0, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(28, -10), Vector2(72, 0), Vector2(190, 0), Vector2(48, 0), Vector2(0, 0)]
+"values": [0.0, 0.3, 0.5, 0.24, 0.2, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("BladeGhostTwo:position")
+tracks/1/path = NodePath("CastFlash:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(-18, 22), Vector2(-36, 62), Vector2(-95, 165), Vector2(-24, 42), Vector2(0, 0)]
+"times": PackedFloat32Array(0.02, 0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.72, 0.82),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("BladeGhostThree:position")
+tracks/2/path = NodePath("CastFlash:modulate:a")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
+"times": PackedFloat32Array(0, 0.35, 0.75, 0.9, 1.05),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-12, -24), Vector2(-38, -58), Vector2(-95, -165), Vector2(-24, -42), Vector2(0, 0)]
+"values": [0.0, 0.85, 1.0, 0.25, 0.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("OrbitGuide:scale")
+tracks/3/path = NodePath("CastFlash:scale")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.75, 1.05),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0.28, 0.28), Vector2(0.45, 0.45), Vector2(1.2, 1.2), Vector2(0.36, 0.36), Vector2(0.05, 0.05)]
+"values": [Vector2(0.7, 0.7), Vector2(1.05, 1.05), Vector2(1.2, 1.2)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("CrossSlash:modulate:a")
+tracks/4/path = NodePath("WhirlwindCore:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 7.2, 7.45, 7.8, 8.15),
+"times": PackedFloat32Array(0, 0.7, 1.05, 3.0, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.35, 0.0]
+"values": [0.0, 0.0, 0.95, 0.9, 0.0]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("BladeGhostOne:frame")
+tracks/5/path = NodePath("WhirlwindCore:scale")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.6, 1.8, 3.8, 5.6, 7.2, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 3, 5, 7, 8, 2, 4]
+"times": PackedFloat32Array(0, 1.0, 2.0, 3.0, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.55, 0.55), Vector2(0.55, 0.55), Vector2(1.0, 1.0), Vector2(1.2, 1.2), Vector2(0.35, 0.35)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("BladeGhostTwo:frame")
+tracks/6/path = NodePath("WhirlwindCore:rotation")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.6, 1.8, 3.8, 5.6, 7.2, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [3, 4, 6, 8, 1, 2, 5, 7]
+"times": PackedFloat32Array(0, 1.0, 3.0, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 10.0, 12.5]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("BladeGhostThree:frame")
+tracks/7/path = NodePath("BladeGhostOne:position")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.6, 1.8, 3.8, 5.6, 7.2, 7.45, 8.15),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.0, 2.0, 3.0, 3.55, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(30, -8), Vector2(30, -8), Vector2(120, -30), Vector2(200, -50), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("BladeGhostTwo:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.0, 2.0, 3.0, 3.55, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-22, 30), Vector2(-22, 30), Vector2(-95, 120), Vector2(-160, 200), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("BladeGhostThree:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.0, 2.0, 3.0, 3.55, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-8, -28), Vector2(-8, -28), Vector2(-40, -110), Vector2(-70, -185), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("BladeGhostOne:modulate:a")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.1, 3.0, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.86, 0.8, 0.0]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("BladeGhostTwo:modulate:a")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 0.95, 1.15, 3.0, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.78, 0.72, 0.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("BladeGhostThree:modulate:a")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 1.0, 1.2, 3.0, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.72, 0.66, 0.0]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("BladeGhostOne:frame")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.3, 1.7, 2.1, 2.5, 2.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [6, 7, 0, 2, 4, 5, 8, 1]
+"values": [0, 1, 3, 5, 7, 8, 2]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("BladeGhostTwo:frame")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0, 0.95, 1.35, 1.75, 2.15, 2.55, 2.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [3, 4, 6, 8, 1, 2, 5]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("BladeGhostThree:frame")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0, 1.0, 1.4, 1.8, 2.2, 2.6, 3.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 0, 2, 4, 5, 8]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("CollapseFlare:frame")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(2.95, 3.05, 3.15, 3.25, 3.35, 3.45, 3.55, 3.65, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 7, 6, 5, 4, 3, 2, 1, 0]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("CollapseFlare:modulate:a")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0, 2.95, 3.1, 3.45, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.4, 0.0]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("CollapseFlare:scale")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0, 2.95, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.9, 0.9), Vector2(0.9, 0.9), Vector2(1.35, 1.35)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_scarlet_whirlwind"]
 _data = {"ultimate": SubResource("Animation_scarlet_whirlwind")}
 
 [node name="BerserkSwordScarletWhirlwind" type="Node2D"]
+script = ExtResource("4_v2_driver")
+release_at = 0.75
+impact_at = 1.0
+recovery_at = 3.1
+cancel_at = 3.8
+hitstop_ms = 120.0
+shake_seconds = 0.55
+shake_amplitude = 9.0
 metadata/ultimate_id = "berserk/sword"
-metadata/silhouette = "three_spectral_two_handed_swords"
-metadata/motion_path = "expanding_three_orbit_spiral_then_inward_cross_slash"
-metadata/impact_language = "synchronized_inward_cross_slash"
-metadata/max_visual_nodes = 6
+metadata/silhouette = "three_spectral_two_handed_swords_in_one_scarlet_vortex"
+metadata/motion_path = "cast_flash_ignites_a_spinning_scarlet_whirlwind_of_three_orbiting_blades_that_collapses_inward_in_one_flare"
+metadata/impact_language = "per_victim_scarlet_explosion_on_every_swept_enemy"
+metadata/max_visual_nodes = 8
 metadata/crowd_cap = 24
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="WindupTelegraph" type="Polygon2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-color = Color(0.9, 0.04, 0.09, 0.3)
-polygon = PackedVector2Array(-28, 26, 0, -78, 28, 26)
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.16, 0.02, 0.03, 0)
+metadata/fullscreen_layer = true
 
-[node name="OrbitGuide" type="Line2D" parent="."]
+[node name="CastFlash" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(112, 0, 103, 46, 79, 85, 42, 104, 0, 112, -42, 104, -79, 85, -103, 46, -112, 0, -103, -46, -79, -85, -42, -104, 0, -112, 42, -104, 79, -85, 103, -46, 112, 0)
-width = 5.0
-default_color = Color(1, 0.08, 0.14, 0.62)
-closed = true
-antialiased = true
+z_index = 40
+sprite_frames = ExtResource("1_cast_flash")
+animation = &"cast_flash"
+frame = 0
+scale = Vector2(0.7, 0.7)
+modulate = Color(1, 1, 1, 0)
+
+[node name="WhirlwindCore" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 40
+sprite_frames = ExtResource("2_whirlwind")
+animation = &"whirlwind_spin"
+frame = 0
+scale = Vector2(0.55, 0.55)
+modulate = Color(1, 1, 1, 0)
 
 [node name="BladeGhostOne" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-sprite_frames = ExtResource("1_blade_frames")
+z_index = 40
+sprite_frames = ExtResource("3_blade_frames")
 animation = &"scarlet_whirlwind"
 frame = 0
-position = Vector2(28, -10)
+position = Vector2(30, -8)
 rotation = 1.571
 scale = Vector2(0.44, 0.44)
-modulate = Color(1, 0.25, 0.32, 0.86)
+modulate = Color(1, 0.25, 0.32, 0)
 
 [node name="BladeGhostTwo" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-sprite_frames = ExtResource("1_blade_frames")
+z_index = 40
+sprite_frames = ExtResource("3_blade_frames")
 animation = &"scarlet_whirlwind"
 frame = 3
-position = Vector2(-18, 22)
+position = Vector2(-22, 30)
 rotation = 3.664
 scale = Vector2(0.44, 0.44)
-modulate = Color(1, 0.34, 0.38, 0.78)
+modulate = Color(1, 0.34, 0.38, 0)
 
 [node name="BladeGhostThree" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-sprite_frames = ExtResource("1_blade_frames")
+z_index = 40
+sprite_frames = ExtResource("3_blade_frames")
 animation = &"scarlet_whirlwind"
 frame = 6
-position = Vector2(-12, -24)
+position = Vector2(-8, -28)
 rotation = -0.522
 scale = Vector2(0.44, 0.44)
-modulate = Color(1, 0.18, 0.24, 0.72)
+modulate = Color(1, 0.18, 0.24, 0)
 
-[node name="CrossSlash" type="Line2D" parent="."]
+[node name="CollapseFlare" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-112, -96, 0, 0, 112, 96, 112, -96, 0, 0, -112, 96)
-width = 14.0
-default_color = Color(1, 0.84, 0.71, 0.92)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 45
+sprite_frames = ExtResource("1_cast_flash")
+animation = &"cast_flash"
+frame = 8
+scale = Vector2(0.9, 0.9)
+modulate = Color(1, 0.9, 0.85, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_scarlet_whirlwind")}
