@@ -1149,6 +1149,7 @@ func _test_full_frame_animation_registry() -> void:
 		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"rift_shieldbearer": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+		"void_mage": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
