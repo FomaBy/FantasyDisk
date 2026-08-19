@@ -191,10 +191,22 @@ def main() -> int:
         for direction in DIRECTIONS:
             s = suffix(direction)
             urls = animations[state][direction]
+            # v3 custom animations (attack/hit/death) default to
+            # keep_first_frame=true, which prepends the shared static
+            # rotation pose as frame 0 ahead of the real animation frames.
+            # That reference/anchor frame is not part of the animation and
+            # must be dropped, same as the bone_caller/small_biter precedent
+            # (tests/animation_smoke_test.gd hardcodes 6/4/6 for this fleet).
+            # The source filename keeps PixelLab's original index (so an
+            # already-downloaded anchor frame on disk is never mistaken for
+            # a real frame); the runtime filename is the clean 0-based
+            # sequence actually shipped in the SpriteFrames resource.
+            frame_urls = urls[1:] if state != "move" and len(urls) > 1 else urls
+            source_offset = len(urls) - len(frame_urls)
             rids = []
             reports = []
-            for index, url in enumerate(urls):
-                src = SOURCE_DIR / f"rift_shieldbearer_{state}_{s}_{index:02d}.png"
+            for index, url in enumerate(frame_urls):
+                src = SOURCE_DIR / f"rift_shieldbearer_{state}_{s}_{index + source_offset:02d}.png"
                 dest = RUNTIME_DIR / f"rift_shieldbearer_{state}_{s}_{index:02d}.png"
                 download(url, src)
                 reports.append(normalize_frame(src, dest))
