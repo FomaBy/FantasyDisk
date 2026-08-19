@@ -37,7 +37,6 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"engineer": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"knight": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -67,7 +66,14 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## the aimed execute bonus, and every Fourfold Rift beat reaches every live
 ## enemy with lane membership as attribution. The per-enemy floor is proven
 ## under crowd pressure in `tests/ultimates/berserk_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk"]
+##
+## `engineer` (FAN-2955): every volley of the sentry hex suppresses the whole
+## map with the three chords as attribution, every microdrone ram wave
+## intercepts every live enemy, and all sixteen smart mines detonate once each
+## as arena-wide pressure waves bounded per TARGET rather than per count. The
+## per-enemy floor is proven under crowd pressure in
+## `tests/ultimates/engineer_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "engineer"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
