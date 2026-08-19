@@ -95,6 +95,53 @@ The standard covers ALL basic-attack effects — projectiles, melee strikes and
 hit effects — not only ultimates. Non-conforming effects join the FAN-3002
 retrofit plan in the same per-class batches.
 
+### Basic-attack flipbook plumbing (FAN-3010)
+
+`scripts/attack_vfx.gd` builds every basic-attack effect and takes both routes.
+`AttackVfx.effect_pack(class_id, weapon_id, effect)` is the single resolution
+rule and applies the convention path literally:
+
+```
+res://assets/sprites/effects/<class>/<weapon>/<effect>/<effect>_spriteframes.tres
+```
+
+Pack present → the effect's identity figure is an `AnimatedSprite2D` playing
+that `SpriteFrames`. Pack absent → the effect keeps the temporary static
+stand-in it has today, unchanged. The flipbook is scaled to the stand-in's
+footprint, so existing timings, blend modes, class colors and effect geometry
+are untouched; a pack replaces only the identity figure, while shared glow,
+shockwave, dust and note layers stay as they are.
+
+`<effect>` is the effect family name: `weapon_signature` for the per-weapon
+release cue, and `slash`, `hammer_slam`, `orb_projectile`, `projectile_trace`,
+`orb_burst`, `beam`, `sound_wave_blast`, `ring_pulse`, `curse_skull` for the
+nine shared families (`AttackVfx.EFFECT_FAMILIES`). The weapon-signature route
+resolves its pack itself from the attacking hero's class, so an art card only
+has to land the files. The nine shared families take the resolved pack as their
+trailing argument, because one static family serves many weapons.
+
+Repeated strikes may open on a varied frame; the switch is per family in
+`AttackVfx.START_FRAME_VARIATION` and every family must have an explicit entry.
+It is off for travelling projectiles, traces, beams and the curse skull, where a
+fixed opening frame carries the read. All layers of one effect share one start
+frame.
+
+Effects still on the static stand-in live in the shrink-only allowlists of
+`tests/basic_attack_flipbook_ratchet_test.gd`, with the same ratchet rules as
+the primitive ratchet above: a fallback outside the lists fails, a stale entry
+(its pack landed, or the entry no longer matches live content) fails, and the
+target state is two empty lists. Each per-class art card removes its own
+entries together with the packs it delivers.
+
+Focused verification:
+
+```bash
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/basic_attack_flipbook_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/basic_attack_flipbook_ratchet_test.gd
+```
+
 ### Combat vs UI boundary
 
 The ban covers combat presentation only. UI and other non-combat imagery are
