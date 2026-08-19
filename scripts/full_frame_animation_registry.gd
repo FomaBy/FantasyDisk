@@ -184,7 +184,11 @@ const FULL_FRAME_SPRITEFRAMES := {
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
-			"scale": Vector2(2.48, 2.48),
+			# FAN-3099: 512x512 canvas restored for all 7 states (normalize_frame),
+			# so scale/position revert to the pre-FAN-2621 512-canvas values
+			# (512*0.62 == 317.44, same canvas*scale product the FAN-2621 bug
+			# preserved at 128*2.48 -- keeps contact_range=244.7 unchanged).
+			"scale": Vector2(0.62, 0.62),
 			"position": Vector2(0.0, -76.0),
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
