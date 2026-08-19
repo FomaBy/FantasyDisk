@@ -88,6 +88,16 @@
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
         "scene_driver": "scenes/vfx/ultimates/chemist/chemist_acid_flask_v2.gd",
         "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_acid_flask.json"
+      },
+      {
+        "weapon_id": "homunculus_vial",
+        "card": "FAN-2959",
+        "decision": "existing FAN-2552 PixelLab stomp frames carry the v2 scale and length: the 9-frame cycle is replayed three times at arena scale, so the envelope shortens from 5.40s to 3.80s without a new PixelLab job; the frames were regenerated for FAN-2552 at 256x256 and only their placement, scale and beat spacing changed",
+        "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+        "seed": 2552,
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_homunculus_vial_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_homunculus_vial.json"
       }
     ]
   },
@@ -210,16 +220,16 @@
       "weapon_id": "homunculus_vial",
       "title": "Совершенный Гомункул",
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
-      "silhouette": "tank and caster fuse into one towering emerald homunculus",
-      "motion_path": "two allies converge through a circle, giant avatar stomps, then both split back out",
-      "timing_rhythm": "measured convergence, a long avatar action hold with beats, then a clean split",
-      "impact_language": "taunt halo, broad stomp rings, and toxic cascade waves",
+      "silhouette": "tank and caster fuse into one arena-tall emerald homunculus stomping inside a screen-wide alchemical circle",
+      "motion_path": "two allies converge through a widening circle, the fused giant lands three arena-wide stomps, then both split back out",
+      "timing_rhythm": "0.9s convergence ceremony with the hero pair spotlit inside the circle, one emerald fusion flash at 1.0s, three heavy stomps at 1.75s / 2.60s / 3.45s with the hitstop on the first, then a short visible split-back recovery",
+      "impact_language": "taunt halo, three expanding stomp rings, and toxic cascade waves",
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.9,
-        "active": 1.7,
-        "recovery": 4.2,
-        "cancel": 5.4
+        "active": 1.75,
+        "recovery": 3.6,
+        "cancel": 3.8
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.homunculus_vial.windup",
@@ -233,18 +243,34 @@
         0.62
       ],
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 11,
         "crowd_cap": 14,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration"
+        "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration",
+        "v2_budget_note": "FAN-2959 re-derivation: 10 drawn nodes (backdrop veil, fusion glow, arena-wide alchemical circle, the tank/caster pair, vial burst, PixelLab avatar, taunt halo, stomp wave, toxic cascade) under an 11-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.26,
+        "max_viewport_coverage_ratio": 0.34,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the alchemical circle and taunt halo hold steady contrast rings and the avatar marks each stomp with a held brightness step instead of expanding rings",
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the three stomp shakes, and the fusion flash plays as a calm fade — backdrop veil and fusion glow keep every beat at a damped peak",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
-        "max_flash_coverage_ratio": 0.0
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating emerald fusion flash at 0 Hz; the three stomps are marked by world-space rings, not by a second full-screen flash. WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.homunculus_fusion",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_04.png",
+        "class_palette_id": "palette.chemist.emerald_homunculus"
       }
     }
   ],

@@ -32,11 +32,14 @@ const PACKS := [
 	{
 		"weapon_id": "homunculus_vial",
 		"scene": SCENES["homunculus_vial"],
-		"time": 2.6,
+		# Just after the second stomp beat rather than on it: the sheet has to
+		# show the arena-wide ring sweeping outward, and on the beat itself the
+		# ring has only just reset to its smallest scale.
+		"time": 2.85,
 		"title": "HOMUNCULUS VIAL — FUSION",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.48, 1.0, 0.52),
-		"required_nodes": ["AlchemicalCircle", "Avatar", "TauntHalo", "StompWave", "ToxicCascade"],
+		"required_nodes": ["BackdropVeil", "FusionGlow", "AlchemicalCircle", "Avatar", "TauntHalo", "StompWave", "ToxicCascade"],
 	},
 ]
 const CAPTURES := [
@@ -66,6 +69,7 @@ const DRIVER_DUCK_DB := -9.0
 
 var _blast_package := {}
 var _acid_package := {}
+var _homunculus_package := {}
 
 
 class HandleProbe extends RefCounted:
@@ -93,6 +97,7 @@ func _initialize() -> void:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
 	_check_acid_v2(packages.get("acid_flask", {}) as Dictionary, errors)
+	_check_homunculus_v2(packages.get("homunculus_vial", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
@@ -102,6 +107,7 @@ func _initialize() -> void:
 		return
 	_blast_package = packages.get("blast_powder", {}) as Dictionary
 	_acid_package = packages.get("acid_flask", {}) as Dictionary
+	_homunculus_package = packages.get("homunculus_vial", {}) as Dictionary
 
 
 ## _initialize runs before the root window joins the tree, so nothing added
@@ -111,6 +117,7 @@ func _process(_delta: float) -> bool:
 	var errors: Array[String] = []
 	_check_blast_driver(_blast_package, errors)
 	_check_acid_driver(_acid_package, errors)
+	_check_homunculus_driver(_homunculus_package, errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return true
@@ -268,6 +275,39 @@ func _check_acid_v2(package: Dictionary, errors: Array[String]) -> void:
 	)
 
 
+## FAN-2959: the same v2 contract for the migrated homunculus_vial pair. This
+## pair is the one whose presentation had to shrink (5.40s -> 3.80s) to reach the
+## v2 envelope while the mechanics beats stayed frozen, so on top of the shared
+## gate it proves the retimed envelope still covers every stomp the executor
+## deals: all three mechanics beats stay inside the active window, and the
+## avatar is the visual core rather than a reusable burst.
+func _check_homunculus_v2(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_v2("homunculus_vial", package, errors)
+	_expect(
+		not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("chemist/homunculus_vial"),
+		"chemist/homunculus_vial must have left the v2 migration allowlist",
+		errors
+	)
+	var silhouette := str((package.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	_expect(
+		silhouette.contains("ultimates/chemist/homunculus_vial"),
+		"homunculus_vial weapon silhouette must be its own FAN-2552 PixelLab frame: %s" % silhouette,
+		errors
+	)
+	# The executor keeps fuse_at/beat_interval/beat_count: shortening the drawn
+	# envelope may never leave a stomp that still damages without a drawn hit.
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var release := float(timing.get("release", -1.0))
+	var recovery := float(timing.get("recovery", -1.0))
+	for beat_time in AVATAR_SLAM_BEATS:
+		_expect(
+			float(beat_time) >= release and float(beat_time) <= recovery,
+			"mechanics stomp beat %.2fs must stay inside the drawn active window %.2f-%.2fs"
+				% [float(beat_time), release, recovery],
+			errors
+		)
+
+
 func _check_weapon_v2(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
 	_expect(not package.is_empty(), "%s package must exist for the v2 gate" % weapon_id, errors)
 	if package.is_empty():
@@ -330,6 +370,10 @@ func _check_blast_driver(package: Dictionary, errors: Array[String]) -> void:
 
 func _check_acid_driver(package: Dictionary, errors: Array[String]) -> void:
 	_check_weapon_driver("acid_flask", package, errors)
+
+
+func _check_homunculus_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("homunculus_vial", package, errors)
 
 
 func _check_driver_pause(weapon_id: String, errors: Array[String]) -> void:
