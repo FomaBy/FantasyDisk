@@ -96,6 +96,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.38, 0.38),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		# FAN-2610: dedicated 8-direction pack replacing the single authored
 		# horizontal view + flip.
