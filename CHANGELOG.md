@@ -17,6 +17,15 @@
 
 ### Анимация
 
+- Пожиратель Диска (`disk_devourer`) получил полноценный 8-направленный
+  PixelLab-пак (idle/move/attack/hit/death/`skill_vampiric_bite`/
+  `skill_rift_zone` по всем восьми ракурсам, 56 строк) вместо
+  west-facing-плюс-flip источника — `explicit_eight_directions: true`
+  выставлен в реестре, `flip_h` для этого босса больше не используется.
+  Геометрия (512×512 canvas, 255px видимая высота, 48px bottom padding)
+  сохранена без ретюна scale/position. Известный остаточный риск: кадр 5
+  `death_north_east` показывает лёгкий цветовой дрейф в холодную палитру —
+  зафиксировано для QA, playthrough gate не затронут (FAN-2635).
 - Элементалист (`elementalist`) получил новый 8-направленный PixelLab-пак тела
   (idle ×8 + move ×8×6 = 56 кадров) на свежесозданном PixelLab-персонаже —
   прежний `pixellab_character_id` удалён на стороне PixelLab (404), а старый

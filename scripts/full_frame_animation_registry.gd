@@ -233,11 +233,15 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -86.0),
 			"source_faces_left": true,
 		},
+		# FAN-2635: dedicated 8-direction pack replacing the west-facing-plus-flip
+		# source rows with true north/northeast/east/southeast/south/southwest/
+		# west/northwest animation for idle/move/attack/hit/death/skills.
 		"disk_devourer": {
 			"frames": "res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres",
 			"scale": Vector2(0.78, 0.78),
 			"position": Vector2(0.0, -90.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"bone_archon": {
 			"frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres",
