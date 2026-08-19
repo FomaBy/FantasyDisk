@@ -1,9 +1,9 @@
 {
   "character_id": "night_stalker",
   "pixellab_character_id": "2a1aea5b-b457-4e04-88e1-eba9d0f2f928",
-  "generated_at": "2026-08-18",
+  "generated_at": "2026-08-18/2026-08-19",
   "source": "PixelLab MCP (mcp__pixellab__create_character + animate_character)",
-  "mode": "v3 create (8-direction) + template animations (idle=breathing-idle, move=walking-8-frames, hit=taking-punch, death=falling-back-death)",
+  "mode": "v3 create (8-direction) + template animations (idle/move/hit/death) + v3 custom animations (attack/skill_shadow_strike/skill_phase_dash)",
   "body_type": "humanoid",
   "view": "low top-down",
   "runtime_canvas": [128, 128],
@@ -35,13 +35,29 @@
       "template_animation_id": "falling-back-death",
       "fps": 10.0,
       "animation_group_id": "0d38a277-d245-4c66-9823-34cbd19077bf"
+    },
+    "attack": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "quick double dagger slash attack, lunging forward and slashing with both curved blades in an X pattern",
+      "fps": 12.0,
+      "animation_group_id": "3b2bc5da-3c4d-4e87-b8aa-8bb841d6b11a",
+      "note": "runtime animation row name is 'attack' (not 'attack_primary'), matching the FAN-2519/FAN-2901 directional-pack convention already used by mini_rot_hound; the generic 'attack'/'attack_primary' request both alias-resolve to this row via STATE_ALIASES."
+    },
+    "skill_shadow_strike": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "explosive shadow teleport strike, bursting out of dark smoke with a swift dagger stab forward, dark trailing energy",
+      "fps": 12.0,
+      "animation_group_id": "73fd5c76-2845-4815-bea8-00f6a789b573"
+    },
+    "skill_phase_dash": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "swift shadow phase dash, blinking forward through wisps of dark smoke with tattered cloak trailing behind",
+      "fps": 12.0,
+      "animation_group_id": "c26801ec-fc7a-4161-b044-d10acdf458da"
     }
   },
-  "pending_states": {
-    "attack_primary": "not yet generated this run; resolver falls back to move via STATE_ALIASES until added",
-    "skill_shadow_strike": "not yet generated this run; resolver falls back to attack/move via STATE_ALIASES until added",
-    "skill_phase_dash": "not yet generated this run; resolver falls back to attack/move via STATE_ALIASES until added"
-  },
-  "continuation": "reuse animate_character(character_id=\"2a1aea5b-b457-4e04-88e1-eba9d0f2f928\", mode=\"v3\", action_description=..., animation_name=\"attack_primary|skill_shadow_strike|skill_phase_dash\") for the 3 pending states, then re-run tools that regenerate night_stalker_spriteframes.tres to append the new animation blocks.",
-  "notes": "FAN-2621: first explicit-eight-direction pack for night_stalker (elite), replacing the single authored horizontal view + flip_h. Registry entry scripts/full_frame_animation_registry.gd sets explicit_eight_directions=true and rescaled scale from 0.62 (512px source) to 2.48 (128px source) to preserve on-screen size; position offset left unchanged pending visual QA. idle/move/hit/death cover all 8 directions; attack_primary and both unique-skill states (shadow_strike, phase_dash) remain pending — acceptance criteria for FAN-2621 is NOT yet fully met, see Multica comment."
+  "notes": "FAN-2621: first explicit-eight-direction pack for night_stalker (elite), replacing the single authored horizontal view + flip_h. All 7 required states (idle, move, attack, hit, death, skill_shadow_strike, skill_phase_dash) now cover all 8 directions - 56 animations, 368 frame PNGs, assembled into scripts/full_frame_animation_registry.gd via explicit_eight_directions=true. Registry scale rescaled from 0.62 (512px source) to 2.48 (128px source) to preserve on-screen size; position offset left unchanged pending visual QA (flagged for FAN-2757). Two-run delivery: idle/move/hit/death generated 2026-08-18 (run 1, card returned to backlog after hitting a bounded MCP-polling time budget); attack/skill_shadow_strike/skill_phase_dash generated 2026-08-19 (run 2, continuation reusing the same PixelLab character_id and existing groups per PM re-arm instructions). Attack frames were generated under the working name 'attack_primary' during job submission and renamed to 'attack' on disk/in the resource before commit to match the established mini_rot_hound directional-pack convention (see attack state note above) and keep tests/animation_smoke_test.gd's generalized explicit_eight_directions branch (mirrored from the FAN-2901 mini-elite branch) passing without special-casing."
 }
