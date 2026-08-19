@@ -170,11 +170,18 @@ const FULL_FRAME_SPRITEFRAMES := {
 		},
 	},
 	"elite": {
+		# FAN-3093 (rework of FAN-2620): dedicated 8-direction pack replacing
+		# the single west-facing flip-mirrored pack. scale/position recomputed
+		# for the new 245px-visible-height/32px-bottom-padding normalization
+		# (old pack's own bbox pinned bottom at a different offset) so the feet
+		# land on the same footline as before: 0.70/-82.0 -> 0.59/-78.0, solving
+		# for the same ~54.5px feet-below-origin offset the old pack used.
 		"iron_bastion": {
 			"frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
-			"scale": Vector2(0.70, 0.70),
-			"position": Vector2(0.0, -82.0),
+			"scale": Vector2(0.59, 0.59),
+			"position": Vector2(0.0, -78.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
