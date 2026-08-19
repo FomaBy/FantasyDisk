@@ -34,23 +34,23 @@
       "action_description": "walking cautiously while keeping the crossbow raised and ready"
     },
     "attack": {
-      "frame_count": 7,
+      "frame_count": 6,
       "mode": "v3",
       "action_description": "aiming and firing a crossbow forward with a quick recoil snap",
       "fps": 12.0
     },
     "hit": {
-      "frame_count": 5,
+      "frame_count": 4,
       "mode": "v3",
       "action_description": "flinching backward in pain from a hit, recoiling with a jolt",
       "fps": 10.0
     },
     "death": {
-      "frame_count": 7,
+      "frame_count": 6,
       "mode": "v3",
       "action_description": "collapsing and dying, bones crumbling apart and falling to the ground",
       "fps": 10.0
     }
   },
-  "notes": "FAN-2610: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/ash_marksman. 8 idle rotations + 8x6 move frames + 8x7 attack frames + 8x5 hit frames + 8x7 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
+  "notes": "FAN-2610: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/ash_marksman. 8 idle rotations + 8x6 move frames + 8x6 attack frames + 8x4 hit frames + 8x6 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. FAN-3090 dropped the duplicated v3 reference frame that shipped as frame 0 of attack/hit/death."
 }

@@ -62,152 +62,128 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_03.png" id="60_am"]
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_04.png" id="61_am"]
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_05.png" id="62_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_06.png" id="63_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_00.png" id="64_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_01.png" id="65_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_02.png" id="66_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_03.png" id="67_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_04.png" id="68_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_05.png" id="69_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_06.png" id="70_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_00.png" id="71_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_01.png" id="72_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_02.png" id="73_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_03.png" id="74_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_04.png" id="75_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_05.png" id="76_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_06.png" id="77_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_00.png" id="78_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_01.png" id="79_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_02.png" id="80_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_03.png" id="81_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_04.png" id="82_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_05.png" id="83_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_06.png" id="84_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_00.png" id="85_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_01.png" id="86_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_02.png" id="87_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_03.png" id="88_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_04.png" id="89_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_05.png" id="90_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_06.png" id="91_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_00.png" id="92_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_01.png" id="93_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_02.png" id="94_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_03.png" id="95_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_04.png" id="96_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_05.png" id="97_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_06.png" id="98_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_00.png" id="99_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_01.png" id="100_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_02.png" id="101_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_03.png" id="102_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_04.png" id="103_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_05.png" id="104_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_06.png" id="105_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_00.png" id="106_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_01.png" id="107_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_02.png" id="108_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_03.png" id="109_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_04.png" id="110_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_05.png" id="111_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_06.png" id="112_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_00.png" id="113_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_01.png" id="114_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_02.png" id="115_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_03.png" id="116_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_04.png" id="117_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_00.png" id="118_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_01.png" id="119_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_02.png" id="120_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_03.png" id="121_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_04.png" id="122_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_00.png" id="123_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_01.png" id="124_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_02.png" id="125_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_03.png" id="126_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_04.png" id="127_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_00.png" id="128_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_01.png" id="129_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_02.png" id="130_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_03.png" id="131_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_04.png" id="132_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_00.png" id="133_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_01.png" id="134_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_02.png" id="135_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_03.png" id="136_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_04.png" id="137_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_00.png" id="138_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_01.png" id="139_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_02.png" id="140_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_03.png" id="141_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_04.png" id="142_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_00.png" id="143_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_01.png" id="144_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_02.png" id="145_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_03.png" id="146_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_04.png" id="147_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_00.png" id="148_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_01.png" id="149_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_02.png" id="150_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_03.png" id="151_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_04.png" id="152_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_00.png" id="153_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_01.png" id="154_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_02.png" id="155_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_03.png" id="156_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_04.png" id="157_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_05.png" id="158_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_06.png" id="159_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_00.png" id="160_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_01.png" id="161_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_02.png" id="162_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_03.png" id="163_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_04.png" id="164_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_05.png" id="165_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_06.png" id="166_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_00.png" id="167_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_01.png" id="168_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_02.png" id="169_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_03.png" id="170_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_04.png" id="171_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_05.png" id="172_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_06.png" id="173_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_00.png" id="174_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_01.png" id="175_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_02.png" id="176_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_03.png" id="177_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_04.png" id="178_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_05.png" id="179_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_06.png" id="180_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_00.png" id="181_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_01.png" id="182_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_02.png" id="183_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_03.png" id="184_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_04.png" id="185_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_05.png" id="186_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_06.png" id="187_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_00.png" id="188_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_01.png" id="189_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_02.png" id="190_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_03.png" id="191_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_04.png" id="192_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_05.png" id="193_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_06.png" id="194_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_00.png" id="195_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_01.png" id="196_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_02.png" id="197_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_03.png" id="198_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_04.png" id="199_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_05.png" id="200_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_06.png" id="201_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_00.png" id="202_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_01.png" id="203_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_02.png" id="204_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_03.png" id="205_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_04.png" id="206_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_05.png" id="207_am"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_06.png" id="208_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_00.png" id="63_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_01.png" id="64_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_02.png" id="65_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_03.png" id="66_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_04.png" id="67_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_05.png" id="68_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_00.png" id="69_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_01.png" id="70_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_02.png" id="71_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_03.png" id="72_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_04.png" id="73_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_05.png" id="74_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_00.png" id="75_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_01.png" id="76_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_02.png" id="77_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_03.png" id="78_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_04.png" id="79_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_05.png" id="80_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_00.png" id="81_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_01.png" id="82_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_02.png" id="83_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_03.png" id="84_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_04.png" id="85_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_05.png" id="86_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_00.png" id="87_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_01.png" id="88_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_02.png" id="89_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_03.png" id="90_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_04.png" id="91_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_05.png" id="92_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_00.png" id="93_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_01.png" id="94_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_02.png" id="95_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_03.png" id="96_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_04.png" id="97_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_05.png" id="98_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_00.png" id="99_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_01.png" id="100_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_02.png" id="101_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_03.png" id="102_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_04.png" id="103_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_05.png" id="104_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_00.png" id="105_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_01.png" id="106_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_02.png" id="107_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_03.png" id="108_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_00.png" id="109_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_01.png" id="110_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_02.png" id="111_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_03.png" id="112_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_00.png" id="113_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_01.png" id="114_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_02.png" id="115_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_03.png" id="116_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_00.png" id="117_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_01.png" id="118_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_02.png" id="119_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_03.png" id="120_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_00.png" id="121_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_01.png" id="122_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_02.png" id="123_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_03.png" id="124_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_00.png" id="125_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_01.png" id="126_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_02.png" id="127_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_03.png" id="128_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_00.png" id="129_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_01.png" id="130_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_02.png" id="131_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_03.png" id="132_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_00.png" id="133_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_01.png" id="134_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_02.png" id="135_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_03.png" id="136_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_00.png" id="137_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_01.png" id="138_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_02.png" id="139_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_03.png" id="140_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_04.png" id="141_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_05.png" id="142_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_00.png" id="143_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_01.png" id="144_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_02.png" id="145_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_03.png" id="146_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_04.png" id="147_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_05.png" id="148_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_00.png" id="149_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_01.png" id="150_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_02.png" id="151_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_03.png" id="152_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_04.png" id="153_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_05.png" id="154_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_00.png" id="155_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_01.png" id="156_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_02.png" id="157_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_03.png" id="158_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_04.png" id="159_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_05.png" id="160_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_00.png" id="161_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_01.png" id="162_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_02.png" id="163_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_03.png" id="164_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_04.png" id="165_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_05.png" id="166_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_00.png" id="167_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_01.png" id="168_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_02.png" id="169_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_03.png" id="170_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_04.png" id="171_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_05.png" id="172_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_00.png" id="173_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_01.png" id="174_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_02.png" id="175_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_03.png" id="176_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_04.png" id="177_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_05.png" id="178_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_00.png" id="179_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_01.png" id="180_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_02.png" id="181_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_03.png" id="182_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_04.png" id="183_am"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_05.png" id="184_am"]
 
 [resource]
 animations = [
@@ -539,10 +515,6 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("62_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("63_am")
 }],
 "loop": false,
 "name": &"attack_east",
@@ -550,6 +522,10 @@ animations = [
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("64_am")
 },
@@ -568,14 +544,6 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("68_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("69_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_am")
 }],
 "loop": false,
 "name": &"attack_south_east",
@@ -583,6 +551,14 @@ animations = [
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_am")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("71_am")
 },
@@ -597,8 +573,13 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("74_am")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("75_am")
 },
@@ -609,13 +590,8 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("77_am")
-}],
-"loop": false,
-"name": &"attack_south",
-"speed": 12.0
 },
 {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("78_am")
 },
@@ -626,8 +602,13 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("80_am")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("81_am")
 },
@@ -642,21 +623,21 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("84_am")
-}],
-"loop": false,
-"name": &"attack_south_west",
-"speed": 12.0
 },
 {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("85_am")
 },
 {
 "duration": 1.0,
 "texture": ExtResource("86_am")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("87_am")
 },
@@ -675,17 +656,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("91_am")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_am")
 }],
 "loop": false,
-"name": &"attack_west",
+"name": &"attack_north_west",
 "speed": 12.0
 },
 {
 "frames": [{
-"duration": 1.0,
-"texture": ExtResource("92_am")
-},
-{
 "duration": 1.0,
 "texture": ExtResource("93_am")
 },
@@ -710,7 +691,7 @@ animations = [
 "texture": ExtResource("98_am")
 }],
 "loop": false,
-"name": &"attack_north_west",
+"name": &"attack_north",
 "speed": 12.0
 },
 {
@@ -737,17 +718,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("104_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("105_am")
 }],
 "loop": false,
-"name": &"attack_north",
+"name": &"attack_north_east",
 "speed": 12.0
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("106_am")
 },
@@ -758,8 +739,13 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("108_am")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("109_am")
 },
@@ -776,8 +762,8 @@ animations = [
 "texture": ExtResource("112_am")
 }],
 "loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
+"name": &"hit_south_east",
+"speed": 10.0
 },
 {
 "frames": [{
@@ -795,17 +781,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("116_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("117_am")
 }],
 "loop": false,
-"name": &"hit_east",
+"name": &"hit_south",
 "speed": 10.0
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("118_am")
 },
@@ -816,29 +802,34 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("120_am")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("121_am")
 },
 {
 "duration": 1.0,
 "texture": ExtResource("122_am")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
 },
 {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("123_am")
 },
 {
 "duration": 1.0,
 "texture": ExtResource("124_am")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("125_am")
 },
@@ -849,17 +840,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("127_am")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_am")
 }],
 "loop": false,
-"name": &"hit_south",
+"name": &"hit_north_west",
 "speed": 10.0
 },
 {
 "frames": [{
-"duration": 1.0,
-"texture": ExtResource("128_am")
-},
-{
 "duration": 1.0,
 "texture": ExtResource("129_am")
 },
@@ -876,7 +867,7 @@ animations = [
 "texture": ExtResource("132_am")
 }],
 "loop": false,
-"name": &"hit_south_west",
+"name": &"hit_north",
 "speed": 10.0
 },
 {
@@ -895,17 +886,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("136_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("137_am")
 }],
 "loop": false,
-"name": &"hit_west",
+"name": &"hit_north_east",
 "speed": 10.0
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("138_am")
 },
@@ -926,7 +917,7 @@ animations = [
 "texture": ExtResource("142_am")
 }],
 "loop": false,
-"name": &"hit_north_west",
+"name": &"death_east",
 "speed": 10.0
 },
 {
@@ -949,17 +940,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("147_am")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_am")
 }],
 "loop": false,
-"name": &"hit_north",
+"name": &"death_south_east",
 "speed": 10.0
 },
 {
 "frames": [{
-"duration": 1.0,
-"texture": ExtResource("148_am")
-},
-{
 "duration": 1.0,
 "texture": ExtResource("149_am")
 },
@@ -974,21 +965,21 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("152_am")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
 },
 {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("153_am")
 },
 {
 "duration": 1.0,
 "texture": ExtResource("154_am")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("155_am")
 },
@@ -1007,17 +998,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("159_am")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_am")
 }],
 "loop": false,
-"name": &"death_east",
+"name": &"death_south_west",
 "speed": 10.0
 },
 {
 "frames": [{
-"duration": 1.0,
-"texture": ExtResource("160_am")
-},
-{
 "duration": 1.0,
 "texture": ExtResource("161_am")
 },
@@ -1042,7 +1033,7 @@ animations = [
 "texture": ExtResource("166_am")
 }],
 "loop": false,
-"name": &"death_south_east",
+"name": &"death_west",
 "speed": 10.0
 },
 {
@@ -1069,17 +1060,17 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("172_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("173_am")
 }],
 "loop": false,
-"name": &"death_south",
+"name": &"death_north_west",
 "speed": 10.0
 },
 {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_am")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("174_am")
 },
@@ -1098,21 +1089,21 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("178_am")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
 },
 {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("179_am")
 },
 {
 "duration": 1.0,
 "texture": ExtResource("180_am")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
 },
 {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("181_am")
 },
@@ -1127,117 +1118,6 @@ animations = [
 {
 "duration": 1.0,
 "texture": ExtResource("184_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("185_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("186_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("187_am")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("188_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("189_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("190_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("191_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("192_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("193_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("194_am")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("195_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("196_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("197_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("198_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("199_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("200_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("201_am")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("202_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("203_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("204_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("205_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("206_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("207_am")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("208_am")
 }],
 "loop": false,
 "name": &"death_north_east",

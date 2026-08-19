@@ -1142,7 +1142,10 @@ func _test_full_frame_animation_registry() -> void:
 	# each pack actually ships so the per-octant assertion stays exact.
 	var directional_enemy_row_frames := {
 		"rift_cutter": {"idle": 4, "move": 6, "attack": 6, "hit": 6, "death": 6},
-		"ash_marksman": {"idle": 1, "move": 6, "attack": 7, "hit": 5, "death": 7},
+		# FAN-3090: was declared 7/5/7 — the shipped length, but only because
+		# frame 0 of each v3 row was a duplicate of the idle pose. The pack now
+		# ships the animated frames alone, so the declaration follows the art back.
+		"ash_marksman": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 	}
