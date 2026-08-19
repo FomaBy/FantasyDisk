@@ -67,6 +67,15 @@ func _initialize() -> void:
 	_player.set_process(false)
 	_player.set_physics_process(false)
 	_host = PlayerHost.for_player(_player)
+	# The berserk/sword equip flourish (WeaponSignatureVfx_*) self-frees ~0.28s
+	# after configure_character. Left alive it races the per-pair baselines
+	# below: its queue_free can land inside a release-check window and shift
+	# the child count for a pair that leaked nothing (FAN-3061 hit exactly
+	# this on soldier/soldier_rifle). Removing the unrelated transient keeps
+	# every assertion below byte-identical and deterministic.
+	for child in (_host.ultimate_host_effect_parent() as Node).get_children():
+		if str((child as Node).name).begins_with("WeaponSignatureVfx"):
+			(child as Node).free()
 
 	_test_quality_block_reaches_the_runtime_manifest()
 	_test_no_pale_blue_constants_left_in_host_source()
