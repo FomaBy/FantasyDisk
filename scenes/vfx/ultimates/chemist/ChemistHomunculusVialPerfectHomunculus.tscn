@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_tank_south.png" id="1_tank"]
 [ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster_south.png" id="2_caster"]
@@ -11,213 +11,329 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_06.png" id="9_stomp6"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_07.png" id="10_stomp7"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_08.png" id="11_stomp8"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/chemist/chemist_homunculus_vial_v2.gd" id="12_v2_driver"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.82, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+width = 256
+height = 256
+gradient = SubResource("Gradient_glow")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_perfect_homunculus"]
 resource_name = "ultimate"
-length = 5.4
+length = 3.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AlchemicalCircle:modulate:a")
+tracks/0/path = NodePath("BackdropVeil:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.9, 4.2, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.55, 0.9, 1.0, 1.3, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.82, 1.0, 0.48, 0.0]
+"values": [Color(0.02, 0.05, 0.03, 0), Color(0.03, 0.06, 0.04, 0.26), Color(0.04, 0.08, 0.05, 0.44), Color(0.72, 1, 0.66, 0.58), Color(0.05, 0.1, 0.06, 0.38), Color(0.04, 0.08, 0.05, 0.2), Color(0.04, 0.08, 0.05, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("AlchemicalCircle:rotation")
+tracks/1/path = NodePath("FusionGlow:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 5.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.45, 0.9, 1.05, 1.75, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, -0.6]
+"values": [Color(0.45, 1, 0.42, 0), Color(0.52, 1, 0.46, 0.55), Color(0.62, 1, 0.52, 0.92), Color(0.8, 1, 0.7, 0.98), Color(0.55, 1, 0.46, 0.62), Color(0.5, 0.95, 0.44, 0.34), Color(0.5, 0.95, 0.44, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FusingPair/Tank:position")
+tracks/2/path = NodePath("FusionGlow:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.9, 1.15, 4.2, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1.05, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-142, 20), Vector2(-24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(-142, 20)]
+"values": [Vector2(0.5, 0.5), Vector2(1.5, 1.5), Vector2(2.2, 2.2), Vector2(2.6, 2.6)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("FusingPair/Caster:position")
+tracks/3/path = NodePath("AlchemicalCircle:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.9, 1.15, 4.2, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.3, 0.9, 1.75, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(142, 20), Vector2(24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(142, 20)]
+"values": [0.0, 0.82, 1.0, 0.7, 0.4, 0.0]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("FusingPair:modulate:a")
+tracks/4/path = NodePath("AlchemicalCircle:rotation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.95, 1.2, 4.2, 4.55, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 3.8),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.0, 0.9, 1.0, 0.0, 0.0, 0.9, 0.0]
+"values": [0.0, -0.85]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("VialBurst:modulate:a")
+tracks/5/path = NodePath("AlchemicalCircle:scale")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.88, 0.98, 1.32, 5.4),
+"times": PackedFloat32Array(0, 0.9, 1.75, 3.6, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.95, 0.0, 0.0]
+"values": [Vector2(0.75, 0.75), Vector2(1.5, 1.5), Vector2(2.2, 2.2), Vector2(2.5, 2.5), Vector2(2.55, 2.55)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("VialBurst:scale")
+tracks/6/path = NodePath("FusingPair/Tank:position")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.9, 1.35, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1.05, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.35, 0.35), Vector2(0.4, 0.4), Vector2(1.25, 1.25), Vector2(1.25, 1.25)]
+"values": [Vector2(-142, 20), Vector2(-24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(-142, 20)]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("Avatar:modulate:a")
+tracks/7/path = NodePath("FusingPair/Caster:position")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.9, 1.2, 4.15, 4.55, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1.05, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.96, 0.96, 0.0, 0.0]
+"values": [Vector2(142, 20), Vector2(24, 0), Vector2(0, 0), Vector2(0, 0), Vector2(142, 20)]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("Avatar:scale")
+tracks/8/path = NodePath("FusingPair:modulate:a")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 1.2, 1.7, 4.15, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.3, 0.9, 1.1, 3.6, 3.7, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1.5, 1.5), Vector2(1.7, 1.7), Vector2(0.2, 0.2)]
+"values": [0.0, 0.9, 1.0, 0.0, 0.0, 0.85, 0.0]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Avatar:texture")
+tracks/9/path = NodePath("VialBurst:modulate:a")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 1.1, 1.3, 1.5, 1.75, 1.9, 2.05, 2.2, 2.35, 2.5, 2.6, 2.75, 2.9, 3.05, 3.2, 3.35, 3.45, 3.6, 3.75, 3.9, 4.05, 4.2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [ExtResource("3_stomp0"), ExtResource("4_stomp1"), ExtResource("5_stomp2"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("8_stomp5"), ExtResource("9_stomp6"), ExtResource("10_stomp7"), ExtResource("5_stomp2"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("8_stomp5"), ExtResource("9_stomp6"), ExtResource("10_stomp7"), ExtResource("5_stomp2"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("8_stomp5"), ExtResource("9_stomp6"), ExtResource("10_stomp7"), ExtResource("11_stomp8"), ExtResource("3_stomp0")]
+"times": PackedFloat32Array(0, 0.85, 1.0, 1.35, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.0, 0.0]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("TauntHalo:modulate:a")
+tracks/10/path = NodePath("VialBurst:scale")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 1.3, 1.75, 4.0, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1.4, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.88, 0.52, 0.0]
+"values": [Vector2(0.4, 0.4), Vector2(0.5, 0.5), Vector2(2.2, 2.2), Vector2(2.2, 2.2)]
 }
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("TauntHalo:rotation")
+tracks/11/path = NodePath("Avatar:modulate:a")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 1.3, 4.0, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1.1, 3.5, 3.7, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.9, 0.9]
+"values": [0.0, 0.0, 0.96, 0.96, 0.0, 0.0]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("StompWave:modulate:a")
+tracks/12/path = NodePath("Avatar:scale")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 1.75, 1.82, 2.42, 2.5, 2.67, 3.27, 3.35, 3.52, 4.05, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.1, 1.75, 3.45, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.95, 0.08, 0.0, 0.95, 0.08, 0.0, 0.95, 0.42, 0.0]
+"values": [Vector2(0.3, 0.3), Vector2(0.9, 0.9), Vector2(2.3, 2.3), Vector2(2.5, 2.5), Vector2(2.55, 2.55), Vector2(0.3, 0.3)]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
 tracks/13/enabled = true
-tracks/13/path = NodePath("StompWave:scale")
+tracks/13/path = NodePath("Avatar:texture")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 1.75, 2.42, 2.5, 2.52, 3.27, 3.35, 3.37, 4.0, 5.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0.32, 0.32), Vector2(0.32, 0.32), Vector2(1, 1), Vector2(1, 1), Vector2(0.32, 0.32), Vector2(1, 1), Vector2(1, 1), Vector2(0.32, 0.32), Vector2(1, 1), Vector2(1, 1)]
+"times": PackedFloat32Array(0.9, 1.15, 1.4, 1.6, 1.75, 1.95, 2.15, 2.35, 2.45, 2.6, 2.8, 3, 3.2, 3.32, 3.45, 3.6, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("3_stomp0"), ExtResource("4_stomp1"), ExtResource("5_stomp2"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("8_stomp5"), ExtResource("9_stomp6"), ExtResource("10_stomp7"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("8_stomp5"), ExtResource("9_stomp6"), ExtResource("10_stomp7"), ExtResource("6_stomp3"), ExtResource("7_stomp4"), ExtResource("11_stomp8"), ExtResource("3_stomp0")]
 }
 tracks/14/type = "value"
 tracks/14/imported = false
 tracks/14/enabled = true
-tracks/14/path = NodePath("ToxicCascade:modulate:a")
+tracks/14/path = NodePath("TauntHalo:modulate:a")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 1.92, 2.02, 2.44, 2.78, 3.3, 3.62, 4.1, 5.4),
+"times": PackedFloat32Array(0, 1.1, 1.4, 3.45, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.88, 0.6, 0.45, 0.0]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("TauntHalo:rotation")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0, 1.1, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.15]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("TauntHalo:scale")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0, 1.4, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.9, 0.9), Vector2(1.7, 1.7), Vector2(2.2, 2.2), Vector2(2.25, 2.25)]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("StompWave:modulate:a")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0, 1.72, 1.75, 2.35, 2.57, 2.6, 3.2, 3.42, 3.45, 3.7, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.1, 0.0, 0.95, 0.1, 0.0, 0.95, 0.35, 0.0]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("StompWave:scale")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0, 1.75, 2.35, 2.57, 2.6, 3.2, 3.42, 3.45, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.86, 0.22, 0.86, 0.22, 0.86, 0.55, 0.0]
+"values": [Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(3.2, 3.2), Vector2(3.2, 3.2), Vector2(0.5, 0.5), Vector2(3.2, 3.2), Vector2(3.2, 3.2), Vector2(0.5, 0.5), Vector2(3.4, 3.4)]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("ToxicCascade:modulate:a")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0, 1.9, 2.0, 2.3, 2.7, 3.1, 3.5, 3.7, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.86, 0.25, 0.86, 0.25, 0.86, 0.45, 0.0]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("ToxicCascade:scale")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0, 2.0, 3.6, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.8, 0.8), Vector2(1.8, 1.8), Vector2(2.8, 2.8), Vector2(2.85, 2.85)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_perfect_homunculus"]
 _data = {"ultimate": SubResource("Animation_perfect_homunculus")}
 
 [node name="ChemistHomunculusVialPerfectHomunculus" type="Node2D"]
+script = ExtResource("12_v2_driver")
 metadata/ultimate_id = "chemist/homunculus_vial"
-metadata/silhouette = "tank and caster fuse into one towering emerald homunculus"
-metadata/motion_path = "two allies converge through a circle, giant avatar stomps, then both split back out"
-metadata/impact_language = "taunt halo, broad stomp rings, and toxic cascade waves"
-metadata/max_visual_nodes = 8
+metadata/silhouette = "tank and caster fuse into one arena-tall emerald homunculus stomping inside a screen-wide alchemical circle"
+metadata/motion_path = "two allies converge through a widening circle, the fused giant lands three arena-wide stomps, then both split back out"
+metadata/impact_language = "taunt halo, three expanding stomp rings, and toxic cascade waves"
+metadata/max_visual_nodes = 11
 metadata/crowd_cap = 14
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.02, 0.05, 0.03, 0)
+metadata/fullscreen_layer = true
+
+[node name="FusionGlow" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 34
+texture = SubResource("GradientTexture2D_glow")
+position = Vector2(0, -12)
+scale = Vector2(0.5, 0.5)
+modulate = Color(0.45, 1, 0.42, 0)
 
 [node name="AlchemicalCircle" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 32
 points = PackedVector2Array(152, 0, 132, 76, 76, 132, 0, 152, -76, 132, -132, 76, -152, 0, -132, -76, -76, -132, 0, -152, 76, -132, 132, -76, 152, 0)
 width = 7.0
 default_color = Color(0.4, 1, 0.5, 0.92)
 closed = true
 antialiased = true
+scale = Vector2(0.75, 0.75)
 modulate = Color(1, 1, 1, 0)
 
 [node name="FusingPair" type="Node2D" parent="."]
@@ -239,44 +355,51 @@ modulate = Color(0.4, 0.82, 1, 0.96)
 
 [node name="VialBurst" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 38
 polygon = PackedVector2Array(88, 0, 31.4, 13, 62.2, 62.2, 13, 31.4, 0, 88, -13, 31.4, -62.2, 62.2, -31.4, 13, -88, 0, -31.4, -13, -62.2, -62.2, -13, -31.4, 0, -88, 13, -31.4, 62.2, -62.2, 31.4, -13)
 color = Color(0.95, 1, 0.72, 0.9)
 position = Vector2(0, -6)
-scale = Vector2(0.35, 0.35)
+scale = Vector2(0.4, 0.4)
 modulate = Color(1, 1, 1, 0)
 
 [node name="Avatar" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 40
 texture = ExtResource("3_stomp0")
 position = Vector2(0, -24)
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.3, 0.3)
 modulate = Color(0.48, 1, 0.38, 0)
 
 [node name="TauntHalo" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 33
 points = PackedVector2Array(210, 0, 194, 80, 148, 148, 80, 194, 0, 210, -80, 194, -148, 148, -194, 80, -210, 0, -194, -80, -148, -148, -80, -194, 0, -210, 80, -194, 148, -148, 194, -80, 210, 0)
 width = 12.0
 default_color = Color(0.66, 1, 0.3, 0.88)
 closed = true
 antialiased = true
+scale = Vector2(0.9, 0.9)
 modulate = Color(1, 1, 1, 0)
 
 [node name="StompWave" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 36
 points = PackedVector2Array(0, 164, 92, 138, 168, 70, 210, 0, 168, -70, 92, -138, 0, -164, -92, -138, -168, -70, -210, 0, -168, 70, -92, 138, 0, 164)
 width = 18.0
 default_color = Color(0.78, 1, 0.52, 0.92)
 closed = true
 antialiased = true
 modulate = Color(1, 1, 1, 0)
-scale = Vector2(0.32, 0.32)
+scale = Vector2(0.5, 0.5)
 
 [node name="ToxicCascade" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
+z_index = 35
 points = PackedVector2Array(-226, 96, -142, 54, -62, 100, 0, 44, 68, 100, 146, 52, 226, 96)
 width = 22.0
 default_color = Color(0.3, 0.96, 0.28, 0.8)
 antialiased = true
+scale = Vector2(0.8, 0.8)
 modulate = Color(1, 1, 1, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
