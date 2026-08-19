@@ -19,6 +19,7 @@ var _elapsed := 0.0
 var _state := READY_STATE
 var _handles := {}
 var _emitted_phases := {}
+var _beats: Array[Dictionary] = []
 
 
 ## Pass 1 for deterministic headless behavior, 0 for a fixture timeline, and
@@ -40,6 +41,21 @@ func begin(handles: Dictionary) -> Dictionary:
 func set_paused(value: bool) -> void:
 	if _state == ACTIVE_STATE:
 		_paused = value
+
+
+## A beat the executor reported while this timeline was live. Recording is
+## deliberately cheap and passive: the authored scene owns how a beat looks,
+## the timeline only proves the event reached the live presentation.
+func record_beat(event_id: String, payload: Dictionary) -> void:
+	_beats.append({
+		"event_id": event_id,
+		"payload": payload.duplicate(true),
+		"elapsed_seconds": _elapsed,
+	})
+
+
+func recorded_beats() -> Array[Dictionary]:
+	return _beats.duplicate(true)
 
 
 func advance(delta_seconds: float) -> Array[Dictionary]:
@@ -93,5 +109,5 @@ func snapshot(reason := "") -> Dictionary:
 		"elapsed_seconds": _elapsed,
 		"active_handle_count": active_handle_count(),
 		"reason": reason,
-		"events": [],
+		"events": recorded_beats(),
 	}
