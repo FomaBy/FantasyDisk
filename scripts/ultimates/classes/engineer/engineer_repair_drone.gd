@@ -1,5 +1,12 @@
 extends RefCounted
 
+## Инженер / Ремонтный дрон — «Рой микродронов».
+##
+## Ultimate Direction v2 (FAN-2955): every ram wave intercepts every live enemy
+## on the map, on screen and off — the orbit radius is the swarm's presentation,
+## never its reach. The declared control-resistance policy is what still shapes
+## a single target: an epic keeps 35% of the launch, a boss 10%.
+
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_repair_drone"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_repair_drone"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_repair_drone.gd"
@@ -18,7 +25,6 @@ static func parameter_contract() -> Dictionary:
 		"wave_count": {"type": "integer", "minimum": 1},
 		"wave_interval": {"type": "number", "minimum": 0.01},
 		"radius": {"type": "number", "minimum": 1.0},
-		"intercept_target_cap": {"type": "integer", "minimum": 1},
 		"ram_damage": {"type": "number", "minimum": 0.0},
 		"knockback": {"type": "number", "minimum": 0.0},
 		"repair_total": {"type": "number", "minimum": 0.0},
@@ -79,13 +85,7 @@ static func ram_wave(activation, devices: Array[Node], wave: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var center: Vector2 = activation.origin()
-	var selected: Array = activation.select_targets(
-		center,
-		activation.param_float("radius", 430.0),
-		activation.param_int("intercept_target_cap", 4),
-		"nearest"
-	)
-	for raw_target in selected:
+	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
