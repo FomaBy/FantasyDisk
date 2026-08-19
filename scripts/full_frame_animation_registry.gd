@@ -113,11 +113,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -38.0),
 			"source_faces_left": true,
 		},
+		# FAN-2612: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"stone_bruiser": {
 			"frames": "res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres",
 			"scale": Vector2(0.42, 0.42),
 			"position": Vector2(0.0, -52.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"bone_caller": {
 			"frames": "res://assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres",

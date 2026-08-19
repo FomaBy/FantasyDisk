@@ -1149,6 +1149,11 @@ func _test_full_frame_animation_registry() -> void:
 		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 		"rift_shieldbearer": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+		# FAN-2612: attack/hit/death each lead with a byte-identical copy of the
+		# idle pose (the FAN-3090 pattern), so the shipped rows are 7/7/9 rather
+		# than the 6/6/8 of animated content. The pack is QA-approved and frozen,
+		# so the declaration follows the art as shipped.
+		"stone_bruiser": {"idle": 1, "move": 6, "attack": 7, "hit": 7, "death": 9},
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
