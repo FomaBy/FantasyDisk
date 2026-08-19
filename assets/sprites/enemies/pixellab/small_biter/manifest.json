@@ -1,0 +1,55 @@
+{
+  "character_id": "small_biter",
+  "pixellab_character_id": "82c57fa2-24d0-4b48-8857-589738999078",
+  "generated_at": "2026-08-19",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations) + template walk-6-frames (move) + v3 custom (attack/hit/death)",
+  "body_type": "quadruped (dog template)",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walk-6-frames",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "lunging forward and snapping jaws in a vicious bite attack, quick aggressive lunge",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, recoiling with bones rattling",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "collapsing and dying, bones crumbling apart and falling still to the ground",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2617: replaces the single-facing small_biter pack (one authored horizontal view + flip) with a full FAN-2519 explicit-eight-direction animated pack for standard_monster/small_biter. 8 idle rotations + 8x6 move/attack/death frames + 8x4 hit frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32 (fleet standard_monster convention, matching bone_caller/ash_marksman). No flying/hover behavior: small_biter is a ground-crawling quadruped, not a winged actor."
+}
