@@ -94,7 +94,7 @@ is the solo `effect_total` of
 **The finding.** Unlike the Chemist (FAN-2527) and Engineer (FAN-2532) trios,
 the Assassin's weakness was geometric, not arithmetic. Eight Moons prices its
 solo output as two full passes — the declared model in
-`tests/ultimates/mechanics/assassin_balance_test.gd` has always counted
+`tests/ultimates/mechanics/assassin_mechanics_balance_test.gd` has always counted
 `pass_damage * 2.0` — but the shipped `return_curve_offset` 132 bends the
 return curve up to 66 px away from the lane axis while the hit corridor is the
 lane's own 48 px `lane_half_width`. The curved return therefore could never
@@ -237,7 +237,7 @@ python3 tools/godot_gate.py --headless --path . \
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/mechanics/assassin_live_test.gd
 python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/mechanics/assassin_balance_test.gd
+  --script res://tests/ultimates/mechanics/assassin_mechanics_balance_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_package_discovery_test.gd
 python3 tools/godot_gate.py --headless --path . \

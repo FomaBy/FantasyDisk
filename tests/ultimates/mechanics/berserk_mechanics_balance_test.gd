@@ -8,7 +8,7 @@ extends SceneTree
 ##
 ## Run:
 ## python3 tools/godot_gate.py --headless --path . \
-##   --script res://tests/ultimates/mechanics/berserk_balance_test.gd
+##   --script res://tests/ultimates/mechanics/berserk_mechanics_balance_test.gd
 
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
@@ -379,9 +379,9 @@ func _report(metrics: Dictionary) -> void:
 			row["floor_share"], row["control_seconds"], row["lifetime"],
 		])
 	if _errors.is_empty():
-		print("berserk_balance_test: PASS")
+		print("berserk_mechanics_balance_test: PASS")
 		quit(0)
 		return
 	for error in _errors:
-		push_error("berserk_balance_test: %s" % error)
+		push_error("berserk_mechanics_balance_test: %s" % error)
 	quit(1)
