@@ -2,8 +2,7 @@ extends RefCounted
 
 ## Chemist / Кислотная колба — «Царь-Колба».
 ##
-## One aimed flask floods a lake that expands from `start_ratio` to the full
-## radius across its ticks, dissolves what stands in it, and converts the
+## One aimed flask floods a lake, dissolves every live enemy, and converts the
 ## MEASURED outcome of every tick into one capped charge that the finale spends
 ## as the acid pillars.
 ##
@@ -14,7 +13,7 @@ extends RefCounted
 ## residue survives the cast. Tick damage runs through the activation too, so
 ## the whole-cast boss budget binds the entire pour and the finale.
 ##
-## Declaration params: aim_range, lake_radius, start_ratio, target_limit,
+## Declaration params: aim_range, lake_radius,
 ## pour_at, tick_count, tick_interval, recover_at, damage, dissolve_bonus,
 ## dissolve_stack_cap, charge_cap_ratio, charge_conversion, pillar_ratio.
 
@@ -33,8 +32,6 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"aim_range": {"type": "number", "minimum": 0.001},
 		"lake_radius": {"type": "number", "minimum": 0.0},
-		"start_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"target_limit": {"type": "integer", "minimum": 0},
 		"pour_at": {"type": "number", "minimum": 0.0},
 		"tick_count": {"type": "integer", "minimum": 1},
 		"tick_interval": {"type": "number", "minimum": 0.05},
@@ -92,12 +89,7 @@ static func execute(activation: Activation) -> float:
 	tween.tween_interval(pour_at)
 	for tick_index in ticks:
 		tween.tween_interval(interval)
-		var radius := lerpf(
-			lake_radius * activation.param_float("start_ratio", 1.0),
-			lake_radius,
-			float(tick_index + 1) / float(ticks)
-		)
-		tween.tween_callback(func() -> void: _corrode(activation, centre, radius, tick_index))
+		tween.tween_callback(func() -> void: _corrode(activation, centre, tick_index))
 	tween.tween_callback(func() -> void: _pillars(activation, centre, lake_radius))
 	var poured := pour_at + interval * float(ticks)
 	tween.tween_interval(maxf(activation.param_float("recover_at", 0.0) - poured, 0.0))
@@ -106,16 +98,14 @@ static func execute(activation: Activation) -> float:
 
 ## One lake tick: damage scaled by how far this target is already dissolved,
 ## then one more dissolve stack and the measured-outcome charge conversion.
-static func _corrode(
-	activation: Activation, centre: Vector2, radius: float, tick_index: int
-) -> void:
+static func _corrode(activation: Activation, centre: Vector2, tick_index: int) -> void:
 	var base_damage := activation.scaled_damage()
 	var bonus := activation.param_float("dissolve_bonus", 0.0)
 	var stack_cap := float(activation.param_int("dissolve_stack_cap", 0))
 	var conversion := activation.param_float("charge_conversion", 0.0)
 	var cap := charge_cap(activation)
 	var owner_id := charge_owner_id(activation)
-	for raw_target in activation.targets(centre, radius, activation.param_int("target_limit", 0)):
+	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -147,7 +137,7 @@ static func _pillars(activation: Activation, centre: Vector2, radius: float) -> 
 	var stored := float(released.get("amount", 0.0)) * activation.param_float("pillar_ratio", 0.0)
 	if stored <= 0.0:
 		return
-	var targets := activation.targets(centre, radius, activation.param_int("target_limit", 0))
+	var targets := activation.select_targets(centre, INF, 0, "nearest")
 	if targets.is_empty():
 		return
 	activation.present(EXECUTOR_ID, {"shape": "orb_burst", "position": centre, "radius": radius})

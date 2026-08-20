@@ -32,7 +32,6 @@ const READY_SEARCH_LIMIT := 24
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"chemist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -73,7 +72,14 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## as arena-wide pressure waves bounded per TARGET rather than per count. The
 ## per-enemy floor is proven under crowd pressure in
 ## `tests/ultimates/engineer_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "engineer"]
+##
+## `chemist` (FAN-2954): the philosopher's blast crystallizes every live enemy
+## before its bounded per-target transmutation, every acid pour and its finale
+## reach the full map, and every homunculus taunt, stomp and toxin wave reaches
+## the full map while keeping its summon and stack contracts. The per-enemy
+## floor and the class-local `target_limit` vocabulary are proven in
+## `tests/ultimates/chemist_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "chemist", "engineer"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

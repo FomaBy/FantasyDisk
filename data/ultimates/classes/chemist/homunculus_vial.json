@@ -25,10 +25,8 @@
       "beat_interval": 0.85,
       "stomp_radius": 300.0,
       "damage": 62.0,
-      "wave_radius": 240.0,
       "wave_toxin_bonus": 0.22,
       "wave_stack_cap": 4,
-      "target_limit": 14,
       "recover_at": 4.2,
       "control_policy": {
         "normal": {

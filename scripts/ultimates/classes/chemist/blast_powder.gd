@@ -3,8 +3,8 @@ extends RefCounted
 ## Chemist / Взрывная пыль — «Философский Взрыв».
 ##
 ## Five alchemical charges form a pentagram around the caster, crystallize every
-## enemy caught under them, pull that exact set inward and transmute it in one
-## capped blast.
+## live enemy, pull that exact set inward and transmute it in one capped blast.
+## The pentagram remains the cast's visual anchor; it no longer limits reach.
 ##
 ## The detonation reads back the set the pentagram recorded and consumes each
 ## mark exactly once, so a kill can never recruit a fresh victim: there is no
@@ -12,7 +12,7 @@ extends RefCounted
 ## crystal lock go through `apply_control`, so the declared tier policy is what
 ## reduces them for elites and refuses the movement lock on bosses.
 ##
-## Declaration params: pentagram_radius, charge_radius, target_limit, pull_at,
+## Declaration params: pentagram_radius, pull_at,
 ## pull_force, detonate_at, recover_at, damage, target_damage_cap,
 ## control_policy, crystal_status.
 
@@ -33,8 +33,6 @@ const PENTAGRAM_ROTATION_DEGREES := -90.0
 static func parameter_contract() -> Dictionary:
 	return {
 		"pentagram_radius": {"type": "number", "minimum": 1.0},
-		"charge_radius": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 0},
 		"pull_at": {"type": "number", "minimum": 0.0},
 		"pull_force": {"type": "number", "minimum": 0.0},
 		"detonate_at": {"type": "number", "minimum": 0.0},
@@ -52,7 +50,21 @@ static func parameter_contract() -> Dictionary:
 static func prepare(activation: Activation) -> bool:
 	# The pentagram is cast around the alchemist, so the geometry anchor is the
 	# caster itself rather than an aim sample the host may not be able to give.
-	activation.set_primitive_state({"source": activation.origin()})
+	var origin := activation.origin()
+	activation.set_primitive_state({
+		"source": origin,
+		"points": activation.pattern_points(
+			origin,
+			"polygon",
+			{
+				"count": PENTAGRAM_VERTICES,
+				"radius": activation.param_float("pentagram_radius", 0.0),
+				"rotation_degrees": PENTAGRAM_ROTATION_DEGREES,
+				"arc_degrees": 360.0,
+			}
+		),
+		"targets": activation.select_targets(origin, INF, 0, "nearest"),
+	})
 	var ready := Library.execute_primitive(
 		"per_target_damage_cap",
 		activation,
@@ -61,24 +73,8 @@ static func prepare(activation: Activation) -> bool:
 	ready = Library.execute_primitive(
 		"control_resistance_policy", activation, activation.param_dictionary("control_policy")
 	) and ready
-	ready = Library.execute_primitive(
-		"pattern_geometry",
-		activation,
-		{
-			"center": "source",
-			"pattern": "polygon",
-			"params": {
-				"count": PENTAGRAM_VERTICES,
-				"radius": activation.param_float("pentagram_radius", 0.0),
-				"rotation_degrees": PENTAGRAM_ROTATION_DEGREES,
-				"arc_degrees": 360.0,
-			},
-			"hit_radius": activation.param_float("charge_radius", 0.0),
-			"target_limit": activation.param_int("target_limit", 0),
-		}
-	) and ready
-	# An empty pentagram is a legitimate miss, not a malformed declaration: the
-	# ledger step only has work when the pattern caught something.
+	# An empty map is a legitimate miss, not a malformed declaration: the ledger
+	# step only has work when at least one live enemy was selected.
 	if (activation.primitive_value("targets", []) as Array).is_empty():
 		return ready
 	return Library.execute_primitive(
