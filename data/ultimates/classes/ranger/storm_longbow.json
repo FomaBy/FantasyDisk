@@ -17,7 +17,7 @@
       "max_range": 780.0,
       "half_width": 120.0,
       "crowd_cap": 8,
-      "beat_damage": 11.2,
+      "beat_damage": 14.0,
       "beat_falloff": 0.46,
       "push_force": 260.0,
       "slow_duration": 2.6,

@@ -21,8 +21,8 @@
       "mark_duration": 7.8,
       "slow_multiplier": 0.58,
       "accuracy_multiplier": 0.65,
-      "dive_damage": 40.0,
-      "final_damage": 60.0
+      "dive_damage": 54.4,
+      "final_damage": 81.6
     }
   },
   "total_boss_cap": 0.08,

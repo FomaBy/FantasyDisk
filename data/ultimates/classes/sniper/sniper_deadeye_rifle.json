@@ -20,7 +20,7 @@
       "half_width": 46.0,
       "pierce_limit": 4,
       "recover_delay": 0.25,
-      "shot_damage": 84.0,
+      "shot_damage": 113.4,
       "headshot_multiplier": 1.5,
       "penetration_falloff": 0.28
     }

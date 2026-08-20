@@ -14,7 +14,7 @@
       "target_limit": 5,
       "duration": 4.0,
       "evasion_bonus": 0.34,
-      "pressure_damage": 55.0,
+      "pressure_damage": 74.25,
       "outline_slow": 0.72
     }
   },

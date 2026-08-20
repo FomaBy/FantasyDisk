@@ -20,8 +20,8 @@
       "impale_target_cap": 3,
       "root_duration": 5.0,
       "slow_multiplier": 0.45,
-      "impale_damage": 45.0,
-      "thorn_crown_damage": 10.0
+      "impale_damage": 61.2,
+      "thorn_crown_damage": 13.6
     }
   },
   "total_boss_cap": 0.08,

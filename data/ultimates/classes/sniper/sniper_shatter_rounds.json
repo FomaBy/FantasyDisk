@@ -22,7 +22,7 @@
       "ricochet_jumps": 2,
       "volley_delay": 0.18,
       "hop_delay": 0.14,
-      "impact_damage": 52.0,
+      "impact_damage": 70.2,
       "ricochet_falloff": 0.82,
       "shard_count": 1,
       "shard_ratio": 0.22,
