@@ -189,7 +189,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			# (512*0.62 == 317.44, same canvas*scale product the FAN-2621 bug
 			# preserved at 128*2.48 -- keeps contact_range=244.7 unchanged).
 			"scale": Vector2(0.62, 0.62),
-			"position": Vector2(0.0, -76.0),
+			"position": Vector2(0.0, -82.0),
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
