@@ -1,284 +1,1446 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_00.png" id="1_pp1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_01.png" id="2_pp2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_02.png" id="3_pp3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_03.png" id="4_pp4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_04.png" id="5_pp5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_05.png" id="6_pp6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_00.png" id="7_pp7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_01.png" id="8_pp8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_02.png" id="9_pp9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_03.png" id="10_pp10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_04.png" id="11_pp11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_05.png" id="12_pp12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_00.png" id="13_pp13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_01.png" id="14_pp14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_02.png" id="15_pp15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_03.png" id="16_pp16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_04.png" id="17_pp17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_05.png" id="18_pp18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_00.png" id="19_pp19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_01.png" id="20_pp20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_02.png" id="21_pp21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_03.png" id="22_pp22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_04.png" id="23_pp23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_05.png" id="24_pp24"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_00.png" id="25_pp25"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_01.png" id="26_pp26"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_02.png" id="27_pp27"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_03.png" id="28_pp28"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_04.png" id="29_pp29"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_05.png" id="30_pp30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_east.png" id="1_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_east.png" id="2_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south.png" id="3_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_west.png" id="4_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_west.png" id="5_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_west.png" id="6_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north.png" id="7_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_east.png" id="8_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_00.png" id="9_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_01.png" id="10_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_02.png" id="11_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_03.png" id="12_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_04.png" id="13_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_05.png" id="14_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_06.png" id="15_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_07.png" id="16_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_00.png" id="17_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_01.png" id="18_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_02.png" id="19_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_03.png" id="20_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_04.png" id="21_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_05.png" id="22_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_06.png" id="23_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_07.png" id="24_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_00.png" id="25_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_01.png" id="26_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_02.png" id="27_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_03.png" id="28_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_04.png" id="29_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_05.png" id="30_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_06.png" id="31_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_07.png" id="32_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_00.png" id="33_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_01.png" id="34_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_02.png" id="35_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_03.png" id="36_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_04.png" id="37_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_05.png" id="38_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_06.png" id="39_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_07.png" id="40_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_00.png" id="41_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_01.png" id="42_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_02.png" id="43_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_03.png" id="44_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_04.png" id="45_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_05.png" id="46_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_06.png" id="47_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_07.png" id="48_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_00.png" id="49_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_01.png" id="50_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_02.png" id="51_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_03.png" id="52_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_04.png" id="53_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_05.png" id="54_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_06.png" id="55_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_07.png" id="56_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_00.png" id="57_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_01.png" id="58_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_02.png" id="59_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_03.png" id="60_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_04.png" id="61_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_05.png" id="62_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_06.png" id="63_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_07.png" id="64_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_00.png" id="65_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_01.png" id="66_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_02.png" id="67_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_03.png" id="68_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_04.png" id="69_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_05.png" id="70_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_06.png" id="71_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_07.png" id="72_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_00.png" id="73_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_01.png" id="74_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_02.png" id="75_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_03.png" id="76_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_04.png" id="77_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_05.png" id="78_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_06.png" id="79_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_07.png" id="80_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_08.png" id="81_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_09.png" id="82_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_00.png" id="83_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_01.png" id="84_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_02.png" id="85_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_03.png" id="86_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_04.png" id="87_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_05.png" id="88_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_06.png" id="89_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_07.png" id="90_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_08.png" id="91_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_09.png" id="92_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_00.png" id="93_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_01.png" id="94_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_02.png" id="95_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_03.png" id="96_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_04.png" id="97_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_05.png" id="98_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_06.png" id="99_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_07.png" id="100_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_08.png" id="101_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_09.png" id="102_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_00.png" id="103_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_01.png" id="104_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_02.png" id="105_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_03.png" id="106_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_04.png" id="107_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_05.png" id="108_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_06.png" id="109_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_07.png" id="110_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_08.png" id="111_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_09.png" id="112_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_00.png" id="113_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_01.png" id="114_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_02.png" id="115_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_03.png" id="116_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_04.png" id="117_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_05.png" id="118_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_06.png" id="119_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_07.png" id="120_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_08.png" id="121_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_09.png" id="122_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_00.png" id="123_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_01.png" id="124_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_02.png" id="125_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_03.png" id="126_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_04.png" id="127_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_05.png" id="128_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_06.png" id="129_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_07.png" id="130_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_08.png" id="131_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_09.png" id="132_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_00.png" id="133_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_01.png" id="134_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_02.png" id="135_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_03.png" id="136_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_04.png" id="137_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_05.png" id="138_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_06.png" id="139_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_07.png" id="140_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_08.png" id="141_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_09.png" id="142_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_00.png" id="143_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_01.png" id="144_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_02.png" id="145_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_03.png" id="146_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_04.png" id="147_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_05.png" id="148_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_06.png" id="149_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_07.png" id="150_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_08.png" id="151_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_09.png" id="152_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_00.png" id="153_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_01.png" id="154_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_02.png" id="155_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_03.png" id="156_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_04.png" id="157_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_00.png" id="158_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_01.png" id="159_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_02.png" id="160_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_03.png" id="161_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_04.png" id="162_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_00.png" id="163_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_01.png" id="164_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_02.png" id="165_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_03.png" id="166_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_04.png" id="167_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_00.png" id="168_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_01.png" id="169_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_02.png" id="170_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_03.png" id="171_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_04.png" id="172_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_00.png" id="173_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_01.png" id="174_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_02.png" id="175_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_03.png" id="176_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_04.png" id="177_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_00.png" id="178_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_01.png" id="179_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_02.png" id="180_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_03.png" id="181_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_04.png" id="182_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_00.png" id="183_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_01.png" id="184_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_02.png" id="185_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_03.png" id="186_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_04.png" id="187_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_00.png" id="188_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_01.png" id="189_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_02.png" id="190_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_03.png" id="191_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_04.png" id="192_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_00.png" id="193_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_01.png" id="194_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_02.png" id="195_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_03.png" id="196_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_04.png" id="197_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_05.png" id="198_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_06.png" id="199_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_00.png" id="200_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_01.png" id="201_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_02.png" id="202_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_03.png" id="203_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_04.png" id="204_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_05.png" id="205_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_06.png" id="206_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_00.png" id="207_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_01.png" id="208_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_02.png" id="209_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_03.png" id="210_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_04.png" id="211_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_05.png" id="212_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_06.png" id="213_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_00.png" id="214_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_01.png" id="215_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_02.png" id="216_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_03.png" id="217_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_04.png" id="218_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_05.png" id="219_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_06.png" id="220_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_00.png" id="221_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_01.png" id="222_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_02.png" id="223_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_03.png" id="224_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_04.png" id="225_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_05.png" id="226_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_06.png" id="227_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_00.png" id="228_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_01.png" id="229_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_02.png" id="230_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_03.png" id="231_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_04.png" id="232_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_05.png" id="233_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_06.png" id="234_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_00.png" id="235_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_01.png" id="236_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_02.png" id="237_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_03.png" id="238_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_04.png" id="239_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_05.png" id="240_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_06.png" id="241_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_00.png" id="242_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_01.png" id="243_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_02.png" id="244_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_03.png" id="245_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_04.png" id="246_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_05.png" id="247_pp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_06.png" id="248_pp"]
 
 [resource]
 animations = [
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_pp1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_pp2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_pp3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_pp4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_pp5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_pp6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_pp1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_pp2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_pp3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_pp4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_pp5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_pp6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_pp7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_pp8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_pp9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_pp10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_pp11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_pp12")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_pp13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_pp14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_pp15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_pp16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_pp17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_pp18")
-}
-],
+"texture": ExtResource("1_pp")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pp")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_pp")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_pp")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_pp")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_pp")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_pp")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_pp")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_pp")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_pp19")
+"texture": ExtResource("17_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_pp20")
+"texture": ExtResource("18_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_pp21")
+"texture": ExtResource("19_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_pp22")
+"texture": ExtResource("20_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_pp23")
+"texture": ExtResource("21_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_pp24")
-}
-],
+"texture": ExtResource("22_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_pp")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_pp")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_pp")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("41_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_pp")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("51_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_pp")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_pp")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_pp")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("73_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_pp")
+}],
 "loop": false,
-"name": &"skill_poison_volley",
-"speed": 12.0
+"name": &"skill_poison_volley_east",
+"speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_pp19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_pp20")
+"texture": ExtResource("83_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_pp21")
+"texture": ExtResource("84_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_pp22")
+"texture": ExtResource("85_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_pp23")
+"texture": ExtResource("86_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_pp24")
-}
-],
+"texture": ExtResource("87_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_pp")
+}],
 "loop": false,
-"name": &"attack_poison_volley",
-"speed": 12.0
+"name": &"skill_poison_volley_south_east",
+"speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_pp25")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_pp26")
+"texture": ExtResource("93_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_pp27")
+"texture": ExtResource("94_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_pp28")
+"texture": ExtResource("95_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_pp29")
+"texture": ExtResource("96_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_pp30")
-}
-],
+"texture": ExtResource("97_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_pp")
+}],
 "loop": false,
-"name": &"skill_plague_aura",
-"speed": 12.0
+"name": &"skill_poison_volley_south",
+"speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_pp25")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_pp26")
+"texture": ExtResource("103_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_pp27")
+"texture": ExtResource("104_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_pp28")
+"texture": ExtResource("105_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_pp29")
+"texture": ExtResource("106_pp")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_pp30")
-}
-],
+"texture": ExtResource("107_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_pp")
+}],
 "loop": false,
-"name": &"attack_plague_aura",
-"speed": 12.0
+"name": &"skill_poison_volley_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_pp")
+}],
+"loop": false,
+"name": &"skill_poison_volley_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_pp")
+}],
+"loop": false,
+"name": &"skill_poison_volley_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_pp")
+}],
+"loop": false,
+"name": &"skill_poison_volley_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_pp")
+}],
+"loop": false,
+"name": &"skill_poison_volley_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_pp")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("158_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_pp")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("163_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_pp")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("168_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_pp")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_pp")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("178_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_pp")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("183_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_pp")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("188_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_pp")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("193_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_pp")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("200_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_pp")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("207_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_pp")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("214_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_pp")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_pp")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("228_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_pp")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("235_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("239_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_pp")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("242_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_pp")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_pp")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
 }
 ]

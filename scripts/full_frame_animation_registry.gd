@@ -203,6 +203,7 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.66, 0.66),
 			"position": Vector2(0.0, -78.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"shard_marshal": {
 			"frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",

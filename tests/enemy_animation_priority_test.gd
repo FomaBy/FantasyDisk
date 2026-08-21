@@ -29,12 +29,12 @@ func _test_elite_attack_blocks_locomotion(errors: Array[String]) -> void:
 	elite.call("_set_elite_attack_phase", "windup", 0.6)
 	elite.set("velocity", Vector2.RIGHT * 100.0)
 	elite.call("_update_movement_animation", 0.01)
-	if body.animation != &"skill_poison_volley":
-		errors.append("windup was replaced by %s instead of skill_poison_volley" % body.animation)
+	if body.animation != &"skill_poison_volley_east":
+		errors.append("windup was replaced by %s instead of skill_poison_volley_east" % body.animation)
 	elite.call("_set_elite_attack_phase", "idle", 0.0)
 	elite.call("_update_movement_animation", 0.01)
-	if body.animation != &"move":
-		errors.append("locomotion did not resume after elite attack: %s" % body.animation)
+	if body.animation != &"move_east":
+		errors.append("locomotion did not resume as move_east after elite attack: %s" % body.animation)
 	elite.queue_free()
 	await process_frame
 

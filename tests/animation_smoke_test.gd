@@ -1300,7 +1300,7 @@ func _test_full_frame_animation_registry() -> void:
 		},
 		"plague_prophet": {
 			"path": "res://scenes/ElitePoisoned.tscn",
-			"skill_states": ["skill_poison_volley", "skill_plague_aura"],
+			"skill_states": ["skill_poison_volley"],
 			"phase_state": "plague_prophet:poison_volley:windup",
 			"phase_resolved": "skill_poison_volley",
 		},
@@ -1316,6 +1316,7 @@ func _test_full_frame_animation_registry() -> void:
 	# directional_enemy_row_frames above / FAN-2901 mini-elite pattern below).
 	var directional_elite_row_frames := {
 		"iron_bastion": {"idle": 1, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shield_block": 7, "skill_slam_wave": 7},
+		"plague_prophet": {"idle": 1, "move": 8, "skill_poison_volley": 10, "hit": 5, "death": 7},
 	}
 	for elite_id in elite_full_frame_scenes.keys():
 		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]
@@ -1330,7 +1331,7 @@ func _test_full_frame_animation_registry() -> void:
 			var elite_row_frames: Dictionary = directional_elite_row_frames.get(elite_id, {})
 			if elite_row_frames.is_empty():
 				_fail("Expected %s to declare its directional row lengths in directional_elite_row_frames." % elite_id)
-			var elite_state_names := ["idle", "move", "attack", "hit", "death"]
+			var elite_state_names := ["idle", "move", "hit", "death"]
 			for skill_state in elite_info["skill_states"]:
 				elite_state_names.append(str(skill_state))
 			for state_name in elite_state_names:
@@ -1345,6 +1346,10 @@ func _test_full_frame_animation_registry() -> void:
 							_fail("Expected %s %s loop to be %s." % [elite_id, elite_directional_row, str(elite_state_should_loop)])
 						if elite_frames.get_frame_count(elite_directional_row) != elite_expected_frames:
 							_fail("Expected %s %s to have %d frames." % [elite_id, elite_directional_row, elite_expected_frames])
+			if elite_id == "plague_prophet":
+				for stale_row in ["skill_plague_aura_east", "attack_poison_volley_east"]:
+					if elite_frames.has_animation(stale_row):
+						_fail("Expected plague_prophet not to expose stale %s." % stale_row)
 		else:
 			for animation_name in ["move", "attack", "attack_primary"]:
 				if not elite_frames.has_animation(animation_name):
