@@ -90,6 +90,7 @@ func _initialize() -> void:
 	await _test_coin_pouch()
 	await _test_shadow_cloak()
 	await _test_smoke_bomb()
+	await _test_map_wide_coverage()
 	_test_charge_and_persistence_contract()
 	_holder.queue_free()
 	await process_frame
@@ -201,6 +202,22 @@ func _test_charge_and_persistence_contract() -> void:
 		var restored := Ledger.new(row)
 		restored.apply_snapshot(ledger.to_snapshot())
 		_check(is_equal_approx(restored.charge, 63.0), "%s charge must survive snapshots" % weapon_id)
+
+
+## Ultimate Direction v2: each executor must affect every live enemy, including
+## silhouettes far beyond the old radius/count rails.
+func _test_map_wide_coverage() -> void:
+	for weapon_id in ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]:
+		var host := await _host()
+		for index in 20:
+			_target(host, Vector2(80.0 + float(index) * 180.0, float(index % 3) * 40.0), 10000.0, 10000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id), "%s map-wide cast must activate" % weapon_id)
+		var activation := controller.active_activation()
+		_advance(activation, 4.2)
+		for target in host.fixture_targets:
+			_check(target.health < target.max_health, "%s must damage every live enemy" % weapon_id)
+		await _drop(host)
 
 
 func _host() -> FixtureHost:

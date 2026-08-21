@@ -11,7 +11,7 @@
     "strategy_id": "weapon_ultimate.executor.thief.thief_shadow_cloak",
     "params": {
       "radius": 520.0,
-      "mark_limit": 8,
+      "strike_count": 8,
       "strike_interval": 0.16,
       "mark_duration": 2.1,
       "stab_damage": 9.45,

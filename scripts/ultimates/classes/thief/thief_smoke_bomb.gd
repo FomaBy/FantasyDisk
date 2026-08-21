@@ -24,7 +24,6 @@ var _leases: Array[Dictionary] = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"radius": {"type": "number", "minimum": 0.01},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"duration": {"type": "number", "minimum": 0.01},
 		"evasion_bonus": {"type": "number", "minimum": 0.0, "maximum": 0.90},
 		"pressure_damage": {"type": "number", "minimum": 0.0},
@@ -38,8 +37,8 @@ static func execute(activation) -> float:
 		return 0.0
 	if not Library.execute_primitive("priority_target_selector", activation, {
 		"center": "source",
-		"radius": activation.param_float("radius", 300.0),
-		"limit": activation.param_int("target_limit", 12),
+		"radius": 999999.0,
+		"limit": 0,
 		"priority": "nearest",
 		"hint": {},
 	}):

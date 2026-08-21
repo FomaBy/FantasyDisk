@@ -74,9 +74,6 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"soldier/soldier_rifle": V2_SEED_REASON,
 	"soldier/soldier_grenade": V2_SEED_REASON,
 	"soldier/soldier_bayonet": V2_SEED_REASON,
-	"thief/thief_coin_pouch": V2_SEED_REASON,
-	"thief/thief_shadow_cloak": V2_SEED_REASON,
-	"thief/thief_smoke_bomb": V2_SEED_REASON,
 }
 
 static var _schema_cache: Dictionary = {}

@@ -25,7 +25,7 @@ var _leases: Array[Dictionary] = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"radius": {"type": "number", "minimum": 0.01},
-		"mark_limit": {"type": "integer", "minimum": 1, "maximum": 8},
+		"strike_count": {"type": "integer", "minimum": 1, "maximum": 8},
 		"strike_interval": {"type": "number", "minimum": 0.01},
 		"mark_duration": {"type": "number", "minimum": 0.01},
 		"stab_damage": {"type": "number", "minimum": 0.0},
@@ -39,8 +39,8 @@ static func execute(activation) -> float:
 		return 0.0
 	if not Library.execute_primitive("priority_target_selector", activation, {
 		"center": "source",
-		"radius": activation.param_float("radius", 520.0),
-		"limit": activation.param_int("mark_limit", 8),
+		"radius": 999999.0,
+		"limit": 0,
 		"priority": "highest_hp",
 		"hint": {},
 	}):
@@ -56,11 +56,11 @@ static func execute(activation) -> float:
 	if tween == null:
 		return 0.0
 	var interval: float = activation.param_float("strike_interval", 0.16)
-	for index in activation.param_int("mark_limit", 8):
+	for index in activation.param_int("strike_count", 8):
 		tween.tween_callback(Callable(effect, "stab").bind(index))
 		tween.tween_interval(interval)
 	tween.tween_callback(Callable(effect, "finish_line"))
-	return float(activation.param_int("mark_limit", 8)) * interval
+	return float(activation.param_int("strike_count", 8)) * interval
 
 
 func configure(activation, marks: Array) -> void:
@@ -85,15 +85,16 @@ func stab(index: int) -> void:
 	if _activation == null or _activation.is_finished() or _strike_claims.has(index) or _marks.is_empty():
 		return
 	_strike_claims[index] = true
-	var target := _marks[index] as Node if index < _marks.size() else _marks[0] as Node
-	if target == null or not is_instance_valid(target):
-		return
-	strike_count_for_tests += 1
 	var amount: float = _activation.scaled_damage("stab_damage", 0.0) \
 		* (1.0 + _activation.param_float("escalation", 0.12) * float(index))
-	_deal(target, amount, "shadow_stab:%d" % index, {
-		"ultimate_mechanic": "shadow_backstab", "strike_index": index,
-	})
+	for raw_target in _marks:
+		var target := raw_target as Node
+		if target == null or not is_instance_valid(target):
+			continue
+		strike_count_for_tests += 1
+		_deal(target, amount, "shadow_stab:%d:%d" % [index, target.get_instance_id()], {
+			"ultimate_mechanic": "shadow_backstab", "strike_index": index,
+		})
 
 
 func finish_line() -> void:
