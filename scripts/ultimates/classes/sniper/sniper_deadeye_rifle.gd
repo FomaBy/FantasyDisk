@@ -17,12 +17,10 @@ var _rail: Array = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
-		"half_width": {"type": "number", "minimum": 0.0},
-		"pierce_limit": {"type": "integer", "minimum": 1},
+		"arena_radius": {"type": "number", "minimum": 0.01},
 		"recover_delay": {"type": "number", "minimum": 0.0},
 		"shot_damage": {"type": "number", "minimum": 0.0},
 		"headshot_multiplier": {"type": "number", "minimum": 1.0},
-		"penetration_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 	}
 
 
@@ -33,12 +31,13 @@ static func execute(activation) -> float:
 		"target_mode": "host_aim",
 	}):
 		return 0.0
-	if not Library.execute_primitive("line_pierce_geometry", activation, {
-		"start": "source",
-		"direction": "aim",
-		"length": max_range,
-		"half_width": activation.param_float("half_width", 46.0),
-		"limit": activation.param_int("pierce_limit", 4),
+	activation.set_primitive_state({"source": activation.origin()})
+	if not Library.execute_primitive("priority_target_selector", activation, {
+		"center": "source",
+		"radius": activation.param_float("arena_radius", 100000.0),
+		"limit": 0,
+		"priority": "highest_hp",
+		"hint": {},
 	}):
 		return 0.0
 	var rail = activation.primitive_value("targets", [])
@@ -87,33 +86,34 @@ func configure(activation, rail: Array, priority: Node2D) -> void:
 	global_position = activation.origin()
 
 
-## One shot, one pass. The headshot lands at full strength; every other body on
-## the rail keeps only `penetration_falloff` of what the previous one left.
+## One shot, one map-wide pass. The priority silhouette gets the headshot while
+## every other living enemy receives the same non-trivial Deadeye floor.
 func fire() -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var shot: float = _activation.scaled_damage("shot_damage", 0.0)
-	var falloff: float = _activation.param_float("penetration_falloff", 0.28)
-	var pierced := 0
 	for index in _rail.size():
 		var target := _rail[index] as Node2D
-		if target == null or not is_instance_valid(target):
+		if not _alive(target):
 			continue
 		var amount := shot
-		var mechanic := "deadeye_headshot"
+		var mechanic := "deadeye_floor"
 		if target == priority_target_for_tests:
 			amount = shot * _activation.param_float("headshot_multiplier", 1.5)
-		else:
-			pierced += 1
-			amount = shot * pow(falloff, float(pierced))
-			mechanic = "deadeye_penetration"
 		_deal(
 			target,
 			amount,
 			"deadeye_shot:%d" % index,
-			mechanic == "deadeye_penetration",
-			{"ultimate_mechanic": mechanic, "pierce_depth": pierced}
+			mechanic == "deadeye_floor",
+			{"ultimate_mechanic": mechanic}
 		)
+
+
+func _alive(target: Node2D) -> bool:
+	if target == null or not is_instance_valid(target):
+		return false
+	var health_value = target.get("health")
+	return health_value == null or float(health_value) > 0.0
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):

@@ -1,32 +1,94 @@
 extends SceneTree
 
-const OUTPUT := "res://docs/design/references/weapon_ultimates/sniper/sniper_ultimates_contact_sheet.png"
-const TEXTURES := [
-	"res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png",
-	"res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png",
-	"res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png"
+## Reproducible class-local captures for the four supported presentation
+## viewports. Each column is a real SubViewport render of the authored scene
+## at release, including its backdrop, cast pose, silhouette, and phase nodes.
+
+const OUTPUT_ROOT := "res://docs/design/references/weapon_ultimates/sniper"
+const CAPTURES := {
+	"648p": Vector2i(1152, 648),
+	"720p": Vector2i(1280, 720),
+	"1080p": Vector2i(1920, 1080),
+	"2k": Vector2i(2560, 1440),
+}
+const WEAPONS := [
+	{
+		"scene": "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+		"release": 0.75,
+	},
+	{
+		"scene": "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+		"release": 0.85,
+	},
+	{
+		"scene": "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+		"release": 0.65,
+	},
 ]
 
 
 func _initialize() -> void:
-	var contact_sheet := Image.create(768, 256, false, Image.FORMAT_RGBA8)
-	contact_sheet.fill(Color(0.025, 0.035, 0.06, 1.0))
-	for index in TEXTURES.size():
-		var texture := load(TEXTURES[index]) as Texture2D
-		var source := texture.get_image() if texture != null else null
-		if source == null or source.is_empty():
-			push_error("Missing sniper contact-sheet source: %s" % TEXTURES[index])
+	for suffix in CAPTURES:
+		var exported := await _export_capture(str(suffix), CAPTURES[suffix] as Vector2i)
+		if not exported:
 			quit(1)
 			return
-		source.resize(224, 224, Image.INTERPOLATE_NEAREST)
-		contact_sheet.blend_rect(source, Rect2i(Vector2i.ZERO, source.get_size()), Vector2i(16 + index * 256, 16))
-		if index < 2:
-			for divider_y in range(8, 248):
-				contact_sheet.set_pixel(255 + index * 256, divider_y, Color(0.22, 0.32, 0.48, 1.0))
-	var result := contact_sheet.save_png(ProjectSettings.globalize_path(OUTPUT))
-	if result != OK:
-		push_error("Sniper contact-sheet export failed: %s" % error_string(result))
-		quit(1)
-		return
-	print("Sniper ultimate contact sheet exported: %s" % OUTPUT)
+	print("Sniper ultimate contact captures exported at 648p, 720p, 1080p and 2k.")
 	quit(0)
+
+
+func _export_capture(suffix: String, size: Vector2i) -> bool:
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var column_width := size.x / WEAPONS.size()
+	for index in WEAPONS.size():
+		var weapon := WEAPONS[index] as Dictionary
+		var rendered := await _render_release(weapon, Vector2i(column_width, size.y))
+		if rendered == null or rendered.is_empty():
+			push_error("Sniper scene capture is empty: %s" % str(weapon["scene"]))
+			return false
+		image.blend_rect(rendered, Rect2i(Vector2i.ZERO, rendered.get_size()), Vector2i(index * column_width, 0))
+	var output := "%s/sniper_ultimates_%s.png" % [OUTPUT_ROOT, suffix]
+	var result := image.save_png(ProjectSettings.globalize_path(output))
+	if result != OK:
+		push_error("Sniper capture export failed: %s" % error_string(result))
+		return false
+	return true
+
+
+func _render_release(weapon: Dictionary, size: Vector2i) -> Image:
+	var packed := load(str(weapon["scene"])) as PackedScene
+	if packed == null:
+		push_error("Missing sniper capture scene: %s" % str(weapon["scene"]))
+		return null
+	var viewport := SubViewport.new()
+	viewport.size = size
+	viewport.transparent_bg = false
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	var camera := Camera2D.new()
+	camera.position = Vector2(size) * 0.5
+	viewport.add_child(camera)
+	var scene := packed.instantiate() as Node2D
+	scene.position = camera.position
+	viewport.add_child(scene)
+	await process_frame
+	camera.make_current()
+	var begun := scene.call("begin", {}, 0) as Dictionary
+	if str(begun.get("state", "")) != "active":
+		push_error("Sniper capture scene did not start: %s" % str(weapon["scene"]))
+		viewport.queue_free()
+		return null
+	scene.call("advance", float(weapon["release"]) + 0.01)
+	var state := scene.call("presence_state_for_tests") as Dictionary
+	if str(scene.call("visible_phase_name")) != "release" or not bool(state.get("backdrop_visible", false)) \
+		or not bool(state.get("cast_pose_bound", false)) or not bool(state.get("silhouette_bound", false)):
+		push_error("Sniper capture scene did not render its V2 release presence: %s" % str(weapon["scene"]))
+		viewport.queue_free()
+		return null
+	await process_frame
+	await process_frame
+	var image := viewport.get_texture().get_image()
+	scene.call("finish", "capture")
+	viewport.queue_free()
+	await process_frame
+	return image

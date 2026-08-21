@@ -81,6 +81,8 @@ func set_paused(value: bool) -> void:
 func advance(delta: float) -> void:
 	if _timeline != null:
 		_timeline.advance(delta)
+	if _scene != null and is_instance_valid(_scene) and _scene.has_method("advance"):
+		_scene.call("advance", delta)
 
 
 ## Delivers one executor beat (`event_id` plus its payload) to the live
@@ -137,7 +139,10 @@ func _begin_scene(registry) -> void:
 			else:
 				_scene.call("begin", registry, {})
 		else:
-			_scene.call("begin", {})
+			if args is Array and (args as Array).size() >= 2:
+				_scene.call("begin", {}, _headless_mode)
+			else:
+				_scene.call("begin", {})
 		return
 
 

@@ -29,18 +29,20 @@
       {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.cleanup"}
     ],
     "pivot": {"x": 0.5, "y": 0.5},
-    "timing": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
+    "timing": {"windup": 0.0, "release": 0.85, "active": 1.55, "recovery": 2.6, "cancel": 3.4},
+    "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 120.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "sniper.cast.sky_lock", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_north_04.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
     "headless_fallback": "no_op"
   },
   "visual_contract": {
     "ultimate_name": "Небесная Сетка",
-    "silhouette": "wide nine-pip crosshair grid with descending vertical sky locks",
-    "motion_path": "nine lock pips resolve through the aimed zone, then beams descend in order and fold to one point",
-    "timing_rhythm": "0.40s grid acquire, 0.60s lock settle, nine 0.18s sequential beams, 1.18s collapse",
-    "impact_language": "nine narrow red-white sky columns terminating in one collapsed focal point",
-    "lock_count": 9,
-    "required_nodes": ["PhaseNodes/Windup/GridNode1", "PhaseNodes/Windup/GridNode9", "PhaseNodes/Release/LockPip9", "PhaseNodes/Active/SkyBeam9", "PhaseNodes/Recovery/CollapsePoint"],
-    "scene_node_budget": {"sprites": 12, "line_segments": 12, "simultaneous_emitters": 9},
+    "silhouette": "wide crimson three-column sky grid around the Spotter scope silhouette",
+    "motion_path": "the grid blooms over the full arena, then nine rhythmic sky barrages descend over every live enemy before collapsing",
+    "timing_rhythm": "0.85s sky-grid acquire, nine 0.12s full-arena beats inside the 1.55s active read, then a 0.80s collapse",
+    "impact_language": "nine fast red-white arena columns with one shared focal flare rather than selected-target locks",
+    "pulse_count": 9,
+    "required_nodes": ["PhaseNodes/Windup/ArenaGridWest", "PhaseNodes/Windup/ArenaGridEast", "PhaseNodes/Release/SkyGridCrown", "PhaseNodes/Active/BarrageColumnEast", "PhaseNodes/Recovery/CollapsePoint"],
+    "scene_node_budget": {"sprites": 6, "line_segments": 6, "simultaneous_emitters": 3},
     "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 112}
   }
 }

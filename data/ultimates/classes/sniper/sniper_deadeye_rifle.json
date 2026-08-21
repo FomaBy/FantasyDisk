@@ -17,12 +17,10 @@
     "strategy_id": "weapon_ultimate.executor.sniper.sniper_deadeye_rifle",
     "params": {
       "max_range": 940.0,
-      "half_width": 46.0,
-      "pierce_limit": 4,
-      "recover_delay": 0.25,
+      "arena_radius": 100000.0,
+      "recover_delay": 2.9,
       "shot_damage": 113.4,
-      "headshot_multiplier": 1.5,
-      "penetration_falloff": 0.28
+      "headshot_multiplier": 1.5
     }
   },
   "total_boss_cap": 0.1,

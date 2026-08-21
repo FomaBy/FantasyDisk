@@ -59,34 +59,34 @@ default_color = Color(0.54, 0.92, 1, 0.82)
 antialiased = true
 
 [node name="Active" type="Node2D" parent="PhaseNodes"]
-[node name="Ricochet1" type="Line2D" parent="PhaseNodes/Active"]
+[node name="WaveFrontNorth" type="Line2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(208, -180, 112, -98)
 width = 7.0
 default_color = Color(0.9, 0.98, 1, 0.96)
 antialiased = true
-[node name="Ricochet5" type="Line2D" parent="PhaseNodes/Active"]
+[node name="WaveFrontSouth" type="Line2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(208, 180, 112, 98)
 width = 7.0
 default_color = Color(0.9, 0.98, 1, 0.96)
 antialiased = true
-[node name="Shard01" type="Line2D" parent="PhaseNodes/Active"]
+[node name="WaveEchoNorth" type="Line2D" parent="PhaseNodes/Active"]
 points = PackedVector2Array(112, -98, 16, -40)
 width = 3.0
 default_color = Color(0.74, 0.94, 1, 0.82)
 antialiased = true
-[node name="Shard08" type="Line2D" parent="PhaseNodes/Active"]
+[node name="WaveEchoCore" type="Line2D" parent="PhaseNodes/Active"]
 points = PackedVector2Array(270, 0, 12, 0)
 width = 4.0
 default_color = Color(0.82, 0.98, 1, 0.94)
 antialiased = true
-[node name="Shard15" type="Line2D" parent="PhaseNodes/Active"]
+[node name="WaveEchoSouth" type="Line2D" parent="PhaseNodes/Active"]
 points = PackedVector2Array(112, 98, 16, 40)
 width = 3.0
 default_color = Color(0.74, 0.94, 1, 0.82)
 antialiased = true
-[node name="ShardRain" type="Sprite2D" parent="PhaseNodes/Active"]
+[node name="CrystalWaveCore" type="Sprite2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 position = Vector2(46, 0)
@@ -101,7 +101,7 @@ scale = Vector2(0.22, 0.22)
 modulate = Color(0.74, 0.94, 1, 0.46)
 
 [node name="Cancel" type="Node2D" parent="PhaseNodes"]
-[node name="ShardDissolve" type="Line2D" parent="PhaseNodes/Cancel"]
+[node name="WaveDissolve" type="Line2D" parent="PhaseNodes/Cancel"]
 points = PackedVector2Array(-80, -44, 80, 44)
 width = 2.0
 default_color = Color(0.58, 0.82, 1, 0.3)

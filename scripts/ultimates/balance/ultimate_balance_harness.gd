@@ -41,7 +41,6 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"robot": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"sniper": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"thief": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 }
@@ -79,7 +78,7 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## the full map while keeping its summon and stack contracts. The per-enemy
 ## floor and the class-local `target_limit` vocabulary are proven in
 ## `tests/ultimates/chemist_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "chemist", "engineer"]
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "chemist", "engineer", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

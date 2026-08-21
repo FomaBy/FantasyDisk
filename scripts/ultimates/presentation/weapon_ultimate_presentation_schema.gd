@@ -65,9 +65,6 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"robot/robot_magnetic_anchor": V2_SEED_REASON,
 	"robot/robot_hydraulic_press": V2_SEED_REASON,
 	"robot/robot_reactor_core": V2_SEED_REASON,
-	"sniper/sniper_deadeye_rifle": V2_SEED_REASON,
-	"sniper/sniper_spotter_scope": V2_SEED_REASON,
-	"sniper/sniper_shatter_rounds": V2_SEED_REASON,
 }
 
 static var _schema_cache: Dictionary = {}

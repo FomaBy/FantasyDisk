@@ -56,7 +56,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "robot", "weapon_id": "robot_magnetic_anchor", "lifecycle": 4.75, "deadline": 5.75},
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "ranger", "weapon_id": "storm_longbow", "lifecycle": 4.45, "deadline": 5.45},
-	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
+	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 3.4, "deadline": 4.4},
 	{"class_id": "soldier", "weapon_id": "soldier_bayonet", "lifecycle": 4.25, "deadline": 5.25},
 	{"class_id": "chemist", "weapon_id": "homunculus_vial", "lifecycle": 4.2, "deadline": 5.2},
 	{"class_id": "robot", "weapon_id": "robot_hydraulic_press", "lifecycle": 4.05, "deadline": 5.05},
@@ -67,7 +67,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "chemist", "weapon_id": "acid_flask", "lifecycle": 3.7, "deadline": 4.7},
 	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 3.4, "deadline": 4.4},
 	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.87, "deadline": 4.87},
-	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
+	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "chemist", "weapon_id": "blast_powder", "lifecycle": 2.2, "deadline": 3.2},
 	{"class_id": "assassin", "weapon_id": "chakrams", "lifecycle": 1.72, "deadline": 2.72},
 	{"class_id": "assassin", "weapon_id": "shadow_daggers", "lifecycle": 1.72, "deadline": 2.72},
@@ -75,7 +75,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "assassin", "weapon_id": "venom_wire", "lifecycle": 1.05, "deadline": 2.05},
 	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
-	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25, "deadline": 1.25},
+	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 2.9, "deadline": 3.9},
 ]
 
 var _errors: Array[String] = []

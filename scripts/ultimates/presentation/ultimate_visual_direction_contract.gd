@@ -76,7 +76,6 @@ const DIRECTION_FIELDS: Array[String] = ["silhouette", "motion_path", "impact_la
 const ADOPTION_GAPS := {
 	"phases": {
 		"engineer": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
-		"sniper": "legacy source manifest: declares no per-weapon phase_ids",
 		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 	},
 	"cleanup": {
@@ -84,16 +83,13 @@ const ADOPTION_GAPS := {
 	},
 	"direction": {
 		"engineer": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
-		"sniper": "legacy source manifest: no silhouette/motion/impact language",
 		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 	},
 	"capture": {
 		"ranger": "single 4680x594 strip instead of the four live-capture viewports",
-		"sniper": "single 768x256 strip instead of the four live-capture viewports",
 		"thief": "single 3600x552 strip instead of the four live-capture viewports",
 	},
 	"provenance": {
-		"sniper": "legacy source manifest: no generator_provenance block",
 		"thief": "legacy asset-pipeline manifest: no generator_provenance block",
 	},
 	"quality": {
@@ -108,7 +104,6 @@ const ADOPTION_GAPS := {
 		"priest": "awaiting the readability/accessibility declaration",
 		"ranger": "awaiting the readability/accessibility declaration",
 		"robot": "awaiting the readability/accessibility declaration",
-		"sniper": "awaiting the readability/accessibility declaration",
 		"soldier": "awaiting the readability/accessibility declaration",
 		"thief": "awaiting the readability/accessibility declaration",
 	},

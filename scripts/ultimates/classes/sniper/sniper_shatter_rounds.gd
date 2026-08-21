@@ -30,45 +30,27 @@ const CONTROL_POLICY := {
 
 var ultimate_damage_sink: Callable = Callable()
 var impact_count_for_tests := 0
-var shard_count_for_tests := 0
-
 var _activation = null
 var _pool: Array = []
-var _touched: Array[Dictionary] = []
-var _bounce_points: Array = []
 var _staggered: Dictionary = {}
 var _leased_statuses: Array[Dictionary] = []
 
 
 static func parameter_contract() -> Dictionary:
 	return {
-		"zone_radius": {"type": "number", "minimum": 0.01},
-		"crowd_cap": {"type": "integer", "minimum": 1},
-		"trajectory_count": {"type": "integer", "minimum": 1},
-		"ricochet_jumps": {"type": "integer", "minimum": 0},
-		"volley_delay": {"type": "number", "minimum": 0.0},
-		"hop_delay": {"type": "number", "minimum": 0.01},
+		"arena_radius": {"type": "number", "minimum": 0.01},
+		"wave_count": {"type": "integer", "minimum": 1},
+		"windup_delay": {"type": "number", "minimum": 0.0},
+		"wave_interval": {"type": "number", "minimum": 0.01},
 		"impact_damage": {"type": "number", "minimum": 0.0},
-		"ricochet_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"shard_count": {"type": "integer", "minimum": 0},
-		"shard_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"shard_radius": {"type": "number", "minimum": 0.0},
-		"cap_fraction": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"cap_flat": {"type": "number", "minimum": 0.0},
+		"wave_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"duration": {"type": "number", "minimum": 0.0},
 		"stagger_duration": {"type": "number", "minimum": 0.0},
 		"stagger_slow": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 	}
 
 
 static func execute(activation) -> float:
-	# The anti-focus rail is opened before the first bullet leaves: five
-	# trajectories may converge on one silhouette, the ledger still refuses to
-	# spend more than the declared share of it on that one target.
-	if not Library.execute_primitive("per_target_damage_cap", activation, {
-		"cap_fraction": activation.param_float("cap_fraction", 0.4),
-		"cap_flat": activation.param_float("cap_flat", 0.0),
-	}):
-		return 0.0
 	if not Library.execute_primitive("control_resistance_policy", activation, CONTROL_POLICY):
 		return 0.0
 	# The sweep is fired from the hip, not down an aimed rail, so the hero's own
@@ -76,8 +58,8 @@ static func execute(activation) -> float:
 	activation.set_primitive_state({"source": activation.origin()})
 	if not Library.execute_primitive("priority_target_selector", activation, {
 		"center": "source",
-		"radius": activation.param_float("zone_radius", 420.0),
-		"limit": activation.param_int("crowd_cap", 15),
+		"radius": activation.param_float("arena_radius", 100000.0),
+		"limit": 0,
 		"priority": "nearest",
 		"hint": {},
 	}):
@@ -92,113 +74,46 @@ static func execute(activation) -> float:
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
-	var trajectories: int = activation.param_int("trajectory_count", 5)
-	var hops: int = activation.param_int("ricochet_jumps", 2)
-	var volley_delay: float = activation.param_float("volley_delay", 0.18)
-	var hop_delay: float = activation.param_float("hop_delay", 0.14)
-	for trajectory in trajectories:
-		if trajectory > 0:
-			tween.tween_interval(volley_delay)
-		for hop in hops + 1:
-			tween.tween_callback(Callable(effect, "impact").bind(trajectory, hop))
-			tween.tween_interval(hop_delay)
-	return float(trajectories) * float(hops + 1) * hop_delay \
-		+ float(maxi(trajectories - 1, 0)) * volley_delay
+	var waves: int = activation.param_int("wave_count", 5)
+	var windup: float = activation.param_float("windup_delay", 0.65)
+	var interval: float = activation.param_float("wave_interval", 0.22)
+	tween.tween_interval(windup)
+	for wave in waves:
+		tween.tween_callback(Callable(effect, "impact").bind(wave))
+		tween.tween_interval(interval)
+	var elapsed := windup + float(waves) * interval
+	var lifetime := maxf(elapsed, activation.param_float("duration", 3.1))
+	if lifetime > elapsed:
+		tween.tween_interval(lifetime - elapsed)
+	return lifetime
 
 
 func configure(activation, pool: Array) -> void:
 	_activation = activation
 	_pool = pool.duplicate()
 	global_position = activation.origin()
-	_touched.clear()
-	_bounce_points.clear()
-	for _index in activation.param_int("trajectory_count", 5):
-		_touched.append({})
-		_bounce_points.append(null)
 
 
-## Hop 0 enters on the trajectory's own entry silhouette — round-robin over the
-## admitted pool, so five bullets never all open on the same body. Every later
-## hop ricochets from where the previous one landed to the nearest silhouette
-## this trajectory has not touched yet; a lethal hop still leaves its bounce
-## point behind, so killing a target never ends the chain.
-func impact(trajectory: int, hop: int) -> void:
-	if _activation == null or _activation.is_finished() or trajectory >= _touched.size():
+## Five crystal waves sweep the full arena. The rhythm is finite, but every
+## wave reaches every living enemy; it never truncates the enemy set.
+func impact(wave: int) -> void:
+	if _activation == null or _activation.is_finished():
 		return
-	var target: Node2D = null
-	if hop == 0:
-		target = _entry_target(trajectory)
-	elif _bounce_points[trajectory] is Vector2:
-		target = _ricochet_target(trajectory, _bounce_points[trajectory] as Vector2)
-	if target == null:
-		return
-	_touched[trajectory][target.get_instance_id()] = true
-	_bounce_points[trajectory] = target.global_position
-	impact_count_for_tests += 1
-	var amount: float = _activation.scaled_damage("impact_damage", 0.0) \
-		* pow(_activation.param_float("ricochet_falloff", 0.82), float(hop))
-	_deal(
-		target,
-		amount,
-		"shatter_impact:%d:%d" % [trajectory, hop],
-		false,
-		{"ultimate_mechanic": "ricochet_impact", "trajectory": trajectory, "hop": hop}
-	)
-	_stagger(target)
-	_spray_shards(target, amount, trajectory, hop)
-
-
-func remaining_budget_for(target: Node) -> float:
-	if _activation == null:
-		return 0.0
-	return _activation.remaining_target_damage_budget(target)
-
-
-func _entry_target(trajectory: int) -> Node2D:
-	var live: Array[Node2D] = []
 	for raw_target in _pool:
 		var target := raw_target as Node2D
-		if _alive(target):
-			live.append(target)
-	if live.is_empty():
-		return null
-	return live[trajectory % live.size()]
-
-
-func _ricochet_target(trajectory: int, from_point: Vector2) -> Node2D:
-	var touched: Dictionary = _touched[trajectory]
-	for raw_target in _activation.select_targets(
-		from_point, _activation.param_float("zone_radius", 420.0), 0, "nearest"
-	):
-		var target := raw_target as Node2D
-		if _alive(target) and not touched.has(target.get_instance_id()):
-			return target
-	return null
-
-
-func _spray_shards(source: Node2D, amount: float, trajectory: int, hop: int) -> void:
-	var shards: int = _activation.param_int("shard_count", 1)
-	if shards <= 0:
-		return
-	var ratio: float = _activation.param_float("shard_ratio", 0.22)
-	var sprayed := 0
-	for raw_target in _activation.select_targets(
-		source.global_position, _activation.param_float("shard_radius", 130.0), 0, "nearest"
-	):
-		var target := raw_target as Node2D
-		if target == source or not _alive(target):
+		if not _alive(target):
 			continue
-		sprayed += 1
-		shard_count_for_tests += 1
+		impact_count_for_tests += 1
+		var amount: float = _activation.scaled_damage("impact_damage", 0.0) \
+			* pow(_activation.param_float("wave_falloff", 0.82), float(wave))
 		_deal(
 			target,
-			amount * ratio,
-			"shatter_shard:%d:%d:%d" % [trajectory, hop, sprayed],
-			true,
-			{"ultimate_mechanic": "ricochet_shard", "trajectory": trajectory, "hop": hop}
+			amount,
+			"shatter_wave:%d:%d" % [wave, target.get_instance_id()],
+			false,
+			{"ultimate_mechanic": "crystal_wave", "wave": wave}
 		)
-		if sprayed >= shards:
-			return
+		_stagger(target)
 
 
 func _stagger(target: Node2D) -> void:
@@ -234,8 +149,6 @@ func _exit_tree() -> void:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_staggered.clear()
-	_touched.clear()
-	_bounce_points.clear()
 	_pool.clear()
 	_activation = null
 

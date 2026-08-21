@@ -1,40 +1,99 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1463",
+  "issue": "FAN-2538",
   "class_id": "sniper",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
     "profile_source": "data/ultimates/schema/v1/classes/sniper.json",
-    "runtime_adapter_status": "bound_by_FAN-1541"
+    "runtime_adapter_status": "active_exact_pair"
   },
   "source_manifest": "docs/design/references/weapon_ultimates/sniper/provenance_manifest.json",
+  "generator_provenance": {
+    "route": "reused accepted PixelLab sniper weapon silhouettes",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "sniper_deadeye_rifle": "docs/design/references/weapon_ultimates/sniper/source/sniper_deadeye_rifle_pixellab_source.png",
+      "sniper_spotter_scope": "docs/design/references/weapon_ultimates/sniper/source/sniper_spotter_scope_pixellab_source.png",
+      "sniper_shatter_rounds": "docs/design/references/weapon_ultimates/sniper/source/sniper_shatter_rounds_pixellab_source.png"
+    }
+  },
+  "evidence": {
+    "capture_script": "tests/ultimates/presentation/sniper_contact_sheet.gd",
+    "capture_mode": "windowed Godot render; do not use --headless because contact pixels require renderer readback",
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_648p.png",
+      "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_720p.png",
+      "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_1080p.png",
+      "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_2k.png"
+    ],
+    "focused_test": "tests/ultimates/presentation/sniper_runtime_presentation_test.gd"
+  },
   "weapons": [
     {
       "weapon_id": "sniper_deadeye_rifle",
       "title": "Выстрел Мертвого Глаза",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
-      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 0.78, "recovery": 1.4, "cancel": 1.85},
+      "silhouette": "a held-breath rifle silhouette over the hero, split by one white-blue tracer spanning the arena",
+      "motion_path": "the rifle holds steady through windup, snaps into one map-wide horizontal tracer, then leaves a distant endpoint crack",
+      "impact_language": "one sharp full-arena tracer and endpoint flash, followed by a quiet casing fade",
+      "timing_seconds": {"windup": 0.0, "release": 0.75, "active": 1.25, "recovery": 2.05, "cancel": 2.9},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.windup",
+        "release": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.active",
+        "recovery": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.recover",
+        "cancel": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.cleanup"
+      },
       "pivot": [0.5, 0.5],
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 24}
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100, "time_scale_dip": 0.4, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "sniper.cast.steady_breath", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_east_05.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
+      "performance": {"max_visual_nodes": 11, "crowd_cap": 24, "max_unique_materials": 2, "max_fullscreen_materials": 1},
+      "quality": {"max_viewport_coverage_ratio": 0.28, "hud_bands_clear": true, "reduced_motion_substitute": "the backdrop holds a steady dim and the rifle silhouette holds its aimed pose while the tracer, shake and hitstop reduce to one static glint", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.12}
     },
     {
       "weapon_id": "sniper_spotter_scope",
       "title": "Прицел Наводчика",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
-      "timing_seconds": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
+      "silhouette": "a crimson scope silhouette framed by a three-column sky grid that reads as an arena-wide barrage",
+      "motion_path": "the grid blooms across the arena, locks overhead, then sends nine rhythmic columns through every live enemy before collapsing",
+      "impact_language": "nine fast map-wide artillery beats with one red-white core flare, not a selected-target lock",
+      "timing_seconds": {"windup": 0.0, "release": 0.85, "active": 1.55, "recovery": 2.6, "cancel": 3.4},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.sniper.sniper_spotter_scope.windup",
+        "release": "weapon_ultimate.phase.sniper.sniper_spotter_scope.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_spotter_scope.active",
+        "recovery": "weapon_ultimate.phase.sniper.sniper_spotter_scope.recover",
+        "cancel": "weapon_ultimate.phase.sniper.sniper_spotter_scope.cleanup"
+      },
       "pivot": [0.5, 0.5],
-      "performance": {"max_visual_nodes": 24, "crowd_cap": 24}
+      "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 120, "time_scale_dip": 0.4, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "sniper.cast.sky_lock", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_north_04.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
+      "performance": {"max_visual_nodes": 24, "crowd_cap": 24, "max_unique_materials": 2, "max_fullscreen_materials": 1},
+      "quality": {"max_viewport_coverage_ratio": 0.30, "hud_bands_clear": true, "reduced_motion_substitute": "the sky grid and scope silhouette hold one calm crimson frame while the nine barrage beats, shake and hitstop reduce to a single pulse", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.16}
     },
     {
       "weapon_id": "sniper_shatter_rounds",
       "title": "Осколочные Патроны",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
-      "timing_seconds": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},
+      "silhouette": "an icy shatter-round silhouette over the hero, opening into a five-front crystal fan across the arena",
+      "motion_path": "the fan opens from the hero to every edge, then five expanding crystal wavefronts sweep back through the full map",
+      "impact_language": "five broad crystalline pressure waves and a pale centre bloom, never a ricochet route or target shard chain",
+      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 1.3, "recovery": 2.2, "cancel": 3.1},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.windup",
+        "release": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.execute",
+        "active": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.active",
+        "recovery": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.recover",
+        "cancel": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.cleanup"
+      },
       "pivot": [0.5, 0.5],
-      "performance": {"max_visual_nodes": 26, "crowd_cap": 26}
+      "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 90, "time_scale_dip": 0.4, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "sniper.cast.shatter_fan", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_north-west_03.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
+      "performance": {"max_visual_nodes": 26, "crowd_cap": 26, "max_unique_materials": 2, "max_fullscreen_materials": 1},
+      "quality": {"max_viewport_coverage_ratio": 0.30, "hud_bands_clear": true, "reduced_motion_substitute": "the crystal fan and weapon silhouette hold a single pale formation while the five pressure waves, shake and hitstop reduce to one non-flashing bloom", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.15}
     }
   ]
 }

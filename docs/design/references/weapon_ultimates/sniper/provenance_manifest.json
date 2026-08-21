@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "package": "weapon_ultimates/sniper",
-  "issue": "FAN-1463",
+  "issue": "FAN-2538",
   "generator_route": {
     "required_for_new_raster_assets": "PixelLab MCP",
     "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
@@ -10,9 +10,9 @@
   },
   "runtime_binding": {
     "status": "active_exact_pair",
-    "reason": "The shared WeaponUltimatePresentationManifest resolves these class-local scenes for the active 51-pair runtime."
+    "reason": "The shared WeaponUltimatePresentationManifest resolves these exact scenes and WeaponUltimatePresentationRuntime advances their authored phases in live combat."
   },
-  "contact_sheet": "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_contact_sheet.png",
+  "contact_sheet": "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_1080p.png",
   "weapons": [
     {
       "weapon_id": "sniper_deadeye_rifle",
@@ -62,10 +62,12 @@
       {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_spotter_scope.gd", "exit_code": 0},
       {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_shatter_rounds.gd", "exit_code": 0},
       {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_visual_distinction.gd", "exit_code": 0},
-      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_contact_sheet.gd", "exit_code": 0},
+      {"command": "$GODOT_BIN --path . --script res://tests/ultimates/presentation/sniper_contact_sheet.gd (without --headless; captures real SubViewport renders)", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_runtime_presentation_test.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd", "exit_code": 0},
       {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_contract_test.gd", "exit_code": 0},
       {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_contract_validator_test.gd", "exit_code": 0}
     ],
-    "visual_review": "Contact sheet inspected after export: rifle lockshot, nine-lock scope grid, and crystalline split trail are distinguishable silhouettes."
+    "visual_review": "Four viewport captures show the held-breath tracer, arena-wide sky barrage, and five-wave crystal fan as distinct Sniper silhouettes."
   }
 }
