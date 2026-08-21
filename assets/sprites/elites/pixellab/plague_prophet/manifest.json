@@ -1,0 +1,56 @@
+{
+  "character_id": "plague_prophet",
+  "pixellab_character_id": "c5559de2-2347-41a2-89a2-f030ff286019",
+  "generated_at": "2026-08-19",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations) + template walking-8-frames (move) + v3 custom (skill_poison_volley/hit/death)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 8,
+      "template_animation_id": "walking-8-frames",
+      "fps": 9.0
+    },
+    "skill_poison_volley": {
+      "frame_count": 10,
+      "mode": "v3",
+      "action_description": "windup (raising bone staff overhead, brewing a swirling poison cloud) then strike (hurling three lobbing poison globs forward)",
+      "fps": 9.0,
+      "note": "windup+strike frames concatenated into one one-shot clip; the five neutral duplicate frames leading shoot are omitted. scripts/enemy.gd::_play_elite_attack_phase_animation resolves the attack via FullFrameAnimationRegistry with state string 'plague_prophet:poison_volley:<phase>', and _state_candidates() keys only on the attack_id (poison_volley), not the phase, so windup and strike both resolve to skill_poison_volley_<dir> -- a separate cast/shoot state pair would never be reachable."
+    },
+    "hit": {
+      "frame_count": 5,
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, robe rippling, recoiling",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "collapsing and dying, robe crumpling to the ground, staff falling from hand, body slumping",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2622: replaces the single authored horizontal view + flip with a dedicated 8-direction pack. 8 idle rotations + 8x8 move + 8x10 skill_poison_volley + 8x5 hit + 8x7 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. Frames were passed through a connected-component cleanup (strip_disconnected_alpha_islands) to remove stray PixelLab v3 glitch pixels disconnected from the character silhouette."
+}
