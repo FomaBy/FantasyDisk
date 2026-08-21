@@ -107,11 +107,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
+		# FAN-2611: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"spark_runner": {
 			"frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
 			"scale": Vector2(0.34, 0.34),
 			"position": Vector2(0.0, -38.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		# FAN-2612: dedicated 8-direction pack replacing the single authored
 		# horizontal view + flip.
