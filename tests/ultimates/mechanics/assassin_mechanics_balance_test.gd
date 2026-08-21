@@ -182,10 +182,10 @@ func _report(metrics: Dictionary) -> void:
 			weapon_id, row["solo_ratio"], row["aoe_ratio"], row["floor_share"], row["defense_seconds"],
 		])
 	if _errors.is_empty():
-		print("assassin_balance_test: PASS")
+		print("assassin_mechanics_balance_test: PASS")
 		quit(0)
 		return
 	for error in _errors:
-		push_error("assassin_balance_test: %s" % error)
-	print("assassin_balance_test: FAIL (%d)" % _errors.size())
+		push_error("assassin_mechanics_balance_test: %s" % error)
+	print("assassin_mechanics_balance_test: FAIL (%d)" % _errors.size())
 	quit(1)
