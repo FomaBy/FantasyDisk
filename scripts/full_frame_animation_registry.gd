@@ -141,11 +141,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
+		# FAN-2615: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"venom_spitter": {
 			"frames": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres",
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -42.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		# FAN-2616: dedicated 8-direction pack replacing the single authored
 		# horizontal view + flip.

@@ -1,179 +1,1126 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_00.png" id="1_ve1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_01.png" id="2_ve2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_02.png" id="3_ve3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_03.png" id="4_ve4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_04.png" id="5_ve5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_attack_primary_05.png" id="6_ve6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_00.png" id="7_ve7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_01.png" id="8_ve8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_02.png" id="9_ve9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_03.png" id="10_ve10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_04.png" id="11_ve11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_move_05.png" id="12_ve12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_00.png" id="13_ve13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_01.png" id="14_ve14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_02.png" id="15_ve15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_03.png" id="16_ve16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_04.png" id="17_ve17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_hit_05.png" id="18_ve18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_00.png" id="19_ve19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_01.png" id="20_ve20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_02.png" id="21_ve21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_03.png" id="22_ve22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_04.png" id="23_ve23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter/venom_spitter_death_05.png" id="24_ve24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_east.png" id="1_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_east.png" id="2_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south.png" id="3_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_west.png" id="4_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_west.png" id="5_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_west.png" id="6_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north.png" id="7_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_east.png" id="8_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_00.png" id="9_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_01.png" id="10_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_02.png" id="11_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_03.png" id="12_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_04.png" id="13_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_05.png" id="14_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_00.png" id="15_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_01.png" id="16_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_02.png" id="17_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_03.png" id="18_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_04.png" id="19_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_05.png" id="20_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_00.png" id="21_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_01.png" id="22_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_02.png" id="23_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_03.png" id="24_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_04.png" id="25_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_05.png" id="26_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_00.png" id="27_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_01.png" id="28_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_02.png" id="29_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_03.png" id="30_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_04.png" id="31_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_05.png" id="32_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_00.png" id="33_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_01.png" id="34_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_02.png" id="35_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_03.png" id="36_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_04.png" id="37_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_05.png" id="38_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_00.png" id="39_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_01.png" id="40_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_02.png" id="41_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_03.png" id="42_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_04.png" id="43_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_05.png" id="44_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_00.png" id="45_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_01.png" id="46_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_02.png" id="47_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_03.png" id="48_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_04.png" id="49_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_05.png" id="50_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_00.png" id="51_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_01.png" id="52_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_02.png" id="53_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_03.png" id="54_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_04.png" id="55_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_05.png" id="56_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_00.png" id="57_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_01.png" id="58_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_02.png" id="59_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_03.png" id="60_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_04.png" id="61_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_05.png" id="62_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_00.png" id="63_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_01.png" id="64_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_02.png" id="65_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_03.png" id="66_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_04.png" id="67_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_05.png" id="68_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_00.png" id="69_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_01.png" id="70_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_02.png" id="71_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_03.png" id="72_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_04.png" id="73_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_05.png" id="74_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_00.png" id="75_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_01.png" id="76_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_02.png" id="77_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_03.png" id="78_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_04.png" id="79_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_05.png" id="80_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_00.png" id="81_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_01.png" id="82_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_02.png" id="83_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_03.png" id="84_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_04.png" id="85_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_05.png" id="86_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_00.png" id="87_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_01.png" id="88_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_02.png" id="89_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_03.png" id="90_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_04.png" id="91_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_05.png" id="92_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_00.png" id="93_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_01.png" id="94_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_02.png" id="95_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_03.png" id="96_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_04.png" id="97_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_05.png" id="98_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_00.png" id="99_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_01.png" id="100_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_02.png" id="101_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_03.png" id="102_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_04.png" id="103_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_05.png" id="104_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_00.png" id="105_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_01.png" id="106_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_02.png" id="107_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_03.png" id="108_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_00.png" id="109_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_01.png" id="110_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_02.png" id="111_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_03.png" id="112_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_00.png" id="113_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_01.png" id="114_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_02.png" id="115_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_03.png" id="116_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_00.png" id="117_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_01.png" id="118_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_02.png" id="119_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_03.png" id="120_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_00.png" id="121_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_01.png" id="122_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_02.png" id="123_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_03.png" id="124_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_00.png" id="125_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_01.png" id="126_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_02.png" id="127_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_03.png" id="128_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_00.png" id="129_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_01.png" id="130_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_02.png" id="131_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_03.png" id="132_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_00.png" id="133_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_01.png" id="134_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_02.png" id="135_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_03.png" id="136_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_00.png" id="137_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_01.png" id="138_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_02.png" id="139_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_03.png" id="140_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_04.png" id="141_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_05.png" id="142_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_00.png" id="143_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_01.png" id="144_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_02.png" id="145_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_03.png" id="146_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_04.png" id="147_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_05.png" id="148_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_00.png" id="149_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_01.png" id="150_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_02.png" id="151_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_03.png" id="152_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_04.png" id="153_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_05.png" id="154_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_00.png" id="155_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_01.png" id="156_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_02.png" id="157_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_03.png" id="158_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_04.png" id="159_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_05.png" id="160_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_00.png" id="161_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_01.png" id="162_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_02.png" id="163_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_03.png" id="164_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_04.png" id="165_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_05.png" id="166_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_00.png" id="167_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_01.png" id="168_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_02.png" id="169_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_03.png" id="170_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_04.png" id="171_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_05.png" id="172_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_00.png" id="173_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_01.png" id="174_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_02.png" id="175_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_03.png" id="176_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_04.png" id="177_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_05.png" id="178_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_00.png" id="179_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_01.png" id="180_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_02.png" id="181_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_03.png" id="182_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_04.png" id="183_vs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_05.png" id="184_vs"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ve1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_ve2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_ve3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_ve4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_ve5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_ve6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_ve1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_ve2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_ve3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_ve4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_ve5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_ve6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_ve19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_ve20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_ve21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_ve22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_ve23")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_ve24")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_ve13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_ve14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_ve15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_ve16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_ve17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_ve18")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_ve7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_ve8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_ve9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_ve10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_ve11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ve12")
-}
-],
+"texture": ExtResource("1_vs")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_vs")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_vs")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_vs")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_vs")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_vs")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_vs")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_vs")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_vs")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_vs")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_vs")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_vs")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_vs")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_vs")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_vs")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_vs")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_vs")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_vs")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_vs")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_vs")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_vs")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_vs")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_vs")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_vs")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_vs")
+}],
+"loop": false,
+"name": &"hit_east",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_vs")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_vs")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_vs")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("121_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_vs")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_vs")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_vs")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_vs")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_vs")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_vs")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_vs")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_vs")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_vs")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_vs")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_vs")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_vs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_vs")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]
