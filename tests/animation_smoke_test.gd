@@ -1611,43 +1611,70 @@ func _test_full_frame_animation_registry() -> void:
 			"hook_expected": "skill_spike_ring",
 		},
 	}
+	# FAN-2635: same explicit_eight_directions branch as the enemy/mini-elite
+	# loops above — declare the directional boss's per-state row length so the
+	# next converted boss falls into the directional contract automatically.
+	var directional_boss_row_frames := {
+		"disk_devourer": {"idle": 1, "move": 7, "attack": 7, "hit": 5, "death": 7, "skill_vampiric_bite": 7, "skill_rift_zone": 7},
+	}
 	for boss_id in boss_full_frame_scenes.keys():
 		var boss_info: Dictionary = boss_full_frame_scenes[boss_id]
 		var boss_frames := FullFrameAnimationRegistry.sprite_frames_for("boss", boss_id)
 		if boss_frames == null:
 			_fail("Expected full-frame registry to resolve %s boss SpriteFrames." % boss_id)
 			continue
-		for animation_name in ["move", "attack", "attack_primary"]:
-			if not boss_frames.has_animation(animation_name):
-				_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
-			elif boss_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
-		if not boss_frames.get_animation_loop("move"):
-			_fail("Expected %s boss move to loop." % boss_id)
-		if not boss_frames.has_animation("death"):
-			_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
-		elif boss_frames.get_frame_count("death") != 6:
-			_fail("Expected %s boss death to have 6 frames." % boss_id)
-		for one_shot_name in ["attack", "attack_primary", "death"]:
-			if not boss_frames.has_animation(one_shot_name):
-				continue
-			if boss_frames.get_animation_loop(one_shot_name):
-				_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
-		for skill_state in boss_info["skill_states"]:
-			var boss_skill_name := str(skill_state)
-			var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
-			if not boss_frames.has_animation(boss_skill_name):
-				_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
-			elif boss_frames.get_frame_count(boss_skill_name) != 6:
-				_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
-			if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
-				_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
-			if not boss_frames.has_animation(boss_attack_alias):
-				_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
-			elif boss_frames.get_frame_count(boss_attack_alias) != 6:
-				_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
-			if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
-				_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
+		var boss_is_directional := bool(FullFrameAnimationRegistry.registry_config("boss", boss_id).get("explicit_eight_directions", false))
+		if boss_is_directional:
+			var boss_row_frames: Dictionary = directional_boss_row_frames.get(boss_id, {})
+			if boss_row_frames.is_empty():
+				_fail("Expected %s to declare its directional row lengths in directional_boss_row_frames." % boss_id)
+			var boss_state_names: Array = ["idle", "move", "attack", "hit", "death"]
+			for skill_state in boss_info["skill_states"]:
+				boss_state_names.append(str(skill_state))
+			for state_name in boss_state_names:
+				var boss_state_should_loop: bool = state_name in ["idle", "move"]
+				var boss_expected_frames := int(boss_row_frames.get(state_name, 0))
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var boss_directional_row := "%s_%s" % [state_name, dir_suffix]
+					if not boss_frames.has_animation(boss_directional_row):
+						_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_directional_row])
+					else:
+						if boss_frames.get_animation_loop(boss_directional_row) != boss_state_should_loop:
+							_fail("Expected %s boss %s loop to be %s." % [boss_id, boss_directional_row, str(boss_state_should_loop)])
+						if boss_frames.get_frame_count(boss_directional_row) != boss_expected_frames:
+							_fail("Expected %s boss %s to have %d frames." % [boss_id, boss_directional_row, boss_expected_frames])
+		else:
+			for animation_name in ["move", "attack", "attack_primary"]:
+				if not boss_frames.has_animation(animation_name):
+					_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
+				elif boss_frames.get_frame_count(animation_name) != 6:
+					_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
+			if not boss_frames.get_animation_loop("move"):
+				_fail("Expected %s boss move to loop." % boss_id)
+			if not boss_frames.has_animation("death"):
+				_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
+			elif boss_frames.get_frame_count("death") != 6:
+				_fail("Expected %s boss death to have 6 frames." % boss_id)
+			for one_shot_name in ["attack", "attack_primary", "death"]:
+				if not boss_frames.has_animation(one_shot_name):
+					continue
+				if boss_frames.get_animation_loop(one_shot_name):
+					_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
+			for skill_state in boss_info["skill_states"]:
+				var boss_skill_name := str(skill_state)
+				var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
+				if not boss_frames.has_animation(boss_skill_name):
+					_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
+				elif boss_frames.get_frame_count(boss_skill_name) != 6:
+					_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
+				if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
+					_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
+				if not boss_frames.has_animation(boss_attack_alias):
+					_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
+				elif boss_frames.get_frame_count(boss_attack_alias) != 6:
+					_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
+				if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
+					_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
 
 		var boss_scene := load(str(boss_info["path"])) as PackedScene
 		var boss := boss_scene.instantiate()
@@ -1663,16 +1690,24 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s boss scene to select boss-specific SpriteFrames, got %s." % [boss_id, str(boss_body.get_meta("entity_id", ""))])
 			if not FullFrameAnimationRegistry.play_state(boss_body, str(boss_info["phase_state"]), Vector2.RIGHT):
 				_fail("Expected %s boss phase state to resolve through the full-frame registry." % boss_id)
-			if boss_body.animation != str(boss_info["phase_resolved"]):
-				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, str(boss_info["phase_resolved"]), boss_body.animation])
-			if not boss_body.flip_h:
+			# FAN-2635: directional bosses resolve to the `_east` row for
+			# Vector2.RIGHT and never flip (the whole point of the contract).
+			var boss_expected_phase_resolved: String = "%s_east" % str(boss_info["phase_resolved"]) if boss_is_directional else str(boss_info["phase_resolved"])
+			if boss_body.animation != boss_expected_phase_resolved:
+				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, boss_expected_phase_resolved, boss_body.animation])
+			if boss_is_directional:
+				if boss_body.flip_h:
+					_fail("Expected %s boss directional full-frame art to never flip." % boss_id)
+			elif not boss_body.flip_h:
 				_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
 			boss.global_position = Vector2(420.0, 420.0)
 			boss.callv(str(boss_info["hook_method"]), boss_info["hook_args"] as Array)
-			if str(boss_body.get_meta("last_requested_state", "")) != str(boss_info["hook_expected"]):
-				_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, str(boss_info["hook_expected"]), str(boss_body.get_meta("last_requested_state", ""))])
-			if boss_body.animation != str(boss_info["hook_expected"]):
-				_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, str(boss_info["hook_expected"]), boss_body.animation])
+			var boss_expected_hook_state := str(boss_info["hook_expected"])
+			if str(boss_body.get_meta("last_requested_state", "")) != boss_expected_hook_state:
+				_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, boss_expected_hook_state, str(boss_body.get_meta("last_requested_state", ""))])
+			var boss_expected_hook_resolved: String = "%s_east" % boss_expected_hook_state if boss_is_directional else boss_expected_hook_state
+			if boss_body.animation != boss_expected_hook_resolved:
+				_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, boss_expected_hook_resolved, boss_body.animation])
 		var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
 		if boss_static_body != null and boss_static_body.visible:
 			_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)

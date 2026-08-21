@@ -1,0 +1,1754 @@
+{
+  "idle_east": [
+    {
+      "source": "disk_devourer_idle_east.png",
+      "runtime": "disk_devourer_idle_east.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "disk_devourer_idle_south_east.png",
+      "runtime": "disk_devourer_idle_south_east.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "disk_devourer_idle_south.png",
+      "runtime": "disk_devourer_idle_south.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "disk_devourer_idle_south_west.png",
+      "runtime": "disk_devourer_idle_south_west.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "disk_devourer_idle_west.png",
+      "runtime": "disk_devourer_idle_west.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "disk_devourer_idle_north_west.png",
+      "runtime": "disk_devourer_idle_north_west.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "disk_devourer_idle_north.png",
+      "runtime": "disk_devourer_idle_north.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "disk_devourer_idle_north_east.png",
+      "runtime": "disk_devourer_idle_north_east.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "move_east": [
+    {
+      "source": "disk_devourer_move_east_00.png",
+      "runtime": "disk_devourer_move_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_east_01.png",
+      "runtime": "disk_devourer_move_east_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_east_02.png",
+      "runtime": "disk_devourer_move_east_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_east_03.png",
+      "runtime": "disk_devourer_move_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_east_04.png",
+      "runtime": "disk_devourer_move_east_04.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_move_east_05.png",
+      "runtime": "disk_devourer_move_east_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_east_06.png",
+      "runtime": "disk_devourer_move_east_06.png",
+      "scale": 2.7717391304347827
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "disk_devourer_move_south_east_00.png",
+      "runtime": "disk_devourer_move_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_move_south_east_01.png",
+      "runtime": "disk_devourer_move_south_east_01.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_move_south_east_02.png",
+      "runtime": "disk_devourer_move_south_east_02.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_move_south_east_03.png",
+      "runtime": "disk_devourer_move_south_east_03.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_move_south_east_04.png",
+      "runtime": "disk_devourer_move_south_east_04.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_move_south_east_05.png",
+      "runtime": "disk_devourer_move_south_east_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_move_south_east_06.png",
+      "runtime": "disk_devourer_move_south_east_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "move_south": [
+    {
+      "source": "disk_devourer_move_south_00.png",
+      "runtime": "disk_devourer_move_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_south_01.png",
+      "runtime": "disk_devourer_move_south_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_south_02.png",
+      "runtime": "disk_devourer_move_south_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_south_03.png",
+      "runtime": "disk_devourer_move_south_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_south_04.png",
+      "runtime": "disk_devourer_move_south_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_move_south_05.png",
+      "runtime": "disk_devourer_move_south_05.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_move_south_06.png",
+      "runtime": "disk_devourer_move_south_06.png",
+      "scale": 3.0
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "disk_devourer_move_south_west_00.png",
+      "runtime": "disk_devourer_move_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_move_south_west_01.png",
+      "runtime": "disk_devourer_move_south_west_01.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_move_south_west_02.png",
+      "runtime": "disk_devourer_move_south_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_south_west_03.png",
+      "runtime": "disk_devourer_move_south_west_03.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_south_west_04.png",
+      "runtime": "disk_devourer_move_south_west_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_south_west_05.png",
+      "runtime": "disk_devourer_move_south_west_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_south_west_06.png",
+      "runtime": "disk_devourer_move_south_west_06.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "move_west": [
+    {
+      "source": "disk_devourer_move_west_00.png",
+      "runtime": "disk_devourer_move_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_west_01.png",
+      "runtime": "disk_devourer_move_west_01.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_move_west_02.png",
+      "runtime": "disk_devourer_move_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_west_03.png",
+      "runtime": "disk_devourer_move_west_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_west_04.png",
+      "runtime": "disk_devourer_move_west_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_west_05.png",
+      "runtime": "disk_devourer_move_west_05.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_move_west_06.png",
+      "runtime": "disk_devourer_move_west_06.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "disk_devourer_move_north_west_00.png",
+      "runtime": "disk_devourer_move_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_west_01.png",
+      "runtime": "disk_devourer_move_north_west_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_move_north_west_02.png",
+      "runtime": "disk_devourer_move_north_west_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_west_03.png",
+      "runtime": "disk_devourer_move_north_west_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_north_west_04.png",
+      "runtime": "disk_devourer_move_north_west_04.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_move_north_west_05.png",
+      "runtime": "disk_devourer_move_north_west_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_west_06.png",
+      "runtime": "disk_devourer_move_north_west_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "move_north": [
+    {
+      "source": "disk_devourer_move_north_00.png",
+      "runtime": "disk_devourer_move_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_01.png",
+      "runtime": "disk_devourer_move_north_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_north_02.png",
+      "runtime": "disk_devourer_move_north_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_move_north_03.png",
+      "runtime": "disk_devourer_move_north_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_04.png",
+      "runtime": "disk_devourer_move_north_04.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_move_north_05.png",
+      "runtime": "disk_devourer_move_north_05.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_move_north_06.png",
+      "runtime": "disk_devourer_move_north_06.png",
+      "scale": 3.0
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "disk_devourer_move_north_east_00.png",
+      "runtime": "disk_devourer_move_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_east_01.png",
+      "runtime": "disk_devourer_move_north_east_01.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_move_north_east_02.png",
+      "runtime": "disk_devourer_move_north_east_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_move_north_east_03.png",
+      "runtime": "disk_devourer_move_north_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_east_04.png",
+      "runtime": "disk_devourer_move_north_east_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_east_05.png",
+      "runtime": "disk_devourer_move_north_east_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_move_north_east_06.png",
+      "runtime": "disk_devourer_move_north_east_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "disk_devourer_attack_east_00.png",
+      "runtime": "disk_devourer_attack_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_east_01.png",
+      "runtime": "disk_devourer_attack_east_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_east_02.png",
+      "runtime": "disk_devourer_attack_east_02.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_attack_east_03.png",
+      "runtime": "disk_devourer_attack_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_east_04.png",
+      "runtime": "disk_devourer_attack_east_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_east_05.png",
+      "runtime": "disk_devourer_attack_east_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_attack_east_06.png",
+      "runtime": "disk_devourer_attack_east_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "disk_devourer_attack_south_east_00.png",
+      "runtime": "disk_devourer_attack_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_south_east_01.png",
+      "runtime": "disk_devourer_attack_south_east_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_south_east_02.png",
+      "runtime": "disk_devourer_attack_south_east_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_south_east_03.png",
+      "runtime": "disk_devourer_attack_south_east_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_attack_south_east_04.png",
+      "runtime": "disk_devourer_attack_south_east_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_attack_south_east_05.png",
+      "runtime": "disk_devourer_attack_south_east_05.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_south_east_06.png",
+      "runtime": "disk_devourer_attack_south_east_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "disk_devourer_attack_south_00.png",
+      "runtime": "disk_devourer_attack_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_attack_south_01.png",
+      "runtime": "disk_devourer_attack_south_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_south_02.png",
+      "runtime": "disk_devourer_attack_south_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_south_03.png",
+      "runtime": "disk_devourer_attack_south_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_south_04.png",
+      "runtime": "disk_devourer_attack_south_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_south_05.png",
+      "runtime": "disk_devourer_attack_south_05.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_attack_south_06.png",
+      "runtime": "disk_devourer_attack_south_06.png",
+      "scale": 3.072289156626506
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "disk_devourer_attack_south_west_00.png",
+      "runtime": "disk_devourer_attack_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_south_west_01.png",
+      "runtime": "disk_devourer_attack_south_west_01.png",
+      "scale": 2.7419354838709675
+    },
+    {
+      "source": "disk_devourer_attack_south_west_02.png",
+      "runtime": "disk_devourer_attack_south_west_02.png",
+      "scale": 2.7419354838709675
+    },
+    {
+      "source": "disk_devourer_attack_south_west_03.png",
+      "runtime": "disk_devourer_attack_south_west_03.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_south_west_04.png",
+      "runtime": "disk_devourer_attack_south_west_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_south_west_05.png",
+      "runtime": "disk_devourer_attack_south_west_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_attack_south_west_06.png",
+      "runtime": "disk_devourer_attack_south_west_06.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "disk_devourer_attack_west_00.png",
+      "runtime": "disk_devourer_attack_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_west_01.png",
+      "runtime": "disk_devourer_attack_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_west_02.png",
+      "runtime": "disk_devourer_attack_west_02.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_west_03.png",
+      "runtime": "disk_devourer_attack_west_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_west_04.png",
+      "runtime": "disk_devourer_attack_west_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_west_05.png",
+      "runtime": "disk_devourer_attack_west_05.png",
+      "scale": 3.1097560975609757
+    },
+    {
+      "source": "disk_devourer_attack_west_06.png",
+      "runtime": "disk_devourer_attack_west_06.png",
+      "scale": 3.072289156626506
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "disk_devourer_attack_north_west_00.png",
+      "runtime": "disk_devourer_attack_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_north_west_01.png",
+      "runtime": "disk_devourer_attack_north_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_attack_north_west_02.png",
+      "runtime": "disk_devourer_attack_north_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_attack_north_west_03.png",
+      "runtime": "disk_devourer_attack_north_west_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_attack_north_west_04.png",
+      "runtime": "disk_devourer_attack_north_west_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_north_west_05.png",
+      "runtime": "disk_devourer_attack_north_west_05.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_attack_north_west_06.png",
+      "runtime": "disk_devourer_attack_north_west_06.png",
+      "scale": 3.072289156626506
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "disk_devourer_attack_north_00.png",
+      "runtime": "disk_devourer_attack_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_north_01.png",
+      "runtime": "disk_devourer_attack_north_01.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_north_02.png",
+      "runtime": "disk_devourer_attack_north_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_attack_north_03.png",
+      "runtime": "disk_devourer_attack_north_03.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_attack_north_04.png",
+      "runtime": "disk_devourer_attack_north_04.png",
+      "scale": 3.1875
+    },
+    {
+      "source": "disk_devourer_attack_north_05.png",
+      "runtime": "disk_devourer_attack_north_05.png",
+      "scale": 3.1097560975609757
+    },
+    {
+      "source": "disk_devourer_attack_north_06.png",
+      "runtime": "disk_devourer_attack_north_06.png",
+      "scale": 3.0357142857142856
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "disk_devourer_attack_north_east_00.png",
+      "runtime": "disk_devourer_attack_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_north_east_01.png",
+      "runtime": "disk_devourer_attack_north_east_01.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_attack_north_east_02.png",
+      "runtime": "disk_devourer_attack_north_east_02.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_attack_north_east_03.png",
+      "runtime": "disk_devourer_attack_north_east_03.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_attack_north_east_04.png",
+      "runtime": "disk_devourer_attack_north_east_04.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_attack_north_east_05.png",
+      "runtime": "disk_devourer_attack_north_east_05.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_attack_north_east_06.png",
+      "runtime": "disk_devourer_attack_north_east_06.png",
+      "scale": 3.0357142857142856
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "disk_devourer_hit_east_00.png",
+      "runtime": "disk_devourer_hit_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_hit_east_01.png",
+      "runtime": "disk_devourer_hit_east_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_hit_east_02.png",
+      "runtime": "disk_devourer_hit_east_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_hit_east_03.png",
+      "runtime": "disk_devourer_hit_east_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_hit_east_04.png",
+      "runtime": "disk_devourer_hit_east_04.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "disk_devourer_hit_south_east_00.png",
+      "runtime": "disk_devourer_hit_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_hit_south_east_01.png",
+      "runtime": "disk_devourer_hit_south_east_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_hit_south_east_02.png",
+      "runtime": "disk_devourer_hit_south_east_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_hit_south_east_03.png",
+      "runtime": "disk_devourer_hit_south_east_03.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_hit_south_east_04.png",
+      "runtime": "disk_devourer_hit_south_east_04.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "disk_devourer_hit_south_00.png",
+      "runtime": "disk_devourer_hit_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_hit_south_01.png",
+      "runtime": "disk_devourer_hit_south_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_hit_south_02.png",
+      "runtime": "disk_devourer_hit_south_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_hit_south_03.png",
+      "runtime": "disk_devourer_hit_south_03.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_hit_south_04.png",
+      "runtime": "disk_devourer_hit_south_04.png",
+      "scale": 3.0357142857142856
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "disk_devourer_hit_south_west_00.png",
+      "runtime": "disk_devourer_hit_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_hit_south_west_01.png",
+      "runtime": "disk_devourer_hit_south_west_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_hit_south_west_02.png",
+      "runtime": "disk_devourer_hit_south_west_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_hit_south_west_03.png",
+      "runtime": "disk_devourer_hit_south_west_03.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_hit_south_west_04.png",
+      "runtime": "disk_devourer_hit_south_west_04.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "disk_devourer_hit_west_00.png",
+      "runtime": "disk_devourer_hit_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_hit_west_01.png",
+      "runtime": "disk_devourer_hit_west_01.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_hit_west_02.png",
+      "runtime": "disk_devourer_hit_west_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_hit_west_03.png",
+      "runtime": "disk_devourer_hit_west_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_hit_west_04.png",
+      "runtime": "disk_devourer_hit_west_04.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "disk_devourer_hit_north_west_00.png",
+      "runtime": "disk_devourer_hit_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_hit_north_west_01.png",
+      "runtime": "disk_devourer_hit_north_west_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_hit_north_west_02.png",
+      "runtime": "disk_devourer_hit_north_west_02.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_hit_north_west_03.png",
+      "runtime": "disk_devourer_hit_north_west_03.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_hit_north_west_04.png",
+      "runtime": "disk_devourer_hit_north_west_04.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "disk_devourer_hit_north_00.png",
+      "runtime": "disk_devourer_hit_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_hit_north_01.png",
+      "runtime": "disk_devourer_hit_north_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_hit_north_02.png",
+      "runtime": "disk_devourer_hit_north_02.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_hit_north_03.png",
+      "runtime": "disk_devourer_hit_north_03.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_hit_north_04.png",
+      "runtime": "disk_devourer_hit_north_04.png",
+      "scale": 3.0
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "disk_devourer_hit_north_east_00.png",
+      "runtime": "disk_devourer_hit_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_hit_north_east_01.png",
+      "runtime": "disk_devourer_hit_north_east_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_hit_north_east_02.png",
+      "runtime": "disk_devourer_hit_north_east_02.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_hit_north_east_03.png",
+      "runtime": "disk_devourer_hit_north_east_03.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_hit_north_east_04.png",
+      "runtime": "disk_devourer_hit_north_east_04.png",
+      "scale": 3.0
+    }
+  ],
+  "death_east": [
+    {
+      "source": "disk_devourer_death_east_00.png",
+      "runtime": "disk_devourer_death_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_east_01.png",
+      "runtime": "disk_devourer_death_east_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_east_02.png",
+      "runtime": "disk_devourer_death_east_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_east_03.png",
+      "runtime": "disk_devourer_death_east_03.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_east_04.png",
+      "runtime": "disk_devourer_death_east_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_east_05.png",
+      "runtime": "disk_devourer_death_east_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_east_06.png",
+      "runtime": "disk_devourer_death_east_06.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "disk_devourer_death_south_east_00.png",
+      "runtime": "disk_devourer_death_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_south_east_01.png",
+      "runtime": "disk_devourer_death_south_east_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_south_east_02.png",
+      "runtime": "disk_devourer_death_south_east_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_east_03.png",
+      "runtime": "disk_devourer_death_south_east_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_death_south_east_04.png",
+      "runtime": "disk_devourer_death_south_east_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_east_05.png",
+      "runtime": "disk_devourer_death_south_east_05.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_south_east_06.png",
+      "runtime": "disk_devourer_death_south_east_06.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "death_south": [
+    {
+      "source": "disk_devourer_death_south_00.png",
+      "runtime": "disk_devourer_death_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_death_south_01.png",
+      "runtime": "disk_devourer_death_south_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_south_02.png",
+      "runtime": "disk_devourer_death_south_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_death_south_03.png",
+      "runtime": "disk_devourer_death_south_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_04.png",
+      "runtime": "disk_devourer_death_south_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_death_south_05.png",
+      "runtime": "disk_devourer_death_south_05.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_death_south_06.png",
+      "runtime": "disk_devourer_death_south_06.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "disk_devourer_death_south_west_00.png",
+      "runtime": "disk_devourer_death_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_south_west_01.png",
+      "runtime": "disk_devourer_death_south_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_south_west_02.png",
+      "runtime": "disk_devourer_death_south_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_south_west_03.png",
+      "runtime": "disk_devourer_death_south_west_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_west_04.png",
+      "runtime": "disk_devourer_death_south_west_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_west_05.png",
+      "runtime": "disk_devourer_death_south_west_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_south_west_06.png",
+      "runtime": "disk_devourer_death_south_west_06.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "death_west": [
+    {
+      "source": "disk_devourer_death_west_00.png",
+      "runtime": "disk_devourer_death_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_death_west_01.png",
+      "runtime": "disk_devourer_death_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_west_02.png",
+      "runtime": "disk_devourer_death_west_02.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_west_03.png",
+      "runtime": "disk_devourer_death_west_03.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_death_west_04.png",
+      "runtime": "disk_devourer_death_west_04.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_death_west_05.png",
+      "runtime": "disk_devourer_death_west_05.png",
+      "scale": 4.396551724137931
+    },
+    {
+      "source": "disk_devourer_death_west_06.png",
+      "runtime": "disk_devourer_death_west_06.png",
+      "scale": 4.876190476190477
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "disk_devourer_death_north_west_00.png",
+      "runtime": "disk_devourer_death_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_north_west_01.png",
+      "runtime": "disk_devourer_death_north_west_01.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_north_west_02.png",
+      "runtime": "disk_devourer_death_north_west_02.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_death_north_west_03.png",
+      "runtime": "disk_devourer_death_north_west_03.png",
+      "scale": 3.311688311688312
+    },
+    {
+      "source": "disk_devourer_death_north_west_04.png",
+      "runtime": "disk_devourer_death_north_west_04.png",
+      "scale": 3.5416666666666665
+    },
+    {
+      "source": "disk_devourer_death_north_west_05.png",
+      "runtime": "disk_devourer_death_north_west_05.png",
+      "scale": 4.322033898305085
+    },
+    {
+      "source": "disk_devourer_death_north_west_06.png",
+      "runtime": "disk_devourer_death_north_west_06.png",
+      "scale": 5.171717171717172
+    }
+  ],
+  "death_north": [
+    {
+      "source": "disk_devourer_death_north_00.png",
+      "runtime": "disk_devourer_death_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_north_01.png",
+      "runtime": "disk_devourer_death_north_01.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_death_north_02.png",
+      "runtime": "disk_devourer_death_north_02.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_death_north_03.png",
+      "runtime": "disk_devourer_death_north_03.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_death_north_04.png",
+      "runtime": "disk_devourer_death_north_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_death_north_05.png",
+      "runtime": "disk_devourer_death_north_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_north_06.png",
+      "runtime": "disk_devourer_death_north_06.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "disk_devourer_death_north_east_00.png",
+      "runtime": "disk_devourer_death_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_death_north_east_01.png",
+      "runtime": "disk_devourer_death_north_east_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_death_north_east_02.png",
+      "runtime": "disk_devourer_death_north_east_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_death_north_east_03.png",
+      "runtime": "disk_devourer_death_north_east_03.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_death_north_east_04.png",
+      "runtime": "disk_devourer_death_north_east_04.png",
+      "scale": 3.311688311688312
+    },
+    {
+      "source": "disk_devourer_death_north_east_05.png",
+      "runtime": "disk_devourer_death_north_east_05.png",
+      "scale": 4.636363636363637
+    },
+    {
+      "source": "disk_devourer_death_north_east_06.png",
+      "runtime": "disk_devourer_death_north_east_06.png",
+      "scale": 4.553571428571429
+    }
+  ],
+  "skill_vampiric_bite_east": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_east_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_east_06.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "skill_vampiric_bite_south_east": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_02.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_03.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_04.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_05.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_east_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_east_06.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "skill_vampiric_bite_south": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_04.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_05.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_06.png",
+      "scale": 2.9651162790697674
+    }
+  ],
+  "skill_vampiric_bite_south_west": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_02.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_05.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_south_west_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_south_west_06.png",
+      "scale": 2.9310344827586206
+    }
+  ],
+  "skill_vampiric_bite_west": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_02.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_03.png",
+      "scale": 2.7419354838709675
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_04.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_05.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_west_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_west_06.png",
+      "scale": 2.865168539325843
+    }
+  ],
+  "skill_vampiric_bite_north_west": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_04.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_05.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_west_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_west_06.png",
+      "scale": 3.072289156626506
+    }
+  ],
+  "skill_vampiric_bite_north": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_03.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_05.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "skill_vampiric_bite_north_east": [
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_00.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_01.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_02.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_02.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_03.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_04.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_05.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_vampiric_bite_north_east_06.png",
+      "runtime": "disk_devourer_skill_vampiric_bite_north_east_06.png",
+      "scale": 2.9651162790697674
+    }
+  ],
+  "skill_rift_zone_east": [
+    {
+      "source": "disk_devourer_skill_rift_zone_east_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_02.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_03.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_04.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_05.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_east_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_east_06.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "skill_rift_zone_south_east": [
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_02.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_05.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_east_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_east_06.png",
+      "scale": 2.7717391304347827
+    }
+  ],
+  "skill_rift_zone_south": [
+    {
+      "source": "disk_devourer_skill_rift_zone_south_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_00.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_01.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_03.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_04.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_05.png",
+      "scale": 3.0357142857142856
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_06.png",
+      "scale": 2.9651162790697674
+    }
+  ],
+  "skill_rift_zone_south_west": [
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_00.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_02.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_03.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_05.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_south_west_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_south_west_06.png",
+      "scale": 2.8333333333333335
+    }
+  ],
+  "skill_rift_zone_west": [
+    {
+      "source": "disk_devourer_skill_rift_zone_west_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_00.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_01.png",
+      "scale": 2.802197802197802
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_02.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_03.png",
+      "scale": 2.7717391304347827
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_04.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_05.png",
+      "scale": 2.8333333333333335
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_west_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_west_06.png",
+      "scale": 2.802197802197802
+    }
+  ],
+  "skill_rift_zone_north_west": [
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_01.png",
+      "scale": 2.865168539325843
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_03.png",
+      "scale": 2.9651162790697674
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_04.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_west_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_west_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "skill_rift_zone_north": [
+    {
+      "source": "disk_devourer_skill_rift_zone_north_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_01.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_02.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_03.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_04.png",
+      "scale": 3.072289156626506
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_05.png",
+      "scale": 3.0
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_06.png",
+      "scale": 2.897727272727273
+    }
+  ],
+  "skill_rift_zone_north_east": [
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_00.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_00.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_01.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_01.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_02.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_02.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_03.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_03.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_04.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_04.png",
+      "scale": 2.897727272727273
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_05.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_05.png",
+      "scale": 2.9310344827586206
+    },
+    {
+      "source": "disk_devourer_skill_rift_zone_north_east_06.png",
+      "runtime": "disk_devourer_skill_rift_zone_north_east_06.png",
+      "scale": 2.9310344827586206
+    }
+  ]
+}
