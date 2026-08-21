@@ -1300,7 +1300,7 @@ func _test_full_frame_animation_registry() -> void:
 		},
 		"plague_prophet": {
 			"path": "res://scenes/ElitePoisoned.tscn",
-			"skill_states": ["skill_poison_volley", "skill_plague_aura"],
+			"skill_states": ["skill_poison_volley"],
 			"phase_state": "plague_prophet:poison_volley:windup",
 			"phase_resolved": "skill_poison_volley",
 		},
@@ -1317,38 +1317,77 @@ func _test_full_frame_animation_registry() -> void:
 		if elite_frames == null:
 			_fail("Expected full-frame registry to resolve %s elite SpriteFrames." % elite_id)
 			continue
-		for animation_name in ["move", "attack", "attack_primary"]:
-			if not elite_frames.has_animation(animation_name):
-				_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
-			elif elite_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
-		if not elite_frames.get_animation_loop("move"):
-			_fail("Expected %s elite move to loop." % elite_id)
-		if elite_id in ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal"]:
-			if not elite_frames.has_animation("death"):
-				_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
-			elif elite_frames.get_frame_count("death") != 6:
-				_fail("Expected %s elite death to have 6 frames." % elite_id)
-		for one_shot_name in ["attack", "attack_primary", "death"]:
-			if not elite_frames.has_animation(one_shot_name):
-				continue
-			if elite_frames.get_animation_loop(one_shot_name):
-				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
-		for skill_state in elite_info["skill_states"]:
-			var skill_name := str(skill_state)
-			var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
-			if not elite_frames.has_animation(skill_name):
-				_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
-			elif elite_frames.get_frame_count(skill_name) != 6:
-				_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
-			if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
-				_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
-			if not elite_frames.has_animation(attack_alias):
-				_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
-			elif elite_frames.get_frame_count(attack_alias) != 6:
-				_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
-			if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
-				_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
+		# FAN-2622: branch on the registry's own explicit_eight_directions flag,
+		# same pattern as the mini-elite loop below, so a directional elite pack
+		# is checked against its per-direction rows instead of the legacy
+		# flip-based flat animation names.
+		var elite_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", elite_id).get("explicit_eight_directions", false))
+		if elite_is_directional:
+			for state_name in ["idle", "move", "hit", "death"]:
+				var state_should_loop: bool = state_name in ["idle", "move"]
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var directional_row := "%s_%s" % [state_name, dir_suffix]
+					if not elite_frames.has_animation(directional_row):
+						_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, directional_row])
+					elif elite_frames.get_animation_loop(directional_row) != state_should_loop:
+						_fail("Expected %s elite %s loop to be %s." % [elite_id, directional_row, str(state_should_loop)])
+			for skill_state in elite_info["skill_states"]:
+				var elite_skill_base := str(skill_state)
+				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+					var elite_skill_row := "%s_%s" % [elite_skill_base, dir_suffix]
+					if not elite_frames.has_animation(elite_skill_row):
+						_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, elite_skill_row])
+					elif elite_frames.get_animation_loop(elite_skill_row):
+						_fail("Expected %s elite %s to be one-shot." % [elite_id, elite_skill_row])
+			if elite_id == "plague_prophet":
+				var plague_expected_frames := {
+					"idle": 1,
+					"move": 8,
+					"skill_poison_volley": 10,
+					"hit": 5,
+					"death": 7,
+				}
+				for plague_state in plague_expected_frames.keys():
+					for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+						var plague_row := "%s_%s" % [plague_state, dir_suffix]
+						if elite_frames.get_frame_count(plague_row) != int(plague_expected_frames[plague_state]):
+							_fail("Expected plague_prophet %s to have %d frames." % [plague_row, plague_expected_frames[plague_state]])
+				for stale_row in ["skill_plague_aura_east", "attack_poison_volley_east"]:
+					if elite_frames.has_animation(stale_row):
+						_fail("Expected plague_prophet not to expose stale %s." % stale_row)
+		else:
+			for animation_name in ["move", "attack", "attack_primary"]:
+				if not elite_frames.has_animation(animation_name):
+					_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
+				elif elite_frames.get_frame_count(animation_name) != 6:
+					_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
+			if not elite_frames.get_animation_loop("move"):
+				_fail("Expected %s elite move to loop." % elite_id)
+			if elite_id in ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal"]:
+				if not elite_frames.has_animation("death"):
+					_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
+				elif elite_frames.get_frame_count("death") != 6:
+					_fail("Expected %s elite death to have 6 frames." % elite_id)
+			for one_shot_name in ["attack", "attack_primary", "death"]:
+				if not elite_frames.has_animation(one_shot_name):
+					continue
+				if elite_frames.get_animation_loop(one_shot_name):
+					_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
+			for skill_state in elite_info["skill_states"]:
+				var skill_name := str(skill_state)
+				var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
+				if not elite_frames.has_animation(skill_name):
+					_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
+				elif elite_frames.get_frame_count(skill_name) != 6:
+					_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
+				if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
+					_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
+				if not elite_frames.has_animation(attack_alias):
+					_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
+				elif elite_frames.get_frame_count(attack_alias) != 6:
+					_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
+				if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
+					_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
 
 		var elite_scene := load(str(elite_info["path"])) as PackedScene
 		var elite := elite_scene.instantiate()
@@ -1362,10 +1401,17 @@ func _test_full_frame_animation_registry() -> void:
 		if elite_full_frame_body != null:
 			if not FullFrameAnimationRegistry.play_state(elite_full_frame_body, str(elite_info["phase_state"]), Vector2.RIGHT):
 				_fail("Expected %s elite phase state to resolve through the full-frame registry." % elite_id)
-			if elite_full_frame_body.animation != str(elite_info["phase_resolved"]):
-				_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, str(elite_info["phase_resolved"]), elite_full_frame_body.animation])
-			if not elite_full_frame_body.flip_h:
-				_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
+			if elite_is_directional:
+				var elite_expected_directional_animation := "%s_east" % str(elite_info["phase_resolved"])
+				if elite_full_frame_body.animation != elite_expected_directional_animation:
+					_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, elite_expected_directional_animation, elite_full_frame_body.animation])
+				if elite_full_frame_body.flip_h:
+					_fail("Expected %s elite eight-direction full-frame art to never mirror via flip_h." % elite_id)
+			else:
+				if elite_full_frame_body.animation != str(elite_info["phase_resolved"]):
+					_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, str(elite_info["phase_resolved"]), elite_full_frame_body.animation])
+				if not elite_full_frame_body.flip_h:
+					_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
 		var elite_static_body := elite.get_node_or_null("Body") as CanvasItem
 		if elite_static_body != null and elite_static_body.visible:
 			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
