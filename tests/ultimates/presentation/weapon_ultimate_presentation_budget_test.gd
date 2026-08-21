@@ -140,13 +140,15 @@ func _test_material_budget(pack: Dictionary, errors: Array[String]) -> void:
 	var unique := int(counts["unique"])
 	_expect(unique == 1, "%s shares one canvas material across its drawn nodes" % pack["id"], errors)
 	_expect(int(counts["fullscreen"]) == 0, "%s draws in world space: no screen-space material" % pack["id"], errors)
-	_expect(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must still be an allowlisted v1 pair" % key, errors)
+	_expect(not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must have left the v2 migration allowlist" % key, errors)
 	_expect(
 		Contract.scene_material_violations(scene, key).is_empty(),
-		"%s is allowlisted v1 and must not owe a material declaration" % key,
+		"%s migrated scene must declare a valid material budget" % key,
 		errors
 	)
 
+	scene.remove_meta("max_unique_materials")
+	scene.remove_meta("max_fullscreen_materials")
 	_expect_code(
 		Contract.scene_material_violations(scene, key, {}),
 		"budget.max_unique_materials",
@@ -218,11 +220,16 @@ func _test_manifest_material_gate(errors: Array[String]) -> void:
 	_expect(not manifest.is_empty(), "%s reference manifest must load" % REFERENCE_CLASS, errors)
 	_expect(
 		_budget_violations(Contract.violations(REFERENCE_CLASS, manifest)).is_empty(),
-		"%s is allowlisted v1 and must owe no declared material budget" % REFERENCE_CLASS,
+		"%s migrated manifest must declare a valid material budget" % REFERENCE_CLASS,
 		errors
 	)
+	var missing := manifest.duplicate(true)
+	for raw_weapon in missing.get("weapons", []) as Array:
+		var performance := (raw_weapon as Dictionary)["performance"] as Dictionary
+		performance.erase("max_unique_materials")
+		performance.erase("max_fullscreen_materials")
 	_expect_code(
-		_budget_violations(Contract.violations(REFERENCE_CLASS, manifest, {})),
+		_budget_violations(Contract.violations(REFERENCE_CLASS, missing, {})),
 		"budget.max_unique_materials",
 		"%s read as a migrated pair must fail closed on the missing declaration" % REFERENCE_CLASS,
 		errors

@@ -71,9 +71,6 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"sniper/sniper_deadeye_rifle": V2_SEED_REASON,
 	"sniper/sniper_spotter_scope": V2_SEED_REASON,
 	"sniper/sniper_shatter_rounds": V2_SEED_REASON,
-	"soldier/soldier_rifle": V2_SEED_REASON,
-	"soldier/soldier_grenade": V2_SEED_REASON,
-	"soldier/soldier_bayonet": V2_SEED_REASON,
 }
 
 static var _schema_cache: Dictionary = {}

@@ -17,7 +17,6 @@ static func parameter_contract() -> Dictionary:
 		"outer_radius": {"type": "number", "minimum": 0.0},
 		"seed": {"type": "integer"},
 		"probe_radius": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"first_impact_delay": {"type": "number", "minimum": 0.0},
 		"chain_interval": {"type": "number", "minimum": 0.01},
 		"blast_radius": {"type": "number", "minimum": 0.0},
@@ -55,7 +54,7 @@ static func execute(activation) -> float:
 			"seed": activation.param_int("seed", 1469),
 		},
 		"hit_radius": activation.param_float("probe_radius", 170.0),
-		"target_limit": activation.param_int("target_limit", 26),
+		"target_limit": 0,
 	}):
 		return 0.0
 	var deploy := Library.normalize_params("deploy_summon", {
@@ -81,8 +80,9 @@ static func execute(activation) -> float:
 	if nodes.size() != count:
 		return 0.0
 	_place(nodes, points as PackedVector2Array)
-	var selected = activation.primitive_value("targets", [])
+	var selected = activation.select_targets(activation.origin(), 99999.0, 0, "nearest")
 	if selected is Array and not (selected as Array).is_empty():
+		activation.set_primitive_targets(selected as Array)
 		Library.execute_primitive("stateful_target_ledger", activation, {
 			"operation": "record",
 			"target_source": "targets",
@@ -131,13 +131,9 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 		return
 	detonated[index] = true
 	var event_id := "soldier_grenade_chain:%d" % index
-	for raw_target in activation.targets(
-		points[index], activation.param_float("blast_radius", 155.0), 0
-	):
+	for raw_target in activation.targets(activation.origin(), 99999.0, 0):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
-			continue
-		if activation.consume_target_value(target, TARGET_KEY, event_id) == null:
 			continue
 		activation.deal_damage(
 			target,

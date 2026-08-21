@@ -13,6 +13,7 @@ const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/soldier.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/soldier/manifest.json"
 const SCHEMA_PATH := "res://data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const WEAPON_IDS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
 const PACKS := [
 	{
@@ -27,11 +28,11 @@ const PACKS := [
 	{
 		"weapon_id": "soldier_grenade",
 		"scene": preload("res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn"),
-		"time": 6.2,
+		"time": 3.2,
 		"title": "GRENADE — SEVEN SECONDS / outer chain link",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(1.0, 0.62, 0.24),
-		"required_nodes": ["GrenadeThree", "GrenadeFive", "GrenadeSeven", "FuseRing", "ChainBlast"],
+		"required_nodes": ["GrenadeThree", "GrenadeFive", "GrenadeSeven", "FuseRing"],
 	},
 	{
 		"weapon_id": "soldier_bayonet",
@@ -82,6 +83,7 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, schema, errors)
 	_check_distinction(packages, errors)
+	_check_v2_contract(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
@@ -221,6 +223,21 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		active_windows[snappedf(float(timing.get("recovery", -1.0)) - float(timing.get("active", -1.0)), 0.01)] = true
 	_expect(totals.size() == WEAPON_IDS.size(), "all three weapons must have different timeline lengths", errors)
 	_expect(active_windows.size() == WEAPON_IDS.size(), "all three weapons must have different active windows", errors)
+
+
+func _check_v2_contract(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var key := "soldier/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		var timing := package.get("timing_seconds", {}) as Dictionary
+		var presence := package.get("presence", {}) as Dictionary
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must leave the v2 migration allowlist" % key, errors)
+		_expect(float(timing.get("cancel", 0.0)) >= 2.5 and float(timing.get("cancel", 0.0)) <= 4.0, "%s total presentation must fit v2 envelope" % key, errors)
+		_expect(float(timing.get("release", 0.0)) >= 0.6 and float(timing.get("release", 0.0)) <= 1.0, "%s windup must fit v2 envelope" % key, errors)
+		_expect(float(timing.get("recovery", 0.0)) - float(timing.get("release", 0.0)) >= 1.2, "%s active presentation must meet the v2 floor" % key, errors)
+		_expect(bool(presence.get("fullscreen_footprint", false)) and bool(presence.get("camera_shake", false)) and int(presence.get("hitstop_ms", 0)) >= 80 and int(presence.get("hitstop_ms", 0)) <= 150, "%s must declare arena-wide first-impact weight" % key, errors)
+		_expect(not str(identity.get("cast_pose_id", "")).is_empty() and not str(identity.get("weapon_silhouette_asset", "")).is_empty() and not str(identity.get("class_palette_id", "")).is_empty(), "%s must declare a Soldier identity" % key, errors)
 
 
 func _check_capture_composition(errors: Array[String]) -> void:
