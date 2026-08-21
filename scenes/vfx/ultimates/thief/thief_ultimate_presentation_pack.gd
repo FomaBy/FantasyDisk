@@ -25,7 +25,7 @@ const WEAPONS := {
 		"title": "Джекпот Короля",
 		"sfx_file": "sfx_pickup_money.ogg",
 		"pivot": {"x": 0.5, "y": 0.5},
-		"timing": {"windup": 0.0, "release": 0.30, "active": 0.72, "recovery": 4.20, "cancel": 4.85},
+		"timing": {"windup": 0.0, "release": 0.70, "active": 1.10, "recovery": 2.30, "cancel": 3.05},
 		"formation": {"kind": "coin_ricochet", "count": 13, "radius": 118.0},
 		"silhouette": "gold coin burst with a small leather pouch",
 		"motion": "thirteen staggered coins zig-zag across unique target glints, then return in a crown burst",
@@ -35,7 +35,7 @@ const WEAPONS := {
 		"title": "Безмолвный Приговор",
 		"sfx_file": "sfx_hit_magic.ogg",
 		"pivot": {"x": 0.5, "y": 0.5},
-		"timing": {"windup": 0.0, "release": 0.46, "active": 0.88, "recovery": 3.18, "cancel": 3.74},
+		"timing": {"windup": 0.0, "release": 0.82, "active": 1.22, "recovery": 2.57, "cancel": 3.20},
 		"formation": {"kind": "shadow_stab_chain", "count": 8, "radius": 106.0},
 		"silhouette": "violet cloak crescent with a dagger-eye sweep",
 		"motion": "eight marked targets receive sequential phantom backstabs along a tightening ellipse",
@@ -45,7 +45,7 @@ const WEAPONS := {
 		"title": "Идеальное Ограбление",
 		"sfx_file": "sfx_dodge.ogg",
 		"pivot": {"x": 0.5, "y": 0.5},
-		"timing": {"windup": 0.0, "release": 0.68, "active": 1.16, "recovery": 5.22, "cancel": 5.82},
+		"timing": {"windup": 0.0, "release": 0.94, "active": 1.34, "recovery": 2.84, "cancel": 3.42},
 		"formation": {"kind": "smoke_dome", "count": 7, "radius": 112.0},
 		"silhouette": "blue-grey smoke dome with violet pressure motes",
 		"motion": "a central dome expands around the hero while six outlined pressure marks drift at its edge",
@@ -95,6 +95,8 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 		"pivot": config.get("pivot", {}).duplicate(),
 		"timing": config.get("timing", {}).duplicate(),
 		"headless_fallback": "no_op",
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "thief_ultimate_crouched_toss", "weapon_silhouette_asset": path, "class_palette_id": "thief_gold_violet_smoke"},
 	}
 
 

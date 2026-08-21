@@ -18,7 +18,7 @@ var _hit_claims := {}
 static func parameter_contract() -> Dictionary:
 	return {
 		"radius": {"type": "number", "minimum": 0.01},
-		"coin_count": {"type": "integer", "minimum": 1, "maximum": 13},
+		"coin_wave_count": {"type": "integer", "minimum": 1, "maximum": 13},
 		"hop_delay": {"type": "number", "minimum": 0.01},
 		"coin_damage": {"type": "number", "minimum": 0.0},
 		"damage_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -32,8 +32,8 @@ static func execute(activation) -> float:
 	activation.set_primitive_state({"source": activation.origin()})
 	if not Library.execute_primitive("priority_target_selector", activation, {
 		"center": "source",
-		"radius": activation.param_float("radius", 620.0),
-		"limit": activation.param_int("coin_count", 13),
+		"radius": 999999.0,
+		"limit": 0,
 		"priority": "nearest",
 		"hint": {},
 	}):
