@@ -36,28 +36,6 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
-- FAN-2879 (2026-08-18) resolves the Elementalist `7a334fc4-...` 404 blocker above
-  and the FAN-2599 evidence-only candidate's live-capture finding (mid-loop
-  identity morph in 7/8 directions, comment `42cbe958`) plus the outstanding
-  SCRUM-801 hand-glow cleanup, in one pass. The dead `pixellab_character_id` was
-  unreachable, so a brand-new PixelLab character (`4b01496c-09c9-4cc8-8913-a9feee4e3a69`,
-  `create_character(mode=pro, n_directions=8)`) replaces it; `7a334fc4-...` is
-  recorded as a second rejected predecessor alongside the original SCRUM-801
-  rejection (`3068581d-...`) in `manifest.json`. All 8 walk directions were
-  requested in a single `animate_character(mode=template,
-  template_animation_id=walking-6-frames)` job/group instead of being stitched
-  from separate per-direction rounds, which is what produced the FAN-2599 seam.
-  Geometry held: `512x512` canvas, `246px` visible height, footline
-  `y=471-472`, pivot `x=255.5-256.0` across all 56 frames (normalized via
-  `tools/update_pixellab_character_animations.py`, `--bottom-padding 40` —
-  the manifest's stale `32` no longer matched the pack's actual footline and
-  was corrected). No hand glow on any idle or move frame. Self-QA flagged one
-  open risk for QA to judge: mirror-pair (east/west,
-  north-east/north-west, south-east/south-west) mean-abs-RGBA-diff measured
-  1.0-5.4 across the 21 idle+move pairs, with the 3 idle pairs (~1.0-1.2)
-  reading below the `>=3.5` honest-pack baseline even though no pair is
-  byte-identical — plausibly a side effect of the character's fairly symmetric
-  idle pose rather than mirrored-copy substitution.
 - FAN-2606 (2026-08-17) reviewed the live Sniper pack that SCRUM-869 left in
   place (SCRUM-433 source, PixelLab character
   `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) and rejected it: `south`,
@@ -241,19 +219,6 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   registry coverage. `winged_spark` preserves the accepted source `hover_flap`
   row as a looped runtime state and exposes `hit` as a visual alias to keep the
   existing enemy hit-state contract.
-- FAN-2609 (2026-08-17) replaces `rift_cutter`'s single-facing pack (SCRUM-363,
-  horizontal flip only) with the first `standard_monster` pack on the FAN-2519
-  8-direction contract: PixelLab MCP character `4582ea80-53e5-4fbc-865b-838ff48a12e5`
-  ("Rift Cutter"), explicit `idle`/`move`/`attack_primary`/`hit`/`death` rows
-  per octant (`east, south_east, south, south_west, west, north_west, north,
-  north_east`), 4-frame breathing idle and 6-frame move/attack/hit/death at a
-  shared `384x384` runtime canvas. `rift_cutter` is not a flying identity, so
-  no `hover` row was added. The registry entry now sets
-  `explicit_eight_directions: true`, which forces `flip_h=false` and disables
-  the mirrored-fallback path for this actor. Source manifest, PixelLab job IDs
-  and the south-facing reference crop are under
-  `docs/design/references/fan2609_rift_cutter/`; recursive roster audit
-  (`tools/animation_roster_audit.py`) reports zero findings for `rift_cutter`.
 
 ## Full-Frame State Registry
 
@@ -438,63 +403,6 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   `build/qa/animation_roster_audit/` carries the contact sheet + findings.
   AI, collision, damage and encounter timing are unchanged — registry-only
   visual integration.
-- FAN-2613 (2026-08-18) converts the first `standard_monster`: `enemy/bone_caller`.
-  PixelLab MCP humanoid character `ed447a43-dede-4551-b3c9-d7c651f7886b`
-  (48x48px low top-down, standard-mode 8 rotations) plus four v3 custom
-  animation groups — `move` ("shuffling forward at a menacing pace", 6f),
-  `attack` ("raising the clawed hand and skull trophy...dark summoning
-  curse", 6f), `hit` ("flinching backward in pain", 4f), `death`
-  ("collapsing and dying, crumbling to the ground", 6f) — each generated for
-  all 8 directions (no `skill_*`/hover row: bone_caller is ground-based with
-  no separate skill state). Source frames live under
-  `assets/sprites/enemies/pixellab/bone_caller/` with `manifest.json` and
-  `alpha_bbox_report.json`; runtime frames are transparent `512x512` canvases
-  under `assets/sprites/enemies/full_frame/bone_caller/` normalized to
-  `245px` visible height / `32px` bottom padding (fleet standard); the
-  crumpled final `death_<dir>` poses read shorter than `245px` because their
-  alpha bbox is wider than tall (scaled to fit canvas width instead), same
-  as the FAN-2628 precedent. `bone_caller_spriteframes.tres` exposes exactly
-  `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` / `death_<dir>`
-  for all 8 directions (40 rows, no undirected fallback rows) and the
-  registry entry sets `explicit_eight_directions: true`. Old non-directional
-  pack (flat `move`/`attack`/`attack_primary`/`hit`/`death`, single
-  west-facing source with flip-based mirroring) is backed up under
-  `docs/design/backups/fan2613_bone_caller_pre_directional/`. Build tooling:
-  `tools/build_fan2613_bone_caller_pack.py`. Evidence:
-  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack
-  (`Eight-direction live packs audited: 2`),
-  `tests/full_frame_registry_integrity_test.gd` and
-  `tests/content_registry_consistency_test.gd` pass, and
-  `tests/animation_smoke_test.gd` was generalized to branch on the
-  registry's own `explicit_eight_directions` flag instead of a hardcoded ID
-  list. AI, collision, damage and encounter timing are unchanged —
-  registry-only visual integration.
-- FAN-2617 (2026-08-19) converts `standard_monster/small_biter`. PixelLab MCP
-  quadruped character `82c57fa2-24d0-4b48-8857-589738999078` (dog template,
-  68x68px low top-down, standard-mode 8 rotations) plus four animation
-  groups — `move` (template `walk-6-frames`, 6f), `attack` (v3 custom
-  "lunging forward and snapping jaws in a vicious bite attack", 7f incl.
-  PixelLab's default reference frame), `hit` (v3 custom flinch, 5f incl.
-  reference), `death` (v3 custom collapse, 7f incl. reference) — each
-  generated for all 8 directions (no `skill_*`/hover row: small_biter is a
-  ground-crawling quadruped biter, not a winged actor). Source frames live
-  under `assets/sprites/enemies/pixellab/small_biter/` with `manifest.json`
-  and `alpha_bbox_report.json`; runtime frames are transparent `512x512`
-  canvases under `assets/sprites/enemies/full_frame/small_biter/` normalized
-  to `245px` visible height / `32px` bottom padding (fleet standard, same
-  maths as FAN-2628/FAN-2613). `small_biter_spriteframes.tres` exposes
-  exactly `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
-  `death_<dir>` for all 8 directions (40 rows, no undirected fallback rows)
-  and the registry entry sets `explicit_eight_directions: true`. Old
-  non-directional pack (flat `move`/`attack`/`attack_primary`/`hit`/`death`,
-  single east-facing source with flip-based mirroring) is backed up under
-  `docs/design/backups/fan2617_small_biter_pre_directional/`. Build tooling:
-  `tools/build_fan2617_small_biter_pack.py`. Evidence:
-  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack,
-  `tests/full_frame_registry_integrity_test.gd` and
-  `tests/animation_smoke_test.gd` pass, and `build/qa/animation_roster_audit/`
-  carries the contact sheets. AI, collision, damage and encounter timing are
-  unchanged — registry-only visual integration.
 
 ## Player Motion
 
