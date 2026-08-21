@@ -86,15 +86,18 @@ def download(url, path):
 
 
 def _parse_object_text(text):
-    """Parse the get_object text report (status/progress/urls) when it is not JSON."""
+    """Parse status, progress, pending jobs and URLs from a text report."""
     info = {}
     for line in text.splitlines():
-        if line.startswith("status:"):
-            info["status"] = line.split(":", 1)[1].strip()
-        elif line.startswith("progress:"):
-            info["progress"] = line.split(":", 1)[1].strip()
-        elif line.startswith("http://") or line.startswith("https://"):
-            info.setdefault("urls", []).append(line.strip())
+        stripped = line.strip()
+        if stripped.startswith("status:"):
+            info["status"] = stripped.split(":", 1)[1].strip()
+        elif stripped.startswith("progress:"):
+            info["progress"] = stripped.split(":", 1)[1].strip()
+        elif stripped.startswith("pending jobs"):
+            info["pending_jobs"] = 1
+        elif stripped.startswith("http://") or stripped.startswith("https://"):
+            info.setdefault("urls", []).append(stripped)
     return info
 
 
@@ -105,6 +108,8 @@ def _animation_group_ready(info):
     just queued on it is still running — the object-level status alone is not
     proof the animation frames exist yet.
     """
+    if info.get("pending_jobs"):
+        return False
     animations = info.get("animations")
     if not animations:
         return True

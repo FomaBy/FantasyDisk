@@ -31,6 +31,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "tools" / "pixellab_generate_pack.py"
+LIVE_RESPONSE_FIXTURE = ROOT / "tools" / "fixtures" / "pixellab_completed_object_response.txt"
 
 FRAME_COUNT = 4
 
@@ -80,6 +81,20 @@ def completed_object(frame_count=FRAME_COUNT):
             "frames": [{"url": "https://img.example/f%d.png" % i} for i in range(frame_count)],
         }],
     }
+
+
+def completed_text_response(include_pending=False):
+    raw = LIVE_RESPONSE_FIXTURE.read_text()
+    if include_pending:
+        return raw.replace(
+            "    unknown: https://fixture.invalid/animations/<animation-group-id>/unknown/{i}.png  (i=0..4)\n",
+            "",
+        )
+    return raw.replace(
+        "pending jobs (1):\n  sanitized animation [group: <animation-group-id>]\n"
+        "    status: pending\n    progress: 50%\n\n",
+        "",
+    )
 
 
 class Args:
@@ -268,6 +283,43 @@ def case_defect3_reference_frame_extra(module):
     print("  ok: frame_count+1 frames (v3 reference frame) -> exit 0")
 
 
+def case_live_text_response_waits_for_frames(module):
+    """A completed base object can still list a pending animation job."""
+    state = {"polls": 0}
+
+    def get_object(clock):
+        state["polls"] += 1
+        raw = completed_text_response(include_pending=state["polls"] == 1)
+        return {"_raw": raw}
+
+    script = {
+        "create_1_direction_object": {"object_id": "obj-text"},
+        "get_object": get_object,
+        "animate_object": {"job": "anim"},
+    }
+    code, calls, tmp, downloaded = run_case(module, script)
+    assert code == 0, "expected exit 0 for live text response, got %s" % code
+    assert calls["log"].count("get_object") == 3, calls["log"]
+    assert len(downloaded) == 5, downloaded
+    shutil.rmtree(tmp)
+    print("  ok: completed text response waits for pending job, then downloads all frames")
+
+
+def case_empty_completed_response(module):
+    """A terminal response without frame URLs must never produce a manifest."""
+    script = {
+        "create_1_direction_object": {"object_id": "obj-empty"},
+        "get_object": {"_raw": "status: completed\nan..."},
+        "animate_object": {"job": "anim"},
+    }
+    code, calls, tmp, downloaded = run_case(module, script)
+    assert code == module.EXIT_INCOMPLETE, "expected EXIT_INCOMPLETE, got %s" % code
+    assert not downloaded
+    assert not (tmp / "manifest.json").exists()
+    shutil.rmtree(tmp)
+    print("  ok: empty completed response -> exit %d without false manifest" % module.EXIT_INCOMPLETE)
+
+
 def main():
     module = load_module()
     print("FAN-2924 pixellab_generate_pack mocked polling tests:")
@@ -279,6 +331,8 @@ def main():
     case_defect1_animation_group_not_ready(module)
     case_defect2_template_extraction(module)
     case_defect3_reference_frame_extra(module)
+    case_live_text_response_waits_for_frames(module)
+    case_empty_completed_response(module)
     print("all cases passed")
 
 
