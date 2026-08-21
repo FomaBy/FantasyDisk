@@ -12,7 +12,6 @@ static func parameter_contract() -> Dictionary:
 		"search_radius": {"type": "number", "minimum": 0.0},
 		"cluster_radius": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"volley_count": {"type": "integer", "minimum": 1},
 		"volley_interval": {"type": "number", "minimum": 0.01},
 		"damage": {"type": "number", "minimum": 0.0},
@@ -46,8 +45,8 @@ static func execute(activation) -> float:
 		"start": "source",
 		"direction": "source_to_target",
 		"length": aim_range,
-		"half_width": activation.param_float("corridor_half_width", 90.0),
-		"limit": activation.param_int("target_limit", 3),
+		"half_width": activation.param_float("corridor_half_width", 99999.0),
+		"limit": 0,
 	}):
 		return 0.0
 	var sequence := Library.normalize_params("aimed_sequence", {

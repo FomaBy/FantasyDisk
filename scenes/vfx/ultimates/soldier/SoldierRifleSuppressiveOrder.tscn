@@ -8,7 +8,7 @@ light_mode = 1
 
 [sub_resource type="Animation" id="Animation_suppressive_order"]
 resource_name = "ultimate"
-length = 5.6
+length = 3.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -116,6 +116,8 @@ metadata/motion_path = "three_aimed_volleys_sweeping_one_straight_arena_crossing
 metadata/impact_language = "three_muzzle_flash_waves_then_smoke_recall"
 metadata/max_visual_nodes = 8
 metadata/crowd_cap = 22
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved volley art."
 
 [node name="WarBanner" type="Polygon2D" parent="."]

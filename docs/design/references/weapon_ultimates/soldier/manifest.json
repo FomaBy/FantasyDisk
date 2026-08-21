@@ -49,10 +49,10 @@
       "impact_language": "three muzzle-flash waves that break on the first dense group, then a smoke recall",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.55,
-        "active": 0.8,
-        "recovery": 4.9,
-        "cancel": 5.6
+        "release": 0.6,
+        "active": 0.9,
+        "recovery": 2.6,
+        "cancel": 3.2
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.soldier.soldier_rifle.windup",
@@ -64,9 +64,13 @@
       "performance": {
         "max_visual_nodes": 8,
         "crowd_cap": 22,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "total_boss_cap_split_owner": "mechanics FAN-1469"
-      }
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100, "time_scale_dip": 0.45, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner", "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_rifle.png", "class_palette_id": "soldier_olive_gold_palette"}
     },
     {
       "weapon_id": "soldier_grenade",
@@ -77,10 +81,10 @@
       "impact_language": "outside-in chain detonation closing on a central fire column and a short burning crater",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.62,
-        "active": 0.95,
-        "recovery": 8.4,
-        "cancel": 8.4
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 2.9,
+        "cancel": 3.5
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.soldier.soldier_grenade.windup",
@@ -92,9 +96,13 @@
       "performance": {
         "max_visual_nodes": 11,
         "crowd_cap": 26,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "chain_detonation_damage_owner": "mechanics FAN-1469"
-      }
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 120, "time_scale_dip": 0.4, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner", "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_grenade.png", "class_palette_id": "soldier_olive_gold_palette"}
     },
     {
       "weapon_id": "soldier_bayonet",
@@ -105,10 +113,10 @@
       "impact_language": "crossed-bayonet pin, then a short frontal guard and a rally salute",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.48,
-        "active": 0.72,
-        "recovery": 3.6,
-        "cancel": 4.25
+        "release": 0.8,
+        "active": 1.1,
+        "recovery": 3.2,
+        "cancel": 3.8
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.soldier.soldier_bayonet.windup",
@@ -120,9 +128,13 @@
       "performance": {
         "max_visual_nodes": 8,
         "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "pin_stagger_and_frontal_guard_owner": "mechanics FAN-1469"
-      }
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 140, "time_scale_dip": 0.35, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner", "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_bayonet.png", "class_palette_id": "soldier_olive_gold_palette"}
     }
   ],
   "evidence": {

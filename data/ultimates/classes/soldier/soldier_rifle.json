@@ -16,11 +16,10 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.soldier.soldier_rifle",
     "params": {
-      "max_range": 960.0,
+      "max_range": 99999.0,
       "search_radius": 280.0,
       "cluster_radius": 135.0,
-      "corridor_half_width": 90.0,
-      "target_limit": 3,
+      "corridor_half_width": 99999.0,
       "volley_count": 3,
       "volley_interval": 1.35,
       "damage": 42.0,

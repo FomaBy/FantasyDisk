@@ -183,9 +183,9 @@ func _test_soldier_grenade_timing_truth() -> void:
 		"the unchanged Soldier grenade gameplay lifetime must remain 8.4 seconds")
 	_check(is_equal_approx(float(profile.get("total_boss_cap", -1.0)), 0.09),
 		"the Soldier grenade boss cap must remain unchanged")
-	_check(animation != null and is_equal_approx(cancel, lifetime)
-		and is_equal_approx(animation.length, lifetime),
-		"Soldier grenade gameplay, cancel and scene clocks must agree")
+	_check(animation != null and is_equal_approx(cancel, 3.5)
+		and is_equal_approx(animation.length, cancel) and cancel < lifetime,
+		"Soldier grenade presentation must finish independently inside the v2 envelope")
 	scene.free()
 
 
