@@ -1,68 +1,68 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png" id="1_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_00.png" id="2_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_01.png" id="3_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_02.png" id="4_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_03.png" id="5_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_04.png" id="6_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_05.png" id="7_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-east.png" id="8_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_00.png" id="9_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_01.png" id="10_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_02.png" id="11_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_03.png" id="12_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_04.png" id="13_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_05.png" id="14_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_east.png" id="15_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_00.png" id="16_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_01.png" id="17_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_02.png" id="18_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_03.png" id="19_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_04.png" id="20_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_05.png" id="21_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-east.png" id="22_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_00.png" id="23_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_01.png" id="24_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_02.png" id="25_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_03.png" id="26_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_04.png" id="27_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_05.png" id="28_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north.png" id="29_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_00.png" id="30_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_01.png" id="31_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_02.png" id="32_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_03.png" id="33_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_04.png" id="34_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_05.png" id="35_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-west.png" id="36_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_00.png" id="37_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_01.png" id="38_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_02.png" id="39_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_03.png" id="40_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_04.png" id="41_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_05.png" id="42_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_west.png" id="43_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_00.png" id="44_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_01.png" id="45_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_02.png" id="46_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_03.png" id="47_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_04.png" id="48_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_05.png" id="49_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-west.png" id="50_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_00.png" id="51_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_01.png" id="52_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_02.png" id="53_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_03.png" id="54_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_04.png" id="55_pixellab"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_05.png" id="56_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png" id="1_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-east.png" id="2_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_east.png" id="3_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-east.png" id="4_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north.png" id="5_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-west.png" id="6_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_west.png" id="7_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-west.png" id="8_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_00.png" id="9_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_01.png" id="10_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_02.png" id="11_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_03.png" id="12_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_04.png" id="13_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_05.png" id="14_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_00.png" id="15_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_01.png" id="16_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_02.png" id="17_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_03.png" id="18_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_04.png" id="19_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_05.png" id="20_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_00.png" id="21_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_01.png" id="22_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_02.png" id="23_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_03.png" id="24_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_04.png" id="25_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_05.png" id="26_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_00.png" id="27_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_01.png" id="28_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_02.png" id="29_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_03.png" id="30_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_04.png" id="31_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_05.png" id="32_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_00.png" id="33_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_01.png" id="34_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_02.png" id="35_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_03.png" id="36_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_04.png" id="37_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_05.png" id="38_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_00.png" id="39_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_01.png" id="40_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_02.png" id="41_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_03.png" id="42_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_04.png" id="43_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_05.png" id="44_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_00.png" id="45_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_01.png" id="46_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_02.png" id="47_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_03.png" id="48_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_04.png" id="49_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_05.png" id="50_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_00.png" id="51_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_01.png" id="52_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_02.png" id="53_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_03.png" id="54_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_04.png" id="55_scrum801"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_05.png" id="56_scrum801"]
 
 [resource]
 animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_pixellab")
+"texture": ExtResource("1_scrum801")
 }],
 "loop": true,
 "name": &"idle",
@@ -71,22 +71,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_pixellab")
+"texture": ExtResource("9_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_pixellab")
+"texture": ExtResource("10_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_pixellab")
+"texture": ExtResource("11_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_pixellab")
+"texture": ExtResource("12_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_pixellab")
+"texture": ExtResource("13_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_pixellab")
+"texture": ExtResource("14_scrum801")
 }],
 "loop": true,
 "name": &"move",
@@ -95,22 +95,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_pixellab")
+"texture": ExtResource("9_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_pixellab")
+"texture": ExtResource("10_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_pixellab")
+"texture": ExtResource("11_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_pixellab")
+"texture": ExtResource("12_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_pixellab")
+"texture": ExtResource("13_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_pixellab")
+"texture": ExtResource("14_scrum801")
 }],
 "loop": true,
 "name": &"walk",
@@ -119,7 +119,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_pixellab")
+"texture": ExtResource("1_scrum801")
 }],
 "loop": true,
 "name": &"idle_south",
@@ -128,7 +128,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_pixellab")
+"texture": ExtResource("2_scrum801")
 }],
 "loop": true,
 "name": &"idle_south_east",
@@ -137,7 +137,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("15_pixellab")
+"texture": ExtResource("3_scrum801")
 }],
 "loop": true,
 "name": &"idle_east",
@@ -146,7 +146,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("22_pixellab")
+"texture": ExtResource("4_scrum801")
 }],
 "loop": true,
 "name": &"idle_north_east",
@@ -155,7 +155,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("29_pixellab")
+"texture": ExtResource("5_scrum801")
 }],
 "loop": true,
 "name": &"idle_north",
@@ -164,7 +164,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("36_pixellab")
+"texture": ExtResource("6_scrum801")
 }],
 "loop": true,
 "name": &"idle_north_west",
@@ -173,7 +173,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("43_pixellab")
+"texture": ExtResource("7_scrum801")
 }],
 "loop": true,
 "name": &"idle_west",
@@ -182,7 +182,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("50_pixellab")
+"texture": ExtResource("8_scrum801")
 }],
 "loop": true,
 "name": &"idle_south_west",
@@ -191,22 +191,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_pixellab")
+"texture": ExtResource("9_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_pixellab")
+"texture": ExtResource("10_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_pixellab")
+"texture": ExtResource("11_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_pixellab")
+"texture": ExtResource("12_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_pixellab")
+"texture": ExtResource("13_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_pixellab")
+"texture": ExtResource("14_scrum801")
 }],
 "loop": true,
 "name": &"move_south",
@@ -215,22 +215,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_pixellab")
+"texture": ExtResource("15_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_pixellab")
+"texture": ExtResource("16_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("11_pixellab")
+"texture": ExtResource("17_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("12_pixellab")
+"texture": ExtResource("18_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("13_pixellab")
+"texture": ExtResource("19_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_pixellab")
+"texture": ExtResource("20_scrum801")
 }],
 "loop": true,
 "name": &"move_south_east",
@@ -239,22 +239,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("16_pixellab")
+"texture": ExtResource("21_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("17_pixellab")
+"texture": ExtResource("22_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("18_pixellab")
+"texture": ExtResource("23_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("19_pixellab")
+"texture": ExtResource("24_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("20_pixellab")
+"texture": ExtResource("25_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("21_pixellab")
+"texture": ExtResource("26_scrum801")
 }],
 "loop": true,
 "name": &"move_east",
@@ -263,22 +263,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("23_pixellab")
+"texture": ExtResource("27_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("24_pixellab")
+"texture": ExtResource("28_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("25_pixellab")
+"texture": ExtResource("29_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("26_pixellab")
+"texture": ExtResource("30_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("27_pixellab")
+"texture": ExtResource("31_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("28_pixellab")
+"texture": ExtResource("32_scrum801")
 }],
 "loop": true,
 "name": &"move_north_east",
@@ -287,22 +287,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("30_pixellab")
+"texture": ExtResource("33_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("31_pixellab")
+"texture": ExtResource("34_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("32_pixellab")
+"texture": ExtResource("35_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("33_pixellab")
+"texture": ExtResource("36_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("34_pixellab")
+"texture": ExtResource("37_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("35_pixellab")
+"texture": ExtResource("38_scrum801")
 }],
 "loop": true,
 "name": &"move_north",
@@ -311,22 +311,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("37_pixellab")
+"texture": ExtResource("39_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("38_pixellab")
+"texture": ExtResource("40_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("39_pixellab")
+"texture": ExtResource("41_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("40_pixellab")
+"texture": ExtResource("42_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("41_pixellab")
+"texture": ExtResource("43_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("42_pixellab")
+"texture": ExtResource("44_scrum801")
 }],
 "loop": true,
 "name": &"move_north_west",
@@ -335,22 +335,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("44_pixellab")
+"texture": ExtResource("45_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("45_pixellab")
+"texture": ExtResource("46_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("46_pixellab")
+"texture": ExtResource("47_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("47_pixellab")
+"texture": ExtResource("48_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("48_pixellab")
+"texture": ExtResource("49_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("49_pixellab")
+"texture": ExtResource("50_scrum801")
 }],
 "loop": true,
 "name": &"move_west",
@@ -359,22 +359,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("51_pixellab")
+"texture": ExtResource("51_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("52_pixellab")
+"texture": ExtResource("52_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("53_pixellab")
+"texture": ExtResource("53_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("54_pixellab")
+"texture": ExtResource("54_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("55_pixellab")
+"texture": ExtResource("55_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("56_pixellab")
+"texture": ExtResource("56_scrum801")
 }],
 "loop": true,
 "name": &"move_south_west",
@@ -383,22 +383,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_pixellab")
+"texture": ExtResource("9_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_pixellab")
+"texture": ExtResource("10_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_pixellab")
+"texture": ExtResource("11_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_pixellab")
+"texture": ExtResource("12_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_pixellab")
+"texture": ExtResource("13_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_pixellab")
+"texture": ExtResource("14_scrum801")
 }],
 "loop": true,
 "name": &"walk_south",
@@ -407,22 +407,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_pixellab")
+"texture": ExtResource("15_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_pixellab")
+"texture": ExtResource("16_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("11_pixellab")
+"texture": ExtResource("17_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("12_pixellab")
+"texture": ExtResource("18_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("13_pixellab")
+"texture": ExtResource("19_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_pixellab")
+"texture": ExtResource("20_scrum801")
 }],
 "loop": true,
 "name": &"walk_south_east",
@@ -431,22 +431,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("16_pixellab")
+"texture": ExtResource("21_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("17_pixellab")
+"texture": ExtResource("22_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("18_pixellab")
+"texture": ExtResource("23_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("19_pixellab")
+"texture": ExtResource("24_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("20_pixellab")
+"texture": ExtResource("25_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("21_pixellab")
+"texture": ExtResource("26_scrum801")
 }],
 "loop": true,
 "name": &"walk_east",
@@ -455,22 +455,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("23_pixellab")
+"texture": ExtResource("27_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("24_pixellab")
+"texture": ExtResource("28_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("25_pixellab")
+"texture": ExtResource("29_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("26_pixellab")
+"texture": ExtResource("30_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("27_pixellab")
+"texture": ExtResource("31_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("28_pixellab")
+"texture": ExtResource("32_scrum801")
 }],
 "loop": true,
 "name": &"walk_north_east",
@@ -479,22 +479,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("30_pixellab")
+"texture": ExtResource("33_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("31_pixellab")
+"texture": ExtResource("34_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("32_pixellab")
+"texture": ExtResource("35_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("33_pixellab")
+"texture": ExtResource("36_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("34_pixellab")
+"texture": ExtResource("37_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("35_pixellab")
+"texture": ExtResource("38_scrum801")
 }],
 "loop": true,
 "name": &"walk_north",
@@ -503,22 +503,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("37_pixellab")
+"texture": ExtResource("39_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("38_pixellab")
+"texture": ExtResource("40_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("39_pixellab")
+"texture": ExtResource("41_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("40_pixellab")
+"texture": ExtResource("42_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("41_pixellab")
+"texture": ExtResource("43_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("42_pixellab")
+"texture": ExtResource("44_scrum801")
 }],
 "loop": true,
 "name": &"walk_north_west",
@@ -527,22 +527,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("44_pixellab")
+"texture": ExtResource("45_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("45_pixellab")
+"texture": ExtResource("46_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("46_pixellab")
+"texture": ExtResource("47_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("47_pixellab")
+"texture": ExtResource("48_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("48_pixellab")
+"texture": ExtResource("49_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("49_pixellab")
+"texture": ExtResource("50_scrum801")
 }],
 "loop": true,
 "name": &"walk_west",
@@ -551,22 +551,22 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("51_pixellab")
+"texture": ExtResource("51_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("52_pixellab")
+"texture": ExtResource("52_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("53_pixellab")
+"texture": ExtResource("53_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("54_pixellab")
+"texture": ExtResource("54_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("55_pixellab")
+"texture": ExtResource("55_scrum801")
 }, {
 "duration": 1.0,
-"texture": ExtResource("56_pixellab")
+"texture": ExtResource("56_scrum801")
 }],
 "loop": true,
 "name": &"walk_south_west",

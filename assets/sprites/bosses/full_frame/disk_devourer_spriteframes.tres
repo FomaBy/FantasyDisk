@@ -1,1926 +1,228 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_east.png" id="1_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_south_east.png" id="2_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_south.png" id="3_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_south_west.png" id="4_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_west.png" id="5_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_north_west.png" id="6_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_north.png" id="7_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_idle_north_east.png" id="8_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_00.png" id="9_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_01.png" id="10_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_02.png" id="11_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_03.png" id="12_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_04.png" id="13_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_05.png" id="14_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_east_06.png" id="15_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_00.png" id="16_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_01.png" id="17_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_02.png" id="18_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_03.png" id="19_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_04.png" id="20_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_05.png" id="21_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_east_06.png" id="22_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_00.png" id="23_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_01.png" id="24_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_02.png" id="25_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_03.png" id="26_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_04.png" id="27_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_05.png" id="28_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_06.png" id="29_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_00.png" id="30_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_01.png" id="31_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_02.png" id="32_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_03.png" id="33_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_04.png" id="34_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_05.png" id="35_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_south_west_06.png" id="36_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_00.png" id="37_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_01.png" id="38_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_02.png" id="39_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_03.png" id="40_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_04.png" id="41_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_05.png" id="42_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_west_06.png" id="43_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_00.png" id="44_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_01.png" id="45_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_02.png" id="46_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_03.png" id="47_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_04.png" id="48_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_05.png" id="49_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_west_06.png" id="50_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_00.png" id="51_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_01.png" id="52_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_02.png" id="53_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_03.png" id="54_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_04.png" id="55_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_05.png" id="56_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_06.png" id="57_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_00.png" id="58_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_01.png" id="59_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_02.png" id="60_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_03.png" id="61_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_04.png" id="62_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_05.png" id="63_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_move_north_east_06.png" id="64_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_00.png" id="65_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_01.png" id="66_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_02.png" id="67_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_03.png" id="68_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_04.png" id="69_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_05.png" id="70_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_east_06.png" id="71_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_00.png" id="72_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_01.png" id="73_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_02.png" id="74_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_03.png" id="75_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_04.png" id="76_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_05.png" id="77_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_east_06.png" id="78_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_00.png" id="79_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_01.png" id="80_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_02.png" id="81_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_03.png" id="82_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_04.png" id="83_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_05.png" id="84_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_06.png" id="85_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_00.png" id="86_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_01.png" id="87_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_02.png" id="88_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_03.png" id="89_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_04.png" id="90_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_05.png" id="91_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_south_west_06.png" id="92_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_00.png" id="93_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_01.png" id="94_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_02.png" id="95_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_03.png" id="96_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_04.png" id="97_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_05.png" id="98_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_west_06.png" id="99_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_00.png" id="100_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_01.png" id="101_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_02.png" id="102_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_03.png" id="103_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_04.png" id="104_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_05.png" id="105_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_west_06.png" id="106_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_00.png" id="107_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_01.png" id="108_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_02.png" id="109_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_03.png" id="110_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_04.png" id="111_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_05.png" id="112_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_06.png" id="113_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_00.png" id="114_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_01.png" id="115_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_02.png" id="116_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_03.png" id="117_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_04.png" id="118_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_05.png" id="119_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_attack_north_east_06.png" id="120_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_east_00.png" id="121_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_east_01.png" id="122_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_east_02.png" id="123_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_east_03.png" id="124_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_east_04.png" id="125_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_east_00.png" id="126_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_east_01.png" id="127_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_east_02.png" id="128_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_east_03.png" id="129_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_east_04.png" id="130_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_00.png" id="131_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_01.png" id="132_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_02.png" id="133_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_03.png" id="134_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_04.png" id="135_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_west_00.png" id="136_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_west_01.png" id="137_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_west_02.png" id="138_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_west_03.png" id="139_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_south_west_04.png" id="140_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_west_00.png" id="141_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_west_01.png" id="142_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_west_02.png" id="143_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_west_03.png" id="144_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_west_04.png" id="145_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_west_00.png" id="146_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_west_01.png" id="147_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_west_02.png" id="148_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_west_03.png" id="149_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_west_04.png" id="150_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_00.png" id="151_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_01.png" id="152_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_02.png" id="153_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_03.png" id="154_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_04.png" id="155_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_east_00.png" id="156_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_east_01.png" id="157_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_east_02.png" id="158_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_east_03.png" id="159_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_hit_north_east_04.png" id="160_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_00.png" id="161_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_01.png" id="162_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_02.png" id="163_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_03.png" id="164_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_04.png" id="165_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_05.png" id="166_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_east_06.png" id="167_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_00.png" id="168_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_01.png" id="169_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_02.png" id="170_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_03.png" id="171_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_04.png" id="172_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_05.png" id="173_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_east_06.png" id="174_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_00.png" id="175_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_01.png" id="176_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_02.png" id="177_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_03.png" id="178_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_04.png" id="179_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_05.png" id="180_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_06.png" id="181_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_00.png" id="182_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_01.png" id="183_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_02.png" id="184_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_03.png" id="185_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_04.png" id="186_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_05.png" id="187_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_south_west_06.png" id="188_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_00.png" id="189_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_01.png" id="190_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_02.png" id="191_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_03.png" id="192_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_04.png" id="193_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_05.png" id="194_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_west_06.png" id="195_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_00.png" id="196_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_01.png" id="197_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_02.png" id="198_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_03.png" id="199_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_04.png" id="200_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_05.png" id="201_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_west_06.png" id="202_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_00.png" id="203_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_01.png" id="204_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_02.png" id="205_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_03.png" id="206_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_04.png" id="207_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_05.png" id="208_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_06.png" id="209_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_00.png" id="210_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_01.png" id="211_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_02.png" id="212_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_03.png" id="213_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_04.png" id="214_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_05.png" id="215_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_death_north_east_06.png" id="216_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_00.png" id="217_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_01.png" id="218_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_02.png" id="219_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_03.png" id="220_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_04.png" id="221_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_05.png" id="222_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_east_06.png" id="223_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_00.png" id="224_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_01.png" id="225_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_02.png" id="226_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_03.png" id="227_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_04.png" id="228_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_05.png" id="229_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_east_06.png" id="230_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_00.png" id="231_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_01.png" id="232_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_02.png" id="233_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_03.png" id="234_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_04.png" id="235_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_05.png" id="236_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_06.png" id="237_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_00.png" id="238_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_01.png" id="239_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_02.png" id="240_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_03.png" id="241_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_04.png" id="242_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_05.png" id="243_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_south_west_06.png" id="244_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_00.png" id="245_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_01.png" id="246_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_02.png" id="247_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_03.png" id="248_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_04.png" id="249_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_05.png" id="250_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_west_06.png" id="251_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_00.png" id="252_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_01.png" id="253_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_02.png" id="254_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_03.png" id="255_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_04.png" id="256_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_05.png" id="257_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_west_06.png" id="258_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_00.png" id="259_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_01.png" id="260_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_02.png" id="261_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_03.png" id="262_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_04.png" id="263_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_05.png" id="264_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_06.png" id="265_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_00.png" id="266_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_01.png" id="267_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_02.png" id="268_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_03.png" id="269_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_04.png" id="270_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_05.png" id="271_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_vampiric_bite_north_east_06.png" id="272_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_00.png" id="273_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_01.png" id="274_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_02.png" id="275_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_03.png" id="276_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_04.png" id="277_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_05.png" id="278_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_east_06.png" id="279_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_00.png" id="280_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_01.png" id="281_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_02.png" id="282_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_03.png" id="283_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_04.png" id="284_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_05.png" id="285_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_east_06.png" id="286_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_00.png" id="287_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_01.png" id="288_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_02.png" id="289_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_03.png" id="290_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_04.png" id="291_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_05.png" id="292_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_06.png" id="293_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_00.png" id="294_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_01.png" id="295_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_02.png" id="296_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_03.png" id="297_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_04.png" id="298_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_05.png" id="299_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_south_west_06.png" id="300_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_00.png" id="301_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_01.png" id="302_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_02.png" id="303_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_03.png" id="304_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_04.png" id="305_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_05.png" id="306_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_west_06.png" id="307_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_00.png" id="308_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_01.png" id="309_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_02.png" id="310_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_03.png" id="311_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_04.png" id="312_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_05.png" id="313_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_west_06.png" id="314_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_00.png" id="315_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_01.png" id="316_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_02.png" id="317_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_03.png" id="318_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_04.png" id="319_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_05.png" id="320_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_06.png" id="321_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_00.png" id="322_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_01.png" id="323_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_02.png" id="324_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_03.png" id="325_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_04.png" id="326_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_05.png" id="327_dd"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/disk_devourer_8dir/runtime/disk_devourer_skill_rift_zone_north_east_06.png" id="328_dd"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_00.png" id="1_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_01.png" id="2_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_02.png" id="3_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_03.png" id="4_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_04.png" id="5_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_05.png" id="6_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_00.png" id="7_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_01.png" id="8_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_02.png" id="9_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_03.png" id="10_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_04.png" id="11_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_05.png" id="12_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_00.png" id="13_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_01.png" id="14_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_02.png" id="15_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_03.png" id="16_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_04.png" id="17_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_05.png" id="18_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_00.png" id="19_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_01.png" id="20_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_02.png" id="21_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_03.png" id="22_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_04.png" id="23_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_05.png" id="24_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_00.png" id="25_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_01.png" id="26_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_02.png" id="27_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_03.png" id="28_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_04.png" id="29_disk_devourer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_05.png" id="30_disk_devourer"]
 
 [resource]
 animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_dd")
-}],
-"loop": true,
-"name": &"idle_east",
-"speed": 1.0
-},
-{
-"frames": [{
+"texture": ExtResource("1_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("2_dd")
-}],
-"loop": true,
-"name": &"idle_south_east",
-"speed": 1.0
-},
-{
-"frames": [{
+"texture": ExtResource("2_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("3_dd")
-}],
-"loop": true,
-"name": &"idle_south",
-"speed": 1.0
-},
-{
-"frames": [{
+"texture": ExtResource("3_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("4_dd")
-}],
-"loop": true,
-"name": &"idle_south_west",
-"speed": 1.0
-},
-{
-"frames": [{
+"texture": ExtResource("4_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("5_dd")
-}],
-"loop": true,
-"name": &"idle_west",
-"speed": 1.0
-},
-{
-"frames": [{
+"texture": ExtResource("5_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("6_dd")
-}],
-"loop": true,
-"name": &"idle_north_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_dd")
-}],
-"loop": true,
-"name": &"idle_north",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_dd")
-}],
-"loop": true,
-"name": &"idle_north_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_dd")
-}],
-"loop": true,
-"name": &"move_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("16_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("19_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_dd")
-}],
-"loop": true,
-"name": &"move_south_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("23_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("25_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("27_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("28_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("29_dd")
-}],
-"loop": true,
-"name": &"move_south",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("30_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("31_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("32_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("33_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("34_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("35_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("36_dd")
-}],
-"loop": true,
-"name": &"move_south_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("37_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("38_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("39_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("40_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("41_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("42_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("43_dd")
-}],
-"loop": true,
-"name": &"move_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("44_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("45_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("46_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("47_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("48_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("49_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("50_dd")
-}],
-"loop": true,
-"name": &"move_north_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("51_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("52_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("53_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("54_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("55_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("56_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("57_dd")
-}],
-"loop": true,
-"name": &"move_north",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("58_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("59_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("60_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("61_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("62_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("63_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("64_dd")
-}],
-"loop": true,
-"name": &"move_north_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("65_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("66_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("67_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("68_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("69_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("71_dd")
+"texture": ExtResource("6_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_east",
+"name": &"attack",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("72_dd")
-},
-{
+"texture": ExtResource("1_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("73_dd")
-},
-{
+"texture": ExtResource("2_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("74_dd")
-},
-{
+"texture": ExtResource("3_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("75_dd")
-},
-{
+"texture": ExtResource("4_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("76_dd")
-},
-{
+"texture": ExtResource("5_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("77_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("78_dd")
+"texture": ExtResource("6_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_south_east",
+"name": &"attack_primary",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("79_dd")
-},
-{
+"texture": ExtResource("7_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("80_dd")
-},
-{
+"texture": ExtResource("8_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("81_dd")
-},
-{
+"texture": ExtResource("9_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("82_dd")
-},
-{
+"texture": ExtResource("10_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("83_dd")
-},
-{
+"texture": ExtResource("11_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("84_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("85_dd")
+"texture": ExtResource("12_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_south",
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_disk_devourer")
+}],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_disk_devourer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_disk_devourer")
+}],
+"loop": false,
+"name": &"skill_vampiric_bite",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("86_dd")
-},
-{
+"texture": ExtResource("19_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("87_dd")
-},
-{
+"texture": ExtResource("20_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("88_dd")
-},
-{
+"texture": ExtResource("21_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("89_dd")
-},
-{
+"texture": ExtResource("22_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("90_dd")
-},
-{
+"texture": ExtResource("23_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("91_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("92_dd")
+"texture": ExtResource("24_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_south_west",
+"name": &"attack_vampiric_bite",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("93_dd")
-},
-{
+"texture": ExtResource("25_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("94_dd")
-},
-{
+"texture": ExtResource("26_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("95_dd")
-},
-{
+"texture": ExtResource("27_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("96_dd")
-},
-{
+"texture": ExtResource("28_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("97_dd")
-},
-{
+"texture": ExtResource("29_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("98_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("99_dd")
+"texture": ExtResource("30_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_west",
+"name": &"skill_rift_zone",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("100_dd")
-},
-{
+"texture": ExtResource("25_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("101_dd")
-},
-{
+"texture": ExtResource("26_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("102_dd")
-},
-{
+"texture": ExtResource("27_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("103_dd")
-},
-{
+"texture": ExtResource("28_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("104_dd")
-},
-{
+"texture": ExtResource("29_disk_devourer")
+}, {
 "duration": 1.0,
-"texture": ExtResource("105_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("106_dd")
+"texture": ExtResource("30_disk_devourer")
 }],
 "loop": false,
-"name": &"attack_north_west",
+"name": &"attack_rift_zone",
 "speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("107_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("108_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("109_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("110_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("111_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("112_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("113_dd")
-}],
-"loop": false,
-"name": &"attack_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("114_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("115_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("116_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("117_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("118_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("119_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("120_dd")
-}],
-"loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("121_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("122_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("123_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("124_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("125_dd")
-}],
-"loop": false,
-"name": &"hit_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("126_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("127_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("128_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("129_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("130_dd")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("131_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("132_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("133_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("134_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("135_dd")
-}],
-"loop": false,
-"name": &"hit_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("136_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("137_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("138_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("139_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("140_dd")
-}],
-"loop": false,
-"name": &"hit_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("141_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("142_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("143_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("144_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("145_dd")
-}],
-"loop": false,
-"name": &"hit_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("146_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("147_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("148_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("149_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("150_dd")
-}],
-"loop": false,
-"name": &"hit_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("151_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("152_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("153_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("154_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("155_dd")
-}],
-"loop": false,
-"name": &"hit_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("156_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("157_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("158_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("159_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("160_dd")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("161_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("162_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("163_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("164_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("165_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("166_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("167_dd")
-}],
-"loop": false,
-"name": &"death_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("168_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("169_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("170_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("171_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("172_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("173_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("174_dd")
-}],
-"loop": false,
-"name": &"death_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("175_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("176_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("177_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("178_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("179_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("180_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("181_dd")
-}],
-"loop": false,
-"name": &"death_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("182_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("183_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("184_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("185_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("186_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("187_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("188_dd")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("189_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("190_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("191_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("192_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("193_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("194_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("195_dd")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("196_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("197_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("198_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("199_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("200_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("201_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("202_dd")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("203_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("204_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("205_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("206_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("207_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("208_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("209_dd")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("210_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("211_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("212_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("213_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("214_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("215_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("216_dd")
-}],
-"loop": false,
-"name": &"death_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("217_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("218_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("219_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("220_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("221_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("222_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("223_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("224_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("225_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("226_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("227_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("228_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("229_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("230_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("231_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("232_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("233_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("234_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("235_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("236_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("237_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("238_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("239_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("240_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("241_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("242_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("243_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("244_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("245_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("246_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("247_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("248_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("249_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("250_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("251_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("252_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("253_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("254_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("255_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("256_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("257_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("258_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("259_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("260_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("261_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("262_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("263_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("264_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("265_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("266_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("267_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("268_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("269_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("270_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("271_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("272_dd")
-}],
-"loop": false,
-"name": &"skill_vampiric_bite_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("273_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("274_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("275_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("276_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("277_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("278_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("279_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("280_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("281_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("282_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("283_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("284_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("285_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("286_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("287_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("288_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("289_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("290_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("291_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("292_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("293_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("294_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("295_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("296_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("297_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("298_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("299_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("300_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("301_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("302_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("303_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("304_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("305_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("306_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("307_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("308_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("309_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("310_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("311_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("312_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("313_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("314_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("315_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("316_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("317_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("318_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("319_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("320_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("321_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("322_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("323_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("324_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("325_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("326_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("327_dd")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("328_dd")
-}],
-"loop": false,
-"name": &"skill_rift_zone_north_east",
-"speed": 10.0
 }
 ]

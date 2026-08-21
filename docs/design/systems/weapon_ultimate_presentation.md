@@ -95,53 +95,6 @@ The standard covers ALL basic-attack effects — projectiles, melee strikes and
 hit effects — not only ultimates. Non-conforming effects join the FAN-3002
 retrofit plan in the same per-class batches.
 
-### Basic-attack flipbook plumbing (FAN-3010)
-
-`scripts/attack_vfx.gd` builds every basic-attack effect and takes both routes.
-`AttackVfx.effect_pack(class_id, weapon_id, effect)` is the single resolution
-rule and applies the convention path literally:
-
-```
-res://assets/sprites/effects/<class>/<weapon>/<effect>/<effect>_spriteframes.tres
-```
-
-Pack present → the effect's identity figure is an `AnimatedSprite2D` playing
-that `SpriteFrames`. Pack absent → the effect keeps the temporary static
-stand-in it has today, unchanged. The flipbook is scaled to the stand-in's
-footprint, so existing timings, blend modes, class colors and effect geometry
-are untouched; a pack replaces only the identity figure, while shared glow,
-shockwave, dust and note layers stay as they are.
-
-`<effect>` is the effect family name: `weapon_signature` for the per-weapon
-release cue, and `slash`, `hammer_slam`, `orb_projectile`, `projectile_trace`,
-`orb_burst`, `beam`, `sound_wave_blast`, `ring_pulse`, `curse_skull` for the
-nine shared families (`AttackVfx.EFFECT_FAMILIES`). The weapon-signature route
-resolves its pack itself from the attacking hero's class, so an art card only
-has to land the files. The nine shared families take the resolved pack as their
-trailing argument, because one static family serves many weapons.
-
-Repeated strikes may open on a varied frame; the switch is per family in
-`AttackVfx.START_FRAME_VARIATION` and every family must have an explicit entry.
-It is off for travelling projectiles, traces, beams and the curse skull, where a
-fixed opening frame carries the read. All layers of one effect share one start
-frame.
-
-Effects still on the static stand-in live in the shrink-only allowlists of
-`tests/basic_attack_flipbook_ratchet_test.gd`, with the same ratchet rules as
-the primitive ratchet above: a fallback outside the lists fails, a stale entry
-(its pack landed, or the entry no longer matches live content) fails, and the
-target state is two empty lists. Each per-class art card removes its own
-entries together with the packs it delivers.
-
-Focused verification:
-
-```bash
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/basic_attack_flipbook_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/basic_attack_flipbook_ratchet_test.gd
-```
-
 ### Combat vs UI boundary
 
 The ban covers combat presentation only. UI and other non-combat imagery are
@@ -397,81 +350,6 @@ unconverted classes; it only shrinks and its target state is empty. A class
 outside it fails closed on a missing phase or frame-local node requirement, and
 a complete declaration left inside it fails as a stale ratchet entry.
 
-## Per-victim impact (FAN-3008)
-
-The activation scene owns the caster-side spectacle; the hit itself is read on
-each victim. `UltimateVictimImpactPlayer`
-(`scripts/ultimates/presentation/victim_impact_player.gd`) is the one service
-every ultimate scene uses for that, so a retrofit card wires three lines and
-nothing else:
-
-```gdscript
-var impacts := UltimateVictimImpactPlayer.new()
-add_child(impacts)                                   # freed with the scene
-impacts.play(impact_frames, hit_enemies, cast_position)
-```
-
-- `play(frames: SpriteFrames, victims: Array, cast_position: Vector2) -> Dictionary`
-  schedules one burst per victim and returns the plan (`stagger_frames`,
-  `degraded`, `burst_seconds`, node counters) for activation diagnostics.
-  `frames` is the class impact pack; art ships it, this service never
-  substitutes a placeholder.
-- The node ticks itself in `_process`; a headless fixture calls
-  `advance(delta)` instead. `finish()` releases every burst and frees the pool.
-  `snapshot()` returns the same diagnostic Dictionary at any time.
-- Each victim gets the **existing** white flash: the service calls the enemy's
-  own `_show_hit_flash()`, gated by its own `_combat_feedback_enabled()`. It
-  draws no flash of its own and never skips one — the flash fires before the
-  burst node is even acquired, so pool pressure and degradation cannot take it
-  away. Both names are asserted by the budget test. A public wrapper on
-  `Enemy` would be the nicer entry point, but `scripts/enemy.gd` sits exactly on
-  its shrink-only line ratchet, so it belongs to the card that splits that file.
-
-**Ripple.** Victims are sorted by distance from the cast point and split into at
-most 8 distance waves; consecutive waves are staggered by 3-8 frames
-(`RIPPLE_BUDGET_FRAMES / (waves - 1)`, clamped), so the impact reads as one wave
-leaving the hero and a large crowd never stretches the ultimate.
-
-**Budget.** Impact sprites are victim-side feedback in the same contour as the
-enemy hit flash, not part of the activation's declared `max_visual_nodes`. Their
-ceiling is the pool: a map-wide ultimate creates at most `POOL_CAP` nodes at any
-crowd size, and reuses them for the rest. Both constants are measured, not
-chosen — the sweep is reprinted by
-`tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd` on
-every run (60 fps steps, victims placed farthest-first):
-
-| victims | created nodes | peak concurrent bursts | stagger | degraded |
-| --- | --- | --- | --- | --- |
-| 1 | 1 | 1 | 3 | no |
-| 8 | 5 | 5 | 6 | no |
-| 24 | 15 | 15 | 6 | no |
-| 38 | 24 | 24 | 6 | no |
-| 48 (`max_active_cap`) | 24 | 24 | 6 | yes |
-
-- `POOL_CAP = 24` — the measured peak of the reduced variant at the largest
-  scenario crowd (48 = `main.gd` `WAVE_SETTINGS.max_active_cap`), which stays
-  inside the 32-node crowd ceiling one activation may already draw.
-- `DEGRADE_VICTIM_THRESHOLD = 38` — measured: 38 victims still peak at 24
-  full-size bursts, 39 peak at 25 and would force the pool to cut a live burst
-  short. Above the threshold the reduced variant runs (0.60 scale, 0.30 s
-  instead of 0.45 s, i.e. fewer frames at the same rate), which brings the peak
-  back to 24 at 48 victims. The pool therefore recycles nothing anywhere in the
-  scenario range.
-
-Only the scheduling half is machine-measured; GPU fill-rate of the shipped
-impact packs stays review-gated, like the rest of the rendered result.
-
-**Area telegraphs are flavour, not the read.** Because the hit now reads on the
-victim, a blinking area rectangle may no longer be how an ultimate shows its
-reach. `UltimateVisualDirectionContract.scene_telegraph_violations()` walks an
-instantiated activation and fails closed when an area rectangle (a world-space
-`Line2D`/`Polygon2D` rectangle, `ColorRect`/`ReferenceRect`, or a node in the
-`ultimate_area_telegraph` group) is the only drawn effect
-(`telegraph.only_read`), is more than half the drawn nodes
-(`telegraph.dominant`), or alternates visibility three or more times in one
-animation (`telegraph.blink`). A single fade in and out beside real effects is
-two alternations and stays allowed.
-
 ## Timeline lifecycle and integration boundary
 
 `WeaponUltimatePresentationTimeline` gives adapters a small testable lifecycle:
@@ -504,14 +382,7 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd
 ```
-
-The budget test additionally owns the per-victim impact contract: it prints the
-pool/degradation sweep above, asserts the flash fires once per victim in every
-mode, and proves the area-telegraph gate goes red on a scene whose blinking
-frame is the read.
 
 The first test verifies all 51 immutable presentation IDs, the migration
 allowlist integrity, and the fixture cleanup, pause, and headless obligations.

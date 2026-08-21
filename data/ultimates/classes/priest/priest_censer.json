@@ -15,7 +15,7 @@
       "stored_ratio": 0.65,
       "stored_cap": 56.0,
       "counter_at": 6.3,
-      "counter_damage_cap": 75.6,
+      "counter_damage_cap": 56.0,
       "counter_radius": 360.0,
       "counter_target_cap": 12,
       "counter_falloff": 0.75

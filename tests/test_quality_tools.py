@@ -418,44 +418,6 @@ class QualityGateTests(unittest.TestCase):
                 self.quality.select_godot_tests("full", [], "origin/dev", False)
         self.assertIn("registry_contract_test", str(raised.exception))
 
-    def test_real_assassin_and_berserk_suites_are_unique_and_selected_once(self) -> None:
-        expected = {
-            ROOT / "tests" / "ultimates" / "assassin_balance_test.gd",
-            ROOT / "tests" / "ultimates" / "mechanics" / "assassin_mechanics_balance_test.gd",
-            ROOT / "tests" / "ultimates" / "berserk_balance_test.gd",
-            ROOT / "tests" / "ultimates" / "mechanics" / "berserk_mechanics_balance_test.gd",
-        }
-        discovered = self.quality.discover_godot_tests()
-        self.assertTrue(expected <= set(discovered))
-        self.assertEqual(len(discovered), len({path.stem for path in discovered}))
-
-        for changed_path, expected_path in (
-            (
-                "tests/ultimates/mechanics/assassin_mechanics_balance_test.gd",
-                ROOT / "tests" / "ultimates" / "mechanics" / "assassin_mechanics_balance_test.gd",
-            ),
-            (
-                "tests/ultimates/mechanics/berserk_mechanics_balance_test.gd",
-                ROOT / "tests" / "ultimates" / "mechanics" / "berserk_mechanics_balance_test.gd",
-            ),
-        ):
-            with self.subTest(changed_path=changed_path), mock.patch.object(
-                self.quality, "_git_changed_paths", return_value={changed_path}
-            ):
-                changed_selected = self.quality.select_godot_tests(
-                    "changed", [], "base", False
-                )
-            self.assertEqual(
-                [path for path in changed_selected if path in expected],
-                [expected_path],
-            )
-            self.assertEqual(
-                self.quality.select_godot_tests(
-                    "full", [expected_path.stem], "origin/dev", False
-                ),
-                [expected_path],
-            )
-
     def test_python_discovery_covers_nested_directories(self) -> None:
         with contextlib.ExitStack() as stack:
             self._use_synthetic_tree(stack, {

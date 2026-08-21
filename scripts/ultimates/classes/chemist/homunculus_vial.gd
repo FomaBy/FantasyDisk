@@ -17,8 +17,8 @@ extends RefCounted
 ## so a retriggered execute can never stack a second avatar.
 ##
 ## Declaration params: summon_group, avatar_scene, fuse_at, taunt_radius,
-## taunt_force, beat_count, beat_interval, stomp_radius, damage,
-## wave_toxin_bonus, wave_stack_cap, recover_at, control_policy,
+## taunt_force, beat_count, beat_interval, stomp_radius, damage, wave_radius,
+## wave_toxin_bonus, wave_stack_cap, target_limit, recover_at, control_policy,
 ## taunt_status.
 
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
@@ -47,8 +47,10 @@ static func parameter_contract() -> Dictionary:
 		"beat_interval": {"type": "number", "minimum": 0.05},
 		"stomp_radius": {"type": "number", "minimum": 0.0},
 		"damage": {"type": "number", "minimum": 0.0},
+		"wave_radius": {"type": "number", "minimum": 0.0},
 		"wave_toxin_bonus": {"type": "number", "minimum": 0.0},
 		"wave_stack_cap": {"type": "integer", "minimum": 1},
+		"target_limit": {"type": "integer", "minimum": 0},
 		"recover_at": {"type": "number", "minimum": 0.0},
 		"control_policy": {"type": "dictionary"},
 		"taunt_status": {"type": "dictionary"},
@@ -120,7 +122,9 @@ static func _taunt(activation: Activation, avatar: Node) -> void:
 	var centre := _centre(activation, avatar)
 	var force := activation.param_float("taunt_force", 0.0)
 	var status := activation.param_dictionary("taunt_status")
-	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
+	for raw_target in activation.targets(
+		centre, activation.param_float("taunt_radius", 0.0), activation.param_int("target_limit", 0)
+	):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -139,18 +143,23 @@ static func _beat(activation: Activation, avatar: Node, beat_index: int) -> void
 	var stomp_damage := activation.scaled_damage()
 	var bonus := activation.param_float("wave_toxin_bonus", 0.0)
 	var stack_cap := float(maxi(activation.param_int("wave_stack_cap", 1), 1))
+	var target_limit := activation.param_int("target_limit", 0)
 	activation.present(EXECUTOR_ID, {
 		"shape": "orb_burst",
 		"position": centre,
 		"radius": activation.param_float("stomp_radius", 0.0),
 	})
-	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
+	for raw_target in activation.targets(
+		centre, activation.param_float("stomp_radius", 0.0), target_limit
+	):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stacks := float(activation.target_value(target, TOXIN_KEY, 0.0))
 		activation.deal_damage(target, stomp_damage * (1.0 + bonus * stacks))
-	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
+	for raw_target in activation.targets(
+		centre, activation.param_float("wave_radius", 0.0), target_limit
+	):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue

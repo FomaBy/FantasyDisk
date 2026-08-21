@@ -39,6 +39,7 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 0.0},
+		"target_limit": {"type": "integer", "minimum": 1},
 		"rank_count": {"type": "integer", "minimum": 1},
 		"rank_interval": {"type": "number", "minimum": 0.01},
 		"damage": {"type": "number", "minimum": 0.0},
@@ -61,8 +62,8 @@ static func execute(activation) -> float:
 		"start": "source",
 		"direction": "aim",
 		"length": aim_range,
-		"half_width": activation.param_float("corridor_half_width", 99999.0),
-		"limit": 0,
+		"half_width": activation.param_float("corridor_half_width", 78.0),
+		"limit": activation.param_int("target_limit", 18),
 	}):
 		return 0.0
 	if not Library.execute_primitive("control_resistance_policy", activation, CONTROL_POLICY):

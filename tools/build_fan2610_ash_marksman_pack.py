@@ -41,12 +41,6 @@ STATE_TIMING = {
     "death": {"loop": False, "speed": 10.0},
 }
 
-# FAN-3090: a v3 animation returns the static reference pose (a duplicate of the
-# idle rotation) as frame 0; the walking-6-frames template used for `move` does
-# not. Drop it so only animated frames ship, as build_fan2613_bone_caller_pack.py
-# already does for its all-v3 pack.
-V3_STATES = {"attack", "hit", "death"}
-
 
 def suffix(direction: str) -> str:
     return direction.replace("-", "_")
@@ -197,8 +191,6 @@ def main() -> int:
         for direction in DIRECTIONS:
             s = suffix(direction)
             urls = animations[state][direction]
-            if state in V3_STATES:
-                urls = urls[1:]
             rids = []
             reports = []
             for index, url in enumerate(urls):
@@ -239,18 +231,16 @@ def main() -> int:
         "states": {
             "idle": {"frame_count": 1, "source": "rotations"},
             "move": {"frame_count": 6, "template_animation_id": "walking-6-frames", "fps": 9.0, "action_description": "walking cautiously while keeping the crossbow raised and ready"},
-            "attack": {"frame_count": 6, "mode": "v3", "action_description": "aiming and firing a crossbow forward with a quick recoil snap", "fps": 12.0},
-            "hit": {"frame_count": 4, "mode": "v3", "action_description": "flinching backward in pain from a hit, recoiling with a jolt", "fps": 10.0},
-            "death": {"frame_count": 6, "mode": "v3", "action_description": "collapsing and dying, bones crumbling apart and falling to the ground", "fps": 10.0},
+            "attack": {"frame_count": 7, "mode": "v3", "action_description": "aiming and firing a crossbow forward with a quick recoil snap", "fps": 12.0},
+            "hit": {"frame_count": 5, "mode": "v3", "action_description": "flinching backward in pain from a hit, recoiling with a jolt", "fps": 10.0},
+            "death": {"frame_count": 7, "mode": "v3", "action_description": "collapsing and dying, bones crumbling apart and falling to the ground", "fps": 10.0},
         },
         "notes": (
             "FAN-2610: dedicated 8-direction pack replacing the single authored "
             "horizontal view + flip for standard_monster/ash_marksman. "
-            "8 idle rotations + 8x6 move frames + 8x6 attack frames + 8x4 hit "
-            "frames + 8x6 death frames, all normalized to 245px visible height "
-            "on a transparent 512x512 canvas, footline pinned at bottom_padding=32. "
-            "FAN-3090 dropped the duplicated v3 reference frame that shipped as "
-            "frame 0 of attack/hit/death."
+            "8 idle rotations + 8x6 move frames + 8x7 attack frames + 8x5 hit "
+            "frames + 8x7 death frames, all normalized to 245px visible height "
+            "on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
         ),
     }
     (SOURCE_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")

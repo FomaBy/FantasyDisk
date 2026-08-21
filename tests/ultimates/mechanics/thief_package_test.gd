@@ -9,9 +9,9 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "thief"
 const WEAPONS := ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]
 const EXPECTED_CAPS := {
-	"thief_coin_pouch": {"coin_wave_count": 13, "gold_every": 3, "gold_cap": 4},
-	"thief_shadow_cloak": {"strike_count": 8, "escalation": 0.12},
-	"thief_smoke_bomb": {"duration": 4.0, "evasion_bonus": 0.34},
+	"thief_coin_pouch": {"coin_count": 13, "gold_every": 3, "gold_cap": 4},
+	"thief_shadow_cloak": {"mark_limit": 8, "escalation": 0.12},
+	"thief_smoke_bomb": {"target_limit": 5, "duration": 4.0, "evasion_bonus": 0.34},
 }
 
 var _errors: Array[String] = []

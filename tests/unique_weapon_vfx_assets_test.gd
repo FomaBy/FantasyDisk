@@ -31,16 +31,12 @@ func _initialize() -> void:
 				push_error("Weapon signature for %s must be a compact moving release cue, never a damage-zone plate." % weapon_id)
 				quit(1)
 				return
-			# FAN-3010: фигура — либо статичный Sprite2D, либо flipbook-обёртка,
-			# когда для пары класс/оружие уже нарисован пак.
 			var has_sprite := false
 			for child in node.get_children():
 				if child is Sprite2D and (child as Sprite2D).texture != null:
 					has_sprite = true
-				elif child.get_child_count() > 0 and child.get_child(0) is AnimatedSprite2D:
-					has_sprite = true
 			if not has_sprite:
-				push_error("Weapon signature for %s must use textured sprites or a flipbook pack." % weapon_id)
+				push_error("Weapon signature for %s must use textured sprites." % weapon_id)
 				quit(1)
 				return
 			checked += 1

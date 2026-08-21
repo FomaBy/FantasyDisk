@@ -39,6 +39,8 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"biologist/biologist_spore_lens": V2_SEED_REASON,
 	"biologist/biologist_sample_injector": V2_SEED_REASON,
 	"biologist/biologist_symbiote_seed": V2_SEED_REASON,
+	"chemist/acid_flask": V2_SEED_REASON,
+	"chemist/homunculus_vial": V2_SEED_REASON,
 	"dark_mage/dark_book": V2_SEED_REASON,
 	"dark_mage/cursed_skull": V2_SEED_REASON,
 	"dark_mage/dark_wand": V2_SEED_REASON,
@@ -71,6 +73,12 @@ const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"sniper/sniper_deadeye_rifle": V2_SEED_REASON,
 	"sniper/sniper_spotter_scope": V2_SEED_REASON,
 	"sniper/sniper_shatter_rounds": V2_SEED_REASON,
+	"soldier/soldier_rifle": V2_SEED_REASON,
+	"soldier/soldier_grenade": V2_SEED_REASON,
+	"soldier/soldier_bayonet": V2_SEED_REASON,
+	"thief/thief_coin_pouch": V2_SEED_REASON,
+	"thief/thief_shadow_cloak": V2_SEED_REASON,
+	"thief/thief_smoke_bomb": V2_SEED_REASON,
 }
 
 static var _schema_cache: Dictionary = {}

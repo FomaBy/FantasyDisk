@@ -23,14 +23,14 @@
       "radius_start": 250.0,
       "radius_step": 185.0,
       "crowd_cap": 18,
-      "infection_damage": 78.65,
+      "infection_damage": 55.0,
       "infection_duration": 8.6,
       "root_duration": 5.0,
       "slow_multiplier": 0.45,
       "secondary_bloom_cap": 3,
       "secondary_bloom_radius": 150.0,
       "secondary_bloom_targets": 3,
-      "secondary_bloom_damage": 25.74
+      "secondary_bloom_damage": 18.0
     }
   },
   "total_boss_cap": 0.09,

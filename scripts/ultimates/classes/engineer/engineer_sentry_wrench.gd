@@ -1,13 +1,5 @@
 extends RefCounted
 
-## Инженер / Разводной ключ — «Гексагональный перекрёстный огонь».
-##
-## Ultimate Direction v2 (FAN-2955): every volley of the fixed hex suppresses
-## the whole map — each live enemy takes one chord's worth of the volley
-## wherever it stands, on screen and off. The three shipped chords are
-## attribution: a silhouette the beams actually cross takes one hit per
-## crossing, which the hex's own geometry bounds at three.
-
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_sentry_wrench"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_sentry_wrench"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd"
@@ -27,6 +19,7 @@ static func parameter_contract() -> Dictionary:
 		"volley_interval": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 1.0},
 		"damage": {"type": "number", "minimum": 0.0},
+		"target_limit": {"type": "integer", "minimum": 0},
 	}
 
 
@@ -66,11 +59,7 @@ static func execute(activation) -> float:
 static func fire_volley(activation, points: PackedVector2Array, volley: int) -> void:
 	if activation == null or activation.is_finished() or points.size() != 6:
 		return
-	var crossings := {}
-	for raw_target in activation.select_targets(activation.origin(), INF, 0, "nearest"):
-		var target := raw_target as Node2D
-		if target != null and is_instance_valid(target):
-			crossings[target.get_instance_id()] = {"target": target, "hits": 0}
+	var damage: float = activation.scaled_damage("damage", 0.55)
 	for chord in 3:
 		var start := points[chord]
 		var finish := points[chord + 3]
@@ -80,33 +69,22 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 			direction,
 			start.distance_to(finish),
 			activation.param_float("corridor_half_width", 76.0),
-			0
+			activation.param_int("target_limit", 0)
 		):
-			var target := raw_target as Node2D
-			if target == null or not crossings.has(target.get_instance_id()):
-				continue
-			var crossed := crossings[target.get_instance_id()] as Dictionary
-			crossed["hits"] = int(crossed["hits"]) + 1
+			var target := raw_target as Node
+			if target != null and is_instance_valid(target):
+				activation.deal_damage(
+					target,
+					damage,
+					{"source": "engineer_hex_crossfire"},
+					"sentry:%d:%d" % [volley, chord]
+				)
 		activation.present(EXECUTOR_ID + ".volley", {
 			"from": start,
 			"to": finish,
 			"position": finish,
 			"shape": "beam",
 		})
-	# One volley is one damage event per enemy: the map-wide floor is a single
-	# chord's worth, and the beams a silhouette actually stands in raise it.
-	var damage: float = activation.scaled_damage("damage", 0.55)
-	for target_id in crossings:
-		var crossed := crossings[target_id] as Dictionary
-		var target := crossed["target"] as Node
-		if target == null or not is_instance_valid(target):
-			continue
-		activation.deal_damage(
-			target,
-			damage * float(maxi(int(crossed["hits"]), 1)),
-			{"source": "engineer_hex_crossfire"},
-			"sentry:%d" % volley
-		)
 
 
 static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:

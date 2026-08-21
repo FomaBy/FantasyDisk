@@ -794,19 +794,7 @@ func _spawn_weapon_signature(owner_node: Node2D, _target: Node2D, direction: Vec
 		return
 	var release_origin := owner_node.global_position + direction * 26.0
 	var radius := maxf(aoe_radius, beam_width * 1.4)
-	var signature := AttackVfx.weapon_signature(
-		_projectile_parent(),
-		release_origin,
-		weapon_id,
-		radius,
-		visual_color,
-		direction.angle(),
-		null,
-		0.0,
-		0.58,
-		Vector2.ZERO,
-		AttackVfx.owner_class_id(owner_node)
-	)
+	var signature := AttackVfx.weapon_signature(_projectile_parent(), release_origin, weapon_id, radius, visual_color, direction.angle())
 	if signature != null:
 		_register_effect(signature)
 

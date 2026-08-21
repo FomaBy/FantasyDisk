@@ -127,7 +127,6 @@ func _initialize() -> void:
 	await _test_sentry_hex_and_cleanup()
 	await _test_drone_intercept_repair_and_shield()
 	await _test_seeded_mine_chain_and_finale()
-	await _test_trio_reaches_every_enemy()
 	_holder.queue_free()
 	await process_frame
 	_report()
@@ -189,7 +188,7 @@ func _test_drone_intercept_repair_and_shield() -> void:
 	var spawned: Array[Node] = activation.spawned_for_tests()
 	_check(spawned.size() == 12, "repair swarm must atomically deploy twelve microdrones")
 	_check(normal.knockback_impulses.size() == 1 and epic.knockback_impulses.size() == 1,
-		"the first intercept wave must reach every live target")
+		"the first capped intercept wave must reach both nearby targets")
 	if not normal.knockback_impulses.is_empty() and not epic.knockback_impulses.is_empty():
 		_check(is_equal_approx(epic.knockback_impulses[0].length(),
 			normal.knockback_impulses[0].length() * 0.35),
@@ -268,36 +267,6 @@ func _test_seeded_mine_chain_and_finale() -> void:
 	for node in spawned:
 		_check(not is_instance_valid(node), "completion must remove every mine deploy")
 	await _drop(host)
-
-
-## Ultimate Direction v2 (FAN-2955): no count-shaped cap survives in the trio.
-## Each weapon is cast against a crowd far larger than its old cap plus one
-## silhouette parked thousands of pixels off-screen, and every one of them has
-## to end the cast with HP removed.
-func _test_trio_reaches_every_enemy() -> void:
-	for weapon_id in [SENTRY, DRONES, MINES]:
-		var host := _new_host()
-		for index in 28:
-			_target(host, Vector2(0.0, -270.0 + float(index) * 20.0))
-		_target(host, Vector2(5000.0, -4000.0))
-		var controller := Controller.new(host, _registry)
-		_check(controller.activate(CLASS_ID, weapon_id),
-			"%s map-wide fixture must activate" % weapon_id)
-		var activation = controller.active_activation()
-		# Past the longest declared cast in the trio (the swarm's 5.50 s), so a
-		# sequence that resolves only on its final beat is measured after it.
-		_advance(activation, 6.0)
-		var reached := 0
-		for raw_target in host.fixture_targets:
-			if (raw_target as Target).health < (raw_target as Target).max_health:
-				reached += 1
-		_check(reached == host.fixture_targets.size(),
-			"%s must reach every live enemy on the map, got %d of %d" % [
-				weapon_id, reached, host.fixture_targets.size(),
-			])
-		controller.cancel()
-		await process_frame
-		await _drop(host)
 
 
 func _new_host() -> Host:

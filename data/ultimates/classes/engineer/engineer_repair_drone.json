@@ -15,6 +15,7 @@
       "wave_count": 6,
       "wave_interval": 0.55,
       "radius": 430,
+      "intercept_target_cap": 4,
       "ram_damage": 0.65,
       "knockback": 260,
       "repair_total": 8,

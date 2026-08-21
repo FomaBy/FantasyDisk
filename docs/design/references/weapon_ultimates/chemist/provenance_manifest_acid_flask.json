@@ -56,18 +56,18 @@
     "normalized_by": "bit-exact copy of the PixelLab frames (already 256x256 full-frame RGBA); no crop, no matte, no palette shift"
   },
   "phase_binding": {
-    "windup": {"seconds": 0.0, "frames": "0-1 (cast ceremony: the hero glow rises under the revealed colossal flask, backdrop darkens, pool still)"},
-    "release": {"seconds": 0.85, "frames": "2-3 (the pour lands and floods the pool outward in one broad wave, lake shoreline starts expanding)"},
-    "active": {"seconds": 1.0, "frames": "3-7 (first corrosion tick lands with the acid-white flash and hitstop, sustained bubbling, lake grows arena-wide)"},
-    "recovery": {"seconds": 3.35, "frames": "7-8 (ChargePillars spend the capped charge at 3.25s, then the held frame fades while EvaporationSmoke peaks)"},
-    "cancel": {"seconds": 3.95, "frames": "alpha reaches zero; Timeline releases every handle"}
+    "windup": {"seconds": 0.0, "frames": "0 (heavy flask reveal, pool still)"},
+    "release": {"seconds": 0.75, "frames": "1-3 (the pour lands and floods the pool outward in one broad wave)"},
+    "active": {"seconds": 1.6, "frames": "4-8 (sustained bubbling, ChargePillars hold the capped charges)"},
+    "recovery": {"seconds": 3.7, "frames": "8 held while alpha falls and EvaporationSmoke peaks (slow evaporation)"},
+    "cancel": {"seconds": 4.8, "frames": "alpha reaches zero; Timeline releases every handle"}
   },
-  "distinctness": "blast_powder is a gold-rune pentagram with five multicolor kegs on a 3.6s crystal-implosion beat; homunculus_vial is an emerald avatar fusion on a 5.4s convergence-and-split beat; acid_flask is the only one built on a colossal dark-glass cracked flask flooding a wide acid-green lake, on its own 3.95s heavy-flood-then-evaporation beat (total and active window both >=0.1s from either sibling)",
+  "distinctness": "blast_powder is a gold-rune pentagram with five multicolor kegs on a 3.4s crystal-implosion beat; homunculus_vial is an emerald avatar fusion on a 5.4s convergence-and-split beat; acid_flask is the only one built on a colossal dark-glass cracked flask flooding a wide acid-green lake, on the longest 4.8s heavy-flood-then-evaporation beat, and the only one whose declared flash coverage is exactly 0.0",
   "accessibility": {
     "full_screen_flash_hz": 0.0,
-    "max_flash_coverage_ratio": 1.0,
-    "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the impact shake, and the single release flash plays as a calm damped fade on the backdrop veil and acid surge glow",
-    "note": "The frame track is the only fast channel and it is monotonic (0->8, never reversing), so there is no repeating flash at any rate; the one release flash does not repeat."
+    "max_flash_coverage_ratio": 0.0,
+    "reduced_motion_substitute": "the acid lake keeps a calm static shoreline and slow bubble drift in place of the pour wave and pillar bursts",
+    "note": "The frame track is the only fast channel and it is monotonic (0->8, never reversing), so there is no repeating flash at any rate."
   },
   "verification": {
     "commands": [

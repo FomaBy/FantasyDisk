@@ -11,9 +11,10 @@
     "strategy_id": "weapon_ultimate.executor.thief.thief_smoke_bomb",
     "params": {
       "radius": 300.0,
+      "target_limit": 5,
       "duration": 4.0,
       "evasion_bonus": 0.34,
-      "pressure_damage": 74.25,
+      "pressure_damage": 55.0,
       "outline_slow": 0.72
     }
   },

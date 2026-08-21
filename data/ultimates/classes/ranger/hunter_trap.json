@@ -19,9 +19,9 @@
       "outer_radius": 320.0,
       "ring_shrink": 0.72,
       "crowd_cap": 10,
-      "snap_damage": 67.5,
+      "snap_damage": 54.0,
       "net_ratio": 0.11,
-      "closure_damage": 33.75,
+      "closure_damage": 27.0,
       "lock_duration": 3.4,
       "pull_force": 220.0
     }

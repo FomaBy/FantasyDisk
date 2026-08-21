@@ -251,13 +251,10 @@ func _expect_inventory_failure(errors: Array[String], required_keys: Array, scen
 
 
 ## Ownership channels are package-specific: deploy packages spawn nodes,
-## choreography packages (guitarist) show a presentation instead. The
-## presentation count is the activation's own presentation nodes plus the live
-## authored scene the host runs for it (FAN-3015 — the host owns and frees that
-## scene, the activation only accounts it). The tracked tween is deliberately
-## not a channel here — every pair is already asserted to own exactly one, so
-## counting it would satisfy the disjunction unconditionally and constrain
-## nothing.
+## choreography packages (guitarist) own presentation handles instead. The
+## tracked tween is deliberately not a channel here — every pair is already
+## asserted to own exactly one, so counting it would satisfy the disjunction
+## unconditionally and constrain nothing.
 func _live_ownership_errors(
 	label: String,
 	spawned_count: int,
@@ -615,7 +612,7 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 					for error in _live_ownership_errors(
 						str(state["label"]),
 						(activation.spawned_for_tests() as Array).size(),
-						activation.live_presentation_count()
+						(activation.presentation_for_tests() as Array).size()
 					):
 						_check(false, error)
 					for tween in state["tweens"]:
@@ -662,7 +659,6 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		_check(activation.tweens_for_tests().is_empty(), "%s must drop tween ownership" % label)
 		_check(activation.spawned_for_tests().is_empty(), "%s must drop spawn/deploy ownership" % label)
 		_check(activation.presentation_for_tests().is_empty(), "%s must drop presentation handles" % label)
-		_check(activation.live_presentation_count() == 0, "%s must drop every live presentation channel" % label)
 		_check(activation.summon_snapshot_count_for_tests() == 0, "%s must drop summon handles" % label)
 		_check(activation.target_ledger_size_for_tests() == 0, "%s must clear target state" % label)
 		if state.has("tower_shield_guard_owner_id"):

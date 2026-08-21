@@ -72,11 +72,9 @@ ROSTER = (
          "biologist", "robot", "engineer", "dark_mage", "guitarist",
          "assassin", "ranger", "doctor", "chemist", "knight", "druid",
      ]]
-    + [{"id": "rift_cutter", "group": "monster", "frames": f"{EN}/rift_cutter_spriteframes.tres",
-        "directional": True}]
     + [{"id": e, "group": "monster", "frames": f"{EN}/{e}_spriteframes.tres"}
        for e in [
-           "ash_marksman", "spark_runner", "stone_bruiser",
+           "rift_cutter", "ash_marksman", "spark_runner", "stone_bruiser",
            "bone_caller", "void_mage", "venom_spitter", "rift_shieldbearer",
            "small_biter", "bone_shaman", "winged_spark",
        ]]

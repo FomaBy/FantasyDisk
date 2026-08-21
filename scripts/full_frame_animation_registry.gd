@@ -96,7 +96,6 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.38, 0.38),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		# FAN-2610: dedicated 8-direction pack replacing the single authored
 		# horizontal view + flip.
@@ -107,23 +106,17 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
-		# FAN-2611: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
 		"spark_runner": {
 			"frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
 			"scale": Vector2(0.34, 0.34),
 			"position": Vector2(0.0, -38.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
-		# FAN-2612: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
 		"stone_bruiser": {
 			"frames": "res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres",
 			"scale": Vector2(0.42, 0.42),
 			"position": Vector2(0.0, -52.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"bone_caller": {
 			"frames": "res://assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres",
@@ -132,45 +125,38 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
-		# FAN-2614: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
 		"void_mage": {
 			"frames": "res://assets/sprites/enemies/full_frame/void_mage_spriteframes.tres",
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
+		# FAN-2615: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip.
 		"venom_spitter": {
 			"frames": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres",
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -42.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
-		# FAN-2616: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
 		"rift_shieldbearer": {
 			"frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
 			"scale": Vector2(0.42, 0.42),
 			"position": Vector2(0.0, -50.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
-		# FAN-2617: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
 		"small_biter": {
 			"frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
 			"scale": Vector2(0.30, 0.30),
 			"position": Vector2(0.0, -32.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"bone_shaman": {
 			"frames": "res://assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres",
 			"scale": Vector2(0.36, 0.36),
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"winged_spark": {
 			"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
@@ -180,18 +166,11 @@ const FULL_FRAME_SPRITEFRAMES := {
 		},
 	},
 	"elite": {
-		# FAN-3093 (rework of FAN-2620): dedicated 8-direction pack replacing
-		# the single west-facing flip-mirrored pack. scale/position recomputed
-		# for the new 245px-visible-height/32px-bottom-padding normalization
-		# (old pack's own bbox pinned bottom at a different offset) so the feet
-		# land on the same footline as before: 0.70/-82.0 -> 0.59/-78.0, solving
-		# for the same ~54.5px feet-below-origin offset the old pack used.
 		"iron_bastion": {
 			"frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
-			"scale": Vector2(0.59, 0.59),
-			"position": Vector2(0.0, -78.0),
+			"scale": Vector2(0.70, 0.70),
+			"position": Vector2(0.0, -82.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
@@ -204,7 +183,6 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"scale": Vector2(0.66, 0.66),
 			"position": Vector2(0.0, -78.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"shard_marshal": {
 			"frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",
@@ -257,15 +235,11 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -86.0),
 			"source_faces_left": true,
 		},
-		# FAN-2635: dedicated 8-direction pack replacing the west-facing-plus-flip
-		# source rows with true north/northeast/east/southeast/south/southwest/
-		# west/northwest animation for idle/move/attack/hit/death/skills.
 		"disk_devourer": {
 			"frames": "res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres",
 			"scale": Vector2(0.78, 0.78),
 			"position": Vector2(0.0, -90.0),
 			"source_faces_left": true,
-			"explicit_eight_directions": true,
 		},
 		"bone_archon": {
 			"frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres",

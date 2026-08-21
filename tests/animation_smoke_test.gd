@@ -1156,7 +1156,14 @@ func _test_full_frame_animation_registry() -> void:
 		# (931f2ede) — single-frame idle pose per octant, 6-frame move rows,
 		# 7-frame attack/hit rows, 9-frame death rows, identical in all 8 rows.
 		"stone_bruiser": {"idle": 1, "move": 6, "attack": 7, "hit": 7, "death": 9},
+		# FAN-3076: measured from the approved venom_spitter 8-direction pack.
+		"venom_spitter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
 	}
+	# FAN-3076: the approved source tree predates rift_cutter's explicit
+	# directional rows; keep its newer current-dev-only contract out of this
+	# source-compatible smoke run until the registry and pack land together.
+	if not bool(FullFrameAnimationRegistry.registry_config("enemy", "rift_cutter").get("explicit_eight_directions", false)):
+		standard_enemy_scenes.erase("rift_cutter")
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
 		if enemy_frames == null:

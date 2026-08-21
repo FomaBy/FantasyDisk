@@ -49,7 +49,7 @@ var _threat_fire_marker_left := 0.0
 var _summon_cooldown := 0.0
 var _contact_cooldown := 0.0
 var _contact_windup_left := -1.0
-var _animation_priority := EnemyAnimationPriority.new()
+var _animation_time := 0.0
 var _elite_shield_cooldown := 4.2
 var _elite_shield_time_left := 0.0
 var _elite_dash_cooldown := 2.8
@@ -612,7 +612,7 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
 	_play_full_frame_state("hit", Vector2.ZERO)
-	_animation_priority.register_hit(health > 0.0)
+
 	if health <= 0.0:
 		_death_lifecycle_started = true
 		health = 0.0
@@ -1833,8 +1833,8 @@ func _body_sprite() -> Sprite2D:
 func _update_movement_animation(delta: float) -> void:
 	var full_frame_body := _full_frame_body()
 	if full_frame_body != null and full_frame_body.visible:
-		if _animation_priority.blocks_locomotion(delta, elite_attack_state): return
-		FullFrameAnimationRegistry.play_state(full_frame_body, "move" if velocity.length_squared() > 1.0 else "idle", velocity)
+		var state := "move" if velocity.length_squared() > 1.0 else "idle"
+		FullFrameAnimationRegistry.play_state(full_frame_body, state, velocity)
 		return
 
 	var body := _body_sprite()

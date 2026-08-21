@@ -1,2006 +1,284 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_east.png" id="1_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_south_east.png" id="2_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_south.png" id="3_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_south_west.png" id="4_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_west.png" id="5_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_north_west.png" id="6_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_north.png" id="7_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_idle_north_east.png" id="8_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_00.png" id="9_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_01.png" id="10_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_02.png" id="11_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_03.png" id="12_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_04.png" id="13_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_05.png" id="14_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_06.png" id="15_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_east_07.png" id="16_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_00.png" id="17_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_01.png" id="18_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_02.png" id="19_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_03.png" id="20_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_04.png" id="21_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_05.png" id="22_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_06.png" id="23_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_east_07.png" id="24_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_00.png" id="25_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_01.png" id="26_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_02.png" id="27_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_03.png" id="28_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_04.png" id="29_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_05.png" id="30_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_06.png" id="31_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_07.png" id="32_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_00.png" id="33_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_01.png" id="34_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_02.png" id="35_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_03.png" id="36_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_04.png" id="37_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_05.png" id="38_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_06.png" id="39_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_south_west_07.png" id="40_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_00.png" id="41_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_01.png" id="42_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_02.png" id="43_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_03.png" id="44_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_04.png" id="45_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_05.png" id="46_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_06.png" id="47_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_west_07.png" id="48_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_00.png" id="49_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_01.png" id="50_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_02.png" id="51_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_03.png" id="52_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_04.png" id="53_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_05.png" id="54_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_06.png" id="55_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_west_07.png" id="56_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_00.png" id="57_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_01.png" id="58_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_02.png" id="59_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_03.png" id="60_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_04.png" id="61_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_05.png" id="62_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_06.png" id="63_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_07.png" id="64_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_00.png" id="65_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_01.png" id="66_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_02.png" id="67_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_03.png" id="68_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_04.png" id="69_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_05.png" id="70_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_06.png" id="71_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_north_east_07.png" id="72_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_00.png" id="73_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_01.png" id="74_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_02.png" id="75_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_03.png" id="76_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_04.png" id="77_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_05.png" id="78_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_east_06.png" id="79_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_00.png" id="80_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_01.png" id="81_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_02.png" id="82_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_03.png" id="83_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_04.png" id="84_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_05.png" id="85_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_east_06.png" id="86_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_00.png" id="87_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_01.png" id="88_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_02.png" id="89_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_03.png" id="90_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_04.png" id="91_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_05.png" id="92_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_06.png" id="93_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_00.png" id="94_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_01.png" id="95_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_02.png" id="96_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_03.png" id="97_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_04.png" id="98_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_05.png" id="99_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_south_west_06.png" id="100_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_00.png" id="101_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_01.png" id="102_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_02.png" id="103_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_03.png" id="104_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_04.png" id="105_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_05.png" id="106_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_west_06.png" id="107_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_00.png" id="108_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_01.png" id="109_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_02.png" id="110_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_03.png" id="111_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_04.png" id="112_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_05.png" id="113_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_west_06.png" id="114_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_00.png" id="115_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_01.png" id="116_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_02.png" id="117_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_03.png" id="118_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_04.png" id="119_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_05.png" id="120_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_06.png" id="121_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_00.png" id="122_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_01.png" id="123_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_02.png" id="124_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_03.png" id="125_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_04.png" id="126_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_05.png" id="127_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_north_east_06.png" id="128_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_00.png" id="129_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_01.png" id="130_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_02.png" id="131_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_03.png" id="132_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_04.png" id="133_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_east_05.png" id="134_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_00.png" id="135_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_01.png" id="136_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_02.png" id="137_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_03.png" id="138_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_04.png" id="139_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_east_05.png" id="140_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_00.png" id="141_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_01.png" id="142_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_02.png" id="143_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_03.png" id="144_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_04.png" id="145_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_05.png" id="146_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_00.png" id="147_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_01.png" id="148_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_02.png" id="149_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_03.png" id="150_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_04.png" id="151_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_south_west_05.png" id="152_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_00.png" id="153_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_01.png" id="154_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_02.png" id="155_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_03.png" id="156_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_04.png" id="157_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_west_05.png" id="158_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_00.png" id="159_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_01.png" id="160_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_02.png" id="161_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_03.png" id="162_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_04.png" id="163_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_west_05.png" id="164_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_00.png" id="165_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_01.png" id="166_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_02.png" id="167_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_03.png" id="168_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_04.png" id="169_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_05.png" id="170_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_00.png" id="171_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_01.png" id="172_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_02.png" id="173_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_03.png" id="174_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_04.png" id="175_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_hit_north_east_05.png" id="176_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_00.png" id="177_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_01.png" id="178_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_02.png" id="179_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_03.png" id="180_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_04.png" id="181_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_05.png" id="182_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_east_06.png" id="183_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_00.png" id="184_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_01.png" id="185_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_02.png" id="186_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_03.png" id="187_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_04.png" id="188_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_05.png" id="189_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_east_06.png" id="190_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_00.png" id="191_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_01.png" id="192_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_02.png" id="193_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_03.png" id="194_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_04.png" id="195_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_05.png" id="196_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_06.png" id="197_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_00.png" id="198_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_01.png" id="199_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_02.png" id="200_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_03.png" id="201_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_04.png" id="202_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_05.png" id="203_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_south_west_06.png" id="204_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_00.png" id="205_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_01.png" id="206_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_02.png" id="207_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_03.png" id="208_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_04.png" id="209_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_05.png" id="210_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_west_06.png" id="211_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_00.png" id="212_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_01.png" id="213_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_02.png" id="214_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_03.png" id="215_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_04.png" id="216_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_05.png" id="217_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_west_06.png" id="218_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_00.png" id="219_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_01.png" id="220_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_02.png" id="221_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_03.png" id="222_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_04.png" id="223_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_05.png" id="224_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_06.png" id="225_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_00.png" id="226_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_01.png" id="227_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_02.png" id="228_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_03.png" id="229_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_04.png" id="230_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_05.png" id="231_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_north_east_06.png" id="232_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_00.png" id="233_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_01.png" id="234_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_02.png" id="235_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_03.png" id="236_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_04.png" id="237_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_05.png" id="238_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_east_06.png" id="239_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_00.png" id="240_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_01.png" id="241_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_02.png" id="242_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_03.png" id="243_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_04.png" id="244_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_05.png" id="245_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_east_06.png" id="246_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_00.png" id="247_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_01.png" id="248_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_02.png" id="249_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_03.png" id="250_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_04.png" id="251_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_05.png" id="252_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_06.png" id="253_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_00.png" id="254_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_01.png" id="255_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_02.png" id="256_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_03.png" id="257_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_04.png" id="258_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_05.png" id="259_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_south_west_06.png" id="260_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_00.png" id="261_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_01.png" id="262_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_02.png" id="263_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_03.png" id="264_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_04.png" id="265_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_05.png" id="266_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_west_06.png" id="267_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_00.png" id="268_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_01.png" id="269_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_02.png" id="270_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_03.png" id="271_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_04.png" id="272_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_05.png" id="273_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_west_06.png" id="274_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_00.png" id="275_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_01.png" id="276_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_02.png" id="277_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_03.png" id="278_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_04.png" id="279_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_05.png" id="280_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_06.png" id="281_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_00.png" id="282_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_01.png" id="283_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_02.png" id="284_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_03.png" id="285_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_04.png" id="286_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_05.png" id="287_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_north_east_06.png" id="288_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_00.png" id="289_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_01.png" id="290_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_02.png" id="291_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_03.png" id="292_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_04.png" id="293_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_05.png" id="294_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_east_06.png" id="295_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_00.png" id="296_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_01.png" id="297_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_02.png" id="298_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_03.png" id="299_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_04.png" id="300_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_05.png" id="301_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_east_06.png" id="302_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_00.png" id="303_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_01.png" id="304_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_02.png" id="305_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_03.png" id="306_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_04.png" id="307_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_05.png" id="308_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_06.png" id="309_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_00.png" id="310_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_01.png" id="311_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_02.png" id="312_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_03.png" id="313_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_04.png" id="314_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_05.png" id="315_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_south_west_06.png" id="316_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_00.png" id="317_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_01.png" id="318_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_02.png" id="319_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_03.png" id="320_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_04.png" id="321_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_05.png" id="322_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_west_06.png" id="323_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_00.png" id="324_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_01.png" id="325_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_02.png" id="326_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_03.png" id="327_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_04.png" id="328_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_05.png" id="329_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_west_06.png" id="330_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_00.png" id="331_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_01.png" id="332_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_02.png" id="333_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_03.png" id="334_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_04.png" id="335_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_05.png" id="336_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_06.png" id="337_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_00.png" id="338_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_01.png" id="339_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_02.png" id="340_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_03.png" id="341_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_04.png" id="342_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_05.png" id="343_ib"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_north_east_06.png" id="344_ib"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_00.png" id="1_ib1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_01.png" id="2_ib2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_02.png" id="3_ib3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_03.png" id="4_ib4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_04.png" id="5_ib5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_05.png" id="6_ib6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_00.png" id="7_ib7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_01.png" id="8_ib8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_02.png" id="9_ib9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_03.png" id="10_ib10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_04.png" id="11_ib11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_death_05.png" id="12_ib12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_00.png" id="13_ib13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_01.png" id="14_ib14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_02.png" id="15_ib15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_03.png" id="16_ib16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_04.png" id="17_ib17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_05.png" id="18_ib18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_00.png" id="19_ib19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_01.png" id="20_ib20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_02.png" id="21_ib21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_03.png" id="22_ib22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_04.png" id="23_ib23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_05.png" id="24_ib24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_00.png" id="25_ib25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_01.png" id="26_ib26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_02.png" id="27_ib27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_03.png" id="28_ib28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_04.png" id="29_ib29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_05.png" id="30_ib30"]
 
 [resource]
 animations = [
 {
-"frames": [{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("1_ib")
-}],
+"texture": ExtResource("1_ib1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ib2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ib3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ib4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ib5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ib6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ib1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ib2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ib3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ib4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ib5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ib6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_ib7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_ib8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_ib9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ib10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ib11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ib12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ib13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ib14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ib15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ib16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ib17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ib18")
+}
+],
 "loop": true,
-"name": &"idle_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("2_ib")
-}],
-"loop": true,
-"name": &"idle_south_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("3_ib")
-}],
-"loop": true,
-"name": &"idle_south",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("4_ib")
-}],
-"loop": true,
-"name": &"idle_south_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("5_ib")
-}],
-"loop": true,
-"name": &"idle_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("6_ib")
-}],
-"loop": true,
-"name": &"idle_north_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_ib")
-}],
-"loop": true,
-"name": &"idle_north",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_ib")
-}],
-"loop": true,
-"name": &"idle_north_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_ib")
-}],
-"loop": true,
-"name": &"move_east",
+"name": &"move",
 "speed": 9.0
 },
 {
-"frames": [{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("17_ib")
+"texture": ExtResource("19_ib19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_ib")
+"texture": ExtResource("20_ib20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("19_ib")
+"texture": ExtResource("21_ib21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ib")
+"texture": ExtResource("22_ib22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ib")
+"texture": ExtResource("23_ib23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_ib")
-}],
-"loop": true,
-"name": &"move_south_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("25_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("27_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("28_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("29_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("30_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("31_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("32_ib")
-}],
-"loop": true,
-"name": &"move_south",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("33_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("34_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("35_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("36_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("37_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("38_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("39_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("40_ib")
-}],
-"loop": true,
-"name": &"move_south_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("41_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("42_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("43_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("44_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("45_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("46_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("47_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("48_ib")
-}],
-"loop": true,
-"name": &"move_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("49_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("50_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("51_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("52_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("53_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("54_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("55_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("56_ib")
-}],
-"loop": true,
-"name": &"move_north_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("57_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("58_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("59_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("60_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("61_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("62_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("63_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("64_ib")
-}],
-"loop": true,
-"name": &"move_north",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("65_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("66_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("67_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("68_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("69_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("71_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("72_ib")
-}],
-"loop": true,
-"name": &"move_north_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("73_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("74_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("75_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("76_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("77_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("78_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("79_ib")
-}],
+"texture": ExtResource("24_ib24")
+}
+],
 "loop": false,
-"name": &"attack_east",
+"name": &"skill_shield_block",
 "speed": 12.0
 },
 {
-"frames": [{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("80_ib")
+"texture": ExtResource("19_ib19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("81_ib")
+"texture": ExtResource("20_ib20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("82_ib")
+"texture": ExtResource("21_ib21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("83_ib")
+"texture": ExtResource("22_ib22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("84_ib")
+"texture": ExtResource("23_ib23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("85_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("86_ib")
-}],
+"texture": ExtResource("24_ib24")
+}
+],
 "loop": false,
-"name": &"attack_south_east",
+"name": &"attack_shield_block",
 "speed": 12.0
 },
 {
-"frames": [{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("87_ib")
+"texture": ExtResource("25_ib25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("88_ib")
+"texture": ExtResource("26_ib26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("89_ib")
+"texture": ExtResource("27_ib27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("90_ib")
+"texture": ExtResource("28_ib28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("91_ib")
+"texture": ExtResource("29_ib29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("92_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("93_ib")
-}],
+"texture": ExtResource("30_ib30")
+}
+],
 "loop": false,
-"name": &"attack_south",
+"name": &"skill_slam_wave",
 "speed": 12.0
 },
 {
-"frames": [{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("94_ib")
+"texture": ExtResource("25_ib25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("95_ib")
+"texture": ExtResource("26_ib26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("96_ib")
+"texture": ExtResource("27_ib27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("97_ib")
+"texture": ExtResource("28_ib28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("98_ib")
+"texture": ExtResource("29_ib29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("99_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("100_ib")
-}],
+"texture": ExtResource("30_ib30")
+}
+],
 "loop": false,
-"name": &"attack_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("101_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("102_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("103_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("104_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("105_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("106_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("107_ib")
-}],
-"loop": false,
-"name": &"attack_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("108_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("109_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("110_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("111_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("112_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("113_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("114_ib")
-}],
-"loop": false,
-"name": &"attack_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("115_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("116_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("117_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("118_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("119_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("120_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("121_ib")
-}],
-"loop": false,
-"name": &"attack_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("122_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("123_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("124_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("125_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("126_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("127_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("128_ib")
-}],
-"loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("129_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("130_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("131_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("132_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("133_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("134_ib")
-}],
-"loop": false,
-"name": &"hit_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("135_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("136_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("137_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("138_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("139_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("140_ib")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("141_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("142_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("143_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("144_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("145_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("146_ib")
-}],
-"loop": false,
-"name": &"hit_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("147_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("148_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("149_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("150_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("151_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("152_ib")
-}],
-"loop": false,
-"name": &"hit_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("153_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("154_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("155_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("156_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("157_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("158_ib")
-}],
-"loop": false,
-"name": &"hit_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("159_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("160_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("161_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("162_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("163_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("164_ib")
-}],
-"loop": false,
-"name": &"hit_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("165_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("166_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("167_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("168_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("169_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("170_ib")
-}],
-"loop": false,
-"name": &"hit_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("171_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("172_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("173_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("174_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("175_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("176_ib")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("177_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("178_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("179_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("180_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("181_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("182_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("183_ib")
-}],
-"loop": false,
-"name": &"death_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("184_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("185_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("186_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("187_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("188_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("189_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("190_ib")
-}],
-"loop": false,
-"name": &"death_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("191_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("192_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("193_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("194_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("195_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("196_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("197_ib")
-}],
-"loop": false,
-"name": &"death_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("198_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("199_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("200_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("201_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("202_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("203_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("204_ib")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("205_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("206_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("207_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("208_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("209_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("210_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("211_ib")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("212_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("213_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("214_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("215_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("216_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("217_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("218_ib")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("219_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("220_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("221_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("222_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("223_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("224_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("225_ib")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("226_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("227_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("228_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("229_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("230_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("231_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("232_ib")
-}],
-"loop": false,
-"name": &"death_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("233_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("234_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("235_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("236_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("237_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("238_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("239_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("240_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("241_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("242_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("243_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("244_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("245_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("246_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_south_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("247_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("248_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("249_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("250_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("251_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("252_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("253_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_south",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("254_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("255_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("256_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("257_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("258_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("259_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("260_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("261_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("262_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("263_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("264_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("265_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("266_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("267_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("268_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("269_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("270_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("271_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("272_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("273_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("274_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("275_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("276_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("277_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("278_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("279_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("280_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("281_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("282_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("283_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("284_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("285_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("286_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("287_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("288_ib")
-}],
-"loop": false,
-"name": &"skill_shield_block_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("289_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("290_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("291_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("292_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("293_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("294_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("295_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("296_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("297_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("298_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("299_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("300_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("301_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("302_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_south_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("303_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("304_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("305_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("306_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("307_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("308_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("309_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_south",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("310_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("311_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("312_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("313_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("314_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("315_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("316_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("317_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("318_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("319_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("320_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("321_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("322_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("323_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("324_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("325_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("326_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("327_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("328_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("329_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("330_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("331_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("332_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("333_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("334_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("335_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("336_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("337_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("338_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("339_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("340_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("341_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("342_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("343_ib")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("344_ib")
-}],
-"loop": false,
-"name": &"skill_slam_wave_north_east",
+"name": &"attack_slam_wave",
 "speed": 12.0
 }
 ]

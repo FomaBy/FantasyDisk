@@ -868,8 +868,7 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 		weapon_texture,
 		weapon_rotation,
 		weapon_scale,
-		weapon_offset,
-		AttackVfx.owner_class_id(owner_node)
+		weapon_offset
 	)
 	if signature != null:
 		signature.add_to_group("player_weapon_effects")

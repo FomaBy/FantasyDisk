@@ -17,6 +17,8 @@
     "strategy_id": "weapon_ultimate.executor.chemist.blast_powder",
     "params": {
       "pentagram_radius": 330.0,
+      "charge_radius": 165.0,
+      "target_limit": 18,
       "pull_at": 0.5,
       "pull_force": 620.0,
       "detonate_at": 1.3,

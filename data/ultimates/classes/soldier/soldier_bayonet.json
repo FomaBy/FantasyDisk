@@ -16,8 +16,9 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.soldier.soldier_bayonet",
     "params": {
-      "max_range": 99999.0,
-      "corridor_half_width": 99999.0,
+      "max_range": 780.0,
+      "corridor_half_width": 78.0,
+      "target_limit": 18,
       "rank_count": 3,
       "rank_interval": 0.48,
       "damage": 125.0,

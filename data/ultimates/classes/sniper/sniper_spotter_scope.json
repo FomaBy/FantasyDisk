@@ -22,7 +22,7 @@
       "max_locks_per_target": 3,
       "lock_delay": 1.0,
       "strike_interval": 0.12,
-      "strike_damage": 20.25,
+      "strike_damage": 15.0,
       "suppression_duration": 4.4,
       "suppression_slow": 0.45
     }

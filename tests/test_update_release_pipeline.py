@@ -3090,12 +3090,10 @@ class CandidatePreSignVerificationTests(unittest.TestCase):
 
     # Inputs the build reads for real before the checkpoint.
     COPIED_INPUTS = (
-        "CHANGELOG.md",
         "export_presets.cfg",
         "project.godot",
         "scripts/update_manager.gd",
         "tools/build_release.sh",
-        "tools/release_notes_visual_claims_guard.py",
         "tools/release_scope_guard.py",
         "tools/release_scope_manifest.json",
         "tools/release_version_contract.py",

@@ -11,9 +11,9 @@
     "strategy_id": "weapon_ultimate.executor.thief.thief_coin_pouch",
     "params": {
       "radius": 620.0,
-      "coin_wave_count": 13,
+      "coin_count": 13,
       "hop_delay": 0.10,
-      "coin_damage": 128.25,
+      "coin_damage": 95.0,
       "damage_falloff": 0.88,
       "gold_every": 3,
       "gold_amount": 1,

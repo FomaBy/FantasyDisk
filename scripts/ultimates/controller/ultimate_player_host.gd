@@ -19,7 +19,6 @@ const Controller := preload("res://scripts/ultimates/controller/ultimate_control
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const PresentationRuntime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
-const PresentationManifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TargetQuery := preload("res://scripts/combat_target_query.gd")
 
@@ -37,13 +36,8 @@ var player: Node2D = null
 var _controller: Controller = null
 var _runtime_registry = null
 var _presentation: PresentationRuntime = null
-var _presentation_profile: Dictionary = {}
 var _presentation_headless_mode := -1
 var _last_activation_failure := ""
-
-## Neutral reserve tint for the fallback primitive; per-beat color and motion
-## belong to the authored scene, and a beat may override this via `color`.
-const FALLBACK_FLASH_COLOR := Color(1.0, 1.0, 1.0, 0.32)
 
 
 ## Read once per process. The catalog is immutable, so every Player shares it.
@@ -253,7 +247,6 @@ func ultimate_host_effect_parent() -> Node:
 
 
 func ultimate_host_begin_presentation(profile: Dictionary) -> bool:
-	_presentation_profile = profile.duplicate(true)
 	if _presentation == null:
 		_presentation = PresentationRuntime.new(_presentation_headless_mode)
 	if _presentation.begin(self, _registry(), profile):
@@ -272,70 +265,31 @@ func ultimate_host_finish_presentation(reason: String) -> void:
 	if _presentation != null:
 		_presentation.finish(reason)
 		_presentation = null
-	_presentation_profile = {}
 
 
-## The authored presentation is the cast's live visual channel whenever it is
-## running, and the host owns it: `ultimate_host_finish_presentation` releases
-## its scene handle. The activation reads this to account the channel it is
-## showing without taking a second claim on the node.
-func ultimate_host_presentation_active() -> bool:
-	return _presentation != null and _presentation.is_active()
+func ultimate_host_set_active(active: bool) -> void:
+	player.set("_ultimate_active", active)
 
 
-## Beats belong to the authored presentation: while it is live, `event_id` and
-## its payload are delivered to it (`present_beat`) and nothing is drawn over
-## it. The AttackVfx path below is an explicit fallback for the rare cast whose
-## authored scene is not live, and it honors the weapon's declared flash budget
-## (`quality.full_screen_flash_hz`, `quality.max_flash_coverage_ratio`) — a
-## weapon that declared a zero flash budget never sees a controller flash, and
-## an undeclared budget fails closed the same way.
-func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
-	if _presentation != null and _presentation.is_active():
-		_presentation.present_beat(event_id, payload)
-		return null
-	if not _fallback_flash_allowed():
-		return null
+## Presentation stays primitive on purpose: the weapon-ultimate presentation
+## contract is a separate package, so this only maps the geometric shapes the
+## executors describe onto the existing AttackVfx primitives.
+func ultimate_host_present(_event_id: String, payload: Dictionary) -> Node:
 	var parent := ultimate_host_effect_parent()
 	if parent == null:
 		return null
 	var position: Vector2 = payload.get("position", player.global_position)
 	var radius := float(payload.get("radius", 240.0))
-	var color: Color = payload.get("color", FALLBACK_FLASH_COLOR)
-	var shape := str(payload.get("shape", "ring_pulse"))
-	match shape:
+	match str(payload.get("shape", "ring_pulse")):
 		"beam":
 			return AttackVfx.beam(
 				parent,
 				payload.get("from", player.global_position),
 				payload.get("to", position),
-				float(payload.get("width", 34.0)),
-				color
+				34.0,
+				Color(0.86, 0.92, 1.0, 0.42)
 			)
 		"orb_burst":
-			return AttackVfx.orb_burst(parent, position, radius, color)
-		"ring_pulse":
-			return AttackVfx.ring_pulse(parent, position, radius, color, false)
+			return AttackVfx.orb_burst(parent, position, radius, Color(0.62, 0.76, 1.0, 0.44))
 		_:
-			push_warning(
-				"ultimate_host_present: no live authored presentation and unknown fallback shape '%s' (event %s); nothing drawn"
-				% [shape, event_id]
-			)
-			return null
-
-
-## The fallback primitive may draw only when the weapon's own manifest declared
-## a non-zero flash budget; the authored scene is otherwise the only visual.
-func _fallback_flash_allowed() -> bool:
-	if _presentation_profile.is_empty():
-		return false
-	var manifest := PresentationManifest.manifest_for_profile(_presentation_profile)
-	var quality: Dictionary = manifest.get("quality", {})
-	if quality.is_empty():
-		return false
-	return float(quality.get("full_screen_flash_hz", 0.0)) > 0.0 \
-		or float(quality.get("max_flash_coverage_ratio", 0.0)) > 0.0
-
-
-func ultimate_host_set_active(active: bool) -> void:
-	player.set("_ultimate_active", active)
+			return AttackVfx.ring_pulse(parent, position, radius, Color(0.86, 0.92, 1.0, 0.40), false)

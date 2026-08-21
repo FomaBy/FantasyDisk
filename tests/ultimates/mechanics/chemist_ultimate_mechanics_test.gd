@@ -29,8 +29,6 @@ const PACKAGE_DATA_ROOT := "res://data/ultimates/classes/chemist"
 const EXPECTED_BOSS_CAP := 0.1
 const HOST_DAMAGE := 10.0
 const STEP := 0.01
-const CROWD_PRESSURE_COUNT := 21
-const MAP_WIDE_CROWD_RADIUS := 1000.0
 
 
 class FixtureEnemy extends Node2D:
@@ -115,7 +113,6 @@ func _initialize() -> void:
 	await _test_blast_powder()
 	await _test_acid_flask()
 	await _test_homunculus_vial()
-	await _test_map_wide_coverage()
 
 	_holder.queue_free()
 	await process_frame
@@ -255,10 +252,9 @@ func _test_blast_powder() -> void:
 	_check(is_equal_approx(100.0 - boss.health, expected_boss_cap),
 		"the boss cap must bind the whole activation, removed %.2f" % (100.0 - boss.health))
 	_check(is_zero_approx(doomed.health) and is_equal_approx(activation.applied_total,
-			expected_target_cap + expected_boss_cap + expected_target_cap + 5.0 + expected_target_cap),
+			expected_target_cap + expected_boss_cap + expected_target_cap + 5.0),
 		"attribution must count actual HP removed, got %.2f" % activation.applied_total)
-	_check(is_equal_approx(100.0 - outsider.health, expected_target_cap),
-		"the transmutation must reach every live enemy, including one beyond the pentagram")
+	_check(is_equal_approx(outsider.health, 100.0), "the pentagram must not reach outside its charges")
 	_check(activation.target_ledger_size_for_tests() == 0, "every crystal mark must be consumed once")
 
 	# No recursive kill chain: the detonation only ever reads the recorded set,
@@ -421,60 +417,6 @@ func _test_homunculus_vial() -> void:
 	await _drop(host, controller)
 
 
-# --- map-wide coverage -------------------------------------------------------
-
-## A high-count, off-radius crowd exercises the real registry/controller path.
-## It catches both a hidden count cap and a geometry-only selector: every enemy
-## has to lose HP, not merely receive a presentation event or a control pulse.
-func _test_map_wide_coverage() -> void:
-	await _test_blast_powder_map_wide_coverage()
-	await _test_acid_flask_map_wide_coverage()
-	await _test_homunculus_vial_map_wide_coverage()
-
-
-func _test_blast_powder_map_wide_coverage() -> void:
-	var params := _declared_params("blast_powder")
-	var host := await _make_host()
-	var crowd := _add_map_wide_crowd(host)
-	var controller := Controller.new(host, _registry)
-	_check(controller.activate(CLASS_ID, "blast_powder"), "blast_powder must take the coverage cast")
-	var activation := controller.active_activation()
-	if activation != null:
-		_advance(activation, float(params["detonate_at"]) + 0.05)
-		_check_map_wide_damage("blast_powder", crowd)
-	await _drop(host, controller)
-
-
-func _test_acid_flask_map_wide_coverage() -> void:
-	var params := _declared_params("acid_flask")
-	var host := await _make_host()
-	var crowd := _add_map_wide_crowd(host)
-	var controller := Controller.new(host, _registry)
-	_check(controller.activate(CLASS_ID, "acid_flask"), "acid_flask must take the coverage cast")
-	var activation := controller.active_activation()
-	if activation != null:
-		_advance(activation,
-			float(params["pour_at"]) + float(params["tick_count"]) * float(params["tick_interval"]) + 0.05)
-		_check_map_wide_damage("acid_flask", crowd)
-	await _drop(host, controller)
-
-
-func _test_homunculus_vial_map_wide_coverage() -> void:
-	var params := _declared_params("homunculus_vial")
-	var host := await _make_host()
-	_add_ally(host)
-	_add_ally(host)
-	var crowd := _add_map_wide_crowd(host)
-	var controller := Controller.new(host, _registry)
-	_check(controller.activate(CLASS_ID, "homunculus_vial"), "homunculus_vial must take the coverage cast")
-	var activation := controller.active_activation()
-	if activation != null:
-		_advance(activation,
-			float(params["fuse_at"]) + float(params["beat_count"]) * float(params["beat_interval"]) + 0.05)
-		_check_map_wide_damage("homunculus_vial", crowd)
-	await _drop(host, controller)
-
-
 # --- fixture plumbing --------------------------------------------------------
 
 func _declared_params(weapon_id: String) -> Dictionary:
@@ -505,23 +447,6 @@ func _add_enemy(host: FixtureHost, position: Vector2, group: String) -> FixtureE
 	host.add_child(enemy)
 	host.enemies.append(enemy)
 	return enemy
-
-
-func _add_map_wide_crowd(host: FixtureHost) -> Array:
-	var crowd: Array = []
-	for index in CROWD_PRESSURE_COUNT:
-		var position := host.global_position + Vector2.RIGHT.rotated(
-			TAU * float(index) / float(CROWD_PRESSURE_COUNT)
-		) * (MAP_WIDE_CROWD_RADIUS + float(index) * 10.0)
-		crowd.append(_add_enemy(host, position, ""))
-	return crowd
-
-
-func _check_map_wide_damage(weapon_id: String, crowd: Array) -> void:
-	for index in crowd.size():
-		var enemy := crowd[index] as FixtureEnemy
-		_check(enemy != null and enemy.hits > 0 and enemy.health < enemy.max_health,
-			"%s must damage crowd enemy %d under map-wide pressure" % [weapon_id, index])
 
 
 func _add_ally(host: FixtureHost) -> FixtureAlly:

@@ -1,1126 +1,179 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_east.png" id="1_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_east.png" id="2_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south.png" id="3_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_west.png" id="4_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_west.png" id="5_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_west.png" id="6_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north.png" id="7_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_east.png" id="8_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_00.png" id="9_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_01.png" id="10_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_02.png" id="11_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_03.png" id="12_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_04.png" id="13_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_05.png" id="14_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_00.png" id="15_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_01.png" id="16_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_02.png" id="17_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_03.png" id="18_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_04.png" id="19_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_05.png" id="20_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_00.png" id="21_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_01.png" id="22_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_02.png" id="23_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_03.png" id="24_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_04.png" id="25_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_05.png" id="26_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_00.png" id="27_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_01.png" id="28_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_02.png" id="29_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_03.png" id="30_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_04.png" id="31_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_05.png" id="32_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_00.png" id="33_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_01.png" id="34_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_02.png" id="35_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_03.png" id="36_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_04.png" id="37_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_05.png" id="38_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_00.png" id="39_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_01.png" id="40_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_02.png" id="41_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_03.png" id="42_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_04.png" id="43_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_05.png" id="44_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_00.png" id="45_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_01.png" id="46_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_02.png" id="47_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_03.png" id="48_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_04.png" id="49_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_05.png" id="50_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_00.png" id="51_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_01.png" id="52_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_02.png" id="53_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_03.png" id="54_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_04.png" id="55_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_05.png" id="56_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_00.png" id="57_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_01.png" id="58_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_02.png" id="59_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_03.png" id="60_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_04.png" id="61_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_05.png" id="62_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_00.png" id="63_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_01.png" id="64_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_02.png" id="65_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_03.png" id="66_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_04.png" id="67_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_05.png" id="68_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_00.png" id="69_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_01.png" id="70_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_02.png" id="71_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_03.png" id="72_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_04.png" id="73_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_05.png" id="74_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_00.png" id="75_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_01.png" id="76_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_02.png" id="77_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_03.png" id="78_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_04.png" id="79_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_05.png" id="80_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_00.png" id="81_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_01.png" id="82_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_02.png" id="83_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_03.png" id="84_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_04.png" id="85_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_05.png" id="86_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_00.png" id="87_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_01.png" id="88_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_02.png" id="89_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_03.png" id="90_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_04.png" id="91_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_05.png" id="92_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_00.png" id="93_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_01.png" id="94_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_02.png" id="95_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_03.png" id="96_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_04.png" id="97_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_05.png" id="98_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_00.png" id="99_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_01.png" id="100_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_02.png" id="101_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_03.png" id="102_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_04.png" id="103_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_05.png" id="104_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_00.png" id="105_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_01.png" id="106_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_02.png" id="107_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_03.png" id="108_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_00.png" id="109_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_01.png" id="110_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_02.png" id="111_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_03.png" id="112_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_00.png" id="113_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_01.png" id="114_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_02.png" id="115_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_03.png" id="116_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_00.png" id="117_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_01.png" id="118_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_02.png" id="119_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_03.png" id="120_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_00.png" id="121_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_01.png" id="122_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_02.png" id="123_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_03.png" id="124_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_00.png" id="125_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_01.png" id="126_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_02.png" id="127_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_03.png" id="128_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_00.png" id="129_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_01.png" id="130_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_02.png" id="131_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_03.png" id="132_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_00.png" id="133_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_01.png" id="134_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_02.png" id="135_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_03.png" id="136_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_00.png" id="137_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_01.png" id="138_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_02.png" id="139_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_03.png" id="140_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_04.png" id="141_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_05.png" id="142_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_00.png" id="143_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_01.png" id="144_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_02.png" id="145_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_03.png" id="146_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_04.png" id="147_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_05.png" id="148_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_00.png" id="149_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_01.png" id="150_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_02.png" id="151_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_03.png" id="152_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_04.png" id="153_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_05.png" id="154_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_00.png" id="155_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_01.png" id="156_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_02.png" id="157_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_03.png" id="158_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_04.png" id="159_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_05.png" id="160_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_00.png" id="161_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_01.png" id="162_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_02.png" id="163_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_03.png" id="164_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_04.png" id="165_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_05.png" id="166_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_00.png" id="167_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_01.png" id="168_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_02.png" id="169_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_03.png" id="170_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_04.png" id="171_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_05.png" id="172_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_00.png" id="173_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_01.png" id="174_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_02.png" id="175_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_03.png" id="176_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_04.png" id="177_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_05.png" id="178_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_00.png" id="179_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_01.png" id="180_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_02.png" id="181_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_03.png" id="182_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_04.png" id="183_bsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_05.png" id="184_bsh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_00.png" id="1_bo1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_01.png" id="2_bo2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_02.png" id="3_bo3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_03.png" id="4_bo4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_04.png" id="5_bo5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_primary_05.png" id="6_bo6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_00.png" id="7_bo7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_01.png" id="8_bo8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_02.png" id="9_bo9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_03.png" id="10_bo10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_04.png" id="11_bo11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_05.png" id="12_bo12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_00.png" id="13_bo13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_01.png" id="14_bo14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_02.png" id="15_bo15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_03.png" id="16_bo16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_04.png" id="17_bo17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_05.png" id="18_bo18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_00.png" id="19_bo19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_01.png" id="20_bo20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_02.png" id="21_bo21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_03.png" id="22_bo22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_04.png" id="23_bo23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_05.png" id="24_bo24"]
 
 [resource]
-animations = [
+animations = [{
+"frames": [
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_bsh")
-}],
-"loop": true,
-"name": &"idle_east",
-"speed": 1.0
+"texture": ExtResource("1_bo1")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_bsh")
-}],
-"loop": true,
-"name": &"idle_south_east",
-"speed": 1.0
+"texture": ExtResource("2_bo2")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_bsh")
-}],
-"loop": true,
-"name": &"idle_south",
-"speed": 1.0
+"texture": ExtResource("3_bo3")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_bsh")
-}],
-"loop": true,
-"name": &"idle_south_west",
-"speed": 1.0
+"texture": ExtResource("4_bo4")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_bsh")
-}],
-"loop": true,
-"name": &"idle_west",
-"speed": 1.0
+"texture": ExtResource("5_bo5")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_bsh")
-}],
-"loop": true,
-"name": &"idle_north_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_bsh")
-}],
-"loop": true,
-"name": &"idle_north",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_bsh")
-}],
-"loop": true,
-"name": &"idle_north_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_bsh")
-}],
-"loop": true,
-"name": &"move_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("15_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("19_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_bsh")
-}],
-"loop": true,
-"name": &"move_south_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("21_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("25_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_bsh")
-}],
-"loop": true,
-"name": &"move_south",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("27_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("28_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("29_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("30_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("31_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("32_bsh")
-}],
-"loop": true,
-"name": &"move_south_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("33_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("34_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("35_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("36_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("37_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("38_bsh")
-}],
-"loop": true,
-"name": &"move_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("39_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("40_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("41_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("42_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("43_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("44_bsh")
-}],
-"loop": true,
-"name": &"move_north_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("45_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("46_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("47_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("48_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("49_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("50_bsh")
-}],
-"loop": true,
-"name": &"move_north",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("51_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("52_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("53_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("54_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("55_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("56_bsh")
-}],
-"loop": true,
-"name": &"move_north_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("57_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("58_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("59_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("60_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("61_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("62_bsh")
-}],
-"loop": false,
-"name": &"attack_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("63_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("64_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("65_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("66_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("67_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("68_bsh")
-}],
-"loop": false,
-"name": &"attack_south_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("69_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("71_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("72_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("73_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("74_bsh")
-}],
-"loop": false,
-"name": &"attack_south",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("75_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("76_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("77_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("78_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("79_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("80_bsh")
-}],
-"loop": false,
-"name": &"attack_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("81_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("82_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("83_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("84_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("85_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("86_bsh")
-}],
-"loop": false,
-"name": &"attack_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("87_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("88_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("89_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("90_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("91_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("92_bsh")
-}],
-"loop": false,
-"name": &"attack_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("93_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("94_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("95_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("96_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("97_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("98_bsh")
-}],
-"loop": false,
-"name": &"attack_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("99_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("100_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("101_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("102_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("103_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("104_bsh")
-}],
-"loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("105_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("106_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("107_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("108_bsh")
-}],
-"loop": false,
-"name": &"hit_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("109_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("110_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("111_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("112_bsh")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("113_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("114_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("115_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("116_bsh")
-}],
-"loop": false,
-"name": &"hit_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("117_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("118_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("119_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("120_bsh")
-}],
-"loop": false,
-"name": &"hit_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("121_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("122_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("123_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("124_bsh")
-}],
-"loop": false,
-"name": &"hit_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("125_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("126_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("127_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("128_bsh")
-}],
-"loop": false,
-"name": &"hit_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("129_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("130_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("131_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("132_bsh")
-}],
-"loop": false,
-"name": &"hit_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("133_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("134_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("135_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("136_bsh")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("137_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("138_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("139_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("140_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("141_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("142_bsh")
-}],
-"loop": false,
-"name": &"death_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("143_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("144_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("145_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("146_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("147_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("148_bsh")
-}],
-"loop": false,
-"name": &"death_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("149_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("150_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("151_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("152_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("153_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("154_bsh")
-}],
-"loop": false,
-"name": &"death_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("155_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("156_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("157_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("158_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("159_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("160_bsh")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("161_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("162_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("163_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("164_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("165_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("166_bsh")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("167_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("168_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("169_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("170_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("171_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("172_bsh")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("173_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("174_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("175_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("176_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("177_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("178_bsh")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("179_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("180_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("181_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("182_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("183_bsh")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("184_bsh")
-}],
-"loop": false,
-"name": &"death_north_east",
-"speed": 10.0
+"texture": ExtResource("6_bo6")
 }
-]
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_bo1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_bo2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_bo3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_bo4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_bo5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_bo6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_bo19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_bo20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_bo21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_bo22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_bo23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_bo24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_bo13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_bo14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_bo15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_bo16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_bo17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_bo18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_bo7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_bo8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_bo9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_bo10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_bo11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_bo12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

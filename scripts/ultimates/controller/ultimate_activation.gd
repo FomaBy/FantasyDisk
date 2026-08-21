@@ -29,9 +29,6 @@ const DAMAGE_PROVENANCE_EVENT_KEY := "ultimate_provenance_event_id"
 # Optional host channel: deliberately not part of HOST_METHODS, so existing
 # hosts keep passing host_supports() and repair stays default-off for them.
 const HOST_REPAIR_METHOD := "ultimate_host_repair"
-# Optional host channel too: a host that runs an authored presentation reports
-# it here, and one that does not simply owns no presentation channel.
-const HOST_PRESENTATION_ACTIVE_METHOD := "ultimate_host_presentation_active"
 # The whole generic init contract of deploy_temporary(); unknown keys fail
 # the deploy closed before any node is created.
 const DEPLOY_INIT_KEYS := ["properties", "setup_method", "setup_args"]
@@ -976,19 +973,6 @@ func spawned_for_tests() -> Array[Node]:
 
 func presentation_for_tests() -> Array[Node]:
 	return _presentation.duplicate()
-
-
-## Presentation channels this cast is showing right now: the nodes it created
-## itself plus the host's authored presentation while that one is live. The
-## authored scene stays host-owned — `ultimate_host_finish_presentation` frees
-## it before `shutdown()` runs — so it is counted here, never claimed.
-func live_presentation_count() -> int:
-	if _finished:
-		return 0
-	var host_presentation := host != null and is_instance_valid(host) \
-		and host.has_method(HOST_PRESENTATION_ACTIVE_METHOD) \
-		and bool(host.call(HOST_PRESENTATION_ACTIVE_METHOD))
-	return _presentation.size() + (1 if host_presentation else 0)
 
 
 func _revert_modifier(key: String, value: float, op: String) -> void:

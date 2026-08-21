@@ -1,190 +1,91 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_spriteframes.tres" id="1_lake_frames"]
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/chemist/chemist_acid_flask_v2.gd" id="2_v2_driver"]
-[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_acid_flask.png" id="3_acid_splat"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
-[sub_resource type="Gradient" id="Gradient_veil"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(1, 1, 1, 0.82, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
-gradient = SubResource("Gradient_veil")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
-
 [sub_resource type="Animation" id="Animation_tsar_flask"]
 resource_name = "ultimate"
-length = 3.95
+length = 4.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("BackdropVeil:modulate")
+tracks/0/path = NodePath("TsarFlask:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.6, 0.85, 0.95, 1.05, 1.35, 3.35, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Color(0.02, 0.05, 0.03, 0), Color(0.03, 0.07, 0.04, 0.28), Color(0.04, 0.09, 0.05, 0.42), Color(0.05, 0.11, 0.06, 0.5), Color(0.78, 1, 0.62, 0.6), Color(0.05, 0.11, 0.06, 0.34), Color(0.04, 0.08, 0.05, 0.18), Color(0.04, 0.08, 0.05, 0)]
+"times": PackedFloat32Array(0, 0.75, 1.05, 1.35, 1.6, 2, 2.4, 2.9, 3.4, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 8]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("AcidSurgeGlow:modulate")
+tracks/1/path = NodePath("TsarFlask:modulate:a")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.0, 3.35, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.35, 0.75, 3.7, 4.35, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Color(0.62, 1, 0.4, 0), Color(0.72, 1, 0.45, 0.9), Color(0.8, 1, 0.5, 0.95), Color(0.68, 0.95, 0.44, 0.5), Color(0.68, 0.95, 0.44, 0)]
+"values": [0.0, 0.62, 1.0, 0.92, 0.45, 0.0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("TsarFlask:frame")
+tracks/2/path = NodePath("TsarFlask:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.85, 1.0, 1.5, 2.0, 2.5, 3.0, 3.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+"times": PackedFloat32Array(0, 0.75, 1.6, 3.7, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1.28, 1.28), Vector2(1.34, 1.34), Vector2(1.55, 1.55), Vector2(1.68, 1.68), Vector2(1.74, 1.74)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("TsarFlask:modulate:a")
+tracks/3/path = NodePath("ChargePillars:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.85, 3.35, 3.95),
+"times": PackedFloat32Array(0, 1.45, 1.7, 3.65, 4.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.5, 1.0, 0.92, 0.0]
+"values": [0.0, 0.0, 1.0, 0.55, 0.0]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("TsarFlask:scale")
+tracks/4/path = NodePath("EvaporationSmoke:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.0, 2.5, 3.35, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(1.35, 1.35), Vector2(1.45, 1.45), Vector2(1.6, 1.6), Vector2(1.8, 1.8), Vector2(1.9, 1.9), Vector2(1.95, 1.95)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("LakeRing:modulate:a")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.0, 1.6, 3.35, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.55, 0.9, 1.0, 0.5, 0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("LakeRing:scale")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.0, 2.2, 3.35, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0.744, 0.744), Vector2(1.488, 1.488), Vector2(2.045, 2.045), Vector2(3.533, 3.533), Vector2(4.463, 4.463), Vector2(4.834, 4.834)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("ChargePillars:modulate:a")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 2.9, 3.1, 3.25, 3.6, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 0.7, 1.0, 0.6, 0.0]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("ChargePillars:scale")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 3.1, 3.25, 3.95),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0.6, 0.6), Vector2(0.9, 0.9), Vector2(1.15, 1.15), Vector2(1.3, 1.3)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("EvaporationSmoke:modulate:a")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0, 3.1, 3.35, 3.7, 3.95),
+"times": PackedFloat32Array(0, 1.7, 2.15, 4.0, 4.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.6, 0.85, 0.0]
+"values": [0.0, 0.0, 0.75, 0.86, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tsar_flask"]
 _data = {"ultimate": SubResource("Animation_tsar_flask")}
 
 [node name="ChemistAcidFlaskTsarFlask" type="Node2D"]
-script = ExtResource("2_v2_driver")
 metadata/ultimate_id = "chemist/acid_flask"
 metadata/silhouette = "one colossal cracked flask flooding an irregular green acid lake"
 metadata/motion_path = "flask tip pours forward, a wave expands outward, then pillars bubble from the lake"
 metadata/impact_language = "corrosive flood, capped charge pillars, and evaporation smoke"
 metadata/max_visual_nodes = 9
 metadata/crowd_cap = 16
-metadata/max_unique_materials = 1
-metadata/max_fullscreen_materials = 1
-
-[node name="BackdropVeil" type="Sprite2D" parent="."]
-z_index = 30
-texture = SubResource("GradientTexture2D_veil")
-centered = false
-scale = Vector2(18, 10.125)
-modulate = Color(0.02, 0.05, 0.03, 0)
-metadata/fullscreen_layer = true
-
-[node name="AcidSurgeGlow" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-z_index = 40
-texture = ExtResource("3_acid_splat")
-scale = Vector2(0.36, 0.36)
-modulate = Color(0.62, 1, 0.4, 0)
 
 [node name="TsarFlask" type="AnimatedSprite2D" parent="."]
-z_index = 40
 sprite_frames = ExtResource("1_lake_frames")
 animation = &"tsar_flask"
 frame = 8
-scale = Vector2(1.35, 1.35)
-modulate = Color(1, 1, 1, 0)
-
-[node name="LakeRing" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-z_index = 35
-texture = ExtResource("3_acid_splat")
-scale = Vector2(0.744, 0.744)
-self_modulate = Color(0.6, 1, 0.38, 0.9)
+scale = Vector2(1.28, 1.28)
 modulate = Color(1, 1, 1, 0)
 
 [node name="ChargePillars" type="Node2D" parent="."]
@@ -212,8 +113,6 @@ default_color = Color(0.64, 0.96, 0.3, 0.78)
 antialiased = true
 
 [node name="EvaporationSmoke" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-z_index = 40
 points = PackedVector2Array(-152, -26, -112, -94, -64, -52, -20, -136, 30, -72, 82, -160, 142, -90)
 width = 18.0
 default_color = Color(0.72, 0.92, 0.52, 0.68)

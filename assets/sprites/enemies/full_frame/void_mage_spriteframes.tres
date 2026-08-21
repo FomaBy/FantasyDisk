@@ -1,1126 +1,179 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_east.png" id="1_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_east.png" id="2_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south.png" id="3_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_west.png" id="4_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_west.png" id="5_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_west.png" id="6_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north.png" id="7_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_east.png" id="8_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_00.png" id="9_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_01.png" id="10_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_02.png" id="11_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_03.png" id="12_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_04.png" id="13_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_05.png" id="14_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_00.png" id="15_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_01.png" id="16_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_02.png" id="17_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_03.png" id="18_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_04.png" id="19_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_05.png" id="20_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_00.png" id="21_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_01.png" id="22_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_02.png" id="23_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_03.png" id="24_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_04.png" id="25_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_05.png" id="26_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_00.png" id="27_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_01.png" id="28_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_02.png" id="29_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_03.png" id="30_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_04.png" id="31_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_05.png" id="32_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_00.png" id="33_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_01.png" id="34_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_02.png" id="35_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_03.png" id="36_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_04.png" id="37_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_05.png" id="38_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_00.png" id="39_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_01.png" id="40_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_02.png" id="41_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_03.png" id="42_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_04.png" id="43_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_05.png" id="44_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_00.png" id="45_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_01.png" id="46_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_02.png" id="47_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_03.png" id="48_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_04.png" id="49_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_05.png" id="50_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_00.png" id="51_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_01.png" id="52_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_02.png" id="53_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_03.png" id="54_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_04.png" id="55_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_05.png" id="56_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_00.png" id="57_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_01.png" id="58_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_02.png" id="59_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_03.png" id="60_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_04.png" id="61_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_05.png" id="62_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_00.png" id="63_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_01.png" id="64_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_02.png" id="65_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_03.png" id="66_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_04.png" id="67_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_05.png" id="68_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_00.png" id="69_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_01.png" id="70_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_02.png" id="71_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_03.png" id="72_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_04.png" id="73_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_05.png" id="74_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_00.png" id="75_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_01.png" id="76_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_02.png" id="77_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_03.png" id="78_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_04.png" id="79_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_05.png" id="80_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_00.png" id="81_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_01.png" id="82_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_02.png" id="83_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_03.png" id="84_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_04.png" id="85_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_05.png" id="86_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_00.png" id="87_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_01.png" id="88_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_02.png" id="89_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_03.png" id="90_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_04.png" id="91_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_05.png" id="92_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_00.png" id="93_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_01.png" id="94_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_02.png" id="95_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_03.png" id="96_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_04.png" id="97_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_05.png" id="98_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_00.png" id="99_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_01.png" id="100_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_02.png" id="101_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_03.png" id="102_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_04.png" id="103_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_05.png" id="104_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_00.png" id="105_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_01.png" id="106_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_02.png" id="107_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_03.png" id="108_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_00.png" id="109_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_01.png" id="110_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_02.png" id="111_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_03.png" id="112_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_00.png" id="113_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_01.png" id="114_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_02.png" id="115_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_03.png" id="116_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_00.png" id="117_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_01.png" id="118_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_02.png" id="119_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_03.png" id="120_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_00.png" id="121_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_01.png" id="122_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_02.png" id="123_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_03.png" id="124_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_00.png" id="125_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_01.png" id="126_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_02.png" id="127_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_03.png" id="128_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_00.png" id="129_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_01.png" id="130_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_02.png" id="131_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_03.png" id="132_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_00.png" id="133_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_01.png" id="134_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_02.png" id="135_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_03.png" id="136_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_00.png" id="137_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_01.png" id="138_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_02.png" id="139_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_03.png" id="140_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_04.png" id="141_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_05.png" id="142_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_00.png" id="143_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_01.png" id="144_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_02.png" id="145_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_03.png" id="146_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_04.png" id="147_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_05.png" id="148_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_00.png" id="149_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_01.png" id="150_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_02.png" id="151_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_03.png" id="152_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_04.png" id="153_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_05.png" id="154_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_00.png" id="155_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_01.png" id="156_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_02.png" id="157_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_03.png" id="158_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_04.png" id="159_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_05.png" id="160_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_00.png" id="161_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_01.png" id="162_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_02.png" id="163_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_03.png" id="164_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_04.png" id="165_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_05.png" id="166_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_00.png" id="167_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_01.png" id="168_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_02.png" id="169_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_03.png" id="170_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_04.png" id="171_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_05.png" id="172_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_00.png" id="173_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_01.png" id="174_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_02.png" id="175_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_03.png" id="176_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_04.png" id="177_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_05.png" id="178_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_00.png" id="179_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_01.png" id="180_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_02.png" id="181_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_03.png" id="182_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_04.png" id="183_vm"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_05.png" id="184_vm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_00.png" id="1_vo1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_01.png" id="2_vo2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_02.png" id="3_vo3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_03.png" id="4_vo4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_04.png" id="5_vo5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_attack_primary_05.png" id="6_vo6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_00.png" id="7_vo7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_01.png" id="8_vo8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_02.png" id="9_vo9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_03.png" id="10_vo10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_04.png" id="11_vo11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_move_05.png" id="12_vo12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_00.png" id="13_vo13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_01.png" id="14_vo14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_02.png" id="15_vo15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_03.png" id="16_vo16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_04.png" id="17_vo17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_hit_05.png" id="18_vo18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_00.png" id="19_vo19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_01.png" id="20_vo20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_02.png" id="21_vo21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_03.png" id="22_vo22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_04.png" id="23_vo23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/void_mage/void_mage_death_05.png" id="24_vo24"]
 
 [resource]
-animations = [
+animations = [{
+"frames": [
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_vm")
-}],
-"loop": true,
-"name": &"idle_east",
-"speed": 1.0
+"texture": ExtResource("1_vo1")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_vm")
-}],
-"loop": true,
-"name": &"idle_south_east",
-"speed": 1.0
+"texture": ExtResource("2_vo2")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_vm")
-}],
-"loop": true,
-"name": &"idle_south",
-"speed": 1.0
+"texture": ExtResource("3_vo3")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_vm")
-}],
-"loop": true,
-"name": &"idle_south_west",
-"speed": 1.0
+"texture": ExtResource("4_vo4")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_vm")
-}],
-"loop": true,
-"name": &"idle_west",
-"speed": 1.0
+"texture": ExtResource("5_vo5")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_vm")
-}],
-"loop": true,
-"name": &"idle_north_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_vm")
-}],
-"loop": true,
-"name": &"idle_north",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_vm")
-}],
-"loop": true,
-"name": &"idle_north_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_vm")
-}],
-"loop": true,
-"name": &"move_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("15_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("19_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_vm")
-}],
-"loop": true,
-"name": &"move_south_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("21_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("25_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_vm")
-}],
-"loop": true,
-"name": &"move_south",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("27_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("28_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("29_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("30_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("31_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("32_vm")
-}],
-"loop": true,
-"name": &"move_south_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("33_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("34_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("35_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("36_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("37_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("38_vm")
-}],
-"loop": true,
-"name": &"move_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("39_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("40_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("41_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("42_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("43_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("44_vm")
-}],
-"loop": true,
-"name": &"move_north_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("45_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("46_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("47_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("48_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("49_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("50_vm")
-}],
-"loop": true,
-"name": &"move_north",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("51_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("52_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("53_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("54_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("55_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("56_vm")
-}],
-"loop": true,
-"name": &"move_north_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("57_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("58_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("59_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("60_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("61_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("62_vm")
-}],
-"loop": false,
-"name": &"attack_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("63_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("64_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("65_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("66_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("67_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("68_vm")
-}],
-"loop": false,
-"name": &"attack_south_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("69_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("71_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("72_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("73_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("74_vm")
-}],
-"loop": false,
-"name": &"attack_south",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("75_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("76_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("77_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("78_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("79_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("80_vm")
-}],
-"loop": false,
-"name": &"attack_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("81_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("82_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("83_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("84_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("85_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("86_vm")
-}],
-"loop": false,
-"name": &"attack_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("87_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("88_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("89_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("90_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("91_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("92_vm")
-}],
-"loop": false,
-"name": &"attack_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("93_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("94_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("95_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("96_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("97_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("98_vm")
-}],
-"loop": false,
-"name": &"attack_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("99_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("100_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("101_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("102_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("103_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("104_vm")
-}],
-"loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("105_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("106_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("107_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("108_vm")
-}],
-"loop": false,
-"name": &"hit_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("109_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("110_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("111_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("112_vm")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("113_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("114_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("115_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("116_vm")
-}],
-"loop": false,
-"name": &"hit_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("117_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("118_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("119_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("120_vm")
-}],
-"loop": false,
-"name": &"hit_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("121_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("122_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("123_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("124_vm")
-}],
-"loop": false,
-"name": &"hit_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("125_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("126_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("127_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("128_vm")
-}],
-"loop": false,
-"name": &"hit_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("129_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("130_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("131_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("132_vm")
-}],
-"loop": false,
-"name": &"hit_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("133_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("134_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("135_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("136_vm")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("137_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("138_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("139_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("140_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("141_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("142_vm")
-}],
-"loop": false,
-"name": &"death_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("143_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("144_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("145_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("146_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("147_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("148_vm")
-}],
-"loop": false,
-"name": &"death_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("149_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("150_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("151_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("152_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("153_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("154_vm")
-}],
-"loop": false,
-"name": &"death_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("155_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("156_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("157_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("158_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("159_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("160_vm")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("161_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("162_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("163_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("164_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("165_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("166_vm")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("167_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("168_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("169_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("170_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("171_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("172_vm")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("173_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("174_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("175_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("176_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("177_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("178_vm")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("179_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("180_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("181_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("182_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("183_vm")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("184_vm")
-}],
-"loop": false,
-"name": &"death_north_east",
-"speed": 10.0
+"texture": ExtResource("6_vo6")
 }
-]
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_vo1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_vo2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_vo3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_vo4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_vo5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_vo6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_vo19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_vo20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_vo21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_vo22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_vo23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_vo24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_vo13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_vo14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_vo15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_vo16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_vo17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_vo18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_vo7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_vo8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_vo9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_vo10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_vo11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_vo12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

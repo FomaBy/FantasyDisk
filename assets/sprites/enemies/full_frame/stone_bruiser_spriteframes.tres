@@ -1,1406 +1,179 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_east.png" id="1_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_east.png" id="2_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south.png" id="3_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_west.png" id="4_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_west.png" id="5_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_west.png" id="6_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north.png" id="7_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_east.png" id="8_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_00.png" id="9_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_01.png" id="10_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_02.png" id="11_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_03.png" id="12_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_04.png" id="13_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_05.png" id="14_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_00.png" id="15_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_01.png" id="16_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_02.png" id="17_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_03.png" id="18_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_04.png" id="19_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_05.png" id="20_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_00.png" id="21_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_01.png" id="22_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_02.png" id="23_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_03.png" id="24_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_04.png" id="25_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_05.png" id="26_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_00.png" id="27_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_01.png" id="28_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_02.png" id="29_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_03.png" id="30_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_04.png" id="31_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_05.png" id="32_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_00.png" id="33_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_01.png" id="34_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_02.png" id="35_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_03.png" id="36_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_04.png" id="37_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_05.png" id="38_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_00.png" id="39_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_01.png" id="40_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_02.png" id="41_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_03.png" id="42_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_04.png" id="43_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_05.png" id="44_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_00.png" id="45_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_01.png" id="46_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_02.png" id="47_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_03.png" id="48_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_04.png" id="49_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_05.png" id="50_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_00.png" id="51_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_01.png" id="52_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_02.png" id="53_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_03.png" id="54_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_04.png" id="55_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_05.png" id="56_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_00.png" id="57_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_01.png" id="58_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_02.png" id="59_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_03.png" id="60_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_04.png" id="61_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_05.png" id="62_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_06.png" id="63_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_00.png" id="64_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_01.png" id="65_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_02.png" id="66_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_03.png" id="67_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_04.png" id="68_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_05.png" id="69_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_06.png" id="70_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_00.png" id="71_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_01.png" id="72_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_02.png" id="73_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_03.png" id="74_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_04.png" id="75_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_05.png" id="76_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_06.png" id="77_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_00.png" id="78_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_01.png" id="79_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_02.png" id="80_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_03.png" id="81_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_04.png" id="82_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_05.png" id="83_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_06.png" id="84_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_00.png" id="85_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_01.png" id="86_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_02.png" id="87_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_03.png" id="88_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_04.png" id="89_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_05.png" id="90_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_06.png" id="91_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_00.png" id="92_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_01.png" id="93_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_02.png" id="94_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_03.png" id="95_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_04.png" id="96_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_05.png" id="97_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_06.png" id="98_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_00.png" id="99_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_01.png" id="100_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_02.png" id="101_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_03.png" id="102_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_04.png" id="103_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_05.png" id="104_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_06.png" id="105_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_00.png" id="106_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_01.png" id="107_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_02.png" id="108_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_03.png" id="109_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_04.png" id="110_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_05.png" id="111_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_06.png" id="112_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_00.png" id="113_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_01.png" id="114_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_02.png" id="115_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_03.png" id="116_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_04.png" id="117_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_05.png" id="118_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_06.png" id="119_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_00.png" id="120_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_01.png" id="121_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_02.png" id="122_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_03.png" id="123_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_04.png" id="124_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_05.png" id="125_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_06.png" id="126_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_00.png" id="127_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_01.png" id="128_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_02.png" id="129_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_03.png" id="130_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_04.png" id="131_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_05.png" id="132_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_06.png" id="133_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_00.png" id="134_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_01.png" id="135_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_02.png" id="136_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_03.png" id="137_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_04.png" id="138_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_05.png" id="139_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_06.png" id="140_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_00.png" id="141_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_01.png" id="142_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_02.png" id="143_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_03.png" id="144_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_04.png" id="145_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_05.png" id="146_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_06.png" id="147_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_00.png" id="148_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_01.png" id="149_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_02.png" id="150_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_03.png" id="151_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_04.png" id="152_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_05.png" id="153_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_06.png" id="154_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_00.png" id="155_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_01.png" id="156_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_02.png" id="157_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_03.png" id="158_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_04.png" id="159_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_05.png" id="160_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_06.png" id="161_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_00.png" id="162_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_01.png" id="163_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_02.png" id="164_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_03.png" id="165_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_04.png" id="166_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_05.png" id="167_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_06.png" id="168_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_00.png" id="169_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_01.png" id="170_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_02.png" id="171_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_03.png" id="172_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_04.png" id="173_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_05.png" id="174_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_06.png" id="175_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_07.png" id="176_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_08.png" id="177_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_00.png" id="178_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_01.png" id="179_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_02.png" id="180_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_03.png" id="181_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_04.png" id="182_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_05.png" id="183_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_06.png" id="184_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_07.png" id="185_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_08.png" id="186_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_00.png" id="187_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_01.png" id="188_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_02.png" id="189_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_03.png" id="190_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_04.png" id="191_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_05.png" id="192_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_06.png" id="193_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_07.png" id="194_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_08.png" id="195_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_00.png" id="196_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_01.png" id="197_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_02.png" id="198_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_03.png" id="199_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_04.png" id="200_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_05.png" id="201_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_06.png" id="202_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_07.png" id="203_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_08.png" id="204_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_00.png" id="205_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_01.png" id="206_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_02.png" id="207_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_03.png" id="208_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_04.png" id="209_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_05.png" id="210_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_06.png" id="211_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_07.png" id="212_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_08.png" id="213_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_00.png" id="214_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_01.png" id="215_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_02.png" id="216_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_03.png" id="217_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_04.png" id="218_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_05.png" id="219_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_06.png" id="220_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_07.png" id="221_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_08.png" id="222_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_00.png" id="223_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_01.png" id="224_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_02.png" id="225_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_03.png" id="226_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_04.png" id="227_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_05.png" id="228_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_06.png" id="229_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_07.png" id="230_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_08.png" id="231_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_00.png" id="232_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_01.png" id="233_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_02.png" id="234_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_03.png" id="235_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_04.png" id="236_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_05.png" id="237_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_06.png" id="238_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_07.png" id="239_sb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_08.png" id="240_sb"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_00.png" id="1_st1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_01.png" id="2_st2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_02.png" id="3_st3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_03.png" id="4_st4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_04.png" id="5_st5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_05.png" id="6_st6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_00.png" id="7_st7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_01.png" id="8_st8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_02.png" id="9_st9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_03.png" id="10_st10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_04.png" id="11_st11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_05.png" id="12_st12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_00.png" id="13_st13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_01.png" id="14_st14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_02.png" id="15_st15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_03.png" id="16_st16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_04.png" id="17_st17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_05.png" id="18_st18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_00.png" id="19_st19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_01.png" id="20_st20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_02.png" id="21_st21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_03.png" id="22_st22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_04.png" id="23_st23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_05.png" id="24_st24"]
 
 [resource]
-animations = [
+animations = [{
+"frames": [
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_sb")
-}],
-"loop": true,
-"name": &"idle_east",
-"speed": 1.0
+"texture": ExtResource("1_st1")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_sb")
-}],
-"loop": true,
-"name": &"idle_south_east",
-"speed": 1.0
+"texture": ExtResource("2_st2")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_sb")
-}],
-"loop": true,
-"name": &"idle_south",
-"speed": 1.0
+"texture": ExtResource("3_st3")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_sb")
-}],
-"loop": true,
-"name": &"idle_south_west",
-"speed": 1.0
+"texture": ExtResource("4_st4")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_sb")
-}],
-"loop": true,
-"name": &"idle_west",
-"speed": 1.0
+"texture": ExtResource("5_st5")
 },
 {
-"frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_sb")
-}],
-"loop": true,
-"name": &"idle_north_west",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_sb")
-}],
-"loop": true,
-"name": &"idle_north",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_sb")
-}],
-"loop": true,
-"name": &"idle_north_east",
-"speed": 1.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_sb")
-}],
-"loop": true,
-"name": &"move_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("15_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("19_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_sb")
-}],
-"loop": true,
-"name": &"move_south_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("21_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("25_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("26_sb")
-}],
-"loop": true,
-"name": &"move_south",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("27_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("28_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("29_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("30_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("31_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("32_sb")
-}],
-"loop": true,
-"name": &"move_south_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("33_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("34_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("35_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("36_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("37_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("38_sb")
-}],
-"loop": true,
-"name": &"move_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("39_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("40_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("41_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("42_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("43_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("44_sb")
-}],
-"loop": true,
-"name": &"move_north_west",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("45_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("46_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("47_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("48_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("49_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("50_sb")
-}],
-"loop": true,
-"name": &"move_north",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("51_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("52_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("53_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("54_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("55_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("56_sb")
-}],
-"loop": true,
-"name": &"move_north_east",
-"speed": 9.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("57_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("58_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("59_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("60_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("61_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("62_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("63_sb")
-}],
-"loop": false,
-"name": &"attack_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("64_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("65_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("66_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("67_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("68_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("69_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("70_sb")
-}],
-"loop": false,
-"name": &"attack_south_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("71_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("72_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("73_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("74_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("75_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("76_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("77_sb")
-}],
-"loop": false,
-"name": &"attack_south",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("78_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("79_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("80_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("81_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("82_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("83_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("84_sb")
-}],
-"loop": false,
-"name": &"attack_south_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("85_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("86_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("87_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("88_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("89_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("90_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("91_sb")
-}],
-"loop": false,
-"name": &"attack_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("92_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("93_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("94_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("95_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("96_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("97_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("98_sb")
-}],
-"loop": false,
-"name": &"attack_north_west",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("99_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("100_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("101_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("102_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("103_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("104_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("105_sb")
-}],
-"loop": false,
-"name": &"attack_north",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("106_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("107_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("108_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("109_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("110_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("111_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("112_sb")
-}],
-"loop": false,
-"name": &"attack_north_east",
-"speed": 12.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("113_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("114_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("115_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("116_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("117_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("118_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("119_sb")
-}],
-"loop": false,
-"name": &"hit_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("120_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("121_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("122_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("123_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("124_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("125_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("126_sb")
-}],
-"loop": false,
-"name": &"hit_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("127_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("128_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("129_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("130_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("131_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("132_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("133_sb")
-}],
-"loop": false,
-"name": &"hit_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("134_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("135_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("136_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("137_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("138_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("139_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("140_sb")
-}],
-"loop": false,
-"name": &"hit_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("141_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("142_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("143_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("144_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("145_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("146_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("147_sb")
-}],
-"loop": false,
-"name": &"hit_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("148_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("149_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("150_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("151_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("152_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("153_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("154_sb")
-}],
-"loop": false,
-"name": &"hit_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("155_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("156_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("157_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("158_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("159_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("160_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("161_sb")
-}],
-"loop": false,
-"name": &"hit_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("162_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("163_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("164_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("165_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("166_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("167_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("168_sb")
-}],
-"loop": false,
-"name": &"hit_north_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("169_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("170_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("171_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("172_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("173_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("174_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("175_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("176_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("177_sb")
-}],
-"loop": false,
-"name": &"death_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("178_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("179_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("180_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("181_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("182_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("183_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("184_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("185_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("186_sb")
-}],
-"loop": false,
-"name": &"death_south_east",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("187_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("188_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("189_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("190_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("191_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("192_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("193_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("194_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("195_sb")
-}],
-"loop": false,
-"name": &"death_south",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("196_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("197_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("198_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("199_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("200_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("201_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("202_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("203_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("204_sb")
-}],
-"loop": false,
-"name": &"death_south_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("205_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("206_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("207_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("208_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("209_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("210_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("211_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("212_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("213_sb")
-}],
-"loop": false,
-"name": &"death_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("214_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("215_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("216_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("217_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("218_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("219_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("220_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("221_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("222_sb")
-}],
-"loop": false,
-"name": &"death_north_west",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("223_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("224_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("225_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("226_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("227_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("228_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("229_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("230_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("231_sb")
-}],
-"loop": false,
-"name": &"death_north",
-"speed": 10.0
-},
-{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("232_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("233_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("234_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("235_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("236_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("237_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("238_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("239_sb")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("240_sb")
-}],
-"loop": false,
-"name": &"death_north_east",
-"speed": 10.0
+"texture": ExtResource("6_st6")
 }
-]
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_st1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_st2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_st3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_st4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_st5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_st6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_st19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_st20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_st21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_st22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_st23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_st24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_st13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_st14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_st15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_st16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_st17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_st18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_st7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_st8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_st9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_st10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_st11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_st12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

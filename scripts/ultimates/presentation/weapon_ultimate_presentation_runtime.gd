@@ -83,25 +83,6 @@ func advance(delta: float) -> void:
 		_timeline.advance(delta)
 
 
-## Delivers one executor beat (`event_id` plus its payload) to the live
-## authored presentation. The timeline records the beat; a scene that opts into
-## beat-driven visuals may expose `present(event_id, payload)`. Returning true
-## means the beat was accepted by a live presentation and the controller must
-## not draw anything over it.
-func present_beat(event_id: String, payload: Dictionary) -> bool:
-	if _timeline == null:
-		return false
-	_timeline.record_beat(event_id, payload)
-	if _scene != null and is_instance_valid(_scene) and _scene.has_method("present"):
-		_scene.call("present", event_id, payload)
-	return true
-
-
-## Beats recorded by the current (or just finished) timeline, in arrival order.
-func recorded_beats() -> Array[Dictionary]:
-	return _timeline.recorded_beats() if _timeline != null else []
-
-
 func finish(reason: String) -> void:
 	if _scene != null and is_instance_valid(_scene) and _scene.has_method("finish"):
 		_scene.call("finish", reason)

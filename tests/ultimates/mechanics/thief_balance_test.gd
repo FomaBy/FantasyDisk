@@ -9,9 +9,6 @@ const WEAPONS := ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]
 const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 0.45
-const COUNT_SHAPED_PATTERN := \
-	"[A-Za-z0-9_]*(target_cap|target_count|target_limit|mark_limit|coin_count|max_targets|crowd_cap)[A-Za-z0-9_]*"
-const COUNT_SHAPED_ALLOWED_SUFFIXES := ["_fraction", "_flat"]
 
 var _errors: Array[String] = []
 
@@ -25,7 +22,6 @@ func _initialize() -> void:
 		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
 		metrics[weapon_id] = _measure(weapon_id, row, profile)
 		_test_weapon(weapon_id, row, profile, metrics[weapon_id])
-	_test_no_count_caps(registry)
 	_test_trio(metrics)
 	_test_harness_goes_red(registry, rows)
 	_report(metrics)
@@ -43,22 +39,22 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	match weapon_id:
 		"thief_coin_pouch":
 			var chain := 0.0
-			for index in int(params["coin_wave_count"]):
+			for index in int(params["coin_count"]):
 				chain += pow(float(params["damage_falloff"]), float(index))
 			solo_output = float(params["coin_damage"]) * base_damage
 			aoe_output = chain * float(params["coin_damage"]) * base_damage
-			crowd_cap = int(params["coin_wave_count"])
+			crowd_cap = int(params["coin_count"])
 		"thief_shadow_cloak":
 			var sequence := 0.0
-			for index in int(params["strike_count"]):
+			for index in int(params["mark_limit"]):
 				sequence += 1.0 + float(params["escalation"]) * float(index)
 			solo_output = sequence * float(params["stab_damage"]) * base_damage
-			aoe_output = float(params["strike_count"]) * float(params["stab_damage"]) * base_damage
-			crowd_cap = int(params["strike_count"])
+			aoe_output = float(params["mark_limit"]) * float(params["stab_damage"]) * base_damage
+			crowd_cap = int(params["mark_limit"])
 		"thief_smoke_bomb":
 			solo_output = float(params["pressure_damage"]) * base_damage
-			aoe_output = 5.0 * solo_output
-			crowd_cap = 5
+			aoe_output = float(params["target_limit"]) * solo_output
+			crowd_cap = int(params["target_limit"])
 			defense_seconds = float(params["duration"]) * float(params["evasion_bonus"])
 	var power_midpoint := (float(row["power_budget_min"]) + float(row["power_budget_max"])) * 0.5
 	var aoe_midpoint := float(row["reference_aoe_dps"]) * (Budget.POWER_SECONDS_MIN + Budget.POWER_SECONDS_MAX) * 0.5
@@ -89,30 +85,7 @@ func _test_weapon(weapon_id: String, row: Dictionary, profile: Dictionary, metri
 				"Silent Sentence must remain the escalating solo specialist")
 		"thief_smoke_bomb":
 			_check(float(metrics["defense_seconds"]) >= 1.0 and int(metrics["crowd_cap"]) == 5,
-			"Perfect Heist must retain its defensive dome and capped collapse")
-
-
-## Ultimate Direction v2: a crowd shape may be fixed, but no executor may
-## refuse a live enemy because the target list reached a numeric cap.
-func _test_no_count_caps(registry: Registry) -> void:
-	var forbidden := RegEx.new()
-	forbidden.compile(COUNT_SHAPED_PATTERN)
-	for weapon_id in WEAPONS:
-		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
-		var params := (profile.get("executor", {}) as Dictionary).get("params", {}) as Dictionary
-		var executor = registry.executor_for(CLASS_ID, weapon_id)
-		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
-		for key in params.keys() + contract.keys():
-			var name := str(key)
-			if forbidden.search(name) != null and not _allowed_count_name(name):
-				_check(false, "%s must not ship a count-shaped reach cap (%s)" % [weapon_id, name])
-
-
-func _allowed_count_name(name: String) -> bool:
-	for suffix in COUNT_SHAPED_ALLOWED_SUFFIXES:
-		if name.ends_with(suffix):
-			return true
-	return false
+				"Perfect Heist must retain its defensive dome and capped collapse")
 
 
 func _test_trio(metrics: Dictionary) -> void:

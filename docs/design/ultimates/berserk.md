@@ -176,7 +176,7 @@ plus `total_boss_cap` are unchanged on every row.
 ```bash
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_package_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_live_test.gd
-python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_mechanics_balance_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/berserk_balance_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/berserk_balance_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/tracked_tween_natural_completion_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/executor_contract_audit_test.gd
