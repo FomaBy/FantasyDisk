@@ -45,6 +45,16 @@ Always produce assets with:
 8. Create preview/contact sheets when useful, especially for batches, state sheets, frames, or animations.
 9. Promote accepted runtime assets to `assets/...` only when integration is part of the task.
 
+### Failed blocking CLI handoff
+
+For pack generation, follow `docs/process/pixellab_pull_setup.md` and use the
+blocking CLI. If it exits with any non-zero code, stop the current run: do not
+sleep, manually poll, silently retry, or leave the issue `in_progress`. Save
+the redacted CLI output, including the exact exit code, object/job id, and last
+status, then immediately set the assigned issue to `blocked` and post that
+evidence with `multica issue comment add --content-file`. A timeout retry with
+`--object-id` belongs to a newly dispatched run, never to the failed run.
+
 After generation, postprocess the result before presenting it as game-ready:
 
 - remove or mask backgrounds when possible;

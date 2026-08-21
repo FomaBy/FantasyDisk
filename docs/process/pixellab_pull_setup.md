@@ -118,9 +118,22 @@ Key flags: `--poll-interval` seconds between status polls (default 30),
 Exit codes: `0` success; `3` timeout (the unfinished object id and its status
 are printed); `4` API error (create/animate/download failure, JSON-RPC error);
 `5` incomplete pack (fewer frames downloaded than `--frame-count`). On a
-non-zero exit do NOT retry silently: for a timeout, re-run once with
-`--object-id <id from the log>` and a larger `--timeout` — the job keeps
-running server-side; for `4`/`5`, report the error on the Multica card.
+non-zero exit, the delivery agent MUST stop the current run and hand the issue
+off as blocked. Do not sleep, poll manually, or finish the turn while the issue
+is still `in_progress`. Capture the complete redacted output first; it contains
+the object/job id and the last reported status. Then use the issue id from the
+current assignment and post the evidence before leaving the run:
+
+```bash
+multica issue status <FAN-issue-id> blocked --no-start
+multica issue comment add <FAN-issue-id> --content-file ./pixellab-failure.md
+```
+
+The comment must include the exact command, exit code, object/job id, last
+status, and the unblock condition. A timeout may be retried with
+`--object-id <id from the log>` and a larger `--timeout` only in a newly
+dispatched run; never retry it silently in the failed run. Exit codes `4` and
+`5` are reported as-is and are not converted into success.
 
 The token comes only from env `PIXELLAB_BEARER_TOKEN`; it is never printed,
 written to the manifest, or committed. Import of a downloaded pack into
