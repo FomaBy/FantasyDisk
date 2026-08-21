@@ -33,9 +33,6 @@ const V2_SEED_REASON := "shipped under the v1 envelope before FAN-2948; awaiting
 const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"assassin/shadow_daggers": V2_SEED_REASON,
 	"assassin/venom_wire": V2_SEED_REASON,
-	"berserk/sword": V2_SEED_REASON,
-	"berserk/axe": V2_SEED_REASON,
-	"berserk/hammer": V2_SEED_REASON,
 	"biologist/biologist_spore_lens": V2_SEED_REASON,
 	"biologist/biologist_sample_injector": V2_SEED_REASON,
 	"biologist/biologist_symbiote_seed": V2_SEED_REASON,

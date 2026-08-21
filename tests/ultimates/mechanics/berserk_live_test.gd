@@ -167,11 +167,11 @@ func _test_scarlet_whirlwind() -> void:
 	_check(controller.activate(CLASS_ID, "sword"), "Scarlet Whirlwind must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 0.61)
+	_advance(activation, 0.76)
 	_check(effect != null
 		and (effect.get("blade_hits_for_tests") as Array) == [VORTEX_TARGETS, 0, 0],
 		"the first sweep must belong to exactly one blade")
-	_advance(activation, 0.56)
+	_advance(activation, 0.45)
 	_check((effect.get("blade_hits_for_tests") as Array) == [VORTEX_TARGETS, VORTEX_TARGETS, 0],
 		"each sweep must hand the orbit to the next blade")
 	var normal_status := _status(normal, "berserk_ultimate_whirlwind_")
@@ -183,14 +183,14 @@ func _test_scarlet_whirlwind() -> void:
 	_check(is_equal_approx(float(epic_status.get("duration", 0.0)), 1.35)
 		and is_equal_approx(float(boss_status.get("duration", 0.0)), 0.6),
 		"epic and boss targets must keep only the resistant share of the vortex")
-	_advance(activation, 6.4)
+	_advance(activation, 2.0)
 	var radii := effect.get("sweep_radii_for_tests") as Array
-	_check(radii.size() == 11 and is_equal_approx(float(radii[0]), 190.0)
-		and is_equal_approx(float(radii[10]), 420.0),
-		"eleven sweeps must expand the orbit from 190 to 420, got %s" % [radii])
+	_check(radii.size() == 6 and is_equal_approx(float(radii[0]), 190.0)
+		and is_equal_approx(float(radii[5]), 420.0),
+		"six sweeps must expand the orbit from 190 to 420, got %s" % [radii])
 	_check((effect.get("blade_hits_for_tests") as Array)
 		== [2 * VORTEX_TARGETS, 2 * VORTEX_TARGETS, 2 * VORTEX_TARGETS],
-		"each blade must bite twice per target across eleven sweeps, got %s"
+		"each blade must bite twice per target across six sweeps, got %s"
 			% [effect.get("blade_hits_for_tests")])
 	_check(int(effect.get("cross_count_for_tests")) == 1,
 		"the cast must end in exactly one inward cross slash")
@@ -225,7 +225,7 @@ func _test_execution_loop() -> void:
 	var effect := _effect(activation)
 	_check(effect != null and (effect.get("edge_for_tests") as Vector2) == Vector2(900.0, 0.0),
 		"the axe must fly to the arena edge along the aim")
-	_advance(activation, 0.46)
+	_advance(activation, 0.66)
 	_check((effect.get("beat_trace_for_tests") as Array) == ["outbound"]
 		and int(effect.get("marked_count_for_tests")) == 5,
 		"the outbound pass must mark every live enemy, got %s" % [effect.get("marked_count_for_tests")])
@@ -235,10 +235,10 @@ func _test_execution_loop() -> void:
 		"a target beside the corridor must take the outbound pass and no return")
 	_check(low.received.size() == 1 and boss.received.size() == 1,
 		"the outbound pass must land once on every live enemy")
-	_advance(activation, 2.21)
+	_advance(activation, 0.95)
 	_check((effect.get("beat_trace_for_tests") as Array) == ["outbound", "turn"],
 		"the loop must turn at the arena edge before returning")
-	_advance(activation, 2.41)
+	_advance(activation, 0.9)
 	_check((effect.get("beat_trace_for_tests") as Array) == ["outbound", "turn", "return"],
 		"the return catch must be the third and last beat")
 	_check(int(effect.get("executed_count_for_tests")) == 1,
@@ -273,7 +273,7 @@ func _test_fourfold_rift() -> void:
 	_check(controller.activate(CLASS_ID, "hammer"), "Fourfold Rift must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 0.71)
+	_advance(activation, 0.91)
 	_check(activation.composition_trace_for_tests() == ["cardinal_lanes"],
 		"the rift must open on the cardinal beat")
 	# Ultimate Direction v2: every beat reaches every live enemy — lane
@@ -282,12 +282,12 @@ func _test_fourfold_rift() -> void:
 	_check(cardinal.received.size() == 1 and diagonal.received.size() == 1
 		and epic.received.size() == 1 and boss.received.size() == 1,
 		"the cardinal beat must reach every live enemy on the map")
-	_advance(activation, 0.86)
+	_advance(activation, 0.7)
 	_check(activation.composition_trace_for_tests() == ["cardinal_lanes", "diagonal_lanes"],
 		"the second beat must be the diagonals")
 	_check(diagonal.received.size() == 2,
 		"the diagonal beat must reach every live enemy again")
-	_advance(activation, 0.86)
+	_advance(activation, 0.7)
 	_check(activation.composition_trace_for_tests()
 		== ["cardinal_lanes", "diagonal_lanes", "central_quake"],
 		"the rift must close on the central quake")
@@ -333,7 +333,7 @@ func _test_trio_reaches_every_enemy() -> void:
 		_check(controller.activate(CLASS_ID, weapon_id),
 			"%s map-wide fixture must activate" % weapon_id)
 		var activation = controller.active_activation()
-		# Past the longest declared cast in the trio (the whirlwind's 7.45 s),
+		# Past the longest declared cast in the trio (the whirlwind's 3.1 s),
 		# so a sequence that resolves only on its final beat is measured after
 		# that beat.
 		_advance(activation, 8.0)

@@ -5,15 +5,21 @@
   "profile_id": "weapon_ultimate.profile.berserk.axe",
   "executor_id": "weapon_ultimate.executor.berserk.axe",
   "implementation_state": "ready",
-  "targeting": {"strategy_id": "aimed_execution_loop", "params": {}},
-  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "targeting": {
+    "strategy_id": "aimed_execution_loop",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "rare_charge_ledger",
+    "params": {}
+  },
   "executor": {
     "strategy_id": "weapon_ultimate.executor.berserk.axe",
     "params": {
-      "lifetime": 5.85,
-      "release_delay": 0.45,
-      "outbound_seconds": 2.2,
-      "return_seconds": 2.4,
+      "lifetime": 2.7,
+      "release_delay": 0.65,
+      "outbound_seconds": 0.95,
+      "return_seconds": 0.9,
       "arena_radius": 900.0,
       "corridor_half_width": 130.0,
       "outbound_damage": 30.0,
@@ -27,5 +33,8 @@
     }
   },
   "total_boss_cap": 0.1,
-  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
 }

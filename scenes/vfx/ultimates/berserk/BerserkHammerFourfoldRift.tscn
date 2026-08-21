@@ -1,119 +1,293 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=11 format=3]
 
-[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/hammer_slam_spriteframes.tres" id="1_hammer"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/hammer/cast_flash/cast_flash_spriteframes.tres" id="1_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/hammer/rift_shockwave/rift_shockwave_spriteframes.tres" id="2_rift_shockwave"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="3_v2_driver"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/hammer/war_hammer/war_hammer_spriteframes.tres" id="4_war_hammer"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.9, 0.9, 0.9, 1, 0.82, 0.82, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_fourfold_rift"]
 resource_name = "ultimate"
-length = 4.1
+length = 2.95
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("HammerGhost:position")
+tracks/0/path = NodePath("BackdropVeil:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.7, 0.96, 1.2, 1.95, 2.75, 3.4, 4.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.85, 1.15, 1.8, 2.3, 2.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, -18), Vector2(0, -164), Vector2(0, -196), Vector2(0, -18), Vector2(0, -16), Vector2(0, -16), Vector2(0, 0), Vector2(0, 12)]
+"values": [0.0, 0.3, 0.5, 0.25, 0.35, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CardinalLanes:modulate:a")
+tracks/1/path = NodePath("CastFlash:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.96, 1.2, 1.48, 4.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+"times": PackedFloat32Array(0.05, 0.16, 0.27, 0.38, 0.49, 0.6, 0.71, 0.82, 0.93),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("DiagonalLanes:modulate:a")
+tracks/2/path = NodePath("CastFlash:modulate:a")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 1.72, 1.95, 2.28, 4.1),
+"times": PackedFloat32Array(0, 0.6, 0.9, 1.05, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+"values": [0.0, 0.9, 1.0, 0.3, 0.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CentralQuake:scale")
+tracks/3/path = NodePath("CastFlash:scale")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 2.52, 2.75, 3.2, 4.1),
+"times": PackedFloat32Array(0, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.8, 0.8), Vector2(1.1, 1.1), Vector2(1.25, 1.25)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("RiftBeatOne:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(1.15, 1.22, 1.29, 1.36, 1.43, 1.5, 1.57, 1.64, 1.71),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("RiftBeatOne:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.15, 1.3, 1.7, 1.85),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(0.55, 0.55), Vector2(1.15, 1.15), Vector2(1.35, 1.35)]
+"values": [0.0, 0.0, 0.9, 0.35, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("RiftBeatOne:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.15, 1.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.45, 0.45), Vector2(0.45, 0.45), Vector2(0.85, 0.85)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("RiftBeatTwo:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(1.8, 1.86, 1.92, 1.98, 2.04, 2.1, 2.16, 2.22, 2.28),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("RiftBeatTwo:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.8, 1.95, 2.25, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.4, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("RiftBeatTwo:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.8, 2.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(0.95, 0.95)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("CentralQuake:frame")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(2.3, 2.37, 2.44, 2.51, 2.58, 2.65, 2.72, 2.79, 2.86),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("CentralQuake:modulate:a")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 2.3, 2.45, 2.85, 2.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.2, 0.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("CentralQuake:scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 2.3, 2.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.4, 0.4), Vector2(0.4, 0.4), Vector2(1.3, 1.3)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("HammerGhost:frame")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0.05, 0.18, 0.31, 0.44, 0.57, 0.7, 0.83, 0.96),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("HammerGhost:modulate:a")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.9, 1.15, 2.8, 2.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.92, 0.98, 0.9, 0.82, 0.0]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("HammerGhost:position")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.15, 1.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -96), Vector2(0, -44), Vector2(0, 0), Vector2(0, 16)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fourfold_rift"]
 _data = {"ultimate": SubResource("Animation_fourfold_rift")}
 
 [node name="BerserkHammerFourfoldRift" type="Node2D"]
+script = ExtResource("3_v2_driver")
+release_at = 0.9
+impact_at = 1.15
+recovery_at = 2.35
+cancel_at = 2.95
+hitstop_ms = 140.0
+shake_seconds = 0.6
+shake_amplitude = 11.0
 metadata/ultimate_id = "berserk/hammer"
-metadata/silhouette = "overhead_hammer_and_four_ground_rift_lanes"
-metadata/motion_path = "three_ground_slam_beats_cardinal_diagonal_center"
-metadata/impact_language = "cross_then_diagonals_then_central_quake"
+metadata/silhouette = "one_overhead_war_hammer_whose_head_lies_in_a_pulsing_ground_rift"
+metadata/motion_path = "cast_flash_then_three_slam_beats_two_rift_pulses_and_one_central_quake"
+metadata/impact_language = "per_victim_ground_shatter_burst_on_every_crushed_enemy"
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 20
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="WindupGlyph" type="Polygon2D" parent="."]
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.13, 0.08, 0.02, 0)
+metadata/fullscreen_layer = true
+
+[node name="CastFlash" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-color = Color(0.84, 0.58, 0.16, 0.3)
-polygon = PackedVector2Array(0, -94, 26, -58, 0, -22, -26, -58)
+z_index = 40
+sprite_frames = ExtResource("1_cast_flash")
+animation = &"cast_flash"
+frame = 0
+scale = Vector2(0.8, 0.8)
+modulate = Color(1, 1, 1, 0)
 
 [node name="HammerGhost" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-sprite_frames = ExtResource("1_hammer")
+z_index = 46
+sprite_frames = ExtResource("4_war_hammer")
 animation = &"slam"
-frame = 5
-position = Vector2(0, -18)
-rotation = 0.14
-scale = Vector2(0.72, 0.72)
-modulate = Color(1, 0.84, 0.55, 0.96)
+frame = 0
+scale = Vector2(1.1, 1.1)
+modulate = Color(1, 0.78, 0.42, 0)
 
-[node name="CardinalLanes" type="Line2D" parent="."]
+[node name="RiftBeatOne" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-220, 0, 0, 0, 220, 0, 0, -150, 0, 0, 0, 150)
-width = 22.0
-default_color = Color(1, 0.44, 0.08, 0.88)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 40
+sprite_frames = ExtResource("2_rift_shockwave")
+animation = &"rift_shockwave"
+frame = 0
+scale = Vector2(0.45, 0.45)
+modulate = Color(1, 0.82, 0.4, 0)
 
-[node name="DiagonalLanes" type="Line2D" parent="."]
+[node name="RiftBeatTwo" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-168, -112, 0, 0, 168, 112, -168, 112, 0, 0, 168, -112)
-width = 18.0
-default_color = Color(0.94, 0.74, 0.24, 0.9)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 40
+sprite_frames = ExtResource("2_rift_shockwave")
+animation = &"rift_shockwave"
+frame = 0
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 0.72, 0.28, 0)
 
-[node name="CentralQuake" type="Line2D" parent="."]
+[node name="CentralQuake" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(92, 0, 85, 35, 64, 64, 35, 85, 0, 92, -35, 85, -64, 64, -85, 35, -92, 0, -85, -35, -64, -64, -35, -85, 0, -92, 35, -85, 64, -64, 85, -35, 92, 0)
-width = 14.0
-default_color = Color(1, 0.86, 0.52, 0.96)
-closed = true
-antialiased = true
-scale = Vector2(0.1, 0.1)
-
-[node name="DustWave" type="Line2D" parent="."]
-points = PackedVector2Array(-150, 34, -92, 16, -32, 28, 32, 10, 90, 26, 150, 8)
-width = 12.0
-default_color = Color(0.4, 0.29, 0.2, 0.45)
-antialiased = true
+z_index = 45
+sprite_frames = ExtResource("2_rift_shockwave")
+animation = &"rift_shockwave"
+frame = 0
+scale = Vector2(0.4, 0.4)
+modulate = Color(1, 0.86, 0.52, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_fourfold_rift")}

@@ -5,6 +5,7 @@ const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/berserk/ma
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text_fit.gd")
 const CONTRACT := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const SCENES := {
 	"sword": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
 	"axe": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
@@ -14,29 +15,29 @@ const PACKS := [
 	{
 		"weapon_id": "sword",
 		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
-		"time": 7.48,
-		"title": "SWORD — SCARLET WHIRLWIND / inward cross-slash",
+		"time": 2.2,
+		"title": "SWORD — SCARLET WHIRLWIND / spinning vortex",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.32, 0.34),
-		"required_nodes": ["BladeGhostOne", "BladeGhostTwo", "BladeGhostThree", "CrossSlash"],
+		"required_nodes": ["WhirlwindCore", "BladeGhostOne", "BladeGhostTwo", "BladeGhostThree"],
 	},
 	{
 		"weapon_id": "axe",
 		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
-		"time": 3.18,
+		"time": 1.9,
 		"title": "AXE — EXECUTION LOOP / boundary turn",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(1.0, 0.56, 0.20),
-		"required_nodes": ["AxeGhost", "ExecutionMark"],
+		"required_nodes": ["AxeGhost", "TurnBurst"],
 	},
 	{
 		"weapon_id": "hammer",
 		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn"),
-		"time": 2.76,
+		"time": 2.45,
 		"title": "HAMMER — FOURFOLD RIFT / central quake",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.82, 0.40),
-		"required_nodes": ["HammerGhost", "CentralQuake"],
+		"required_nodes": ["CentralQuake"],
 	},
 ]
 const CAPTURES := [
@@ -106,7 +107,7 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_sword_reused_approved_assets_for_the_other_two", "provenance route must explain the mixed PixelLab/reuse route", errors)
+	_expect(str(provenance.get("route", "")) == "pixellab_animation_packs_for_the_whole_trio_fan3005", "provenance route must record the all-PixelLab FAN-3005 rebuild", errors)
 	_expect(str(provenance.get("pixellab_mcp_config_smoke", "")).begins_with("PASS"), "PixelLab MCP config smoke must be recorded as PASS", errors)
 	var created = provenance.get("new_pixellab_assets", [])
 	_expect(created is Array and (created as Array).size() == PIXELLAB_WEAPON_IDS.size(), "provenance must declare exactly the PixelLab-generated weapons", errors)
@@ -220,6 +221,8 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 	_check_lifecycle(weapon_id, timing, phases, errors)
 	if QUALITY_WEAPON_IDS.has(weapon_id):
 		_check_quality(weapon_id, package, errors)
+	_check_weapon_v2(weapon_id, package, errors)
+	_check_fan3005_packs(weapon_id, package, errors)
 
 
 func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
@@ -291,8 +294,82 @@ func _check_repeat_activation(errors: Array[String]) -> void:
 		_expect(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT) <= baseline, "%s repeated activation and scene exit must leave no orphan nodes" % weapon_id, errors)
 
 
+## FAN-3012: the trio left the v2 migration allowlist, so each package carries
+## the full Direction v2 presence/identity contract, and the shared schema
+## ratchet must no longer list any berserk pair.
+func _check_weapon_v2(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	_expect(not package.is_empty(), "%s package must exist for the v2 gate" % weapon_id, errors)
+	if package.is_empty():
+		return
+	_expect(
+		not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("berserk/%s" % weapon_id),
+		"berserk/%s must have left the v2 migration allowlist" % weapon_id,
+		errors
+	)
+	var presence := package.get("presence", {}) as Dictionary
+	_expect(presence.get("fullscreen_footprint") == true, "%s must declare a fullscreen footprint" % weapon_id, errors)
+	_expect(str(presence.get("backdrop", "")) == "darken", "%s must declare the darken backdrop" % weapon_id, errors)
+	_expect(presence.get("camera_shake") == true, "%s must declare camera shake" % weapon_id, errors)
+	var hitstop := float(presence.get("hitstop_ms", 0.0))
+	_expect(hitstop >= 80.0 and hitstop <= 150.0, "%s hitstop must stay in the 80-150ms corridor" % weapon_id, errors)
+	_expect(presence.get("sfx_ducking") == true, "%s must declare SFX ducking" % weapon_id, errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "%s must declare its hero cast pose" % weapon_id, errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "%s weapon silhouette asset must exist: %s" % [weapon_id, silhouette], errors)
+	_expect(silhouette.contains("effects/berserk"), "%s weapon silhouette must be its own FAN-3005 berserk frame: %s" % [weapon_id, silhouette], errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s must resolve its class palette" % weapon_id, errors)
+	var performance := package.get("performance", {}) as Dictionary
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(int(performance.get(budget_key, 0)) > 0, "%s must declare a positive %s" % [weapon_id, budget_key], errors)
+	var scene := SCENES.get(weapon_id) as PackedScene
+	if scene == null:
+		return
+	var instance := scene.instantiate() as Node2D
+	root.add_child(instance)
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(
+			int(instance.get_meta(budget_key, 0)) == int(performance.get(budget_key, -1)),
+			"%s scene and manifest must agree on %s" % [weapon_id, budget_key],
+			errors
+		)
+	var veil := instance.get_node_or_null("BackdropVeil") as CanvasItem
+	_expect(veil != null and veil.visible, "%s must carry a backdrop veil node" % weapon_id, errors)
+	if veil != null:
+		_expect(bool(veil.get_meta("fullscreen_layer", false)), "%s backdrop veil must be marked as the fullscreen layer" % weapon_id, errors)
+	instance.queue_free()
+
+
+## FAN-3012: every drawn effect is a flipbook from the FAN-3005 packs — no
+## static one-frame stubs, no naked primitives, nothing reused from a generic
+## burst library. The pack list must exist on disk and its scene must actually
+## reference it.
+func _check_fan3005_packs(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var packs = package.get("packs_fan3005", null)
+	_expect(packs is Array and not (packs as Array).is_empty(), "%s must declare its FAN-3005 flipbook packs" % weapon_id, errors)
+	if not packs is Array or (packs as Array).is_empty():
+		return
+	var scene_path := "res://%s" % str(package.get("scene_path", ""))
+	var scene_text := FileAccess.get_file_as_string(scene_path) if FileAccess.file_exists(scene_path) else ""
+	# The victim-side pack is wired by the class executor, not the scene: the
+	# reference may live in either file.
+	var executor_path := "res://scripts/ultimates/classes/berserk/%s.gd" % weapon_id
+	var executor_text := FileAccess.get_file_as_string(executor_path) if FileAccess.file_exists(executor_path) else ""
+	for raw_pack in packs as Array:
+		var pack_path := str(raw_pack).trim_prefix("res://")
+		_expect(pack_path.begins_with("assets/sprites/effects/berserk/%s/" % weapon_id), "%s pack must live in its weapon lane: %s" % [weapon_id, pack_path], errors)
+		_expect(FileAccess.file_exists("res://%s" % pack_path), "%s pack must exist: %s" % [weapon_id, pack_path], errors)
+		_expect(not scene_text.is_empty() and scene_text.contains(pack_path) or not executor_text.is_empty() and executor_text.contains(pack_path), "%s scene or executor must reference pack %s" % [weapon_id, pack_path], errors)
+		var frames := ResourceLoader.load("res://%s" % pack_path) as SpriteFrames
+		_expect(frames != null, "%s pack must load as SpriteFrames: %s" % [weapon_id, pack_path], errors)
+		if frames == null:
+			continue
+		for animation in frames.get_animation_names():
+			_expect(frames.get_frame_count(animation) >= 2, "%s pack animation %s must be a flipbook, not a stub" % [weapon_id, animation], errors)
+
+
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
-	for field in ["silhouette", "motion_path", "impact_language"]:
+	for field in ["silhouette", "motion_path", "timing_rhythm", "impact_language"]:
 		var values := {}
 		for weapon_id in ["sword", "axe", "hammer"]:
 			values[str((packages.get(weapon_id, {}) as Dictionary).get(field, ""))] = true
@@ -424,6 +501,11 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 				continue
 			var item := child as CanvasItem
 			if not is_capture_item_visible(item, scene):
+				continue
+			# The backdrop veil is a fullscreen treatment, not panel content: it
+			# is fitted to the whole viewport, so it must never widen the
+			# auto-fit bounds of the weapon's own drawn content.
+			if bool(item.get_meta("fullscreen_layer", false)):
 				continue
 			var item_bounds := capture_item_bounds(scene, item)
 			if not item_bounds.has_area():
