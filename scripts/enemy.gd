@@ -49,8 +49,7 @@ var _threat_fire_marker_left := 0.0
 var _summon_cooldown := 0.0
 var _contact_cooldown := 0.0
 var _contact_windup_left := -1.0
-var _animation_time := 0.0
-var _hit_animation_left := 0.0
+var _animation_priority := EnemyAnimationPriority.new()
 var _elite_shield_cooldown := 4.2
 var _elite_shield_time_left := 0.0
 var _elite_dash_cooldown := 2.8
@@ -169,7 +168,6 @@ const GROUND_CIRCLE_HEIGHT_RATIO := 0.32
 const GROUND_CIRCLE_ALPHA := 0.16
 const GROUND_CIRCLE_BOSS_ALPHA := 0.20
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
-const HIT_ANIMATION_DURATION := 0.18
 const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
 const COMBAT_FEEDBACK_MAX_LABELS := 42
@@ -614,9 +612,7 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
 	_play_full_frame_state("hit", Vector2.ZERO)
-	if health > 0.0:
-		_hit_animation_left = HIT_ANIMATION_DURATION
-
+	_animation_priority.register_hit(health > 0.0)
 	if health <= 0.0:
 		_death_lifecycle_started = true
 		health = 0.0
@@ -1835,13 +1831,10 @@ func _body_sprite() -> Sprite2D:
 
 
 func _update_movement_animation(delta: float) -> void:
-	_hit_animation_left = maxf(_hit_animation_left - delta, 0.0)
 	var full_frame_body := _full_frame_body()
 	if full_frame_body != null and full_frame_body.visible:
-		if elite_attack_state != "idle" or _hit_animation_left > 0.0:
-			return
-		var state := "move" if velocity.length_squared() > 1.0 else "idle"
-		FullFrameAnimationRegistry.play_state(full_frame_body, state, velocity)
+		if _animation_priority.blocks_locomotion(delta, elite_attack_state): return
+		FullFrameAnimationRegistry.play_state(full_frame_body, "move" if velocity.length_squared() > 1.0 else "idle", velocity)
 		return
 
 	var body := _body_sprite()
