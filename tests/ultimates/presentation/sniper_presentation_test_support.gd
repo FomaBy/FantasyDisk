@@ -78,10 +78,13 @@ static func _test_visual_contract(weapon_id: String, definition: Dictionary, err
 		_expect(int((budget as Dictionary).get("line_segments", 0)) <= 24, "%s must stay under the 24-line crowd cap" % weapon_id, errors)
 		_expect(int((budget as Dictionary).get("simultaneous_emitters", 0)) <= 15, "%s must stay under the 15-emitter crowd cap" % weapon_id, errors)
 	if weapon_id == "sniper_spotter_scope":
-		_expect(int(contract.get("lock_count", 0)) == 9, "spotter scope must have nine sky locks", errors)
+		_expect(int(contract.get("pulse_count", 0)) == 9, "spotter scope must retain its nine-barrage rhythm", errors)
+		_expect(not str(contract.get("motion_path", "")).contains("aimed zone"),
+			"spotter scope must not present a selected-target kill zone", errors)
 	if weapon_id == "sniper_shatter_rounds":
-		_expect(int(contract.get("trajectory_count", 0)) == 5, "shatter rounds must have five trajectories", errors)
-		_expect(int(contract.get("shards_per_trajectory", 0)) == 3, "shatter rounds must split into three shards", errors)
+		_expect(int(contract.get("wave_count", 0)) == 5, "shatter rounds must retain five arena waves", errors)
+		_expect(not str(contract.get("motion_path", "")).contains("ricochet"),
+			"shatter rounds must not present a ricochet route", errors)
 
 
 static func _test_lifecycle(scene: Node, weapon_id: String, errors: Array[String]) -> void:

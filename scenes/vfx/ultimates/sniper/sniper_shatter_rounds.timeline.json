@@ -29,19 +29,20 @@
       {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_shatter_rounds.cleanup"}
     ],
     "pivot": {"x": 0.5, "y": 0.5},
-    "timing": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},
+    "timing": {"windup": 0.0, "release": 0.65, "active": 1.3, "recovery": 2.2, "cancel": 3.1},
+    "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 90.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "sniper.cast.shatter_fan", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_north-west_03.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
     "headless_fallback": "no_op"
   },
   "visual_contract": {
     "ultimate_name": "Хрустальный Шторм",
-    "silhouette": "five-way icy fan that ricochets once at the arena edge and returns as shard rain",
-    "motion_path": "one muzzle flash splits to five trajectories, each turns once at the edge, then releases three inward shards",
-    "timing_rhythm": "0.36s muzzle flash, 0.38s fan travel, 0.91s ricochet and shard rain, 0.45s center settle",
-    "impact_language": "five edge flares and fifteen thin crystal shards converging through center; no circular glyph",
-    "trajectory_count": 5,
-    "shards_per_trajectory": 3,
-    "required_nodes": ["PhaseNodes/Release/MuzzleFlash", "PhaseNodes/Release/FanTrajectory1", "PhaseNodes/Release/FanTrajectory5", "PhaseNodes/Active/Ricochet5", "PhaseNodes/Active/Shard15", "PhaseNodes/Recovery/CenterReturn"],
-    "scene_node_budget": {"sprites": 3, "line_segments": 23, "simultaneous_emitters": 15},
+    "silhouette": "five-way icy fan that fills the arena before returning as broad crystal wavefronts",
+    "motion_path": "a 0.65s fan opens from the hero to every edge, then five full-arena pressure waves sweep through the map",
+    "timing_rhythm": "0.65s fan windup, five 0.22s expanding crystal waves, then a 1.00s centre settle",
+    "impact_language": "five broad pale-blue wavefronts and one centre bloom; no ricochet route or per-target shard chain",
+    "wave_count": 5,
+    "required_nodes": ["PhaseNodes/Release/MuzzleFlash", "PhaseNodes/Release/FanTrajectory1", "PhaseNodes/Release/FanTrajectory5", "PhaseNodes/Active/WaveFrontSouth", "PhaseNodes/Active/WaveEchoSouth", "PhaseNodes/Recovery/CenterReturn"],
+    "scene_node_budget": {"sprites": 3, "line_segments": 11, "simultaneous_emitters": 5},
     "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 96}
   }
 }

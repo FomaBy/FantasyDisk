@@ -1,27 +1,22 @@
 # Sniper weapon ultimate timelines
 
-This package stages presentation-only scenes for the frozen Sniper weapon IDs.
-It does not change targeting, damage, boss caps, projectile logic, or the shared
-runtime manifest. `FAN-1541` (or its explicitly assigned successor) must bind
-these scene-local runtime paths when the common adapter is ready.
+The three Sniper timelines are runtime-bound through the shared weapon ultimate
+presentation manifest. Their visual contract is part of the gameplay package:
+each record supplies the same V2 envelope to the validator and runtime adapter
+as its class-local executor.
 
-The contact sheet is ordered left to right as **One Shot**, **Sky Grid**, and
-**Crystal Storm**. It contains the accepted PixelLab-derived source used by each
-timeline; `provenance_manifest.json` records its source/runtime separation and
-object IDs.
+| Weapon ID | Visual language | Windup / active / total |
+| --- | --- | --- |
+| `sniper_deadeye_rifle` | held breath → full-arena tracer → endpoint crack | 0.75 / 1.25 / 2.90 s |
+| `sniper_spotter_scope` | sky locks → arena-wide artillery grid → collapse point | 0.85 / 1.55 / 3.40 s |
+| `sniper_shatter_rounds` | crystal fan → five expanding waves → dissipating shards | 0.65 / 1.30 / 3.10 s |
 
-| Weapon ID | Timeline | Distinct visual language | Total timeline |
-| --- | --- | --- | --- |
-| `sniper_deadeye_rifle` | One Shot | scope hold → one full-arena tracer → delayed endpoint crack | 1.85 s |
-| `sniper_spotter_scope` | Sky Grid | nine crosshair locks → sequential descending sky beams → collapse point | 3.20 s |
-| `sniper_shatter_rounds` | Crystal Storm | five-way fan → one edge ricochet → fifteen returning shards | 2.10 s |
+All three use an explicit full-screen footprint, Sniper's glacial-crimson
+palette, a hero cast pose, a weapon-specific silhouette, backdrop treatment,
+camera shake, time-scale dip, and first-impact hitstop (100/120/90 ms). The
+release points differ by at least 0.1 s and all active windows exceed 1.2 s.
 
-Every definition maps `windup`, `release`, `active`, `recovery`, and `cancel`
-to the exact frozen `cast_phases` IDs in `data/ultimates/schema/v1/classes/sniper.json`.
-The local runner delegates `begin()`, pause freezing, and `finish("cancel" | "death" |
-"node_end")` to `WeaponUltimatePresentationTimeline`; it never claims shared
-pool ownership.
-
-Readability and crowd budgets are part of each `visual_contract`: 648p, 720p,
-1080p, and 2K are checked; no visual reaches the HUD zone; and the largest
-scene is capped at 23 line segments, 15 concurrent emitters, and 3 sprites.
+The local timeline runner owns `begin()`, pause freezing, and
+`finish("cancel" | "death" | "node_end")`; it does not own shared pooling or
+damage. Presentation details are bounded by each scene's `visual_contract` and
+remain readable at 648p, 720p, 1080p, and 2K without reaching the HUD zone.

@@ -17,13 +17,12 @@
     "strategy_id": "weapon_ultimate.executor.sniper.sniper_spotter_scope",
     "params": {
       "max_range": 760.0,
-      "zone_radius": 300.0,
-      "lock_count": 9,
-      "max_locks_per_target": 3,
-      "lock_delay": 1.0,
+      "arena_radius": 100000.0,
+      "pulse_count": 9,
+      "lock_delay": 0.85,
       "strike_interval": 0.12,
-      "strike_damage": 20.25,
-      "suppression_duration": 4.4,
+      "strike_damage": 6.75,
+      "duration": 3.4,
       "suppression_slow": 0.45
     }
   },

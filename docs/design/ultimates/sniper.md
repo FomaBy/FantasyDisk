@@ -1,108 +1,65 @@
 # Sniper weapon ultimates
 
-Status: the three exact Sniper packages are ready. Each JSON binding is paired
-with one class-local executor and is discovered by the shared weapon ultimate
-registry; no Player, registry, schema, progression or sibling-class code is
-changed.
+The ready Sniper trio uses its three exact package executors. It has no
+per-target, ray-pierce, lock, shard, ricochet, or crowd-count damage cap: every
+live enemy in the arena receives the non-trivial floor for the cast. The shared
+activation ledger remains the only boss protection and keeps each weapon under
+the frozen `total_boss_cap = 0.10`.
 
 ## Trio roles
 
-| Weapon | Ultimate | Mechanical role |
+| Weapon | Ultimate | Arena-wide combat role |
 | --- | --- | --- |
-| `sniper_deadeye_rifle` | Выстрел Мертвого Глаза | One aimed rail, one shot, resolved on the activation frame. The highest-HP silhouette on the rail takes the ×1.5 headshot wherever it stands; every other body keeps only `penetration_falloff^depth` of the shot, so the rail decays strictly with pierce depth and stops at four bodies. The scope lock is presentation only — the ultimate is the shot. |
-| `sniper_spotter_scope` | Прицел Наводчика | Nine sky locks are dealt round-robin over the most dangerous silhouettes inside the kill zone, at most three per silhouette; surplus locks are never armed. Locking suppresses under the tier policy. Each lock drops one artillery round; a lock whose body is already gone transfers to the most dangerous survivor still inside the zone instead of being wasted. |
-| `sniper_shatter_rounds` | Осколочные Патроны | Five ricochet trajectories open on distinct entry silhouettes and bounce twice each to the nearest untouched body, spraying one shard per impact. A per-target damage cap is the anti-focus rail: converging trajectories cannot spend more than the declared share of any one silhouette. |
+| `sniper_deadeye_rifle` | Выстрел Мертвого Глаза | A 0.75 s held-breath release fires one full-arena rail. The highest-HP enemy receives the 1.5× headshot; every other live enemy receives the regular shot floor. |
+| `sniper_spotter_scope` | Прицел Наводчика | After a 0.85 s sky lock, nine 0.12 s artillery pulses strike every live enemy and apply the full suppression window. Pulses are a rhythm, not a target cap. |
+| `sniper_shatter_rounds` | Осколочные Патроны | A 0.65 s crystal-fan windup releases five 0.22 s expanding waves. Each wave damages every live enemy and applies stagger once per target. |
 
-The runtime scenes under `scripts/ultimates/classes/sniper/` are mechanics
-owners. Each embeds the already accepted presentation scene as a child, exposes
-`ultimate_damage_sink`, and is spawned by `UltimateActivation`, so deferred
-damage shares idempotency, applied-HP attribution and the whole-cast boss
-budget.
+Each executor is class-local under `scripts/ultimates/classes/sniper/`, accepts
+the shared damage sink, and is spawned by `UltimateActivation`. Damage events
+therefore preserve idempotency, applied-HP attribution, cancellation cleanup,
+and the whole-cast boss budget without modifying Player, the registry, or
+sibling classes.
 
-## Safety and lifecycle
+## Safety and charge economy
 
-- All profiles use the frozen Sniper `total_boss_cap = 0.10`. Every shot,
-  strike, impact and shard event uses the same activation ledger.
-- Normal control is full strength. Epic displacement is ×0.25 and duration ×0.5
-  with no movement lock; bosses reject displacement, receive ×0.25 duration and
-  no movement lock. Only the kill zone ever pins a normal target; the shatter
-  volley staggers but never pins and never displaces.
-- Status IDs include the activation-owned node instance ID and the target
-  instance ID. Teardown removes only those exact leases, preserving unrelated
-  statuses.
-- The rail resolves synchronously so a cast always has a measurable combat
-  effect on its own activation frame; only the kill zone deliberately delays
-  its artillery, which is that weapon's declared identity.
-- Controller completion or cancellation kills the tracked timeline and frees
-  the rail, kill zone or sweep. The kill zone deliberately stays live for its
-  whole suppression window so teardown never cuts the declared duration short.
-- Event IDs are stable per target and phase. Repeating the shot, strike or
-  impact event is idempotent; shards are secondary by contract, so they cannot
-  spray another shard.
-- The sky-lock ledger holds a count, so a transfer releases exactly one lock
-  from the lost silhouette and arms exactly one on the survivor.
-- Charge declares `ultimate_charge_ledger`. The shared ledger is the authority
-  for one spend, no active-window income, one activation per encounter and
-  battle/act/Continue snapshots; the package tests exercise those rules for all
-  three weapon rows. Wiring that already-frozen ledger into Player remains a
-  shared-runtime adoption concern and is intentionally outside this class-local
-  write set.
+- The shared ledger is authoritative for one charge spend, no active-window
+  income, one activation per encounter, and battle/act/Continue snapshots.
+- Bosses are limited only by the shared 10% whole-cast ledger. Epic and boss
+  control follows the class policy; the three executors retain no second
+  target-shaped cap.
+- The `ultimate_charge_ledger` contract is exercised for a three-to-four
+  encounter charge cycle by the package and effectiveness suites.
+- Stable per-target event IDs make replayed shot, pulse, and wave events
+  idempotent. Teardown releases only statuses owned by this cast.
 
-## Caps and timing
+## Presentation contract
 
-| Weapon | Lifetime | Crowd | Additional hard caps |
-| --- | ---: | ---: | --- |
-| Deadeye Rifle | instant shot + 0.25s recovery | 4-body rail | 1 headshot; 0.28 penetration decay per depth |
-| Spotter Scope | 1.0s lock + 9×0.12s strikes, held to the 4.4s suppression window | 9 locks | 3 locks per silhouette; 1 transfer per lock |
-| Shatter Rounds | 2.82s volley | 15-target sweep | 5 trajectories; 2 ricochets each; 1 shard per impact; 40% per-target damage cap |
+| Weapon | Windup / active / total | Backdrop and impact | Sniper identity |
+| --- | --- | --- | --- |
+| Deadeye Rifle | 0.75 / 1.25 / 2.90 s | darken, full-arena tracer, shake, 100 ms hitstop | `sniper.cast.steady_breath`, Deadeye silhouette |
+| Spotter Scope | 0.85 / 1.55 / 3.40 s | flash, full-arena sky grid, shake, 120 ms hitstop | `sniper.cast.sky_lock`, Spotter silhouette |
+| Shatter Rounds | 0.65 / 1.30 / 3.10 s | flash, full-arena crystal fan, shake, 90 ms hitstop | `sniper.cast.shatter_fan`, Shatter silhouette |
 
-## Balance evidence
-
-The frozen budget prices each activation against 20–35 seconds of that weapon's
-own normal solo output. The focused proof derives live
-`damage × ultimate_multiplier` from the selected weapon and measures the
-declared coefficients rather than accepting a hand-authored score.
-
-| Weapon | Solo / budget midpoint | Crowd AoE / midpoint | Crowd cap | Control |
-| --- | ---: | ---: | ---: | ---: |
-| Deadeye Rifle | 0.995 | 0.578 | 4 | — |
-| Spotter Scope | 0.923 | 1.283 | 9 | 4.4s suppression |
-| Shatter Rounds | 0.826 | 1.156 | 15 | 2.8s stagger |
-
-Deadeye pays for headshot certainty instead of line clear: 79.8% of a full
-four-body rail still lands on the priority target. Spotter leads AoE and is the
-only weapon in the trio that clears the shared 4.0s decisive-control bar.
-Shatter leads crowd reach at the lowest solo share. The class composite is
-0.980 across solo, AoE, capped crowd and defense axes, inside the project
-0.90–1.10 corridor. A long-range burst class buys reach with control, so the
-defense axis is normalized against the 2.4s Sniper class reference rather than
-a melee-grade one.
-
-The balance test also multiplies the sky-lock coefficient out of corridor and
-requires the proof to fail specifically on Spotter Scope, preventing an
-inherited always-green result.
+Every cast has at least 1.2 seconds of active readability and pairwise release
+separation of at least 0.1 seconds. The package-level manifest and the timeline
+JSONs both carry the same `sniper.glacial_crimson` class palette, weapon-local
+silhouette, arena footprint, backdrop, camera shake, time-scale dip, audio
+ducking, and hitstop data. Sniper is in both V2 coverage ratchets; no Sniper
+presentation or coverage allowlist entry remains.
 
 ## Verification
 
+The checked-in effectiveness baseline records each exact executor in six
+scenarios: solo, 5/10/20 regular enemies, elite, and boss. Focused tests also
+spawn a 20-enemy live arena to prove that every survivor receives the damage
+floor, then verify boss-cap and control behavior. The presentation timeline
+test verifies the V2 envelope, full-arena effects, pose/silhouette/palette, and
+timing distinction.
+
 ```bash
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/mechanics/sniper_package_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/mechanics/sniper_live_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/mechanics/sniper_balance_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/registry_contract_test.gd
-python3 tools/godot_gate.py --headless --path . \
-  --script res://tests/ultimates/registry_package_discovery_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/sniper_package_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/sniper_live_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/sniper_balance_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_ultimate_timelines.gd
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/effectiveness_runner_test.gd
 ```
-
-## Known foundation gap
-
-`tests/ultimates/controller_player_integration_test.gd` still snapshots the
-shipped ready set as Biologist-only (`SHIPPED_READY_CLASS`,
-`SHIPPED_READY_WEAPONS`, `SHIPPED_LEGACY_PAIRS = 48`). That half of the suite
-goes red on any second ready class, exactly as it did before FAN-2057 aligned
-it to Biologist. It lives outside this card's locked paths, so aligning it is a
-separate foundation change; the sniper fixture halves of the same suite, and
-its real-Player routing assertions for the three Sniper pairs, already pass.

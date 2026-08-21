@@ -14,30 +14,30 @@ definition_path = "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeli
 [node name="PhaseNodes" type="Node2D" parent="."]
 
 [node name="Windup" type="Node2D" parent="PhaseNodes"]
-[node name="GridNode1" type="Sprite2D" parent="PhaseNodes/Windup"]
+[node name="ArenaGridWest" type="Sprite2D" parent="PhaseNodes/Windup"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 position = Vector2(-160, -80)
 scale = Vector2(0.16, 0.16)
 modulate = Color(1, 0.26, 0.2, 0.74)
-[node name="GridNode5" type="Sprite2D" parent="PhaseNodes/Windup"]
+[node name="ArenaGridCore" type="Sprite2D" parent="PhaseNodes/Windup"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 scale = Vector2(0.16, 0.16)
 modulate = Color(1, 0.26, 0.2, 0.74)
-[node name="GridNode9" type="Sprite2D" parent="PhaseNodes/Windup"]
+[node name="ArenaGridEast" type="Sprite2D" parent="PhaseNodes/Windup"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 position = Vector2(160, 80)
 scale = Vector2(0.16, 0.16)
 modulate = Color(1, 0.26, 0.2, 0.74)
-[node name="GridAxisX" type="Line2D" parent="PhaseNodes/Windup"]
+[node name="ArenaGridAxisX" type="Line2D" parent="PhaseNodes/Windup"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(-220, 0, 220, 0)
 width = 3.0
 default_color = Color(1, 0.2, 0.15, 0.58)
 antialiased = true
-[node name="GridAxisY" type="Line2D" parent="PhaseNodes/Windup"]
+[node name="ArenaGridAxisY" type="Line2D" parent="PhaseNodes/Windup"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(0, -150, 0, 150)
 width = 3.0
@@ -45,12 +45,12 @@ default_color = Color(1, 0.2, 0.15, 0.58)
 antialiased = true
 
 [node name="Release" type="Node2D" parent="PhaseNodes"]
-[node name="LockPip9" type="Sprite2D" parent="PhaseNodes/Release"]
+[node name="SkyGridCrown" type="Sprite2D" parent="PhaseNodes/Release"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 scale = Vector2(0.48, 0.48)
 modulate = Color(1, 0.38, 0.28, 0.84)
-[node name="LockSweep" type="Line2D" parent="PhaseNodes/Release"]
+[node name="SkyGridRelease" type="Line2D" parent="PhaseNodes/Release"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(-210, -124, 210, 124)
 width = 5.0
@@ -58,25 +58,25 @@ default_color = Color(1, 0.34, 0.24, 0.86)
 antialiased = true
 
 [node name="Active" type="Node2D" parent="PhaseNodes"]
-[node name="SkyBeam1" type="Line2D" parent="PhaseNodes/Active"]
+[node name="BarrageColumnWest" type="Line2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(-168, -340, -168, 132)
 width = 8.0
 default_color = Color(1, 0.44, 0.3, 0.74)
 antialiased = true
-[node name="SkyBeam5" type="Line2D" parent="PhaseNodes/Active"]
+[node name="BarrageColumnCore" type="Line2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(0, -340, 0, 132)
 width = 9.0
 default_color = Color(1, 0.74, 0.62, 0.9)
 antialiased = true
-[node name="SkyBeam9" type="Line2D" parent="PhaseNodes/Active"]
+[node name="BarrageColumnEast" type="Line2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 points = PackedVector2Array(168, -340, 168, 132)
 width = 8.0
 default_color = Color(1, 0.44, 0.3, 0.74)
 antialiased = true
-[node name="GroundLock" type="Sprite2D" parent="PhaseNodes/Active"]
+[node name="ArenaImpactCore" type="Sprite2D" parent="PhaseNodes/Active"]
 material = SubResource("CanvasItemMaterial_add")
 texture = ExtResource("2_texture")
 position = Vector2(0, 132)
