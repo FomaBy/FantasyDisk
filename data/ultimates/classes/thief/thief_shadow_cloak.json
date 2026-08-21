@@ -14,7 +14,7 @@
       "mark_limit": 8,
       "strike_interval": 0.16,
       "mark_duration": 2.1,
-      "stab_damage": 7.0,
+      "stab_damage": 9.45,
       "escalation": 0.12
     }
   },

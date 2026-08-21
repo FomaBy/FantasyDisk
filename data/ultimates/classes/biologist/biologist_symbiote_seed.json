@@ -26,11 +26,11 @@
       "pull_strength": 520.0,
       "root_duration": 4.5,
       "slow_multiplier": 0.5,
-      "impact_damage": 9.0,
+      "impact_damage": 12.33,
       "larva_count": 6,
       "larva_interval": 0.6,
-      "larva_damage": 7.0,
-      "hatch_damage": 49.0
+      "larva_damage": 9.59,
+      "hatch_damage": 67.13
     }
   },
   "total_boss_cap": 0.09,
