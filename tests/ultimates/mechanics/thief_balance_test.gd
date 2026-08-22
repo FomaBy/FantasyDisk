@@ -10,8 +10,9 @@ const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 0.45
 const COUNT_SHAPED_PATTERN := \
-	"[A-Za-z0-9_]*(target_cap|target_count|target_limit|mark_limit|coin_count|max_targets|crowd_cap)[A-Za-z0-9_]*"
+	"[A-Za-z0-9_]*(target_cap|target_count|target_limit|mark_limit|coin(?:_[A-Za-z0-9]+)*_count|max_targets|crowd_cap)[A-Za-z0-9_]*"
 const COUNT_SHAPED_ALLOWED_SUFFIXES := ["_fraction", "_flat"]
+const COUNT_SHAPED_ALLOWED_NAMES := ["coin_wave_count"]
 
 var _errors: Array[String] = []
 
@@ -92,11 +93,15 @@ func _test_weapon(weapon_id: String, row: Dictionary, profile: Dictionary, metri
 			"Perfect Heist must retain its defensive dome and capped collapse")
 
 
-## Ultimate Direction v2: a crowd shape may be fixed, but no executor may
-## refuse a live enemy because the target list reached a numeric cap.
+## Only the declared Coin Pouch wave may cap reach; other count-shaped reach
+## caps remain forbidden.
 func _test_no_count_caps(registry: Registry) -> void:
 	var forbidden := RegEx.new()
 	forbidden.compile(COUNT_SHAPED_PATTERN)
+	_check(not _is_forbidden_count_name("coin_wave_count", forbidden),
+		"the approved Coin Pouch wave cap must remain allowed")
+	_check(_is_forbidden_count_name("target_count", forbidden),
+		"unapproved count-shaped reach caps must remain forbidden")
 	for weapon_id in WEAPONS:
 		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
 		var params := (profile.get("executor", {}) as Dictionary).get("params", {}) as Dictionary
@@ -104,11 +109,17 @@ func _test_no_count_caps(registry: Registry) -> void:
 		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
 		for key in params.keys() + contract.keys():
 			var name := str(key)
-			if forbidden.search(name) != null and not _allowed_count_name(name):
+			if _is_forbidden_count_name(name, forbidden):
 				_check(false, "%s must not ship a count-shaped reach cap (%s)" % [weapon_id, name])
 
 
+func _is_forbidden_count_name(name: String, forbidden: RegEx) -> bool:
+	return forbidden.search(name) != null and not _allowed_count_name(name)
+
+
 func _allowed_count_name(name: String) -> bool:
+	if name in COUNT_SHAPED_ALLOWED_NAMES:
+		return true
 	for suffix in COUNT_SHAPED_ALLOWED_SUFFIXES:
 		if name.ends_with(suffix):
 			return true

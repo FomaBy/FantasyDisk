@@ -859,6 +859,18 @@ class QualityGateTests(unittest.TestCase):
             self.assertLessEqual(expected, names)
             self.assertIn("tracked_tween_natural_completion_test", names)
 
+    def test_coin_pouch_executor_selects_thief_contract_suites(self) -> None:
+        expected = {"thief_live_test", "thief_balance_test"}
+        with mock.patch.object(
+            self.quality, "_git_changed_paths",
+            return_value={"scripts/ultimates/classes/thief/thief_coin_pouch.gd"},
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertLessEqual(expected, names)
+
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
             "full", ["runtime_smoke"], "origin/dev", True

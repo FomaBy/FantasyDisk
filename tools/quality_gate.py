@@ -130,6 +130,10 @@ DEFENSIVE_CONTRACT_TESTS = {
     "thief_kit_test",
 }
 PATH_TEST_RULES = {
+    "scripts/ultimates/classes/thief/thief_coin_pouch.gd": {
+        "thief_live_test",
+        "thief_balance_test",
+    },
     "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
     # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
     # (progression_data.gd), данные CLASS_TRAITS (progression_data_characters.gd),
