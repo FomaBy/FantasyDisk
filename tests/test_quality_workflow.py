@@ -149,6 +149,22 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("--script", self.source)
         self.assertNotIn("$GODOT_DIR/godot --headless", self.source)
 
+    def test_full_profile_shards_budget_swap_from_available_disk(self) -> None:
+        start = self.source.index("  dev-runtime-health-godot:\n")
+        end = self.source.index("\n  # This job survives", start)
+        shards = self.source[start:end]
+
+        self.assertIn("Capture resource diagnostics before cache and swap", shards)
+        self.assertIn("Capture resource diagnostics before full-profile gate", shards)
+        self.assertIn("Capture post-shard resource diagnostics", shards)
+        self.assertIn("origin dev:refs/remotes/origin/dev", shards)
+        self.assertIn("df --output=avail -B1", shards)
+        self.assertIn("min_free_bytes", shards)
+        self.assertIn("max_swap_bytes", shards)
+        self.assertIn("swap_bytes=$((available_bytes - min_free_bytes))", shards)
+        self.assertIn('test "$swap_bytes" -gt 0', shards)
+        self.assertNotIn("fallocate -l 8G", shards)
+
     def test_required_check_job_id_is_stable(self) -> None:
         # Branch protection binds to the job id: renaming it detaches the
         # required gate without any visible failure.
