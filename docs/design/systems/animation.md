@@ -404,6 +404,21 @@ west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
   AI, collision, damage and encounter timing are unchanged — registry-only
   visual integration.
 
+- FAN-2619 (2026-08-19) converts the flying `standard_monster`
+  `enemy/winged_spark` to the explicit-eight-direction PixelLab contract.
+  Its source frames are in `assets/sprites/enemies/pixellab/winged_spark/`;
+  normalized runtime frames are in
+  `assets/sprites/enemies/full_frame/winged_spark/`, with all frames kept at
+  `512x512`, `245px` visible height, and `32px` bottom padding. The SpriteFrames
+  resource exposes `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` for all eight directions (40 rows, no undirected fallback rows)
+  and registry `explicit_eight_directions: true`; `idle_<dir>` is the six-frame
+  hover-flap loop because the resolver has no distinct hover state. The old
+  flip-mirrored pack is retained in
+  `docs/design/backups/fan2619_winged_spark_pre_directional/`; build tooling is
+  `tools/build_fan2619_winged_spark_pack.py`. AI, collision, damage, and
+  encounter timing are unchanged — registry-only visual integration.
+
 ## Player Motion
 
 - FAN-1071 (2026-07-14) replaces the live playable footline dependency on
