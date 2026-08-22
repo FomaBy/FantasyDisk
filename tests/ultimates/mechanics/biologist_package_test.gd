@@ -13,11 +13,11 @@ const WEAPONS := [
 	"biologist_symbiote_seed",
 ]
 const EXPECTED_CAPS := {
-	"biologist_spore_lens": {"crowd_cap": 18, "secondary_bloom_cap": 3},
+	"biologist_spore_lens": {"secondary_bloom_cap": 3},
 	"biologist_sample_injector": {
-		"crowd_cap": 16, "analysis_pulses": 3, "sample_window": 10.0,
+		"analysis_pulses": 3, "sample_window": 10.0,
 	},
-	"biologist_symbiote_seed": {"crowd_cap": 22, "larva_count": 6},
+	"biologist_symbiote_seed": {"larva_count": 6},
 }
 
 var _errors: Array[String] = []
@@ -75,6 +75,9 @@ func _test_pair(registry: Registry, weapon_id: String) -> void:
 		"%s EXECUTOR_ID must match the immutable catalog" % weapon_id
 	)
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
+	for removed_cap in ["crowd_cap", "analysis_target_cap"]:
+		_check(not params.has(removed_cap),
+			"%s must not ship count-shaped reach parameter %s" % [weapon_id, removed_cap])
 	for key in (EXPECTED_CAPS[weapon_id] as Dictionary):
 		_check(
 			params.get(key) == (EXPECTED_CAPS[weapon_id] as Dictionary)[key],

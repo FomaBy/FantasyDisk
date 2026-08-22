@@ -21,17 +21,14 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
 		"half_width": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"sample_window": {"type": "number", "minimum": 0.1},
 		"analysis_pulses": {"type": "integer", "minimum": 1},
 		"analysis_first_delay": {"type": "number", "minimum": 0.01},
 		"analysis_interval": {"type": "number", "minimum": 0.01},
-		"analysis_radius": {"type": "number", "minimum": 0.0},
-		"analysis_target_cap": {"type": "integer", "minimum": 1},
 		"extraction_damage": {"type": "number", "minimum": 0.0},
 		"analysis_damage": {"type": "number", "minimum": 0.0},
-		"tissue_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"tissue_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 2.0},
 		"swarm_bonus": {"type": "number", "minimum": 1.0},
 		"ranged_bonus": {"type": "number", "minimum": 1.0},
 		"durable_bonus": {"type": "number", "minimum": 1.0},
@@ -50,7 +47,7 @@ static func execute(activation) -> float:
 		"direction": "aim",
 		"length": max_range,
 		"half_width": activation.param_float("half_width", 64.0),
-		"limit": activation.param_int("crowd_cap", 16),
+		"limit": 0,
 	}):
 		return 0.0
 	var targets = activation.primitive_value("targets", [])
@@ -62,7 +59,8 @@ static func execute(activation) -> float:
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
-	effect.call("configure", activation, targets as Array, primary)
+	var all_targets: Array = activation.select_targets(activation.origin(), INF, 0, "nearest")
+	effect.call("configure", activation, all_targets, primary)
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
@@ -164,15 +162,9 @@ func analysis_pulse(pulse: int) -> void:
 		false,
 		{"ultimate_mechanic": "analysis_pulse", "analysis_pulse": pulse}
 	)
-	var nearby: Array = _activation.select_targets(
-		(primary_target_for_tests as Node2D).global_position,
-		_activation.param_float("analysis_radius", 125.0),
-		_activation.param_int("analysis_target_cap", 4),
-		"nearest"
-	)
-	for raw_target in nearby:
+	for raw_target in _corridor_targets:
 		var target := raw_target as Node2D
-		if target == null or target == primary_target_for_tests or not _corridor_targets.has(target):
+		if target == null or not is_instance_valid(target) or target == primary_target_for_tests:
 			continue
 		_deal(
 			target,

@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -78,7 +77,12 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## the full map while keeping its summon and stack contracts. The per-enemy
 ## floor and the class-local `target_limit` vocabulary are proven in
 ## `tests/ultimates/chemist_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "chemist", "engineer", "sniper"]
+##
+## `biologist` (FAN-2526): every mycelium wave infects every live enemy,
+## every analysis pulse reaches the whole map after the aimed priority sample,
+## and the Matriarch's pull/root plus terminal hatch cover every live enemy;
+## blooms and larvae stay finite identity bonuses rather than reach bounds.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "engineer", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

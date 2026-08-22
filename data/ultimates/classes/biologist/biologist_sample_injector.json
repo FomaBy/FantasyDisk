@@ -18,17 +18,14 @@
     "params": {
       "max_range": 760.0,
       "half_width": 64.0,
-      "crowd_cap": 16,
       "release_delay": 0.65,
       "sample_window": 10.0,
       "analysis_pulses": 3,
       "analysis_first_delay": 1.55,
       "analysis_interval": 1.65,
-      "analysis_radius": 125.0,
-      "analysis_target_cap": 4,
       "extraction_damage": 38.36,
       "analysis_damage": 10.96,
-      "tissue_damage_ratio": 0.35,
+      "tissue_damage_ratio": 0.65,
       "swarm_bonus": 1.15,
       "ranged_bonus": 1.25,
       "durable_bonus": 1.35

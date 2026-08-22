@@ -100,6 +100,7 @@ func _initialize() -> void:
 	await _test_spore_lens()
 	await _test_sample_injector()
 	await _test_symbiote_seed()
+	await _test_trio_reaches_every_enemy()
 	_test_charge_and_persistence_contract()
 	_holder.queue_free()
 	await process_frame
@@ -128,7 +129,7 @@ func _test_spore_lens() -> void:
 		"three non-recursive blooms may hit at most three neighbors each")
 	for victim in vulnerable:
 		_check(is_zero_approx(victim.health), "primary infection must kill the low-HP fixture")
-		_check(is_equal_approx(float(victim.received[0]["amount"]), 550.0),
+		_check(is_equal_approx(float(victim.received[0]["amount"]), 786.5),
 			"the attempted infection hit must remain visible for attribution")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.fixture_targets)),
 		"Spore attribution must equal HP actually removed, including overkill clamps")
@@ -144,6 +145,38 @@ func _test_spore_lens() -> void:
 		_check(_status_with_prefix(target, "biologist_ultimate_spore_").is_empty(),
 			"Spore cancel must remove only its leased statuses")
 	await _drop(host)
+
+
+## Direction v2 coverage proof: each cast faces more enemies than its former
+## reach cap, including a silhouette far beyond the viewport. Every live enemy
+## must receive the weapon's guaranteed damage channel before the first active
+## beat is over; local blooms and larvae remain bounded identity bonuses.
+func _test_trio_reaches_every_enemy() -> void:
+	for weapon_id in [
+		"biologist_spore_lens", "biologist_sample_injector", "biologist_symbiote_seed"
+	]:
+		var host := await _host()
+		host.aim_point = Vector2(700.0, 0.0)
+		for index in 25:
+			_target(host, Vector2(100.0 + float(index) * 24.0, float(index % 3) * 18.0),
+				100000.0, 100000.0)
+		_target(host, Vector2(4200.0, -3100.0), 100000.0, 100000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id),
+			"%s map-wide fixture must activate" % weapon_id)
+		var activation := controller.active_activation()
+		_advance(activation, 2.4)
+		var reached := 0
+		for raw_target in host.fixture_targets:
+			if not (raw_target as FixtureTarget).received.is_empty():
+				reached += 1
+		_check(reached == host.fixture_targets.size(),
+			"%s must reach every live enemy, got %d of %d" % [
+				weapon_id, reached, host.fixture_targets.size(),
+			])
+		controller.cancel()
+		await process_frame
+		await _drop(host)
 
 
 func _test_sample_injector() -> void:

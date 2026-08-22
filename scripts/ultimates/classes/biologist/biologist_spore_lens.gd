@@ -23,9 +23,6 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"propagation_interval": {"type": "number", "minimum": 0.01},
 		"propagation_waves": {"type": "integer", "minimum": 1},
-		"radius_start": {"type": "number", "minimum": 0.0},
-		"radius_step": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"infection_damage": {"type": "number", "minimum": 0.0},
 		"infection_duration": {"type": "number", "minimum": 0.1},
 		"root_duration": {"type": "number", "minimum": 0.1},
@@ -41,10 +38,8 @@ static func execute(activation) -> float:
 	if not Library.execute_primitive("control_resistance_policy", activation, _control_policy()):
 		return 0.0
 	var waves: int = activation.param_int("propagation_waves", 3)
-	var max_radius: float = activation.param_float("radius_start", 250.0) \
-		+ activation.param_float("radius_step", 185.0) * float(waves - 1)
 	var selected: Array = activation.select_targets(
-		activation.origin(), max_radius, activation.param_int("crowd_cap", 18), "nearest"
+		activation.origin(), INF, 0, "nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
@@ -106,13 +101,11 @@ func propagate(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	propagation_count_for_tests += 1
-	var radius: float = _activation.param_float("radius_start", 250.0) \
-		+ _activation.param_float("radius_step", 185.0) * float(wave)
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
 		var target := raw_target as Node2D
-		if target == null or target.global_position.distance_to(_origin) > radius:
+		if target == null:
 			continue
 		_ensure_infected(target)
 		var result = _deal(
