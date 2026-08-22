@@ -25,8 +25,6 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"active_delay": {"type": "number", "minimum": 0.0},
 		"hatch_delay": {"type": "number", "minimum": 0.0},
-		"radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"pull_strength": {"type": "number", "minimum": 0.0},
 		"root_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -120,10 +118,7 @@ func pull_and_root() -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	_targets = _activation.select_targets(
-		global_position,
-		_activation.param_float("radius", 350.0),
-		_activation.param_int("crowd_cap", 22),
-		"nearest"
+		global_position, INF, 0, "nearest"
 	)
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
@@ -171,10 +166,7 @@ func launch_larva(index: int) -> void:
 			live_targets.append(target)
 	if live_targets.is_empty():
 		live_targets = _activation.select_targets(
-			global_position,
-			_activation.param_float("radius", 350.0),
-			_activation.param_int("crowd_cap", 22),
-			"highest_hp"
+			global_position, INF, 0, "highest_hp"
 		)
 	if live_targets.is_empty():
 		return
@@ -193,10 +185,7 @@ func hatch() -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	for raw_target in _activation.select_targets(
-		global_position,
-		_activation.param_float("radius", 350.0),
-		_activation.param_int("crowd_cap", 22),
-		"nearest"
+		global_position, INF, 0, "nearest"
 	):
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue

@@ -13,6 +13,9 @@ const SEED_VFX := preload("res://assets/sprites/effects/vfx_weapon_biologist_sym
 const LENS_WEAPON := preload("res://assets/sprites/weapons/biologist_spore_lens.png")
 const INJECTOR_WEAPON := preload("res://assets/sprites/weapons/biologist_sample_injector.png")
 const SEED_WEAPON := preload("res://assets/sprites/weapons/biologist_symbiote_seed.png")
+const LENS_CAST_POSE := preload("res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_00.png")
+const INJECTOR_CAST_POSE := preload("res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_02.png")
+const SEED_CAST_POSE := preload("res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_04.png")
 
 const PALE_GREEN := Color(0.72, 1.0, 0.68)
 const MYCELIUM_GREEN := Color(0.22, 0.92, 0.48)
@@ -21,6 +24,8 @@ const SAMPLE_WHITE := Color(0.94, 1.0, 0.95)
 const ANALYSIS_GREEN := Color(0.3, 1.0, 0.5)
 const SYMBIOTE_MAGENTA := Color(0.92, 0.2, 0.86)
 const SYMBIOTE_GREEN := Color(0.22, 0.95, 0.46)
+const HITSTOP_TIME_SCALE := 0.12
+const SFX_DUCK_DB := -8.0
 
 @export var variant: Variant = Variant.WORLD_MYCELIUM
 @export var duration := 8.6
@@ -31,6 +36,12 @@ const SYMBIOTE_GREEN := Color(0.22, 0.95, 0.46)
 			_update_visuals()
 
 var _prepared := false
+var _playing := false
+var _impact_triggered := false
+var _owns_time_scale := false
+var _ducked_bus_index := -1
+var _ducked_prev_db := 0.0
+var _presence_state := {}
 
 
 func _ready() -> void:
@@ -46,7 +57,40 @@ func prepare() -> void:
 	_update_visuals()
 
 
+func begin(registry, _handles: Dictionary = {}, headless_mode := -1) -> Dictionary:
+	if registry == null:
+		return {}
+	prepare()
+	_playing = true
+	_impact_triggered = false
+	_presence_state = {
+		"impact_triggered": false,
+		"camera_shake_triggered": false,
+		"hitstop_ms": _hitstop_ms(),
+		"cast_pose_bound": get_node_or_null("HeroCastPose") != null,
+		"silhouette_bound": true,
+	}
+	var timeline := get_node_or_null("Timeline") as AnimationPlayer
+	if timeline != null:
+		timeline.play(&"ultimate")
+	return {"state": "active", "headless": headless_mode == 1}
+
+
+func finish(_reason := "cancel") -> Dictionary:
+	_playing = false
+	var timeline := get_node_or_null("Timeline") as AnimationPlayer
+	if timeline != null:
+		timeline.stop()
+	_restore_presence()
+	return {"state": "finished"}
+
+
+func presence_state_for_tests() -> Dictionary:
+	return _presence_state.duplicate(true)
+
+
 func _build_visuals() -> void:
+	_build_backdrop()
 	match variant:
 		Variant.WORLD_MYCELIUM:
 			_build_world_mycelium()
@@ -79,7 +123,10 @@ func _build_world_mycelium() -> void:
 	set_meta("impact_language", "root flashes travel along veins, infected deaths become three capped non-recursive secondary blooms")
 	set_meta("max_visual_nodes", 10)
 	set_meta("crowd_cap", 18)
+	set_meta("max_unique_materials", 1)
+	set_meta("max_fullscreen_materials", 1)
 
+	_cast_pose(LENS_CAST_POSE, Color(0.62, 1.0, 0.58))
 	var lens := _sprite(self, "LensCore", LENS_WEAPON, Vector2(-172.0, 48.0), 0.42)
 	lens.rotation = -0.45
 	var spore_gate := _sprite(self, "SporeGate", LENS_VFX, Vector2(-112.0, 24.0), 0.34)
@@ -109,7 +156,10 @@ func _build_perfect_sample() -> void:
 	set_meta("impact_language", "green-white extraction flash records a helix mark followed by three capped analysis pulses")
 	set_meta("max_visual_nodes", 11)
 	set_meta("crowd_cap", 16)
+	set_meta("max_unique_materials", 1)
+	set_meta("max_fullscreen_materials", 1)
 
+	_cast_pose(INJECTOR_CAST_POSE, SAMPLE_CYAN)
 	var rail := _sprite(self, "NeedleRail", INJECTOR_WEAPON, Vector2(-158.0, 54.0), 0.43)
 	rail.rotation = -2.28
 	_line(self, "BeamHalo", PackedVector2Array([Vector2(-92, 8), Vector2(186, 8)]), 17.0, Color(0.18, 0.95, 0.62, 0.3))
@@ -145,7 +195,10 @@ func _build_symbiont_matriarch() -> void:
 	set_meta("impact_language", "six pull-root lashes frame a larval barrage and one terminal hatch burst")
 	set_meta("max_visual_nodes", 17)
 	set_meta("crowd_cap", 22)
+	set_meta("max_unique_materials", 1)
+	set_meta("max_fullscreen_materials", 1)
 
+	_cast_pose(SEED_CAST_POSE, Color(0.86, 0.46, 1.0))
 	_sprite(self, "FallingSeed", SEED_WEAPON, Vector2(0.0, -176.0), 0.22)
 	var pod := _sprite(self, "Pod", SEED_VFX, Vector2.ZERO, 0.58)
 	pod.modulate = Color(1.0, 0.82, 1.0)
@@ -167,6 +220,11 @@ func _build_symbiont_matriarch() -> void:
 
 
 func _update_visuals() -> void:
+	var backdrop := get_node_or_null("BackdropVeil") as Polygon2D
+	if backdrop != null:
+		backdrop.color.a = sin(progress * PI) * 0.24
+	if _playing and not _impact_triggered and progress >= _impact_progress():
+		_apply_first_impact()
 	match variant:
 		Variant.WORLD_MYCELIUM:
 			_update_world_mycelium()
@@ -174,6 +232,109 @@ func _update_visuals() -> void:
 			_update_perfect_sample()
 		Variant.SYMBIONT_MATRIARCH:
 			_update_symbiont_matriarch()
+
+
+func _build_backdrop() -> void:
+	var backdrop := Polygon2D.new()
+	backdrop.name = "BackdropVeil"
+	backdrop.z_index = -100
+	backdrop.polygon = PackedVector2Array([
+		Vector2(-2800.0, -1800.0), Vector2(2800.0, -1800.0),
+		Vector2(2800.0, 1800.0), Vector2(-2800.0, 1800.0),
+	])
+	backdrop.color = _backdrop_color()
+	backdrop.set_meta("fullscreen_layer", true)
+	add_child(backdrop)
+
+
+func _cast_pose(texture: Texture2D, tint: Color) -> void:
+	var hero := _sprite(self, "HeroCastPose", texture, Vector2(-22.0, -58.0), 0.24)
+	hero.z_index = -2
+	hero.modulate = tint
+
+
+func _impact_progress() -> float:
+	match variant:
+		Variant.WORLD_MYCELIUM:
+			return 1.1 / 3.4
+		Variant.PERFECT_SAMPLE:
+			return 1.0 / 3.0
+		Variant.SYMBIONT_MATRIARCH:
+			return 1.3 / 3.8
+	return 0.33
+
+
+func _hitstop_ms() -> float:
+	return [100.0, 120.0, 140.0][int(variant)]
+
+
+func _backdrop_color() -> Color:
+	match variant:
+		Variant.WORLD_MYCELIUM:
+			return Color(0.025, 0.08, 0.055, 0.0)
+		Variant.PERFECT_SAMPLE:
+			return Color(0.24, 0.62, 0.52, 0.0)
+		Variant.SYMBIONT_MATRIARCH:
+			return Color(0.12, 0.025, 0.14, 0.0)
+	return Color(0.0, 0.0, 0.0, 0.0)
+
+
+func _apply_first_impact() -> void:
+	_impact_triggered = true
+	_presence_state["impact_triggered"] = true
+	if DisplayServer.get_name() == "headless" or not is_inside_tree():
+		return
+	_shake_player_camera()
+	_presence_state["camera_shake_triggered"] = true
+	if Engine.time_scale >= 0.99:
+		_owns_time_scale = true
+		Engine.time_scale = HITSTOP_TIME_SCALE
+		var timer := get_tree().create_timer(_hitstop_ms() / 1000.0, true, false, true)
+		timer.timeout.connect(_restore_hitstop)
+	_duck_sfx()
+
+
+func _shake_player_camera() -> void:
+	if not bool(get_tree().root.get_meta("screen_shake", true)):
+		return
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player == null:
+		return
+	var camera := player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var tween := camera.create_tween()
+	for index in 5:
+		var falloff := 1.0 - float(index) / 5.0
+		tween.tween_property(camera, "offset", Vector2(6.0, -4.0) * falloff, 0.035)
+		tween.tween_property(camera, "offset", Vector2(-5.0, 3.0) * falloff, 0.035)
+	tween.tween_property(camera, "offset", Vector2.ZERO, 0.035)
+
+
+func _duck_sfx() -> void:
+	var bus_index := AudioServer.get_bus_index("SFX")
+	if bus_index == -1 or _ducked_bus_index != -1:
+		return
+	_ducked_bus_index = bus_index
+	_ducked_prev_db = AudioServer.get_bus_volume_db(bus_index)
+	AudioServer.set_bus_volume_db(bus_index, _ducked_prev_db + SFX_DUCK_DB)
+
+
+func _restore_hitstop() -> void:
+	if _owns_time_scale:
+		Engine.time_scale = 1.0
+		_owns_time_scale = false
+
+
+func _restore_presence() -> void:
+	_restore_hitstop()
+	if _ducked_bus_index != -1:
+		AudioServer.set_bus_volume_db(_ducked_bus_index, _ducked_prev_db)
+		_ducked_bus_index = -1
+
+
+func _exit_tree() -> void:
+	_restore_presence()
 
 
 func _update_world_mycelium() -> void:
