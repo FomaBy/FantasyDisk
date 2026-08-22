@@ -1,0 +1,6578 @@
+{
+  "idle_east": [
+    {
+      "source": "winged_spark_idle_east_00.png",
+      "runtime": "winged_spark_idle_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        60,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_east_01.png",
+      "runtime": "winged_spark_idle_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        60,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        163,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_east_02.png",
+      "runtime": "winged_spark_idle_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        61,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_east_03.png",
+      "runtime": "winged_spark_idle_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        61,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_east_04.png",
+      "runtime": "winged_spark_idle_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        60,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_east_05.png",
+      "runtime": "winged_spark_idle_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        60,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "winged_spark_idle_south_east_00.png",
+      "runtime": "winged_spark_idle_south_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_east_01.png",
+      "runtime": "winged_spark_idle_south_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        67,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        232,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        372,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_east_02.png",
+      "runtime": "winged_spark_idle_south_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_east_03.png",
+      "runtime": "winged_spark_idle_south_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        69,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_east_04.png",
+      "runtime": "winged_spark_idle_south_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_east_05.png",
+      "runtime": "winged_spark_idle_south_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "winged_spark_idle_south_00.png",
+      "runtime": "winged_spark_idle_south_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        72,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        253,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_01.png",
+      "runtime": "winged_spark_idle_south_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_02.png",
+      "runtime": "winged_spark_idle_south_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_03.png",
+      "runtime": "winged_spark_idle_south_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        75,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        261,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_04.png",
+      "runtime": "winged_spark_idle_south_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        74,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_05.png",
+      "runtime": "winged_spark_idle_south_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        13,
+        73,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "winged_spark_idle_south_west_00.png",
+      "runtime": "winged_spark_idle_south_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        201,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_west_01.png",
+      "runtime": "winged_spark_idle_south_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        71,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_west_02.png",
+      "runtime": "winged_spark_idle_south_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        72,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_west_03.png",
+      "runtime": "winged_spark_idle_south_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_west_04.png",
+      "runtime": "winged_spark_idle_south_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        72,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_south_west_05.png",
+      "runtime": "winged_spark_idle_south_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        71,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "winged_spark_idle_west_00.png",
+      "runtime": "winged_spark_idle_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        60,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_west_01.png",
+      "runtime": "winged_spark_idle_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        62,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_west_02.png",
+      "runtime": "winged_spark_idle_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        13,
+        65,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_west_03.png",
+      "runtime": "winged_spark_idle_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        15,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        185,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_west_04.png",
+      "runtime": "winged_spark_idle_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_west_05.png",
+      "runtime": "winged_spark_idle_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        13,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "winged_spark_idle_north_west_00.png",
+      "runtime": "winged_spark_idle_north_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        12,
+        69,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        211,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_west_01.png",
+      "runtime": "winged_spark_idle_north_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        70,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_west_02.png",
+      "runtime": "winged_spark_idle_north_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        14,
+        71,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_west_03.png",
+      "runtime": "winged_spark_idle_north_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        72,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_west_04.png",
+      "runtime": "winged_spark_idle_north_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        254,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_west_05.png",
+      "runtime": "winged_spark_idle_north_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        71,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "winged_spark_idle_north_00.png",
+      "runtime": "winged_spark_idle_north_00.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        11,
+        11,
+        69,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        258,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_01.png",
+      "runtime": "winged_spark_idle_north_01.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        70,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        272,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        392,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_02.png",
+      "runtime": "winged_spark_idle_north_02.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        71,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        281,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_03.png",
+      "runtime": "winged_spark_idle_north_03.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        72,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        302,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        105,
+        235,
+        407,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_04.png",
+      "runtime": "winged_spark_idle_north_04.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        14,
+        71,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        298,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        235,
+        405,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_05.png",
+      "runtime": "winged_spark_idle_north_05.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        70,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        283,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        397,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "winged_spark_idle_north_east_00.png",
+      "runtime": "winged_spark_idle_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_east_01.png",
+      "runtime": "winged_spark_idle_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        14,
+        66,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_east_02.png",
+      "runtime": "winged_spark_idle_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        15,
+        68,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_east_03.png",
+      "runtime": "winged_spark_idle_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        15,
+        70,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_east_04.png",
+      "runtime": "winged_spark_idle_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        14,
+        68,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        232,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        372,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_idle_north_east_05.png",
+      "runtime": "winged_spark_idle_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        64,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "winged_spark_move_east_00.png",
+      "runtime": "winged_spark_move_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_east_01.png",
+      "runtime": "winged_spark_move_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        63,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_east_02.png",
+      "runtime": "winged_spark_move_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        206,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        153,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_east_03.png",
+      "runtime": "winged_spark_move_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        16,
+        66,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        232,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        372,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_east_04.png",
+      "runtime": "winged_spark_move_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        15,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_east_05.png",
+      "runtime": "winged_spark_move_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        64,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        190,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        351,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "winged_spark_move_south_east_00.png",
+      "runtime": "winged_spark_move_south_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        68,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_east_01.png",
+      "runtime": "winged_spark_move_south_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        71,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        237,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_east_02.png",
+      "runtime": "winged_spark_move_south_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        72,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        258,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_east_03.png",
+      "runtime": "winged_spark_move_south_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        14,
+        71,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_east_04.png",
+      "runtime": "winged_spark_move_south_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        71,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_east_05.png",
+      "runtime": "winged_spark_move_south_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        69,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "winged_spark_move_south_00.png",
+      "runtime": "winged_spark_move_south_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        14,
+        74,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        285,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_01.png",
+      "runtime": "winged_spark_move_south_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        16,
+        75,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        328,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        235,
+        420,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_02.png",
+      "runtime": "winged_spark_move_south_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        18,
+        76,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_03.png",
+      "runtime": "winged_spark_move_south_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        14,
+        73,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        276,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_04.png",
+      "runtime": "winged_spark_move_south_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        69,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_05.png",
+      "runtime": "winged_spark_move_south_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        21,
+        75,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        359,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        235,
+        435,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "winged_spark_move_south_west_00.png",
+      "runtime": "winged_spark_move_south_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        70,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_west_01.png",
+      "runtime": "winged_spark_move_south_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        71,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_west_02.png",
+      "runtime": "winged_spark_move_south_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        13,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_west_03.png",
+      "runtime": "winged_spark_move_south_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        13,
+        75,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        284,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        398,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_west_04.png",
+      "runtime": "winged_spark_move_south_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        75,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        284,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        398,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_south_west_05.png",
+      "runtime": "winged_spark_move_south_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "winged_spark_move_west_00.png",
+      "runtime": "winged_spark_move_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        62,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_west_01.png",
+      "runtime": "winged_spark_move_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_west_02.png",
+      "runtime": "winged_spark_move_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        70,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_west_03.png",
+      "runtime": "winged_spark_move_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        71,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_west_04.png",
+      "runtime": "winged_spark_move_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        69,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        192,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_west_05.png",
+      "runtime": "winged_spark_move_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        180,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        346,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "winged_spark_move_north_west_00.png",
+      "runtime": "winged_spark_move_north_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_west_01.png",
+      "runtime": "winged_spark_move_north_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_west_02.png",
+      "runtime": "winged_spark_move_north_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        15,
+        73,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        281,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_west_03.png",
+      "runtime": "winged_spark_move_north_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        7,
+        16,
+        70,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        291,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        235,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_west_04.png",
+      "runtime": "winged_spark_move_north_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        14,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        285,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_west_05.png",
+      "runtime": "winged_spark_move_north_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "winged_spark_move_north_00.png",
+      "runtime": "winged_spark_move_north_00.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        70,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        267,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_01.png",
+      "runtime": "winged_spark_move_north_01.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        72,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        307,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        235,
+        409,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_02.png",
+      "runtime": "winged_spark_move_north_02.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        15,
+        70,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        300,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        106,
+        235,
+        406,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_03.png",
+      "runtime": "winged_spark_move_north_03.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        12,
+        17,
+        68,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        292,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        235,
+        402,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_04.png",
+      "runtime": "winged_spark_move_north_04.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        11,
+        18,
+        69,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        309,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_05.png",
+      "runtime": "winged_spark_move_north_05.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        68,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        269,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        391,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "winged_spark_move_north_east_00.png",
+      "runtime": "winged_spark_move_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        63,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_east_01.png",
+      "runtime": "winged_spark_move_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        14,
+        66,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        223,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_east_02.png",
+      "runtime": "winged_spark_move_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        15,
+        70,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        259,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_east_03.png",
+      "runtime": "winged_spark_move_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        16,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        263,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_east_04.png",
+      "runtime": "winged_spark_move_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        15,
+        74,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        277,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_move_north_east_05.png",
+      "runtime": "winged_spark_move_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        14,
+        68,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        254,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        235,
+        383,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "winged_spark_attack_east_00.png",
+      "runtime": "winged_spark_attack_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        60,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        158,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_east_01.png",
+      "runtime": "winged_spark_attack_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        62,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        177,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_east_02.png",
+      "runtime": "winged_spark_attack_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_east_03.png",
+      "runtime": "winged_spark_attack_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        16,
+        66,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        223,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_east_04.png",
+      "runtime": "winged_spark_attack_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        18,
+        66,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_east_05.png",
+      "runtime": "winged_spark_attack_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        17,
+        67,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "winged_spark_attack_south_east_00.png",
+      "runtime": "winged_spark_attack_south_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_east_01.png",
+      "runtime": "winged_spark_attack_south_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_east_02.png",
+      "runtime": "winged_spark_attack_south_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        68,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_east_03.png",
+      "runtime": "winged_spark_attack_south_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        14,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_east_04.png",
+      "runtime": "winged_spark_attack_south_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_east_05.png",
+      "runtime": "winged_spark_attack_south_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "winged_spark_attack_south_00.png",
+      "runtime": "winged_spark_attack_south_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        14,
+        73,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        276,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_01.png",
+      "runtime": "winged_spark_attack_south_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        15,
+        74,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        302,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        105,
+        235,
+        407,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_02.png",
+      "runtime": "winged_spark_attack_south_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        16,
+        75,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        318,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        235,
+        415,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_03.png",
+      "runtime": "winged_spark_attack_south_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        18,
+        70,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        287,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_04.png",
+      "runtime": "winged_spark_attack_south_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        18,
+        70,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_05.png",
+      "runtime": "winged_spark_attack_south_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        18,
+        66,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "winged_spark_attack_south_west_00.png",
+      "runtime": "winged_spark_attack_south_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        68,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        208,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        360,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_west_01.png",
+      "runtime": "winged_spark_attack_south_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        70,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_west_02.png",
+      "runtime": "winged_spark_attack_south_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        14,
+        72,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_west_03.png",
+      "runtime": "winged_spark_attack_south_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_west_04.png",
+      "runtime": "winged_spark_attack_south_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        15,
+        74,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        286,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        113,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_south_west_05.png",
+      "runtime": "winged_spark_attack_south_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        267,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        389,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "winged_spark_attack_west_00.png",
+      "runtime": "winged_spark_attack_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        158,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_west_01.png",
+      "runtime": "winged_spark_attack_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        23,
+        13,
+        64,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_west_02.png",
+      "runtime": "winged_spark_attack_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        15,
+        67,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_west_03.png",
+      "runtime": "winged_spark_attack_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        18,
+        69,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        222,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_west_04.png",
+      "runtime": "winged_spark_attack_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        18,
+        71,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_west_05.png",
+      "runtime": "winged_spark_attack_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        14,
+        66,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "winged_spark_attack_north_west_00.png",
+      "runtime": "winged_spark_attack_north_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        70,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_west_01.png",
+      "runtime": "winged_spark_attack_north_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        71,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_west_02.png",
+      "runtime": "winged_spark_attack_north_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        73,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_west_03.png",
+      "runtime": "winged_spark_attack_north_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        62,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        235,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_west_04.png",
+      "runtime": "winged_spark_attack_north_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        18,
+        65,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        231,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_west_05.png",
+      "runtime": "winged_spark_attack_north_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        12,
+        72,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "winged_spark_attack_north_00.png",
+      "runtime": "winged_spark_attack_north_00.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        70,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        283,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_01.png",
+      "runtime": "winged_spark_attack_north_01.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        71,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        315,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        235,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_02.png",
+      "runtime": "winged_spark_attack_north_02.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        6,
+        16,
+        73,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        365,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        235,
+        439,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_03.png",
+      "runtime": "winged_spark_attack_north_03.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        7,
+        19,
+        72,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        43
+      ],
+      "scale": 5.6976744186046515,
+      "resized_visible_size": [
+        370,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        71,
+        235,
+        441,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_04.png",
+      "runtime": "winged_spark_attack_north_04.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        13,
+        19,
+        66,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        289,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_05.png",
+      "runtime": "winged_spark_attack_north_05.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        13,
+        15,
+        65,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        260,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        386,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "winged_spark_attack_north_east_00.png",
+      "runtime": "winged_spark_attack_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_east_01.png",
+      "runtime": "winged_spark_attack_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        13,
+        66,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_east_02.png",
+      "runtime": "winged_spark_attack_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_east_03.png",
+      "runtime": "winged_spark_attack_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        15,
+        69,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_east_04.png",
+      "runtime": "winged_spark_attack_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        67,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_attack_north_east_05.png",
+      "runtime": "winged_spark_attack_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        69,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        224,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        368,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "winged_spark_hit_east_00.png",
+      "runtime": "winged_spark_hit_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_east_01.png",
+      "runtime": "winged_spark_hit_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        62,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        182,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_east_02.png",
+      "runtime": "winged_spark_hit_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_east_03.png",
+      "runtime": "winged_spark_hit_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        65,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        214,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        235,
+        363,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "winged_spark_hit_south_east_00.png",
+      "runtime": "winged_spark_hit_south_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        67,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        216,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_east_01.png",
+      "runtime": "winged_spark_hit_south_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        68,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_east_02.png",
+      "runtime": "winged_spark_hit_south_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        13,
+        71,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_east_03.png",
+      "runtime": "winged_spark_hit_south_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        72,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        257,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        385,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "winged_spark_hit_south_00.png",
+      "runtime": "winged_spark_hit_south_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        13,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_01.png",
+      "runtime": "winged_spark_hit_south_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        266,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        123,
+        235,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_02.png",
+      "runtime": "winged_spark_hit_south_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        14,
+        75,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        288,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        400,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_03.png",
+      "runtime": "winged_spark_hit_south_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        75,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        283,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        397,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "winged_spark_hit_south_west_00.png",
+      "runtime": "winged_spark_hit_south_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_west_01.png",
+      "runtime": "winged_spark_hit_south_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        70,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        217,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_west_02.png",
+      "runtime": "winged_spark_hit_south_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        72,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_south_west_03.png",
+      "runtime": "winged_spark_hit_south_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        11,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        235,
+        383,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "winged_spark_hit_west_00.png",
+      "runtime": "winged_spark_hit_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_west_01.png",
+      "runtime": "winged_spark_hit_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        63,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        169,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_west_02.png",
+      "runtime": "winged_spark_hit_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        65,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_west_03.png",
+      "runtime": "winged_spark_hit_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        12,
+        65,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        194,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        235,
+        353,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "winged_spark_hit_north_west_00.png",
+      "runtime": "winged_spark_hit_north_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        70,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        237,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_west_01.png",
+      "runtime": "winged_spark_hit_north_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        72,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        262,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_west_02.png",
+      "runtime": "winged_spark_hit_north_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        73,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_west_03.png",
+      "runtime": "winged_spark_hit_north_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        73,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "winged_spark_hit_north_00.png",
+      "runtime": "winged_spark_hit_north_00.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        69,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        263,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_01.png",
+      "runtime": "winged_spark_hit_north_01.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        7,
+        13,
+        72,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        290,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        235,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_02.png",
+      "runtime": "winged_spark_hit_north_02.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        4,
+        13,
+        75,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        322,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        235,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_03.png",
+      "runtime": "winged_spark_hit_north_03.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        4,
+        15,
+        75,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        335,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        423,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "winged_spark_hit_north_east_00.png",
+      "runtime": "winged_spark_hit_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        66,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        203,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_east_01.png",
+      "runtime": "winged_spark_hit_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        14,
+        68,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_east_02.png",
+      "runtime": "winged_spark_hit_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        14,
+        74,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        280,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        396,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_hit_north_east_03.png",
+      "runtime": "winged_spark_hit_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        72,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        267,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        389,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "winged_spark_death_east_00.png",
+      "runtime": "winged_spark_death_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_east_01.png",
+      "runtime": "winged_spark_death_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        62,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_east_02.png",
+      "runtime": "winged_spark_death_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        64,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        190,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_east_03.png",
+      "runtime": "winged_spark_death_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        64,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        202,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_east_04.png",
+      "runtime": "winged_spark_death_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        64,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_east_05.png",
+      "runtime": "winged_spark_death_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        64,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "winged_spark_death_south_east_00.png",
+      "runtime": "winged_spark_death_south_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        64,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        201,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_east_01.png",
+      "runtime": "winged_spark_death_south_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        12,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_east_02.png",
+      "runtime": "winged_spark_death_south_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        17,
+        71,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        263,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_east_03.png",
+      "runtime": "winged_spark_death_south_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        12,
+        21,
+        73,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        287,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_east_04.png",
+      "runtime": "winged_spark_death_south_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        24,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        332,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        422,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_east_05.png",
+      "runtime": "winged_spark_death_south_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        7,
+        25,
+        75,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "winged_spark_death_south_00.png",
+      "runtime": "winged_spark_death_south_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        15,
+        73,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        276,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_01.png",
+      "runtime": "winged_spark_death_south_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        16,
+        76,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        309,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_02.png",
+      "runtime": "winged_spark_death_south_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        18,
+        75,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        311,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_03.png",
+      "runtime": "winged_spark_death_south_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        7,
+        20,
+        76,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        331,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_04.png",
+      "runtime": "winged_spark_death_south_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        75,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        322,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        235,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_05.png",
+      "runtime": "winged_spark_death_south_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        18,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        291,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        235,
+        401,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "winged_spark_death_south_west_00.png",
+      "runtime": "winged_spark_death_south_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        68,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_west_01.png",
+      "runtime": "winged_spark_death_south_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_west_02.png",
+      "runtime": "winged_spark_death_south_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        71,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_west_03.png",
+      "runtime": "winged_spark_death_south_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        9,
+        14,
+        73,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        275,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_west_04.png",
+      "runtime": "winged_spark_death_south_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        15,
+        75,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        279,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_south_west_05.png",
+      "runtime": "winged_spark_death_south_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        72,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "winged_spark_death_west_00.png",
+      "runtime": "winged_spark_death_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_west_01.png",
+      "runtime": "winged_spark_death_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        63,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_west_02.png",
+      "runtime": "winged_spark_death_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        14,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_west_03.png",
+      "runtime": "winged_spark_death_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        66,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_west_04.png",
+      "runtime": "winged_spark_death_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        65,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        193,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        235,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_west_05.png",
+      "runtime": "winged_spark_death_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        63,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "winged_spark_death_north_west_00.png",
+      "runtime": "winged_spark_death_north_west_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        69,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_west_01.png",
+      "runtime": "winged_spark_death_north_west_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        15,
+        13,
+        69,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        236,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        374,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_west_02.png",
+      "runtime": "winged_spark_death_north_west_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        18,
+        71,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        269,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_west_03.png",
+      "runtime": "winged_spark_death_north_west_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        22,
+        71,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        279,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        235,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_west_04.png",
+      "runtime": "winged_spark_death_north_west_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        11,
+        25,
+        73,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        338,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        235,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_west_05.png",
+      "runtime": "winged_spark_death_north_west_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        14,
+        28,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        334,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        89,
+        235,
+        423,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "winged_spark_death_north_00.png",
+      "runtime": "winged_spark_death_north_00.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        69,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        268,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        390,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_01.png",
+      "runtime": "winged_spark_death_north_01.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        14,
+        71,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        298,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        235,
+        405,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_02.png",
+      "runtime": "winged_spark_death_north_02.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        10,
+        16,
+        70,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        288,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        400,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_03.png",
+      "runtime": "winged_spark_death_north_03.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        19,
+        70,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        305,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        235,
+        409,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_04.png",
+      "runtime": "winged_spark_death_north_04.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        20,
+        71,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        310,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        101,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_05.png",
+      "runtime": "winged_spark_death_north_05.png",
+      "source_size": [
+        80,
+        80
+      ],
+      "source_alpha_bbox": [
+        9,
+        18,
+        71,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        304,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        235,
+        408,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "winged_spark_death_north_east_00.png",
+      "runtime": "winged_spark_death_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        65,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        206,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        153,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_east_01.png",
+      "runtime": "winged_spark_death_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        66,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        206,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        153,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_east_02.png",
+      "runtime": "winged_spark_death_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        67,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_east_03.png",
+      "runtime": "winged_spark_death_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        66,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_east_04.png",
+      "runtime": "winged_spark_death_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        67,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        215,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "winged_spark_death_north_east_05.png",
+      "runtime": "winged_spark_death_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        69,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
+    }
+  ]
+}

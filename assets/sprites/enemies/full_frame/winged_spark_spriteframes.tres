@@ -1,209 +1,1326 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_00.png" id="1_wi1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_01.png" id="2_wi2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_02.png" id="3_wi3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_03.png" id="4_wi4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_04.png" id="5_wi5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_05.png" id="6_wi6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_00.png" id="7_wi7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_01.png" id="8_wi8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_02.png" id="9_wi9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_03.png" id="10_wi10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_04.png" id="11_wi11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_05.png" id="12_wi12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_00.png" id="13_wi13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_01.png" id="14_wi14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_02.png" id="15_wi15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_03.png" id="16_wi16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_04.png" id="17_wi17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_05.png" id="18_wi18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_00.png" id="19_wi19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_01.png" id="20_wi20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_02.png" id="21_wi21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_03.png" id="22_wi22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_04.png" id="23_wi23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_05.png" id="24_wi24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_00.png" id="1_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_01.png" id="2_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_02.png" id="3_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_03.png" id="4_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_04.png" id="5_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_05.png" id="6_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_00.png" id="7_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_01.png" id="8_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_02.png" id="9_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_03.png" id="10_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_04.png" id="11_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_05.png" id="12_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_00.png" id="13_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_01.png" id="14_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_02.png" id="15_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_03.png" id="16_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_04.png" id="17_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_05.png" id="18_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_00.png" id="19_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_01.png" id="20_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_02.png" id="21_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_03.png" id="22_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_04.png" id="23_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_05.png" id="24_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_00.png" id="25_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_01.png" id="26_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_02.png" id="27_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_03.png" id="28_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_04.png" id="29_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_05.png" id="30_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_00.png" id="31_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_01.png" id="32_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_02.png" id="33_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_03.png" id="34_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_04.png" id="35_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_05.png" id="36_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_00.png" id="37_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_01.png" id="38_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_02.png" id="39_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_03.png" id="40_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_04.png" id="41_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_05.png" id="42_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_00.png" id="43_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_01.png" id="44_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_02.png" id="45_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_03.png" id="46_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_04.png" id="47_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_05.png" id="48_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_00.png" id="49_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_01.png" id="50_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_02.png" id="51_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_03.png" id="52_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_04.png" id="53_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_05.png" id="54_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_00.png" id="55_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_01.png" id="56_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_02.png" id="57_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_03.png" id="58_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_04.png" id="59_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_05.png" id="60_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_00.png" id="61_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_01.png" id="62_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_02.png" id="63_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_03.png" id="64_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_04.png" id="65_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_05.png" id="66_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_00.png" id="67_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_01.png" id="68_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_02.png" id="69_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_03.png" id="70_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_04.png" id="71_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_05.png" id="72_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_00.png" id="73_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_01.png" id="74_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_02.png" id="75_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_03.png" id="76_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_04.png" id="77_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_05.png" id="78_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_00.png" id="79_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_01.png" id="80_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_02.png" id="81_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_03.png" id="82_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_04.png" id="83_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_05.png" id="84_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_00.png" id="85_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_01.png" id="86_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_02.png" id="87_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_03.png" id="88_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_04.png" id="89_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_05.png" id="90_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_00.png" id="91_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_01.png" id="92_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_02.png" id="93_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_03.png" id="94_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_04.png" id="95_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_05.png" id="96_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_00.png" id="97_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_01.png" id="98_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_02.png" id="99_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_03.png" id="100_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_04.png" id="101_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_05.png" id="102_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_00.png" id="103_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_01.png" id="104_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_02.png" id="105_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_03.png" id="106_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_04.png" id="107_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_05.png" id="108_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_00.png" id="109_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_01.png" id="110_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_02.png" id="111_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_03.png" id="112_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_04.png" id="113_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_05.png" id="114_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_00.png" id="115_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_01.png" id="116_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_02.png" id="117_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_03.png" id="118_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_04.png" id="119_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_05.png" id="120_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_00.png" id="121_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_01.png" id="122_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_02.png" id="123_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_03.png" id="124_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_04.png" id="125_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_05.png" id="126_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_00.png" id="127_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_01.png" id="128_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_02.png" id="129_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_03.png" id="130_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_04.png" id="131_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_05.png" id="132_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_00.png" id="133_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_01.png" id="134_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_02.png" id="135_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_03.png" id="136_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_04.png" id="137_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_05.png" id="138_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_00.png" id="139_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_01.png" id="140_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_02.png" id="141_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_03.png" id="142_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_04.png" id="143_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_05.png" id="144_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_00.png" id="145_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_01.png" id="146_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_02.png" id="147_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_03.png" id="148_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_00.png" id="149_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_01.png" id="150_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_02.png" id="151_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_03.png" id="152_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_00.png" id="153_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_01.png" id="154_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_02.png" id="155_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_03.png" id="156_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_00.png" id="157_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_01.png" id="158_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_02.png" id="159_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_03.png" id="160_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_00.png" id="161_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_01.png" id="162_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_02.png" id="163_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_03.png" id="164_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_00.png" id="165_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_01.png" id="166_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_02.png" id="167_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_03.png" id="168_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_00.png" id="169_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_01.png" id="170_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_02.png" id="171_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_03.png" id="172_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_00.png" id="173_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_01.png" id="174_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_02.png" id="175_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_03.png" id="176_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_00.png" id="177_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_01.png" id="178_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_02.png" id="179_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_03.png" id="180_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_04.png" id="181_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_05.png" id="182_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_00.png" id="183_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_01.png" id="184_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_02.png" id="185_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_03.png" id="186_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_04.png" id="187_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_05.png" id="188_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_00.png" id="189_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_01.png" id="190_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_02.png" id="191_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_03.png" id="192_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_04.png" id="193_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_05.png" id="194_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_00.png" id="195_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_01.png" id="196_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_02.png" id="197_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_03.png" id="198_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_04.png" id="199_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_05.png" id="200_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_00.png" id="201_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_01.png" id="202_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_02.png" id="203_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_03.png" id="204_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_04.png" id="205_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_05.png" id="206_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_00.png" id="207_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_01.png" id="208_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_02.png" id="209_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_03.png" id="210_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_04.png" id="211_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_05.png" id="212_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_00.png" id="213_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_01.png" id="214_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_02.png" id="215_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_03.png" id="216_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_04.png" id="217_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_05.png" id="218_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_00.png" id="219_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_01.png" id="220_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_02.png" id="221_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_03.png" id="222_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_04.png" id="223_ws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_05.png" id="224_ws"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_wi1")
+"texture": ExtResource("1_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_wi2")
+"texture": ExtResource("2_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_wi3")
+"texture": ExtResource("3_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_wi4")
+"texture": ExtResource("4_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_wi5")
+"texture": ExtResource("5_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("6_wi6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_wi1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_wi2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_wi3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_wi4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_wi5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_wi6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_wi19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_wi20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_wi21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_wi22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_wi23")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_wi24")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_wi13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_wi14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_wi15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_wi16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_wi17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_wi18")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_wi13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_wi14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_wi15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_wi16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_wi17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_wi18")
-}
-],
+"texture": ExtResource("6_ws")
+}],
 "loop": true,
-"name": &"hover_flap",
-"speed": 12.0
-}, {
-"frames": [
+"name": &"idle_east",
+"speed": 8.0
+},
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_wi7")
+"texture": ExtResource("7_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("8_wi8")
+"texture": ExtResource("8_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("9_wi9")
+"texture": ExtResource("9_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_wi10")
+"texture": ExtResource("10_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("11_wi11")
+"texture": ExtResource("11_ws")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_wi12")
-}
-],
+"texture": ExtResource("12_ws")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_south_east",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ws")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ws")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_ws")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("31_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_ws")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_ws")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("43_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_ws")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 8.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("51_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_ws")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("55_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_ws")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("61_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_ws")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("67_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_ws")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("73_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_ws")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("79_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_ws")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("85_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_ws")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("91_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_ws")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("97_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_ws")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("103_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_ws")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_ws")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("115_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_ws")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("121_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_ws")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("127_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_ws")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_ws")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("139_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_ws")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("145_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_ws")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_ws")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_ws")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("157_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_ws")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_ws")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("165_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_ws")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("169_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_ws")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_ws")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("177_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_ws")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("183_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_ws")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("189_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_ws")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("195_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_ws")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_ws")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("207_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_ws")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("213_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_ws")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("219_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_ws")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_ws")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]
