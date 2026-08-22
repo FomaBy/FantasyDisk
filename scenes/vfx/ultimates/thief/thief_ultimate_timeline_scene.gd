@@ -23,6 +23,9 @@ func begin(registry, handles: Dictionary = {}, headless_mode := -1) -> Dictionar
 	if _manifest.is_empty():
 		push_error("ThiefUltimateTimelineScene: no manifest for %s" % weapon_id)
 		return {}
+	var performance: Dictionary = Pack.weapon_config(weapon_id).get("performance", {})
+	set_meta("max_unique_materials", performance.get("max_unique_materials"))
+	set_meta("max_fullscreen_materials", performance.get("max_fullscreen_materials"))
 	_timeline = Timeline.new(_manifest, headless_mode)
 	var snapshot: Dictionary = _timeline.begin(handles)
 	if str(snapshot.get("state", "")) == Timeline.ACTIVE_STATE:

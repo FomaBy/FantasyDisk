@@ -81,15 +81,15 @@ func _mounted_presentation_scene(host: Host) -> Node:
 
 
 func _check_backdrop_covers_camera_edge(scene: Node2D, camera: Camera2D, weapon_id: String) -> void:
-	var backdrop := scene.get_node_or_null("BackdropTreatment") as Polygon2D
+	var backdrop := scene.get_node_or_null("BackdropTreatment") as Sprite2D
 	_check(backdrop != null, "%s must create its backdrop treatment" % weapon_id)
-	if backdrop == null or backdrop.polygon.size() < 3:
+	if backdrop == null or backdrop.texture == null:
 		return
 	var visible_rect := scene.get_viewport().get_visible_rect()
 	var half_visible := visible_rect.size / camera.zoom * 0.5
 	var center := camera.get_screen_center_position()
-	var minimum := backdrop.global_position + backdrop.polygon[0]
-	var maximum := backdrop.global_position + backdrop.polygon[2]
+	var minimum := backdrop.global_position
+	var maximum := backdrop.global_position + backdrop.texture.get_size() * backdrop.global_scale
 	_check(minimum.x <= center.x - half_visible.x and maximum.x >= center.x + half_visible.x
 		and minimum.y <= center.y - half_visible.y and maximum.y >= center.y + half_visible.y,
 		"%s backdrop must cover the displaced camera viewport at arena edges" % weapon_id)

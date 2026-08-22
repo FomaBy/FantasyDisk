@@ -337,28 +337,30 @@ func _test_v2_overlay(registry, errors: Array[String]) -> void:
 	var scene := packed.instantiate() as Node2D
 	root.add_child(scene)
 	scene.begin(registry, _probes(), 0)
-	for node_name in ["BackdropDim", "WrenchSigil", "CrossfireChord0", "CrossfireChord1", "CrossfireChord2"]:
+	for node_name in ["BackdropDim", "WrenchSigil"]:
 		_expect(scene.get_node_or_null(node_name) != null, "sentry v2 scene must build %s" % node_name, errors)
+	for retired_node in ["CrossfireChord0", "CrossfireChord1", "CrossfireChord2"]:
+		_expect(scene.get_node_or_null(retired_node) == null, "sentry v2 scene must not retain naked primitive %s" % retired_node, errors)
 	_expect(
-		_live_canvas_items(scene) == 11,
-		"sentry v2 scene must own 11 drawing nodes (6 pylons + 5 overlay), got %d" % _live_canvas_items(scene),
+		_live_canvas_items(scene) == 8,
+		"sentry v2 scene must own 8 drawing nodes (6 pylons + 2 texture-backed overlay), got %d" % _live_canvas_items(scene),
 		errors
 	)
 
-	var backdrop := scene.get_node_or_null("BackdropDim") as Polygon2D
+	var backdrop := scene.get_node_or_null("BackdropDim") as Sprite2D
 	var sigil := scene.get_node_or_null("WrenchSigil") as Sprite2D
 	if backdrop != null and sigil != null:
 		scene.step(0.45)
-		var windup_alpha := backdrop.color.a
+		var windup_alpha := backdrop.modulate.a
 		_expect(windup_alpha > 0.0, "backdrop must dim in during the cast ceremony", errors)
 		scene.step(0.60)
-		_expect(backdrop.color.a > windup_alpha, "backdrop must hold its release peak", errors)
+		_expect(backdrop.modulate.a > windup_alpha, "backdrop must hold its release peak", errors)
 		_expect(sigil.visible and sigil.modulate.a > 0.9, "wrench sigil must lead the release", errors)
 
 	# Repeated activation rebuilds the layers instead of stacking them.
 	scene.begin(registry, _probes(), 0)
 	_expect(
-		_live_canvas_items(scene) == 11,
+		_live_canvas_items(scene) == 8,
 		"repeated activation must rebuild the v2 layers, got %d" % _live_canvas_items(scene),
 		errors
 	)

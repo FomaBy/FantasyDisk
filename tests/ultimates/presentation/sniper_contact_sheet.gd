@@ -28,6 +28,10 @@ const WEAPONS := [
 
 
 func _initialize() -> void:
+	if not supports_readback(DisplayServer.get_name()):
+		print("Sniper ultimate contact capture skipped: the headless dummy renderer has no readable SubViewport texture. Run without --headless to generate pixels.")
+		quit(0)
+		return
 	for suffix in CAPTURES:
 		var exported := await _export_capture(str(suffix), CAPTURES[suffix] as Vector2i)
 		if not exported:
@@ -35,6 +39,10 @@ func _initialize() -> void:
 			return
 	print("Sniper ultimate contact captures exported at 648p, 720p, 1080p and 2k.")
 	quit(0)
+
+
+static func supports_readback(display_name: String) -> bool:
+	return display_name != "headless"
 
 
 func _export_capture(suffix: String, size: Vector2i) -> bool:

@@ -152,16 +152,15 @@ Current state — the gate prints this every run:
 
 | Gate | Conforming | Pending |
 | --- | --- | --- |
-| `phases` | 14/17 | engineer, sniper, thief |
-| `cleanup` | 16/17 | soldier |
+| `phases` | 15/17 | engineer, thief |
+| `cleanup` | 17/17 | — |
 | `budget` | 17/17 | — |
-| `direction` | 14/17 | engineer, sniper, thief |
-| `capture` | 13/17 | engineer, ranger, sniper, thief |
-| `provenance` | 14/17 | engineer, sniper, thief |
-| `quality` | 1/17 | every class except the `doctor` reference |
+| `direction` | 15/17 | engineer, thief |
+| `capture` | 15/17 | ranger, thief |
+| `provenance` | 16/17 | thief |
+| `quality` | 4/17 | assassin, biologist, dark_mage, druid, elementalist, engineer, guitarist, knight, priest, ranger, robot, soldier, thief |
 
-engineer, sniper and thief still ship the legacy asset-pipeline manifest shape
-(no per-weapon `phase_ids`, direction fields or `generator_provenance`); they and
-ranger commit a single wide contact strip instead of the four viewport captures.
-soldier's `soldier_grenade` declares `cancel` and `recovery` at the same 8.40 s,
-which is the zero-length cleanup window described above.
+Engineer and thief still ship the legacy asset-pipeline manifest shape (no
+per-weapon `phase_ids` or direction fields). Ranger and thief commit a single
+wide contact strip instead of the four viewport captures; thief also lacks the
+per-weapon provenance declaration.

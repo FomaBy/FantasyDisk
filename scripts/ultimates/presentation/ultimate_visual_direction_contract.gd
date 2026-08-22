@@ -78,9 +78,6 @@ const ADOPTION_GAPS := {
 		"engineer": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 	},
-	"cleanup": {
-		"soldier": "soldier_grenade declares cancel == recovery (8.40s): no cleanup window",
-	},
 	"direction": {
 		"engineer": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",

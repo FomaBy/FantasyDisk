@@ -19,15 +19,10 @@ const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
 ## Draw order of one v2 activation: backdrop dim under everything the ultimate
-## owns, chords under the pylons, the weapon sigil on top as the identity core.
+## owns, pylons in the middle, and the weapon sigil on top as the identity core.
 const V2_BACKDROP_Z := 4
-const V2_CHORD_Z := 5
 const V2_ELEMENT_Z := 6
 const V2_SIGIL_Z := 7
-const V2_CHORD_WIDTH := 6.0
-## How far past the pylon seats the crossfire chords reach, so the web reads
-## arena-wide instead of stopping at the formation ring.
-const V2_CHORD_REACH := 2.2
 ## First-impact hitstop slows real time this hard for presence.hitstop_ms.
 const V2_HITSTOP_TIME_SCALE := 0.12
 const V2_SFX_DUCK_DB := -8.0
@@ -41,9 +36,8 @@ var _timeline = null
 var _manifest: Dictionary = {}
 var _elements: Array[Sprite2D] = []
 var _frames: Array[Texture2D] = []
-var _backdrop: Polygon2D = null
+var _backdrop: Sprite2D = null
 var _sigil: Sprite2D = null
-var _chords: Array[Line2D] = []
 # Cached at begin() so the per-frame overlay pose allocates nothing.
 var _v2_overlay: Dictionary = {}
 var _presence: Dictionary = {}
@@ -184,10 +178,6 @@ func _clear_elements() -> void:
 		if is_instance_valid(sprite):
 			sprite.queue_free()
 	_elements.clear()
-	for chord in _chords:
-		if is_instance_valid(chord):
-			chord.queue_free()
-	_chords.clear()
 	if _backdrop != null and is_instance_valid(_backdrop):
 		_backdrop.queue_free()
 	_backdrop = null
@@ -239,43 +229,32 @@ func _cache_v2_config() -> void:
 	_presence = config.get("presence", {}) if config.get("presence") is Dictionary else {}
 
 
-## Build the declared full-screen layers of a migrated weapon: one translucent
-## backdrop dim, the arena-wide crossfire chords, and the weapon-silhouette
-## sigil that is the identity core of the effect. A weapon without a
-## `v2_overlay` block keeps its exact v1 scene shape.
+## Build the declared full-screen layers of a migrated weapon: one texture-backed
+## backdrop dim and the weapon-silhouette sigil that is the identity core of the
+## effect. A weapon without a `v2_overlay` block keeps its exact v1 scene shape.
 func _build_v2_overlay() -> void:
 	var overlay := _v2_overlay_config()
 	if overlay.is_empty():
 		return
 	var half: Dictionary = overlay.get("backdrop_half_size", {})
 	var half_size := Vector2(float(half.get("x", 1400.0)), float(half.get("y", 800.0)))
-	_backdrop = Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color(1.0, 1.0, 1.0, 0.82), Color.WHITE])
+	var backdrop_texture := GradientTexture2D.new()
+	backdrop_texture.gradient = gradient
+	backdrop_texture.fill = GradientTexture2D.FILL_RADIAL
+	backdrop_texture.width = 64
+	backdrop_texture.height = 64
+	_backdrop = Sprite2D.new()
 	_backdrop.name = "BackdropDim"
-	_backdrop.polygon = PackedVector2Array([
-		Vector2(-half_size.x, -half_size.y),
-		Vector2(half_size.x, -half_size.y),
-		half_size,
-		Vector2(-half_size.x, half_size.y),
-	])
-	_backdrop.color = _v2_color(overlay.get("backdrop_color", {}), 0.0)
+	_backdrop.texture = backdrop_texture
+	_backdrop.centered = false
+	_backdrop.position = -half_size
+	_backdrop.scale = half_size * 2.0 / backdrop_texture.get_size()
+	_backdrop.modulate = _v2_color(overlay.get("backdrop_color", {}), 0.0)
 	_backdrop.z_index = V2_BACKDROP_Z
 	add_child(_backdrop)
-
-	var formation: Dictionary = Pack.weapon_config(weapon_id).get("formation", {})
-	var count := int(formation.get("count", 0))
-	var radius := float(formation.get("radius", 0.0))
-	# Opposite hex seats mirror through the origin, so each chord is one line
-	# through the hero, extended past the seats to read arena-wide.
-	for index in count / 2:
-		var chord := Line2D.new()
-		chord.name = "CrossfireChord%d" % index
-		var seat := _v2_seat(index, count, radius)
-		chord.points = PackedVector2Array([seat * V2_CHORD_REACH, -seat * V2_CHORD_REACH])
-		chord.width = V2_CHORD_WIDTH
-		chord.default_color = _v2_color(overlay.get("chord_color", {}), 0.0)
-		chord.z_index = V2_CHORD_Z
-		add_child(chord)
-		_chords.append(chord)
 
 	var identity: Dictionary = Pack.weapon_config(weapon_id).get("identity", {})
 	var texture: Texture2D = load(str(identity.get("weapon_silhouette_asset", "")))
@@ -286,11 +265,6 @@ func _build_v2_overlay() -> void:
 		_sigil.z_index = V2_SIGIL_Z
 		_sigil.modulate = Color(1.0, 1.0, 1.0, 0.0)
 		add_child(_sigil)
-
-
-func _v2_seat(index: int, count: int, radius: float) -> Vector2:
-	var angle := TAU * float(index) / float(maxi(count, 1)) - PI * 0.5
-	return Vector2(cos(angle), sin(angle) * 0.62) * radius
 
 
 func _v2_color(raw, alpha: float) -> Color:
@@ -313,7 +287,6 @@ func _apply_v2_overlay(phase_name: String, progress: float) -> void:
 	var peak := float(overlay.get("backdrop_peak_alpha", 0.42))
 	var t := clampf(progress, 0.0, 1.0)
 	var backdrop_alpha := 0.0
-	var chord_alpha := 0.0
 	var sigil_alpha := 0.0
 	var sigil_scale := 1.0
 	var sigil_position := Vector2.ZERO
@@ -321,30 +294,26 @@ func _apply_v2_overlay(phase_name: String, progress: float) -> void:
 	match phase_name:
 		"windup":
 			# Cast ceremony: the frame dims, the wrench sigil rises over the
-			# hero, and faint chords call out the arena the nest will hold.
+			# hero while the pylon formation establishes the arena it will hold.
 			backdrop_alpha = peak * ease(t, 0.6)
-			chord_alpha = 0.12 * t
 			sigil_alpha = lerpf(0.22, 0.92, t)
 			sigil_scale = lerpf(0.9, 3.4, ease(t, 0.55))
 			sigil_position = Vector2(0.0, lerpf(-46.0, -150.0, ease(t, 0.55)))
 			sigil_rotation = sin(t * TAU) * 0.06
 		"release":
 			backdrop_alpha = peak
-			chord_alpha = lerpf(0.12, 0.55, t)
 			sigil_alpha = 1.0
 			sigil_scale = lerpf(3.4, 4.3, ease(t, 0.3))
 			sigil_position = Vector2(0.0, lerpf(-150.0, -12.0, ease(t, 0.3)))
 		"active":
 			var volley := absf(sin(t * float(Pack.SENTRY_VOLLEY_BEATS) * PI))
 			backdrop_alpha = peak
-			chord_alpha = 0.30 + 0.25 * volley
 			sigil_alpha = 0.80 + 0.15 * volley
 			sigil_scale = 4.3 + 0.06 * volley
 			sigil_position = Vector2(0.0, -12.0)
 			sigil_rotation = t * PI * 0.5
 		"recovery":
 			backdrop_alpha = lerpf(peak, 0.10, t)
-			chord_alpha = lerpf(0.40, 0.06, t)
 			sigil_alpha = lerpf(0.95, 0.35, t)
 			sigil_scale = lerpf(4.3, 2.0, t)
 			sigil_position = Vector2(0.0, lerpf(-12.0, -60.0, t))
@@ -355,11 +324,8 @@ func _apply_v2_overlay(phase_name: String, progress: float) -> void:
 			sigil_scale = lerpf(2.0, 1.2, t)
 			sigil_position = Vector2(0.0, lerpf(-60.0, -90.0, t))
 			sigil_rotation = PI * 0.5
-	_backdrop.color.a = backdrop_alpha
+	_backdrop.modulate.a = backdrop_alpha
 	_backdrop.visible = backdrop_alpha > 0.0
-	for chord in _chords:
-		chord.default_color.a = chord_alpha
-		chord.visible = chord_alpha > 0.0
 	if _sigil != null:
 		_sigil.modulate.a = sigil_alpha
 		_sigil.visible = sigil_alpha > 0.0

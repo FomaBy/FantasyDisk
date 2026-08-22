@@ -113,10 +113,12 @@ func _notification(what: int) -> void:
 
 
 ## The backdrop veil is a top-level child so the moving hero never shifts the
-## full-screen treatment; it is refitted every frame to the visible rect.
+## full-screen treatment; it is refitted every frame to the visible rect. The
+## veil draws its gradient texture uncentered, so the fit is a top-left position
+## plus a scale instead of procedural geometry.
 func _fit_backdrop_to_viewport() -> void:
-	var veil := get_node_or_null("BackdropVeil") as Polygon2D
-	if veil == null:
+	var veil := get_node_or_null("BackdropVeil") as Sprite2D
+	if veil == null or veil.texture == null:
 		return
 	var viewport := get_viewport()
 	if viewport == null:
@@ -131,12 +133,7 @@ func _fit_backdrop_to_viewport() -> void:
 	var size := visible_size + overscan * 2.0
 	veil.top_level = true
 	veil.position = viewport.get_canvas_transform().affine_inverse() * rect.position - overscan
-	veil.polygon = PackedVector2Array([
-		Vector2.ZERO,
-		Vector2(size.x, 0.0),
-		size,
-		Vector2(0.0, size.y),
-	])
+	veil.scale = size / veil.texture.get_size()
 
 
 func _pause_timeline() -> void:
@@ -165,7 +162,7 @@ func _screen_shake_enabled() -> bool:
 ## moves and the release flash plays as a damped fade. Every phase keeps its
 ## declared timing — only the intensity of the two motion devices changes.
 func _apply_reduced_motion() -> void:
-	for node_name in ["BackdropVeil", "GoldRadiance"]:
+	for node_name in ["BackdropVeil"]:
 		var item := get_node_or_null(node_name) as CanvasItem
 		if item != null:
 			item.self_modulate.a = REDUCED_MOTION_FLASH_ALPHA

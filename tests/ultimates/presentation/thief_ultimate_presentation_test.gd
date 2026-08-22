@@ -5,6 +5,7 @@ const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const Pack := preload("res://scenes/vfx/ultimates/thief/thief_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/thief/thief_ultimate_timeline_scene.gd")
 
@@ -101,6 +102,9 @@ func _test_distinct_timelines(manifests: Dictionary, errors: Array[String]) -> v
 
 func _test_budgets(errors: Array[String]) -> void:
 	for weapon_id in Pack.WEAPON_IDS:
+		var performance: Dictionary = Pack.weapon_config(weapon_id).get("performance", {})
+		_expect(int(performance.get("max_unique_materials", 0)) == 1, "%s must declare one material budget" % weapon_id, errors)
+		_expect(int(performance.get("max_fullscreen_materials", 0)) == 1, "%s must declare one full-screen material budget" % weapon_id, errors)
 		var count := int((Pack.weapon_config(weapon_id).get("formation", {}) as Dictionary).get("count", 0))
 		_expect(count > 0 and count <= Pack.MAX_ELEMENTS_PER_ULTIMATE, "%s must respect crowd cap" % weapon_id, errors)
 		var texture: Texture2D = load(Pack.asset_path(weapon_id))
@@ -131,6 +135,11 @@ func _test_lifecycle(registry, weapon_id: String, errors: Array[String]) -> void
 	var scene := packed.instantiate() as Node2D
 	root.add_child(scene)
 	scene.begin(registry, _probes(), 0)
+	_expect(
+		DirectionContract.scene_material_violations(scene, "thief/%s" % weapon_id).is_empty(),
+		"%s live scene must enforce its declared material budget" % weapon_id,
+		errors
+	)
 	scene.step(0.2)
 	_expect(scene.is_active() and scene.get_child_count() > 0, "%s scene must animate" % weapon_id, errors)
 	var before := _scene_pose(scene)
