@@ -18,6 +18,7 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "quality.yml"
+LIFECYCLE_TEST = ROOT / "tests" / "ultimates" / "tracked_tween_natural_completion_test.gd"
 
 
 def _pinned_engine_build_id() -> str:
@@ -115,6 +116,38 @@ class QualityGateTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.quality = _load_module("quality_gate_tested", "tools/quality_gate.py")
+
+    def test_lifecycle_measurement_starts_after_activation_admission(self) -> None:
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        body = _gdscript_func_body(source, "_start_case")
+        admitted = body.index('player.call("activate_ultimate")')
+        measured = body.index('state["started_ms"] = Time.get_ticks_msec()')
+        self.assertGreater(measured, admitted)
+
+    def test_lifecycle_precompletion_checkpoint_uses_tween_progress(self) -> None:
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        self.assertIn("get_total_elapsed_time()", source)
+        self.assertNotIn("now >= pre_at", source)
+
+    def test_known_import_sidecars_are_removed_without_broad_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-sidecars-") as scratch:
+            root = Path(scratch)
+            for name in self.quality.GENERATED_IMPORT_SIDECARS:
+                (root / name).write_text("generated\n", encoding="utf-8")
+            (root / "unrelated.png.import").write_text("keep\n", encoding="utf-8")
+            (root / "nested").mkdir()
+            (root / "nested" / "asset.png.import").write_text("keep\n", encoding="utf-8")
+            with mock.patch.object(self.quality, "ROOT", root):
+                removed = self.quality._cleanup_generated_import_sidecars()
+            self.assertEqual(set(removed), set(self.quality.GENERATED_IMPORT_SIDECARS))
+            for name in self.quality.GENERATED_IMPORT_SIDECARS:
+                self.assertFalse((root / name).exists())
+            self.assertTrue((root / "unrelated.png.import").exists())
+            self.assertTrue((root / "nested" / "asset.png.import").exists())
+
+    def test_quality_gate_runs_known_import_sidecar_cleanup_before_status_reads(self) -> None:
+        source = (ROOT / "tools" / "quality_gate.py").read_text(encoding="utf-8")
+        self.assertGreaterEqual(source.count("_cleanup_generated_import_sidecars()"), 2)
 
     def _captured_shell_exclusive_flag(self, shell: str, command: str) -> str:
         """Run one shell call with a fake Godot launcher and capture its env."""
@@ -858,6 +891,18 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
             self.assertIn("tracked_tween_natural_completion_test", names)
+
+    def test_coin_pouch_executor_selects_thief_contract_suites(self) -> None:
+        expected = {"thief_live_test", "thief_balance_test"}
+        with mock.patch.object(
+            self.quality, "_git_changed_paths",
+            return_value={"scripts/ultimates/classes/thief/thief_coin_pouch.gd"},
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertLessEqual(expected, names)
 
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
