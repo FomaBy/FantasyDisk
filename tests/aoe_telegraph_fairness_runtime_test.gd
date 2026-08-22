@@ -10,7 +10,8 @@ extends SceneTree
 #      скорость не меняются), направление рывка залочено в момент решения даже
 #      если игрок ушёл.
 #
-# Время меряется суммой process-дельт по кадрам (та же шкала, что двигает tween'ы).
+# Время меряется pausable-часами игрового узла: они включают кадр спавна и
+# останавливаются вместе с tween hazard-а.
 #
 # Запуск: python3 tools/godot_gate.py --headless --path . --script res://tests/aoe_telegraph_fairness_runtime_test.gd
 
@@ -25,9 +26,13 @@ class StubPlayer extends Node2D:
 	var max_health := 1000.0
 	var health := 1000.0
 	var hits: Array = []
+	var active_time := 0.0
+
+	func _process(delta: float) -> void:
+		active_time += delta
 
 	func take_damage(amount: float, source := "", _attacker: Node2D = null) -> bool:
-		hits.append({"amount": amount, "source": str(source)})
+		hits.append({"amount": amount, "source": str(source), "active_time": active_time})
 		health -= amount
 		return true
 
@@ -91,8 +96,8 @@ func _test_elite_poison_hazard_floor(holder: Node2D, stub: StubPlayer) -> void:
 
 	stub.hits.clear()
 	var expected_floor: float = CombatFairnessScript.fair_windup(0.55, 72.0, 1.0, stub)
+	var armed_at := stub.active_time
 	poison.call("_spawn_elite_hazard", stub.global_position)
-	var elapsed := 0.0
 
 	var hazard := holder.find_child("ElitePoisonZone", true, false)
 	if hazard == null:
@@ -102,26 +107,56 @@ func _test_elite_poison_hazard_floor(holder: Node2D, stub: StubPlayer) -> void:
 		_fail("(a) у зоны нет ребёнка HazardTelegraph — телеграф обязателен")
 		return
 
-	# Рано (заметно ниже пола ~0.69s) урона быть не должно.
-	while elapsed < 0.32:
+	# Время берём из pausable игрового узла: оно включает кадр спавна и не
+	# растёт во время паузы, ровно как tween hazard-а.
+	while stub.active_time - armed_at < expected_floor:
 		await process_frame
-		elapsed += root.get_process_delta_time()
-	if not stub.hits.is_empty():
-		_fail("(a) урон прошёл на %.2fs — раньше честного окна %.2fs" % [elapsed, expected_floor])
+		if not stub.hits.is_empty():
+			var early_elapsed := float((stub.hits[0] as Dictionary).get("active_time", 0.0)) - armed_at
+			_fail("(a) урон прошёл на %.2fs — раньше честного окна %.2fs" % [early_elapsed, expected_floor])
 		return
 
-	# Ждём детонацию (щедрый таймаут по движковому времени) и сверяем момент с полом.
-	while stub.hits.is_empty() and elapsed < expected_floor + 2.0:
+	while stub.hits.is_empty() and stub.active_time - armed_at < expected_floor + 2.0:
 		await process_frame
-		elapsed += root.get_process_delta_time()
 	if stub.hits.is_empty():
 		_fail("(a) детонация так и не случилась (таймаут)")
 		return
-	if elapsed + 0.08 < expected_floor:
-		_fail("(a) детонация на %.2fs раньше пола fair_windup %.2fs" % [elapsed, expected_floor])
+	var hit_elapsed := float((stub.hits[0] as Dictionary).get("active_time", 0.0)) - armed_at
+	if hit_elapsed < expected_floor:
+		_fail("(a) детонация на %.2fs раньше пола fair_windup %.2fs" % [hit_elapsed, expected_floor])
 	if str((stub.hits[0] as Dictionary).get("source", "")) != "poison_zone":
 		_fail("(a) неожиданный источник урона: %s" % str((stub.hits[0] as Dictionary).get("source", "")))
 	poison.queue_free()
+	await process_frame
+
+	# Пауза не должна расходовать замах: до resume урона нет, а после него
+	# остаётся тот же fair_windup активного игрового времени.
+	var paused_poison := _make_elite(holder, "plague_prophet")
+	paused_poison.global_position = stub.global_position + Vector2(240.0, 0.0)
+	paused_poison.set("elite_hazard_damage", 5.0)
+	await process_frame
+	stub.hits.clear()
+	var paused_armed_at := stub.active_time
+	paused_poison.call("_spawn_elite_hazard", stub.global_position)
+	while stub.active_time - paused_armed_at < 0.20:
+		await process_frame
+	var paused_at := stub.active_time
+	paused = true
+	await create_timer(0.20, true).timeout
+	if not is_equal_approx(stub.active_time, paused_at):
+		_fail("(a) игровой таймер продолжил ход во время паузы")
+	if not stub.hits.is_empty():
+		_fail("(a) ядовитая зона нанесла урон во время паузы")
+	paused = false
+	while stub.hits.is_empty() and stub.active_time - paused_armed_at < expected_floor + 2.0:
+		await process_frame
+	if stub.hits.is_empty():
+		_fail("(a) ядовитая зона не продолжила замах после паузы")
+	else:
+		var resumed_elapsed := float((stub.hits[0] as Dictionary).get("active_time", 0.0)) - paused_armed_at
+		if resumed_elapsed < expected_floor:
+			_fail("(a) после паузы детонация на %.2fs раньше пола fair_windup %.2fs" % [resumed_elapsed, expected_floor])
+	paused_poison.queue_free()
 	await process_frame
 
 

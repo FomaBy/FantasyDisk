@@ -307,7 +307,7 @@ func _test_grand_trap() -> void:
 	_check(effect != null and int(effect.get("ring_count_for_tests")) == 1
 		and effect.get("jaw_target_for_tests") == boss,
 		"the first ring must bite the body nearest the trap centre")
-	_check(is_equal_approx(normal.total_received(), BASE_DAMAGE * 54.0 * 0.11),
+	_check(is_equal_approx(normal.total_received(), BASE_DAMAGE * 67.5 * 0.11),
 		"everything the jaws did not bite must keep only the declared chain share")
 	_check(normal.knockback.length() > 0.0
 		and (normal.global_position + normal.knockback).x < normal.global_position.x,

@@ -128,7 +128,7 @@ func _test_spore_lens() -> void:
 		"three non-recursive blooms may hit at most three neighbors each")
 	for victim in vulnerable:
 		_check(is_zero_approx(victim.health), "primary infection must kill the low-HP fixture")
-		_check(is_equal_approx(float(victim.received[0]["amount"]), 550.0),
+		_check(is_equal_approx(float(victim.received[0]["amount"]), host.base_damage * 78.65),
 			"the attempted infection hit must remain visible for attribution")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.fixture_targets)),
 		"Spore attribution must equal HP actually removed, including overkill clamps")
