@@ -5,4 +5,4 @@
 [node name="BiologistSymbioteSeedMatriarch" type="Node2D"]
 script = ExtResource("1_scene")
 variant = 2
-duration = 9.0
+duration = 3.8

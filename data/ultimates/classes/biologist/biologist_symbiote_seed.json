@@ -21,8 +21,6 @@
       "release_delay": 1.15,
       "active_delay": 1.75,
       "hatch_delay": 8.1,
-      "radius": 350.0,
-      "crowd_cap": 22,
       "pull_strength": 520.0,
       "root_duration": 4.5,
       "slow_multiplier": 0.5,

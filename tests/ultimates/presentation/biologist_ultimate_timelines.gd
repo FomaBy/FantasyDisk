@@ -3,6 +3,8 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/biologist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/biologist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const VISUAL_CONTRACT := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const WEAPON_IDS := ["biologist_spore_lens", "biologist_sample_injector", "biologist_symbiote_seed"]
 const SCENES := {
 	"biologist_spore_lens": preload("res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn"),
@@ -13,7 +15,7 @@ const PACKS := [
 	{
 		"weapon_id": "biologist_spore_lens",
 		"scene": preload("res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn"),
-		"time": 4.2,
+		"time": 2.1,
 		"title": "SPORE LENS — WORLD MYCELIUM",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.68, 1.0, 0.52),
@@ -22,7 +24,7 @@ const PACKS := [
 	{
 		"weapon_id": "biologist_sample_injector",
 		"scene": preload("res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn"),
-		"time": 4.0,
+		"time": 1.9,
 		"title": "SAMPLE INJECTOR — PERFECT SAMPLE",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.55, 1.0, 0.86),
@@ -31,7 +33,7 @@ const PACKS := [
 	{
 		"weapon_id": "biologist_symbiote_seed",
 		"scene": preload("res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn"),
-		"time": 6.9,
+		"time": 2.9,
 		"title": "SYMBIOTE SEED — SYMBIONT MATRIARCH",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.48, 0.92),
@@ -80,10 +82,12 @@ func _initialize() -> void:
 	_check_provenance(manifest, errors)
 	var profiles := _profiles_by_weapon(profile_root)
 	var packages := _packages_by_weapon(manifest)
+	_check_v2_ratchets(errors)
 	_expect(packages.size() == WEAPON_IDS.size(), "manifest must contain exactly three Biologist packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_timing_distinctness(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
@@ -128,6 +132,7 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 		var expected := str((profile.get("cast_phases", {}) as Dictionary).get(_cast_phase_name(phase_name), ""))
 		_expect(str(phases.get(phase_name, "")) == expected, "%s %s must bind the frozen Cast phase" % [weapon_id, phase_name], errors)
 	_check_scene(weapon_id, package, errors)
+	_check_v2_package(weapon_id, package, errors)
 	_check_lifecycle(weapon_id, timing, phases, errors)
 
 
@@ -152,6 +157,12 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	var performance := package.get("performance", {}) as Dictionary
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) == int(performance.get("max_visual_nodes", -1)), "%s node budget must match manifest" % weapon_id, errors)
 	_expect(int(instance.get_meta("crowd_cap", 0)) == int(performance.get("crowd_cap", -1)), "%s crowd cap must match manifest" % weapon_id, errors)
+	for material_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(int(instance.get_meta(material_key, 0)) == int(performance.get(material_key, -1)),
+			"%s scene %s must match manifest" % [weapon_id, material_key], errors)
+	var backdrop := instance.get_node_or_null("BackdropVeil") as CanvasItem
+	_expect(backdrop != null and backdrop.visible and bool(backdrop.get_meta("fullscreen_layer", false)),
+		"%s must carry a visible arena-wide backdrop veil" % weapon_id, errors)
 	_expect(_visual_node_count(instance) <= int(instance.get_meta("max_visual_nodes", 0)), "%s scene must stay within its visual-node budget" % weapon_id, errors)
 	match weapon_id:
 		"biologist_spore_lens":
@@ -162,7 +173,82 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 		"biologist_symbiote_seed":
 			_expect(instance.get_node("Tendrils").get_child_count() == int(performance.get("tendril_cap", -1)), "seed tendril count must match its cap", errors)
 			_expect(instance.get_node("Larvae").get_child_count() == int(performance.get("larva_cap", -1)), "seed larva count must match its cap", errors)
+	_check_runtime_presence(instance, package, errors)
 	instance.queue_free()
+
+
+func _check_runtime_presence(instance: Node2D, package: Dictionary, errors: Array[String]) -> void:
+	_expect(instance.has_method("begin") and instance.has_method("finish")
+		and instance.has_method("presence_state_for_tests"),
+		"Biologist scene must expose its runtime presence lifecycle", errors)
+	if not instance.has_method("begin") or not instance.has_method("presence_state_for_tests"):
+		return
+	instance.call("begin", {}, {}, 0)
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	instance.set("progress", float(timing.get("active", 0.0)) / float(timing.get("cancel", 1.0)))
+	var state := instance.call("presence_state_for_tests") as Dictionary
+	_expect(state.get("impact_triggered") == true,
+		"first active beat must exercise the runtime presence weight", errors)
+	_expect(float(state.get("hitstop_ms", 0.0)) == float((package.get("presence", {}) as Dictionary).get("hitstop_ms", -1.0)),
+		"runtime hitstop must match the manifest", errors)
+	_expect(state.get("cast_pose_bound") == true and state.get("silhouette_bound") == true,
+		"runtime must bind the hero pose and weapon silhouette", errors)
+	instance.call("finish", "cancel")
+
+
+func _check_v2_package(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var key := "biologist/%s" % weapon_id
+	_expect(V2_SCHEMA.v2_envelope_errors(package.get("timing_seconds", {}), key).is_empty(),
+		"%s must stay inside the 2.5-4.0s v2 envelope" % weapon_id, errors)
+	var presence := package.get("presence", {}) as Dictionary
+	_expect(presence.get("fullscreen_footprint") == true,
+		"%s must declare arena-wide footprint" % weapon_id, errors)
+	_expect(V2_SCHEMA.V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))),
+		"%s must declare a v2 backdrop" % weapon_id, errors)
+	_expect(presence.get("camera_shake") == true and presence.get("sfx_ducking") == true,
+		"%s must declare camera shake and SFX ducking" % weapon_id, errors)
+	var hitstop := float(presence.get("hitstop_ms", 0.0))
+	_expect(hitstop >= 80.0 and hitstop <= 150.0,
+		"%s first-impact hitstop must stay in 80-150ms" % weapon_id, errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(str(identity.get("cast_pose_id", "")).begins_with("cast_pose.biologist."),
+		"%s must declare a Biologist cast pose" % weapon_id, errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette),
+		"%s central weapon silhouette must exist" % weapon_id, errors)
+	_expect(str(identity.get("class_palette_id", "")).begins_with("palette.biologist."),
+		"%s must declare a Biologist palette" % weapon_id, errors)
+	var quality := package.get("quality", {}) as Dictionary
+	_expect(float(quality.get("max_viewport_coverage_ratio", 1.0)) <= 0.35
+		and quality.get("hud_bands_clear") == true
+		and quality.get("reduced_motion_preserves_timing") == true,
+		"%s must declare HUD-safe reduced-motion readability" % weapon_id, errors)
+
+
+func _check_v2_ratchets(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("biologist/%s" % weapon_id),
+			"%s must leave the presentation v2 allowlist" % weapon_id, errors)
+	_expect(not (VISUAL_CONTRACT.ADOPTION_GAPS.get("quality", {}) as Dictionary).has("biologist"),
+		"Biologist must leave the visual-quality adoption gap", errors)
+
+
+func _check_timing_distinctness(packages: Dictionary, errors: Array[String]) -> void:
+	var rhythms: Array[Dictionary] = []
+	for weapon_id in WEAPON_IDS:
+		var timing := ((packages.get(weapon_id, {}) as Dictionary).get("timing_seconds", {}) as Dictionary)
+		rhythms.append({
+			"weapon_id": weapon_id,
+			"total": float(timing.get("cancel", 0.0)),
+			"active_window": float(timing.get("recovery", 0.0)) - float(timing.get("active", 0.0)),
+		})
+	for first_index in range(rhythms.size() - 1):
+		for second_index in range(first_index + 1, rhythms.size()):
+			for axis in ["total", "active_window"]:
+				_expect(absf(float(rhythms[first_index][axis]) - float(rhythms[second_index][axis])) >= 0.1 - 0.000001,
+					"%s/%s %s rhythms must differ by at least 0.1s" % [
+						rhythms[first_index]["weapon_id"], rhythms[second_index]["weapon_id"], axis,
+					], errors)
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phase_ids: Dictionary, errors: Array[String]) -> void:
