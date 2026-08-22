@@ -26,6 +26,7 @@ const PresentationManifest := preload(
 	"res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 
 const HOST_SOURCE_PATH := "res://scripts/ultimates/controller/ultimate_player_host.gd"
+const CLASS_ULTIMATE_SCENE_ROOT := "res://scripts/ultimates/classes"
 const EXPECTED_PAIR_COUNT := 51
 ## FAN-3015: the pairs whose ready package spawns nothing, so the authored
 ## scene is the only live effect channel their cast owns. Kept explicit —
@@ -79,6 +80,7 @@ func _initialize() -> void:
 
 	_test_quality_block_reaches_the_runtime_manifest()
 	_test_no_pale_blue_constants_left_in_host_source()
+	_test_class_scenes_do_not_embed_presentations()
 	_test_all_pairs_draw_nothing_over_the_live_presentation()
 	_test_zero_budget_weapons_never_flash()
 	_test_fallback_only_with_declared_budget()
@@ -130,6 +132,19 @@ func _test_no_pale_blue_constants_left_in_host_source() -> void:
 	var source := FileAccess.get_file_as_string(HOST_SOURCE_PATH)
 	_check(not source.contains("0.86, 0.92, 1.0"),
 		"the pale-blue controller colors must be gone from ultimate_player_host.gd")
+
+
+func _test_class_scenes_do_not_embed_presentations() -> void:
+	for class_id in DirAccess.get_directories_at(CLASS_ULTIMATE_SCENE_ROOT):
+		var class_path := "%s/%s" % [CLASS_ULTIMATE_SCENE_ROOT, class_id]
+		for file_name in DirAccess.get_files_at(class_path):
+			if not file_name.ends_with(".tscn"):
+				continue
+			var path := "%s/%s" % [class_path, file_name]
+			_check(
+				not FileAccess.get_file_as_string(path).contains("scenes/vfx/ultimates/"),
+				"%s must not embed an authored ultimate presentation" % path
+			)
 
 
 func _test_all_pairs_draw_nothing_over_the_live_presentation() -> void:
