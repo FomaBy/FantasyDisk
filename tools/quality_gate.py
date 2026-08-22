@@ -130,6 +130,10 @@ DEFENSIVE_CONTRACT_TESTS = {
     "thief_kit_test",
 }
 PATH_TEST_RULES = {
+    "scripts/ultimates/classes/thief/thief_coin_pouch.gd": {
+        "thief_live_test",
+        "thief_balance_test",
+    },
     "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
     # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
     # (progression_data.gd), данные CLASS_TRAITS (progression_data_characters.gd),
@@ -176,6 +180,10 @@ PATH_TEST_RULES = {
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
+GENERATED_IMPORT_SIDECARS = (
+    "before_berserk_648p.png.import",
+    "after_berserk_648p.png.import",
+)
 
 
 def discover_godot_tests() -> list[Path]:
@@ -483,6 +491,22 @@ def _worktree_status() -> list[str]:
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or "git worktree status failed")
     return [line for line in result.stdout.splitlines() if line]
+
+
+def _cleanup_generated_import_sidecars() -> list[str]:
+    """Remove only the two known root sidecars emitted by Godot's import pass."""
+    removed: list[str] = []
+    for relative in GENERATED_IMPORT_SIDECARS:
+        path = ROOT / relative
+        if not path.is_file():
+            continue
+        try:
+            path.unlink()
+        except OSError as exc:
+            print(f"quality_gate: cannot remove generated sidecar {relative}: {exc}", file=sys.stderr)
+            continue
+        removed.append(relative)
+    return removed
 
 
 def _is_certifying(
@@ -1262,8 +1286,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.profile == "windows" and os.name != "nt":
         print("quality_gate: windows profile must run natively on Windows", file=sys.stderr)
         return 2
+    removed_import_sidecars: list[str] = []
     try:
         changed_base_sha = _resolved_commit(args.changed_ref)
+        removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
         selected = select_godot_tests(
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
@@ -1351,6 +1377,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         import_result = None
 
+    removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
     try:
         final_worktree_status = _worktree_status()
     except RuntimeError as exc:
@@ -1402,6 +1429,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         static_checks=static_results,
         godot_import_prepass=import_result,
         godot_tests=godot_results,
+        generated_import_sidecars_removed=sorted(set(removed_import_sidecars)),
         shard={"index": args.shard_index, "count": args.shard_count},
     )
     _write_report((ROOT / args.report).resolve(), payload)

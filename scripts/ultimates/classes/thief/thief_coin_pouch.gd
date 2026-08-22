@@ -33,7 +33,7 @@ static func execute(activation) -> float:
 	if not Library.execute_primitive("priority_target_selector", activation, {
 		"center": "source",
 		"radius": 999999.0,
-		"limit": 0,
+		"limit": activation.param_int("coin_wave_count", 13),
 		"priority": "nearest",
 		"hint": {},
 	}):
