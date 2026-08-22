@@ -198,9 +198,12 @@ const FULL_FRAME_SPRITEFRAMES := {
 		},
 		"night_stalker": {
 			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
+			# FAN-3118: restore the approved normalized 512x512 eight-direction
+			# snapshot; preserve its live footline and disable horizontal mirroring.
 			"scale": Vector2(0.62, 0.62),
-			"position": Vector2(0.0, -76.0),
+			"position": Vector2(0.0, -82.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 		"plague_prophet": {
 			"frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",

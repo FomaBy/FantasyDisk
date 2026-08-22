@@ -1318,6 +1318,7 @@ func _test_full_frame_animation_registry() -> void:
 	# directional_enemy_row_frames above / FAN-2901 mini-elite pattern below).
 	var directional_elite_row_frames := {
 		"iron_bastion": {"idle": 1, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shield_block": 7, "skill_slam_wave": 7},
+		"night_stalker": {"idle": 4, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shadow_strike": 7, "skill_phase_dash": 7},
 		"plague_prophet": {"idle": 1, "move": 8, "skill_poison_volley": 10, "hit": 5, "death": 7},
 	}
 	for elite_id in elite_full_frame_scenes.keys():
@@ -1334,6 +1335,8 @@ func _test_full_frame_animation_registry() -> void:
 			if elite_row_frames.is_empty():
 				_fail("Expected %s to declare its directional row lengths in directional_elite_row_frames." % elite_id)
 			var elite_state_names := ["idle", "move", "hit", "death"]
+			if elite_id == "night_stalker":
+				elite_state_names.append("attack")
 			for skill_state in elite_info["skill_states"]:
 				elite_state_names.append(str(skill_state))
 			for state_name in elite_state_names:

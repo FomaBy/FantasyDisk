@@ -1,0 +1,81 @@
+{
+  "character_id": "night_stalker",
+  "pixellab_character_id": "2a1aea5b-b457-4e04-88e1-eba9d0f2f928",
+  "generated_at": "2026-08-18/2026-08-19",
+  "source": "PixelLab MCP (mcp__pixellab__create_character + animate_character)",
+  "mode": "v3 create (8-direction) + template animations (idle/move/hit/death) + v3 custom animations (attack/skill_shadow_strike/skill_phase_dash)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 4,
+      "template_animation_id": "breathing-idle",
+      "fps": 6.0,
+      "animation_group_id": "9afc45f7-ab41-4624-891d-e5e7ab4a2f4b"
+    },
+    "move": {
+      "frame_count": 8,
+      "template_animation_id": "walking-8-frames",
+      "fps": 9.0,
+      "animation_group_id": "26cc67b1-7f7e-425f-bd29-9a3223bd1d72"
+    },
+    "hit": {
+      "frame_count": 6,
+      "template_animation_id": "taking-punch",
+      "fps": 10.0,
+      "animation_group_id": "175256c2-1497-4dcb-947d-88943ee54e90"
+    },
+    "death": {
+      "frame_count": 7,
+      "template_animation_id": "falling-back-death",
+      "fps": 10.0,
+      "animation_group_id": "0d38a277-d245-4c66-9823-34cbd19077bf"
+    },
+    "attack": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "quick double dagger slash attack, lunging forward and slashing with both curved blades in an X pattern",
+      "fps": 12.0,
+      "animation_group_id": "3b2bc5da-3c4d-4e87-b8aa-8bb841d6b11a",
+      "note": "runtime animation row name is 'attack' (not 'attack_primary'), matching the FAN-2519/FAN-2901 directional-pack convention already used by mini_rot_hound; the generic 'attack'/'attack_primary' request both alias-resolve to this row via STATE_ALIASES."
+    },
+    "skill_shadow_strike": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "explosive shadow teleport strike, bursting out of dark smoke with a swift dagger stab forward, dark trailing energy",
+      "fps": 12.0,
+      "animation_group_id": "73fd5c76-2845-4815-bea8-00f6a789b573"
+    },
+    "skill_phase_dash": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "swift shadow phase dash, blinking forward through wisps of dark smoke with tattered cloak trailing behind",
+      "fps": 12.0,
+      "animation_group_id": "c26801ec-fc7a-4161-b044-d10acdf458da"
+    }
+  },
+  "notes": "FAN-2621: first explicit-eight-direction pack for night_stalker (elite), replacing the single authored horizontal view + flip_h. All 7 required states (idle, move, attack, hit, death, skill_shadow_strike, skill_phase_dash) now cover all 8 directions - 56 animations, 368 frame PNGs, assembled into scripts/full_frame_animation_registry.gd via explicit_eight_directions=true. Registry scale rescaled from 0.62 (512px source) to 2.48 (128px source) to preserve on-screen size; position offset left unchanged pending visual QA (flagged for FAN-2757). Two-run delivery: idle/move/hit/death generated 2026-08-18 (run 1, card returned to backlog after hitting a bounded MCP-polling time budget); attack/skill_shadow_strike/skill_phase_dash generated 2026-08-19 (run 2, continuation reusing the same PixelLab character_id and existing groups per PM re-arm instructions). Attack frames were generated under the working name 'attack_primary' during job submission and renamed to 'attack' on disk/in the resource before commit to match the established mini_rot_hound directional-pack convention (see attack state note above) and keep tests/animation_smoke_test.gd's generalized explicit_eight_directions branch (mirrored from the FAN-2901 mini-elite branch) passing without special-casing.",
+  "normalization": {
+    "task": "FAN-3099",
+    "tool": "tools/fan3099_normalize_night_stalker_pack.py",
+    "target_visible_height": 245,
+    "bottom_padding": 32,
+    "dust_island_max_pixels": 4,
+    "total_dust_islands_removed": 45,
+    "note": "Offline re-normalization of the 368 already-generated frames from FAN-2621 (rejected by FAN-2757 for non-uniform canvas / silhouette scale). No PixelLab regeneration."
+  }
+}
