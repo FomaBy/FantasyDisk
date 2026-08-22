@@ -1,0 +1,6056 @@
+{
+  "idle_east": [
+    {
+      "source": "homunculus_tank_idle_east.png",
+      "runtime": "homunculus_tank_idle_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        2,
+        43,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 3.466666666666667,
+      "resized_visible_size": [
+        87,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        272,
+        299,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "homunculus_tank_idle_south_east.png",
+      "runtime": "homunculus_tank_idle_south_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        3,
+        55,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        173,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        272,
+        343,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "homunculus_tank_idle_south.png",
+      "runtime": "homunculus_tank_idle_south.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        2,
+        2,
+        61,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        208,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        272,
+        360,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "homunculus_tank_idle_south_west.png",
+      "runtime": "homunculus_tank_idle_south_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        3,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        173,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        272,
+        343,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "homunculus_tank_idle_west.png",
+      "runtime": "homunculus_tank_idle_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        2,
+        45,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 3.466666666666667,
+      "resized_visible_size": [
+        87,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        272,
+        299,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "homunculus_tank_idle_north_west.png",
+      "runtime": "homunculus_tank_idle_north_west.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        2,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        60
+      ],
+      "scale": 3.466666666666667,
+      "resized_visible_size": [
+        156,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        272,
+        334,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "homunculus_tank_idle_north.png",
+      "runtime": "homunculus_tank_idle_north.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        3,
+        2,
+        60,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        201,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        272,
+        357,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "homunculus_tank_idle_north_east.png",
+      "runtime": "homunculus_tank_idle_north_east.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        2,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        60
+      ],
+      "scale": 3.466666666666667,
+      "resized_visible_size": [
+        156,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        272,
+        334,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "homunculus_tank_move_east_00.png",
+      "runtime": "homunculus_tank_move_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        7,
+        40,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        76,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        272,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_east_01.png",
+      "runtime": "homunculus_tank_move_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        100,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        272,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_east_02.png",
+      "runtime": "homunculus_tank_move_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        50
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        96,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        280,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_east_03.png",
+      "runtime": "homunculus_tank_move_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        7,
+        40,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        76,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        276,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_east_04.png",
+      "runtime": "homunculus_tank_move_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        104,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        276,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_east_05.png",
+      "runtime": "homunculus_tank_move_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        88,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        276,
+        300,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "homunculus_tank_move_south_east_00.png",
+      "runtime": "homunculus_tank_move_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        112,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        272,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_east_01.png",
+      "runtime": "homunculus_tank_move_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        50
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        128,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        280,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_east_02.png",
+      "runtime": "homunculus_tank_move_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        50
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        120,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        280,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_east_03.png",
+      "runtime": "homunculus_tank_move_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        112,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        272,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_east_04.png",
+      "runtime": "homunculus_tank_move_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        132,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        272,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_east_05.png",
+      "runtime": "homunculus_tank_move_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        124,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        272,
+        318,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "homunculus_tank_move_south_00.png",
+      "runtime": "homunculus_tank_move_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        41,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        81,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_01.png",
+      "runtime": "homunculus_tank_move_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        40,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        76,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        272,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_02.png",
+      "runtime": "homunculus_tank_move_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        40,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        76,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        276,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_03.png",
+      "runtime": "homunculus_tank_move_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        85,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        276,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_04.png",
+      "runtime": "homunculus_tank_move_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        81,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_05.png",
+      "runtime": "homunculus_tank_move_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        81,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        297,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "homunculus_tank_move_south_west_00.png",
+      "runtime": "homunculus_tank_move_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        51,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        136,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        272,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_west_01.png",
+      "runtime": "homunculus_tank_move_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        51,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        52
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        136,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        272,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_west_02.png",
+      "runtime": "homunculus_tank_move_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        136,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        276,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_west_03.png",
+      "runtime": "homunculus_tank_move_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        136,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        276,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_west_04.png",
+      "runtime": "homunculus_tank_move_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        6,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        136,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        276,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_south_west_05.png",
+      "runtime": "homunculus_tank_move_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        6,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        51
+      ],
+      "scale": 4.0,
+      "resized_visible_size": [
+        140,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        276,
+        326,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "homunculus_tank_move_west_00.png",
+      "runtime": "homunculus_tank_move_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        9,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        81,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_west_01.png",
+      "runtime": "homunculus_tank_move_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        8,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        98,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        276,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_west_02.png",
+      "runtime": "homunculus_tank_move_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        44,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        89,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        276,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_west_03.png",
+      "runtime": "homunculus_tank_move_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        49
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        81,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        272,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_west_04.png",
+      "runtime": "homunculus_tank_move_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        8,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        93,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        276,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_west_05.png",
+      "runtime": "homunculus_tank_move_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        44,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        85,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        276,
+        299,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "homunculus_tank_move_north_west_00.png",
+      "runtime": "homunculus_tank_move_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        79,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        280,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_west_01.png",
+      "runtime": "homunculus_tank_move_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        8,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        96,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        276,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_west_02.png",
+      "runtime": "homunculus_tank_move_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        96,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        276,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_west_03.png",
+      "runtime": "homunculus_tank_move_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        79,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_west_04.png",
+      "runtime": "homunculus_tank_move_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        50
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        116,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        272,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_west_05.png",
+      "runtime": "homunculus_tank_move_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        8,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        48
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        280,
+        308,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "homunculus_tank_move_north_00.png",
+      "runtime": "homunculus_tank_move_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        56,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        182,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        272,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_01.png",
+      "runtime": "homunculus_tank_move_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        56,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        182,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        272,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_02.png",
+      "runtime": "homunculus_tank_move_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        3,
+        56,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        178,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        272,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_03.png",
+      "runtime": "homunculus_tank_move_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        57,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        186,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        272,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_04.png",
+      "runtime": "homunculus_tank_move_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        56,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        182,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        272,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_05.png",
+      "runtime": "homunculus_tank_move_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        2,
+        56,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        182,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        272,
+        347,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "homunculus_tank_move_north_east_00.png",
+      "runtime": "homunculus_tank_move_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        9,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        92,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        276,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_east_01.png",
+      "runtime": "homunculus_tank_move_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        9,
+        44,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        50
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        272,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_east_02.png",
+      "runtime": "homunculus_tank_move_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        276,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_east_03.png",
+      "runtime": "homunculus_tank_move_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        9,
+        40,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        87,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        276,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_east_04.png",
+      "runtime": "homunculus_tank_move_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        9,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        48
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        280,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_move_north_east_05.png",
+      "runtime": "homunculus_tank_move_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        48
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        280,
+        308,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "homunculus_tank_attack_east_00.png",
+      "runtime": "homunculus_tank_attack_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        6,
+        45,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        49
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        102,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        272,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_east_01.png",
+      "runtime": "homunculus_tank_attack_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        6,
+        45,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        49
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        110,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        272,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_east_02.png",
+      "runtime": "homunculus_tank_attack_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        45,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        115,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        276,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_east_03.png",
+      "runtime": "homunculus_tank_attack_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        8,
+        45,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        123,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        285,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_east_04.png",
+      "runtime": "homunculus_tank_attack_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        9,
+        45,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        119,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        285,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_east_05.png",
+      "runtime": "homunculus_tank_attack_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        9,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        157,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        276,
+        335,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "homunculus_tank_attack_south_east_00.png",
+      "runtime": "homunculus_tank_attack_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        46
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        106,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        285,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_east_01.png",
+      "runtime": "homunculus_tank_attack_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        119,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        285,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_east_02.png",
+      "runtime": "homunculus_tank_attack_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        11,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        47
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        127,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        280,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_east_03.png",
+      "runtime": "homunculus_tank_attack_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        48
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        119,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_east_04.png",
+      "runtime": "homunculus_tank_attack_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        47,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        49
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        123,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        272,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_east_05.png",
+      "runtime": "homunculus_tank_attack_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 4.244897959183674,
+      "resized_visible_size": [
+        136,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        285,
+        324,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "homunculus_tank_attack_south_00.png",
+      "runtime": "homunculus_tank_attack_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        50
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        94,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        276,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_01.png",
+      "runtime": "homunculus_tank_attack_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        6,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        51
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        94,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        272,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_02.png",
+      "runtime": "homunculus_tank_attack_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        6,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        50
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        94,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        276,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_03.png",
+      "runtime": "homunculus_tank_attack_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        5,
+        42,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        50
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        94,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        276,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_04.png",
+      "runtime": "homunculus_tank_attack_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        5,
+        44,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        50
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        82,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        276,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_05.png",
+      "runtime": "homunculus_tank_attack_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.078431372549019,
+      "resized_visible_size": [
+        90,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        280,
+        301,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "homunculus_tank_attack_south_west_00.png",
+      "runtime": "homunculus_tank_attack_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        10,
+        43,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        92,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        276,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_west_01.png",
+      "runtime": "homunculus_tank_attack_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        9,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        92,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        276,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_west_02.png",
+      "runtime": "homunculus_tank_attack_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        8,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        50
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        92,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        272,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_west_03.png",
+      "runtime": "homunculus_tank_attack_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        49,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        50
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        104,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        272,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_west_04.png",
+      "runtime": "homunculus_tank_attack_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        53,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        50
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        121,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        272,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_south_west_05.png",
+      "runtime": "homunculus_tank_attack_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        14,
+        43,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 4.16,
+      "resized_visible_size": [
+        125,
+        187
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        293,
+        319,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "homunculus_tank_attack_west_00.png",
+      "runtime": "homunculus_tank_attack_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        9,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        48
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        108,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        272,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_west_01.png",
+      "runtime": "homunculus_tank_attack_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        47
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        113,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        276,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_west_02.png",
+      "runtime": "homunculus_tank_attack_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        121,
+        199
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        281,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_west_03.png",
+      "runtime": "homunculus_tank_attack_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        49,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        134,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        285,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_west_04.png",
+      "runtime": "homunculus_tank_attack_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        48,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        126,
+        199
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        281,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_west_05.png",
+      "runtime": "homunculus_tank_attack_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        15,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.333333333333333,
+      "resized_visible_size": [
+        156,
+        186
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        294,
+        334,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "homunculus_tank_attack_north_west_00.png",
+      "runtime": "homunculus_tank_attack_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        111,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        272,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_west_01.png",
+      "runtime": "homunculus_tank_attack_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        111,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        272,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_west_02.png",
+      "runtime": "homunculus_tank_attack_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        46
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        119,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_west_03.png",
+      "runtime": "homunculus_tank_attack_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        47,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        137,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        285,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_west_04.png",
+      "runtime": "homunculus_tank_attack_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        46
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        119,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_west_05.png",
+      "runtime": "homunculus_tank_attack_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        13,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        44
+      ],
+      "scale": 4.425531914893617,
+      "resized_visible_size": [
+        142,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        285,
+        327,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "homunculus_tank_attack_north_00.png",
+      "runtime": "homunculus_tank_attack_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        5,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        53
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        104,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        276,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_01.png",
+      "runtime": "homunculus_tank_attack_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        5,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        53
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        104,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        276,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_02.png",
+      "runtime": "homunculus_tank_attack_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        52
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        104,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        280,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_03.png",
+      "runtime": "homunculus_tank_attack_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        6,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        52
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        104,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        280,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_04.png",
+      "runtime": "homunculus_tank_attack_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        54
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        100,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        272,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_05.png",
+      "runtime": "homunculus_tank_attack_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        54
+      ],
+      "scale": 3.8518518518518516,
+      "resized_visible_size": [
+        104,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        272,
+        308,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "homunculus_tank_attack_north_east_00.png",
+      "runtime": "homunculus_tank_attack_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        5,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        93,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        279,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_east_01.png",
+      "runtime": "homunculus_tank_attack_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        5,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        93,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        279,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_east_02.png",
+      "runtime": "homunculus_tank_attack_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        5,
+        41,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        89,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        279,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_east_03.png",
+      "runtime": "homunculus_tank_attack_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        5,
+        40,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        89,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        279,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_east_04.png",
+      "runtime": "homunculus_tank_attack_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        4,
+        40,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        100,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        279,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_attack_north_east_05.png",
+      "runtime": "homunculus_tank_attack_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        3,
+        51,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        130,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        272,
+        321,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "homunculus_tank_hit_east_00.png",
+      "runtime": "homunculus_tank_hit_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        5,
+        55,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        169,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        276,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_east_01.png",
+      "runtime": "homunculus_tank_hit_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        5,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        57
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        165,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        276,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_east_02.png",
+      "runtime": "homunculus_tank_hit_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        6,
+        55,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        56
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        143,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        279,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_east_03.png",
+      "runtime": "homunculus_tank_hit_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        6,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        56
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        136,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        279,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_east_04.png",
+      "runtime": "homunculus_tank_hit_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        5,
+        57,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        151,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        272,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_east_05.png",
+      "runtime": "homunculus_tank_hit_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        5,
+        53,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        140,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        272,
+        326,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "homunculus_tank_hit_south_east_00.png",
+      "runtime": "homunculus_tank_hit_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        4,
+        52,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        158,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        272,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_east_01.png",
+      "runtime": "homunculus_tank_hit_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        3,
+        51,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        154,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        272,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_east_02.png",
+      "runtime": "homunculus_tank_hit_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        154,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        272,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_east_03.png",
+      "runtime": "homunculus_tank_hit_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        154,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        272,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_east_04.png",
+      "runtime": "homunculus_tank_hit_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        4,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        158,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        272,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_east_05.png",
+      "runtime": "homunculus_tank_hit_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        5,
+        53,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        56
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        158,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        279,
+        335,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "homunculus_tank_hit_south_00.png",
+      "runtime": "homunculus_tank_hit_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        5,
+        47,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        116,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        279,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_01.png",
+      "runtime": "homunculus_tank_hit_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        4,
+        46,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_02.png",
+      "runtime": "homunculus_tank_hit_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        4,
+        46,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_03.png",
+      "runtime": "homunculus_tank_hit_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        4,
+        45,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        113,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        276,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_04.png",
+      "runtime": "homunculus_tank_hit_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        4,
+        48,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        113,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        272,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_05.png",
+      "runtime": "homunculus_tank_hit_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        5,
+        51,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        279,
+        316,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "homunculus_tank_hit_south_west_00.png",
+      "runtime": "homunculus_tank_hit_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        6,
+        47,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        56
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        116,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        283,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_west_01.png",
+      "runtime": "homunculus_tank_hit_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        42,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        113,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        279,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_west_02.png",
+      "runtime": "homunculus_tank_hit_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        5,
+        43,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        109,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        276,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_west_03.png",
+      "runtime": "homunculus_tank_hit_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        5,
+        43,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        106,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        276,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_west_04.png",
+      "runtime": "homunculus_tank_hit_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        4,
+        43,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        106,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        272,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_south_west_05.png",
+      "runtime": "homunculus_tank_hit_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        5,
+        41,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        81,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        279,
+        297,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "homunculus_tank_hit_west_00.png",
+      "runtime": "homunculus_tank_hit_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        4,
+        56,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        166,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        279,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_west_01.png",
+      "runtime": "homunculus_tank_hit_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        4,
+        53,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        159,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        276,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_west_02.png",
+      "runtime": "homunculus_tank_hit_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        6,
+        45,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        56
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        130,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        283,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_west_03.png",
+      "runtime": "homunculus_tank_hit_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        5,
+        45,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        279,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_west_04.png",
+      "runtime": "homunculus_tank_hit_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        49,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        148,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        272,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_west_05.png",
+      "runtime": "homunculus_tank_hit_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        50,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        137,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        279,
+        325,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "homunculus_tank_hit_north_west_00.png",
+      "runtime": "homunculus_tank_hit_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        55,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        163,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        272,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_west_01.png",
+      "runtime": "homunculus_tank_hit_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        4,
+        54,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        163,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        272,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_west_02.png",
+      "runtime": "homunculus_tank_hit_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        7,
+        52,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        53
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        163,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        283,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_west_03.png",
+      "runtime": "homunculus_tank_hit_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        6,
+        51,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        156,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        279,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_west_04.png",
+      "runtime": "homunculus_tank_hit_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        5,
+        51,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        160,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        272,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_west_05.png",
+      "runtime": "homunculus_tank_hit_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        5,
+        54,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        160,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        279,
+        336,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "homunculus_tank_hit_north_00.png",
+      "runtime": "homunculus_tank_hit_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        51,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        126,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        279,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_01.png",
+      "runtime": "homunculus_tank_hit_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        6,
+        52,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        119,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        279,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_02.png",
+      "runtime": "homunculus_tank_hit_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        5,
+        52,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        119,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        272,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_03.png",
+      "runtime": "homunculus_tank_hit_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        5,
+        52,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        119,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        272,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_04.png",
+      "runtime": "homunculus_tank_hit_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        7,
+        49,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        55
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        123,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        276,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_05.png",
+      "runtime": "homunculus_tank_hit_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        5,
+        48,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        55
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        130,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        276,
+        321,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "homunculus_tank_hit_north_east_00.png",
+      "runtime": "homunculus_tank_hit_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        4,
+        49,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        113,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        276,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_east_01.png",
+      "runtime": "homunculus_tank_hit_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        3,
+        52,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        272,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_east_02.png",
+      "runtime": "homunculus_tank_hit_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        5,
+        52,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        127,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        276,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_east_03.png",
+      "runtime": "homunculus_tank_hit_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        6,
+        50,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        120,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        279,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_east_04.png",
+      "runtime": "homunculus_tank_hit_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        6,
+        50,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        57
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        116,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        279,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_hit_north_east_05.png",
+      "runtime": "homunculus_tank_hit_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        5,
+        43,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        58
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        81,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        276,
+        297,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "homunculus_tank_death_east_00.png",
+      "runtime": "homunculus_tank_death_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        6,
+        57,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        56
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        180,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        283,
+        346,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_01.png",
+      "runtime": "homunculus_tank_death_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        5,
+        56,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        55
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        166,
+        194
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        286,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_02.png",
+      "runtime": "homunculus_tank_death_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        3,
+        63,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        59
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        173,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        272,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_03.png",
+      "runtime": "homunculus_tank_death_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        64,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        54
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        180,
+        190
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        290,
+        346,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_04.png",
+      "runtime": "homunculus_tank_death_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        5,
+        63,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        50
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        194,
+        176
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        304,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_05.png",
+      "runtime": "homunculus_tank_death_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        58,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        49
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        152,
+        173
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        307,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_east_06.png",
+      "runtime": "homunculus_tank_death_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        6,
+        53,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 3.5254237288135593,
+      "resized_visible_size": [
+        141,
+        166
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        314,
+        327,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "homunculus_tank_death_south_east_00.png",
+      "runtime": "homunculus_tank_death_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        3,
+        5,
+        58,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        204,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        272,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_01.png",
+      "runtime": "homunculus_tank_death_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        4,
+        5,
+        57,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        197,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        279,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_02.png",
+      "runtime": "homunculus_tank_death_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        6,
+        52,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        55
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        119,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        276,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_03.png",
+      "runtime": "homunculus_tank_death_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        58,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        54
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        152,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        279,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_04.png",
+      "runtime": "homunculus_tank_death_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        9,
+        58,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        45
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        141,
+        167
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        313,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_05.png",
+      "runtime": "homunculus_tank_death_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        58,
+        52
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        145,
+        163
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        317,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_east_06.png",
+      "runtime": "homunculus_tank_death_south_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        61,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        41
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        167,
+        152
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        328,
+        339,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "homunculus_tank_death_south_00.png",
+      "runtime": "homunculus_tank_death_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        49,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        136,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        272,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_01.png",
+      "runtime": "homunculus_tank_death_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        3,
+        51,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        140,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        272,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_02.png",
+      "runtime": "homunculus_tank_death_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        4,
+        5,
+        56,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        57
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        186,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        276,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_03.png",
+      "runtime": "homunculus_tank_death_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        8,
+        56,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        54
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        169,
+        194
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        286,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_04.png",
+      "runtime": "homunculus_tank_death_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        61,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        50
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        161,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        301,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_05.png",
+      "runtime": "homunculus_tank_death_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        64,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        47
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        172,
+        169
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        311,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_06.png",
+      "runtime": "homunculus_tank_death_south_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        9,
+        64,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        46
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        176,
+        165
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        315,
+        344,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "homunculus_tank_death_south_west_00.png",
+      "runtime": "homunculus_tank_death_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        6,
+        49,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        55
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        126,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        193,
+        276,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_west_01.png",
+      "runtime": "homunculus_tank_death_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        5,
+        42,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        82,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        272,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_west_02.png",
+      "runtime": "homunculus_tank_death_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        0,
+        6,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        201,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        272,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_west_03.png",
+      "runtime": "homunculus_tank_death_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        0,
+        9,
+        61,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        53
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        227,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        283,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_west_04.png",
+      "runtime": "homunculus_tank_death_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        4,
+        8,
+        64,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        53
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        223,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        283,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_south_west_05.png",
+      "runtime": "homunculus_tank_death_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        63,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        47
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        204,
+        175
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        305,
+        358,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "homunculus_tank_death_west_00.png",
+      "runtime": "homunculus_tank_death_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        5,
+        59,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        56
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        179,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        279,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_01.png",
+      "runtime": "homunculus_tank_death_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        5,
+        54,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        54
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        161,
+        194
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        286,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_02.png",
+      "runtime": "homunculus_tank_death_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        3,
+        12,
+        49,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        48
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        165,
+        172
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        308,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_03.png",
+      "runtime": "homunculus_tank_death_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        0,
+        10,
+        53,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        190,
+        186
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        294,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_04.png",
+      "runtime": "homunculus_tank_death_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        2,
+        2,
+        54,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        186,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        272,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_05.png",
+      "runtime": "homunculus_tank_death_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        46,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        50
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        140,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        301,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_west_06.png",
+      "runtime": "homunculus_tank_death_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        129,
+        158
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        322,
+        321,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "homunculus_tank_death_north_west_00.png",
+      "runtime": "homunculus_tank_death_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        6,
+        62,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        53
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        204,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        287,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_01.png",
+      "runtime": "homunculus_tank_death_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        5,
+        61,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        53
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        193,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        287,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_02.png",
+      "runtime": "homunculus_tank_death_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        117,
+        175
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        305,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_03.png",
+      "runtime": "homunculus_tank_death_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        2,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        57
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        117,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        272,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_04.png",
+      "runtime": "homunculus_tank_death_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        0,
+        42,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        56
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        128,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        276,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_05.png",
+      "runtime": "homunculus_tank_death_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        0,
+        42,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        55
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        131,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        279,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_west_06.png",
+      "runtime": "homunculus_tank_death_north_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        3,
+        2,
+        43,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        52
+      ],
+      "scale": 3.6491228070175437,
+      "resized_visible_size": [
+        146,
+        190
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        290,
+        329,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "homunculus_tank_death_north_00.png",
+      "runtime": "homunculus_tank_death_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        5,
+        52,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        137,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        272,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_01.png",
+      "runtime": "homunculus_tank_death_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        4,
+        52,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        134,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        272,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_02.png",
+      "runtime": "homunculus_tank_death_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        7,
+        57,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        53
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        186,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        283,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_03.png",
+      "runtime": "homunculus_tank_death_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        3,
+        50,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        56
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        152,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        272,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_04.png",
+      "runtime": "homunculus_tank_death_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        4,
+        0,
+        45,
+        51
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        51
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        152,
+        189
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        291,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_05.png",
+      "runtime": "homunculus_tank_death_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        0,
+        0,
+        46,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        53
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        171,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        283,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_06.png",
+      "runtime": "homunculus_tank_death_north_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        0,
+        7,
+        50,
+        49
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        42
+      ],
+      "scale": 3.7142857142857144,
+      "resized_visible_size": [
+        186,
+        156
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        324,
+        349,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "homunculus_tank_death_north_east_00.png",
+      "runtime": "homunculus_tank_death_north_east_00.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        60,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        58
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        147,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        272,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_01.png",
+      "runtime": "homunculus_tank_death_north_east_01.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        62,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        143,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        276,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_02.png",
+      "runtime": "homunculus_tank_death_north_east_02.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        25,
+        18,
+        66,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        53
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        147,
+        190
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        290,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_03.png",
+      "runtime": "homunculus_tank_death_north_east_03.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        19,
+        22,
+        71,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        50
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        186,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        301,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_04.png",
+      "runtime": "homunculus_tank_death_north_east_04.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        13,
+        34,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        36
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        197,
+        129
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        351,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "homunculus_tank_death_north_east_05.png",
+      "runtime": "homunculus_tank_death_north_east_05.png",
+      "source_size": [
+        84,
+        84
+      ],
+      "source_alpha_bbox": [
+        10,
+        41,
+        74,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        31
+      ],
+      "scale": 3.586206896551724,
+      "resized_visible_size": [
+        230,
+        111
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        369,
+        371,
+        480
+      ]
+    }
+  ]
+}

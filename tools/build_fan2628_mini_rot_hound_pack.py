@@ -93,6 +93,19 @@ def alpha_bbox(image: Image.Image) -> tuple[int, int, int, int] | None:
     return image.getchannel("A").getbbox()
 
 
+def row_scale(source_path: Path) -> float:
+    match = re.match(r"(.+)_\d{2}$", source_path.stem)
+    source_paths = sorted(source_path.parent.glob(f"{match.group(1)}_*.png")) if match else [source_path]
+    sizes = []
+    for path in source_paths:
+        with Image.open(path) as image:
+            bbox = alpha_bbox(image.convert("RGBA"))
+        if bbox is None:
+            raise RuntimeError(f"{path} has no visible alpha")
+        sizes.append((bbox[2] - bbox[0], bbox[3] - bbox[1]))
+    return min(TARGET_VISIBLE_HEIGHT / float(max(height for _, height in sizes)), CELL_SIZE / float(max(width for width, _ in sizes)))
+
+
 def normalize_frame(source_path: Path, dest_path: Path) -> dict:
     image = Image.open(source_path).convert("RGBA")
     bbox = alpha_bbox(image)
@@ -100,9 +113,7 @@ def normalize_frame(source_path: Path, dest_path: Path) -> dict:
         raise RuntimeError(f"{source_path} has no visible alpha")
     bbox_width = bbox[2] - bbox[0]
     bbox_height = bbox[3] - bbox[1]
-    height_scale = TARGET_VISIBLE_HEIGHT / float(bbox_height)
-    width_scale = CELL_SIZE / float(bbox_width)
-    scale = min(height_scale, width_scale)
+    scale = row_scale(source_path)
     scaled_size = (max(1, round(bbox_width * scale)), max(1, round(bbox_height * scale)))
     resized = image.crop(bbox).resize(scaled_size, Image.Resampling.NEAREST)
     paste_x = round((CELL_SIZE - scaled_size[0]) / 2.0)
@@ -214,7 +225,7 @@ def main() -> int:
     SPRITEFRAMES_PATH.parent.mkdir(parents=True, exist_ok=True)
     SPRITEFRAMES_PATH.write_text(text, encoding="utf-8")
 
-    (SOURCE_DIR / "alpha_bbox_report.json").write_text(
+    (RUNTIME_DIR / "row_scale_report.json").write_text(
         json.dumps(alpha_report, indent=2), encoding="utf-8"
     )
 
@@ -245,7 +256,7 @@ def main() -> int:
             "on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
         ),
     }
-    (SOURCE_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    (RUNTIME_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     print(f"wrote {SPRITEFRAMES_PATH}")
     print(f"wrote {SOURCE_DIR / 'manifest.json'}")

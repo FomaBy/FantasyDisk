@@ -1,0 +1,5418 @@
+{
+  "idle_east": [
+    {
+      "source": "bone_caller_idle_east.png",
+      "runtime": "bone_caller_idle_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        16,
+        1,
+        31,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        80,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        235,
+        296,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "bone_caller_idle_south_east.png",
+      "runtime": "bone_caller_idle_south_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        12,
+        1,
+        38,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "bone_caller_idle_south.png",
+      "runtime": "bone_caller_idle_south.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        1,
+        41,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        186,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        235,
+        349,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "bone_caller_idle_south_west.png",
+      "runtime": "bone_caller_idle_south_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        1,
+        37,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "bone_caller_idle_west.png",
+      "runtime": "bone_caller_idle_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        17,
+        1,
+        32,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        80,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        235,
+        296,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "bone_caller_idle_north_west.png",
+      "runtime": "bone_caller_idle_north_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        1,
+        36,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        138,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        325,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "bone_caller_idle_north.png",
+      "runtime": "bone_caller_idle_north.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        2,
+        43,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        200,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        356,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "bone_caller_idle_north_east.png",
+      "runtime": "bone_caller_idle_north_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        12,
+        1,
+        40,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "bone_caller_move_east_00.png",
+      "runtime": "bone_caller_move_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        10,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        99,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_east_01.png",
+      "runtime": "bone_caller_move_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        130,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        240,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_east_02.png",
+      "runtime": "bone_caller_move_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        11,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        136,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        245,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_east_03.png",
+      "runtime": "bone_caller_move_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        11,
+        43,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        120,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        245,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_east_04.png",
+      "runtime": "bone_caller_move_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        45,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        136,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        240,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_east_05.png",
+      "runtime": "bone_caller_move_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        11,
+        46,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        136,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        245,
+        324,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "bone_caller_move_south_east_00.png",
+      "runtime": "bone_caller_move_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        47,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        138,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        240,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_east_01.png",
+      "runtime": "bone_caller_move_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        138,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        240,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_east_02.png",
+      "runtime": "bone_caller_move_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        48,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        246,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_east_03.png",
+      "runtime": "bone_caller_move_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_east_04.png",
+      "runtime": "bone_caller_move_south_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_east_05.png",
+      "runtime": "bone_caller_move_south_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        52,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "bone_caller_move_south_00.png",
+      "runtime": "bone_caller_move_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        182,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        245,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_01.png",
+      "runtime": "bone_caller_move_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        193,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        240,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_02.png",
+      "runtime": "bone_caller_move_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_03.png",
+      "runtime": "bone_caller_move_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        214,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_04.png",
+      "runtime": "bone_caller_move_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        214,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_05.png",
+      "runtime": "bone_caller_move_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        203,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        357,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "bone_caller_move_south_west_00.png",
+      "runtime": "bone_caller_move_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_west_01.png",
+      "runtime": "bone_caller_move_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        240,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_west_02.png",
+      "runtime": "bone_caller_move_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        240,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_west_03.png",
+      "runtime": "bone_caller_move_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_west_04.png",
+      "runtime": "bone_caller_move_south_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_south_west_05.png",
+      "runtime": "bone_caller_move_south_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        240,
+        336,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "bone_caller_move_west_00.png",
+      "runtime": "bone_caller_move_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        10,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        89,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_west_01.png",
+      "runtime": "bone_caller_move_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        44,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        109,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        245,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_west_02.png",
+      "runtime": "bone_caller_move_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        104,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        245,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_west_03.png",
+      "runtime": "bone_caller_move_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        94,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        240,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_west_04.png",
+      "runtime": "bone_caller_move_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        94,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        240,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_west_05.png",
+      "runtime": "bone_caller_move_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        94,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        240,
+        303,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "bone_caller_move_north_west_00.png",
+      "runtime": "bone_caller_move_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        10,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_west_01.png",
+      "runtime": "bone_caller_move_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        130,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        240,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_west_02.png",
+      "runtime": "bone_caller_move_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        141,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        245,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_west_03.png",
+      "runtime": "bone_caller_move_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        11,
+        48,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        146,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        245,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_west_04.png",
+      "runtime": "bone_caller_move_north_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        49,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        156,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        240,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_west_05.png",
+      "runtime": "bone_caller_move_north_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        49,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        156,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        245,
+        334,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "bone_caller_move_north_00.png",
+      "runtime": "bone_caller_move_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        197,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        240,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_01.png",
+      "runtime": "bone_caller_move_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        197,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        240,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_02.png",
+      "runtime": "bone_caller_move_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        202,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        240,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_03.png",
+      "runtime": "bone_caller_move_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        8,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_04.png",
+      "runtime": "bone_caller_move_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        202,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        240,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_05.png",
+      "runtime": "bone_caller_move_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        50,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        192,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        246,
+        352,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "bone_caller_move_north_east_00.png",
+      "runtime": "bone_caller_move_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        10,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_east_01.png",
+      "runtime": "bone_caller_move_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        167,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        240,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_east_02.png",
+      "runtime": "bone_caller_move_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        177,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        245,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_east_03.png",
+      "runtime": "bone_caller_move_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        50,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        177,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        245,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_east_04.png",
+      "runtime": "bone_caller_move_north_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        49,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        167,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        240,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_move_north_east_05.png",
+      "runtime": "bone_caller_move_north_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        146,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        240,
+        329,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "bone_caller_attack_east_00.png",
+      "runtime": "bone_caller_attack_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_east_01.png",
+      "runtime": "bone_caller_attack_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        27,
+        11,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_east_02.png",
+      "runtime": "bone_caller_attack_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        14,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        251,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_east_03.png",
+      "runtime": "bone_caller_attack_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        56,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_east_04.png",
+      "runtime": "bone_caller_attack_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        251,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_east_05.png",
+      "runtime": "bone_caller_attack_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        14,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        251,
+        339,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "bone_caller_attack_south_east_00.png",
+      "runtime": "bone_caller_attack_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_east_01.png",
+      "runtime": "bone_caller_attack_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_east_02.png",
+      "runtime": "bone_caller_attack_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        52,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        176,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        240,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_east_03.png",
+      "runtime": "bone_caller_attack_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        51,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        251,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_east_04.png",
+      "runtime": "bone_caller_attack_south_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        15,
+        61,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        240,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        262,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_east_05.png",
+      "runtime": "bone_caller_attack_south_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        8,
+        15,
+        57,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        261,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        262,
+        387,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "bone_caller_attack_south_00.png",
+      "runtime": "bone_caller_attack_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        188,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        245,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_01.png",
+      "runtime": "bone_caller_attack_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        188,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        245,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_02.png",
+      "runtime": "bone_caller_attack_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        172,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        245,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_03.png",
+      "runtime": "bone_caller_attack_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        12,
+        49,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        151,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        240,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_04.png",
+      "runtime": "bone_caller_attack_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        52,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        162,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        251,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_05.png",
+      "runtime": "bone_caller_attack_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        50,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "bone_caller_attack_south_west_00.png",
+      "runtime": "bone_caller_attack_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_west_01.png",
+      "runtime": "bone_caller_attack_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_west_02.png",
+      "runtime": "bone_caller_attack_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        240,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_west_03.png",
+      "runtime": "bone_caller_attack_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        246,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_west_04.png",
+      "runtime": "bone_caller_attack_south_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        45,
+        52
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        251,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_south_west_05.png",
+      "runtime": "bone_caller_attack_south_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        128,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        240,
+        320,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "bone_caller_attack_west_00.png",
+      "runtime": "bone_caller_attack_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        10,
+        42,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        240,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_west_01.png",
+      "runtime": "bone_caller_attack_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        9,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_west_02.png",
+      "runtime": "bone_caller_attack_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        112,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        245,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_west_03.png",
+      "runtime": "bone_caller_attack_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        245,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_west_04.png",
+      "runtime": "bone_caller_attack_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        174,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        245,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_west_05.png",
+      "runtime": "bone_caller_attack_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        158,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        245,
+        335,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "bone_caller_attack_north_west_00.png",
+      "runtime": "bone_caller_attack_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        145,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        250,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_west_01.png",
+      "runtime": "bone_caller_attack_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        11,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        185,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        250,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_west_02.png",
+      "runtime": "bone_caller_attack_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        8,
+        11,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        215,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        250,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_west_03.png",
+      "runtime": "bone_caller_attack_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        57,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_west_04.png",
+      "runtime": "bone_caller_attack_north_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        13,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        44
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        175,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        260,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_west_05.png",
+      "runtime": "bone_caller_attack_north_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        43
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        150,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        265,
+        331,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "bone_caller_attack_north_00.png",
+      "runtime": "bone_caller_attack_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        44
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        174,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        240,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_01.png",
+      "runtime": "bone_caller_attack_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        44
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        174,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        240,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_02.png",
+      "runtime": "bone_caller_attack_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        47,
+        51
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        41
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        180,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        257,
+        346,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_03.png",
+      "runtime": "bone_caller_attack_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        42
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        191,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        251,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_04.png",
+      "runtime": "bone_caller_attack_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        57,
+        52
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        42
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        261,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        251,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_05.png",
+      "runtime": "bone_caller_attack_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        218,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        147,
+        235,
+        365,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "bone_caller_attack_north_east_00.png",
+      "runtime": "bone_caller_attack_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        151,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        240,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_east_01.png",
+      "runtime": "bone_caller_attack_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        130,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        240,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_east_02.png",
+      "runtime": "bone_caller_attack_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        151,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        240,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_east_03.png",
+      "runtime": "bone_caller_attack_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        56,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_east_04.png",
+      "runtime": "bone_caller_attack_north_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        130,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        245,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_attack_north_east_05.png",
+      "runtime": "bone_caller_attack_north_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        45
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        125,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        245,
+        319,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "bone_caller_hit_east_00.png",
+      "runtime": "bone_caller_hit_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        41,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_east_01.png",
+      "runtime": "bone_caller_hit_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        101,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_east_02.png",
+      "runtime": "bone_caller_hit_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        14,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        122,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        251,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_east_03.png",
+      "runtime": "bone_caller_hit_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        17,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        40
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        267,
+        323,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "bone_caller_hit_south_east_00.png",
+      "runtime": "bone_caller_hit_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_east_01.png",
+      "runtime": "bone_caller_hit_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        246,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_east_02.png",
+      "runtime": "bone_caller_hit_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        42
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        181,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        256,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_east_03.png",
+      "runtime": "bone_caller_hit_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        16,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        192,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        262,
+        352,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "bone_caller_hit_south_00.png",
+      "runtime": "bone_caller_hit_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        194,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        245,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_01.png",
+      "runtime": "bone_caller_hit_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        199,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_02.png",
+      "runtime": "bone_caller_hit_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        204,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        245,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_03.png",
+      "runtime": "bone_caller_hit_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        14,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        194,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        261,
+        353,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "bone_caller_hit_south_west_00.png",
+      "runtime": "bone_caller_hit_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        251,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_west_01.png",
+      "runtime": "bone_caller_hit_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        240,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_west_02.png",
+      "runtime": "bone_caller_hit_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_south_west_03.png",
+      "runtime": "bone_caller_hit_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "bone_caller_hit_west_00.png",
+      "runtime": "bone_caller_hit_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        98,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_west_01.png",
+      "runtime": "bone_caller_hit_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        109,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_west_02.png",
+      "runtime": "bone_caller_hit_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        13,
+        43,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        42
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        109,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        251,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_west_03.png",
+      "runtime": "bone_caller_hit_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        14,
+        43,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        41
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        120,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        257,
+        316,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "bone_caller_hit_north_west_00.png",
+      "runtime": "bone_caller_hit_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        11,
+        47,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        144,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_west_01.png",
+      "runtime": "bone_caller_hit_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        12,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        240,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_west_02.png",
+      "runtime": "bone_caller_hit_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        14,
+        55,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        224,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        251,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_west_03.png",
+      "runtime": "bone_caller_hit_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        16,
+        56,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        240,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        262,
+        376,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "bone_caller_hit_north_00.png",
+      "runtime": "bone_caller_hit_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        43
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        212,
+        239
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        241,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_01.png",
+      "runtime": "bone_caller_hit_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        42
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        217,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        246,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_02.png",
+      "runtime": "bone_caller_hit_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        11,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        42
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        228,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        246,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_03.png",
+      "runtime": "bone_caller_hit_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        50,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "bone_caller_hit_north_east_00.png",
+      "runtime": "bone_caller_hit_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        52,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_east_01.png",
+      "runtime": "bone_caller_hit_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_east_02.png",
+      "runtime": "bone_caller_hit_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        176,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        240,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_hit_north_east_03.png",
+      "runtime": "bone_caller_hit_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        13,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        170,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        171,
+        246,
+        341,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "bone_caller_death_east_00.png",
+      "runtime": "bone_caller_death_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        13,
+        43,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_east_01.png",
+      "runtime": "bone_caller_death_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        45,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        44
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_east_02.png",
+      "runtime": "bone_caller_death_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        17,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        40
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        161,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        257,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_east_03.png",
+      "runtime": "bone_caller_death_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        22,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        35
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        195,
+        195
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        285,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_east_04.png",
+      "runtime": "bone_caller_death_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        34,
+        56,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        22
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        228,
+        122
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        358,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_east_05.png",
+      "runtime": "bone_caller_death_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        10,
+        42,
+        59,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        16
+      ],
+      "scale": 5.568181818181818,
+      "resized_visible_size": [
+        273,
+        89
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        391,
+        393,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "bone_caller_death_south_east_00.png",
+      "runtime": "bone_caller_death_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_east_01.png",
+      "runtime": "bone_caller_death_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        14,
+        50,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        43
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        169,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        246,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_east_02.png",
+      "runtime": "bone_caller_death_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        20,
+        56,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        38
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        212,
+        207
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        273,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_east_03.png",
+      "runtime": "bone_caller_death_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        57,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        36
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        218,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        147,
+        284,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_east_04.png",
+      "runtime": "bone_caller_death_south_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        31,
+        57,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        27
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        250,
+        147
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        333,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_east_05.png",
+      "runtime": "bone_caller_death_south_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        10,
+        37,
+        62,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        23
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        283,
+        125
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        355,
+        397,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "bone_caller_death_south_00.png",
+      "runtime": "bone_caller_death_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        12,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        194,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        250,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_01.png",
+      "runtime": "bone_caller_death_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        204,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        240,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_02.png",
+      "runtime": "bone_caller_death_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        9,
+        55,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_03.png",
+      "runtime": "bone_caller_death_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        57,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        235,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        240,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_04.png",
+      "runtime": "bone_caller_death_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        59,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        250,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        240,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_05.png",
+      "runtime": "bone_caller_death_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        60,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        260,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        386,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "bone_caller_death_south_west_00.png",
+      "runtime": "bone_caller_death_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        160,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_west_01.png",
+      "runtime": "bone_caller_death_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_west_02.png",
+      "runtime": "bone_caller_death_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        13,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        165,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        246,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_west_03.png",
+      "runtime": "bone_caller_death_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        16,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        154,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        262,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_west_04.png",
+      "runtime": "bone_caller_death_south_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        25,
+        53,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        32
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        202,
+        170
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        310,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_south_west_05.png",
+      "runtime": "bone_caller_death_south_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        36,
+        57,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        22
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        245,
+        117
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        363,
+        379,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "bone_caller_death_west_00.png",
+      "runtime": "bone_caller_death_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        28,
+        12,
+        46,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        98,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_west_01.png",
+      "runtime": "bone_caller_death_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        48,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        42
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        125,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        251,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_west_02.png",
+      "runtime": "bone_caller_death_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        21,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        36
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        147,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        284,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_west_03.png",
+      "runtime": "bone_caller_death_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        32,
+        49,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        25
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        163,
+        136
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        344,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_west_04.png",
+      "runtime": "bone_caller_death_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        38,
+        52,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        18
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        212,
+        98
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        382,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_west_05.png",
+      "runtime": "bone_caller_death_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        9,
+        45,
+        56,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        12
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        256,
+        65
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        415,
+        384,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "bone_caller_death_north_west_00.png",
+      "runtime": "bone_caller_death_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        48,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_west_01.png",
+      "runtime": "bone_caller_death_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        13,
+        51,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        169,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        240,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_west_02.png",
+      "runtime": "bone_caller_death_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        19,
+        57,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        38
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        223,
+        207
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        273,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_west_03.png",
+      "runtime": "bone_caller_death_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        32,
+        58,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        26
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        256,
+        142
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        338,
+        384,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_west_04.png",
+      "runtime": "bone_caller_death_north_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        9,
+        37,
+        58,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        21
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        267,
+        114
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        366,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_west_05.png",
+      "runtime": "bone_caller_death_north_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        9,
+        37,
+        58,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        21
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        267,
+        114
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        366,
+        389,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "bone_caller_death_north_00.png",
+      "runtime": "bone_caller_death_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        212,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        240,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_01.png",
+      "runtime": "bone_caller_death_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        212,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        362,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_02.png",
+      "runtime": "bone_caller_death_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        9,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_03.png",
+      "runtime": "bone_caller_death_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_04.png",
+      "runtime": "bone_caller_death_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        256,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        235,
+        384,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_05.png",
+      "runtime": "bone_caller_death_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        57,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        45
+      ],
+      "scale": 5.444444444444445,
+      "resized_visible_size": [
+        261,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        235,
+        387,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "bone_caller_death_north_east_00.png",
+      "runtime": "bone_caller_death_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        10,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        156,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_east_01.png",
+      "runtime": "bone_caller_death_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        162,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        251,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_east_02.png",
+      "runtime": "bone_caller_death_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        19,
+        54,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        38
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        172,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        282,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_east_03.png",
+      "runtime": "bone_caller_death_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        31,
+        57,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        27
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        229,
+        141
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        339,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_east_04.png",
+      "runtime": "bone_caller_death_north_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        38,
+        56,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        20
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        235,
+        104
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        376,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "bone_caller_death_north_east_05.png",
+      "runtime": "bone_caller_death_north_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        11,
+        39,
+        57,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        19
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        240,
+        99
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        381,
+        376,
+        480
+      ]
+    }
+  ]
+}

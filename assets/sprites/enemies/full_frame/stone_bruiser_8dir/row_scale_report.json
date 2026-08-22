@@ -1,0 +1,7042 @@
+{
+  "idle_east": [
+    {
+      "source": "stone_bruiser_idle_east.png",
+      "runtime": "stone_bruiser_idle_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        28,
+        12,
+        41,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        235,
+        289,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "stone_bruiser_idle_south_east.png",
+      "runtime": "stone_bruiser_idle_south_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        42,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "stone_bruiser_idle_south.png",
+      "runtime": "stone_bruiser_idle_south.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "stone_bruiser_idle_south_west.png",
+      "runtime": "stone_bruiser_idle_south_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "stone_bruiser_idle_west.png",
+      "runtime": "stone_bruiser_idle_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        40,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        235,
+        289,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "stone_bruiser_idle_north_west.png",
+      "runtime": "stone_bruiser_idle_north_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "stone_bruiser_idle_north.png",
+      "runtime": "stone_bruiser_idle_north.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        44,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "stone_bruiser_idle_north_east.png",
+      "runtime": "stone_bruiser_idle_north_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        12,
+        42,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "stone_bruiser_move_east_00.png",
+      "runtime": "stone_bruiser_move_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        28,
+        12,
+        41,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_east_01.png",
+      "runtime": "stone_bruiser_move_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        45,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_east_02.png",
+      "runtime": "stone_bruiser_move_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        102,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        240,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_east_03.png",
+      "runtime": "stone_bruiser_move_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        28,
+        12,
+        41,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        245,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_east_04.png",
+      "runtime": "stone_bruiser_move_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        112,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        245,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_east_05.png",
+      "runtime": "stone_bruiser_move_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        12,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        107,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        245,
+        309,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "stone_bruiser_move_south_east_00.png",
+      "runtime": "stone_bruiser_move_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        80,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        240,
+        296,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_east_01.png",
+      "runtime": "stone_bruiser_move_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        48,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        120,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        245,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_east_02.png",
+      "runtime": "stone_bruiser_move_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        105,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        245,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_east_03.png",
+      "runtime": "stone_bruiser_move_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        240,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_east_04.png",
+      "runtime": "stone_bruiser_move_south_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        47,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_east_05.png",
+      "runtime": "stone_bruiser_move_south_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        46,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        313,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "stone_bruiser_move_south_00.png",
+      "runtime": "stone_bruiser_move_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        245,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_01.png",
+      "runtime": "stone_bruiser_move_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        42,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_02.png",
+      "runtime": "stone_bruiser_move_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        240,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_03.png",
+      "runtime": "stone_bruiser_move_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        44,
+        57
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        100,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        250,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_04.png",
+      "runtime": "stone_bruiser_move_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        100,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        240,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_05.png",
+      "runtime": "stone_bruiser_move_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        44,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        95,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        240,
+        303,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "stone_bruiser_move_south_west_00.png",
+      "runtime": "stone_bruiser_move_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        44,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        235,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_west_01.png",
+      "runtime": "stone_bruiser_move_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_west_02.png",
+      "runtime": "stone_bruiser_move_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_west_03.png",
+      "runtime": "stone_bruiser_move_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        27,
+        11,
+        43,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        235,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_west_04.png",
+      "runtime": "stone_bruiser_move_south_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        107,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        240,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_south_west_05.png",
+      "runtime": "stone_bruiser_move_south_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        97,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        240,
+        305,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "stone_bruiser_move_west_00.png",
+      "runtime": "stone_bruiser_move_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        27,
+        11,
+        40,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        65,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        224,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_west_01.png",
+      "runtime": "stone_bruiser_move_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        45,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        240,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_west_02.png",
+      "runtime": "stone_bruiser_move_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        46,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        105,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        240,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_west_03.png",
+      "runtime": "stone_bruiser_move_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        27,
+        11,
+        40,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        65,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        224,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_west_04.png",
+      "runtime": "stone_bruiser_move_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        45,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_west_05.png",
+      "runtime": "stone_bruiser_move_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        47,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        110,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        240,
+        311,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "stone_bruiser_move_north_west_00.png",
+      "runtime": "stone_bruiser_move_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        42,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        78,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        217,
+        250,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_west_01.png",
+      "runtime": "stone_bruiser_move_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        45,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        108,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        240,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_west_02.png",
+      "runtime": "stone_bruiser_move_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        46,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        103,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        245,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_west_03.png",
+      "runtime": "stone_bruiser_move_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        83,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        240,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_west_04.png",
+      "runtime": "stone_bruiser_move_north_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        46,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        123,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_west_05.png",
+      "runtime": "stone_bruiser_move_north_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        113,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        313,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "stone_bruiser_move_north_00.png",
+      "runtime": "stone_bruiser_move_north_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_01.png",
+      "runtime": "stone_bruiser_move_north_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_02.png",
+      "runtime": "stone_bruiser_move_north_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_03.png",
+      "runtime": "stone_bruiser_move_north_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        44,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_04.png",
+      "runtime": "stone_bruiser_move_north_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_05.png",
+      "runtime": "stone_bruiser_move_north_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        11,
+        43,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "stone_bruiser_move_north_east_00.png",
+      "runtime": "stone_bruiser_move_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        42,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        78,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        217,
+        245,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_east_01.png",
+      "runtime": "stone_bruiser_move_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        46,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        113,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        240,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_east_02.png",
+      "runtime": "stone_bruiser_move_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        11,
+        44,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        98,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_east_03.png",
+      "runtime": "stone_bruiser_move_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        26,
+        11,
+        41,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        74,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        219,
+        245,
+        293,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_east_04.png",
+      "runtime": "stone_bruiser_move_north_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        46,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        113,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        245,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_move_north_east_05.png",
+      "runtime": "stone_bruiser_move_north_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        11,
+        44,
+        59
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        108,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        245,
+        310,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "stone_bruiser_attack_east_00.png",
+      "runtime": "stone_bruiser_attack_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        45,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        62,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        225,
+        249,
+        287,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_01.png",
+      "runtime": "stone_bruiser_attack_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        77,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        249,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_02.png",
+      "runtime": "stone_bruiser_attack_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_03.png",
+      "runtime": "stone_bruiser_attack_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        159,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        249,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_04.png",
+      "runtime": "stone_bruiser_attack_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        16,
+        52,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        101,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        249,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_05.png",
+      "runtime": "stone_bruiser_attack_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        125,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        249,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_east_06.png",
+      "runtime": "stone_bruiser_attack_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        135,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        249,
+        323,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "stone_bruiser_attack_south_east_00.png",
+      "runtime": "stone_bruiser_attack_south_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        82,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        249,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_01.png",
+      "runtime": "stone_bruiser_attack_south_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        17,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        47
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        96,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        254,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_02.png",
+      "runtime": "stone_bruiser_attack_south_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        47
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        125,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        254,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_03.png",
+      "runtime": "stone_bruiser_attack_south_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        16,
+        55,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        48
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        178,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        249,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_04.png",
+      "runtime": "stone_bruiser_attack_south_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_05.png",
+      "runtime": "stone_bruiser_attack_south_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        18,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        46
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        110,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        259,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_east_06.png",
+      "runtime": "stone_bruiser_attack_south_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        58,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        47
+      ],
+      "scale": 4.803921568627451,
+      "resized_visible_size": [
+        144,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        254,
+        328,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "stone_bruiser_attack_south_00.png",
+      "runtime": "stone_bruiser_attack_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_01.png",
+      "runtime": "stone_bruiser_attack_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        47,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        138,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        240,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_02.png",
+      "runtime": "stone_bruiser_attack_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        14,
+        48,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        149,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        246,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_03.png",
+      "runtime": "stone_bruiser_attack_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        15,
+        51,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        181,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        251,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_04.png",
+      "runtime": "stone_bruiser_attack_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        17,
+        52,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        41
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        192,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        262,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_05.png",
+      "runtime": "stone_bruiser_attack_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        16,
+        18,
+        52,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        40
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        192,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        267,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_06.png",
+      "runtime": "stone_bruiser_attack_south_06.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        16,
+        53,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        42
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        202,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        256,
+        357,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "stone_bruiser_attack_south_west_00.png",
+      "runtime": "stone_bruiser_attack_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_01.png",
+      "runtime": "stone_bruiser_attack_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_02.png",
+      "runtime": "stone_bruiser_attack_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_03.png",
+      "runtime": "stone_bruiser_attack_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        110,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_04.png",
+      "runtime": "stone_bruiser_attack_south_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        16,
+        54,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        205,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        245,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_05.png",
+      "runtime": "stone_bruiser_attack_south_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        17,
+        46,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        155,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        255,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_south_west_06.png",
+      "runtime": "stone_bruiser_attack_south_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        15,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "stone_bruiser_attack_west_00.png",
+      "runtime": "stone_bruiser_attack_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        16,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        61,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        226,
+        254,
+        287,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_01.png",
+      "runtime": "stone_bruiser_attack_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        14,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        66,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        254,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_02.png",
+      "runtime": "stone_bruiser_attack_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        17,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        99,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        259,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_03.png",
+      "runtime": "stone_bruiser_attack_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        17,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        108,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        259,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_04.png",
+      "runtime": "stone_bruiser_attack_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        118,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_05.png",
+      "runtime": "stone_bruiser_attack_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        12,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        127,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_west_06.png",
+      "runtime": "stone_bruiser_attack_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        17,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        118,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        259,
+        315,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "stone_bruiser_attack_north_west_00.png",
+      "runtime": "stone_bruiser_attack_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_01.png",
+      "runtime": "stone_bruiser_attack_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        117,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        240,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_02.png",
+      "runtime": "stone_bruiser_attack_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        18,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        245,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_03.png",
+      "runtime": "stone_bruiser_attack_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        49,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        153,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        250,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_04.png",
+      "runtime": "stone_bruiser_attack_north_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        51,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        153,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        245,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_05.png",
+      "runtime": "stone_bruiser_attack_north_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        18,
+        51,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        158,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        250,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_west_06.png",
+      "runtime": "stone_bruiser_attack_north_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        51,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        245,
+        337,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "stone_bruiser_attack_north_00.png",
+      "runtime": "stone_bruiser_attack_north_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        46,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        92,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        258,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_01.png",
+      "runtime": "stone_bruiser_attack_north_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        25,
+        15,
+        48,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        46
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        106,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        267,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_02.png",
+      "runtime": "stone_bruiser_attack_north_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        51,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        45
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        139,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        272,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_03.png",
+      "runtime": "stone_bruiser_attack_north_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        12,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        83,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        253,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_04.png",
+      "runtime": "stone_bruiser_attack_north_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        25,
+        10,
+        46,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        51
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        97,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        244,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_05.png",
+      "runtime": "stone_bruiser_attack_north_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        49,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        116,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_06.png",
+      "runtime": "stone_bruiser_attack_north_06.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        48,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        111,
+        203
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        277,
+        311,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "stone_bruiser_attack_north_east_00.png",
+      "runtime": "stone_bruiser_attack_north_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_01.png",
+      "runtime": "stone_bruiser_attack_north_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        240,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_02.png",
+      "runtime": "stone_bruiser_attack_north_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        245,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_03.png",
+      "runtime": "stone_bruiser_attack_north_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        107,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        245,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_04.png",
+      "runtime": "stone_bruiser_attack_north_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        16,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_05.png",
+      "runtime": "stone_bruiser_attack_north_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        128,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        240,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_attack_north_east_06.png",
+      "runtime": "stone_bruiser_attack_north_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        55,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "stone_bruiser_hit_east_00.png",
+      "runtime": "stone_bruiser_hit_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        45,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_01.png",
+      "runtime": "stone_bruiser_hit_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        97,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_02.png",
+      "runtime": "stone_bruiser_hit_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        27,
+        43,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        11,
+        37
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        56,
+        189
+      ],
+      "runtime_alpha_bbox": [
+        228,
+        291,
+        284,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_03.png",
+      "runtime": "stone_bruiser_hit_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        20,
+        55,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        44
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        117,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        255,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_04.png",
+      "runtime": "stone_bruiser_hit_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        18,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        245,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_05.png",
+      "runtime": "stone_bruiser_hit_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        18,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        245,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_east_06.png",
+      "runtime": "stone_bruiser_hit_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        17,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        77,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        240,
+        295,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "stone_bruiser_hit_south_east_00.png",
+      "runtime": "stone_bruiser_hit_south_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_01.png",
+      "runtime": "stone_bruiser_hit_south_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        97,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_02.png",
+      "runtime": "stone_bruiser_hit_south_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        117,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        240,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_03.png",
+      "runtime": "stone_bruiser_hit_south_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        20,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        44
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        143,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        255,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_04.png",
+      "runtime": "stone_bruiser_hit_south_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        22,
+        21,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        148,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        261,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_05.png",
+      "runtime": "stone_bruiser_hit_south_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        18,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        138,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        245,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_east_06.png",
+      "runtime": "stone_bruiser_hit_south_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        117,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        315,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "stone_bruiser_hit_south_00.png",
+      "runtime": "stone_bruiser_hit_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        107,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_01.png",
+      "runtime": "stone_bruiser_hit_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        107,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        240,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_02.png",
+      "runtime": "stone_bruiser_hit_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        117,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        246,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_03.png",
+      "runtime": "stone_bruiser_hit_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        15,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        43
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        251,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_04.png",
+      "runtime": "stone_bruiser_hit_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        14,
+        48,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        44
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        149,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        246,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_05.png",
+      "runtime": "stone_bruiser_hit_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        13,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        45
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        133,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        240,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_06.png",
+      "runtime": "stone_bruiser_hit_south_06.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        12,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        46
+      ],
+      "scale": 5.326086956521739,
+      "resized_visible_size": [
+        117,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        315,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "stone_bruiser_hit_south_west_00.png",
+      "runtime": "stone_bruiser_hit_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        85,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_01.png",
+      "runtime": "stone_bruiser_hit_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_02.png",
+      "runtime": "stone_bruiser_hit_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        105,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        240,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_03.png",
+      "runtime": "stone_bruiser_hit_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        18,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        120,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        250,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_04.png",
+      "runtime": "stone_bruiser_hit_south_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        18,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        120,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        250,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_05.png",
+      "runtime": "stone_bruiser_hit_south_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        115,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        245,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_south_west_06.png",
+      "runtime": "stone_bruiser_hit_south_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        100,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        240,
+        306,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "stone_bruiser_hit_west_00.png",
+      "runtime": "stone_bruiser_hit_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        16,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        66,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        223,
+        235,
+        289,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_01.png",
+      "runtime": "stone_bruiser_hit_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        14,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        71,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        220,
+        240,
+        291,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_02.png",
+      "runtime": "stone_bruiser_hit_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        17,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        77,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        240,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_03.png",
+      "runtime": "stone_bruiser_hit_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        43,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        77,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        240,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_04.png",
+      "runtime": "stone_bruiser_hit_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        17,
+        43,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        240,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_05.png",
+      "runtime": "stone_bruiser_hit_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        43,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        77,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        240,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_west_06.png",
+      "runtime": "stone_bruiser_hit_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        16,
+        45,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        14,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        71,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        220,
+        235,
+        291,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "stone_bruiser_hit_north_west_00.png",
+      "runtime": "stone_bruiser_hit_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        80,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        216,
+        254,
+        296,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_01.png",
+      "runtime": "stone_bruiser_hit_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        85,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        254,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_02.png",
+      "runtime": "stone_bruiser_hit_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        94,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        254,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_03.png",
+      "runtime": "stone_bruiser_hit_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        12,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        104,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_04.png",
+      "runtime": "stone_bruiser_hit_north_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        46
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        108,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        263,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_05.png",
+      "runtime": "stone_bruiser_hit_north_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        51,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        118,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        259,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_west_06.png",
+      "runtime": "stone_bruiser_hit_north_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        94,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        254,
+        303,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "stone_bruiser_hit_north_00.png",
+      "runtime": "stone_bruiser_hit_north_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        46,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_01.png",
+      "runtime": "stone_bruiser_hit_north_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        240,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_02.png",
+      "runtime": "stone_bruiser_hit_north_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        15,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        245,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_03.png",
+      "runtime": "stone_bruiser_hit_north_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        18,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        261,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_04.png",
+      "runtime": "stone_bruiser_hit_north_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        28,
+        18,
+        44,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        82,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        215,
+        261,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_05.png",
+      "runtime": "stone_bruiser_hit_north_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        250,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_06.png",
+      "runtime": "stone_bruiser_hit_north_06.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        47
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        92,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        240,
+        302,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "stone_bruiser_hit_north_east_00.png",
+      "runtime": "stone_bruiser_hit_north_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        83,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        245,
+        297,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_01.png",
+      "runtime": "stone_bruiser_hit_north_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        98,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        250,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_02.png",
+      "runtime": "stone_bruiser_hit_north_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        16,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        108,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        245,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_03.png",
+      "runtime": "stone_bruiser_hit_north_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        14,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        127,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_04.png",
+      "runtime": "stone_bruiser_hit_north_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        25,
+        16,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        118,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        245,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_05.png",
+      "runtime": "stone_bruiser_hit_north_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        113,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        250,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_hit_north_east_06.png",
+      "runtime": "stone_bruiser_hit_north_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        98,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        245,
+        305,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "stone_bruiser_death_east_00.png",
+      "runtime": "stone_bruiser_death_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        45,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        59,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        226,
+        262,
+        285,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_01.png",
+      "runtime": "stone_bruiser_death_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        34,
+        18,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        15,
+        46
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        68,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        222,
+        271,
+        290,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_02.png",
+      "runtime": "stone_bruiser_death_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        23,
+        55,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        41
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        113,
+        186
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        294,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_03.png",
+      "runtime": "stone_bruiser_death_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        51
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        177,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        249,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_04.png",
+      "runtime": "stone_bruiser_death_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        22,
+        10,
+        60,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        172,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_05.png",
+      "runtime": "stone_bruiser_death_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        19,
+        60,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        45
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        177,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        276,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_06.png",
+      "runtime": "stone_bruiser_death_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        28,
+        60,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        36
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        191,
+        163
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        317,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_07.png",
+      "runtime": "stone_bruiser_death_east_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        34,
+        62,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        30
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        227,
+        136
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        344,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_east_08.png",
+      "runtime": "stone_bruiser_death_east_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        11,
+        36,
+        64,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        28
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        240,
+        127
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        353,
+        376,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "stone_bruiser_death_south_east_00.png",
+      "runtime": "stone_bruiser_death_south_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        87,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_01.png",
+      "runtime": "stone_bruiser_death_south_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        97,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        245,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_02.png",
+      "runtime": "stone_bruiser_death_south_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        22,
+        51,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        40
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        143,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        276,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_03.png",
+      "runtime": "stone_bruiser_death_south_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        22,
+        30,
+        54,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        32
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        163,
+        163
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        317,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_04.png",
+      "runtime": "stone_bruiser_death_south_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        35,
+        56,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        31
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        184,
+        158
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        322,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_05.png",
+      "runtime": "stone_bruiser_death_south_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        18,
+        38,
+        59,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        28
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        209,
+        143
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        337,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_06.png",
+      "runtime": "stone_bruiser_death_south_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        45,
+        59,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        22
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        214,
+        112
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        368,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_07.png",
+      "runtime": "stone_bruiser_death_south_east_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        48,
+        62,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        19
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        230,
+        97
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        383,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_east_08.png",
+      "runtime": "stone_bruiser_death_south_east_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        48,
+        62,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        19
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        230,
+        97
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        383,
+        371,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "stone_bruiser_death_south_00.png",
+      "runtime": "stone_bruiser_death_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        12,
+        44,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        46
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        104,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        240,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_01.png",
+      "runtime": "stone_bruiser_death_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        44
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        115,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        251,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_02.png",
+      "runtime": "stone_bruiser_death_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        17,
+        46,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        41
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        125,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        266,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_03.png",
+      "runtime": "stone_bruiser_death_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        21,
+        45,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        37
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        115,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        287,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_04.png",
+      "runtime": "stone_bruiser_death_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        23,
+        49,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        37
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        162,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        287,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_05.png",
+      "runtime": "stone_bruiser_death_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        13,
+        22,
+        53,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        42
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        209,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        261,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_06.png",
+      "runtime": "stone_bruiser_death_south_06.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        10,
+        18,
+        56,
+        60
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        42
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        240,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        261,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_07.png",
+      "runtime": "stone_bruiser_death_south_07.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        8,
+        15,
+        59,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        266,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        123,
+        235,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_08.png",
+      "runtime": "stone_bruiser_death_south_08.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        7,
+        14,
+        59,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        47
+      ],
+      "scale": 5.212765957446808,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "stone_bruiser_death_south_west_00.png",
+      "runtime": "stone_bruiser_death_south_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        49
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        77,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        258,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_01.png",
+      "runtime": "stone_bruiser_death_south_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        48,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        91,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        262,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_02.png",
+      "runtime": "stone_bruiser_death_south_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        23,
+        14,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        118,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        253,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_03.png",
+      "runtime": "stone_bruiser_death_south_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        18,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        46
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        136,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        271,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_04.png",
+      "runtime": "stone_bruiser_death_south_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        17,
+        52,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        47
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        168,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        267,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_05.png",
+      "runtime": "stone_bruiser_death_south_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        47
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        159,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        267,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_06.png",
+      "runtime": "stone_bruiser_death_south_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        16,
+        57,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        186,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        244,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_07.png",
+      "runtime": "stone_bruiser_death_south_west_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        59,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_south_west_08.png",
+      "runtime": "stone_bruiser_death_south_west_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        10,
+        15,
+        61,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        231,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        371,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "stone_bruiser_death_west_00.png",
+      "runtime": "stone_bruiser_death_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        31,
+        16,
+        44,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        13,
+        48
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        58,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        227,
+        266,
+        285,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_01.png",
+      "runtime": "stone_bruiser_death_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        10,
+        45,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        16,
+        54
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        71,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        220,
+        239,
+        291,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_02.png",
+      "runtime": "stone_bruiser_death_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        9,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        89,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_03.png",
+      "runtime": "stone_bruiser_death_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        51
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        94,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        253,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_04.png",
+      "runtime": "stone_bruiser_death_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        25,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        39
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        129,
+        174
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        306,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_05.png",
+      "runtime": "stone_bruiser_death_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        36,
+        54,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        28
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        169,
+        125
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        355,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_06.png",
+      "runtime": "stone_bruiser_death_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        12,
+        45,
+        60,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        19
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        214,
+        85
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        395,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_07.png",
+      "runtime": "stone_bruiser_death_west_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        48,
+        64,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        16
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        227,
+        71
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        409,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_west_08.png",
+      "runtime": "stone_bruiser_death_west_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        49,
+        64,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        16
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        227,
+        71
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        409,
+        369,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "stone_bruiser_death_north_west_00.png",
+      "runtime": "stone_bruiser_death_north_west_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        76,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        266,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_01.png",
+      "runtime": "stone_bruiser_death_north_west_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        28,
+        17,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        47
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        85,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        271,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_02.png",
+      "runtime": "stone_bruiser_death_north_west_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        20,
+        10,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        54
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        134,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        239,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_03.png",
+      "runtime": "stone_bruiser_death_north_west_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        9,
+        56,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        178,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_04.png",
+      "runtime": "stone_bruiser_death_north_west_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        59,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        51
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        192,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        253,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_05.png",
+      "runtime": "stone_bruiser_death_north_west_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        16,
+        20,
+        58,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        187,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        284,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_06.png",
+      "runtime": "stone_bruiser_death_north_west_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        15,
+        24,
+        61,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        41
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        205,
+        183
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        297,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_07.png",
+      "runtime": "stone_bruiser_death_north_west_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        14,
+        35,
+        61,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        30
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        209,
+        134
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        346,
+        361,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_west_08.png",
+      "runtime": "stone_bruiser_death_north_west_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        14,
+        40,
+        66,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        25
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        232,
+        111
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        369,
+        372,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "stone_bruiser_death_north_00.png",
+      "runtime": "stone_bruiser_death_north_00.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        46,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        20,
+        48
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        92,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        258,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_01.png",
+      "runtime": "stone_bruiser_death_north_01.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        25,
+        14,
+        47,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        47
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        102,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        263,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_02.png",
+      "runtime": "stone_bruiser_death_north_02.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        26,
+        13,
+        45,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        19,
+        48
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        88,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        258,
+        300,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_03.png",
+      "runtime": "stone_bruiser_death_north_03.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        20,
+        8,
+        47,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_04.png",
+      "runtime": "stone_bruiser_death_north_04.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        24,
+        8,
+        47,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        106,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_05.png",
+      "runtime": "stone_bruiser_death_north_05.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        19,
+        13,
+        51,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        48
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        148,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        258,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_06.png",
+      "runtime": "stone_bruiser_death_north_06.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        15,
+        19,
+        57,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        42
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        194,
+        194
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        286,
+        353,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_07.png",
+      "runtime": "stone_bruiser_death_north_07.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        11,
+        30,
+        60,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        32
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        227,
+        148
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        332,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_08.png",
+      "runtime": "stone_bruiser_death_north_08.png",
+      "source_size": [
+        72,
+        72
+      ],
+      "source_alpha_bbox": [
+        10,
+        26,
+        61,
+        61
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        35
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        236,
+        162
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        318,
+        374,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "stone_bruiser_death_north_east_00.png",
+      "runtime": "stone_bruiser_death_north_east_00.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        29,
+        16,
+        46,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        48
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        77,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        262,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_01.png",
+      "runtime": "stone_bruiser_death_north_east_01.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        30,
+        18,
+        47,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        17,
+        46
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        77,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        271,
+        295,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_02.png",
+      "runtime": "stone_bruiser_death_north_east_02.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        27,
+        11,
+        50,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        53
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        104,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        240,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_03.png",
+      "runtime": "stone_bruiser_death_north_east_03.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        24,
+        10,
+        53,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        132,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_04.png",
+      "runtime": "stone_bruiser_death_north_east_04.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        21,
+        16,
+        61,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        48
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        181,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        262,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_05.png",
+      "runtime": "stone_bruiser_death_north_east_05.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        17,
+        27,
+        57,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        37
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        181,
+        168
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        312,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_06.png",
+      "runtime": "stone_bruiser_death_north_east_06.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        13,
+        30,
+        61,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        35
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        218,
+        159
+      ],
+      "runtime_alpha_bbox": [
+        147,
+        321,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_07.png",
+      "runtime": "stone_bruiser_death_north_east_07.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        10,
+        31,
+        63,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        35
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        240,
+        159
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        321,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "stone_bruiser_death_north_east_08.png",
+      "runtime": "stone_bruiser_death_north_east_08.png",
+      "source_size": [
+        76,
+        76
+      ],
+      "source_alpha_bbox": [
+        9,
+        32,
+        65,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        34
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        254,
+        154
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        326,
+        383,
+        480
+      ]
+    }
+  ]
+}
