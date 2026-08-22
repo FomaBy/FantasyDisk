@@ -175,11 +175,15 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 			"explicit_eight_directions": true,
 		},
+		# FAN-2619: dedicated 8-direction pack replacing the single authored
+		# horizontal view + flip. idle_<dir> carries the hover-flap loop (a
+		# flying actor has no separate "hover" state name in the resolver).
 		"winged_spark": {
 			"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
 			"scale": Vector2(0.32, 0.32),
 			"position": Vector2(0.0, -42.0),
 			"source_faces_left": true,
+			"explicit_eight_directions": true,
 		},
 	},
 	"elite": {

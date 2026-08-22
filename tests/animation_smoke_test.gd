@@ -1157,6 +1157,8 @@ func _test_full_frame_animation_registry() -> void:
 		# 7-frame attack/hit rows, 9-frame death rows, identical in all 8 rows.
 		"stone_bruiser": {"idle": 1, "move": 6, "attack": 7, "hit": 7, "death": 9},
 		"venom_spitter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
+		# FAN-2619: a flying actor's idle row is the six-frame hover-flap loop.
+		"winged_spark": {"idle": 6, "move": 6, "attack": 6, "hit": 4, "death": 6},
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
@@ -1195,11 +1197,6 @@ func _test_full_frame_animation_registry() -> void:
 			for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
 				if enemy_frames.get_animation_loop(one_shot_name):
 					_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
-		if enemy_id == "winged_spark":
-			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
-				_fail("Expected winged_spark hover_flap to have 6 frames.")
-			elif not enemy_frames.get_animation_loop("hover_flap"):
-				_fail("Expected winged_spark hover_flap to loop.")
 		if enemy_id == "rift_cutter":
 			# FAN-2609: explicit 8-direction runtime contract — every state must
 			# expose all eight `<state>_<suffix>` rows, never a mirrored fallback.
