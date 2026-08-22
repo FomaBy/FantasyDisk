@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"biologist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -72,13 +71,20 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## per-enemy floor is proven under crowd pressure in
 ## `tests/ultimates/engineer_balance_test.gd`.
 ##
+## `biologist` (FAN-2526): the World Mycelium's three infection waves each
+## reach every live enemy through the activation itself, the Perfect Sample's
+## tissue echoes sweep the whole arena from the highest-HP primary, and the
+## Symbiont Matriarch pulls, roots and hatches across the whole map with its
+## larvae round-robined over the live set. The per-enemy floor is proven under
+## crowd pressure in `tests/ultimates/biologist_balance_test.gd`.
+##
 ## `chemist` (FAN-2954): the philosopher's blast crystallizes every live enemy
 ## before its bounded per-target transmutation, every acid pour and its finale
 ## reach the full map, and every homunculus taunt, stomp and toxin wave reaches
 ## the full map while keeping its summon and stack contracts. The per-enemy
 ## floor and the class-local `target_limit` vocabulary are proven in
 ## `tests/ultimates/chemist_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "chemist", "engineer", "sniper"]
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "engineer", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

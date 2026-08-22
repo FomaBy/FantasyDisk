@@ -1,7 +1,95 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_biologist_spore_lens.png" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/biologist_spore_lens.png" id="3_weapon"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
 
 [node name="BiologistSporeLensWorldMycelium" type="Node2D"]
-script = ExtResource("1_scene")
-duration = 8.6
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/biologist/biologist_spore_lens.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="LensCore" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(-172, 48)
+scale = Vector2(0.42, 0.42)
+rotation = -0.45
+modulate = Color(0.72, 1, 0.68, 0.62)
+[node name="SporeGate" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(-112, 24)
+scale = Vector2(0.34, 0.34)
+modulate = Color(0.42, 1, 0.76, 0.5)
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="VeinNorth" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-92, 24, -30, 4, 34, -52, 320, -96)
+width = 8.0
+default_color = Color(0.22, 0.92, 0.48, 0.85)
+antialiased = true
+[node name="VeinEast" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-92, 24, -24, 30, 42, 18, 340, 6)
+width = 7.0
+default_color = Color(0.42, 1, 0.66, 0.82)
+antialiased = true
+[node name="VeinSouth" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-92, 24, -28, 54, 28, 88, 316, 130)
+width = 6.0
+default_color = Color(0.84, 1, 0.52, 0.8)
+antialiased = true
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="BloomA" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(320, -96)
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.72, 1, 0.68, 0.92)
+[node name="BloomB" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(340, 6)
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.42, 1, 0.76, 0.88)
+[node name="BloomC" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(316, 130)
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.84, 1, 0.52, 0.86)
+[node name="VeinFlashNorth" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(34, -52, 320, -96)
+width = 4.0
+default_color = Color(0.9, 1, 0.7, 0.7)
+antialiased = true
+[node name="VeinFlashSouth" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(28, 88, 316, 130)
+width = 4.0
+default_color = Color(0.9, 1, 0.7, 0.6)
+antialiased = true
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="MyceliumFade" type="Sprite2D" parent="PhaseNodes/Recovery"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(120, 12)
+scale = Vector2(0.22, 0.22)
+modulate = Color(0.6, 0.95, 0.55, 0.4)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="SporeDissolve" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(-80, -44, 80, 44)
+width = 2.0
+default_color = Color(0.5, 0.9, 0.45, 0.3)
+antialiased = true

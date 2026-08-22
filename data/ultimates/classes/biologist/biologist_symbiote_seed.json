@@ -16,19 +16,18 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.biologist.biologist_symbiote_seed",
     "params": {
-      "lifetime": 9.0,
+      "lifetime": 3.9,
       "max_range": 700.0,
-      "release_delay": 1.15,
-      "active_delay": 1.75,
-      "hatch_delay": 8.1,
-      "radius": 350.0,
-      "crowd_cap": 22,
+      "release_delay": 0.95,
+      "active_delay": 1.35,
+      "hatch_delay": 3.3,
+      "arena_radius": 100000.0,
       "pull_strength": 520.0,
-      "root_duration": 4.5,
+      "root_duration": 2.1,
       "slow_multiplier": 0.5,
       "impact_damage": 12.33,
       "larva_count": 6,
-      "larva_interval": 0.6,
+      "larva_interval": 0.3,
       "larva_damage": 9.59,
       "hatch_damage": 67.13
     }

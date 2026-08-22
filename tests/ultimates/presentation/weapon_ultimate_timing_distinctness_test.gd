@@ -18,7 +18,6 @@ const PACK_TIMING_KEY := "timing"
 const PARITY_EXEMPTIONS := {
 	"assassin": "scene-only package: no timeline and no presentation pack",
 	"berserk": "scene-only package: no timeline and no presentation pack",
-	"biologist": "scene script animates normalized progress, not absolute phase seconds",
 	"chemist": "scene-only package: no timeline and no presentation pack",
 	"dark_mage": "scene-only package: no timeline and no presentation pack",
 	"druid": "scene-only package: no timeline and no presentation pack",

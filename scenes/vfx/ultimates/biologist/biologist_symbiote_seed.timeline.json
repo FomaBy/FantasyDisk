@@ -1,0 +1,48 @@
+{
+  "timeline_id": "biologist_symbiote_seed.symbiont_matriarch",
+  "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "biologist",
+    "key": {"weapon_id": "biologist_symbiote_seed", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.biologist.biologist_symbiote_seed",
+    "animation": {
+      "id": "weapon_ultimate.animation.biologist.biologist_symbiote_seed",
+      "source_path": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.biologist.biologist_symbiote_seed",
+      "source_path": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.biologist.biologist_symbiote_seed",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.cleanup"}
+    ],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "timing": {"windup": 0.0, "release": 0.95, "active": 1.35, "recovery": 3.25, "cancel": 3.9},
+    "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 130.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "biologist.cast.seed_sow", "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_04.png", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png", "class_palette_id": "biologist.viridian_outbreak"},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Матка Симбионта",
+    "silhouette": "falling seed becomes one giant pod with radial tendrils and orbiting larvae",
+    "motion_path": "the seed drops for 0.95s, the pod swells and its tendrils snap across the arena, larvae orbit, then the membrane ruptures",
+    "timing_rhythm": "0.95s seed fall, pull-root lashes at 0.95s, six 0.30s larva launches from 1.35s, terminal hatch at 3.30s, 0.60s spore settle",
+    "impact_language": "arena-wide pull-root lashes frame a larval barrage and one terminal hatch burst",
+    "larva_count": 6,
+    "required_nodes": ["PhaseNodes/Windup/FallingSeed", "PhaseNodes/Release/Pod", "PhaseNodes/Release/Tendrils/Tendril0", "PhaseNodes/Active/Larvae/Larva0", "PhaseNodes/Recovery/MembraneRemnant", "PhaseNodes/Cancel/HatchBurst"],
+    "scene_node_budget": {"sprites": 6, "line_segments": 8, "simultaneous_emitters": 6},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 96}
+  }
+}

@@ -13,11 +13,11 @@ const WEAPONS := [
 	"biologist_symbiote_seed",
 ]
 const EXPECTED_CAPS := {
-	"biologist_spore_lens": {"crowd_cap": 18, "secondary_bloom_cap": 3},
+	"biologist_spore_lens": {"arena_radius": 100000.0, "propagation_waves": 3},
 	"biologist_sample_injector": {
-		"crowd_cap": 16, "analysis_pulses": 3, "sample_window": 10.0,
+		"arena_radius": 100000.0, "analysis_pulses": 3, "sample_window": 2.2,
 	},
-	"biologist_symbiote_seed": {"crowd_cap": 22, "larva_count": 6},
+	"biologist_symbiote_seed": {"arena_radius": 100000.0, "larva_count": 6},
 }
 
 var _errors: Array[String] = []

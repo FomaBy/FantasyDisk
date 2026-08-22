@@ -16,20 +16,16 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.biologist.biologist_spore_lens",
     "params": {
-      "lifetime": 8.6,
-      "release_delay": 0.9,
-      "propagation_interval": 1.45,
+      "lifetime": 3.5,
+      "release_delay": 0.7,
+      "propagation_interval": 0.55,
       "propagation_waves": 3,
-      "radius_start": 250.0,
-      "radius_step": 185.0,
-      "crowd_cap": 18,
+      "arena_radius": 100000.0,
       "infection_damage": 78.65,
-      "infection_duration": 8.6,
-      "root_duration": 5.0,
+      "infection_duration": 3.5,
+      "root_duration": 2.6,
       "slow_multiplier": 0.45,
-      "secondary_bloom_cap": 3,
       "secondary_bloom_radius": 150.0,
-      "secondary_bloom_targets": 3,
       "secondary_bloom_damage": 25.74
     }
   },

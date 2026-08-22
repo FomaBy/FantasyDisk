@@ -23,53 +23,44 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"propagation_interval": {"type": "number", "minimum": 0.01},
 		"propagation_waves": {"type": "integer", "minimum": 1},
-		"radius_start": {"type": "number", "minimum": 0.0},
-		"radius_step": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
+		"arena_radius": {"type": "number", "minimum": 0.01},
 		"infection_damage": {"type": "number", "minimum": 0.0},
 		"infection_duration": {"type": "number", "minimum": 0.1},
 		"root_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"secondary_bloom_cap": {"type": "integer", "minimum": 0},
 		"secondary_bloom_radius": {"type": "number", "minimum": 0.0},
-		"secondary_bloom_targets": {"type": "integer", "minimum": 1},
 		"secondary_bloom_damage": {"type": "number", "minimum": 0.0},
 	}
 
 
+## Ultimate Direction v2: the mycelium reaches every live enemy through the
+## activation itself — the three infection waves sweep the whole arena, and a
+## lethal infection blooms into every neighbour inside its spore radius. Reach
+## is bounded per TARGET (per-enemy infection damage), never per count.
 static func execute(activation) -> float:
 	if not Library.execute_primitive("control_resistance_policy", activation, _control_policy()):
 		return 0.0
-	var waves: int = activation.param_int("propagation_waves", 3)
-	var max_radius: float = activation.param_float("radius_start", 250.0) \
-		+ activation.param_float("radius_step", 185.0) * float(waves - 1)
 	var selected: Array = activation.select_targets(
-		activation.origin(), max_radius, activation.param_int("crowd_cap", 18), "nearest"
+		activation.origin(), activation.param_float("arena_radius", 100000.0), 0, "nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
 	effect.call("configure", activation, selected)
-	# Contact germination is immediate so activation always has a measurable
-	# gameplay result; the accepted 0.9s release remains the first outward branch.
-	effect.call("propagate", 0)
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
-	var release_delay: float = activation.param_float("release_delay", 0.9)
-	var interval: float = activation.param_float("propagation_interval", 1.45)
-	for wave in range(1, waves):
-		if wave == 1:
-			tween.tween_interval(release_delay)
-		else:
-			tween.tween_interval(interval)
+	var release_delay: float = activation.param_float("release_delay", 0.7)
+	var interval: float = activation.param_float("propagation_interval", 0.55)
+	var waves: int = activation.param_int("propagation_waves", 3)
+	for wave in waves:
+		tween.tween_interval(release_delay if wave == 0 else interval)
 		tween.tween_callback(Callable(effect, "propagate").bind(wave))
-	var elapsed: float = release_delay + interval * float(maxi(waves - 2, 0)) \
-		if waves > 1 else 0.0
-	var tail := maxf(activation.param_float("lifetime", 8.6) - elapsed, 0.0)
+	var elapsed: float = release_delay + interval * float(maxi(waves - 1, 0))
+	var tail := maxf(activation.param_float("lifetime", 3.5) - elapsed, 0.0)
 	if tail > 0.0:
 		tween.tween_interval(tail)
-	return activation.param_float("lifetime", 8.6)
+	return activation.param_float("lifetime", 3.5)
 
 
 static func _control_policy() -> Dictionary:
@@ -106,13 +97,11 @@ func propagate(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	propagation_count_for_tests += 1
-	var radius: float = _activation.param_float("radius_start", 250.0) \
-		+ _activation.param_float("radius_step", 185.0) * float(wave)
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
 		var target := raw_target as Node2D
-		if target == null or target.global_position.distance_to(_origin) > radius:
+		if target == null:
 			continue
 		_ensure_infected(target)
 		var result = _deal(
@@ -136,7 +125,7 @@ func _ensure_infected(target: Node2D) -> void:
 		Vector2.ZERO,
 		status_id,
 		{
-			"duration": _activation.param_float("root_duration", 5.0),
+			"duration": _activation.param_float("root_duration", 2.6),
 			"movement_locked": true,
 			"speed_multiplier": _activation.param_float("slow_multiplier", 0.45),
 			"infection": true,
@@ -147,16 +136,13 @@ func _ensure_infected(target: Node2D) -> void:
 
 
 func _secondary_bloom(source: Node2D, wave: int) -> void:
-	if bloom_count_for_tests >= _activation.param_int("secondary_bloom_cap", 3):
-		return
 	bloom_count_for_tests += 1
 	var neighbors: Array = _activation.select_targets(
 		source.global_position,
 		_activation.param_float("secondary_bloom_radius", 150.0),
-		_activation.param_int("secondary_bloom_targets", 3) + 1,
+		0,
 		"nearest"
 	)
-	var hit_count := 0
 	for raw_neighbor in neighbors:
 		if raw_neighbor == null or not is_instance_valid(raw_neighbor):
 			continue
@@ -170,9 +156,6 @@ func _secondary_bloom(source: Node2D, wave: int) -> void:
 			true,
 			{"ultimate_mechanic": "secondary_bloom", "bloom": bloom_count_for_tests}
 		)
-		hit_count += 1
-		if hit_count >= _activation.param_int("secondary_bloom_targets", 3):
-			break
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):

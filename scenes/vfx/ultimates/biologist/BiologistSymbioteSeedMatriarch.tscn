@@ -1,8 +1,101 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/biologist_symbiote_seed.png" id="3_weapon"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
 
 [node name="BiologistSymbioteSeedMatriarch" type="Node2D"]
-script = ExtResource("1_scene")
-variant = 2
-duration = 9.0
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/biologist/biologist_symbiote_seed.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="FallingSeed" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(0, -140)
+scale = Vector2(0.22, 0.22)
+modulate = Color(0.6, 1, 0.64, 0.8)
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="Pod" type="Sprite2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.58, 0.58)
+modulate = Color(1, 0.82, 1, 0.95)
+[node name="Tendrils" type="Node2D" parent="PhaseNodes/Release"]
+[node name="Tendril0" type="Line2D" parent="PhaseNodes/Release/Tendrils"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(32, 0, 55, 20, 300, 0)
+width = 7.0
+default_color = Color(0.92, 0.2, 0.86, 0.85)
+antialiased = true
+[node name="Tendril1" type="Line2D" parent="PhaseNodes/Release/Tendrils"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(16, 28, 47, 55, 260, 150)
+width = 7.0
+default_color = Color(0.57, 0.57, 0.66, 0.85)
+antialiased = true
+[node name="Tendril2" type="Line2D" parent="PhaseNodes/Release/Tendrils"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-16, 28, -47, 55, -260, 150)
+width = 7.0
+default_color = Color(0.92, 0.2, 0.86, 0.8)
+antialiased = true
+[node name="Tendril3" type="Line2D" parent="PhaseNodes/Release/Tendrils"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-32, 0, -55, 20, -300, 0)
+width = 7.0
+default_color = Color(0.57, 0.57, 0.66, 0.85)
+antialiased = true
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="Larvae" type="Node2D" parent="PhaseNodes/Active"]
+[node name="Larva0" type="Sprite2D" parent="PhaseNodes/Active/Larvae"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(74, 0)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.6, 1, 0.64, 0.9)
+[node name="Larva1" type="Sprite2D" parent="PhaseNodes/Active/Larvae"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(37, 64)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.6, 1, 0.64, 0.85)
+[node name="Larva2" type="Sprite2D" parent="PhaseNodes/Active/Larvae"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(-37, 64)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.6, 1, 0.64, 0.9)
+[node name="Larva3" type="Sprite2D" parent="PhaseNodes/Active/Larvae"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(-74, 0)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.6, 1, 0.64, 0.85)
+[node name="OrbitRing" type="Line2D" parent="PhaseNodes/Active"]
+points = PackedVector2Array(98, 0, 85, 49, 49, 85, 0, 98, -49, 85, -85, 49, -98, 0, -85, -49, -49, -85, 0, -98, 49, -85, 85, -49, 98, 0)
+width = 3.0
+default_color = Color(1, 0.48, 0.92, 0.6)
+antialiased = true
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="MembraneRemnant" type="Sprite2D" parent="PhaseNodes/Recovery"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.7, 0.95, 0.45)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="HatchBurst" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(124, 0, 88, 88, 0, 124, -88, 88, -124, 0, -88, -88, 0, -124, 88, -88, 124, 0)
+width = 9.0
+default_color = Color(1, 0.46, 0.92, 0.5)
+antialiased = true

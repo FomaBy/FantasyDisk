@@ -1,0 +1,48 @@
+{
+  "timeline_id": "biologist_spore_lens.world_mycelium",
+  "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "biologist",
+    "key": {"weapon_id": "biologist_spore_lens", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.biologist.biologist_spore_lens",
+    "animation": {
+      "id": "weapon_ultimate.animation.biologist.biologist_spore_lens",
+      "source_path": "res://docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_spore_lens.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.biologist.biologist_spore_lens",
+      "source_path": "res://docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_spore_lens.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.biologist.biologist_spore_lens",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.biologist.biologist_spore_lens.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.biologist.biologist_spore_lens.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.biologist.biologist_spore_lens.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.biologist.biologist_spore_lens.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.biologist.biologist_spore_lens.cleanup"}
+    ],
+    "pivot": {"x": 0.28, "y": 0.56},
+    "timing": {"windup": 0.0, "release": 0.7, "active": 1.25, "recovery": 2.45, "cancel": 3.5},
+    "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 110.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "biologist.cast.mycelium_bloom", "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_00.png", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_spore_lens.png", "class_palette_id": "biologist.viridian_outbreak"},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Мировой Мицелий",
+    "silhouette": "opened spore lens feeding a branching ground mycelium with mushroom blooms",
+    "motion_path": "the lens charges for 0.70s, then three fungal vein waves crawl across the whole arena before the network dries inward",
+    "timing_rhythm": "0.70s lens windup, three 0.55s vein waves at 0.70/1.25/1.80s, then a 1.05s dry-down",
+    "impact_language": "root flashes travel along arena-wide veins, infected deaths become non-recursive secondary blooms",
+    "wave_count": 3,
+    "required_nodes": ["PhaseNodes/Windup/LensCore", "PhaseNodes/Release/VeinNorth", "PhaseNodes/Release/VeinSouth", "PhaseNodes/Active/BloomA", "PhaseNodes/Active/BloomC", "PhaseNodes/Recovery/MyceliumFade"],
+    "scene_node_budget": {"sprites": 5, "line_segments": 6, "simultaneous_emitters": 3},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 96}
+  }
+}

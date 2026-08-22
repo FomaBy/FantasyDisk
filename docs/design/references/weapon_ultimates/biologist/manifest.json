@@ -1,19 +1,11 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1480",
+  "issue": "FAN-2526",
   "class_id": "biologist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
-    "phase_groups": [
-      "windup",
-      "release",
-      "active",
-      "recovery",
-      "cancel"
-    ],
-    "max_timeline_seconds": 10.0,
-    "headless_fallback": "no_op",
-    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+    "profile_source": "data/ultimates/schema/v1/classes/biologist.json",
+    "runtime_adapter_status": "active_exact_pair"
   },
   "generator_provenance": {
     "route": "reused_approved_assets_no_new_raster_generation",
@@ -24,42 +16,54 @@
         "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
         "preexisting_pixellab_id": "3e336a3b-d5cf-4bf6-b0f5-ab8ee64392ea",
-        "note": "Reuses the accepted SCRUM-731 PixelLab source and runtime texture; FAN-1480 generated no raster asset."
+        "note": "Reuses the accepted SCRUM-731 PixelLab source and runtime texture; FAN-2526 generated no raster asset."
       },
       "biologist_sample_injector": {
         "source_path": "docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source_alpha_clean.png",
         "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_sample_injector.png",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
         "preexisting_generator": "gpt-image-2 / SCRUM-730",
-        "note": "Reuses the accepted alpha-clean source and runtime texture; FAN-1480 generated no raster asset."
+        "note": "Reuses the accepted alpha-clean source and runtime texture; FAN-2526 generated no raster asset."
       },
       "biologist_symbiote_seed": {
         "source_path": "assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
         "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
         "preexisting_generator": "approved legacy runtime asset; no isolated source ID recorded",
-        "note": "Reuses the accepted runtime texture as the reviewed source identity; FAN-1480 generated no raster asset."
+        "note": "Reuses the accepted runtime texture as the reviewed source identity; FAN-2526 generated no raster asset."
       }
     }
+  },
+  "evidence": {
+    "capture_script": "tests/ultimates/presentation/biologist_ultimate_contact_capture.gd",
+    "capture_mode": "windowed Godot render; the checked-in FAN-1480 contact sheets remain the historical v1 evidence",
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_2k.png"
+    ],
+    "focused_test": "tests/ultimates/presentation/biologist_runtime_presentation_test.gd"
   },
   "weapons": [
     {
       "weapon_id": "biologist_spore_lens",
       "title": "Мировой Мицелий",
       "scene_path": "scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
-      "silhouette": "opened spore lens feeding a branching ground mycelium with three mushroom blooms",
-      "motion_path": "fungal veins crawl from the lens toward three separated clusters before the network dries inward",
-      "impact_language": "root flashes travel along veins, infected deaths become three capped non-recursive secondary blooms",
+      "timeline_path": "scenes/vfx/ultimates/biologist/biologist_spore_lens.timeline.json",
+      "silhouette": "opened spore lens feeding a branching ground mycelium with mushroom blooms",
+      "motion_path": "the lens charges through windup, then three fungal vein waves crawl across the whole arena before the network dries inward",
+      "impact_language": "root flashes travel along arena-wide veins, infected deaths become non-recursive secondary blooms",
       "pivot": {
         "x": 0.28,
         "y": 0.56
       },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.9,
-        "active": 1.45,
-        "recovery": 7.7,
-        "cancel": 8.6
+        "release": 0.7,
+        "active": 1.25,
+        "recovery": 2.45,
+        "cancel": 3.5
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.biologist.biologist_spore_lens.windup",
@@ -68,32 +72,53 @@
         "recovery": "weapon_ultimate.phase.biologist.biologist_spore_lens.recover",
         "cancel": "weapon_ultimate.phase.biologist.biologist_spore_lens.cleanup"
       },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "biologist.cast.mycelium_bloom",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_00.png",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+        "class_palette_id": "biologist.viridian_outbreak"
+      },
       "performance": {
-        "max_visual_nodes": 10,
-        "crowd_cap": 18,
-        "secondary_bloom_cap": 3,
-        "secondary_bloom_recursion": false,
-        "runtime_enforcement_owner": "FAN-1541",
-        "mechanics_owner": "FAN-1481"
+        "max_visual_nodes": 17,
+        "crowd_cap": 26,
+        "max_unique_materials": 2,
+        "max_fullscreen_materials": 1
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the backdrop holds a steady dim and the lens silhouette holds its cast pose while the vein waves, shake and hitstop reduce to one static glint",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.12
       }
     },
     {
       "weapon_id": "biologist_sample_injector",
       "title": "Идеальный Образец",
       "scene_path": "scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+      "timeline_path": "scenes/vfx/ultimates/biologist/biologist_sample_injector.timeline.json",
       "silhouette": "long needle rail and extraction beam ending in a rotating double DNA helix",
-      "motion_path": "needle charges on a straight priority-target rail, then scan pulses revisit the sampled endpoint",
-      "impact_language": "green-white extraction flash records a helix mark followed by three capped analysis pulses",
+      "motion_path": "the needle charges on its priority rail, the extraction flash records a helix mark, then three arena-wide scan pulses revisit the sample",
+      "impact_language": "green-white extraction flash records a helix mark followed by three tissue echoes that sweep every live enemy",
       "pivot": {
         "x": 0.18,
         "y": 0.52
       },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.65,
-        "active": 1.2,
-        "recovery": 6.65,
-        "cancel": 7.4
+        "release": 0.8,
+        "active": 1.1,
+        "recovery": 2.65,
+        "cancel": 3.0
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.biologist.biologist_sample_injector.windup",
@@ -102,32 +127,53 @@
         "recovery": "weapon_ultimate.phase.biologist.biologist_sample_injector.recover",
         "cancel": "weapon_ultimate.phase.biologist.biologist_sample_injector.cleanup"
       },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 90.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "biologist.cast.helix_extraction",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_02.png",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_sample_injector.png",
+        "class_palette_id": "biologist.viridian_outbreak"
+      },
       "performance": {
-        "max_visual_nodes": 11,
-        "crowd_cap": 16,
-        "analysis_pulse_cap": 3,
-        "sample_window_seconds": 10.0,
-        "runtime_enforcement_owner": "FAN-1541",
-        "mechanics_owner": "FAN-1481"
+        "max_visual_nodes": 17,
+        "crowd_cap": 26,
+        "max_unique_materials": 2,
+        "max_fullscreen_materials": 1
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the backdrop holds a steady flash and the needle silhouette holds its rail pose while the beam, pulses, shake and hitstop reduce to one static glint",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.12
       }
     },
     {
       "weapon_id": "biologist_symbiote_seed",
       "title": "Матка Симбионта",
       "scene_path": "scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
-      "silhouette": "falling seed becomes one giant pod with six radial tendrils and orbiting larvae",
-      "motion_path": "seed drops vertically, pod swells in place, tendrils snap outward, larvae orbit, membrane ruptures",
-      "impact_language": "six pull-root lashes frame a larval barrage and one terminal hatch burst",
+      "timeline_path": "scenes/vfx/ultimates/biologist/biologist_symbiote_seed.timeline.json",
+      "silhouette": "falling seed becomes one giant pod with radial tendrils and orbiting larvae",
+      "motion_path": "the seed drops through windup, the pod swells and its tendrils snap across the arena, larvae orbit, then the membrane ruptures",
+      "impact_language": "arena-wide pull-root lashes frame a larval barrage and one terminal hatch burst",
       "pivot": {
         "x": 0.5,
         "y": 0.5
       },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 1.15,
-        "active": 1.75,
-        "recovery": 8.1,
-        "cancel": 9.0
+        "release": 0.95,
+        "active": 1.35,
+        "recovery": 3.25,
+        "cancel": 3.9
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.windup",
@@ -136,24 +182,34 @@
         "recovery": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.recover",
         "cancel": "weapon_ultimate.phase.biologist.biologist_symbiote_seed.cleanup"
       },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 130.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "biologist.cast.seed_sow",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_04.png",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
+        "class_palette_id": "biologist.viridian_outbreak"
+      },
       "performance": {
-        "max_visual_nodes": 17,
-        "crowd_cap": 22,
-        "tendril_cap": 6,
-        "larva_cap": 6,
-        "runtime_enforcement_owner": "FAN-1541",
-        "mechanics_owner": "FAN-1481"
+        "max_visual_nodes": 18,
+        "crowd_cap": 28,
+        "max_unique_materials": 2,
+        "max_fullscreen_materials": 1
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the backdrop holds a steady dim and the pod silhouette holds its swollen pose while the tendrils, larvae, shake and hitstop reduce to one static membrane glint",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.12
       }
     }
-  ],
-  "evidence": {
-    "contact_sheets": [
-      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_2k.png"
-    ],
-    "capture_script": "tests/ultimates/presentation/biologist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/biologist_ultimate_timelines.gd"
-  }
+  ]
 }

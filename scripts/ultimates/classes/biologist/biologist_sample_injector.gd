@@ -20,15 +20,12 @@ var _leased_statuses: Array[Dictionary] = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
-		"half_width": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"sample_window": {"type": "number", "minimum": 0.1},
 		"analysis_pulses": {"type": "integer", "minimum": 1},
 		"analysis_first_delay": {"type": "number", "minimum": 0.01},
 		"analysis_interval": {"type": "number", "minimum": 0.01},
-		"analysis_radius": {"type": "number", "minimum": 0.0},
-		"analysis_target_cap": {"type": "integer", "minimum": 1},
+		"arena_radius": {"type": "number", "minimum": 0.01},
 		"extraction_damage": {"type": "number", "minimum": 0.0},
 		"analysis_damage": {"type": "number", "minimum": 0.0},
 		"tissue_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -38,6 +35,10 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+## Ultimate Direction v2: the needle still opens on the highest-HP silhouette
+## on its priority rail, but every analysis pulse now reads the whole arena —
+## the primary takes the full scan while every other live enemy takes the
+## tissue echo, so reach is bounded per TARGET, never per count.
 static func execute(activation) -> float:
 	var max_range: float = activation.param_float("max_range", 760.0)
 	if not Library.execute_primitive("aim_context", activation, {
@@ -45,12 +46,12 @@ static func execute(activation) -> float:
 		"target_mode": "host_aim",
 	}):
 		return 0.0
-	if not Library.execute_primitive("line_pierce_geometry", activation, {
-		"start": "source",
-		"direction": "aim",
-		"length": max_range,
-		"half_width": activation.param_float("half_width", 64.0),
-		"limit": activation.param_int("crowd_cap", 16),
+	if not Library.execute_primitive("priority_target_selector", activation, {
+		"center": "source",
+		"radius": activation.param_float("arena_radius", 100000.0),
+		"limit": 0,
+		"priority": "highest_hp",
+		"hint": {},
 	}):
 		return 0.0
 	var targets = activation.primitive_value("targets", [])
@@ -66,18 +67,18 @@ static func execute(activation) -> float:
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
-	var release_delay: float = activation.param_float("release_delay", 0.65)
+	var release_delay: float = activation.param_float("release_delay", 0.8)
 	tween.tween_interval(release_delay)
 	tween.tween_callback(Callable(effect, "extract"))
-	tween.tween_interval(activation.param_float("analysis_first_delay", 1.55))
+	tween.tween_interval(activation.param_float("analysis_first_delay", 0.35))
 	var pulses: int = activation.param_int("analysis_pulses", 3)
 	for pulse in pulses:
 		if pulse > 0:
-			tween.tween_interval(activation.param_float("analysis_interval", 1.65))
+			tween.tween_interval(activation.param_float("analysis_interval", 0.55))
 		tween.tween_callback(Callable(effect, "analysis_pulse").bind(pulse))
-	var elapsed: float = release_delay + activation.param_float("analysis_first_delay", 1.55) \
-		+ activation.param_float("analysis_interval", 1.65) * float(pulses - 1)
-	var lifetime: float = release_delay + activation.param_float("sample_window", 10.0)
+	var elapsed: float = release_delay + activation.param_float("analysis_first_delay", 0.35) \
+		+ activation.param_float("analysis_interval", 0.55) * float(maxi(pulses - 1, 0))
+	var lifetime: float = release_delay + activation.param_float("sample_window", 2.2)
 	if lifetime > elapsed:
 		tween.tween_interval(lifetime - elapsed)
 	return lifetime
@@ -130,7 +131,7 @@ func extract() -> void:
 		return
 	var status_id := "biologist_ultimate_sample_%d" % get_instance_id()
 	StatusEffects.apply_status(primary_target_for_tests, status_id, {
-		"duration": _activation.param_float("sample_window", 10.0),
+		"duration": _activation.param_float("sample_window", 2.2),
 		"sampled": true,
 		"direct_hit_bonus": _sample_bonus(),
 	})
@@ -154,20 +155,21 @@ func analysis_pulse(pulse: int) -> void:
 	if pulse >= _activation.param_int("analysis_pulses", 3):
 		return
 	analysis_pulse_count_for_tests += 1
-	if not _valid_primary():
-		return
 	var amount: float = _activation.scaled_damage("analysis_damage", 0.0)
-	_deal(
-		primary_target_for_tests,
-		amount * _sample_bonus(),
-		"sample_analysis:%d" % pulse,
-		false,
-		{"ultimate_mechanic": "analysis_pulse", "analysis_pulse": pulse}
-	)
+	if _valid_primary():
+		_deal(
+			primary_target_for_tests,
+			amount * _sample_bonus(),
+			"sample_analysis:%d" % pulse,
+			false,
+			{"ultimate_mechanic": "analysis_pulse", "analysis_pulse": pulse}
+		)
+	# The tissue echo reaches every live enemy in the arena, not a capped
+	# neighbourhood of the primary: the per-enemy floor is the contract.
 	var nearby: Array = _activation.select_targets(
-		(primary_target_for_tests as Node2D).global_position,
-		_activation.param_float("analysis_radius", 125.0),
-		_activation.param_int("analysis_target_cap", 4),
+		(primary_target_for_tests as Node2D).global_position if _valid_primary() else _activation.origin(),
+		_activation.param_float("arena_radius", 100000.0),
+		0,
 		"nearest"
 	)
 	for raw_target in nearby:

@@ -1,0 +1,48 @@
+{
+  "timeline_id": "biologist_sample_injector.perfect_sample",
+  "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "biologist",
+    "key": {"weapon_id": "biologist_sample_injector", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.biologist.biologist_sample_injector",
+    "animation": {
+      "id": "weapon_ultimate.animation.biologist.biologist_sample_injector",
+      "source_path": "res://docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source_alpha_clean.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_sample_injector.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.biologist.biologist_sample_injector",
+      "source_path": "res://docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source_alpha_clean.png",
+      "runtime_path": "res://assets/sprites/effects/vfx_weapon_biologist_sample_injector.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.biologist.biologist_sample_injector",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.biologist.biologist_sample_injector.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.biologist.biologist_sample_injector.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.biologist.biologist_sample_injector.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.biologist.biologist_sample_injector.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.biologist.biologist_sample_injector.cleanup"}
+    ],
+    "pivot": {"x": 0.18, "y": 0.52},
+    "timing": {"windup": 0.0, "release": 0.8, "active": 1.1, "recovery": 2.65, "cancel": 3.0},
+    "presence": {"fullscreen_footprint": true, "backdrop": "flash", "camera_shake": true, "hitstop_ms": 90.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "biologist.cast.helix_extraction", "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_02.png", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_biologist_sample_injector.png", "class_palette_id": "biologist.viridian_outbreak"},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Идеальный Образец",
+    "silhouette": "long needle rail and extraction beam ending in a rotating double DNA helix",
+    "motion_path": "the needle charges on its rail for 0.80s, the extraction flash records a helix mark, then three arena-wide scan pulses revisit the sample",
+    "timing_rhythm": "0.80s rail windup, extraction at 0.80s, three 0.55s analysis pulses at 1.15/1.70/2.25s, then a 0.35s helix collapse",
+    "impact_language": "green-white extraction flash records a helix mark followed by three tissue echoes that sweep every live enemy",
+    "analysis_pulses": 3,
+    "required_nodes": ["PhaseNodes/Windup/NeedleRail", "PhaseNodes/Release/ExtractionBeam", "PhaseNodes/Release/SampleTarget", "PhaseNodes/Active/DNAHelix/StrandA", "PhaseNodes/Active/AnalysisPulses/PulseB", "PhaseNodes/Recovery/HelixFade"],
+    "scene_node_budget": {"sprites": 4, "line_segments": 7, "simultaneous_emitters": 3},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 96}
+  }
+}

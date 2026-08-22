@@ -25,10 +25,10 @@ const TOWER_SHIELD_GUARD_RESOURCE := "knight_tower_shield.counter"
 # configure_character -> activate_ultimate -> controller.is_active() path;
 # `deadline` is that measurement plus COMPLETION_GRACE_SECONDS of slack.
 const LIFECYCLE_SPECS := [
-	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 10.65, "deadline": 11.65},
-	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0, "deadline": 10.0},
+	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 3.0, "deadline": 4.0},
+	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 3.9, "deadline": 4.9},
 	{"class_id": "elementalist", "weapon_id": "elementalist_meteor_core", "lifecycle": 8.89, "deadline": 9.89},
-	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6, "deadline": 9.6},
+	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 3.5, "deadline": 4.5},
 	{"class_id": "knight", "weapon_id": "tower_shield", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "priest", "weapon_id": "priest_reliquary", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "elementalist", "weapon_id": "elementalist_orb_ring", "lifecycle": 8.4, "deadline": 9.4},

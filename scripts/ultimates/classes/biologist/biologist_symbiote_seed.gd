@@ -25,8 +25,7 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"active_delay": {"type": "number", "minimum": 0.0},
 		"hatch_delay": {"type": "number", "minimum": 0.0},
-		"radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
+		"arena_radius": {"type": "number", "minimum": 0.01},
 		"pull_strength": {"type": "number", "minimum": 0.0},
 		"root_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -38,6 +37,10 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+## Ultimate Direction v2: the matriarch's lashes, larval barrage and terminal
+## hatch all read the whole arena, so every live enemy is pulled, rooted and
+## burst regardless of how many stand around it. Reach is bounded per TARGET,
+## never per count.
 static func execute(activation) -> float:
 	if not Library.execute_primitive("aim_context", activation, {
 		"max_range": activation.param_float("max_range", 700.0),
@@ -65,8 +68,8 @@ static func execute(activation) -> float:
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
-	var release_delay: float = activation.param_float("release_delay", 1.15)
-	var active_delay: float = activation.param_float("active_delay", 1.75)
+	var release_delay: float = activation.param_float("release_delay", 0.95)
+	var active_delay: float = activation.param_float("active_delay", 1.35)
 	tween.tween_interval(release_delay)
 	tween.tween_callback(Callable(pod, "pull_and_root"))
 	if active_delay > release_delay:
@@ -74,14 +77,14 @@ static func execute(activation) -> float:
 	var larvae: int = activation.param_int("larva_count", 6)
 	for larva in larvae:
 		if larva > 0:
-			tween.tween_interval(activation.param_float("larva_interval", 0.6))
+			tween.tween_interval(activation.param_float("larva_interval", 0.3))
 		tween.tween_callback(Callable(pod, "launch_larva").bind(larva))
-	var elapsed: float = active_delay + activation.param_float("larva_interval", 0.6) * float(larvae - 1)
-	var hatch_delay: float = activation.param_float("hatch_delay", 8.1)
+	var elapsed: float = active_delay + activation.param_float("larva_interval", 0.3) * float(larvae - 1)
+	var hatch_delay: float = activation.param_float("hatch_delay", 3.3)
 	if hatch_delay > elapsed:
 		tween.tween_interval(hatch_delay - elapsed)
 	tween.tween_callback(Callable(pod, "hatch"))
-	var lifetime: float = activation.param_float("lifetime", 9.0)
+	var lifetime: float = activation.param_float("lifetime", 3.9)
 	if lifetime > hatch_delay:
 		tween.tween_interval(lifetime - hatch_delay)
 	return lifetime
@@ -116,15 +119,19 @@ func configure(activation) -> void:
 	add_to_group(SUMMON_GROUP)
 
 
+func _arena_targets(priority: String) -> Array:
+	return _activation.select_targets(
+		global_position,
+		_activation.param_float("arena_radius", 100000.0),
+		0,
+		priority
+	)
+
+
 func pull_and_root() -> void:
 	if _activation == null or _activation.is_finished():
 		return
-	_targets = _activation.select_targets(
-		global_position,
-		_activation.param_float("radius", 350.0),
-		_activation.param_int("crowd_cap", 22),
-		"nearest"
-	)
+	_targets = _arena_targets("nearest")
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
@@ -140,7 +147,7 @@ func pull_and_root() -> void:
 			impulse,
 			status_id,
 			{
-				"duration": _activation.param_float("root_duration", 4.5),
+				"duration": _activation.param_float("root_duration", 2.1),
 				"movement_locked": true,
 				"speed_multiplier": _activation.param_float("slow_multiplier", 0.5),
 				"symbiote_root": true,
@@ -170,12 +177,7 @@ func launch_larva(index: int) -> void:
 				and (target.get("health") == null or float(target.get("health")) > 0.0):
 			live_targets.append(target)
 	if live_targets.is_empty():
-		live_targets = _activation.select_targets(
-			global_position,
-			_activation.param_float("radius", 350.0),
-			_activation.param_int("crowd_cap", 22),
-			"highest_hp"
-		)
+		live_targets = _arena_targets("highest_hp")
 	if live_targets.is_empty():
 		return
 	var target := live_targets[index % live_targets.size()] as Node
@@ -192,12 +194,7 @@ func hatch() -> void:
 	terminal_burst_for_tests = true
 	if _activation == null or _activation.is_finished():
 		return
-	for raw_target in _activation.select_targets(
-		global_position,
-		_activation.param_float("radius", 350.0),
-		_activation.param_int("crowd_cap", 22),
-		"nearest"
-	):
+	for raw_target in _arena_targets("nearest"):
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
 		var target := raw_target as Node

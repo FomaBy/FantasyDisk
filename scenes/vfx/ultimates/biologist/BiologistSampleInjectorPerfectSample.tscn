@@ -1,8 +1,95 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_biologist_sample_injector.png" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/biologist_sample_injector.png" id="3_weapon"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
 
 [node name="BiologistSampleInjectorPerfectSample" type="Node2D"]
-script = ExtResource("1_scene")
-variant = 1
-duration = 7.4
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/biologist/biologist_sample_injector.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="NeedleRail" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("3_weapon")
+position = Vector2(-158, 54)
+scale = Vector2(0.43, 0.43)
+rotation = -2.28
+modulate = Color(0.94, 1, 0.95, 0.66)
+[node name="ChargeHalo" type="Line2D" parent="PhaseNodes/Windup"]
+points = PackedVector2Array(-92, 8, -20, 8)
+width = 12.0
+default_color = Color(0.18, 0.95, 0.62, 0.3)
+antialiased = true
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="ExtractionBeam" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-92, 8, 300, 8)
+width = 5.0
+default_color = Color(0.94, 1, 0.95, 0.95)
+antialiased = true
+[node name="SampleTarget" type="Sprite2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(302, 8)
+scale = Vector2(0.32, 0.32)
+modulate = Color(0.55, 1, 0.86, 0.95)
+[node name="HelixMark" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(286, -14, 302, 8, 318, 30)
+width = 4.0
+default_color = Color(0.45, 1, 0.84, 0.85)
+antialiased = true
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="DNAHelix" type="Node2D" parent="PhaseNodes/Active"]
+[node name="StrandA" type="Line2D" parent="PhaseNodes/Active/DNAHelix"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-62, 0, -54, 20, -46, 0, -38, 20, -30, 0, -22, 20, -14, 0, -6, 20, 2, 0, 10, 20, 18, 0, 26, 20, 34, 0, 42, 20, 50, 0, 58, 20, 66, 0)
+width = 4.0
+default_color = Color(0.55, 1, 0.86, 0.9)
+antialiased = true
+[node name="StrandB" type="Line2D" parent="PhaseNodes/Active/DNAHelix"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-62, 20, -54, 0, -46, 20, -38, 0, -30, 20, -22, 0, -14, 20, -6, 0, 2, 20, 10, 0, 18, 20, 26, 0, 34, 20, 42, 0, 50, 20, 58, 0, 66, 20)
+width = 4.0
+default_color = Color(0.72, 0.42, 1, 0.8)
+antialiased = true
+[node name="AnalysisPulses" type="Node2D" parent="PhaseNodes/Active"]
+[node name="PulseA" type="Line2D" parent="PhaseNodes/Active/AnalysisPulses"]
+points = PackedVector2Array(58, 0, 41, 41, 0, 58, -41, 41, -58, 0, -41, -41, 0, -58, 41, -41, 58, 0)
+width = 4.0
+default_color = Color(0.3, 1, 0.5, 0.85)
+antialiased = true
+[node name="PulseB" type="Line2D" parent="PhaseNodes/Active/AnalysisPulses"]
+points = PackedVector2Array(86, 0, 61, 61, 0, 86, -61, 61, -86, 0, -61, -61, 0, -86, 61, -61, 86, 0)
+width = 3.0
+default_color = Color(0.72, 0.42, 1, 0.75)
+antialiased = true
+[node name="PulseC" type="Line2D" parent="PhaseNodes/Active/AnalysisPulses"]
+points = PackedVector2Array(112, 0, 79, 79, 0, 112, -79, 79, -112, 0, -79, -79, 0, -112, 79, -79, 112, 0)
+width = 3.0
+default_color = Color(0.82, 1, 0.58, 0.7)
+antialiased = true
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="HelixFade" type="Sprite2D" parent="PhaseNodes/Recovery"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(302, 8)
+scale = Vector2(0.18, 0.18)
+modulate = Color(0.6, 1, 0.9, 0.4)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="BeamDissolve" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(-60, 8, 60, 8)
+width = 2.0
+default_color = Color(0.5, 0.95, 0.7, 0.3)
+antialiased = true
