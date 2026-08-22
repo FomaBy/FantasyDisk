@@ -37,14 +37,14 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "druid", "weapon_id": "briar_staff", "lifecycle": 7.9, "deadline": 8.9},
 	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
 	{"class_id": "knight", "weapon_id": "holy_flail", "lifecycle": 7.6, "deadline": 8.6},
-	{"class_id": "berserk", "weapon_id": "sword", "lifecycle": 7.45, "deadline": 8.45},
+	{"class_id": "berserk", "weapon_id": "sword", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
 	{"class_id": "druid", "weapon_id": "summon_amulet", "lifecycle": 6.6, "deadline": 7.6},
 	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
 	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 6.37, "deadline": 7.37},
 	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
 	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
-	{"class_id": "berserk", "weapon_id": "axe", "lifecycle": 5.85, "deadline": 6.85},
+	{"class_id": "berserk", "weapon_id": "axe", "lifecycle": 2.7, "deadline": 3.7},
 	{"class_id": "doctor", "weapon_id": "plague_syringe", "lifecycle": 5.85, "deadline": 6.85},
 	{"class_id": "guitarist", "weapon_id": "bass_guitar", "lifecycle": 5.8, "deadline": 6.8},
 	{"class_id": "soldier", "weapon_id": "soldier_rifle", "lifecycle": 5.6, "deadline": 6.6},
@@ -65,7 +65,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "thief", "weapon_id": "thief_smoke_bomb", "lifecycle": 4.0, "deadline": 5.0},
 	{"class_id": "doctor", "weapon_id": "bone_saw", "lifecycle": 3.85, "deadline": 4.85},
 	{"class_id": "chemist", "weapon_id": "acid_flask", "lifecycle": 3.7, "deadline": 4.7},
-	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 3.4, "deadline": 4.4},
+	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 2.35, "deadline": 3.35},
 	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.87, "deadline": 4.87},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "chemist", "weapon_id": "blast_powder", "lifecycle": 2.2, "deadline": 3.2},
@@ -74,7 +74,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "knight", "weapon_id": "long_spear", "lifecycle": 1.4, "deadline": 2.4},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "assassin", "weapon_id": "venom_wire", "lifecycle": 1.05, "deadline": 2.05},
-	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
+	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.3, "deadline": 2.3},
 	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 2.9, "deadline": 3.9},
 ]
 
@@ -490,8 +490,38 @@ func _start_case(state: Dictionary) -> void:
 	_check(is_zero_approx(float(player.get("ultimate_charge"))), "%s must spend charge once" % label)
 	_check(bool(player.get("_ultimate_active")), "%s must set the Player active latch" % label)
 	_check(not bool(player.call("activate_ultimate")), "%s must refuse live re-entry" % label)
+	_assert_coin_pouch_selection(state)
 	_feed_ward_prevention(state)
 	_feed_tower_shield_guard_prevention(state)
+
+
+func _assert_coin_pouch_selection(state: Dictionary) -> void:
+	if str(state["label"]) != "thief/thief_coin_pouch":
+		return
+	var activation = state.get("activation")
+	var selected = activation.primitive_value("targets", []) if activation != null else []
+	_check(selected is Array and (selected as Array).size() == 13,
+		"thief_coin_pouch must select exactly 13 nearest live targets")
+	if not selected is Array:
+		return
+	var source = activation.primitive_value("source") if activation != null else null
+	_check(source is Vector2, "thief_coin_pouch must select from its recorded source")
+	if not source is Vector2:
+		return
+	var expected: Array = activation.select_targets(source as Vector2, 999999.0, 13, "nearest")
+	_check(selected == expected,
+		"thief_coin_pouch targets must remain deterministically nearest-first")
+	var reaches_beyond_declared_radius := false
+	for raw_target in selected as Array:
+		var target := raw_target as Node2D
+		_check(target != null and is_instance_valid(target),
+			"thief_coin_pouch must select only live targets")
+		if target == null or not is_instance_valid(target):
+			continue
+		reaches_beyond_declared_radius = reaches_beyond_declared_radius \
+				or (source as Vector2).distance_to(target.global_position) > 620.0
+	_check(reaches_beyond_declared_radius,
+		"thief_coin_pouch must retain map-wide reach while capping the wave")
 
 
 ## A ward package reaches its damage step only after it actually absorbed
