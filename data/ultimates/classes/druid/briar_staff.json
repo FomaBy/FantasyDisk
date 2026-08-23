@@ -16,8 +16,6 @@
       "impale_pulses": 3,
       "seed_count": 5,
       "root_radius": 430.0,
-      "target_cap": 20,
-      "impale_target_cap": 3,
       "root_duration": 5.0,
       "slow_multiplier": 0.45,
       "impale_damage": 61.2,

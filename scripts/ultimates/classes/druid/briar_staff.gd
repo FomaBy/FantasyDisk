@@ -23,8 +23,6 @@ static func parameter_contract() -> Dictionary:
 		"impale_pulses": {"type": "integer", "minimum": 1},
 		"seed_count": {"type": "integer", "minimum": 5, "maximum": 5},
 		"root_radius": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
-		"impale_target_cap": {"type": "integer", "minimum": 1},
 		"root_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"impale_damage": {"type": "number", "minimum": 0.0},
@@ -85,8 +83,8 @@ func grow_lattice() -> void:
 		return
 	_targets = _activation.select_targets(
 		global_position,
-		_activation.param_float("root_radius", 430.0),
-		_activation.param_int("target_cap", 20),
+		INF,
+		0,
 		"nearest"
 	)
 	for raw_target in _targets:
@@ -109,15 +107,10 @@ func impale(pulse: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	impale_count_for_tests += 1
-	var target_cap: int = _activation.param_int("impale_target_cap", 3)
-	var hit_count := 0
 	for raw_target in _targets:
-		if hit_count >= target_cap:
-			break
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
-		hit_count += 1
 		var damage_key := "thorn_crown_damage" if pulse == _activation.param_int("impale_pulses", 3) - 1 else "impale_damage"
 		_deal(
 			target,
