@@ -21,7 +21,6 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"aim_range": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"row_count": {"type": "integer", "minimum": 3, "maximum": 3},
 		"row_interval": {"type": "number", "minimum": 0.01},
 		"damage": {"type": "number", "minimum": 0.0},
@@ -44,7 +43,7 @@ static func execute(activation) -> float:
 		"direction": "aim",
 		"length": aim_range,
 		"half_width": activation.param_float("corridor_half_width", 72.0),
-		"limit": activation.param_int("target_limit", 18),
+		"limit": 0,
 	}):
 		return 0.0
 	var targets = activation.primitive_value("targets", [])
