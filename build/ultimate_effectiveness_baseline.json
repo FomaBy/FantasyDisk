@@ -774,17 +774,17 @@
 					"activated": true,
 					"cast_completed": true,
 					"control_seconds": 0.0,
-					"damage_applied": 14923.2909223854,
+					"damage_applied": 13107.6568088648,
 					"displacement": 0.0,
-					"effect_total": 14924.2909223854,
+					"effect_total": 13108.6568088648,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
 					"probe_count": 20,
 					"summon_count": 1.0,
-					"targets_struck": 20.0,
+					"targets_struck": 13.0,
 					"tier": "normal",
-					"uptime_seconds": 2.02
+					"uptime_seconds": 1.32
 				},
 				"crowd_5": {
 					"activated": true,
@@ -3230,7 +3230,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "boss",
-					"uptime_seconds": 5.21999999999998
+					"uptime_seconds": 3.1
 				},
 				"crowd_10": {
 					"activated": true,
@@ -3246,23 +3246,23 @@
 					"summon_count": 1.0,
 					"targets_struck": 10.0,
 					"tier": "normal",
-					"uptime_seconds": 5.19999999999998
+					"uptime_seconds": 3.1
 				},
 				"crowd_20": {
 					"activated": true,
 					"cast_completed": true,
 					"control_seconds": 0.0,
-					"damage_applied": 7022.6731584,
+					"damage_applied": 11144.940352,
 					"displacement": 0.0,
-					"effect_total": 7023.6731584,
+					"effect_total": 11145.940352,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
 					"probe_count": 20,
 					"summon_count": 1.0,
-					"targets_struck": 12.0,
+					"targets_struck": 20.0,
 					"tier": "normal",
-					"uptime_seconds": 5.19999999999998
+					"uptime_seconds": 3.1
 				},
 				"crowd_5": {
 					"activated": true,
@@ -3278,7 +3278,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 5.0,
 					"tier": "normal",
-					"uptime_seconds": 5.19999999999998
+					"uptime_seconds": 3.1
 				},
 				"elite": {
 					"activated": true,
@@ -3294,7 +3294,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "epic",
-					"uptime_seconds": 5.21999999999998
+					"uptime_seconds": 3.1
 				},
 				"solo": {
 					"activated": true,
@@ -3310,7 +3310,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "normal",
-					"uptime_seconds": 5.21999999999998
+					"uptime_seconds": 3.1
 				}
 			},
 			"total_boss_cap": 0.11,
@@ -3335,12 +3335,12 @@
 				"boss": {
 					"activated": true,
 					"boss_cap_budget": 681.3,
-					"boss_cap_ratio": 0.835099815059447,
+					"boss_cap_ratio": 0.835099815059444,
 					"cast_completed": true,
-					"control_seconds": 1.375,
-					"damage_applied": 568.953504000001,
+					"control_seconds": 0.75,
+					"damage_applied": 568.953503999999,
 					"displacement": 0.0,
-					"effect_total": 571.328504000001,
+					"effect_total": 570.703503999999,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
@@ -3348,15 +3348,15 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "boss",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				},
 				"crowd_10": {
 					"activated": true,
 					"cast_completed": true,
-					"control_seconds": 55.0,
-					"damage_applied": 5689.53504000001,
+					"control_seconds": 30.0,
+					"damage_applied": 5689.53504,
 					"displacement": 0.0,
-					"effect_total": 5745.53504000001,
+					"effect_total": 5720.53504,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
@@ -3364,31 +3364,31 @@
 					"summon_count": 1.0,
 					"targets_struck": 10.0,
 					"tier": "normal",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				},
 				"crowd_20": {
 					"activated": true,
 					"cast_completed": true,
-					"control_seconds": 77.0,
-					"damage_applied": 7965.34905600001,
+					"control_seconds": 60.0,
+					"damage_applied": 11379.07008,
 					"displacement": 0.0,
-					"effect_total": 8043.34905600001,
+					"effect_total": 11440.07008,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
 					"probe_count": 20,
 					"summon_count": 1.0,
-					"targets_struck": 14.0,
+					"targets_struck": 20.0,
 					"tier": "normal",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				},
 				"crowd_5": {
 					"activated": true,
 					"cast_completed": true,
-					"control_seconds": 27.5,
+					"control_seconds": 15.0,
 					"damage_applied": 2844.76752,
 					"displacement": 0.0,
-					"effect_total": 2873.26752,
+					"effect_total": 2860.76752,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
@@ -3396,15 +3396,15 @@
 					"summon_count": 1.0,
 					"targets_struck": 5.0,
 					"tier": "normal",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				},
 				"elite": {
 					"activated": true,
 					"cast_completed": true,
-					"control_seconds": 2.75,
+					"control_seconds": 1.5,
 					"damage_applied": 568.953504,
 					"displacement": 0.0,
-					"effect_total": 572.703504,
+					"effect_total": 571.453504,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
@@ -3412,15 +3412,15 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "epic",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				},
 				"solo": {
 					"activated": true,
 					"cast_completed": true,
-					"control_seconds": 5.5,
+					"control_seconds": 3.0,
 					"damage_applied": 568.953504,
 					"displacement": 0.0,
-					"effect_total": 575.453504,
+					"effect_total": 572.953504,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
@@ -3428,7 +3428,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "normal",
-					"uptime_seconds": 6.35999999999995
+					"uptime_seconds": 3.6
 				}
 			},
 			"total_boss_cap": 0.11,
@@ -3466,25 +3466,9 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "boss",
-					"uptime_seconds": 3.86
+					"uptime_seconds": 3.9
 				},
 				"crowd_10": {
-					"activated": true,
-					"cast_completed": true,
-					"control_seconds": 0.0,
-					"damage_applied": 3477.24,
-					"displacement": 0.0,
-					"effect_total": 3478.24,
-					"healing_applied": 0.0,
-					"modifier_granted": 0.0,
-					"prevention_applied": 0.0,
-					"probe_count": 10,
-					"summon_count": 1.0,
-					"targets_struck": 8.0,
-					"tier": "normal",
-					"uptime_seconds": 3.86
-				},
-				"crowd_20": {
 					"activated": true,
 					"cast_completed": true,
 					"control_seconds": 0.0,
@@ -3494,11 +3478,27 @@
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
-					"probe_count": 20,
+					"probe_count": 10,
 					"summon_count": 1.0,
 					"targets_struck": 10.0,
 					"tier": "normal",
-					"uptime_seconds": 3.86
+					"uptime_seconds": 3.9
+				},
+				"crowd_20": {
+					"activated": true,
+					"cast_completed": true,
+					"control_seconds": 0.0,
+					"damage_applied": 8693.1,
+					"displacement": 0.0,
+					"effect_total": 8694.1,
+					"healing_applied": 0.0,
+					"modifier_granted": 0.0,
+					"prevention_applied": 0.0,
+					"probe_count": 20,
+					"summon_count": 1.0,
+					"targets_struck": 20.0,
+					"tier": "normal",
+					"uptime_seconds": 3.9
 				},
 				"crowd_5": {
 					"activated": true,
@@ -3514,7 +3514,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 5.0,
 					"tier": "normal",
-					"uptime_seconds": 3.86
+					"uptime_seconds": 3.9
 				},
 				"elite": {
 					"activated": true,
@@ -3530,7 +3530,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "epic",
-					"uptime_seconds": 3.86
+					"uptime_seconds": 3.9
 				},
 				"solo": {
 					"activated": true,
@@ -3546,7 +3546,7 @@
 					"summon_count": 1.0,
 					"targets_struck": 1.0,
 					"tier": "normal",
-					"uptime_seconds": 3.86
+					"uptime_seconds": 3.9
 				}
 			},
 			"total_boss_cap": 0.11,

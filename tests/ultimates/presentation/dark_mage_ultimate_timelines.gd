@@ -2,7 +2,9 @@ extends SceneTree
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/dark_mage.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/dark_mage/manifest.json"
+const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const SCENES := {
 	"dark_book": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn"),
 	"cursed_skull": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn"),
@@ -13,7 +15,7 @@ const PACKS := [
 	{
 		"weapon_id": "dark_book",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn"),
-		"time": 3.22,
+		"time": 1.95,
 		"title": "DARK BOOK — ABYSS MIRROR",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.76, 0.42, 1.0),
@@ -22,7 +24,7 @@ const PACKS := [
 	{
 		"weapon_id": "cursed_skull",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn"),
-		"time": 5.22,
+		"time": 2.55,
 		"title": "CURSED SKULL — CURSED CROWN",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.68, 0.9, 0.42),
@@ -31,7 +33,7 @@ const PACKS := [
 	{
 		"weapon_id": "dark_wand",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn"),
-		"time": 3.08,
+		"time": 2.5,
 		"title": "DARK WAND — VANISHING THREAD",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.4, 0.84, 1.0),
@@ -80,6 +82,7 @@ func _initialize() -> void:
 	_expect(packages.size() == 3, "manifest must contain exactly three Dark Mage weapon packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_v2_adoption(manifest, packages, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
@@ -135,6 +138,39 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 	_check_lifecycle(weapon_id, timing, phases, errors)
 
 
+## FAN-2528: this card closes Dark Mage's own migration entries. The shared
+## ratchets and the class-focused timeline proof must agree, so no future v1
+## timing, generic silhouette or missing readable-impact declaration can slip
+## back behind an allowlist.
+func _check_v2_adoption(manifest: Dictionary, packages: Dictionary, errors: Array[String]) -> void:
+	_expect(DirectionContract.violations("dark_mage", manifest).is_empty(),
+		"Dark Mage must satisfy every visual-direction gate: %s" % [
+			str(DirectionContract.violations("dark_mage", manifest)),
+		], errors)
+	for gate in DirectionContract.GATES:
+		_expect(not (DirectionContract.ADOPTION_GAPS.get(gate, {}) as Dictionary).has("dark_mage"),
+			"Dark Mage must leave the %s visual-direction allowlist" % gate, errors)
+	for weapon_id in WEAPON_IDS:
+		var key := "dark_mage/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		_expect(not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key),
+			"%s must leave the presentation V2 migration allowlist" % key, errors)
+		errors.append_array(Schema.v2_envelope_errors(package.get("timing_seconds"), key))
+		var presence := package.get("presence", {}) as Dictionary
+		_expect(presence.get("fullscreen_footprint") == true
+			and presence.get("camera_shake") == true
+			and float(presence.get("hitstop_ms", 0.0)) >= 80.0
+			and float(presence.get("hitstop_ms", 0.0)) <= 150.0,
+			"%s must declare full-screen presence, shake and 80-150ms hitstop" % key, errors)
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(not str(identity.get("cast_pose_id", "")).is_empty()
+			and FileAccess.file_exists(str(identity.get("cast_pose_asset", "")))
+			and FileAccess.file_exists(str(identity.get("weapon_silhouette_asset", "")))
+			and str(identity.get("cast_pose_asset", "")) != str(identity.get("weapon_silhouette_asset", ""))
+			and str(identity.get("class_palette_id", "")) == "dark_mage.abyssal_violet",
+			"%s must bind Dark Mage pose, unique weapon silhouette and palette" % key, errors)
+
+
 func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
 	var scene := SCENES.get(weapon_id) as PackedScene
 	_expect(scene != null, "%s scene must load" % weapon_id, errors)
@@ -157,6 +193,11 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	var performance := package.get("performance", {}) as Dictionary
 	_expect(max_visual_nodes == int(performance.get("max_visual_nodes", -1)), "%s scene and manifest visual budgets must agree" % weapon_id, errors)
 	_expect(crowd_cap == int(performance.get("crowd_cap", -1)), "%s scene and manifest crowd caps must agree" % weapon_id, errors)
+	_expect(int(instance.get_meta("max_unique_materials", 0)) == int(performance.get("max_unique_materials", -1))
+		and int(instance.get_meta("max_fullscreen_materials", 0)) == int(performance.get("max_fullscreen_materials", -1)),
+		"%s scene and manifest material budgets must agree" % weapon_id, errors)
+	_expect(DirectionContract.scene_material_violations(instance, "dark_mage/%s" % weapon_id).is_empty(),
+		"%s scene must fit its declared V2 material budget" % weapon_id, errors)
 	instance.queue_free()
 
 

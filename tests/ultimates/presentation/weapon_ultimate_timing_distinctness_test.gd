@@ -20,7 +20,6 @@ const PARITY_EXEMPTIONS := {
 	"berserk": "scene-only package: no timeline and no presentation pack",
 	"biologist": "scene script animates normalized progress, not absolute phase seconds",
 	"chemist": "scene-only package: no timeline and no presentation pack",
-	"dark_mage": "scene-only package: no timeline and no presentation pack",
 	"druid": "scene-only package: no timeline and no presentation pack",
 	"elementalist": "scene-only package: no timeline and no presentation pack",
 	"guitarist": "scene-only package: no timeline and no presentation pack",

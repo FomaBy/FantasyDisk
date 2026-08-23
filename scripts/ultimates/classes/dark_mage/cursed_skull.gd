@@ -20,7 +20,6 @@ var _leased_statuses: Array[Dictionary] = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"screen_radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"curse_duration": {"type": "number", "minimum": 0.1},
 		"outgoing_damage_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -28,7 +27,6 @@ static func parameter_contract() -> Dictionary:
 		"pulse_interval": {"type": "number", "minimum": 0.01},
 		"curse_damage": {"type": "number", "minimum": 0.0},
 		"transfer_radius": {"type": "number", "minimum": 0.0},
-		"transfer_cap": {"type": "integer", "minimum": 0},
 		"harvest_delay": {"type": "number", "minimum": 0.0},
 		"harvest_damage": {"type": "number", "minimum": 0.0},
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -40,8 +38,8 @@ static func execute(activation) -> float:
 		return 0.0
 	var targets: Array = activation.select_targets(
 		activation.origin(),
-		activation.param_float("screen_radius", 900.0),
-		activation.param_int("crowd_cap", 14),
+		INF,
+		0,
 		"nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -175,8 +173,7 @@ func _mark(target: Node2D) -> void:
 
 
 func _transfer_curse(source: Node2D, pulse: int) -> void:
-	if source == null or not is_instance_valid(source) or transfer_count_for_tests \
-		>= _activation.param_int("transfer_cap", 8) or _transferred_from.has(source.get_instance_id()):
+	if source == null or not is_instance_valid(source) or _transferred_from.has(source.get_instance_id()):
 		return
 	_transferred_from[source.get_instance_id()] = true
 	for raw_target in _activation.select_targets(
@@ -196,7 +193,6 @@ func _transfer_curse(source: Node2D, pulse: int) -> void:
 			"radius": _activation.param_float("transfer_radius", 260.0) * 0.3,
 			"shape": "ring_pulse",
 		})
-		return
 
 
 func _alive(target: Node2D) -> bool:

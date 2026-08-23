@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"dark_mage": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -78,11 +77,18 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## floor and the class-local `target_limit` vocabulary are proven in
 ## `tests/ultimates/chemist_balance_test.gd`.
 ##
+## `dark_mage` (FAN-2528): the Abyss Mirror gives every live enemy its original
+## hit while its reflected point stays visual-only, the Cursed Crown marks and
+## pulses every live enemy before harvesting, and the Vanishing Thread gives
+## every live enemy its collapse floor with one bounded aimed focus bonus.
+## The floor is proven under crowd pressure in
+## `tests/ultimates/mechanics/dark_mage_ultimate_balance_test.gd`.
+##
 ## `biologist` (FAN-2526): every mycelium wave infects every live enemy,
 ## every analysis pulse reaches the whole map after the aimed priority sample,
 ## and the Matriarch's pull/root plus terminal hatch cover every live enemy;
 ## blooms and larvae stay finite identity bonuses rather than reach bounds.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "engineer", "sniper"]
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "engineer", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
