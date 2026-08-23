@@ -67,7 +67,7 @@ static func fire_wave(activation, state: Dictionary, stage: String) -> void:
 	var radius: float = activation.param_float("%s_radius" % stage, 0.0)
 	var damage: float = activation.scaled_damage("%s_damage" % stage, 0.0)
 	var duration: float = activation.param_float("%s_duration" % stage, 0.0)
-	for raw_target in activation.targets(activation.origin(), radius, activation.param_int("crowd_cap", 12)):
+	for raw_target in activation.targets(activation.origin(), radius):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
