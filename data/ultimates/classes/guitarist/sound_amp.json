@@ -17,7 +17,6 @@
       "recovery_tail": 4.06,
       "amp_radius": 260.0,
       "square_half_side": 260.0,
-      "crowd_cap": 14,
       "feedback_damage": 13.5,
       "overload_damage": 54.0,
       "feedback_duration": 2.0,
