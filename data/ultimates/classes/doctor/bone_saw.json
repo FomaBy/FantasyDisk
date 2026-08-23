@@ -11,7 +11,6 @@
     "strategy_id": "weapon_ultimate.executor.doctor.bone_saw",
     "params": {
       "orbit_radius": 240.0,
-      "target_cap": 8,
       "tick_count": 6,
       "tick_interval": 0.5,
       "tick_damage": 15.99,

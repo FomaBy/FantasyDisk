@@ -8,7 +8,6 @@ const SELF_PATH := "res://scripts/ultimates/classes/doctor/bone_saw.gd"
 static func parameter_contract() -> Dictionary:
 	return {
 		"orbit_radius": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
 		"tick_count": {"type": "integer", "minimum": 1},
 		"tick_interval": {"type": "number", "minimum": 0.01},
 		"tick_damage": {"type": "number", "minimum": 0.0},
@@ -50,8 +49,7 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 	var removed := 0.0
 	for raw_target in activation.targets(
 		activation.origin(),
-		activation.param_float("orbit_radius", 240.0),
-		activation.param_int("target_cap", 8)
+		activation.param_float("orbit_radius", 240.0)
 	):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):

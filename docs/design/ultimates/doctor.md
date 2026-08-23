@@ -8,7 +8,7 @@ Player и ClassWeapon не получают class-specific веток.
 | --- | ---: | ---: | ---: | --- |
 | `restore_potion` | 28.07s | 12-target outer zone | 10 repair + 8 absorb | aimed dual pool; actual outer damage heals and its final overflow becomes a temporary shield |
 | `plague_syringe` | 31.62s | 18 infected | 9 repair | highest-HP patient zero; five non-recursive spreading waves and a mask finale |
-| `bone_saw` | 27.55s | 8 close-orbit targets | 10 drain + 9 absorb | six close orbit cuts; actual removed HP becomes drain and stored vitality becomes a stitch shield |
+| `bone_saw` | 27.55s | every live target in the 240-radius orbit | 10 drain + 9 absorb | six close orbit cuts; actual removed HP becomes drain and stored vitality becomes a stitch shield |
 
 The trio midpoint is 29.08 seconds of each weapon's normal-output reference,
 inside the shared 20–35 second U3 power corridor. Every profile uses
@@ -22,5 +22,5 @@ editing their locked assets: Life and Death emits flask/release, poison-ring,
 healing-spiral, and shield events; Black Epidemic emits injection, veins, wave,
 and mask events; Emergency Surgery emits stance, orbit, and stitch-shield events.
 
-Focused evidence: `doctor_package_test.gd`, `doctor_balance_test.gd`, and
-`doctor_live_test.gd`.
+Focused evidence: `doctor_bone_saw_direction_v2_test.gd`,
+`doctor_package_test.gd`, `doctor_balance_test.gd`, and `doctor_live_test.gd`.
