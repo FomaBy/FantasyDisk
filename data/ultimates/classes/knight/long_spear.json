@@ -18,7 +18,6 @@
     "params": {
       "aim_range": 780.0,
       "corridor_half_width": 72.0,
-      "target_limit": 18,
       "row_count": 3,
       "row_interval": 0.32,
       "damage": 10.0,

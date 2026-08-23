@@ -122,6 +122,9 @@ func _test_discovery_and_fail_closed_profile() -> void:
 		"Long Spear must keep its nine-percent boss cap")
 	_check(executor is GDScript and (executor as GDScript).resource_path.ends_with("knight/long_spear.gd"),
 		"Long Spear must load only its class-local executor")
+	var executor_params: Variant = (profile.get("executor", {}) as Dictionary).get("params", {})
+	_check(executor_params is Dictionary and not (executor_params as Dictionary).has("target_limit"),
+		"Long Spear must not admit a count-shaped target limit")
 	var document = JSON.parse_string(FileAccess.get_file_as_string(
 		"res://data/ultimates/classes/knight/long_spear.json"
 	))
@@ -146,6 +149,9 @@ func _test_phalanx_order_damage_and_control() -> void:
 	epic.add_to_group(Activation.EPIC_GROUP)
 	var boss := _target(host, Vector2(600.0, 0.0))
 	boss.add_to_group(Activation.BOSS_GROUP)
+	var crowd_targets: Array[FixtureTarget] = [first, second, third, epic, boss]
+	for index in 15:
+		crowd_targets.append(_target(host, Vector2(610.0 + float(index) * 10.0, 0.0)))
 	var off_corridor := _target(host, Vector2(360.0, 180.0))
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	var controller := Controller.new(host, registry)
@@ -168,6 +174,9 @@ func _test_phalanx_order_damage_and_control() -> void:
 				"pierce hit must retain its assigned phalanx row")
 		_check(int(activation.target_value(target, Executor.HIT_KEY, 0)) == expected_row,
 			"target ledger must claim the target exactly once before its row hit")
+	for target in crowd_targets:
+		_check(target.received.size() == 1,
+			"every one of 20 eligible corridor targets must receive one pierce hit")
 	_check(off_corridor.received.is_empty(), "the phalanx corridor must not leak sideways")
 	for target in [first, second, third]:
 		_check(target.knockbacks.size() == 1 and is_equal_approx(target.knockbacks[0].length(), 180.0),
