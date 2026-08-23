@@ -28,7 +28,7 @@ const PULSE_INTERVAL := 0.85
 const PULSE_COUNT := 5
 const ADVANCE_BUFFER := 0.02
 
-const REGULAR_NORMAL_COUNT := 17
+const REGULAR_NORMAL_COUNT := 18
 # Base damage 1.0 keeps impact_damage/crater_damage coefficients (13.0/1.3) as
 # clean per-hit amounts; boss max_health 190 puts the 10% cap (19.0) between
 # the 4th (18.2) and 5th (19.5) cumulative pulse total, so every one of the
@@ -250,10 +250,22 @@ func _test_map_wide_impact_and_crater() -> void:
 	pulse_targets.append(epic)
 	pulse_targets.append(boss)
 	for pulse in range(PULSE_COUNT):
+		var living_pulse_targets: Array[FixtureTarget] = []
+		var received_before: Dictionary = {}
+		for target in pulse_targets:
+			if is_instance_valid(target) and target.health > 0.0:
+				living_pulse_targets.append(target)
+				received_before[target.get_instance_id()] = target.received.size()
+		_check(living_pulse_targets.size() > 20,
+			"crater pulse %d must start with more than 20 living targets" % pulse)
 		_advance(activation, PULSE_INTERVAL + ADVANCE_BUFFER)
 		_check(int(effect.get("pulse_count_for_tests")) == pulse + 1,
 			"crater pulse %d must resolve exactly once" % pulse)
-		for target in pulse_targets:
+		for target in living_pulse_targets:
+			_check(target.health > 0.0,
+				"crater pulse %d must not kill an eligible pulse target" % pulse)
+			_check(target.received.size() == int(received_before[target.get_instance_id()]) + 1,
+				"crater pulse %d must add exactly one new hit per eligible target" % pulse)
 			_check(target.crater_hits() == pulse + 1,
 				"every eligible live target must gain exactly one new meteor_crater hit on pulse %d" % pulse)
 			var last: Dictionary = target.received[target.received.size() - 1]
