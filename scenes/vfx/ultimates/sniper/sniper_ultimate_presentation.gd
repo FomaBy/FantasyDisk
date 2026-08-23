@@ -20,7 +20,7 @@ var _visible_phase := ""
 var _headless_mode := -1
 var _presence: Dictionary = {}
 var _identity: Dictionary = {}
-var _backdrop: Polygon2D = null
+var _backdrop: Sprite2D = null
 var _cast_pose: Sprite2D = null
 var _silhouette: Sprite2D = null
 var _camera: Camera2D = null
@@ -158,9 +158,19 @@ func _build_presence_nodes() -> void:
 	}
 	if _presence.is_empty() or _identity.is_empty():
 		return
-	_backdrop = Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color(1.0, 1.0, 1.0, 0.82), Color.WHITE])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.width = 64
+	texture.height = 64
+	_backdrop = Sprite2D.new()
 	_backdrop.name = "BackdropTreatment"
-	_backdrop.color = _backdrop_color(0.0)
+	_backdrop.texture = texture
+	_backdrop.centered = false
+	_backdrop.modulate = _backdrop_color(0.0)
 	_backdrop.z_index = -2
 	_backdrop.top_level = true
 	add_child(_backdrop)
@@ -202,7 +212,7 @@ func _apply_presence_pose(phase_name: String) -> void:
 			alpha = 0.24
 		"recovery":
 			alpha = 0.10
-	_backdrop.color = _backdrop_color(alpha)
+	_backdrop.modulate = _backdrop_color(alpha)
 	_backdrop.visible = alpha > 0.0
 	_presence_state["backdrop_visible"] = _backdrop.visible
 	if _cast_pose != null:
@@ -215,9 +225,9 @@ func _apply_presence_pose(phase_name: String) -> void:
 		_silhouette.scale = Vector2.ONE * (0.46 if phase_name == "windup" else 0.72)
 
 
-## The treatment is top-level and re-fitted to the actual camera every step.
-## A player-centred polygon leaves gaps whenever the camera reaches an arena
-## limit, because the player is then offset from the viewport centre.
+## The texture treatment is top-level and re-fitted to the actual camera every
+## step. A player-centred treatment leaves gaps whenever the camera reaches an
+## arena limit, because the player is then offset from the viewport centre.
 func _fit_backdrop_to_viewport() -> void:
 	if _backdrop == null:
 		return
@@ -230,12 +240,8 @@ func _fit_backdrop_to_viewport() -> void:
 	var overscan := visible_size * (BACKDROP_OVERSCAN - 1.0) * 0.5
 	var size := visible_size + overscan * 2.0
 	_backdrop.position = viewport.get_canvas_transform().affine_inverse() * rect.position - overscan
-	_backdrop.polygon = PackedVector2Array([
-		Vector2.ZERO,
-		Vector2(size.x, 0.0),
-		size,
-		Vector2(0.0, size.y),
-	])
+	if _backdrop.texture != null:
+		_backdrop.scale = size / _backdrop.texture.get_size()
 
 
 func _apply_release_presence() -> void:

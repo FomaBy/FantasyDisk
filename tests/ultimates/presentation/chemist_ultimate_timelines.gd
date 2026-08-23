@@ -18,7 +18,7 @@ const PACKS := [
 		"title": "BLAST POWDER — PHILOSOPHERS' EXPLOSION",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.78, 0.28),
-		"required_nodes": ["BackdropVeil", "AlchemistGlow", "PhilosophersRitual", "PentagramSigil", "GoldRadiance"],
+		"required_nodes": ["BackdropVeil", "PhilosophersRitual"],
 	},
 	{
 		"weapon_id": "acid_flask",
@@ -70,6 +70,7 @@ const DRIVER_DUCK_DB := -9.0
 var _blast_package := {}
 var _acid_package := {}
 var _homunculus_package := {}
+var _failed := false
 
 
 class HandleProbe extends RefCounted:
@@ -96,6 +97,7 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
+	_check_blast_primitive_budget(errors)
 	_check_acid_v2(packages.get("acid_flask", {}) as Dictionary, errors)
 	_check_homunculus_v2(packages.get("homunculus_vial", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
@@ -114,6 +116,8 @@ func _initialize() -> void:
 ## there gets _ready, autoplay or a current camera. The driver gate needs all
 ## three, so it runs on the first real frame instead.
 func _process(_delta: float) -> bool:
+	if _failed:
+		return true
 	var errors: Array[String] = []
 	_check_blast_driver(_blast_package, errors)
 	_check_acid_driver(_acid_package, errors)
@@ -255,6 +259,26 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 ## make the effect full-screen and identity-bearing.
 func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
 	_check_weapon_v2("blast_powder", package, errors)
+
+
+func _check_blast_primitive_budget(errors: Array[String]) -> void:
+	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	_expect(scene != null, "blast_powder scene must instantiate for its primitive budget", errors)
+	if scene == null:
+		return
+	root.add_child(scene)
+	_expect(_naked_primitive_count(scene) == 1, "blast_powder must retain only its one ratcheted backdrop primitive", errors)
+	_expect(scene.get_node_or_null("BackdropVeil") is Polygon2D, "blast_powder must retain its fitted backdrop veil", errors)
+	for retired_node in ["AlchemistGlow", "PentagramSigil", "GoldRadiance"]:
+		_expect(scene.get_node_or_null(retired_node) == null, "blast_powder must not restore naked primitive %s" % retired_node, errors)
+	scene.queue_free()
+
+
+func _naked_primitive_count(node: Node) -> int:
+	var count := 1 if node is Polygon2D or (node is Line2D and (node as Line2D).texture == null) else 0
+	for child in node.get_children():
+		count += _naked_primitive_count(child)
+	return count
 
 
 ## FAN-2958: the same v2 contract for the migrated acid_flask pair, plus the
@@ -701,6 +725,7 @@ func _expect(condition: bool, message: String, errors: Array[String]) -> void:
 
 
 func _finish(errors: Array[String]) -> void:
+	_failed = true
 	for error in errors:
 		push_error("Chemist ultimate timeline: %s" % error)
 	quit(1)
