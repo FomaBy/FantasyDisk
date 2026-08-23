@@ -15,6 +15,7 @@ Usage: python3 tools/build_fan2609_rift_cutter_pack.py
 from __future__ import annotations
 
 import json
+import re
 import urllib.request
 from pathlib import Path
 
@@ -29,9 +30,9 @@ CHARACTER_ID = "rift_cutter"
 # PixelLab hyphenated direction -> FullFrameAnimationRegistry.DIRECTION_SUFFIXES.
 DIRECTIONS = ["east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east"]
 
-CELL_SIZE = 384
+CELL_SIZE = 512
 TARGET_VISIBLE_HEIGHT = 192
-BOTTOM_PADDING = 46
+BOTTOM_PADDING = 32
 STATE_FRAME_COUNTS = {"idle": 4, "move": 6, "attack": 6, "hit": 6, "death": 6}
 STATE_SPEED = {"idle": 4.0, "move": 10.0, "attack": 10.0, "hit": 10.0, "death": 10.0}
 USER_AGENT = "FantasyDisk-PixelArtist-FAN2609/1.0"
@@ -42,6 +43,8 @@ def suffix_of(direction: str) -> str:
 
 
 def download(url: str, dest: Path) -> None:
+    if dest.exists():
+        return
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=60) as response:
         dest.write_bytes(response.read())
@@ -51,14 +54,27 @@ def alpha_bbox(image: Image.Image) -> tuple[int, int, int, int] | None:
     return image.convert("RGBA").getchannel("A").getbbox()
 
 
+def row_scale(source_path: Path) -> float:
+    match = re.match(r"(.+)_\d{2}_src$", source_path.stem)
+    source_paths = sorted(source_path.parent.glob(f"{match.group(1)}_*_src.png")) if match else [source_path]
+    sizes = []
+    for path in source_paths:
+        with Image.open(path) as image:
+            bbox = alpha_bbox(image.convert("RGBA"))
+        if bbox is None:
+            raise RuntimeError(f"{path} has no visible alpha")
+        sizes.append((bbox[2] - bbox[0], bbox[3] - bbox[1]))
+    max_width = CELL_SIZE - 8
+    return min(TARGET_VISIBLE_HEIGHT / float(max(height for _, height in sizes)), max_width / float(max(width for width, _ in sizes)))
+
+
 def normalize_frame(src: Path, dest: Path) -> dict:
     image = Image.open(src).convert("RGBA")
     bbox = alpha_bbox(image)
     if bbox is None:
         raise RuntimeError(f"{src} has no visible alpha")
     bbox_w, bbox_h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    max_width = CELL_SIZE - 8
-    scale = min(TARGET_VISIBLE_HEIGHT / float(bbox_h), max_width / float(bbox_w))
+    scale = row_scale(src)
     scaled_size = (max(1, round(bbox_w * scale)), max(1, round(bbox_h * scale)))
     resized = image.crop(bbox).resize(scaled_size, Image.Resampling.NEAREST)
     paste_x = round((CELL_SIZE - scaled_size[0]) / 2.0)
@@ -142,8 +158,17 @@ def main() -> int:
     tmp_dir = ROOT / "build/fan2609_rift_cutter_src"
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
+    for direction in DIRECTIONS:
+        suffix = suffix_of(direction)
+        for state, count in STATE_FRAME_COUNTS.items():
+            urls = sources[state][direction]
+            if len(urls) != count:
+                raise RuntimeError(f"{state}/{direction}: expected {count} frames, got {len(urls)}")
+            for index, url in enumerate(urls):
+                download(url, tmp_dir / f"{CHARACTER_ID}_{state}_{suffix}_{index:02d}_src.png")
+
     frame_paths: dict[str, dict[str, list[str]]] = {state: {} for state in STATE_FRAME_COUNTS}
-    report = {"normalize": []}
+    report: dict[str, list[dict]] = {}
 
     for direction in DIRECTIONS:
         suffix = suffix_of(direction)
@@ -152,19 +177,21 @@ def main() -> int:
             if len(urls) != count:
                 raise RuntimeError(f"{state}/{direction}: expected {count} frames, got {len(urls)}")
             runtime_paths = []
+            reports = []
             for index, url in enumerate(urls):
                 src = tmp_dir / f"{CHARACTER_ID}_{state}_{suffix}_{index:02d}_src.png"
                 download(url, src)
                 dest = RUNTIME_DIR / f"{CHARACTER_ID}_{state}_{suffix}_{index:02d}.png"
-                report["normalize"].append(normalize_frame(src, dest))
+                reports.append(normalize_frame(src, dest))
                 runtime_paths.append(str(dest.relative_to(ROOT)))
+            report[f"{state}_{suffix}"] = reports
             frame_paths[state][direction] = runtime_paths
 
     write_spriteframes(frame_paths)
-    report_path = ROOT / "build/qa/fan2609_rift_cutter_pack/normalize_report.json"
+    report_path = RUNTIME_DIR / "row_scale_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"wrote {SPRITEFRAMES_PATH.relative_to(ROOT)} and {len(report['normalize'])} runtime frames")
+    print(f"wrote {SPRITEFRAMES_PATH.relative_to(ROOT)} and {sum(len(frames) for frames in report.values())} runtime frames")
     return 0
 
 

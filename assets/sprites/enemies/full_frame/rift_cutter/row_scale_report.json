@@ -1,0 +1,1202 @@
+{
+  "idle_east": [
+    {
+      "source": "rift_cutter_idle_east_00_src.png",
+      "runtime": "rift_cutter_idle_east_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_idle_east_01_src.png",
+      "runtime": "rift_cutter_idle_east_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_idle_east_02_src.png",
+      "runtime": "rift_cutter_idle_east_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_idle_east_03_src.png",
+      "runtime": "rift_cutter_idle_east_03.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "move_east": [
+    {
+      "source": "rift_cutter_move_east_00_src.png",
+      "runtime": "rift_cutter_move_east_00.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_east_01_src.png",
+      "runtime": "rift_cutter_move_east_01.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_east_02_src.png",
+      "runtime": "rift_cutter_move_east_02.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_east_03_src.png",
+      "runtime": "rift_cutter_move_east_03.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_east_04_src.png",
+      "runtime": "rift_cutter_move_east_04.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_east_05_src.png",
+      "runtime": "rift_cutter_move_east_05.png",
+      "scale": 3.6226415094339623
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "rift_cutter_attack_east_00_src.png",
+      "runtime": "rift_cutter_attack_east_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_east_01_src.png",
+      "runtime": "rift_cutter_attack_east_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_east_02_src.png",
+      "runtime": "rift_cutter_attack_east_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_east_03_src.png",
+      "runtime": "rift_cutter_attack_east_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_east_04_src.png",
+      "runtime": "rift_cutter_attack_east_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_east_05_src.png",
+      "runtime": "rift_cutter_attack_east_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "rift_cutter_hit_east_00_src.png",
+      "runtime": "rift_cutter_hit_east_00.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_hit_east_01_src.png",
+      "runtime": "rift_cutter_hit_east_01.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_hit_east_02_src.png",
+      "runtime": "rift_cutter_hit_east_02.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_hit_east_03_src.png",
+      "runtime": "rift_cutter_hit_east_03.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_hit_east_04_src.png",
+      "runtime": "rift_cutter_hit_east_04.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_hit_east_05_src.png",
+      "runtime": "rift_cutter_hit_east_05.png",
+      "scale": 3.0476190476190474
+    }
+  ],
+  "death_east": [
+    {
+      "source": "rift_cutter_death_east_00_src.png",
+      "runtime": "rift_cutter_death_east_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_east_01_src.png",
+      "runtime": "rift_cutter_death_east_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_east_02_src.png",
+      "runtime": "rift_cutter_death_east_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_east_03_src.png",
+      "runtime": "rift_cutter_death_east_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_east_04_src.png",
+      "runtime": "rift_cutter_death_east_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_east_05_src.png",
+      "runtime": "rift_cutter_death_east_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "rift_cutter_idle_south_east_00_src.png",
+      "runtime": "rift_cutter_idle_south_east_00.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_east_01_src.png",
+      "runtime": "rift_cutter_idle_south_east_01.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_east_02_src.png",
+      "runtime": "rift_cutter_idle_south_east_02.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_east_03_src.png",
+      "runtime": "rift_cutter_idle_south_east_03.png",
+      "scale": 3.6226415094339623
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "rift_cutter_move_south_east_00_src.png",
+      "runtime": "rift_cutter_move_south_east_00.png",
+      "scale": 3.9183673469387754
+    },
+    {
+      "source": "rift_cutter_move_south_east_01_src.png",
+      "runtime": "rift_cutter_move_south_east_01.png",
+      "scale": 3.9183673469387754
+    },
+    {
+      "source": "rift_cutter_move_south_east_02_src.png",
+      "runtime": "rift_cutter_move_south_east_02.png",
+      "scale": 3.9183673469387754
+    },
+    {
+      "source": "rift_cutter_move_south_east_03_src.png",
+      "runtime": "rift_cutter_move_south_east_03.png",
+      "scale": 3.9183673469387754
+    },
+    {
+      "source": "rift_cutter_move_south_east_04_src.png",
+      "runtime": "rift_cutter_move_south_east_04.png",
+      "scale": 3.9183673469387754
+    },
+    {
+      "source": "rift_cutter_move_south_east_05_src.png",
+      "runtime": "rift_cutter_move_south_east_05.png",
+      "scale": 3.9183673469387754
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "rift_cutter_attack_south_east_00_src.png",
+      "runtime": "rift_cutter_attack_south_east_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_attack_south_east_01_src.png",
+      "runtime": "rift_cutter_attack_south_east_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_attack_south_east_02_src.png",
+      "runtime": "rift_cutter_attack_south_east_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_attack_south_east_03_src.png",
+      "runtime": "rift_cutter_attack_south_east_03.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_attack_south_east_04_src.png",
+      "runtime": "rift_cutter_attack_south_east_04.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_attack_south_east_05_src.png",
+      "runtime": "rift_cutter_attack_south_east_05.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "rift_cutter_hit_south_east_00_src.png",
+      "runtime": "rift_cutter_hit_south_east_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_hit_south_east_01_src.png",
+      "runtime": "rift_cutter_hit_south_east_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_hit_south_east_02_src.png",
+      "runtime": "rift_cutter_hit_south_east_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_hit_south_east_03_src.png",
+      "runtime": "rift_cutter_hit_south_east_03.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_hit_south_east_04_src.png",
+      "runtime": "rift_cutter_hit_south_east_04.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_hit_south_east_05_src.png",
+      "runtime": "rift_cutter_hit_south_east_05.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "rift_cutter_death_south_east_00_src.png",
+      "runtime": "rift_cutter_death_south_east_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_east_01_src.png",
+      "runtime": "rift_cutter_death_south_east_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_east_02_src.png",
+      "runtime": "rift_cutter_death_south_east_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_east_03_src.png",
+      "runtime": "rift_cutter_death_south_east_03.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_east_04_src.png",
+      "runtime": "rift_cutter_death_south_east_04.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_east_05_src.png",
+      "runtime": "rift_cutter_death_south_east_05.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "rift_cutter_idle_south_00_src.png",
+      "runtime": "rift_cutter_idle_south_00.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_south_01_src.png",
+      "runtime": "rift_cutter_idle_south_01.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_south_02_src.png",
+      "runtime": "rift_cutter_idle_south_02.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_south_03_src.png",
+      "runtime": "rift_cutter_idle_south_03.png",
+      "scale": 3.5555555555555554
+    }
+  ],
+  "move_south": [
+    {
+      "source": "rift_cutter_move_south_00_src.png",
+      "runtime": "rift_cutter_move_south_00.png",
+      "scale": 3.6923076923076925
+    },
+    {
+      "source": "rift_cutter_move_south_01_src.png",
+      "runtime": "rift_cutter_move_south_01.png",
+      "scale": 3.6923076923076925
+    },
+    {
+      "source": "rift_cutter_move_south_02_src.png",
+      "runtime": "rift_cutter_move_south_02.png",
+      "scale": 3.6923076923076925
+    },
+    {
+      "source": "rift_cutter_move_south_03_src.png",
+      "runtime": "rift_cutter_move_south_03.png",
+      "scale": 3.6923076923076925
+    },
+    {
+      "source": "rift_cutter_move_south_04_src.png",
+      "runtime": "rift_cutter_move_south_04.png",
+      "scale": 3.6923076923076925
+    },
+    {
+      "source": "rift_cutter_move_south_05_src.png",
+      "runtime": "rift_cutter_move_south_05.png",
+      "scale": 3.6923076923076925
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "rift_cutter_attack_south_00_src.png",
+      "runtime": "rift_cutter_attack_south_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_south_01_src.png",
+      "runtime": "rift_cutter_attack_south_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_south_02_src.png",
+      "runtime": "rift_cutter_attack_south_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_south_03_src.png",
+      "runtime": "rift_cutter_attack_south_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_south_04_src.png",
+      "runtime": "rift_cutter_attack_south_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_south_05_src.png",
+      "runtime": "rift_cutter_attack_south_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "rift_cutter_hit_south_00_src.png",
+      "runtime": "rift_cutter_hit_south_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_01_src.png",
+      "runtime": "rift_cutter_hit_south_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_02_src.png",
+      "runtime": "rift_cutter_hit_south_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_03_src.png",
+      "runtime": "rift_cutter_hit_south_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_04_src.png",
+      "runtime": "rift_cutter_hit_south_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_05_src.png",
+      "runtime": "rift_cutter_hit_south_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "death_south": [
+    {
+      "source": "rift_cutter_death_south_00_src.png",
+      "runtime": "rift_cutter_death_south_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_01_src.png",
+      "runtime": "rift_cutter_death_south_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_02_src.png",
+      "runtime": "rift_cutter_death_south_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_03_src.png",
+      "runtime": "rift_cutter_death_south_03.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_04_src.png",
+      "runtime": "rift_cutter_death_south_04.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_05_src.png",
+      "runtime": "rift_cutter_death_south_05.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "rift_cutter_idle_south_west_00_src.png",
+      "runtime": "rift_cutter_idle_south_west_00.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_west_01_src.png",
+      "runtime": "rift_cutter_idle_south_west_01.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_west_02_src.png",
+      "runtime": "rift_cutter_idle_south_west_02.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_south_west_03_src.png",
+      "runtime": "rift_cutter_idle_south_west_03.png",
+      "scale": 3.6226415094339623
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "rift_cutter_move_south_west_00_src.png",
+      "runtime": "rift_cutter_move_south_west_00.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_south_west_01_src.png",
+      "runtime": "rift_cutter_move_south_west_01.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_south_west_02_src.png",
+      "runtime": "rift_cutter_move_south_west_02.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_south_west_03_src.png",
+      "runtime": "rift_cutter_move_south_west_03.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_south_west_04_src.png",
+      "runtime": "rift_cutter_move_south_west_04.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_south_west_05_src.png",
+      "runtime": "rift_cutter_move_south_west_05.png",
+      "scale": 3.84
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "rift_cutter_attack_south_west_00_src.png",
+      "runtime": "rift_cutter_attack_south_west_00.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_attack_south_west_01_src.png",
+      "runtime": "rift_cutter_attack_south_west_01.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_attack_south_west_02_src.png",
+      "runtime": "rift_cutter_attack_south_west_02.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_attack_south_west_03_src.png",
+      "runtime": "rift_cutter_attack_south_west_03.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_attack_south_west_04_src.png",
+      "runtime": "rift_cutter_attack_south_west_04.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_attack_south_west_05_src.png",
+      "runtime": "rift_cutter_attack_south_west_05.png",
+      "scale": 3.2
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "rift_cutter_hit_south_west_00_src.png",
+      "runtime": "rift_cutter_hit_south_west_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_west_01_src.png",
+      "runtime": "rift_cutter_hit_south_west_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_west_02_src.png",
+      "runtime": "rift_cutter_hit_south_west_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_west_03_src.png",
+      "runtime": "rift_cutter_hit_south_west_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_west_04_src.png",
+      "runtime": "rift_cutter_hit_south_west_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_south_west_05_src.png",
+      "runtime": "rift_cutter_hit_south_west_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "rift_cutter_death_south_west_00_src.png",
+      "runtime": "rift_cutter_death_south_west_00.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_west_01_src.png",
+      "runtime": "rift_cutter_death_south_west_01.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_west_02_src.png",
+      "runtime": "rift_cutter_death_south_west_02.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_west_03_src.png",
+      "runtime": "rift_cutter_death_south_west_03.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_west_04_src.png",
+      "runtime": "rift_cutter_death_south_west_04.png",
+      "scale": 3.2542372881355934
+    },
+    {
+      "source": "rift_cutter_death_south_west_05_src.png",
+      "runtime": "rift_cutter_death_south_west_05.png",
+      "scale": 3.2542372881355934
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "rift_cutter_idle_west_00_src.png",
+      "runtime": "rift_cutter_idle_west_00.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_west_01_src.png",
+      "runtime": "rift_cutter_idle_west_01.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_west_02_src.png",
+      "runtime": "rift_cutter_idle_west_02.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_idle_west_03_src.png",
+      "runtime": "rift_cutter_idle_west_03.png",
+      "scale": 3.6226415094339623
+    }
+  ],
+  "move_west": [
+    {
+      "source": "rift_cutter_move_west_00_src.png",
+      "runtime": "rift_cutter_move_west_00.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_west_01_src.png",
+      "runtime": "rift_cutter_move_west_01.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_west_02_src.png",
+      "runtime": "rift_cutter_move_west_02.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_west_03_src.png",
+      "runtime": "rift_cutter_move_west_03.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_west_04_src.png",
+      "runtime": "rift_cutter_move_west_04.png",
+      "scale": 3.6226415094339623
+    },
+    {
+      "source": "rift_cutter_move_west_05_src.png",
+      "runtime": "rift_cutter_move_west_05.png",
+      "scale": 3.6226415094339623
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "rift_cutter_attack_west_00_src.png",
+      "runtime": "rift_cutter_attack_west_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_west_01_src.png",
+      "runtime": "rift_cutter_attack_west_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_west_02_src.png",
+      "runtime": "rift_cutter_attack_west_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_west_03_src.png",
+      "runtime": "rift_cutter_attack_west_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_west_04_src.png",
+      "runtime": "rift_cutter_attack_west_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_attack_west_05_src.png",
+      "runtime": "rift_cutter_attack_west_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "rift_cutter_hit_west_00_src.png",
+      "runtime": "rift_cutter_hit_west_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_west_01_src.png",
+      "runtime": "rift_cutter_hit_west_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_west_02_src.png",
+      "runtime": "rift_cutter_hit_west_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_west_03_src.png",
+      "runtime": "rift_cutter_hit_west_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_west_04_src.png",
+      "runtime": "rift_cutter_hit_west_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_west_05_src.png",
+      "runtime": "rift_cutter_hit_west_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "death_west": [
+    {
+      "source": "rift_cutter_death_west_00_src.png",
+      "runtime": "rift_cutter_death_west_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_west_01_src.png",
+      "runtime": "rift_cutter_death_west_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_west_02_src.png",
+      "runtime": "rift_cutter_death_west_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_west_03_src.png",
+      "runtime": "rift_cutter_death_west_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_west_04_src.png",
+      "runtime": "rift_cutter_death_west_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_death_west_05_src.png",
+      "runtime": "rift_cutter_death_west_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "rift_cutter_idle_north_west_00_src.png",
+      "runtime": "rift_cutter_idle_north_west_00.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_west_01_src.png",
+      "runtime": "rift_cutter_idle_north_west_01.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_west_02_src.png",
+      "runtime": "rift_cutter_idle_north_west_02.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_west_03_src.png",
+      "runtime": "rift_cutter_idle_north_west_03.png",
+      "scale": 3.5555555555555554
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "rift_cutter_move_north_west_00_src.png",
+      "runtime": "rift_cutter_move_north_west_00.png",
+      "scale": 4.085106382978723
+    },
+    {
+      "source": "rift_cutter_move_north_west_01_src.png",
+      "runtime": "rift_cutter_move_north_west_01.png",
+      "scale": 4.085106382978723
+    },
+    {
+      "source": "rift_cutter_move_north_west_02_src.png",
+      "runtime": "rift_cutter_move_north_west_02.png",
+      "scale": 4.085106382978723
+    },
+    {
+      "source": "rift_cutter_move_north_west_03_src.png",
+      "runtime": "rift_cutter_move_north_west_03.png",
+      "scale": 4.085106382978723
+    },
+    {
+      "source": "rift_cutter_move_north_west_04_src.png",
+      "runtime": "rift_cutter_move_north_west_04.png",
+      "scale": 4.085106382978723
+    },
+    {
+      "source": "rift_cutter_move_north_west_05_src.png",
+      "runtime": "rift_cutter_move_north_west_05.png",
+      "scale": 4.085106382978723
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "rift_cutter_attack_north_west_00_src.png",
+      "runtime": "rift_cutter_attack_north_west_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_north_west_01_src.png",
+      "runtime": "rift_cutter_attack_north_west_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_north_west_02_src.png",
+      "runtime": "rift_cutter_attack_north_west_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_north_west_03_src.png",
+      "runtime": "rift_cutter_attack_north_west_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_north_west_04_src.png",
+      "runtime": "rift_cutter_attack_north_west_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_attack_north_west_05_src.png",
+      "runtime": "rift_cutter_attack_north_west_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "rift_cutter_hit_north_west_00_src.png",
+      "runtime": "rift_cutter_hit_north_west_00.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_north_west_01_src.png",
+      "runtime": "rift_cutter_hit_north_west_01.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_north_west_02_src.png",
+      "runtime": "rift_cutter_hit_north_west_02.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_north_west_03_src.png",
+      "runtime": "rift_cutter_hit_north_west_03.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_north_west_04_src.png",
+      "runtime": "rift_cutter_hit_north_west_04.png",
+      "scale": 3.1475409836065573
+    },
+    {
+      "source": "rift_cutter_hit_north_west_05_src.png",
+      "runtime": "rift_cutter_hit_north_west_05.png",
+      "scale": 3.1475409836065573
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "rift_cutter_death_north_west_00_src.png",
+      "runtime": "rift_cutter_death_north_west_00.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_west_01_src.png",
+      "runtime": "rift_cutter_death_north_west_01.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_west_02_src.png",
+      "runtime": "rift_cutter_death_north_west_02.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_west_03_src.png",
+      "runtime": "rift_cutter_death_north_west_03.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_west_04_src.png",
+      "runtime": "rift_cutter_death_north_west_04.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_west_05_src.png",
+      "runtime": "rift_cutter_death_north_west_05.png",
+      "scale": 3.2
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "rift_cutter_idle_north_00_src.png",
+      "runtime": "rift_cutter_idle_north_00.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_idle_north_01_src.png",
+      "runtime": "rift_cutter_idle_north_01.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_idle_north_02_src.png",
+      "runtime": "rift_cutter_idle_north_02.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_idle_north_03_src.png",
+      "runtime": "rift_cutter_idle_north_03.png",
+      "scale": 3.4909090909090907
+    }
+  ],
+  "move_north": [
+    {
+      "source": "rift_cutter_move_north_00_src.png",
+      "runtime": "rift_cutter_move_north_00.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_move_north_01_src.png",
+      "runtime": "rift_cutter_move_north_01.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_move_north_02_src.png",
+      "runtime": "rift_cutter_move_north_02.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_move_north_03_src.png",
+      "runtime": "rift_cutter_move_north_03.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_move_north_04_src.png",
+      "runtime": "rift_cutter_move_north_04.png",
+      "scale": 3.4909090909090907
+    },
+    {
+      "source": "rift_cutter_move_north_05_src.png",
+      "runtime": "rift_cutter_move_north_05.png",
+      "scale": 3.4909090909090907
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "rift_cutter_attack_north_00_src.png",
+      "runtime": "rift_cutter_attack_north_00.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_01_src.png",
+      "runtime": "rift_cutter_attack_north_01.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_02_src.png",
+      "runtime": "rift_cutter_attack_north_02.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_03_src.png",
+      "runtime": "rift_cutter_attack_north_03.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_04_src.png",
+      "runtime": "rift_cutter_attack_north_04.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_05_src.png",
+      "runtime": "rift_cutter_attack_north_05.png",
+      "scale": 3.0476190476190474
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "rift_cutter_hit_north_00_src.png",
+      "runtime": "rift_cutter_hit_north_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_01_src.png",
+      "runtime": "rift_cutter_hit_north_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_02_src.png",
+      "runtime": "rift_cutter_hit_north_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_03_src.png",
+      "runtime": "rift_cutter_hit_north_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_04_src.png",
+      "runtime": "rift_cutter_hit_north_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_05_src.png",
+      "runtime": "rift_cutter_hit_north_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "death_north": [
+    {
+      "source": "rift_cutter_death_north_00_src.png",
+      "runtime": "rift_cutter_death_north_00.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_01_src.png",
+      "runtime": "rift_cutter_death_north_01.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_02_src.png",
+      "runtime": "rift_cutter_death_north_02.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_03_src.png",
+      "runtime": "rift_cutter_death_north_03.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_04_src.png",
+      "runtime": "rift_cutter_death_north_04.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_05_src.png",
+      "runtime": "rift_cutter_death_north_05.png",
+      "scale": 3.2
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "rift_cutter_idle_north_east_00_src.png",
+      "runtime": "rift_cutter_idle_north_east_00.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_east_01_src.png",
+      "runtime": "rift_cutter_idle_north_east_01.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_east_02_src.png",
+      "runtime": "rift_cutter_idle_north_east_02.png",
+      "scale": 3.5555555555555554
+    },
+    {
+      "source": "rift_cutter_idle_north_east_03_src.png",
+      "runtime": "rift_cutter_idle_north_east_03.png",
+      "scale": 3.5555555555555554
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "rift_cutter_move_north_east_00_src.png",
+      "runtime": "rift_cutter_move_north_east_00.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_north_east_01_src.png",
+      "runtime": "rift_cutter_move_north_east_01.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_north_east_02_src.png",
+      "runtime": "rift_cutter_move_north_east_02.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_north_east_03_src.png",
+      "runtime": "rift_cutter_move_north_east_03.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_north_east_04_src.png",
+      "runtime": "rift_cutter_move_north_east_04.png",
+      "scale": 3.84
+    },
+    {
+      "source": "rift_cutter_move_north_east_05_src.png",
+      "runtime": "rift_cutter_move_north_east_05.png",
+      "scale": 3.84
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "rift_cutter_attack_north_east_00_src.png",
+      "runtime": "rift_cutter_attack_north_east_00.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_east_01_src.png",
+      "runtime": "rift_cutter_attack_north_east_01.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_east_02_src.png",
+      "runtime": "rift_cutter_attack_north_east_02.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_east_03_src.png",
+      "runtime": "rift_cutter_attack_north_east_03.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_east_04_src.png",
+      "runtime": "rift_cutter_attack_north_east_04.png",
+      "scale": 3.0476190476190474
+    },
+    {
+      "source": "rift_cutter_attack_north_east_05_src.png",
+      "runtime": "rift_cutter_attack_north_east_05.png",
+      "scale": 3.0476190476190474
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "rift_cutter_hit_north_east_00_src.png",
+      "runtime": "rift_cutter_hit_north_east_00.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_east_01_src.png",
+      "runtime": "rift_cutter_hit_north_east_01.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_east_02_src.png",
+      "runtime": "rift_cutter_hit_north_east_02.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_east_03_src.png",
+      "runtime": "rift_cutter_hit_north_east_03.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_east_04_src.png",
+      "runtime": "rift_cutter_hit_north_east_04.png",
+      "scale": 3.096774193548387
+    },
+    {
+      "source": "rift_cutter_hit_north_east_05_src.png",
+      "runtime": "rift_cutter_hit_north_east_05.png",
+      "scale": 3.096774193548387
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "rift_cutter_death_north_east_00_src.png",
+      "runtime": "rift_cutter_death_north_east_00.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_east_01_src.png",
+      "runtime": "rift_cutter_death_north_east_01.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_east_02_src.png",
+      "runtime": "rift_cutter_death_north_east_02.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_east_03_src.png",
+      "runtime": "rift_cutter_death_north_east_03.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_east_04_src.png",
+      "runtime": "rift_cutter_death_north_east_04.png",
+      "scale": 3.2
+    },
+    {
+      "source": "rift_cutter_death_north_east_05_src.png",
+      "runtime": "rift_cutter_death_north_east_05.png",
+      "scale": 3.2
+    }
+  ]
+}

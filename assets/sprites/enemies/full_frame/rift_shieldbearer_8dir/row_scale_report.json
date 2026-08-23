@@ -1,0 +1,5418 @@
+{
+  "idle_east": [
+    {
+      "source": "rift_shieldbearer_idle_east.png",
+      "runtime": "rift_shieldbearer_idle_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        50,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        129,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "rift_shieldbearer_idle_south_east.png",
+      "runtime": "rift_shieldbearer_idle_south_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        127,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        319,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "rift_shieldbearer_idle_south.png",
+      "runtime": "rift_shieldbearer_idle_south.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        50,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        135,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        323,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "rift_shieldbearer_idle_south_west.png",
+      "runtime": "rift_shieldbearer_idle_south_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "rift_shieldbearer_idle_west.png",
+      "runtime": "rift_shieldbearer_idle_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        8,
+        43,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        75,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        235,
+        293,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "rift_shieldbearer_idle_north_west.png",
+      "runtime": "rift_shieldbearer_idle_north_west.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        48,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "rift_shieldbearer_idle_north.png",
+      "runtime": "rift_shieldbearer_idle_north.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        6,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        110,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        235,
+        311,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "rift_shieldbearer_idle_north_east.png",
+      "runtime": "rift_shieldbearer_idle_north_east.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        106,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "rift_shieldbearer_move_east_00.png",
+      "runtime": "rift_shieldbearer_move_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        28,
+        7,
+        42,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        14,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        57,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        228,
+        235,
+        285,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_east_01.png",
+      "runtime": "rift_shieldbearer_move_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        52,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        131,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_east_02.png",
+      "runtime": "rift_shieldbearer_move_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        47,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_east_03.png",
+      "runtime": "rift_shieldbearer_move_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        15,
+        7,
+        43,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        114,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        199,
+        243,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_east_04.png",
+      "runtime": "rift_shieldbearer_move_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        52,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        135,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        243,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_east_05.png",
+      "runtime": "rift_shieldbearer_move_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        7,
+        47,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        243,
+        317,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "rift_shieldbearer_move_south_east_00.png",
+      "runtime": "rift_shieldbearer_move_south_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        7,
+        48,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        94,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        239,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_east_01.png",
+      "runtime": "rift_shieldbearer_move_south_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        7,
+        50,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        114,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        199,
+        243,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_east_02.png",
+      "runtime": "rift_shieldbearer_move_south_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        48,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_east_03.png",
+      "runtime": "rift_shieldbearer_move_south_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        7,
+        48,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        98,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        207,
+        239,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_east_04.png",
+      "runtime": "rift_shieldbearer_move_south_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        52,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        131,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_east_05.png",
+      "runtime": "rift_shieldbearer_move_south_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        7,
+        51,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        239,
+        317,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "rift_shieldbearer_move_south_00.png",
+      "runtime": "rift_shieldbearer_move_south_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        49,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        120,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        239,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_01.png",
+      "runtime": "rift_shieldbearer_move_south_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        8,
+        48,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_02.png",
+      "runtime": "rift_shieldbearer_move_south_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        48,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        239,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_03.png",
+      "runtime": "rift_shieldbearer_move_south_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        57
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        243,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_04.png",
+      "runtime": "rift_shieldbearer_move_south_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        18,
+        7,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        129,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_05.png",
+      "runtime": "rift_shieldbearer_move_south_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "rift_shieldbearer_move_south_west_00.png",
+      "runtime": "rift_shieldbearer_move_south_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        48,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        239,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_west_01.png",
+      "runtime": "rift_shieldbearer_move_south_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_west_02.png",
+      "runtime": "rift_shieldbearer_move_south_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        50,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        127,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        239,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_west_03.png",
+      "runtime": "rift_shieldbearer_move_south_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        239,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_west_04.png",
+      "runtime": "rift_shieldbearer_move_south_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        48,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        239,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_south_west_05.png",
+      "runtime": "rift_shieldbearer_move_south_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        239,
+        317,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "rift_shieldbearer_move_west_00.png",
+      "runtime": "rift_shieldbearer_move_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        25,
+        9,
+        43,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        76,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        235,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_west_01.png",
+      "runtime": "rift_shieldbearer_move_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        8,
+        49,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        135,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        239,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_west_02.png",
+      "runtime": "rift_shieldbearer_move_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        9,
+        51,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        118,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_west_03.png",
+      "runtime": "rift_shieldbearer_move_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        9,
+        42,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        18,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        76,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        218,
+        239,
+        294,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_west_04.png",
+      "runtime": "rift_shieldbearer_move_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        17,
+        9,
+        49,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        135,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        239,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_west_05.png",
+      "runtime": "rift_shieldbearer_move_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        9,
+        50,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        118,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        315,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "rift_shieldbearer_move_north_west_00.png",
+      "runtime": "rift_shieldbearer_move_north_west_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        8,
+        46,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        106,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        203,
+        243,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_west_01.png",
+      "runtime": "rift_shieldbearer_move_north_west_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        47,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        114,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        199,
+        239,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_west_02.png",
+      "runtime": "rift_shieldbearer_move_north_west_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        8,
+        50,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        110,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        239,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_west_03.png",
+      "runtime": "rift_shieldbearer_move_north_west_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        8,
+        47,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        110,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        239,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_west_04.png",
+      "runtime": "rift_shieldbearer_move_north_west_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        50,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        127,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        239,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_west_05.png",
+      "runtime": "rift_shieldbearer_move_north_west_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        8,
+        49,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "rift_shieldbearer_move_north_00.png",
+      "runtime": "rift_shieldbearer_move_north_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        45,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        100,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        239,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_01.png",
+      "runtime": "rift_shieldbearer_move_north_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        20,
+        7,
+        45,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_02.png",
+      "runtime": "rift_shieldbearer_move_north_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        7,
+        45,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        92,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        210,
+        239,
+        302,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_03.png",
+      "runtime": "rift_shieldbearer_move_north_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        104,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        239,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_04.png",
+      "runtime": "rift_shieldbearer_move_north_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        7,
+        48,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_05.png",
+      "runtime": "rift_shieldbearer_move_north_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        7,
+        47,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        100,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        239,
+        306,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "rift_shieldbearer_move_north_east_00.png",
+      "runtime": "rift_shieldbearer_move_north_east_00.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        7,
+        49,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_east_01.png",
+      "runtime": "rift_shieldbearer_move_north_east_01.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        22,
+        7,
+        47,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        102,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_east_02.png",
+      "runtime": "rift_shieldbearer_move_north_east_02.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        23,
+        7,
+        45,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        90,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_east_03.png",
+      "runtime": "rift_shieldbearer_move_north_east_03.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        24,
+        7,
+        47,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        94,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        209,
+        243,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_east_04.png",
+      "runtime": "rift_shieldbearer_move_north_east_04.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        21,
+        7,
+        50,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        118,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_move_north_east_05.png",
+      "runtime": "rift_shieldbearer_move_north_east_05.png",
+      "source_size": [
+        68,
+        68
+      ],
+      "source_alpha_bbox": [
+        19,
+        7,
+        47,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        114,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        199,
+        243,
+        313,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "rift_shieldbearer_attack_east_01.png",
+      "runtime": "rift_shieldbearer_attack_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        22,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        59
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        133,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        243,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_east_02.png",
+      "runtime": "rift_shieldbearer_attack_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        38,
+        22,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        59
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        108,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        243,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_east_03.png",
+      "runtime": "rift_shieldbearer_attack_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        20,
+        59,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        96,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        239,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_east_04.png",
+      "runtime": "rift_shieldbearer_attack_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        20,
+        55,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_east_05.png",
+      "runtime": "rift_shieldbearer_attack_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        24,
+        75,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        161,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        251,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_east_06.png",
+      "runtime": "rift_shieldbearer_attack_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        37,
+        24,
+        75,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        57
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        153,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        251,
+        333,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "rift_shieldbearer_attack_south_east_01.png",
+      "runtime": "rift_shieldbearer_attack_south_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        22,
+        64,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        57
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        119,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        262,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_east_02.png",
+      "runtime": "rift_shieldbearer_attack_south_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        22,
+        67,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        56
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        134,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        266,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_east_03.png",
+      "runtime": "rift_shieldbearer_attack_south_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        68,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        55
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        138,
+        211
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        269,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_east_04.png",
+      "runtime": "rift_shieldbearer_attack_south_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        14,
+        62,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        134,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_east_05.png",
+      "runtime": "rift_shieldbearer_attack_south_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        23,
+        21,
+        60,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        57
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        262,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_east_06.png",
+      "runtime": "rift_shieldbearer_attack_south_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        24,
+        74,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        55
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        157,
+        211
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        269,
+        335,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "rift_shieldbearer_attack_south_01.png",
+      "runtime": "rift_shieldbearer_attack_south_00.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        24,
+        17,
+        61,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        58
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        258,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_02.png",
+      "runtime": "rift_shieldbearer_attack_south_01.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        15,
+        17,
+        64,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        58
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        188,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        258,
+        350,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_03.png",
+      "runtime": "rift_shieldbearer_attack_south_02.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        22,
+        16,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        57
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        142,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        262,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_04.png",
+      "runtime": "rift_shieldbearer_attack_south_03.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        30,
+        11,
+        56,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_05.png",
+      "runtime": "rift_shieldbearer_attack_south_04.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        29,
+        20,
+        57,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        55
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        107,
+        211
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        269,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_06.png",
+      "runtime": "rift_shieldbearer_attack_south_05.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        20,
+        19,
+        69,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        56
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        188,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        266,
+        350,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "rift_shieldbearer_attack_south_west_01.png",
+      "runtime": "rift_shieldbearer_attack_south_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        177,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        258,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_west_02.png",
+      "runtime": "rift_shieldbearer_attack_south_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        60,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        162,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        258,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_west_03.png",
+      "runtime": "rift_shieldbearer_attack_south_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        117,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_west_04.png",
+      "runtime": "rift_shieldbearer_attack_south_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        23,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        58
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        261,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_west_05.png",
+      "runtime": "rift_shieldbearer_attack_south_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        22,
+        68,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        58
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        124,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        261,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_south_west_06.png",
+      "runtime": "rift_shieldbearer_attack_south_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        25,
+        73,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        55
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        215,
+        207
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        363,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "rift_shieldbearer_attack_west_01.png",
+      "runtime": "rift_shieldbearer_attack_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        37,
+        14,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        121,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_west_02.png",
+      "runtime": "rift_shieldbearer_attack_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        36,
+        16,
+        74,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        65
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        238
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        242,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_west_03.png",
+      "runtime": "rift_shieldbearer_attack_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        22,
+        76,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        59
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        157,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        264,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_west_04.png",
+      "runtime": "rift_shieldbearer_attack_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        15,
+        78,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        65
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        227,
+        238
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        242,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_west_05.png",
+      "runtime": "rift_shieldbearer_attack_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        17,
+        26,
+        55,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        55
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        139,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        279,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_west_06.png",
+      "runtime": "rift_shieldbearer_attack_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        17,
+        24,
+        57,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        146,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        183,
+        272,
+        329,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "rift_shieldbearer_attack_north_west_01.png",
+      "runtime": "rift_shieldbearer_attack_north_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        22,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        136,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        258,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_west_02.png",
+      "runtime": "rift_shieldbearer_attack_north_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        16,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        139,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_west_03.png",
+      "runtime": "rift_shieldbearer_attack_north_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        23,
+        83,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        57
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        196,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        265,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_west_04.png",
+      "runtime": "rift_shieldbearer_attack_north_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        24,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        57
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        177,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        265,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_west_05.png",
+      "runtime": "rift_shieldbearer_attack_north_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        22,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        185,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        258,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_west_06.png",
+      "runtime": "rift_shieldbearer_attack_north_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        10,
+        22,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        211,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        258,
+        361,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "rift_shieldbearer_attack_north_01.png",
+      "runtime": "rift_shieldbearer_attack_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        63,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        60
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        128,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        254,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_02.png",
+      "runtime": "rift_shieldbearer_attack_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        18,
+        68,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        60
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        151,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        254,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_03.png",
+      "runtime": "rift_shieldbearer_attack_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        15,
+        57,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        61
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        90,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        250,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_04.png",
+      "runtime": "rift_shieldbearer_attack_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        66,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        239,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_05.png",
+      "runtime": "rift_shieldbearer_attack_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        24,
+        63,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        53
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        121,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        280,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_06.png",
+      "runtime": "rift_shieldbearer_attack_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        74,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        219,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        365,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "rift_shieldbearer_attack_north_east_01.png",
+      "runtime": "rift_shieldbearer_attack_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        22,
+        75,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        151,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        258,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_east_02.png",
+      "runtime": "rift_shieldbearer_attack_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        20,
+        15,
+        59,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_east_03.png",
+      "runtime": "rift_shieldbearer_attack_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        18,
+        60,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        62
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        173,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        246,
+        343,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_east_04.png",
+      "runtime": "rift_shieldbearer_attack_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        21,
+        60,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        258,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_east_05.png",
+      "runtime": "rift_shieldbearer_attack_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        22,
+        79,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        58
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        185,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        261,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_attack_north_east_06.png",
+      "runtime": "rift_shieldbearer_attack_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        21,
+        74,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        59
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        258,
+        333,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "rift_shieldbearer_hit_east_01.png",
+      "runtime": "rift_shieldbearer_hit_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        24,
+        63,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_east_02.png",
+      "runtime": "rift_shieldbearer_hit_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        24,
+        63,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        133,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_east_03.png",
+      "runtime": "rift_shieldbearer_hit_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        26,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        55
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        138,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        187,
+        244,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_east_04.png",
+      "runtime": "rift_shieldbearer_hit_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        29,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        52
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        150,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        256,
+        331,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "rift_shieldbearer_hit_south_east_01.png",
+      "runtime": "rift_shieldbearer_hit_south_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        22,
+        63,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        137,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_east_02.png",
+      "runtime": "rift_shieldbearer_hit_south_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        24,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        57
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        145,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        243,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_east_03.png",
+      "runtime": "rift_shieldbearer_hit_south_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        27,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        54
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        158,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        256,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_east_04.png",
+      "runtime": "rift_shieldbearer_hit_south_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        32,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        49
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        162,
+        203
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        277,
+        337,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "rift_shieldbearer_hit_south_01.png",
+      "runtime": "rift_shieldbearer_hit_south_00.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        28,
+        18,
+        61,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        142,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_02.png",
+      "runtime": "rift_shieldbearer_hit_south_01.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        25,
+        20,
+        62,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        55
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        159,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        244,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_03.png",
+      "runtime": "rift_shieldbearer_hit_south_02.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        21,
+        24,
+        62,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        51
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        176,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        261,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_04.png",
+      "runtime": "rift_shieldbearer_hit_south_03.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        62,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        50
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        185,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        265,
+        349,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "rift_shieldbearer_hit_south_west_01.png",
+      "runtime": "rift_shieldbearer_hit_south_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        22,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_west_02.png",
+      "runtime": "rift_shieldbearer_hit_south_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        23,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        154,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        239,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_west_03.png",
+      "runtime": "rift_shieldbearer_hit_south_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        23,
+        68,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        239,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_south_west_04.png",
+      "runtime": "rift_shieldbearer_hit_south_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        22,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        162,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "rift_shieldbearer_hit_west_01.png",
+      "runtime": "rift_shieldbearer_hit_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        20,
+        61,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        62
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        95,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        253,
+        303,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_west_02.png",
+      "runtime": "rift_shieldbearer_hit_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        15,
+        60,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        67
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        124,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_west_03.png",
+      "runtime": "rift_shieldbearer_hit_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        23,
+        54,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        58
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        84,
+        212
+      ],
+      "runtime_alpha_bbox": [
+        214,
+        268,
+        298,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_west_04.png",
+      "runtime": "rift_shieldbearer_hit_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        22,
+        56,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        59
+      ],
+      "scale": 3.656716417910448,
+      "resized_visible_size": [
+        99,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        264,
+        305,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "rift_shieldbearer_hit_north_west_01.png",
+      "runtime": "rift_shieldbearer_hit_north_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        20,
+        63,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        129,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_west_02.png",
+      "runtime": "rift_shieldbearer_hit_north_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        20,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_west_03.png",
+      "runtime": "rift_shieldbearer_hit_north_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        25,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        56
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        153,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        255,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_west_04.png",
+      "runtime": "rift_shieldbearer_hit_north_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        27,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        54
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        149,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        263,
+        331,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "rift_shieldbearer_hit_north_01.png",
+      "runtime": "rift_shieldbearer_hit_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        19,
+        61,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        59
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        103,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        254,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_02.png",
+      "runtime": "rift_shieldbearer_hit_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        17,
+        59,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        61
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        96,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        246,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_03.png",
+      "runtime": "rift_shieldbearer_hit_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        14,
+        72,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        168,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_04.png",
+      "runtime": "rift_shieldbearer_hit_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        22,
+        59,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        56
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        111,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        266,
+        311,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "rift_shieldbearer_hit_north_east_01.png",
+      "runtime": "rift_shieldbearer_hit_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        21,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_east_02.png",
+      "runtime": "rift_shieldbearer_hit_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        21,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_east_03.png",
+      "runtime": "rift_shieldbearer_hit_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        24,
+        71,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        57
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        172,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        247,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_hit_north_east_04.png",
+      "runtime": "rift_shieldbearer_hit_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        26,
+        24,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        57
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        163,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        247,
+        337,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "rift_shieldbearer_death_east_01.png",
+      "runtime": "rift_shieldbearer_death_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        22,
+        62,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        120,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_east_02.png",
+      "runtime": "rift_shieldbearer_death_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        61,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        120,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        239,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_east_03.png",
+      "runtime": "rift_shieldbearer_death_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        29,
+        60,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        52
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        116,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        264,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_east_04.png",
+      "runtime": "rift_shieldbearer_death_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        40,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        41
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        133,
+        170
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        310,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_east_05.png",
+      "runtime": "rift_shieldbearer_death_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        23,
+        57,
+        84,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        24
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        253,
+        100
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        380,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_east_06.png",
+      "runtime": "rift_shieldbearer_death_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        65,
+        96,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        16
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        332,
+        66
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        414,
+        422,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "rift_shieldbearer_death_south_east_01.png",
+      "runtime": "rift_shieldbearer_death_south_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        63
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        132,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        243,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_east_02.png",
+      "runtime": "rift_shieldbearer_death_south_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        68,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        143,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_east_03.png",
+      "runtime": "rift_shieldbearer_death_south_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        14,
+        71,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        64
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        155,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        239,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_east_04.png",
+      "runtime": "rift_shieldbearer_death_south_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        40,
+        73,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        41
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        166,
+        155
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        325,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_east_05.png",
+      "runtime": "rift_shieldbearer_death_south_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        23,
+        57,
+        75,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        26
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        196,
+        98
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        382,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_east_06.png",
+      "runtime": "rift_shieldbearer_death_south_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        19,
+        61,
+        77,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        23
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        219,
+        87
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        393,
+        365,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "rift_shieldbearer_death_south_01.png",
+      "runtime": "rift_shieldbearer_death_south_00.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        62,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        57
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        140,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        258,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_02.png",
+      "runtime": "rift_shieldbearer_death_south_01.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        25,
+        15,
+        64,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        60
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        152,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        247,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_03.png",
+      "runtime": "rift_shieldbearer_death_south_02.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        21,
+        17,
+        70,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        58
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        191,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        254,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_04.png",
+      "runtime": "rift_shieldbearer_death_south_03.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        17,
+        12,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        222,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_05.png",
+      "runtime": "rift_shieldbearer_death_south_04.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        76,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        62
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        226,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        143,
+        239,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_06.png",
+      "runtime": "rift_shieldbearer_death_south_05.png",
+      "source_size": [
+        88,
+        88
+      ],
+      "source_alpha_bbox": [
+        20,
+        15,
+        76,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        60
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        218,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        147,
+        247,
+        365,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "rift_shieldbearer_death_south_west_01.png",
+      "runtime": "rift_shieldbearer_death_south_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        62
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        114,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        199,
+        266,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_west_02.png",
+      "runtime": "rift_shieldbearer_death_south_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        16,
+        66,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        65
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        131,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        256,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_west_03.png",
+      "runtime": "rift_shieldbearer_death_south_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        24,
+        10,
+        72,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        166,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        235,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_west_04.png",
+      "runtime": "rift_shieldbearer_death_south_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        14,
+        78,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        69
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        214,
+        238
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        242,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_west_05.png",
+      "runtime": "rift_shieldbearer_death_south_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        34,
+        78,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        49
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        217,
+        169
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        311,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_south_west_06.png",
+      "runtime": "rift_shieldbearer_death_south_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        59,
+        82,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        24
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        235,
+        83
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        397,
+        373,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "rift_shieldbearer_death_west_01.png",
+      "runtime": "rift_shieldbearer_death_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        23,
+        61,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        58
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        88,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        212,
+        283,
+        300,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_west_02.png",
+      "runtime": "rift_shieldbearer_death_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        19,
+        9,
+        55,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        72
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        122,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_west_03.png",
+      "runtime": "rift_shieldbearer_death_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        12,
+        55,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        70
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        133,
+        238
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        242,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_west_04.png",
+      "runtime": "rift_shieldbearer_death_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        24,
+        58,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        58
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        143,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        283,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_west_05.png",
+      "runtime": "rift_shieldbearer_death_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        53,
+        74,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        29
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        201,
+        99
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        381,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_west_06.png",
+      "runtime": "rift_shieldbearer_death_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        67,
+        83,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        16
+      ],
+      "scale": 3.4027777777777777,
+      "resized_visible_size": [
+        231,
+        54
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        426,
+        371,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "rift_shieldbearer_death_north_west_01.png",
+      "runtime": "rift_shieldbearer_death_north_west_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        30,
+        22,
+        64,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        141,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_west_02.png",
+      "runtime": "rift_shieldbearer_death_north_west_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        24,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        57
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        154,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        179,
+        243,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_west_03.png",
+      "runtime": "rift_shieldbearer_death_north_west_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        20,
+        39,
+        70,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        42
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        208,
+        174
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        306,
+        360,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_west_04.png",
+      "runtime": "rift_shieldbearer_death_north_west_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        12,
+        61,
+        77,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        20
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        270,
+        83
+      ],
+      "runtime_alpha_bbox": [
+        121,
+        397,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_west_05.png",
+      "runtime": "rift_shieldbearer_death_north_west_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        59,
+        80,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        22
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        278,
+        91
+      ],
+      "runtime_alpha_bbox": [
+        117,
+        389,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_west_06.png",
+      "runtime": "rift_shieldbearer_death_north_west_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        66,
+        82,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        15
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        282,
+        62
+      ],
+      "runtime_alpha_bbox": [
+        115,
+        418,
+        397,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "rift_shieldbearer_death_north_01.png",
+      "runtime": "rift_shieldbearer_death_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        67,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        147,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_02.png",
+      "runtime": "rift_shieldbearer_death_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        20,
+        74,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        192,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        243,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_03.png",
+      "runtime": "rift_shieldbearer_death_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        30,
+        77,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        48
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        204,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        284,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_04.png",
+      "runtime": "rift_shieldbearer_death_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        58,
+        77,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        21
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        245,
+        86
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        394,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_05.png",
+      "runtime": "rift_shieldbearer_death_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        58,
+        78,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        21
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        257,
+        86
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        394,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_06.png",
+      "runtime": "rift_shieldbearer_death_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        55,
+        78,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        24
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        257,
+        98
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        382,
+        385,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "rift_shieldbearer_death_north_east_01.png",
+      "runtime": "rift_shieldbearer_death_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        38,
+        21,
+        65,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        60
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        100,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        257,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_east_02.png",
+      "runtime": "rift_shieldbearer_death_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        36,
+        17,
+        67,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        64
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        115,
+        238
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        242,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_east_03.png",
+      "runtime": "rift_shieldbearer_death_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        70,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        130,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_east_04.png",
+      "runtime": "rift_shieldbearer_death_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        23,
+        70,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        59
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        130,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        191,
+        261,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_east_05.png",
+      "runtime": "rift_shieldbearer_death_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        19,
+        32,
+        74,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        52
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        204,
+        193
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        287,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "rift_shieldbearer_death_north_east_06.png",
+      "runtime": "rift_shieldbearer_death_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        16,
+        59,
+        78,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        23
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        230,
+        85
+      ],
+      "runtime_alpha_bbox": [
+        141,
+        395,
+        371,
+        480
+      ]
+    }
+  ]
+}
