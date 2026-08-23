@@ -80,6 +80,8 @@ const LIFECYCLE_SPECS := [
 
 var _errors: Array[String] = []
 var _holder: Node2D = null
+## Widest slice of cast time this run ever left unobserved between two polls.
+var _observation_step := 0.0
 
 
 func _initialize() -> void:
@@ -104,6 +106,7 @@ func _initialize() -> void:
 		_check(false, error)
 	_assert_inventory_falsifications(ready_pairs)
 	_assert_contract_falsifications()
+	_assert_sampling_falsifications()
 	if not _errors.is_empty() or not inventory_errors.is_empty():
 		_report()
 		return
@@ -316,6 +319,75 @@ func _encounter_gate_errors(
 	return errors
 
 
+## FAN-3279: the pre-completion window is only `pre_margin` of cast time wide,
+## and a starved server frame can be wider. The observer then steps straight
+## from "tween short of the window" to "tween already gone" and never gets a
+## live sample to assert on — a gap in observation, not a gameplay failure.
+## The excuse is bounded by the cast's own clock: the gap must be wide enough
+## that a cast running to its declared lifecycle would also have ended inside
+## it. A cast that really vanishes early is seen at a fine sampling step and
+## still reddens here, and `_late_completion_errors` keeps the other bound.
+func _precompletion_sampling_errors(
+	label: String,
+	prechecked: bool,
+	last_live_elapsed: float,
+	observation_step: float,
+	lifecycle: float
+) -> Array[String]:
+	var errors: Array[String] = []
+	if prechecked:
+		return errors
+	if last_live_elapsed + maxf(observation_step, 0.0) < lifecycle:
+		errors.append(
+			"%s must reach its pre-completion checkpoint, last seen live at %.2fs of %.2fs on a %.2fs sampling step"
+			% [label, last_live_elapsed, lifecycle, observation_step]
+		)
+	return errors
+
+
+## The first poll that finds a cast gone can land arbitrarily long after it
+## actually ended, so that timestamp measures the observer, not the cast.
+## Lateness is judged on the last poll that still saw the cast live: that is a
+## real instant it was running, so a genuine overrun is still caught the moment
+## it is observed past its grace, while a slow frame alone can never manufacture
+## one.
+func _late_completion_errors(label: String, last_live_elapsed: float, deadline: float) -> Array[String]:
+	var errors: Array[String] = []
+	if last_live_elapsed > deadline:
+		errors.append(
+			"%s still live at %.2fs, beyond lifecycle + %.1fs"
+			% [label, last_live_elapsed, COMPLETION_GRACE_SECONDS]
+		)
+	return errors
+
+
+func _assert_sampling_falsifications() -> void:
+	_check(
+		_precompletion_sampling_errors("falsification/observed", true, 2.30, 0.02, 2.70).is_empty(),
+		"an observed pre-completion checkpoint must pass the sampling contract"
+	)
+	_check(
+		_precompletion_sampling_errors("falsification/coarse", false, 2.30, 0.45, 2.70).is_empty(),
+		"a sampling step wider than the pre-completion window must not fail a healthy cast"
+	)
+	_check(
+		not _precompletion_sampling_errors("falsification/early", false, 2.30, 0.02, 2.70).is_empty(),
+		"a cast that vanishes early under fine sampling must fail closed"
+	)
+	_check(
+		not _precompletion_sampling_errors("falsification/unobserved", false, 0.0, -1.0, 2.70).is_empty(),
+		"a cast never observed live must fail closed"
+	)
+	_check(
+		_late_completion_errors("falsification/lagged", 3.30, 3.35).is_empty(),
+		"a finish reported late but last seen live inside the grace must pass"
+	)
+	_check(
+		not _late_completion_errors("falsification/overrun", 3.36, 3.35).is_empty(),
+		"a cast still live past lifecycle + grace must fail closed"
+	)
+
+
 func _assert_contract_falsifications() -> void:
 	_check(
 		not _live_ownership_errors("falsification/ownerless", 0, 0).is_empty(),
@@ -427,7 +499,8 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 		"baseline_statuses": baseline_statuses,
 		"baseline_modifiers": (player.get("run_modifiers") as Dictionary).duplicate(true),
 		"started_ms": -1,
-		"finished_ms": -1,
+		"last_active_ms": -1,
+		"tween_elapsed": 0.0,
 		"prechecked": false,
 		"controller": null,
 		"activation": null,
@@ -639,8 +712,19 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 			var pre_elapsed := lifecycle - pre_margin
 			var reached_precompletion := false
 			for tween in state["tweens"]:
-				if tween != null and tween.is_valid() \
-						and tween.get_total_elapsed_time() >= pre_elapsed:
+				if tween == null or not tween.is_valid():
+					continue
+				var tween_elapsed := float(tween.get_total_elapsed_time())
+				# Sampling resolution is measured on the cast clock, never on the
+				# observer's: a starved frame is charged to the tween on the frame
+				# after the observer already logged the stall, so `wall_delta` and
+				# the cast's own progress are one frame out of step. This is the
+				# widest slice of cast time that ever passed unobserved.
+				_observation_step = maxf(
+					_observation_step, tween_elapsed - float(state["tween_elapsed"])
+				)
+				state["tween_elapsed"] = tween_elapsed
+				if tween_elapsed >= pre_elapsed:
 					reached_precompletion = true
 					break
 			if not bool(state["prechecked"]) and reached_precompletion:
@@ -680,8 +764,7 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 				state["prechecked"] = true
 			if controller.is_active():
 				all_finished = false
-			elif int(state["finished_ms"]) < 0:
-				state["finished_ms"] = now
+				state["last_active_ms"] = now
 		if all_finished:
 			return
 		await process_frame
@@ -693,18 +776,31 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		var player: Node2D = state["player"]
 		var controller = state.get("controller")
 		var activation = state.get("activation")
-		_check(bool(state["prechecked"]), "%s must reach its pre-completion checkpoint" % label)
+		for error in _precompletion_sampling_errors(
+			label,
+			bool(state["prechecked"]),
+			float(state["tween_elapsed"]),
+			_observation_step,
+			float(state["lifecycle"])
+		):
+			_check(false, error)
+		if not bool(state["prechecked"]):
+			print(
+				"tracked_tween_natural_completion_test: %s pre-completion window skipped by a %.2fs sampling step"
+				% [label, _observation_step]
+			)
 		_check(controller != null and not controller.is_active(), "%s must finish naturally by lifecycle + 1s" % label)
 		_check(not bool(player.get("_ultimate_active")), "%s must clear the Player active latch" % label)
 		_check(activation != null and activation.is_finished(), "%s activation must finish" % label)
 		if activation == null:
 			continue
-		if int(state["finished_ms"]) >= 0:
-			var elapsed := float(int(state["finished_ms"]) - int(state["started_ms"])) / 1000.0
-			_check(
-				elapsed <= float(state["deadline"]),
-				"%s finished after %.2fs, beyond lifecycle + 1s" % [label, elapsed]
-			)
+		if int(state["last_active_ms"]) >= 0:
+			for error in _late_completion_errors(
+				label,
+				float(int(state["last_active_ms"]) - int(state["started_ms"])) / 1000.0,
+				float(state["deadline"])
+			):
+				_check(false, error)
 		_check(activation.applied_total > 0.0, "%s must execute a real gameplay damage step" % label)
 		_check(activation.tweens_for_tests().is_empty(), "%s must drop tween ownership" % label)
 		_check(activation.spawned_for_tests().is_empty(), "%s must drop spawn/deploy ownership" % label)
