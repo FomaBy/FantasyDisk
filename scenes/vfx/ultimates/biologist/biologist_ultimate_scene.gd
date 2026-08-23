@@ -220,9 +220,9 @@ func _build_symbiont_matriarch() -> void:
 
 
 func _update_visuals() -> void:
-	var backdrop := get_node_or_null("BackdropVeil") as Polygon2D
+	var backdrop := get_node_or_null("BackdropVeil") as Sprite2D
 	if backdrop != null:
-		backdrop.color.a = sin(progress * PI) * 0.24
+		backdrop.modulate.a = sin(progress * PI) * 0.24
 	if _playing and not _impact_triggered and progress >= _impact_progress():
 		_apply_first_impact()
 	match variant:
@@ -235,14 +235,21 @@ func _update_visuals() -> void:
 
 
 func _build_backdrop() -> void:
-	var backdrop := Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color.WHITE, Color.WHITE])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.width = 64
+	texture.height = 64
+	var backdrop := Sprite2D.new()
 	backdrop.name = "BackdropVeil"
 	backdrop.z_index = -100
-	backdrop.polygon = PackedVector2Array([
-		Vector2(-2800.0, -1800.0), Vector2(2800.0, -1800.0),
-		Vector2(2800.0, 1800.0), Vector2(-2800.0, 1800.0),
-	])
-	backdrop.color = _backdrop_color()
+	backdrop.texture = texture
+	backdrop.centered = false
+	backdrop.position = Vector2(-2800.0, -1800.0)
+	backdrop.scale = Vector2(87.5, 56.25)
+	backdrop.modulate = _backdrop_color()
 	backdrop.set_meta("fullscreen_layer", true)
 	add_child(backdrop)
 
