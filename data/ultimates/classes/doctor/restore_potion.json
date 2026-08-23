@@ -14,7 +14,6 @@
       "release_delay": 0.45,
       "outer_radius": 220.0,
       "inner_radius": 100.0,
-      "target_cap": 12,
       "pulse_count": 4,
       "pulse_interval": 0.8,
       "outer_damage": 8.06,
