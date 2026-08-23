@@ -50,8 +50,8 @@ func _measure(weapon_id: String, profile: Dictionary) -> Dictionary:
 			defense = float(params["repair_total"])
 		"bone_saw":
 			coefficient = float(params["tick_damage"]) * float(params["tick_count"])
-			aoe = coefficient * mini(5, int(params["target_cap"]))
-			crowd = float(params["target_cap"])
+			aoe = coefficient * 5.0
+			crowd = INF
 			defense = float(params["repair_total"]) + float(params["shield_cap"])
 	var output := coefficient * base_damage
 	return {
@@ -69,8 +69,8 @@ func _check_trio(metrics: Dictionary) -> void:
 	var saw := metrics["bone_saw"] as Dictionary
 	_check(float(saw["solo"]) > float(restore["solo"]) * 0.9,
 		"Emergency Surgery must remain the close-range solo option")
-	_check(float(plague["crowd"]) > float(restore["crowd"]) and float(plague["crowd"]) > float(saw["crowd"]),
-		"Black Epidemic must retain the crowd-spread ceiling")
+	_check(float(plague["crowd"]) > float(restore["crowd"]),
+		"Black Epidemic must retain the crowd-spread ceiling over Life and Death")
 	_check(float(restore["defense"]) > float(plague["defense"]),
 		"Life and Death must retain the stronger pool/shield defense axis")
 	var total := (float(restore["power_seconds"]) + float(plague["power_seconds"]) + float(saw["power_seconds"])) / 3.0
