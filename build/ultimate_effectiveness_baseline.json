@@ -774,17 +774,17 @@
 					"activated": true,
 					"cast_completed": true,
 					"control_seconds": 0.0,
-					"damage_applied": 14923.2909223854,
+					"damage_applied": 13107.6568088648,
 					"displacement": 0.0,
-					"effect_total": 14924.2909223854,
+					"effect_total": 13108.6568088648,
 					"healing_applied": 0.0,
 					"modifier_granted": 0.0,
 					"prevention_applied": 0.0,
 					"probe_count": 20,
 					"summon_count": 1.0,
-					"targets_struck": 20.0,
+					"targets_struck": 13.0,
 					"tier": "normal",
-					"uptime_seconds": 2.02
+					"uptime_seconds": 1.32
 				},
 				"crowd_5": {
 					"activated": true,
