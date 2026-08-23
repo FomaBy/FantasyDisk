@@ -14,7 +14,6 @@ const MIGRATION_ALLOWLIST: Array[String] = [
 	"berserk",
 	"biologist",
 	"chemist",
-	"dark_mage",
 	"druid",
 	"elementalist",
 	"engineer",
@@ -44,6 +43,23 @@ const FRAMES_BY_CLASS := {
 			{"phase": "release", "time": 0.7, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
 			{"phase": "active", "time": 2.4, "required_nodes": ["HexWeb", "SnapCollapse"]},
 			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
+		],
+	},
+	"dark_mage": {
+		"dark_book": [
+			{"phase": "release", "time": 0.7, "required_nodes": ["BookGhost", "MirrorPlane", "OriginalShadow"]},
+			{"phase": "active", "time": 1.95, "required_nodes": ["MirrorPlane", "AbyssEnergy", "PairedDetonation"]},
+			{"phase": "recovery", "time": 2.5, "required_nodes": ["BookGhost", "MirrorPlane", "PairedDetonation"]},
+		],
+		"cursed_skull": [
+			{"phase": "release", "time": 0.85, "required_nodes": ["SkullCrown", "CrownHalo"]},
+			{"phase": "active", "time": 1.8, "required_nodes": ["SkullCrown", "CurseChains", "SoulWispLeft"]},
+			{"phase": "recovery", "time": 2.55, "required_nodes": ["SkullCrown", "HarvestBite", "CurseAura"]},
+		],
+		"dark_wand": [
+			{"phase": "release", "time": 0.95, "required_nodes": ["WandGhost", "OuterThread"]},
+			{"phase": "active", "time": 1.8, "required_nodes": ["WandGhost", "Branches", "NodeMarks"]},
+			{"phase": "recovery", "time": 2.5, "required_nodes": ["OuterThread", "NodeMarks", "CollapseAfterimage"]},
 		],
 	},
 	# engineer stays on MIGRATION_ALLOWLIST until its whole trio declares

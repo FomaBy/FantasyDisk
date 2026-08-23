@@ -13,17 +13,16 @@ var collapse_count_for_tests := 0
 
 var _activation = null
 var _nodes: Array = []
+var _focus_target_id := 0
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
-		"half_width": {"type": "number", "minimum": 0.0},
-		"chain_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"collapse_delay": {"type": "number", "minimum": 0.0},
 		"base_collapse_damage": {"type": "number", "minimum": 0.0},
-		"distinct_target_ramp": {"type": "number", "minimum": 0.0},
+		"focus_collapse_bonus": {"type": "number", "minimum": 0.0},
 		"per_target_cap_fraction": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"lifetime": {"type": "number", "minimum": 0.1},
 	}
@@ -36,26 +35,20 @@ static func execute(activation) -> float:
 		"target_mode": "host_aim",
 	}):
 		return 0.0
-	if not Library.execute_primitive("line_pierce_geometry", activation, {
-		"start": "source",
-		"direction": "aim",
-		"length": max_range,
-		"half_width": activation.param_float("half_width", 72.0),
-		"limit": activation.param_int("chain_cap", 10),
-	}):
-		return 0.0
 	if not activation.set_per_target_damage_cap(
 		activation.param_float("per_target_cap_fraction", 0.65)
 	):
 		return 0.0
-	var targets = activation.primitive_value("targets", [])
-	if not targets is Array:
-		targets = []
+	var targets: Array = activation.select_targets(activation.origin(), INF, 0, "nearest")
+	var aim: Dictionary = activation.aim_context(max_range)
+	var focus_targets: Array = activation.select_targets(
+		activation.origin(), INF, 1, "aimed", {"point": aim.get("target", activation.origin())}
+	)
+	var focus_target = focus_targets[0] as Node if not focus_targets.is_empty() else null
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
-	effect.call("configure", activation, targets as Array)
-	var aim = activation.aim_context(max_range)
+	effect.call("configure", activation, targets, focus_target)
 	activation.present("weapon_ultimate.phase.dark_mage.dark_wand.execute", {
 		"from": activation.origin(),
 		"to": aim.get("target", activation.origin()),
@@ -78,9 +71,10 @@ static func execute(activation) -> float:
 	return lifetime
 
 
-func configure(activation, targets: Array) -> void:
+func configure(activation, targets: Array, focus_target: Node = null) -> void:
 	_activation = activation
 	_nodes = targets.duplicate()
+	_focus_target_id = focus_target.get_instance_id() if focus_target != null and is_instance_valid(focus_target) else 0
 	global_position = activation.origin()
 
 
@@ -90,7 +84,9 @@ func mark_node(index: int) -> void:
 	var target := _nodes[index] as Node2D
 	if target == null or not is_instance_valid(target):
 		return
-	var ramp: float = 1.0 + _activation.param_float("distinct_target_ramp", 0.14) * float(index)
+	var ramp: float = 1.0
+	if _nodes.size() > 1 and target.get_instance_id() == _focus_target_id:
+		ramp += _activation.param_float("focus_collapse_bonus", 0.0)
 	if _activation.record_target_value(target, NODE_KEY, ramp, "vanishing_mark:%d" % index):
 		marked_count_for_tests += 1
 		_activation.present("weapon_ultimate.phase.dark_mage.dark_wand.active", {
@@ -128,4 +124,5 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 
 func _exit_tree() -> void:
 	_nodes.clear()
+	_focus_target_id = 0
 	_activation = null

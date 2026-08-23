@@ -33,9 +33,6 @@ const V2_SEED_REASON := "shipped under the v1 envelope before FAN-2948; awaiting
 const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
 	"assassin/shadow_daggers": V2_SEED_REASON,
 	"assassin/venom_wire": V2_SEED_REASON,
-	"dark_mage/dark_book": V2_SEED_REASON,
-	"dark_mage/cursed_skull": V2_SEED_REASON,
-	"dark_mage/dark_wand": V2_SEED_REASON,
 	"doctor/restore_potion": V2_SEED_REASON,
 	"doctor/plague_syringe": V2_SEED_REASON,
 	"doctor/bone_saw": V2_SEED_REASON,

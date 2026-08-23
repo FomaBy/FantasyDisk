@@ -8,11 +8,14 @@ const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "dark_mage"
 const WEAPONS := ["dark_book", "cursed_skull", "dark_wand"]
-const EXPECTED_CAPS := {
-	"dark_book": {"crowd_cap": 12, "reflection_cap": 2, "kill_burst_cap": 3},
-	"cursed_skull": {"crowd_cap": 14, "transfer_cap": 8, "pulse_count": 4},
-	"dark_wand": {"chain_cap": 10, "half_width": 72.0, "per_target_cap_fraction": 0.65},
+const EXPECTED_V2_PARAMS := {
+	"dark_book": {"release_delay": 0.7, "original_damage": 23.2, "lifetime": 3.1},
+	"cursed_skull": {"pulse_count": 3, "curse_duration": 3.0, "lifetime": 3.6},
+	"dark_wand": {"release_delay": 0.95, "focus_collapse_bonus": 1.4, "per_target_cap_fraction": 0.65, "lifetime": 3.9},
 }
+const LEGACY_TARGET_LIMIT_PARAMS := [
+	"crowd_cap", "chain_cap", "transfer_cap", "reflection_cap", "kill_burst_cap", "half_width",
+]
 
 var _errors: Array[String] = []
 
@@ -59,9 +62,16 @@ func _test_pair(registry: Registry, weapon_id: String) -> void:
 	_check(str(constants.get("EXECUTOR_ID", "")) == "weapon_ultimate.executor.dark_mage.%s" % weapon_id,
 		"%s EXECUTOR_ID must match the immutable catalog" % weapon_id)
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
-	for key in (EXPECTED_CAPS[weapon_id] as Dictionary):
-		_check(params.get(key) == (EXPECTED_CAPS[weapon_id] as Dictionary)[key],
-			"%s must freeze %s=%s" % [weapon_id, key, (EXPECTED_CAPS[weapon_id] as Dictionary)[key]])
+	for key in (EXPECTED_V2_PARAMS[weapon_id] as Dictionary):
+		_check(params.get(key) == (EXPECTED_V2_PARAMS[weapon_id] as Dictionary)[key],
+			"%s must freeze V2 %s=%s" % [weapon_id, key, (EXPECTED_V2_PARAMS[weapon_id] as Dictionary)[key]])
+	for key in LEGACY_TARGET_LIMIT_PARAMS:
+		_check(not params.has(key), "%s must not restore count-shaped %s" % [weapon_id, key])
+	var source := FileAccess.get_file_as_string((executor as GDScript).resource_path)
+	for legacy in LEGACY_TARGET_LIMIT_PARAMS:
+		_check(not source.contains(legacy), "%s executor must not restore %s" % [weapon_id, legacy])
+	_check(not source.contains("line_pierce_geometry"),
+		"%s executor must not use a corridor as a reach gate" % weapon_id)
 
 
 func _test_no_cross_class_leakage(registry: Registry) -> void:
