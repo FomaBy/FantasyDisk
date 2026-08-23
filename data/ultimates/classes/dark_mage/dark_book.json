@@ -11,17 +11,10 @@
     "strategy_id": "weapon_ultimate.executor.dark_mage.dark_book",
     "params": {
       "radius": 620.0,
-      "crowd_cap": 12,
-      "release_delay": 0.6,
-      "pair_interval": 0.24,
+      "release_delay": 0.7,
       "original_damage": 23.2,
-      "reflection_damage": 19.1,
       "reflection_radius": 150.0,
-      "reflection_cap": 2,
-      "kill_burst_damage": 13.7,
-      "kill_burst_radius": 135.0,
-      "kill_burst_cap": 3,
-      "lifetime": 5.2
+      "lifetime": 3.1
     }
   },
   "total_boss_cap": 0.11,

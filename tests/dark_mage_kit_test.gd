@@ -90,6 +90,7 @@ func _initialize() -> void:
 	await _test_skull_scaling_and_refresh(errors)
 	await _test_book_mirror_geometry(errors)
 	await _test_book_double_hit_overlap(errors)
+	await _test_freed_visual_callbacks_noop(errors)
 	await _test_dark_decay_trait(errors)
 	await _test_dark_decay_secondary_paths_unowned(errors)
 
@@ -211,6 +212,50 @@ func _test_wand_no_repeat_and_burst(errors: Array) -> void:
 	if neighbor.hits_of_type("magic") != neighbor.hit_count:
 		errors.append("chain burst damage must be magic-typed")
 	await _cleanup(burst_holder)
+
+
+func _test_freed_visual_callbacks_noop(errors: Array) -> void:
+	var holder := _new_scene("DarkMageFreedVisualCallbacks")
+	var owner := _new_owner(holder)
+	var wand := _new_weapon(owner, "dark_mage", "dark_wand")
+	var book := _new_weapon(owner, "dark_mage", "dark_book")
+	var target := _new_enemy(holder, owner.global_position + Vector2(180, 0))
+	# Free the real visual nodes before their tween callbacks run. This exercises
+	# both Callable.bind argument conversion and the resolver no-op paths.
+	wand._fire_dark_chain_burst(owner, target, Vector2.RIGHT)
+	var chain_effects: Array = wand.get("_spawned_effects")
+	if chain_effects.size() != 1:
+		errors.append("dark chain must create one visual for freed-callback coverage")
+	else:
+		(chain_effects[0] as Node).queue_free()
+
+	book._fire_dark_mirror_blast(owner, target, Vector2.RIGHT)
+	var mirror_effects: Array = book.get("_spawned_effects")
+	if mirror_effects.size() != 2:
+		errors.append("dark mirror must create two visuals for freed-callback coverage")
+	else:
+		for effect in mirror_effects:
+			(effect as Node).queue_free()
+
+	await create_timer(0.6).timeout
+	if target.hit_count != 0:
+		errors.append("freed Dark Mage visuals must not resolve delayed damage")
+	await _cleanup(holder)
+
+	# Use a separate empty scene so the no-target branch cannot discover the
+	# chain/mirror target above.
+	var miss_holder := _new_scene("DarkMageFreedMissCallback")
+	var miss_owner := _new_owner(miss_holder)
+	var miss_wand := _new_weapon(miss_owner, "dark_mage", "dark_wand")
+	await process_frame
+	miss_wand._fire_dark_chain_burst(miss_owner, null, Vector2.RIGHT)
+	var miss_effects: Array = miss_wand.get("_spawned_effects")
+	if miss_effects.size() != 1:
+		errors.append("dark chain miss must create one visual for freed-callback coverage")
+	else:
+		(miss_effects[0] as Node).queue_free()
+	await create_timer(0.3).timeout
+	await _cleanup(miss_holder)
 
 
 # --- SCRUM-940 ---------------------------------------------------------------

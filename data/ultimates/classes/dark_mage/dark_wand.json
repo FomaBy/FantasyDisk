@@ -11,14 +11,12 @@
     "strategy_id": "weapon_ultimate.executor.dark_mage.dark_wand",
     "params": {
       "max_range": 760.0,
-      "half_width": 72.0,
-      "chain_cap": 10,
-      "release_delay": 0.28,
-      "collapse_delay": 0.34,
+      "release_delay": 0.95,
+      "collapse_delay": 0.4,
       "base_collapse_damage": 24.6,
-      "distinct_target_ramp": 0.14,
+      "focus_collapse_bonus": 1.4,
       "per_target_cap_fraction": 0.65,
-      "lifetime": 3.85
+      "lifetime": 3.9
     }
   },
   "total_boss_cap": 0.11,

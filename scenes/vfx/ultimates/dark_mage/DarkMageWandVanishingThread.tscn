@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/dark_wand.png" id="1_wand"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_dark_wand.png" id="2_vfx"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="3_v2_driver"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -9,7 +10,7 @@ light_mode = 1
 
 [sub_resource type="Animation" id="Animation_vanishing_thread"]
 resource_name = "ultimate"
-length = 3.85
+length = 3.9
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -17,7 +18,7 @@ tracks/0/path = NodePath("WandGhost:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.28, 0.62, 3.05, 3.25, 3.85),
+"times": PackedFloat32Array(0, 0.95, 1.45, 2.5, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(-244, 112), Vector2(-218, 62), Vector2(-204, 30), Vector2(-194, 20), Vector2(-168, 6), Vector2(-64, 0)]
@@ -29,7 +30,7 @@ tracks/1/path = NodePath("OuterThread:width")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.28, 0.62, 1.6, 2.45, 3.05, 3.25, 3.85),
+"times": PackedFloat32Array(0, 0.95, 1.45, 1.9, 2.3, 2.5, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [1.0, 2.0, 5.0, 8.0, 12.0, 15.0, 4.0, 0.5]
@@ -41,7 +42,7 @@ tracks/2/path = NodePath("VoidThread:width")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.28, 0.62, 2.45, 3.05, 3.25, 3.85),
+"times": PackedFloat32Array(0, 0.95, 1.45, 2.3, 2.5, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.5, 1.0, 2.0, 5.0, 7.0, 1.5, 0.1]
@@ -53,7 +54,7 @@ tracks/3/path = NodePath("Branches:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.62, 1.05, 2.45, 3.25, 3.85),
+"times": PackedFloat32Array(0, 1.45, 1.7, 2.3, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.52, 1.0, 0.3, 0.0]
@@ -65,7 +66,7 @@ tracks/4/path = NodePath("NodeMarks:scale")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.62, 1.3, 2.1, 2.75, 3.05, 3.25, 3.85),
+"times": PackedFloat32Array(0, 1.45, 1.8, 2.1, 2.35, 2.5, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.08, 0.08), Vector2(0.2, 0.2), Vector2(0.72, 0.72), Vector2(0.95, 0.95), Vector2(1.18, 1.18), Vector2(1.38, 1.38), Vector2(0.42, 0.42), Vector2(0.05, 0.05)]
@@ -77,7 +78,7 @@ tracks/5/path = NodePath("CollapseAfterimage:modulate:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 2.95, 3.05, 3.25, 3.48, 3.85),
+"times": PackedFloat32Array(0, 2.4, 2.5, 2.8, 3.2, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.72, 0.14, 0.0]
@@ -89,7 +90,7 @@ tracks/6/path = NodePath("BeamVFX:modulate:a")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.28, 0.62, 2.45, 3.25, 3.85),
+"times": PackedFloat32Array(0, 0.95, 1.45, 2.3, 2.8, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.38, 0.74, 0.22, 0.0]
@@ -99,13 +100,17 @@ tracks/6/keys = {
 _data = {"ultimate": SubResource("Animation_vanishing_thread")}
 
 [node name="DarkMageWandVanishingThread" type="Node2D"]
+script = ExtResource("3_v2_driver")
+weapon_id = "dark_wand"
 metadata/ultimate_id = "dark_mage/dark_wand"
 metadata/silhouette = "one_aimed_zigzag_void_thread_with_three_branch_nodes"
 metadata/motion_path = "wand_draws_forward_spine_then_filaments_branch_through_distinct_targets"
 metadata/timing_rhythm = "instant_draw_accelerating_node_pulses_then_silent_simultaneous_collapse"
 metadata/impact_language = "all_chain_nodes_contract_into_thin_black_afterimages_at_once"
-metadata/max_visual_nodes = 8
+metadata/max_visual_nodes = 10
 metadata/crowd_cap = 10
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 metadata/pivot = Vector2(0.18, 0.55)
 
 [node name="WandGhost" type="Sprite2D" parent="."]

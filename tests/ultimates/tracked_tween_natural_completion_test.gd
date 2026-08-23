@@ -41,7 +41,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
 	{"class_id": "druid", "weapon_id": "summon_amulet", "lifecycle": 6.6, "deadline": 7.6},
 	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
-	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 6.37, "deadline": 7.37},
+	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 3.62, "deadline": 4.62},
 	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
 	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
 	{"class_id": "berserk", "weapon_id": "axe", "lifecycle": 2.7, "deadline": 3.7},
@@ -52,7 +52,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "guitarist", "weapon_id": "electric_guitar", "lifecycle": 5.4, "deadline": 6.4},
 	{"class_id": "ranger", "weapon_id": "hunter_trap", "lifecycle": 5.35, "deadline": 6.35},
 	{"class_id": "ranger", "weapon_id": "moon_crossbow", "lifecycle": 4.80, "deadline": 5.80},
-	{"class_id": "dark_mage", "weapon_id": "dark_book", "lifecycle": 5.21, "deadline": 6.21},
+	{"class_id": "dark_mage", "weapon_id": "dark_book", "lifecycle": 3.12, "deadline": 4.12},
 	{"class_id": "robot", "weapon_id": "robot_magnetic_anchor", "lifecycle": 4.75, "deadline": 5.75},
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "ranger", "weapon_id": "storm_longbow", "lifecycle": 4.45, "deadline": 5.45},
@@ -66,7 +66,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "doctor", "weapon_id": "bone_saw", "lifecycle": 3.85, "deadline": 4.85},
 	{"class_id": "chemist", "weapon_id": "acid_flask", "lifecycle": 3.7, "deadline": 4.7},
 	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 2.35, "deadline": 3.35},
-	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.87, "deadline": 4.87},
+	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.92, "deadline": 4.92},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "chemist", "weapon_id": "blast_powder", "lifecycle": 2.2, "deadline": 3.2},
 	{"class_id": "assassin", "weapon_id": "chakrams", "lifecycle": 1.72, "deadline": 2.72},
@@ -115,7 +115,15 @@ func _initialize() -> void:
 
 	var original_time_scale := Engine.time_scale
 	Engine.time_scale = GAMEPLAY_TIME_SCALE
-	for state in states:
+	var start_order: Array[Dictionary] = []
+	start_order.append_array(states)
+	# Each state records its own admission time, but batch setup still runs before
+	# the first observation frame. Start long lifecycles first so no short pair can
+	# finish its pre-completion window while later pairs are being admitted.
+	start_order.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return float(left["lifecycle"]) > float(right["lifecycle"])
+	)
+	for state in start_order:
 		_start_case(state)
 	await _wait_for_natural_completion(states)
 	Engine.time_scale = original_time_scale

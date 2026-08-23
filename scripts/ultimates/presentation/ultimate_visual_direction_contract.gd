@@ -94,7 +94,6 @@ const ADOPTION_GAPS := {
 	},
 	"quality": {
 		"assassin": "awaiting the readability/accessibility declaration",
-		"dark_mage": "awaiting the readability/accessibility declaration",
 		"druid": "awaiting the readability/accessibility declaration",
 		"elementalist": "awaiting the readability/accessibility declaration",
 		"engineer": "awaiting the readability/accessibility declaration",

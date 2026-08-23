@@ -1444,7 +1444,7 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * minf(attack_range, 300.0), 0.2)
-		miss_tween.tween_callback(Callable(self, "_release_effect").bind(miss))
+		miss_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(miss.get_instance_id()))
 		return
 	# Цепь выбирается детерминированно в момент каста.
 	var chain: Array = [first_target]
@@ -1479,27 +1479,25 @@ func _launch_dark_chain_hop(from_position: Vector2, chain: Array, hop_index: int
 	var travel_time := clampf(from_position.distance_to(target_position) / maxf(projectile_speed, 1.0), 0.05, 0.30)
 	var hop_tween := create_tween()
 	hop_tween.tween_property(orb, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	hop_tween.tween_callback(Callable(self, "_resolve_dark_chain_hit").bind(orb, chain, hop_index, damage_value))
+	hop_tween.tween_callback(Callable(self, "_resolve_dark_chain_hit").bind(orb.get_instance_id(), chain, hop_index, damage_value))
 
 
-func _resolve_dark_chain_hit(orb: Node, chain: Array, hop_index: int, damage_value: float) -> void:
-	var impact_position := Vector2.ZERO
-	var impact_known := false
-	if orb != null and is_instance_valid(orb):
-		impact_position = (orb as Node2D).global_position
-		impact_known = true
-		_release_effect(orb)
+func _resolve_dark_chain_hit(orb_id: int, chain: Array, hop_index: int, damage_value: float) -> void:
+	if _effects_shutdown:
+		return
+	var orb := instance_from_id(orb_id) as Node2D
+	if orb == null or not is_instance_valid(orb):
+		return
+	var impact_position := orb.global_position
+	_release_effect(orb)
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
 	var enemy_node := chain[hop_index] as Node2D
 	if enemy_node != null and is_instance_valid(enemy_node):
 		impact_position = enemy_node.global_position
-		impact_known = true
 		var hit_damage := damage_value * pow(falloff, float(hop_index))
 		_damage_enemy(enemy_node, hit_damage)
 		_constellation_event("pierce", enemy_node, hit_damage)
 		_fire_dark_chain_hit_burst(enemy_node, impact_position, hit_damage * chain_burst_ratio * (1.0 + _owner_mod("wand_burst_bonus")))
-	if not impact_known:
-		return
 	_launch_dark_chain_hop(impact_position, chain, hop_index + 1, damage_value)
 
 
@@ -1662,14 +1660,16 @@ func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_dama
 	var travel_time := clampf(start.distance_to(blast_position) / maxf(projectile_speed, 1.0), 0.08, 0.45)
 	var orb_tween := create_tween()
 	orb_tween.tween_property(orb, "global_position", blast_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	orb_tween.tween_callback(Callable(self, "_resolve_dark_mirror_blast").bind(orb, blast_position, blast_damage, pair_token))
+	orb_tween.tween_callback(Callable(self, "_resolve_dark_mirror_blast").bind(orb.get_instance_id(), blast_position, blast_damage, pair_token))
 
 
-func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage: float, pair_token := 0) -> void:
-	if orb != null and is_instance_valid(orb):
-		_release_effect(orb)
+func _resolve_dark_mirror_blast(orb_id: int, blast_position: Vector2, blast_damage: float, pair_token := 0) -> void:
 	if _effects_shutdown:
 		return
+	var orb := instance_from_id(orb_id) as Node2D
+	if orb == null or not is_instance_valid(orb):
+		return
+	_release_effect(orb)
 	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius, _projectile_impact_color())
 	var pair_probe = _constellation_mirror_pairs.get(pair_token, {})
 	var cast_probe := int((pair_probe as Dictionary).get("cast_token", 0)) if pair_probe is Dictionary else 0
