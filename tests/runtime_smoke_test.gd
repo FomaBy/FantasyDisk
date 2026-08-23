@@ -4806,6 +4806,10 @@ func _test_universal_attribute_interpretations() -> void:
 	universal_player.global_position = Vector2(900, 700)
 	await process_frame
 	universal_player.call("configure_character", "berserk", "sword")
+	# The probe owns only explicit on_weapon_hit calls. A configured child weapon
+	# otherwise keeps processing between them and can damage the fresh target.
+	for child in universal_player.find_children("*", "Node", true, false):
+		(child as Node).process_mode = Node.PROCESS_MODE_DISABLED
 	# SCRUM-898: sound_wave_damage удалён — универсальные интерпретации живут на
 	# магии/DoT/лидерстве; battle-shout (звуковой окрик) выпилен вместе с осью.
 	var boosted: Dictionary = universal_player.get("derived_parameters")

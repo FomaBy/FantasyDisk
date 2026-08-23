@@ -90,6 +90,7 @@ func _initialize() -> void:
 	await _test_skull_scaling_and_refresh(errors)
 	await _test_book_mirror_geometry(errors)
 	await _test_book_double_hit_overlap(errors)
+	await _test_freed_visual_callbacks_noop(errors)
 	await _test_dark_decay_trait(errors)
 	await _test_dark_decay_secondary_paths_unowned(errors)
 
@@ -211,6 +212,28 @@ func _test_wand_no_repeat_and_burst(errors: Array) -> void:
 	if neighbor.hits_of_type("magic") != neighbor.hit_count:
 		errors.append("chain burst damage must be magic-typed")
 	await _cleanup(burst_holder)
+
+
+func _test_freed_visual_callbacks_noop(errors: Array) -> void:
+	var holder := _new_scene("DarkMageFreedVisualCallbacks")
+	var owner := _new_owner(holder)
+	var wand := _new_weapon(owner, "dark_mage", "dark_wand")
+	var book := _new_weapon(owner, "dark_mage", "dark_book")
+	var target := _new_enemy(holder, owner.global_position + Vector2(180, 0))
+	var chain_orb := Node2D.new()
+	var mirror_orb := Node2D.new()
+	holder.add_child(chain_orb)
+	holder.add_child(mirror_orb)
+	var chain_orb_id := chain_orb.get_instance_id()
+	var mirror_orb_id := mirror_orb.get_instance_id()
+	chain_orb.queue_free()
+	mirror_orb.queue_free()
+	await process_frame
+	wand._resolve_dark_chain_hit(chain_orb_id, [target], 0, 100.0)
+	book._resolve_dark_mirror_blast(mirror_orb_id, target.global_position, 100.0)
+	if target.hit_count != 0:
+		errors.append("freed Dark Mage visuals must not resolve delayed damage")
+	await _cleanup(holder)
 
 
 # --- SCRUM-940 ---------------------------------------------------------------

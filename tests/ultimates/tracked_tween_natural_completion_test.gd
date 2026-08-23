@@ -115,7 +115,15 @@ func _initialize() -> void:
 
 	var original_time_scale := Engine.time_scale
 	Engine.time_scale = GAMEPLAY_TIME_SCALE
-	for state in states:
+	var start_order: Array[Dictionary] = []
+	start_order.append_array(states)
+	# Each state records its own admission time, but batch setup still runs before
+	# the first observation frame. Start long lifecycles first so no short pair can
+	# finish its pre-completion window while later pairs are being admitted.
+	start_order.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return float(left["lifecycle"]) > float(right["lifecycle"])
+	)
+	for state in start_order:
 		_start_case(state)
 	await _wait_for_natural_completion(states)
 	Engine.time_scale = original_time_scale
