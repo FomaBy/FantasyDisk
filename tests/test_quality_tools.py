@@ -129,6 +129,33 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("get_total_elapsed_time()", source)
         self.assertNotIn("now >= pre_at", source)
 
+    def test_lifecycle_sampling_repair_stays_fail_closed(self) -> None:
+        """FAN-3279: a starved observation frame must not read as a lifecycle
+        defect, and the two bounds that still catch a real one must stay."""
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        # Lateness is judged on the last poll that still saw the cast live. The
+        # first poll that finds it gone measures the observer, not the cast, so
+        # that timestamp must not come back as a deadline.
+        cleanup = _gdscript_func_body(source, "_assert_natural_cleanup")
+        self.assertIn("last_active_ms", cleanup)
+        self.assertNotIn("finished_ms", source)
+        # Sampling resolution is read off the cast's own tween clock: a starved
+        # frame reaches the tween one frame after the observer logged it, so
+        # `wall_delta` measures the wrong thing here.
+        observer = _gdscript_func_body(source, "_wait_for_natural_completion")
+        step = re.search(
+            r"_observation_step = maxf\(\s*_observation_step,([^)]*)\)", observer
+        )
+        assert step is not None, "observer must measure its own sampling step"
+        self.assertIn("tween_elapsed", step.group(1))
+        self.assertNotIn("wall_delta", step.group(1))
+        # Both directions stay deterministically falsifiable without a clock.
+        falsifications = _gdscript_func_body(source, "_assert_sampling_falsifications")
+        for healthy in ("observed", "coarse", "lagged"):
+            self.assertRegex(falsifications, rf'(?<!not )_\w+_errors\("falsification/{healthy}"')
+        for defect in ("early", "unobserved", "overrun"):
+            self.assertRegex(falsifications, rf'not _\w+_errors\("falsification/{defect}"')
+
     def test_known_import_sidecars_are_removed_without_broad_cleanup(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-sidecars-") as scratch:
             root = Path(scratch)
