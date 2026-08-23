@@ -10,14 +10,10 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.doctor.plague_syringe",
     "params": {
-      "max_range": 800.0,
       "release_delay": 0.42,
       "wave_count": 5,
       "wave_interval": 1.0,
-      "spread_radius": 240.0,
-      "spread_per_wave": 3,
-      "death_spread_cap": 2,
-      "infected_cap": 18,
+      "wave_visual_radius": 240.0,
       "direct_damage": 13.0,
       "wave_damage": 5.59,
       "heal_ratio": 0.15,

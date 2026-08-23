@@ -90,6 +90,7 @@ func _initialize() -> void:
 	await process_frame
 	await _test_restore_potion()
 	await _test_plague_syringe()
+	await _test_plague_syringe_reaches_every_enemy()
 	await _test_bone_saw()
 	_holder.queue_free()
 	await process_frame
@@ -135,6 +136,28 @@ func _test_plague_syringe() -> void:
 		"Black Epidemic must emit syringe, veins, waves, and mask finale events")
 	controller.cancel()
 	_check(not host.active, "Black Epidemic cancel must end the active window")
+	await _drop(host)
+
+
+## Ultimate Direction v2: reach cannot depend on infection spread, count, or
+## viewport distance. The former 18-infected ceiling is exceeded here, and the
+## final silhouette proves the same cast reaches beyond its former range.
+func _test_plague_syringe_reaches_every_enemy() -> void:
+	var host := await _host()
+	for index in 25:
+		_target(host, Vector2(120.0 + float(index) * 20.0, 30.0 * float(index % 2)), 5000.0)
+	_target(host, Vector2(4000.0, -3000.0), 5000.0)
+	var controller := Controller.new(host, _registry)
+	_check(controller.activate(CLASS_ID, "plague_syringe"),
+		"Black Epidemic map-wide fixture must activate")
+	var activation: Activation = controller.active_activation()
+	_advance(activation, 6.0)
+	var reached := 0
+	for target in host.targets:
+		if _has_mechanic(target, "black_epidemic_wave"):
+			reached += 1
+	_check(reached == host.targets.size(),
+		"Black Epidemic must wave every live enemy, including crowds above the former cap and off-screen targets")
 	await _drop(host)
 
 
@@ -203,6 +226,13 @@ func _infected_target_count(host: FixtureHost) -> int:
 				count += 1
 				break
 	return count
+
+
+func _has_mechanic(target: FixtureTarget, mechanic: String) -> bool:
+	for hit in target.received:
+		if str((hit["feedback"] as Dictionary).get("ultimate_mechanic", "")) == mechanic:
+			return true
+	return false
 
 
 func _removed_health(targets: Array[FixtureTarget]) -> float:
