@@ -1444,7 +1444,7 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * minf(attack_range, 300.0), 0.2)
-		miss_tween.tween_callback(Callable(self, "_release_effect").bind(miss))
+		miss_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(miss.get_instance_id()))
 		return
 	# Цепь выбирается детерминированно в момент каста.
 	var chain: Array = [first_target]
