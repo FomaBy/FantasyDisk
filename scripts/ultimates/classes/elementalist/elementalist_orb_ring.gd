@@ -22,7 +22,6 @@ static func parameter_contract() -> Dictionary:
 		"orbit_radius": {"type": "number", "minimum": 1.0},
 		"beat_radius": {"type": "number", "minimum": 1.0},
 		"nova_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"beat_start": {"type": "number", "minimum": 0.0},
 		"beat_interval": {"type": "number", "minimum": 0.01},
 		"nova_at": {"type": "number", "minimum": 0.0},
@@ -128,7 +127,7 @@ func cast_beat(beat: int) -> void:
 	var targets: Array = _activation.select_targets(
 		avatar_position,
 		_activation.param_float("beat_radius", 290.0),
-		_activation.param_int("crowd_cap", 24),
+		0,
 		"nearest"
 	)
 	if element == "shock":
@@ -182,7 +181,7 @@ func combined_nova() -> void:
 	_activation.present(EXECUTOR_ID + ".supernova", {
 		"position": center, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.targets(center, radius, _activation.param_int("crowd_cap", 24)):
+	for raw_target in _activation.targets(center, radius):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
