@@ -22,7 +22,6 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
 		"impact_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"meteor_drop_at": {"type": "number", "minimum": 0.0},
 		"impact_at": {"type": "number", "minimum": 0.0},
 		"crater_pulses": {"type": "integer", "minimum": 1},
@@ -133,9 +132,7 @@ func impact() -> void:
 	_activation.present(EXECUTOR_ID + ".impact", {
 		"position": _impact_point, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.select_targets(
-		_impact_point, radius, _activation.param_int("crowd_cap", 20), "nearest"
-	):
+	for raw_target in _activation.select_targets(_impact_point, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -167,10 +164,7 @@ func crater_pulse(pulse: int) -> void:
 		"shape": "ring_pulse",
 	})
 	for raw_target in _activation.select_targets(
-		_impact_point,
-		_activation.param_float("impact_radius", 360.0),
-		_activation.param_int("crowd_cap", 20),
-		"nearest"
+		_impact_point, INF, 0, "nearest"
 	):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
