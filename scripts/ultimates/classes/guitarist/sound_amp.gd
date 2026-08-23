@@ -1,5 +1,9 @@
 extends RefCounted
 
+## Ultimate Direction v2 (FAN-3285): every feedback pulse and the overload
+## reach every live enemy on the map, on screen and off — `amp_radius` and
+## `square_half_side` are presentation only, never reach.
+
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.sound_amp"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.sound_amp"
 const SELF_PATH := "res://scripts/ultimates/classes/guitarist/sound_amp.gd"
@@ -20,7 +24,6 @@ static func parameter_contract() -> Dictionary:
 		"recovery_tail": {"type": "number", "minimum": 0.0},
 		"amp_radius": {"type": "number", "minimum": 1.0},
 		"square_half_side": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"feedback_damage": {"type": "number", "minimum": 0.0},
 		"overload_damage": {"type": "number", "minimum": 0.0},
 		"feedback_duration": {"type": "number", "minimum": 0.0},
@@ -74,7 +77,7 @@ static func deploy_stage(activation, state: Dictionary) -> void:
 static func feedback_pulse(activation, state: Dictionary, pulse_index: int) -> void:
 	if activation.is_finished() or not bool(state.get("linked", false)):
 		return
-	for raw_target in _square_targets(activation):
+	for raw_target in _live_targets(activation):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -99,7 +102,7 @@ static func feedback_pulse(activation, state: Dictionary, pulse_index: int) -> v
 static func overload(activation, state: Dictionary) -> void:
 	if activation.is_finished() or not bool(state.get("linked", false)):
 		return
-	for raw_target in _square_targets(activation):
+	for raw_target in _live_targets(activation):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -124,17 +127,5 @@ static func _amp_points(activation) -> PackedVector2Array:
 	return points
 
 
-static func _square_targets(activation) -> Array:
-	var selected: Array = []
-	var half_side: float = activation.param_float("square_half_side", 260.0)
-	var origin: Vector2 = activation.origin()
-	for raw_target in activation.targets(origin, half_side * sqrt(2.0), 0):
-		var target := raw_target as Node2D
-		if target == null or not is_instance_valid(target):
-			continue
-		var offset: Vector2 = target.global_position - origin
-		if absf(offset.x) <= half_side and absf(offset.y) <= half_side:
-			selected.append(target)
-			if selected.size() >= activation.param_int("crowd_cap", 14):
-				break
-	return selected
+static func _live_targets(activation) -> Array:
+	return activation.select_targets(activation.origin(), INF, 0, "nearest")
