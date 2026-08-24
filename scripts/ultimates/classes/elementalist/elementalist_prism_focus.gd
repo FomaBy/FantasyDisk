@@ -138,9 +138,6 @@ func fire_sweep(sweep: int) -> void:
 				continue
 			seen[target.get_instance_id()] = true
 			targets.append(target)
-	var crowd_cap: int = _activation.param_int("crowd_cap", 18)
-	if targets.size() > crowd_cap:
-		targets.resize(crowd_cap)
 	var focus_points := _focus_points(angle)
 	for raw_target in targets:
 		var target := raw_target as Node2D
@@ -175,9 +172,7 @@ func shatter() -> void:
 	_activation.present(EXECUTOR_ID + ".shatter", {
 		"position": _focus, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.select_targets(
-		_focus, radius, _activation.param_int("crowd_cap", 18), "nearest"
-	):
+	for raw_target in _activation.select_targets(_focus, radius, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
