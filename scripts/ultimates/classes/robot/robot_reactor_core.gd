@@ -59,7 +59,7 @@ static func vent_wave(activation, wave: int) -> void:
 	for index in count:
 		var direction := Vector2.RIGHT.rotated(TAU * float(index) / float(count) + spin)
 		for raw_target in activation.targets_in_corridor(
-			activation.origin(), direction, activation.param_float("range", 300.0), activation.param_float("half_width", 90.0), 1
+			activation.origin(), direction, activation.param_float("range", 300.0), activation.param_float("half_width", 90.0), 0
 		):
 			var target := raw_target as Node
 			if target != null and is_instance_valid(target):
