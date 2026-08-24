@@ -25,7 +25,6 @@ static func parameter_contract() -> Dictionary:
 		"guard_arc_degrees": {"type": "number", "minimum": 1.0, "maximum": 360.0},
 		"counter_radius": {"type": "number", "minimum": 1.0},
 		"counter_arc_degrees": {"type": "number", "minimum": 1.0, "maximum": 360.0},
-		"counter_target_cap": {"type": "integer", "minimum": 1},
 		"counter_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"push_force": {"type": "number", "minimum": 0.0},
 		"control_duration": {"type": "number", "minimum": 0.0},
@@ -112,8 +111,6 @@ func counter_burst() -> void:
 	for raw_target in _activation.select_targets(
 		global_position, _activation.param_float("counter_radius", 195.0), 0, "nearest"
 	):
-		if counter_target_count_for_tests >= _activation.param_int("counter_target_cap", 4):
-			break
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target) or not _inside_counter_arc(target):
 			continue

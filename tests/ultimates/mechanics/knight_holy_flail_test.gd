@@ -135,6 +135,9 @@ func _test_ordered_pull_launch() -> void:
 	epic.add_to_group("elite_enemies")
 	var boss := _target(host, Vector2(80.0, -10.0))
 	boss.add_to_group("bosses")
+	var crowd: Array[Target] = []
+	for index in 22:
+		crowd.append(_target(host, Vector2(70.0, -50.0 + float(index) * 5.0)))
 	var outer := _target(host, Vector2(410.0, 0.0))
 	var outside := _target(host, Vector2(450.0, 0.0))
 	var controller := Controller.new(host, _registry)
@@ -189,6 +192,9 @@ func _test_ordered_pull_launch() -> void:
 			"spiral radii must grow strictly at turn %d" % index)
 	_check(normal.knockbacks.size() == 7,
 		"duplicate host rows must still yield one control event per target and turn")
+	for target in crowd:
+		_check(target.knockbacks.size() == 7,
+			"every eligible crowded target must receive every spiral turn without a count cap")
 	_check(normal.max_health - normal.health <= normal.max_health * 0.35 + 0.001,
 		"normal damage must respect the per-target rail")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.07),

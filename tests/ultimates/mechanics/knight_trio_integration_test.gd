@@ -1,6 +1,7 @@
 extends SceneTree
 
 const PD := preload("res://scripts/progression_data.gd")
+const Harness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 
@@ -44,6 +45,14 @@ func _initialize() -> void:
 	_check(registry.resolution_source("robot", "tower_shield") != Resolver.SOURCE_WEAPON_PROFILE
 		and registry.resolution_source(CLASS_ID, "sword") != Resolver.SOURCE_WEAPON_PROFILE,
 		"the completed Knight trio must not promote foreign or undeclared pairs")
+	_check(Harness.COVERAGE_V2_CLASSES.has(CLASS_ID)
+		and not Harness.COVERAGE_MIGRATION_ALLOWLIST.has(CLASS_ID),
+		"the completed Knight trio must be recorded as map-wide coverage v2")
+	var sources := ""
+	for weapon_id in WEAPONS:
+		sources += FileAccess.get_file_as_string(str((WEAPONS[weapon_id] as Dictionary)["executor"]))
+	var count_caps := Harness.count_cap_params(sources)
+	_check(count_caps.is_empty(), "the completed Knight trio must declare no reach count caps: %s" % [count_caps])
 	if _errors.is_empty():
 		print("knight_trio_integration_test: PASS")
 		quit(0)
