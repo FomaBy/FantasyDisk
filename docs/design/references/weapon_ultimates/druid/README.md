@@ -42,6 +42,13 @@ telegraph/damage windows, summon caps, boss control caps, and the wisp return
 stay owned by mechanics card FAN-1495; the seam is the frozen `phase_id` set,
 not numbers.
 
+The integrated Druid executors already select every live enemy for their
+primary map-wide effects. The frozen package contracts retain the legacy
+`target_cap`, `hunt_splash_target_cap`, `crowd_cap`, and `dive_target_cap` keys
+for catalog compatibility only; the executors do not read them. The aggregate
+coverage ratchet and Druid tests record this conversion without changing the
+weapon-local package files.
+
 The four contact sheets are rendered from the actual local scenes at 648p, 720p,
 1080p, and 2K. Action-following framing fits every visible silhouette and impact
 mark inside its own labeled panel, and each sheet title is centered on its

@@ -9,9 +9,9 @@ animation assets remain untouched.
 
 | Weapon | Ultimate | Mechanical role |
 | --- | --- | --- |
-| `summon_amulet` | Дикая Охота | Eight transient spectral beasts burst along the compass directions, then complete six priority-target hunt waves. Each primary strike has a capped nearby splash, giving the pack crowd pressure without multiplying its persistent summon count. All spirits are activation-owned and vanish with the sigil. |
-| `briar_staff` | Лес за Одно Дыхание | Five seeds grow one connected lattice with readable safe paths. It roots normal targets, slows resistant epic/boss targets, then resolves two impale pulses and a thorn-crown finish against a capped three-target damage rail. |
-| `raven_totem` | Ночь Тысячи Крыльев | The totem marks a capped flock of enemies, reducing speed and accuracy/damage, performs four staggered three-target dives, returns one wisp per applied strike, and ends in a single capped collapse pulse. |
+| `summon_amulet` | Дикая Охота | Eight transient spectral beasts burst along the compass directions, then complete six fixed hunt waves against every live enemy. Nearby splash remains a local attribution bonus; all primary strikes reach the map. All spirits are activation-owned and vanish with the sigil. |
+| `briar_staff` | Лес за Одно Дыхание | Five seeds grow one connected lattice with readable safe paths. It roots normal targets, slows resistant epic/boss targets, then resolves two impale pulses and a thorn-crown finish across every live enemy. |
+| `raven_totem` | Ночь Тысячи Крыльев | The totem marks every live enemy, reducing speed and accuracy/damage, performs four staggered dive waves across the map, returns one wisp per applied strike, and ends in one collapse pulse. |
 
 The runtime scenes embed the accepted `DruidSummonAmuletWildHunt`,
 `DruidBriarStaffForestInOneBreath`, and
@@ -40,9 +40,9 @@ owned by FAN-1541.
 
 | Weapon | Lifetime | Crowd | Additional hard caps |
 | --- | ---: | ---: | --- |
-| Wild Hunt | 6.6s | 12 priority targets | 8 beasts, 6 hunt waves, 4-target splash |
-| Forest In One Breath | 7.9s | 20 control / 3 damage | 5 seeds, 3 impale pulses |
-| Night of a Thousand Wings | 8.4s | 22 marked / 3 dive | 4 dives, 1 collapse pulse |
+| Wild Hunt | 6.6s | every live enemy | 8 beasts, 6 hunt waves, local splash attribution |
+| Forest In One Breath | 7.9s | every live enemy | 5 seeds, 3 impale pulses |
+| Night of a Thousand Wings | 8.4s | every live enemy | 4 dives, 1 collapse pulse |
 
 The focused balance proof derives base Druid magic damage and the selected
 weapon's `ultimate_multiplier`, measures every declared coefficient against
@@ -51,12 +51,38 @@ corridor, and contains a runaway-hunt negative control.
 
 | Weapon | Solo / budget midpoint | 5-target AoE / midpoint | Crowd | Defense role |
 | --- | ---: | ---: | ---: | --- |
-| Wild Hunt | 0.999 | 0.943 | 12 | transient hunt pressure |
-| Forest In One Breath | 0.996 | 0.958 | 20 / 3 damage | 5.0s root/slow |
-| Night of a Thousand Wings | 1.008 | 0.968 | 22 / 3 dive | 7.8s mark/slow |
+| Wild Hunt | 0.996 | 0.956 | every live enemy | transient hunt pressure |
+| Forest In One Breath | 0.993 | 0.955 | every live enemy | 5.0s root/slow |
+| Night of a Thousand Wings | 1.005 | 0.965 | every live enemy | 7.8s mark/slow |
 
-The class-trio composite is `solo 1.001 / AoE 0.956 / crowd 1.000 /
-defense 0.999 / total 0.989`, inside the `0.90…1.10` corridor.
+The class-trio composite is `solo 0.998 / AoE 0.959 / crowd 1.000 /
+defense 0.999 / total 0.989`, inside the `0.90…1.10` corridor. The three
+niches remain distinct: Wild Hunt owns fixed multi-wave pressure, Briar owns
+the root/lattice control channel, and Raven owns the long marked-control
+sequence with the strongest control duration.
+
+## Map-wide coverage (FAN-2530, Ultimate Direction v2)
+
+The three Druid executors already use map-wide runtime selection. This
+aggregate card records that contract in the shared coverage ratchet and moves
+Druid from the migration allowlist into `COVERAGE_V2_CLASSES`; no weapon-owned
+mechanic, profile, scene, or presentation file changes here. The legacy
+count-cap keys remain in the frozen package contracts for catalog compatibility
+and are not read by the executors.
+
+The rebuilt 51-row live artifact is `build/ultimate_effectiveness_baseline.json`.
+Its Druid rows provide the following deterministic matrix:
+
+| Weapon | Corridor | Solo effect | Struck: solo / 5 / 10 / 20 / elite / boss | Boss cap ratio | Uptime |
+| --- | ---: | ---: | --- | ---: | ---: |
+| Wild Hunt | 1439.10…2158.65 | 1793.51 | 1 / 5 / 10 / 20 / 1 / 1 | 0.830 | 6.6s |
+| Forest In One Breath | 1435.50…2153.25 | 1788.33 | 1 / 5 / 10 / 20 / 1 / 1 | 0.828 | 7.9s |
+| Night of a Thousand Wings | 1437.60…2156.40 | 1815.08 | 1 / 5 / 10 / 20 / 1 / 1 | 0.838 | 8.4s |
+
+The aggregate proof is `tests/ultimates/mechanics/druid_balance_test.gd`;
+the package proof is `druid_package_test.gd`. Together they retain the
+distinct solo, crowd, control, elite, and boss roles while leaving charge
+economy, boss caps, and weapon-owned mechanics unchanged.
 
 ## Verification
 
@@ -66,4 +92,5 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/m
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/druid_balance_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/balance_harness_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/global_damage_balance_smoke_test.gd
+python3 tools/godot_gate.py --headless --path . --script res://tools/ultimate_effectiveness_report.gd -- --label=final
 ```
