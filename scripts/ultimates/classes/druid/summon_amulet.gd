@@ -13,9 +13,8 @@ var _activation = null
 
 ## Ultimate Direction v2 (FAN-2944): the Wild Hunt reaches every live enemy on
 ## the map — every beast sweeps the whole arena on the stampede and on every
-## hunt wave, so no count-shaped parameter bounds the reach. `target_cap` and
-## `hunt_splash_target_cap` stay declared only because the frozen class-wide
-## catalog tests pin them; the executor never reads them.
+## hunt wave, so no count-shaped parameter bounds the reach. The splash radius
+## remains a presentation/attribution detail; it does not limit primary reach.
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -24,9 +23,7 @@ static func parameter_contract() -> Dictionary:
 		"hunt_waves": {"type": "integer", "minimum": 1},
 		"pack_count": {"type": "integer", "minimum": 1, "maximum": 8},
 		"hunt_range": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
 		"hunt_splash_radius": {"type": "number", "minimum": 0.0},
-		"hunt_splash_target_cap": {"type": "integer", "minimum": 1},
 		"splash_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"stampede_damage": {"type": "number", "minimum": 0.0},
 		"hunt_damage": {"type": "number", "minimum": 0.0},

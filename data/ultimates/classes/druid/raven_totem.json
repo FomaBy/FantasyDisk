@@ -16,8 +16,6 @@
       "dive_waves": 4,
       "final_delay": 7.1,
       "mark_radius": 520.0,
-      "crowd_cap": 22,
-      "dive_target_cap": 3,
       "mark_duration": 7.8,
       "slow_multiplier": 0.58,
       "accuracy_multiplier": 0.65,

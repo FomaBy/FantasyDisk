@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
+const Harness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
@@ -16,6 +17,10 @@ func _initialize() -> void:
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	var rows := Budget.build_rows(PD.WEAPONS_BY_CLASS, PD)
 	var metrics := {}
+	_check(Harness.COVERAGE_V2_CLASSES.has(CLASS_ID),
+		"Druid must be recorded in the coverage v2 ledger")
+	_check(not Harness.COVERAGE_MIGRATION_ALLOWLIST.has(CLASS_ID),
+		"Druid must leave the coverage migration allowlist")
 	for weapon_id in WEAPONS:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
 		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
@@ -41,7 +46,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 				float(params["stampede_damage"])
 				+ float(params["hunt_waves"]) * float(params["hunt_damage"])
 			)
-			crowd_reach = float(params["target_cap"])
+			crowd_reach = INF
 		"briar_staff":
 			coefficient = float(params["impale_damage"]) * float(params["impale_pulses"] - 1) \
 				+ float(params["thorn_crown_damage"])
@@ -50,14 +55,15 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"raven_totem":
 			coefficient = float(params["dive_damage"]) * float(params["dive_waves"]) \
 				+ float(params["final_damage"])
-			crowd_reach = float(params["crowd_cap"])
+			crowd_reach = INF
 			defense_seconds = float(params["mark_duration"])
 	var solo_output := coefficient * base_damage
 	var aoe_multiplier := 1.0
 	match weapon_id:
 		"summon_amulet":
-			aoe_multiplier = 1.0 + float(params["hunt_splash_target_cap"] - 1) \
-				* float(params["splash_damage_ratio"])
+			# The splash is a local attribution bonus; map-wide primary hits are
+			# the stable three-target AoE corridor anchor for this class proof.
+			aoe_multiplier = 3.0
 		"briar_staff", "raven_totem":
 			aoe_multiplier = 3.0
 	var power_midpoint := (float(row["power_budget_min"]) + float(row["power_budget_max"])) * 0.5
@@ -83,7 +89,7 @@ func _test_weapon(weapon_id: String, row: Dictionary, profile: Dictionary, metri
 		"%s must use its immutable budget-row boss cap" % weapon_id)
 	match weapon_id:
 		"summon_amulet":
-			_check(int(metrics["crowd_reach"]) == 12 and float(metrics["defense_seconds"]) == 0.0,
+			_check(is_inf(float(metrics["crowd_reach"])) and float(metrics["defense_seconds"]) == 0.0,
 				"Wild Hunt must remain the transient priority-pack damage role")
 		"briar_staff":
 			_check(is_inf(float(metrics["crowd_reach"]))
@@ -92,26 +98,24 @@ func _test_weapon(weapon_id: String, row: Dictionary, profile: Dictionary, metri
 				and float(metrics["defense_seconds"]) >= 4.0,
 				"Briar must remain the five-seed map-wide crowd-control role")
 		"raven_totem":
-			_check(int(metrics["crowd_reach"]) == 22 and float(metrics["defense_seconds"]) >= 7.0,
+			_check(is_inf(float(metrics["crowd_reach"])) and float(metrics["defense_seconds"]) >= 7.0,
 				"Raven must remain the marked-vortex control role")
 
 
 func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
 	var aoe_score := _average(metrics, "aoe_ratio")
-	var crowd_score := (
-		float((metrics["summon_amulet"] as Dictionary)["crowd_reach"]) / 12.0
-		+ (1.0 if is_inf(float((metrics["briar_staff"] as Dictionary)["crowd_reach"]))
-			else float((metrics["briar_staff"] as Dictionary)["crowd_reach"]) / 20.0)
-		+ float((metrics["raven_totem"] as Dictionary)["crowd_reach"]) / 22.0
-	) / 3.0
+	var crowd_score := 1.0
+	for weapon_id in WEAPONS:
+		_check(is_inf(float((metrics[weapon_id] as Dictionary)["crowd_reach"])),
+			"%s must retain map-wide reach" % weapon_id)
 	var defense_score := _average(metrics, "defense_seconds") / 4.27
 	var total_score := (solo_score + aoe_score + crowd_score + defense_score) / 4.0
 	_check(solo_score >= TRIO_MIN and solo_score <= TRIO_MAX,
 		"trio solo score %.3f must stay inside %.2f..%.2f" % [solo_score, TRIO_MIN, TRIO_MAX])
 	_check(aoe_score >= TRIO_MIN and aoe_score <= TRIO_MAX,
 		"trio AoE score %.3f must stay inside %.2f..%.2f" % [aoe_score, TRIO_MIN, TRIO_MAX])
-	_check(is_equal_approx(crowd_score, 1.0), "declared crowd caps must stay hard-capped")
+	_check(is_equal_approx(crowd_score, 1.0), "Druid trio must retain map-wide coverage")
 	_check(defense_score >= TRIO_MIN and defense_score <= TRIO_MAX,
 		"trio control score %.3f must stay inside %.2f..%.2f" % [defense_score, TRIO_MIN, TRIO_MAX])
 	_check(total_score >= TRIO_MIN and total_score <= TRIO_MAX,

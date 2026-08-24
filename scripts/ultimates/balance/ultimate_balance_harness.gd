@@ -32,7 +32,6 @@ const READY_SEARCH_LIMIT := 24
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"knight": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -88,7 +87,13 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## every analysis pulse reaches the whole map after the aimed priority sample,
 ## and the Matriarch's pull/root plus terminal hatch cover every live enemy;
 ## blooms and larvae stay finite identity bonuses rather than reach bounds.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "engineer", "sniper"]
+##
+## `druid` (FAN-2530): Wild Hunt stamps and hunts every live enemy, Briar's
+## lattice roots and pulses every live enemy, and Raven marks, dives and
+## collapses every live enemy. Pack/splash, seed/pulse, and dive/final values
+## remain sequence or per-target shaping; proof lives in the Druid package and
+## aggregate suites.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

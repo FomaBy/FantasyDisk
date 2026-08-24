@@ -18,10 +18,8 @@ var _leased_statuses: Array[Dictionary] = []
 
 ## Ultimate Direction v2 (FAN-3239): the mark, every dive wave and the collapse
 ## reach every live enemy on the map — `mark_radius` is the presentation ring,
-## never reach. `crowd_cap` and `dive_target_cap` stay declared only because the
-## read-only class-wide Druid package/balance suites freeze them in the JSON;
-## the executor no longer reads them, and the class-wide conversion card strips
-## them together with the siblings' caps.
+## never reach. Dive and collapse parameters shape the fixed sequence, not its
+## per-activation target count.
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -30,8 +28,6 @@ static func parameter_contract() -> Dictionary:
 		"dive_waves": {"type": "integer", "minimum": 1},
 		"final_delay": {"type": "number", "minimum": 0.0},
 		"mark_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
-		"dive_target_cap": {"type": "integer", "minimum": 1},
 		"mark_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"accuracy_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},

@@ -16,9 +16,7 @@
       "hunt_waves": 6,
       "pack_count": 8,
       "hunt_range": 560.0,
-      "target_cap": 12,
       "hunt_splash_radius": 160.0,
-      "hunt_splash_target_cap": 4,
       "splash_damage_ratio": 0.65,
       "stampede_damage": 38.08,
       "hunt_damage": 13.6

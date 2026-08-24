@@ -362,7 +362,7 @@ func _check_coverage_ratchet(errors: Array[String]) -> void:
 		sources, missing_conversion, [], "coverage.conversion_missing", errors
 	)
 	var with_count_caps := (Harness.COVERAGE_MIGRATION_ALLOWLIST as Dictionary).duplicate()
-	with_count_caps.erase("druid")
+	with_count_caps.erase("knight")
 	_expect_ratchet_violation(sources, with_count_caps, [], "coverage.count_cap", errors)
 
 	# Stale entry: a converted, clean class must not still be allowlisted.

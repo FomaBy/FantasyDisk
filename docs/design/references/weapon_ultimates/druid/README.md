@@ -40,7 +40,9 @@ must call `WeaponUltimatePresentationTimeline.set_paused()` plus
 `finish("cancel"|"death"|"node_end")` for lifecycle cleanup. Numeric
 telegraph/damage windows, summon caps, boss control caps, and the wisp return
 stay owned by mechanics card FAN-1495; the seam is the frozen `phase_id` set,
-not numbers.
+not numbers. The aggregate mechanics card FAN-2530 separately records that
+reach is map-wide; the visual `crowd_cap` values in `manifest.json` remain
+rendering/performance budgets and are not gameplay target caps.
 
 The four contact sheets are rendered from the actual local scenes at 648p, 720p,
 1080p, and 2K. Action-following framing fits every visible silhouette and impact
