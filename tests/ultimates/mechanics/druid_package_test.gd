@@ -10,7 +10,7 @@ const CLASS_ID := "druid"
 const WEAPONS := ["summon_amulet", "briar_staff", "raven_totem"]
 const EXPECTED := {
 	"summon_amulet": {"pack_count": 8, "hunt_waves": 6, "hunt_splash_target_cap": 4},
-	"briar_staff": {"seed_count": 5, "impale_pulses": 3, "impale_target_cap": 3},
+	"briar_staff": {"seed_count": 5, "impale_pulses": 3},
 	"raven_totem": {"crowd_cap": 22, "dive_waves": 4, "dive_target_cap": 3},
 }
 

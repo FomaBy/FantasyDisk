@@ -33,7 +33,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var base_damage := float(derived["magic_damage"]) * float(derived["ultimate_multiplier"])
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
 	var coefficient := 0.0
-	var crowd_cap := 0
+	var crowd_reach := 0.0
 	var defense_seconds := 0.0
 	match weapon_id:
 		"summon_amulet":
@@ -41,16 +41,16 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 				float(params["stampede_damage"])
 				+ float(params["hunt_waves"]) * float(params["hunt_damage"])
 			)
-			crowd_cap = int(params["target_cap"])
+			crowd_reach = float(params["target_cap"])
 		"briar_staff":
 			coefficient = float(params["impale_damage"]) * float(params["impale_pulses"] - 1) \
 				+ float(params["thorn_crown_damage"])
-			crowd_cap = int(params["target_cap"])
+			crowd_reach = INF
 			defense_seconds = float(params["root_duration"])
 		"raven_totem":
 			coefficient = float(params["dive_damage"]) * float(params["dive_waves"]) \
 				+ float(params["final_damage"])
-			crowd_cap = int(params["crowd_cap"])
+			crowd_reach = float(params["crowd_cap"])
 			defense_seconds = float(params["mark_duration"])
 	var solo_output := coefficient * base_damage
 	var aoe_multiplier := 1.0
@@ -68,7 +68,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"solo_ratio": solo_output / power_midpoint,
 		"aoe_output": solo_output * aoe_multiplier,
 		"aoe_ratio": solo_output * aoe_multiplier / aoe_midpoint,
-		"crowd_cap": crowd_cap,
+		"crowd_reach": crowd_reach,
 		"defense_seconds": defense_seconds,
 	}
 
@@ -83,13 +83,16 @@ func _test_weapon(weapon_id: String, row: Dictionary, profile: Dictionary, metri
 		"%s must use its immutable budget-row boss cap" % weapon_id)
 	match weapon_id:
 		"summon_amulet":
-			_check(int(metrics["crowd_cap"]) == 12 and float(metrics["defense_seconds"]) == 0.0,
+			_check(int(metrics["crowd_reach"]) == 12 and float(metrics["defense_seconds"]) == 0.0,
 				"Wild Hunt must remain the transient priority-pack damage role")
 		"briar_staff":
-			_check(int(metrics["crowd_cap"]) == 20 and float(metrics["defense_seconds"]) >= 4.0,
-				"Briar must remain the five-seed crowd-control role")
+			_check(is_inf(float(metrics["crowd_reach"]))
+				and not (profile["executor"] as Dictionary)["params"].has("target_cap")
+				and not (profile["executor"] as Dictionary)["params"].has("impale_target_cap")
+				and float(metrics["defense_seconds"]) >= 4.0,
+				"Briar must remain the five-seed map-wide crowd-control role")
 		"raven_totem":
-			_check(int(metrics["crowd_cap"]) == 22 and float(metrics["defense_seconds"]) >= 7.0,
+			_check(int(metrics["crowd_reach"]) == 22 and float(metrics["defense_seconds"]) >= 7.0,
 				"Raven must remain the marked-vortex control role")
 
 
@@ -97,9 +100,10 @@ func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
 	var aoe_score := _average(metrics, "aoe_ratio")
 	var crowd_score := (
-		float((metrics["summon_amulet"] as Dictionary)["crowd_cap"]) / 12.0
-		+ float((metrics["briar_staff"] as Dictionary)["crowd_cap"]) / 20.0
-		+ float((metrics["raven_totem"] as Dictionary)["crowd_cap"]) / 22.0
+		float((metrics["summon_amulet"] as Dictionary)["crowd_reach"]) / 12.0
+		+ (1.0 if is_inf(float((metrics["briar_staff"] as Dictionary)["crowd_reach"]))
+			else float((metrics["briar_staff"] as Dictionary)["crowd_reach"]) / 20.0)
+		+ float((metrics["raven_totem"] as Dictionary)["crowd_reach"]) / 22.0
 	) / 3.0
 	var defense_score := _average(metrics, "defense_seconds") / 4.27
 	var total_score := (solo_score + aoe_score + crowd_score + defense_score) / 4.0
@@ -139,8 +143,8 @@ func _check(condition: bool, message: String) -> void:
 func _report(metrics: Dictionary) -> void:
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %s solo=%.3f aoe=%.3f crowd=%d defense=%.2fs" % [
-			weapon_id, row["solo_ratio"], row["aoe_ratio"], row["crowd_cap"], row["defense_seconds"],
+		print("  %s solo=%.3f aoe=%.3f crowd=%s defense=%.2fs" % [
+			weapon_id, row["solo_ratio"], row["aoe_ratio"], str(row["crowd_reach"]), row["defense_seconds"],
 		])
 	if _errors.is_empty():
 		print("druid_balance_test: PASS")
