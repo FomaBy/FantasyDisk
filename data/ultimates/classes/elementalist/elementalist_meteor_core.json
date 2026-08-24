@@ -12,7 +12,6 @@
     "params": {
       "max_range": 800.0,
       "impact_radius": 360.0,
-      "crowd_cap": 20,
       "meteor_drop_at": 2.45,
       "impact_at": 2.75,
       "crater_pulses": 5,
