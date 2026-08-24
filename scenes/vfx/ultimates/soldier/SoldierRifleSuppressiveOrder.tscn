@@ -16,7 +16,7 @@ tracks/0/path = NodePath("WarBanner:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.35, 0.55, 1.1, 5.6),
+"times": PackedFloat32Array(0, 0.2, 0.314286, 0.628571, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.85, 0.7, 0.0, 0.0]
@@ -28,7 +28,7 @@ tracks/1/path = NodePath("RifleGhostLeft:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"times": PackedFloat32Array(0, 0.314286, 0.457143, 2.8, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [1.02, 0.24, 0.16, 0.16, 0.95]
@@ -40,7 +40,7 @@ tracks/2/path = NodePath("RifleGhostCenter:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"times": PackedFloat32Array(0, 0.314286, 0.457143, 2.8, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.94, 0.0, -0.06, -0.06, 0.88]
@@ -52,7 +52,7 @@ tracks/3/path = NodePath("RifleGhostRight:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.8, 4.9, 5.6),
+"times": PackedFloat32Array(0, 0.314286, 0.457143, 2.8, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [-1.02, -0.24, -0.16, -0.16, -0.95]
@@ -64,7 +64,7 @@ tracks/4/path = NodePath("VolleyLane:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.8, 3.2, 4.9, 5.6),
+"times": PackedFloat32Array(0, 0.314286, 0.457143, 1.82857, 2.8, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.55, 0.55, 0.2, 0.0]
@@ -76,7 +76,7 @@ tracks/5/path = NodePath("MuzzleFlashWave:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.8, 1.5, 1.58, 1.9, 2.6, 2.68, 3, 3.7, 5.6),
+"times": PackedFloat32Array(0, 0.457143, 0.857143, 0.902857, 1.08571, 1.48571, 1.53143, 1.71429, 2.11429, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, 16), Vector2(0, 16), Vector2(0, -252), Vector2(0, -252)]
@@ -88,7 +88,7 @@ tracks/6/path = NodePath("MuzzleFlashWave:modulate:a")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.78, 0.8, 1.5, 1.58, 1.88, 1.9, 2.6, 2.68, 2.98, 3, 3.7, 4.9, 5.6),
+"times": PackedFloat32Array(0, 0.445714, 0.457143, 0.857143, 0.902857, 1.07429, 1.08571, 1.48571, 1.53143, 1.70286, 1.71429, 2.11429, 2.8, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.8, 0.0, 0.0, 1.0, 0.8, 0.0, 0.0, 1.0, 0.8, 0.0, 0.0]
@@ -100,7 +100,7 @@ tracks/7/path = NodePath("SmokeRecall:modulate:a")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 4.6, 4.9, 5.3, 5.6),
+"times": PackedFloat32Array(0, 2.62857, 2.8, 3.02857, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.8, 0.4, 0.0]

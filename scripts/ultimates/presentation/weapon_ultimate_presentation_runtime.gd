@@ -8,6 +8,7 @@ extends RefCounted
 const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 
 
 class SceneHandle extends RefCounted:
@@ -164,6 +165,13 @@ func _within_declared_budget(runtime: Dictionary) -> bool:
 		return _reject_budget("drawn visual nodes %d exceed max_visual_nodes cap %d" % [drawn, max_visual_nodes])
 	if drawn > crowd_cap:
 		return _reject_budget("drawn visual nodes %d exceed crowd_cap %d" % [drawn, crowd_cap])
+	var material_budget := {
+		"max_unique_materials": runtime.get("max_unique_materials", null),
+		"max_fullscreen_materials": runtime.get("max_fullscreen_materials", null),
+	}
+	var material_errors := DirectionContract.scene_material_violations(_scene, str(_scene.get_meta("ultimate_id", "")), material_budget)
+	if not material_errors.is_empty():
+		return _reject_budget("material budget rejected: %s" % "; ".join(material_errors))
 	_last_budget_diagnostic = ""
 	return true
 

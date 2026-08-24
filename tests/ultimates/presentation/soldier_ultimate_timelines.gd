@@ -19,7 +19,7 @@ const PACKS := [
 	{
 		"weapon_id": "soldier_rifle",
 		"scene": preload("res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn"),
-		"time": 1.9,
+		"time": 1.086,
 		"title": "RIFLE — SUPPRESSIVE ORDER / second volley wave",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.82, 0.96, 0.62),
@@ -28,7 +28,7 @@ const PACKS := [
 	{
 		"weapon_id": "soldier_grenade",
 		"scene": preload("res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn"),
-		"time": 3.2,
+		"time": 1.333,
 		"title": "GRENADE — SEVEN SECONDS / outer chain link",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(1.0, 0.62, 0.24),
@@ -37,7 +37,7 @@ const PACKS := [
 	{
 		"weapon_id": "soldier_bayonet",
 		"scene": preload("res://scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn"),
-		"time": 2.05,
+		"time": 1.833,
 		"title": "BAYONET — LAST CHARGE / third rank release",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.74, 0.86, 1.0),
@@ -165,7 +165,9 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
 	_expect(timeline != null and timeline.has_animation(&"ultimate"), "%s must expose an ultimate animation" % weapon_id, errors)
 	if timeline != null and timeline.has_animation(&"ultimate"):
-		_expect(is_equal_approx(timeline.get_animation(&"ultimate").length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation length must end on its cancel phase" % weapon_id, errors)
+		var animation := timeline.get_animation(&"ultimate")
+		_expect(is_equal_approx(animation.length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation length must end on its cancel phase" % weapon_id, errors)
+		_expect(_latest_key_time(animation) <= animation.length + 0.001, "%s scene must reach every authored key before cleanup" % weapon_id, errors)
 	_expect(str(instance.get_meta("ultimate_id", "")) == "soldier/%s" % weapon_id, "%s scene must retain its exact profile key" % weapon_id, errors)
 	for field in ["silhouette", "motion_path", "impact_language"]:
 		_expect(not str(instance.get_meta(field, "")).is_empty(), "%s %s declaration missing" % [weapon_id, field], errors)
@@ -175,6 +177,14 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(int(performance.get("max_visual_nodes", -1)) == int(instance.get_meta("max_visual_nodes", 0)), "%s manifest visual budget must match the scene" % weapon_id, errors)
 	_expect(int(performance.get("crowd_cap", -1)) == int(instance.get_meta("crowd_cap", 0)), "%s manifest crowd cap must match the scene" % weapon_id, errors)
 	instance.queue_free()
+
+
+func _latest_key_time(animation: Animation) -> float:
+	var latest := 0.0
+	for track_index in animation.get_track_count():
+		for key_index in animation.track_get_key_count(track_index):
+			latest = maxf(latest, animation.track_get_key_time(track_index, key_index))
+	return latest
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:

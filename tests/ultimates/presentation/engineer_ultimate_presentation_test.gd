@@ -345,14 +345,14 @@ func _test_v2_overlay(registry, errors: Array[String]) -> void:
 		errors
 	)
 
-	var backdrop := scene.get_node_or_null("BackdropDim") as Polygon2D
+	var backdrop := scene.get_node_or_null("BackdropDim") as Sprite2D
 	var sigil := scene.get_node_or_null("WrenchSigil") as Sprite2D
 	if backdrop != null and sigil != null:
 		scene.step(0.45)
-		var windup_alpha := backdrop.color.a
+		var windup_alpha := backdrop.modulate.a
 		_expect(windup_alpha > 0.0, "backdrop must dim in during the cast ceremony", errors)
 		scene.step(0.60)
-		_expect(backdrop.color.a > windup_alpha, "backdrop must hold its release peak", errors)
+		_expect(backdrop.modulate.a > windup_alpha, "backdrop must hold its release peak", errors)
 		_expect(sigil.visible and sigil.modulate.a > 0.9, "wrench sigil must lead the release", errors)
 
 	# Repeated activation rebuilds the layers instead of stacking them.
