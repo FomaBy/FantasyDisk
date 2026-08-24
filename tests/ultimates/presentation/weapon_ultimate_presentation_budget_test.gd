@@ -15,6 +15,7 @@ extends SceneTree
 const Runtime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const Contract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const ImpactFrames := preload("res://tests/ultimates/presentation/victim_impact_frames_fixture.gd")
 const REFERENCE_CLASS := "soldier"
@@ -59,9 +60,9 @@ class ImpactVictim extends Node2D:
 
 
 class BudgetProbe extends Runtime:
-	func evaluate(scene: Node, runtime: Dictionary) -> Dictionary:
+	func evaluate(scene: Node, runtime: Dictionary, key := "") -> Dictionary:
 		set("_scene", scene)
-		var accepted := _within_declared_budget(runtime)
+		var accepted := _within_declared_budget(runtime, key)
 		var diagnostic := last_budget_diagnostic()
 		set("_scene", null)
 		return {"accepted": accepted, "diagnostic": diagnostic}
@@ -75,6 +76,7 @@ func _initialize() -> void:
 		_test_failure_modes(pack, errors)
 		_test_material_budget(pack, errors)
 	_test_manifest_material_gate(errors)
+	_test_material_cap_resolution(errors)
 	_test_victim_impact_budget(errors)
 	_test_victim_impact_degradation(errors)
 	_test_area_telegraph_demotion(errors)
@@ -245,6 +247,82 @@ func _test_manifest_material_gate(errors: Array[String]) -> void:
 		"a declared material budget inside both ceilings must be accepted",
 		errors
 	)
+
+
+## FAN-3351: the runtime resolves material caps manifest-first with a scene
+## metadata fallback, keeps the migration-allowlist bypass, and fails closed on
+## a missing or invalid declaration — the exact contract the broken
+## budget-dictionary-as-allowlist call destroyed.
+func _test_material_cap_resolution(errors: Array[String]) -> void:
+	var probe := BudgetProbe.new()
+	var node_budget := {"max_visual_nodes": 4, "crowd_cap": 8}
+
+	# Manifest-only caps: the runtime block declares, the scene carries no
+	# material metadata (the Sniper shape).
+	var scene := _material_probe_scene()
+	var manifest_only := node_budget.duplicate()
+	manifest_only["max_unique_materials"] = 2
+	manifest_only["max_fullscreen_materials"] = 1
+	var result := probe.evaluate(scene, manifest_only, "probe/manifest_only")
+	_expect(bool(result.get("accepted", false)), "manifest-declared material caps must be enforced from the runtime block", errors)
+
+	var manifest_too_low := node_budget.duplicate()
+	manifest_too_low["max_unique_materials"] = 1
+	manifest_too_low["max_fullscreen_materials"] = 1
+	result = probe.evaluate(scene, manifest_too_low, "probe/manifest_only")
+	_expect(not bool(result.get("accepted", true)), "a manifest cap below the actual material count must fail closed", errors)
+	_expect(str(result.get("diagnostic", "")).contains("unique_materials_actual"), "the manifest-cap rejection must name the exceeded cap", errors)
+	scene.free()
+
+	# Scene-metadata fallback: the manifest declares nothing (null, the exact
+	# undeclared value manifest_for_profile produces), the scene declares.
+	scene = _material_probe_scene()
+	scene.set_meta("max_unique_materials", 2)
+	scene.set_meta("max_fullscreen_materials", 1)
+	var undeclared := node_budget.duplicate()
+	undeclared["max_unique_materials"] = null
+	undeclared["max_fullscreen_materials"] = null
+	result = probe.evaluate(scene, undeclared, "probe/scene_meta")
+	_expect(bool(result.get("accepted", false)), "an undeclared manifest cap must fall back to scene metadata", errors)
+
+	var invalid := node_budget.duplicate()
+	invalid["max_unique_materials"] = 0
+	invalid["max_fullscreen_materials"] = 1
+	result = probe.evaluate(scene, invalid, "probe/scene_meta")
+	_expect(not bool(result.get("accepted", true)), "a declared invalid manifest cap must fail closed, never fall back to scene metadata", errors)
+	scene.free()
+
+	# Migration allowlist: an allowlisted legacy pair owes no material
+	# declaration anywhere and must keep activating.
+	scene = _material_probe_scene()
+	var allowlisted_key := "doctor/bone_saw"
+	_expect(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(allowlisted_key), "%s must still be on the migration allowlist" % allowlisted_key, errors)
+	result = probe.evaluate(scene, node_budget, allowlisted_key)
+	_expect(bool(result.get("accepted", false)), "an allowlisted legacy pair must activate without a material declaration", errors)
+
+	# The same undeclared pair outside the allowlist fails closed.
+	result = probe.evaluate(scene, node_budget, "probe/missing")
+	_expect(not bool(result.get("accepted", true)), "a migrated pair without any material declaration must fail closed", errors)
+	_expect(str(result.get("diagnostic", "")).contains("max_unique_materials"), "the missing-declaration rejection must name the cap", errors)
+	scene.free()
+
+	# The manifest loader keeps "not declared" distinct from a declared value,
+	# so the scene-metadata fallback is reachable from real class manifests.
+	var legacy_record := Manifest.class_weapon_record("doctor", "bone_saw")
+	_expect(not legacy_record.is_empty() and legacy_record.get("max_unique_materials") == null,
+		"an undeclared manifest material cap must stay null, not coerce to 0", errors)
+	var sniper_record := Manifest.class_weapon_record("sniper", "sniper_deadeye_rifle")
+	_expect(int(sniper_record.get("max_unique_materials", 0)) == 2 and int(sniper_record.get("max_fullscreen_materials", 0)) == 1,
+		"a declared manifest material cap must pass through to the runtime block", errors)
+
+
+## Two drawn nodes carrying two unique world-space materials and no metadata,
+## so any declaration must arrive from the runtime block or be set by the test.
+func _material_probe_scene() -> Node2D:
+	var root := Node2D.new()
+	root.add_child(_with_material(Sprite2D.new()))
+	root.add_child(_with_material(Sprite2D.new()))
+	return root
 
 
 ## The per-victim impact budget (FAN-3008), printed as the sweep the two

@@ -43,6 +43,7 @@ except ModuleNotFoundError:
 
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
+PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
@@ -359,6 +360,17 @@ def select_godot_tests(
                 "scripts/ultimates/classes/",
             )):
                 selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
+            # FAN-3351: every class ultimate routes through the shared
+            # presentation runtime, so a change there must re-prove all class
+            # presentation suites plus the shared presentation contract suites
+            # that live one level up, not just the core changed set.
+            if changed_path.startswith("scripts/ultimates/presentation/"):
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if PRESENTATION_TEST_DIR in path.parents
+                    or (path.parent == TEST_DIR / "ultimates" and "presentation" in name)
+                )
             if _affects_typography_inventory(changed_path):
                 selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
             if changed_path.startswith("tests/") and changed_path.endswith(".gd"):

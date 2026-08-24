@@ -66,7 +66,8 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	_timeline.begin({"scene": SceneHandle.new(_scene)})
 	if _scene.has_method("begin"):
 		_begin_scene(registry)
-	if not _within_declared_budget(runtime as Dictionary):
+	var ultimate_key := Schema.profile_key(str(profile.get("class_id", "")), str(profile.get("weapon_id", "")))
+	if not _within_declared_budget(runtime as Dictionary, ultimate_key):
 		finish("cancel")
 		return false
 	return true
@@ -147,7 +148,7 @@ func _begin_scene(registry) -> void:
 		return
 
 
-func _within_declared_budget(runtime: Dictionary) -> bool:
+func _within_declared_budget(runtime: Dictionary, key: String) -> bool:
 	if _scene == null or not is_instance_valid(_scene):
 		return _reject_budget("scene is unavailable")
 	var drawn := _drawing_node_count(_scene)
@@ -165,11 +166,11 @@ func _within_declared_budget(runtime: Dictionary) -> bool:
 		return _reject_budget("drawn visual nodes %d exceed max_visual_nodes cap %d" % [drawn, max_visual_nodes])
 	if drawn > crowd_cap:
 		return _reject_budget("drawn visual nodes %d exceed crowd_cap %d" % [drawn, crowd_cap])
-	var material_budget := {
-		"max_unique_materials": runtime.get("max_unique_materials", null),
-		"max_fullscreen_materials": runtime.get("max_fullscreen_materials", null),
-	}
-	var material_errors := DirectionContract.scene_material_violations(_scene, str(_scene.get_meta("ultimate_id", "")), material_budget)
+	# The migration allowlist keeps its own slot; the manifest runtime block is
+	# the declared-budget source the contract resolves before scene metadata.
+	var material_errors := DirectionContract.scene_material_violations(
+		_scene, key, Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, runtime
+	)
 	if not material_errors.is_empty():
 		return _reject_budget("material budget rejected: %s" % "; ".join(material_errors))
 	_last_budget_diagnostic = ""

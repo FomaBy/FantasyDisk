@@ -804,6 +804,46 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
 
+    def test_shared_presentation_runtime_paths_select_all_presentation_suites(self) -> None:
+        # FAN-3351: the certifying changed profile stayed green while a shared
+        # presentation-runtime defect broke twelve class ultimates, because no
+        # rule mapped these paths to the per-class presentation suites.  Any
+        # change under the shared presentation runtime must select every
+        # discovered suite in tests/ultimates/presentation.
+        discovered = {
+            path.stem
+            for path in self.quality.discover_godot_tests()
+            if self.quality.PRESENTATION_TEST_DIR in path.parents
+            or (
+                path.parent == self.quality.TEST_DIR / "ultimates"
+                and "presentation" in path.stem
+            )
+        }
+        for suite in (
+            "beat_routing_gate_test",
+            "sniper_runtime_presentation_test",
+            "doctor_ultimate_timelines",
+            "guitarist_ultimate_timelines",
+            "robot_ultimate_presentation_test",
+            "weapon_ultimate_presentation_budget_test",
+            "visual_direction_contract_test",
+            "presentation_failure_contract_test",
+        ):
+            self.assertIn(suite, discovered)
+        for changed_path in (
+            "scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd",
+            "scripts/ultimates/presentation/ultimate_visual_direction_contract.gd",
+            "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+        ):
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertLessEqual(discovered, names)
+
     def test_offensive_cadence_and_balance_paths_select_focused_regressions(self) -> None:
         cases = {
             "scripts/attribute_contract.gd": {

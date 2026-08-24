@@ -283,14 +283,18 @@ static func _check_material_budget(declaration: Dictionary, key: String, errors:
 		)
 
 
-## The actual material counts of an instantiated activation against the budget
-## its scene metadata declares. The caller owns the instance: this contract
-## still instantiates nothing, it only walks the tree it is handed. A pair
-## inside the migration allowlist is v1 and reports nothing.
+## The actual material counts of an instantiated activation against its
+## declared budget. Each cap resolves like the runtime's node caps: a declared
+## (non-null) `runtime_budget` value from the manifest runtime block wins,
+## otherwise the scene's own metadata, otherwise the declaration is missing and
+## fails closed. The caller owns the instance: this contract still instantiates
+## nothing, it only walks the tree it is handed. A pair inside the migration
+## allowlist is v1 and reports nothing.
 static func scene_material_violations(
 	scene: Node,
 	key: String,
-	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST
+	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST,
+	runtime_budget: Dictionary = {}
 ) -> Array[String]:
 	var errors: Array[String] = []
 	if allowlist.has(key):
@@ -298,8 +302,8 @@ static func scene_material_violations(
 	if scene == null or not is_instance_valid(scene):
 		errors.append("budget.scene_missing: %s" % key)
 		return errors
-	var declared_unique: Variant = _declared_meta(scene, "max_unique_materials")
-	var declared_fullscreen: Variant = _declared_meta(scene, "max_fullscreen_materials")
+	var declared_unique: Variant = _declared_cap(runtime_budget, scene, "max_unique_materials")
+	var declared_fullscreen: Variant = _declared_cap(runtime_budget, scene, "max_fullscreen_materials")
 	_check_material_budget(
 		{"max_unique_materials": declared_unique, "max_fullscreen_materials": declared_fullscreen},
 		key,
@@ -319,6 +323,16 @@ static func scene_material_violations(
 			% [key, int(counts["fullscreen"]), int(declared_fullscreen)]
 		)
 	return errors
+
+
+## One material cap, resolved manifest-first: the runtime budget value when the
+## manifest declares one, else the scene's metadata. Null means "not declared"
+## on both sources, so an undeclared manifest cap falls through instead of
+## masking a scene declaration, while a declared-but-invalid value passes
+## through untouched and fails validation.
+static func _declared_cap(runtime_budget: Dictionary, scene: Node, key: String) -> Variant:
+	var value: Variant = runtime_budget.get(key)
+	return value if value != null else _declared_meta(scene, key)
 
 
 ## A missing scene declaration reads as null, the same "not declared" value the
