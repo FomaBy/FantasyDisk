@@ -6,7 +6,7 @@ Player и ClassWeapon не получают class-specific веток.
 
 | Weapon | Solo | AoE/crowd | Defense | Activation shape |
 | --- | ---: | ---: | ---: | --- |
-| `restore_potion` | 28.07s | 12-target outer zone | 10 repair + 8 absorb | aimed dual pool; actual outer damage heals and its final overflow becomes a temporary shield |
+| `restore_potion` | 28.07s | every live enemy on the map | 10 repair + 8 absorb | aimed dual pool; actual outer damage heals and its final overflow becomes a temporary shield |
 | `plague_syringe` | 31.62s | every live enemy | 9 repair | highest-HP patient zero; five fixed map-wide plague waves and a mask finale |
 | `bone_saw` | 27.55s | every live target in the 240-radius orbit | 10 drain + 9 absorb | six close orbit cuts; actual removed HP becomes drain and stored vitality becomes a stitch shield |
 
@@ -27,6 +27,29 @@ five fixed waves start with every eligible live enemy already infected, so a
 crowd cannot dilute its per-enemy floor. The whole-activation boss cap, repair
 budget, and rare charge ledger remain unchanged; `wave_visual_radius` controls
 only the pulse presentation, never gameplay reach.
+
+Ultimate Direction v2 (FAN-3234) makes Life and Death's outer damage map-wide:
+the aimed release point and visible 220 px ring remain its identity, but the
+outer damage channel reaches every eligible live enemy without a count cap.
+Each target receives the same four-pulse channel while the 8% whole-activation
+boss cap, per-target damage shaping, repair budget, rare-charge ledger, and
+activation-owned cleanup remain unchanged.
+
+The deterministic effectiveness runner measured the following before and after
+the conversion:
+
+| Scenario | Baseline struck | Final struck | Final damage |
+| --- | ---: | ---: | ---: |
+| Solo | 1/1 | 1/1 | 1748.92 |
+| 5 enemies | 5/5 | 5/5 | 8744.61 |
+| 10 enemies | 10/10 | 10/10 | 17489.21 |
+| 20 enemies | 12/20 | 20/20 | 34978.42 |
+| Elite | 1/1 | 1/1 | 1748.92 |
+| Boss | 1/1 | 1/1 | 1748.92 |
+
+The final cast stays inside the shared power corridor: `total_boss_cap=0.08`,
+normal charge `33.50`, elite charge `42.30`, and three normal encounters to
+ready.
 
 Focused evidence: `doctor_bone_saw_direction_v2_test.gd`,
 `doctor_package_test.gd`, `doctor_balance_test.gd`, and `doctor_live_test.gd`.

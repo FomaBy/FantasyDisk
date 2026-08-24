@@ -89,6 +89,7 @@ func _initialize() -> void:
 	_registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	await process_frame
 	await _test_restore_potion()
+	await _test_restore_potion_reaches_every_enemy()
 	await _test_plague_syringe()
 	await _test_plague_syringe_reaches_every_enemy()
 	await _test_bone_saw()
@@ -115,6 +116,28 @@ func _test_restore_potion() -> void:
 	controller.cancel()
 	_check(is_zero_approx(float(host.modifiers.get("absorb_flat", 0.0))) and not host.active,
 		"Life and Death cancel must clean temporary absorb and active state")
+	await _drop(host)
+
+
+func _test_restore_potion_reaches_every_enemy() -> void:
+	var host := await _host()
+	for index in 13:
+		var angle := TAU * float(index) / 13.0
+		_target(host, Vector2(250.0, 0.0) + Vector2.from_angle(angle) * 100.0, 10000.0)
+	for index in 7:
+		_target(host, Vector2(float(index) * 16.0, -40.0), 10000.0)
+	var controller := Controller.new(host, _registry)
+	_check(controller.activate(CLASS_ID, "restore_potion"),
+		"Life and Death must activate against a map-wide crowd")
+	var activation: Activation = controller.active_activation()
+	_advance(activation, 4.2)
+	var reached := 0
+	for target in host.targets:
+		if target.health < target.max_health:
+			reached += 1
+	_check(reached == 20,
+		"Life and Death must damage every live enemy, got %d of 20" % reached)
+	controller.cancel()
 	await _drop(host)
 
 
