@@ -19,7 +19,6 @@
       "strip_interval": 0.16,
       "final_delay": 0.24,
       "recovery_tail": 4.0,
-      "crowd_cap": 14,
       "strip_damage": 13.5,
       "final_damage": 47.3,
       "stun_duration": 1.4,

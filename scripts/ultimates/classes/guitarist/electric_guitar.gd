@@ -38,7 +38,6 @@ static func parameter_contract() -> Dictionary:
 		"strip_interval": {"type": "number", "minimum": 0.01},
 		"final_delay": {"type": "number", "minimum": 0.0},
 		"recovery_tail": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"strip_damage": {"type": "number", "minimum": 0.0},
 		"final_damage": {"type": "number", "minimum": 0.0},
 		"stun_duration": {"type": "number", "minimum": 0.0},
@@ -95,13 +94,7 @@ static func fire_riff_strip(
 	var length: float = activation.param_float("strip_length", 1400.0)
 	var start := center - axis * length * 0.5
 	var damage: float = activation.scaled_damage("strip_damage", 10.0)
-	for raw_target in activation.targets_in_corridor(
-		start,
-		axis,
-		length,
-		activation.param_float("strip_half_width", 46.0),
-		activation.param_int("crowd_cap", 14)
-	):
+	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -124,7 +117,7 @@ static func fire_final_chord(activation, state: Dictionary, center: Vector2, dir
 		axis,
 		length,
 		activation.param_float("strip_half_width", 46.0),
-		activation.param_int("crowd_cap", 14)
+		0
 	):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
