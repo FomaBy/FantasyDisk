@@ -11,7 +11,6 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"outer_radius": {"type": "number", "minimum": 1.0},
 		"inner_radius": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
 		"pulse_count": {"type": "integer", "minimum": 1},
 		"pulse_interval": {"type": "number", "minimum": 0.01},
 		"outer_damage": {"type": "number", "minimum": 0.0},
@@ -53,11 +52,9 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var removed := 0.0
-	for raw_target in activation.targets(
-		point,
-		activation.param_float("outer_radius", 220.0),
-		activation.param_int("target_cap", 12)
-	):
+	# Ultimate Direction v2: the outer pool is map-wide; its radius remains a
+	# presentation shape, not a reach or count limit.
+	for raw_target in activation.targets(activation.origin(), INF):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue

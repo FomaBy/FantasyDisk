@@ -32,6 +32,10 @@ func _initialize() -> void:
 		Budget.row_for(rows, CLASS_ID, "plague_syringe"),
 		metrics["plague_syringe"] as Dictionary
 	)
+	var restore_profile := registry.catalog_profile_for(CLASS_ID, "restore_potion")
+	var restore_params := (restore_profile["executor"] as Dictionary)["params"] as Dictionary
+	_check(not restore_params.has("target_cap"),
+		"Life and Death must not retain a count-shaped target cap")
 	_check_trio(metrics)
 	_report(metrics)
 
@@ -48,8 +52,8 @@ func _measure(weapon_id: String, profile: Dictionary) -> Dictionary:
 	match weapon_id:
 		"restore_potion":
 			coefficient = float(params["outer_damage"]) * float(params["pulse_count"])
-			aoe = coefficient * mini(5, int(params["target_cap"]))
-			crowd = float(params["target_cap"])
+			aoe = coefficient * 5.0
+			crowd = INF
 			defense = float(params["repair_total"]) + float(params["shield_cap"])
 		"plague_syringe":
 			coefficient = float(params["direct_damage"]) + float(params["wave_damage"]) * float(params["wave_count"])
