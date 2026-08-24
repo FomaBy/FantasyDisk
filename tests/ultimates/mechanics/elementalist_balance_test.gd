@@ -48,9 +48,12 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var solo_output := 0.0
 	var aoe_output := 0.0
 	var defense_seconds := 0.0
-	var crowd_cap := int(params["crowd_cap"])
+	# Orb/Prism keep a count-shaped crowd cap; Meteor is map-wide and carries
+	# none, so -1 is the "not count-capped" sentinel rather than a real rail.
+	var crowd_cap := -1
 	match weapon_id:
 		"elementalist_orb_ring":
+			crowd_cap = int(params["crowd_cap"])
 			var nova := float(params["nova_damage"]) \
 				* (1.0 + 4.0 * float(params["nova_status_bonus"]))
 			var direct := float(params["burn_damage"]) + float(params["frost_damage"]) \
@@ -63,6 +66,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 				+ nova * 5.0) * base_damage
 			defense_seconds = float(params["freeze_duration"])
 		"elementalist_prism_focus":
+			crowd_cap = int(params["crowd_cap"])
 			var admitted_hits := mini(int(params["sweep_count"]), int(params["lattice_hit_cap"]))
 			solo_output = (float(admitted_hits) * float(params["lattice_damage"]) \
 				+ float(params["shatter_damage"])) * base_damage
@@ -132,19 +136,22 @@ func _test_weapon(
 		"elementalist_meteor_core":
 			_check(float(metrics["aoe_ratio"]) >= 1.05 and float(metrics["aoe_ratio"]) <= 1.45,
 				"Meteor must retain the aimed crowd-nuke corridor")
-			_check(int(params["crowd_cap"]) == 20 \
-					and float(params["normal_execute_max_health"]) == 900.0,
+			_check(not params.has("crowd_cap"),
+				"Meteor must stay map-wide with no count-shaped crowd cap")
+			_check(float(params["normal_execute_max_health"]) == 900.0,
 				"Meteor must retain its bounded normal execute rail")
 
 
 func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
 	var aoe_score := _average(metrics, "aoe_ratio")
+	# Meteor is map-wide and carries no count-shaped crowd cap, so only Orb's
+	# 24 rail and Prism's 18 rail feed the crowd score; Meteor's map-wide
+	# reach is proven separately in the focused mechanics test.
 	var crowd_score := (
 		float((metrics[WEAPONS[0]] as Dictionary)["crowd_cap"]) / 24.0
 		+ float((metrics[WEAPONS[1]] as Dictionary)["crowd_cap"]) / 18.0
-		+ float((metrics[WEAPONS[2]] as Dictionary)["crowd_cap"]) / 20.0
-	) / 3.0
+	) / 2.0
 	var defense_seconds := _average(metrics, "defense_seconds")
 	var defense_score := defense_seconds / DEFENSE_REFERENCE_SECONDS
 	var total_score := (solo_score + aoe_score + crowd_score + defense_score) / 4.0
@@ -152,7 +159,9 @@ func _test_trio(metrics: Dictionary) -> void:
 		"trio solo score %.3f must stay inside %.2f..%.2f" % [solo_score, TRIO_MIN, TRIO_MAX])
 	_check(aoe_score >= TRIO_MIN and aoe_score <= 1.20,
 		"AoE-class trio score %.3f must stay inside 0.90..1.20" % aoe_score)
-	_check(is_equal_approx(crowd_score, 1.0), "all three crowd rails must obey their caps")
+	_check(is_equal_approx(crowd_score, 1.0), "the Orb/Prism crowd rails must obey their caps")
+	_check(int((metrics[WEAPONS[2]] as Dictionary)["crowd_cap"]) == -1,
+		"Meteor must contribute no count-shaped crowd rail to the trio")
 	_check(defense_seconds >= 3.5 and defense_seconds <= 4.0,
 		"trio defense contribution %.3fs must stay inside 3.5..4.0s" % defense_seconds)
 	_check(total_score >= TRIO_MIN and total_score <= TRIO_MAX,
@@ -212,11 +221,12 @@ func _report(metrics: Dictionary) -> void:
 	print("  weapon                         solo    aoe  crowd defense  base")
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %-29s %.3f  %.3f  %5d  %5.2fs %.2f" % [
+		var crowd_label := "map-wide" if int(row["crowd_cap"]) < 0 else str(row["crowd_cap"])
+		print("  %-29s %.3f  %.3f  %8s  %5.2fs %.2f" % [
 			weapon_id,
 			row["solo_ratio"],
 			row["aoe_ratio"],
-			row["crowd_cap"],
+			crowd_label,
 			row["defense_seconds"],
 			row["base_damage"],
 		])

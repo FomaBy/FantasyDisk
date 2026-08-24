@@ -11,7 +11,7 @@ ProgressionData, sibling-class, or presentation-owned file is modified.
 | --- | --- | --- |
 | `elementalist_orb_ring` | Великий Конклав | Four elemental sigils hold a rotating square around the hero. Burn, frost, gale, and shock resolve in order at 1.0/2.2/3.4/4.6s; shock chains across at most six bodies with 0.86 falloff. At 6.0s the four marks combine into one supernova whose damage grows with the marks actually recorded on each target. |
 | `elementalist_prism_focus` | Призматический Суд | The cast captures one aimed point. Six X-lattice sweeps rotate by 7.5° at 0.9s intervals while two focus points orbit the center. One silhouette can receive at most three lattice hits. A rainbow fracture at 6.4s damages and slows the final arena. |
-| `elementalist_meteor_core` | Падение Звезды | A full-radius rune warns for 2.45s before the meteor descends and impacts at 2.75s. The impact destroys only admitted normal enemies with at most 900 maximum HP, then a gravity-fire crater emits five 0.85s pulses. |
+| `elementalist_meteor_core` | Падение Звезды | A rune warns inside its visual `impact_radius` for 2.45s before the meteor descends and impacts at 2.75s, then a gravity-fire crater emits five 0.85s pulses. Impact and every pulse reach every live enemy map-wide — the warning ring is presentation only, not a mechanics range gate. The impact additionally executes admitted normal enemies with at most 900 maximum HP. |
 
 Every mechanics scene embeds its accepted Elementalist presentation scene as
 `Presentation` and emits stable phase events through `UltimateActivation`.
@@ -45,7 +45,7 @@ remain on the shared runtime surfaces.
 | --- | ---: | ---: | --- |
 | Orb Ring | 8.4s | 24 | 4 ordered beats; 6-target shock chain; 1 supernova |
 | Prism Focus | 7.2s | 18 | 6 sweeps; 3 lattice hits per silhouette; 2 moving focus points |
-| Meteor Core | 8.9s | 20 | 2.45s fair telegraph; normals ≤900 max HP only; 5 crater pulses |
+| Meteor Core | 8.9s | map-wide (no count cap) | 2.45s fair telegraph; normals ≤900 max HP only; 5 crater pulses; 10% whole-activation boss cap |
 
 ## Balance evidence
 
@@ -68,7 +68,7 @@ proof to fail, preventing an inherited always-green result.
 | --- | ---: | ---: | ---: | ---: |
 | Orb Ring | 0.954 | 1.232 | 24 | 4.0s freeze/slow |
 | Prism Focus | 0.953 | 1.014 | 18 | 2.4s fracture slow |
-| Meteor Core | 0.954 | 1.301 | 20 | 4.8s crater slow/pull |
+| Meteor Core | 0.954 | 1.301 | map-wide (no count cap) | 4.8s crater slow/pull |
 
 Orb leads sequencing and control, Prism spends output on aimed arena geometry,
 and Meteor leads bounded crowd burst after the longest warning. The class means
