@@ -35,7 +35,6 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"knight": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"robot": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -88,7 +87,12 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## every analysis pulse reaches the whole map after the aimed priority sample,
 ## and the Matriarch's pull/root plus terminal hatch cover every live enemy;
 ## blooms and larvae stay finite identity bonuses rather than reach bounds.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "engineer", "sniper"]
+##
+## `knight` (FAN-2534): every Phalanx row reaches its corridor, the Tower
+## Shield counter resolves every eligible enemy in its guard arc, and every
+## Holy Flail ring resolves every eligible enemy in its radius. Per-target
+## rails and the total boss caps bound outcome without capping reach.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "engineer", "knight", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

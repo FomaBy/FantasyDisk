@@ -12,7 +12,7 @@
 | Final signed impulse | `+720` | `+252` (×0.35) | `0` |
 | Control duration | `1.2s` | `0.6s` (×0.50) | `0.24s` (×0.20), no movement lock |
 
-The crowd cap is 20 unique targets per turn. A target may lose at most 35% of its own max health from the cast; a boss has the stricter frozen Knight whole-activation cap of 7%.
+Every eligible target in each ring resolves once per turn, with no target-count cap. A target may lose at most 35% of its own max health from the cast; a boss has the stricter frozen Knight whole-activation cap of 7%.
 
 ## Charge and cleanup
 

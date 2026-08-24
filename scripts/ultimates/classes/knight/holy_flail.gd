@@ -25,7 +25,6 @@ static func parameter_contract() -> Dictionary:
 		"turn_count": {"type": "integer", "minimum": 2, "maximum": 12},
 		"inner_radius": {"type": "number", "minimum": 1.0},
 		"outer_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"pull_damage": {"type": "number", "minimum": 0.0},
 		"launch_damage": {"type": "number", "minimum": 0.0},
 		"pull_force": {"type": "number", "minimum": 0.0},
@@ -152,9 +151,7 @@ func _resolve_targets(turn_index: int, radius: float, final_turn: bool) -> void:
 	var damage_key := "launch_damage" if final_turn else "pull_damage"
 	var fallback_damage := 10.0 if final_turn else 4.0
 	var seen := {}
-	for raw_target in _activation.select_targets(
-		center, radius, _activation.param_int("crowd_cap", 20), "nearest"
-	):
+	for raw_target in _activation.select_targets(center, radius, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue

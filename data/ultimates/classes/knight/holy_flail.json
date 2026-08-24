@@ -16,7 +16,6 @@
       "turn_count": 7,
       "inner_radius": 90.0,
       "outer_radius": 430.0,
-      "crowd_cap": 20,
       "pull_damage": 4.0,
       "launch_damage": 10.0,
       "pull_force": 240.0,

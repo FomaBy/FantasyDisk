@@ -131,6 +131,9 @@ func _test_measured_guard_counter_and_cleanup() -> void:
 	var boss := _target(host, Vector2(130.0, -8.0))
 	boss.add_to_group(Activation.BOSS_GROUP)
 	var behind := _target(host, Vector2(-80.0, 0.0))
+	var crowd: Array[Target] = []
+	for index in 22:
+		crowd.append(_target(host, Vector2(100.0, -50.0 + float(index) * 5.0)))
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, WEAPON_ID), "Tower Shield must activate")
 	var activation := controller.active_activation()
@@ -162,8 +165,8 @@ func _test_measured_guard_counter_and_cleanup() -> void:
 
 	effect.call("counter_burst")
 	_check(is_equal_approx(float(effect.get("counter_amount_for_tests")), 80.0)
-		and int(effect.get("counter_target_count_for_tests")) == 3,
-		"the one-shot counter must consume the stored resource once for front targets")
+		and int(effect.get("counter_target_count_for_tests")) == 25,
+		"the one-shot counter must reach every eligible front target without a count cap")
 	_check(normal.knockbacks.size() == 1 and is_equal_approx(normal.knockbacks[0].length(), 230.0),
 		"normal targets must receive the full wall push")
 	_check(epic.knockbacks.size() == 1 and is_equal_approx(epic.knockbacks[0].length(), 57.5),
@@ -175,6 +178,9 @@ func _test_measured_guard_counter_and_cleanup() -> void:
 	_check(not _counter_status(normal).is_empty()
 		and is_equal_approx(float(_counter_status(epic).get("duration", 0.0)), 0.425),
 		"counter statuses must preserve normal duration and epic resistance")
+	for target in crowd:
+		_check(target.knockbacks.size() == 1 and not _counter_status(target).is_empty(),
+			"every eligible crowded target must receive the one-shot counter")
 	var normal_health := normal.health
 	effect.call("counter_burst")
 	_check(is_equal_approx(normal.health, normal_health)
