@@ -32,7 +32,6 @@ const READY_SEARCH_LIMIT := 24
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"druid": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -92,7 +91,7 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## Shield counter resolves every eligible enemy in its guard arc, and every
 ## Holy Flail ring resolves every eligible enemy in its radius. Per-target
 ## rails and the total boss caps bound outcome without capping reach.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "engineer", "knight", "sniper"]
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "knight", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
