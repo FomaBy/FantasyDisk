@@ -13,7 +13,6 @@
       "max_range": 430.0,
       "length": 430.0,
       "half_width": 150.0,
-      "target_limit": 8,
       "windup_delay": 0.72,
       "crush_count": 3,
       "crush_interval": 0.30,

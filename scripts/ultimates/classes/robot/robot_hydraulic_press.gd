@@ -10,7 +10,6 @@ static func parameter_contract() -> Dictionary:
 		"max_range": {"type": "number", "minimum": 1.0},
 		"length": {"type": "number", "minimum": 1.0},
 		"half_width": {"type": "number", "minimum": 1.0},
-		"target_limit": {"type": "integer", "minimum": 1, "maximum": 8},
 		"windup_delay": {"type": "number", "minimum": 0.01},
 		"crush_count": {"type": "integer", "minimum": 1, "maximum": 8},
 		"crush_interval": {"type": "number", "minimum": 0.01},
@@ -57,7 +56,7 @@ static func crush(activation, index: int) -> void:
 	var axis := direction as Vector2
 	var perpendicular := Vector2(-axis.y, axis.x)
 	for raw_target in activation.targets_in_corridor(
-		activation.origin(), axis, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), activation.param_int("target_limit", 8)
+		activation.origin(), axis, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -82,7 +81,7 @@ static func release(activation) -> void:
 	if not direction is Vector2:
 		return
 	for raw_target in activation.targets_in_corridor(
-		activation.origin(), direction as Vector2, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), activation.param_int("target_limit", 8)
+		activation.origin(), direction as Vector2, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
