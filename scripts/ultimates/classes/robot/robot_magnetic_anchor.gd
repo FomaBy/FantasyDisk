@@ -16,7 +16,6 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 1.0},
 		"radius": {"type": "number", "minimum": 1.0},
-		"target_limit": {"type": "integer", "minimum": 1, "maximum": 8},
 		"pull_strength": {"type": "number", "minimum": 0.0},
 		"release_delay": {"type": "number", "minimum": 0.01},
 		"implosion_delay": {"type": "number", "minimum": 0.01},
@@ -56,7 +55,7 @@ static func release(activation, center: Vector2) -> void:
 	if activation == null or activation.is_finished():
 		return
 	for raw_target in activation.targets(
-		center, activation.param_float("radius", 250.0), activation.param_int("target_limit", 8)
+		center, activation.param_float("radius", 250.0), 0
 	):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -78,7 +77,7 @@ static func implode(activation, center: Vector2) -> void:
 	if activation == null or activation.is_finished():
 		return
 	for raw_target in activation.targets(
-		center, activation.param_float("radius", 250.0), activation.param_int("target_limit", 8)
+		center, activation.param_float("radius", 250.0), 0
 	):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
@@ -88,7 +87,7 @@ static func implode(activation, center: Vector2) -> void:
 			)
 	activation.present(EXECUTOR_ID + ".implosion", {"position": center, "radius": 48.0, "shape": "orb_burst"})
 	for raw_target in activation.targets(
-		center, activation.param_float("emp_radius", 300.0), activation.param_int("target_limit", 8)
+		center, activation.param_float("emp_radius", 300.0), 0
 	):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
