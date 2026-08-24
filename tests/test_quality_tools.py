@@ -804,6 +804,57 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
 
+    # FAN-3351/FAN-3381: every path that can trigger the shared presentation
+    # rule, and the suites that rule owes.  The set is spelled out as literals
+    # on purpose: the first attempt derived its expectation with the same
+    # `"presentation" in name` guess quality_gate used, so both sides dropped
+    # fan1541_activation_integration_test and ultimate_player_host_time_scale_test
+    # and the test stayed green while the certifying profile shrank.  Deleting an
+    # explicit consumer mapping from quality_gate now fails here.
+    SHARED_PRESENTATION_TRIGGER_PATHS = (
+        "scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd",
+        "scripts/ultimates/presentation/ultimate_visual_direction_contract.gd",
+        "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+    )
+    REQUIRED_SHARED_PRESENTATION_SUITES = frozenset({
+        # Runtime consumers outside tests/ultimates/presentation, reachable only
+        # through an explicit mapping.  fan1541 is the one suite that activates
+        # all 51 profiles through PresentationRuntime.begin().
+        "fan1541_activation_integration_test",
+        "ultimate_player_host_time_scale_test",
+        # Shared presentation contracts one level up.
+        "presentation_contract_test",
+        "presentation_contract_validator_test",
+        "presentation_failure_contract_test",
+        "ultimate_player_host_presentation_constructor_test",
+        # Anchors inside tests/ultimates/presentation.
+        "beat_routing_gate_test",
+        "doctor_ultimate_timelines",
+        "guitarist_ultimate_timelines",
+        "robot_ultimate_presentation_test",
+        "sniper_runtime_presentation_test",
+        "visual_direction_contract_test",
+        "weapon_ultimate_presentation_budget_test",
+    })
+
+    def test_shared_presentation_runtime_paths_select_every_consumer_suite(self) -> None:
+        directory_suites = {
+            path.stem
+            for path in self.quality.discover_godot_tests()
+            if self.quality.PRESENTATION_TEST_DIR in path.parents
+        }
+        self.assertTrue(directory_suites)
+        for changed_path in self.SHARED_PRESENTATION_TRIGGER_PATHS:
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertLessEqual(self.REQUIRED_SHARED_PRESENTATION_SUITES, names)
+            self.assertLessEqual(directory_suites, names)
+
     def test_offensive_cadence_and_balance_paths_select_focused_regressions(self) -> None:
         cases = {
             "scripts/attribute_contract.gd": {

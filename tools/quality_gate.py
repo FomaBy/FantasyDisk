@@ -43,6 +43,7 @@ except ModuleNotFoundError:
 
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
+PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
@@ -104,6 +105,22 @@ ULTIMATE_PACKAGE_CONTRACT_TESTS = {
 ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
     "controller_player_integration_test",
     "tracked_tween_natural_completion_test",
+}
+# FAN-3351/FAN-3381: every class ultimate activates through the shared
+# presentation runtime, so a change under scripts/ultimates/presentation/ must
+# re-prove the whole tests/ultimates/presentation directory plus the consumer
+# suites that live one level up. Those consumers are listed by name on purpose:
+# the first attempt guessed them with a `"presentation" in name` substring and
+# silently dropped fan1541_activation_integration_test and
+# ultimate_player_host_time_scale_test, leaving the certifying changed profile
+# green while the shared runtime was broken.
+SHARED_PRESENTATION_CONSUMER_TESTS = {
+    "fan1541_activation_integration_test",
+    "presentation_contract_test",
+    "presentation_contract_validator_test",
+    "presentation_failure_contract_test",
+    "ultimate_player_host_presentation_constructor_test",
+    "ultimate_player_host_time_scale_test",
 }
 OFFENSIVE_CONTRACT_TESTS = {
     "attribute_consumability_fan1887_test",
@@ -359,6 +376,13 @@ def select_godot_tests(
                 "scripts/ultimates/classes/",
             )):
                 selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
+            if changed_path.startswith("scripts/ultimates/presentation/"):
+                selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if PRESENTATION_TEST_DIR in path.parents
+                )
             if _affects_typography_inventory(changed_path):
                 selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
             if changed_path.startswith("tests/") and changed_path.endswith(".gd"):
