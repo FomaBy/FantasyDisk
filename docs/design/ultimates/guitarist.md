@@ -11,7 +11,7 @@ only readiness boundary for each weapon pair.
 | --- | --- | --- |
 | `electric_guitar` | Последний Аккорд | Five 1400px aimed riff strips alternate at ±24°. A perpendicular final chord damages the 14-target corridor and stuns only normal enemies that were struck by a riff strip. |
 | `bass_guitar` | Сабвуфер Преисподней | Four 12-target concentric waves pull, compress, launch and finally eject a crowd. The heavy ring is the longest slow; epic control is reduced and bosses never move. |
-| `sound_amp` | Стена Звука | Four cardinal amp points form a 520px square field. Four feedback pulses damage and slow only targets inside it, then the four-way overload ejects that same field. |
+| `sound_amp` | Стена Звука | Four cardinal amp points form a 520px square field for presentation. Four feedback pulses damage and slow every eligible live enemy on the map, and the four-way overload damages those same targets while applying the existing control-resistance rules; the field shape is presentation-only and there is no count cap. |
 
 All three overlays use `rare_charge_ledger`, `activation_owned` cleanup and the
 frozen `0.09` whole-activation boss-health cap. Every damage event goes through
