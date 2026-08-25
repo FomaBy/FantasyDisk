@@ -41,9 +41,9 @@ var _timeline = null
 var _manifest: Dictionary = {}
 var _elements: Array[Sprite2D] = []
 var _frames: Array[Texture2D] = []
-var _backdrop: Polygon2D = null
+var _backdrop: Sprite2D = null
 var _sigil: Sprite2D = null
-var _chords: Array[Line2D] = []
+var _chords: Array[Sprite2D] = []
 # Cached at begin() so the per-frame overlay pose allocates nothing.
 var _v2_overlay: Dictionary = {}
 var _presence: Dictionary = {}
@@ -249,15 +249,14 @@ func _build_v2_overlay() -> void:
 		return
 	var half: Dictionary = overlay.get("backdrop_half_size", {})
 	var half_size := Vector2(float(half.get("x", 1400.0)), float(half.get("y", 800.0)))
-	_backdrop = Polygon2D.new()
+	var overlay_texture := _v2_overlay_texture()
+	_backdrop = Sprite2D.new()
 	_backdrop.name = "BackdropDim"
-	_backdrop.polygon = PackedVector2Array([
-		Vector2(-half_size.x, -half_size.y),
-		Vector2(half_size.x, -half_size.y),
-		half_size,
-		Vector2(-half_size.x, half_size.y),
-	])
-	_backdrop.color = _v2_color(overlay.get("backdrop_color", {}), 0.0)
+	_backdrop.texture = overlay_texture
+	_backdrop.centered = false
+	_backdrop.position = -half_size
+	_backdrop.scale = half_size * 2.0 / Vector2(overlay_texture.get_width(), overlay_texture.get_height())
+	_backdrop.modulate = _v2_color(overlay.get("backdrop_color", {}), 0.0)
 	_backdrop.z_index = V2_BACKDROP_Z
 	add_child(_backdrop)
 
@@ -267,12 +266,15 @@ func _build_v2_overlay() -> void:
 	# Opposite hex seats mirror through the origin, so each chord is one line
 	# through the hero, extended past the seats to read arena-wide.
 	for index in count / 2:
-		var chord := Line2D.new()
+		var chord := Sprite2D.new()
 		chord.name = "CrossfireChord%d" % index
 		var seat := _v2_seat(index, count, radius)
-		chord.points = PackedVector2Array([seat * V2_CHORD_REACH, -seat * V2_CHORD_REACH])
-		chord.width = V2_CHORD_WIDTH
-		chord.default_color = _v2_color(overlay.get("chord_color", {}), 0.0)
+		var endpoint := seat * V2_CHORD_REACH
+		chord.texture = overlay_texture
+		chord.position = Vector2.ZERO
+		chord.rotation = endpoint.angle()
+		chord.scale = Vector2(endpoint.length() * 2.0 / float(overlay_texture.get_width()), V2_CHORD_WIDTH / float(overlay_texture.get_height()))
+		chord.modulate = _v2_color(overlay.get("chord_color", {}), 0.0)
 		chord.z_index = V2_CHORD_Z
 		add_child(chord)
 		_chords.append(chord)
@@ -291,6 +293,17 @@ func _build_v2_overlay() -> void:
 func _v2_seat(index: int, count: int, radius: float) -> Vector2:
 	var angle := TAU * float(index) / float(maxi(count, 1)) - PI * 0.5
 	return Vector2(cos(angle), sin(angle) * 0.62) * radius
+
+
+func _v2_overlay_texture() -> GradientTexture2D:
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color.WHITE, Color.WHITE])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.width = 64
+	texture.height = 64
+	return texture
 
 
 func _v2_color(raw, alpha: float) -> Color:
@@ -355,10 +368,10 @@ func _apply_v2_overlay(phase_name: String, progress: float) -> void:
 			sigil_scale = lerpf(2.0, 1.2, t)
 			sigil_position = Vector2(0.0, lerpf(-60.0, -90.0, t))
 			sigil_rotation = PI * 0.5
-	_backdrop.color.a = backdrop_alpha
+	_backdrop.modulate.a = backdrop_alpha
 	_backdrop.visible = backdrop_alpha > 0.0
 	for chord in _chords:
-		chord.default_color.a = chord_alpha
+		chord.modulate.a = chord_alpha
 		chord.visible = chord_alpha > 0.0
 	if _sigil != null:
 		_sigil.modulate.a = sigil_alpha
