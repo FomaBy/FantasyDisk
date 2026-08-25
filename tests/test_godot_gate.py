@@ -342,47 +342,124 @@ class GodotGateTest(unittest.TestCase):
             imported.mkdir(parents=True)
             (project / ".godot" / "global_script_class_cache.cfg").touch()
             (imported / "unrelated.ctex").touch()
+            for source in self.module.PLAYER_TEXTURE_IMPORTS:
+                source_path = project / source
+                source_path.parent.mkdir(parents=True, exist_ok=True)
+                source_path.touch()
             self.assertTrue(
                 self.module._needs_import_cache(["--path", str(project)], require_script=False)
             )
 
-    def test_import_prepass_rechecks_artifacts_and_loads_player(self):
-        with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
-            with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
-                self.assertEqual(
-                    self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
-                    0,
+    def test_import_cache_ignores_undeclared_player_textures_in_a_minimal_project(self):
+        """A throwaway fixture project with no Berserk sprites must not fail closed on them."""
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            imported = project / ".godot" / "imported"
+            imported.mkdir(parents=True)
+            (project / ".godot" / "global_script_class_cache.cfg").touch()
+            (imported / "unrelated.ctex").touch()
+            self.assertFalse(
+                self.module._needs_import_cache(["--path", str(project)], require_script=False)
+            )
+
+    def test_import_cache_detects_incomplete_cache_for_a_declared_texture(self):
+        """A declared Berserk source without a matching import artifact still fails closed."""
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            imported = project / ".godot" / "imported"
+            imported.mkdir(parents=True)
+            (project / ".godot" / "global_script_class_cache.cfg").touch()
+            (imported / "unrelated.ctex").touch()
+            source = self.module.PLAYER_TEXTURE_IMPORTS[0]
+            source_path = project / source
+            source_path.parent.mkdir(parents=True, exist_ok=True)
+            source_path.touch()
+            (project / f"{source}.import").write_text(
+                'path="res://.godot/imported/missing.ctex"\n', encoding="utf-8"
+            )
+            self.assertTrue(
+                self.module._needs_import_cache(["--path", str(project)], require_script=False)
+            )
+
+    def test_import_cache_accepts_a_complete_cache_for_declared_textures(self):
+        """A declared Berserk source with a fully imported artifact does not need re-import."""
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            imported = project / ".godot" / "imported"
+            imported.mkdir(parents=True)
+            (project / ".godot" / "global_script_class_cache.cfg").touch()
+            for source in self.module.PLAYER_TEXTURE_IMPORTS:
+                source_path = project / source
+                source_path.parent.mkdir(parents=True, exist_ok=True)
+                source_path.touch()
+                ctex_name = f"{Path(source).name}-cache.ctex"
+                (imported / ctex_name).touch()
+                (project / f"{source}.import").write_text(
+                    f'path="res://.godot/imported/{ctex_name}"\n', encoding="utf-8"
                 )
-        self.assertEqual(
-            run.call_args_list,
-            [
-                mock.call(["/godot", "--headless", "--path", "/repo", "--import", "--quit"]),
-                mock.call(
-                    [
-                        "/godot", "--headless", "--path", "/repo", "--script",
-                        "res://tests/import_cache_player_load_test.gd",
-                    ],
-                    fail_on_fatal_output=True,
-                ),
-            ],
-        )
+            self.assertFalse(
+                self.module._needs_import_cache(["--path", str(project)], require_script=False)
+            )
+
+    def test_import_prepass_rechecks_artifacts_and_loads_player(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "tests").mkdir()
+            (project / "tests" / "import_cache_player_load_test.gd").touch()
+            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
+                    self.assertEqual(
+                        self.module._ensure_import_cache(["--path", str(project)], "/godot"),
+                        0,
+                    )
+            self.assertEqual(
+                run.call_args_list,
+                [
+                    mock.call(["/godot", "--headless", "--path", str(project), "--import", "--quit"]),
+                    mock.call(
+                        [
+                            "/godot", "--headless", "--path", str(project), "--script",
+                            "res://tests/import_cache_player_load_test.gd",
+                        ],
+                        fail_on_fatal_output=True,
+                    ),
+                ],
+            )
 
     def test_forced_import_check_still_loads_player_when_cache_is_complete(self):
-        with mock.patch.object(self.module, "_needs_import_cache", return_value=False):
-            with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
-                self.assertEqual(
-                    self.module._ensure_import_cache(
-                        ["--path", "/repo"], "/godot", force=True
-                    ),
-                    0,
-                )
-        run.assert_called_once_with(
-            [
-                "/godot", "--headless", "--path", "/repo", "--script",
-                "res://tests/import_cache_player_load_test.gd",
-            ],
-            fail_on_fatal_output=True,
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "tests").mkdir()
+            (project / "tests" / "import_cache_player_load_test.gd").touch()
+            with mock.patch.object(self.module, "_needs_import_cache", return_value=False):
+                with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                    self.assertEqual(
+                        self.module._ensure_import_cache(
+                            ["--path", str(project)], "/godot", force=True
+                        ),
+                        0,
+                    )
+            run.assert_called_once_with(
+                [
+                    "/godot", "--headless", "--path", str(project), "--script",
+                    "res://tests/import_cache_player_load_test.gd",
+                ],
+                fail_on_fatal_output=True,
+            )
+
+    def test_ensure_import_cache_skips_player_probe_undeclared_by_a_minimal_project(self):
+        """A fixture project without the Player probe script must not fail on it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                    self.assertEqual(
+                        self.module._ensure_import_cache(["--path", str(project)], "/godot"),
+                        0,
+                    )
+            run.assert_called_once_with(
+                ["/godot", "--headless", "--path", str(project), "--import", "--quit"]
+            )
 
     def test_ensure_import_cache_only_skips_the_requested_godot_command(self):
         with tempfile.TemporaryDirectory() as tmp:
