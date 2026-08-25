@@ -34,8 +34,10 @@ sources: если файл отсутствует в sparse worktree, текст
 credential coverage.
 
 Свежий локальный `file://` upload-pack замер синтетического двухродительского PR
-на candidate `e6ecf11dbfaf63d73d34b748561ca16b43e387fb` (tree
-`120b625169f16ecfc4377b5411d1941eb1a22f30`) дал:
+выполнен на merge-коммите `5c0047888b0adc27fe65a1a232dbaa0ca97c9939`:
+base `db934d2131d3e9db2495bae1f498112b02184086`, content/HEAD
+`e6ecf11dbfaf63d73d34b748561ca16b43e387fb`, tree
+`120b625169f16ecfc4377b5411d1941eb1a22f30`. Результат:
 
 | Режим | Candidate | `size-pack` | Checkout disk | `.git` disk | Wall |
 |---|---:|---:|---:|---:|---:|
@@ -49,14 +51,23 @@ pack — консервативный proxy packed-storage/fetch, а не зам
 GitHub partial clone может передать меньше blob-данных.
 
 Все новые source/reference binaries независимо от размера хранятся только под
-`docs/design/reference-assets-lfs/<issue-or-pack>/` как валидные Git LFS
-pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`. Существующие
-файлы в `docs/design/{references,previews,mockups,backups}/` и `build/qa/`
-grandfathered, пока не меняются; добавлять туда даже малые binaries нельзя.
-Автоматические запреты от 1 MiB на один изменённый legacy raw binary и свыше
-5 MiB на их совокупность — минимальная fail-closed защита, а не разрешение для
-меньших файлов. Runtime `assets/**` остаётся обычным Git-контентом и всегда
-входит в чистый build/test checkout.
+`docs/design/reference-assets-lfs/<issue-or-pack>/<file>` как валидные Git LFS
+pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`. Любой
+добавленный, изменённый, скопированный или переименованный binary destination в
+`docs/design/**` либо `build/qa/**` вне этого вложенного пути отклоняется без
+порогов размера; неизменённый legacy grandfathered, удаление разрешено. Runtime
+`assets/**` остаётся обычным Git-контентом и всегда входит в чистый build/test
+checkout.
+
+Детерминированное распознавание считает известные текстовые расширения
+(`.md`, `.json`, `.csv`, Godot/Python/shell/config форматы) текстом, любое иное
+расширение — binary, а файл без расширения проверяет по размеру и максимум 8 KiB
+содержимого. Поэтому новые `.docx`, `.xlsx`, `.pdf`, `.gz` и неизвестные binary
+форматы не обходят правило, а обычные документы и manifests не получают ложный
+запрет. Сначала запрашивается размер Git blob: legacy binary вообще не читается,
+а future blob свыше 256 B отклоняется до чтения. Меньший future blob обязан быть
+ровно каноническим трёхстрочным LFS v1 pointer с lowercase SHA-256, decimal size
+и без добавленного payload.
 
 На clean synthetic candidate YAML и focused workflow/storage/tool suites
 прошли (`82/82`). Static-only дошёл через все sparse reads и остался красным

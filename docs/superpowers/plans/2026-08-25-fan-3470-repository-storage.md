@@ -45,29 +45,44 @@
 - Modify: `.gitattributes`
 - Modify: `tools/quality_gate.py`
 - Modify: `skills/codex/fantasydisk-asset-generator/SKILL.md`
+- Modify: `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py`
+- Modify: `skills/codex/fantasydisk-item-icon-generator/SKILL.md`
 - Modify: `skills/codex/fantasydisk-ui-director/SKILL.md`
+- Modify: `skills/codex/fantasydisk-ui-director/references/ui-change-workflow.md`
 
 **Interfaces:**
 - Consumes: `--root`, `--changed-ref`, Git changed paths, Git blobs, and `.gitattributes`.
-- Produces: exit 0 for grandfathered or valid LFS changes; exit 1 with actionable path errors for raw legacy growth or invalid future LFS blobs.
+- Produces: exit 0 for unchanged grandfathered content, deletions, text docs,
+  runtime assets, and exact bounded LFS pointers; exit 1 for every changed
+  design/build-QA binary outside the nested future route or any invalid pointer.
 
-- [ ] Add integration tests using temporary real Git repositories for raw legacy rejection, aggregate rejection, valid LFS pointer acceptance, grandfathering, and ordinary runtime asset acceptance.
+- [ ] Add strict-pointer unit tests plus temporary real-Git tests for small
+  add/modify, copy/rename destinations, known and unknown formats, required pack
+  nesting, grandfathering, deletion, and ordinary runtime asset acceptance.
 - [ ] Run `python3 -m unittest tests.test_repository_storage_policy -v` and confirm failure because the policy tool does not exist.
-- [ ] Implement the minimal standard-library guard and Git LFS mappings.
-- [ ] Add the guard to the static quality command list and update the two source-routing skills.
+- [ ] Implement status-aware parsing, size-first Git blob inspection, the
+  conservative text allowlist, strict 256-byte LFS pointer validation, and the
+  required Git LFS mappings.
+- [ ] Add the guard to the static quality command list and update every active
+  source/reference/mockup producer without changing runtime `assets/**` routes.
 - [ ] Re-run storage-policy and quality-tool tests and confirm they pass.
 
 ### Task 3: Verification and benchmark
 
 **Files:**
 - Modify: `docs/process/code_quality_and_performance.md`
+- Modify: `docs/superpowers/specs/2026-08-25-fan-3470-repository-storage-design.md`
+- Modify: `docs/superpowers/plans/2026-08-25-fan-3470-repository-storage.md`
+- Create: `.superpowers/sdd/2026-08-25-fan-3470-repository-storage/final-fix-report.md`
 - Modify: `.planning/fan-3470/*` (task-local, removed before commit)
 
 **Interfaces:**
 - Consumes: final candidate diff and a disposable clean clone.
 - Produces: before/after bytes, disk, wall time, clean-checkout/static-gate proof, exact commit/tree SHAs.
 
-- [ ] Document candidate sparse inputs, future LFS path, provenance exception, and release full-history rule.
+- [ ] Document candidate sparse inputs, unconditional future LFS routing, strict
+  pointer/size-first behavior, synthetic merge provenance, and release
+  full-history rule.
 - [ ] Run focused unit tests, `tools/quality_gate.py --static-only`, YAML syntax validation available locally, and a clean sparse-clone check; distinguish candidate regressions from an exact `origin/dev` baseline failure.
 - [ ] Record benchmark numbers from identical local upload-pack inputs and note the local filter limitation.
 - [ ] Inspect the full diff, remove task-owned planning/benchmark directories, commit, push, and post the exact-SHA handoff.

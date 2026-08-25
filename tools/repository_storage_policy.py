@@ -7,27 +7,30 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Sequence
+from typing import NamedTuple, Sequence
 
 
-MIB = 1024 * 1024
-LEGACY_LIMIT = MIB
-LEGACY_AGGREGATE_LIMIT = 5 * MIB
 FUTURE_PREFIX = "docs/design/reference-assets-lfs/"
-LEGACY_PREFIXES = (
-    "docs/design/references/",
-    "docs/design/previews/",
-    "docs/design/mockups/",
-    "docs/design/backups/",
-    "build/qa/",
-)
-BINARY_SUFFIXES = frozenset({
-    ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".wav", ".ogg",
-    ".mp3", ".ttf", ".otf", ".ico", ".dmg", ".exe", ".zip", ".res",
+RESTRICTED_PREFIXES = ("docs/design/", "build/qa/")
+MAX_LFS_POINTER_BYTES = 256
+CONTENT_PROBE_BYTES = 8192
+TEXT_SUFFIXES = frozenset({
+    ".cfg", ".csv", ".gd", ".godot", ".html", ".import", ".ini", ".js",
+    ".json", ".md", ".py", ".rst", ".sh", ".toml", ".tres", ".tscn",
+    ".tsv", ".txt", ".xml", ".yaml", ".yml",
 })
-OID_RE = re.compile(rb"oid sha256:[0-9a-fA-F]{64}")
-SIZE_RE = re.compile(rb"size [0-9]+")
-POINTER_VERSION = b"version https://git-lfs.github.com/spec/v1"
+TEXT_FILENAMES = frozenset({".gitattributes", ".gdignore", ".gitignore"})
+LFS_POINTER_RE = re.compile(
+    rb"\Aversion https://git-lfs\.github\.com/spec/v1\n"
+    rb"oid sha256:[0-9a-f]{64}\n"
+    rb"size (?:0|[1-9][0-9]*)\n\Z"
+)
+
+
+class ChangedEntry(NamedTuple):
+    status: str
+    old_path: str | None
+    path: str
 
 
 def _git(root: Path, *arguments: str) -> bytes:
@@ -44,17 +47,46 @@ def _git(root: Path, *arguments: str) -> bytes:
     return result.stdout
 
 
-def changed_paths(root: Path, changed_ref: str) -> list[str]:
+def changed_entries(root: Path, changed_ref: str) -> list[ChangedEntry]:
     output = _git(
         root,
         "diff",
-        "--name-only",
-        "--diff-filter=ACMR",
+        "--name-status",
         "-z",
+        "--find-renames",
+        "--find-copies-harder",
+        "--diff-filter=ACMRD",
         f"{changed_ref}...HEAD",
         "--",
     )
-    return sorted(path.decode(errors="surrogateescape") for path in output.split(b"\0") if path)
+    fields = output.split(b"\0")
+    if fields and fields[-1] == b"":
+        fields.pop()
+    entries: list[ChangedEntry] = []
+    index = 0
+    while index < len(fields):
+        raw_status = fields[index].decode("ascii", errors="strict")
+        index += 1
+        status = raw_status[:1]
+        path_count = 2 if status in {"C", "R"} else 1
+        if status not in {"A", "C", "D", "M", "R"} or index + path_count > len(fields):
+            raise RuntimeError("malformed git diff --name-status output")
+        paths = [
+            fields[index + offset].decode(errors="surrogateescape")
+            for offset in range(path_count)
+        ]
+        index += path_count
+        old_path = paths[0] if path_count == 2 else None
+        entries.append(ChangedEntry(status, old_path, paths[-1]))
+    return sorted(entries, key=lambda entry: (entry.path, entry.status, entry.old_path or ""))
+
+
+def head_blob_size(root: Path, path: str) -> int:
+    output = _git(root, "cat-file", "-s", f"HEAD:{path}").strip()
+    try:
+        return int(output)
+    except ValueError as exc:
+        raise RuntimeError(f"invalid Git blob size for {path}: {output!r}") from exc
 
 
 def head_blob(root: Path, path: str) -> bytes:
@@ -62,13 +94,31 @@ def head_blob(root: Path, path: str) -> bytes:
 
 
 def is_lfs_pointer(content: bytes) -> bool:
-    lines = content.splitlines()
-    return bool(
-        lines
-        and lines[0] == POINTER_VERSION
-        and any(OID_RE.fullmatch(line) for line in lines[1:])
-        and any(SIZE_RE.fullmatch(line) for line in lines[1:])
-    )
+    return len(content) <= MAX_LFS_POINTER_BYTES and LFS_POINTER_RE.fullmatch(content) is not None
+
+
+def _is_binary(root: Path, path: str, size: int) -> bool:
+    candidate = Path(path)
+    if candidate.name.lower() in TEXT_FILENAMES or candidate.suffix.lower() in TEXT_SUFFIXES:
+        return False
+    if candidate.suffix:
+        return True
+    if size > CONTENT_PROBE_BYTES:
+        return True
+    content = head_blob(root, path)
+    if b"\0" in content:
+        return True
+    try:
+        content.decode("utf-8")
+    except UnicodeDecodeError:
+        return True
+    return any(byte < 32 and byte not in b"\t\n\r\f\b" for byte in content)
+
+
+def _has_pack_nesting(path: str) -> bool:
+    relative = path.removeprefix(FUTURE_PREFIX)
+    parts = relative.split("/")
+    return len(parts) >= 2 and all(parts)
 
 
 def lfs_attribute_error(root: Path, path: str) -> str | None:
@@ -86,35 +136,37 @@ def lfs_attribute_error(root: Path, path: str) -> str | None:
 
 def collect_errors(root: Path, changed_ref: str) -> list[str]:
     errors: list[str] = []
-    legacy_raw: list[tuple[str, int]] = []
-    for path in changed_paths(root, changed_ref):
-        if Path(path).suffix.lower() not in BINARY_SUFFIXES:
+    for entry in changed_entries(root, changed_ref):
+        if entry.status == "D" or not entry.path.startswith(RESTRICTED_PREFIXES):
             continue
-        content = head_blob(root, path)
-        if path.startswith(FUTURE_PREFIX):
-            attribute_error = lfs_attribute_error(root, path)
-            if attribute_error:
-                errors.append(attribute_error)
-            if not is_lfs_pointer(content):
-                errors.append(
-                    f"{path}: expected a valid Git LFS pointer; add the file through Git LFS"
-                )
-        elif path.startswith(LEGACY_PREFIXES) and not is_lfs_pointer(content):
-            size = len(content)
-            legacy_raw.append((path, size))
-            if size >= LEGACY_LIMIT:
-                errors.append(
-                    f"{path}: changed raw legacy binary is {size} bytes (limit is below 1 MiB); "
-                    f"move it under {FUTURE_PREFIX}<issue-or-pack>/ and use Git LFS"
-                )
-
-    total = sum(size for _, size in legacy_raw)
-    if total > LEGACY_AGGREGATE_LIMIT:
-        paths = ", ".join(path for path, _ in legacy_raw)
-        errors.append(
-            f"{paths}: aggregate changed raw legacy binary size is {total} bytes "
-            f"(limit is 5 MiB); use {FUTURE_PREFIX}<issue-or-pack>/ with Git LFS"
-        )
+        size = head_blob_size(root, entry.path)
+        if not _is_binary(root, entry.path, size):
+            continue
+        if not entry.path.startswith(FUTURE_PREFIX):
+            origin = f" copied/renamed from {entry.old_path}" if entry.old_path else ""
+            errors.append(
+                f"{entry.path}: changed binary ({size} bytes, status {entry.status}{origin}) must live under "
+                f"{FUTURE_PREFIX}<issue-or-pack>/ and use Git LFS"
+            )
+            continue
+        if not _has_pack_nesting(entry.path):
+            errors.append(
+                f"{entry.path}: future binaries require {FUTURE_PREFIX}<issue-or-pack>/<file> nesting"
+            )
+            continue
+        attribute_error = lfs_attribute_error(root, entry.path)
+        if attribute_error:
+            errors.append(attribute_error)
+        if size > MAX_LFS_POINTER_BYTES:
+            errors.append(
+                f"{entry.path}: Git LFS pointer blob is too large ({size} bytes; maximum "
+                f"{MAX_LFS_POINTER_BYTES}); add the binary through Git LFS"
+            )
+            continue
+        if not is_lfs_pointer(head_blob(root, entry.path)):
+            errors.append(
+                f"{entry.path}: expected an exact canonical Git LFS pointer; add the file through Git LFS"
+            )
     return errors
 
 

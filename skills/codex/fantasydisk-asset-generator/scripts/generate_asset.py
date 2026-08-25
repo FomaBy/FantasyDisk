@@ -15,6 +15,7 @@ from textwrap import dedent
 
 MODEL = "gpt-image-2"
 QUALITY_VALUES = {"low", "medium", "high", "auto"}
+FUTURE_REFERENCE_ROOT = Path("docs/design/reference-assets-lfs")
 
 # gpt-image-2 pixel budget (empirical): requests below ~1.0 MP are rejected with
 # "below the current minimum pixel budget"; very large requests are rejected too.
@@ -59,7 +60,7 @@ def load_api_key() -> None:
 
 def find_project_root(start: Path) -> Path:
     for path in (start, *start.parents):
-        if (path / "project.godot").exists() and (path / "docs/design/references").is_dir():
+        if (path / "project.godot").exists() and (path / "docs/design").is_dir():
             return path
     fail("run this script from the FantasyDisk project, or a child directory")
 
@@ -123,7 +124,7 @@ def slugify(value: str) -> str:
 
 
 def resolve_output(project_root: Path, output_arg: str) -> Path:
-    references_root = project_root / "docs/design/references"
+    references_root = project_root / FUTURE_REFERENCE_ROOT
     raw = Path(output_arg).expanduser()
 
     if raw.is_absolute():
@@ -131,11 +132,13 @@ def resolve_output(project_root: Path, output_arg: str) -> Path:
         try:
             output.resolve().relative_to(references_root.resolve())
         except ValueError:
-            fail("absolute --output must be inside docs/design/references")
+            fail("absolute --output must be inside docs/design/reference-assets-lfs/<issue-or-pack>/")
     else:
         parts = raw.parts
-        if len(parts) >= 3 and parts[0] == "docs" and parts[1] == "design" and parts[2] == "references":
+        if len(parts) >= 3 and Path(*parts[:3]) == FUTURE_REFERENCE_ROOT:
             output = project_root / raw
+        elif len(parts) >= 3 and parts[:2] == ("docs", "design"):
+            fail("--output design path must use docs/design/reference-assets-lfs/<issue-or-pack>/")
         elif len(parts) > 1:
             output = references_root / raw
         else:
@@ -143,6 +146,12 @@ def resolve_output(project_root: Path, output_arg: str) -> Path:
 
     if output.suffix.lower() != ".png":
         output = output.with_suffix(".png")
+    try:
+        relative = output.resolve().relative_to(references_root.resolve())
+    except ValueError:
+        fail("--output must remain inside docs/design/reference-assets-lfs/<issue-or-pack>/")
+    if len(relative.parts) < 2:
+        fail("--output must include <issue-or-pack>/<file> under docs/design/reference-assets-lfs/")
     output.parent.mkdir(parents=True, exist_ok=True)
     return output
 
@@ -199,10 +208,10 @@ def write_task(
     quality: str,
     issue_id: str,
 ) -> Path:
-    references_root = project_root / "docs/design/references"
+    references_root = project_root / FUTURE_REFERENCE_ROOT
     rel_output = output_path.relative_to(project_root)
     ref_rel = output_path.relative_to(references_root)
-    slug_source = ref_rel.parent.name if ref_rel.parent.name not in {"references", "."} else output_path.stem
+    slug_source = ref_rel.parent.name if ref_rel.parent != Path(".") else output_path.stem
     slug = slugify(slug_source if slug_source else output_path.stem)
     task_path = unique_task_path(project_root, slug)
     created = date.today().isoformat()
@@ -242,7 +251,7 @@ Multica: {issue_id}
 4. Обновить `docs/design/content_registry.md`, релевантные domain docs и `CHANGELOG.md`, если ассет вошел в игру.
 
 ## Acceptance Criteria
-- [ ] PNG из `docs/design/references/` просмотрен и принят/доработан перед runtime-интеграцией.
+- [ ] PNG из `docs/design/reference-assets-lfs/<issue-or-pack>/` просмотрен и принят/доработан перед runtime-интеграцией.
 - [ ] Финальный ассет, если создается, имеет стабильное имя и лежит в правильной `assets/sprites/...` папке.
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
@@ -257,7 +266,11 @@ def parse_args() -> argparse.Namespace:
         description="Generate a FantasyDisk reference PNG and implementation task."
     )
     parser.add_argument("--prompt", required=True, help="Prompt for the OpenAI Images API.")
-    parser.add_argument("--output", required=True, help="PNG output path or name under docs/design/references.")
+    parser.add_argument(
+        "--output",
+        required=True,
+        help="PNG output path or name under docs/design/reference-assets-lfs/<issue-or-pack>/.",
+    )
     parser.add_argument("--size", required=True, help="auto or WIDTHxHEIGHT.")
     parser.add_argument("--quality", required=True, choices=sorted(QUALITY_VALUES), help="Image quality.")
     parser.add_argument(

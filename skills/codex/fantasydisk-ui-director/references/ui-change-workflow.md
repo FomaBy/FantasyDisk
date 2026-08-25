@@ -20,7 +20,7 @@ If the request concerns a visual-only mockup or asset, keep the task in Design o
 Before changing runtime UI, create a mockup package under:
 
 ```text
-docs/design/mockups/<task_or_screen_slug>/
+docs/design/reference-assets-lfs/<task_or_screen_slug>/mockup/
 ```
 
 The package must contain:
@@ -31,6 +31,9 @@ The package must contain:
 - markdown spec using `references/mockup-spec.md`;
 - optional annotated PNG with safe zones and element IDs;
 - generated reference assets, if the mockup uses new frames/buttons/icons.
+
+Keep every new binary mockup, reference, preview, and contact sheet inside this
+task/pack directory through Git LFS. Text specifications may live beside them.
 
 Use `$fantasydisk-builtin-image-generator` for every full-canvas scenic background, menu/screen background, loading/splash image, or illustrated underlay. The built-in OpenAI Image Generator is mandatory by default; never use PixelLab for these layers. Use the OpenAI Images API only after an explicit user request.
 

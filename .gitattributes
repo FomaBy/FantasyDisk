@@ -32,6 +32,10 @@
 *.exe  binary
 *.zip  binary
 *.res  binary
+*.pdf  binary
+*.gz   binary
+*.docx binary
+*.xlsx binary
 
 # Future-only design source/reference binaries. Runtime assets stay ordinary Git blobs.
 docs/design/reference-assets-lfs/**/*.png  filter=lfs diff=lfs merge=lfs -text
@@ -50,3 +54,7 @@ docs/design/reference-assets-lfs/**/*.dmg  filter=lfs diff=lfs merge=lfs -text
 docs/design/reference-assets-lfs/**/*.exe  filter=lfs diff=lfs merge=lfs -text
 docs/design/reference-assets-lfs/**/*.zip  filter=lfs diff=lfs merge=lfs -text
 docs/design/reference-assets-lfs/**/*.res  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.pdf  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.gz   filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.docx filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.xlsx filter=lfs diff=lfs merge=lfs -text

@@ -14,13 +14,44 @@ Shallow candidate events fetch their exact event base at depth 2 into `refs/remo
 
 ## Future reference storage contract
 
-All new source/reference binaries, regardless of size, live under `docs/design/reference-assets-lfs/<issue-or-pack>/`. `.gitattributes` maps supported binary extensions there to Git LFS. Existing `docs/design/references`, `previews`, `mockups`, `backups`, and tracked `build/qa` content remains untouched and no historical object is rewritten.
+All new source/reference binaries, regardless of size or format, live under
+`docs/design/reference-assets-lfs/<issue-or-pack>/<file>`. `.gitattributes`
+maps repository binary formats, including PNG/JPEG/audio/font/archive plus PDF,
+GZip, DOCX, and XLSX, there to Git LFS. Active item-icon, UI-mockup, and asset
+generator producers use that nested route; accepted runtime files still go to
+`assets/**`. Existing design evidence and tracked `build/qa` content remains
+untouched and no historical object is rewritten.
 
-A changed-range policy supplies a minimum fail-closed backstop: it rejects newly added or modified binary evidence in the legacy paths when any file is at least 1 MiB or their aggregate raw size exceeds 5 MiB. Those thresholds do not permit smaller new legacy binaries. Correct Git LFS pointers in the future-only path pass and declare their logical size. Runtime `assets/**` is deliberately outside the LFS mapping and remains present in sparse clean checkouts.
+The changed-range policy preserves Git status and both paths for copies and
+renames. Every added, modified, copied, or renamed binary destination under
+`docs/design/**` or `build/qa/**` is rejected unless it uses the nested future
+route; this is unconditional and has no size threshold. Unchanged legacy files
+remain grandfathered and deletions are allowed. A conservative text-extension
+allowlist keeps manifests, docs, scenes, resources, and scripts textual; any
+other extension is treated as binary, while extensionless files use an 8 KiB
+size/content probe. This catches unknown formats without materializing large
+blobs.
+
+The policy asks Git for each candidate blob size before content. Legacy binary
+rejections never read the blob. Future blobs larger than the 256-byte pointer
+bound fail without a content read; only bounded candidates are checked against
+the exact three-line canonical LFS v1 form in fixed order, with one lowercase
+64-hex SHA-256 OID, one canonical decimal size, a final newline, and no other
+content. Runtime `assets/**` is deliberately outside the LFS mapping and remains
+present in sparse clean checkouts.
 
 ## Validation
 
-Contract tests exercise workflow depth/sparse/history exceptions and the storage policy against temporary real Git repositories. A clean synthetic two-parent PR clone proves the exact base/parent contract, focused suite selection, and that the static gate reaches the same repository invariants as a full checkout. The benchmark records packed storage as a fetch proxy, total checkout disk, and wall time before and after using the same local upload-pack source; local upload-pack does not honor filters, so the measured after result is conservative relative to GitHub. Any pre-existing baseline failure is reported rather than waived or attributed to this change.
+Contract tests exercise workflow depth/sparse/history exceptions, strict pointer
+parsing, size-first rejection, producer output routing, and real-Git add/modify/
+copy/rename/delete cases. A clean synthetic two-parent PR clone proves the exact
+base/parent contract, focused suite selection, and that the static gate reaches
+the same repository invariants as a full checkout. The benchmark records packed
+storage as a fetch proxy, total checkout disk, and wall time before and after
+using the same local upload-pack source; local upload-pack does not honor
+filters, so the measured after result is conservative relative to GitHub. Any
+pre-existing baseline failure is reported rather than waived or attributed to
+this change.
 
 ## Boundaries
 
