@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import re
 import subprocess
 import sys
@@ -47,6 +48,29 @@ def tracked_files(root: Path) -> list[str]:
     return [item.decode("utf-8") for item in result.stdout.split(b"\0") if item]
 
 
+@functools.cache
+def _head_blob(root: Path, relative: str) -> bytes:
+    result = subprocess.run(
+        ["git", "show", f"HEAD:{relative}"],
+        cwd=root,
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(
+            f"git show HEAD:{relative} failed: {detail or 'no error output'}"
+        )
+    return result.stdout
+
+
+def _tracked_text(root: Path, relative: str, *, errors: str = "strict") -> str:
+    path = root / relative
+    if path.is_file():
+        return path.read_text(encoding="utf-8", errors=errors)
+    return _head_blob(root.resolve(), relative).decode("utf-8", errors=errors)
+
+
 def _quoted_value(text: str, key: str) -> str:
     match = re.search(rf"(?m)^{re.escape(key)}=\"([^\"]*)\"$", text)
     return match.group(1) if match else ""
@@ -78,10 +102,10 @@ def case_and_resource_errors(root: Path, tracked: list[str]) -> list[str]:
 
     for source in tracked:
         path = root / source
-        if path.suffix not in RUNTIME_SUFFIXES or not path.is_file():
+        if path.suffix not in RUNTIME_SUFFIXES:
             continue
         try:
-            text = path.read_text(encoding="utf-8")
+            text = _tracked_text(root, source)
         except UnicodeDecodeError:
             continue
         for line_number, line in enumerate(text.splitlines(), 1):
@@ -154,7 +178,7 @@ def architecture_errors(root: Path, tracked: list[str]) -> list[str]:
     for relative in tracked:
         if not relative.startswith("scripts/") or not relative.endswith(".gd"):
             continue
-        line_count = len((root / relative).read_text(encoding="utf-8").splitlines())
+        line_count = len(_tracked_text(root, relative).splitlines())
         ceiling = LEGACY_LINE_CEILINGS.get(relative, NEW_SCRIPT_LINE_LIMIT)
         if line_count > ceiling:
             errors.append(
@@ -187,7 +211,7 @@ def credential_errors(root: Path, tracked: list[str]) -> list[str]:
     for relative in tracked:
         if not relative.endswith((".gd", ".py", ".sh")):
             continue
-        text = (root / relative).read_text(encoding="utf-8", errors="ignore")
+        text = _tracked_text(root, relative, errors="ignore")
         if forbidden_marker in text:
             errors.append(f"{relative}: reversible built-in webhook credential is forbidden")
     return errors

@@ -51,6 +51,29 @@ class QualityStaticGuardTest(unittest.TestCase):
         self.assertIn(old, text)
         path.write_text(text.replace(old, new, count), encoding="utf-8")
 
+    def committed_fixture(self, tmp: str, files: dict[str, str]) -> Path:
+        root = Path(tmp)
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "config", "user.name", "Quality Guard Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.email", "quality-guard@example.invalid"],
+            cwd=root,
+            check=True,
+        )
+        for relative, text in files.items():
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+        subprocess.run(["git", "add", "--", "."], cwd=root, check=True)
+        subprocess.run(
+            ["git", "commit", "-qm", "fixture"], cwd=root, check=True
+        )
+        return root
+
     def release_assignment_errors(self, root: Path) -> list[str]:
         return self.module.release_assignment_errors(
             (root / "project.godot").read_text(encoding="utf-8"),
@@ -75,6 +98,50 @@ class QualityStaticGuardTest(unittest.TestCase):
             errors = self.module.case_and_resource_errors(root, tracked)
             self.assertEqual(len(errors), 1)
             self.assertIn("resource case mismatch", errors[0])
+
+    def test_absent_tracked_runtime_source_still_gets_resource_case_validation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.committed_fixture(
+                tmp,
+                {
+                    "scripts/probe.gd": 'const ICON = preload("res://assets/Icon.png")\n',
+                    "assets/icon.png": "png",
+                },
+            )
+            (root / "scripts" / "probe.gd").unlink()
+
+            errors = self.module.case_and_resource_errors(
+                root, self.module.tracked_files(root)
+            )
+
+            self.assertEqual(len(errors), 1)
+            self.assertIn("resource case mismatch", errors[0])
+
+    def test_absent_tracked_credential_source_is_scanned_from_head(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.committed_fixture(
+                tmp,
+                {
+                    "hidden/probe.py": "BUILTIN_WEBHOOK_" + "B64 = 'fixture'\n",
+                },
+            )
+            (root / "hidden" / "probe.py").unlink()
+            errors = self.module.credential_errors(root, self.module.tracked_files(root))
+
+            self.assertEqual(
+                errors,
+                [
+                    "hidden/probe.py: reversible built-in webhook credential is forbidden"
+                ],
+            )
+
+    def test_absent_text_missing_from_head_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.committed_fixture(tmp, {"README.md": "fixture\n"})
+            with self.assertRaises(RuntimeError) as raised:
+                self.module.credential_errors(root, ["missing.py"])
+
+            self.assertIn("HEAD:missing.py", str(raised.exception))
 
     def test_reports_missing_uid_sidecar_in_imported_tree(self):
         with tempfile.TemporaryDirectory() as tmp:
