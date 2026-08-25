@@ -74,6 +74,48 @@ class QualityStaticGuardTest(unittest.TestCase):
         )
         return root
 
+    def fantasydisk_fixture(self, tmp: str) -> Path:
+        root = self.release_fixture(tmp)
+        files = {
+            "icon.svg": "<svg/>\n",
+            "assets/icon.ico": "fixture\n",
+            "scenes/Main.tscn": "[gd_scene]\n",
+            "scenes/Player.tscn": "[gd_scene]\n",
+            "scripts/audio_manager.gd": "extends Node\n",
+            "scripts/audio_manager.gd.uid": "uid://audio\n",
+            "scripts/input_device_manager.gd": "extends Node\n",
+            "scripts/input_device_manager.gd.uid": "uid://input\n",
+            "scripts/player.gd": "extends Node\n",
+            "scripts/player.gd.uid": "uid://player\n",
+            "tests/import_cache_player_load_test.gd": (
+                "extends SceneTree\n"
+                'const PlayerScene := preload("res://scenes/Player.tscn")\n'
+                "func _init() -> void:\n"
+                "\tvar player := PlayerScene.instantiate()\n"
+                "\tplayer.free()\n"
+                "\tquit()\n"
+            ),
+            "tests/import_cache_player_load_test.gd.uid": "uid://fixture\n",
+        }
+        for relative, text in files.items():
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "config", "user.name", "Quality Guard Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.email", "quality-guard@example.invalid"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(["git", "add", "--", "."], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", "fixture"], cwd=root, check=True)
+        return root
+
     def release_assignment_errors(self, root: Path) -> list[str]:
         return self.module.release_assignment_errors(
             (root / "project.godot").read_text(encoding="utf-8"),
@@ -84,6 +126,61 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_current_checkout_passes(self):
         self.assertEqual(self.module.collect_errors(ROOT), [])
+
+    def test_missing_fantasydisk_player_import_probe_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.fantasydisk_fixture(tmp)
+            (root / "tests/import_cache_player_load_test.gd").unlink()
+
+            errors = self.module.collect_errors(root)
+
+            self.assertIn(
+                "tests/import_cache_player_load_test.gd: required FantasyDisk Player import probe is missing",
+                errors,
+            )
+
+    def test_minimal_fixture_without_fantasydisk_player_assets_is_valid(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.committed_fixture(
+                tmp,
+                {
+                    "project.godot": '[application]\nconfig/name="Fixture"\n',
+                    "tests/probe.gd": "extends SceneTree\n",
+                },
+            )
+
+            self.assertEqual(
+                self.module.player_import_probe_errors(
+                    root, self.module.tracked_files(root)
+                ),
+                [],
+            )
+
+    def test_fantasydisk_player_import_probe_contract_is_required(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.fantasydisk_fixture(tmp)
+            (root / "tests/import_cache_player_load_test.gd").write_text(
+                "extends SceneTree\n", encoding="utf-8"
+            )
+
+            errors = self.module.player_import_probe_errors(
+                root, self.module.tracked_files(root)
+            )
+
+            self.assertTrue(
+                any("required Player import probe contract" in error for error in errors)
+            )
+
+    def test_fantasydisk_player_import_probe_contract_accepts_canonical_probe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.fantasydisk_fixture(tmp)
+
+            self.assertEqual(
+                self.module.player_import_probe_errors(
+                    root, self.module.tracked_files(root)
+                ),
+                [],
+            )
 
     def test_resource_case_mismatch_is_reported(self):
         with tempfile.TemporaryDirectory() as tmp:
