@@ -93,19 +93,57 @@ def head_blob(root: Path, path: str) -> bytes:
     return _git(root, "cat-file", "blob", f"HEAD:{path}")
 
 
+def head_blob_probe(root: Path, path: str, limit: int = CONTENT_PROBE_BYTES) -> bytes:
+    """Read only the first ``limit`` bytes of the HEAD blob.
+
+    The rest of the stream is discarded so a disguised multi-gigabyte blob is
+    never materialized in Python or the worktree.
+    """
+    process = subprocess.Popen(
+        ["git", "cat-file", "blob", f"HEAD:{path}"],
+        cwd=root,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    try:
+        content = process.stdout.read(limit)
+    finally:
+        # Kill before draining stderr: a blob larger than the pipe buffer
+        # otherwise deadlocks — git blocks writing stdout while we block
+        # waiting for git to exit before reading stderr.
+        if process.poll() is None:
+            process.kill()
+        return_code = process.wait()
+        errors = process.stderr.read()
+        process.stdout.close()
+        process.stderr.close()
+    if return_code not in (0, -9):
+        message = errors.decode(errors="replace").strip()
+        raise RuntimeError(message or f"git cat-file blob HEAD:{path} failed")
+    return content
+
+
 def is_lfs_pointer(content: bytes) -> bool:
     return len(content) <= MAX_LFS_POINTER_BYTES and LFS_POINTER_RE.fullmatch(content) is not None
 
 
 def _is_binary(root: Path, path: str, size: int) -> bool:
     candidate = Path(path)
-    if candidate.name.lower() in TEXT_FILENAMES or candidate.suffix.lower() in TEXT_SUFFIXES:
-        return False
-    if candidate.suffix:
+    declared_text = (
+        candidate.name.lower() in TEXT_FILENAMES or candidate.suffix.lower() in TEXT_SUFFIXES
+    )
+    if candidate.suffix and not declared_text:
         return True
-    if size > CONTENT_PROBE_BYTES:
+    if not declared_text and size > CONTENT_PROBE_BYTES:
         return True
-    content = head_blob(root, path)
+    # A text extension must not mask binary content: probe the leading bytes
+    # of every text-declared blob and fail closed on NUL bytes, invalid UTF-8,
+    # or control characters. Binary payloads hidden after a long text prefix
+    # beyond CONTENT_PROBE_BYTES remain a known, documented limitation.
+    return _is_binary_bytes(head_blob_probe(root, path))
+
+
+def _is_binary_bytes(content: bytes) -> bool:
     if b"\0" in content:
         return True
     try:

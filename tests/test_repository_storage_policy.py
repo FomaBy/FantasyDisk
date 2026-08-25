@@ -216,6 +216,42 @@ class RepositoryStoragePolicyTests(unittest.TestCase):
 
         self.assert_policy_passes(base)
 
+    def test_binary_disguised_as_json_is_rejected(self) -> None:
+        base = self.base_commit()
+        relative = "docs/design/data/FAN-3470/payload.json"
+        self.write(relative, b'{"padding": "' + b"\x00\xff\x00\xff" * 64 + b'"}')
+        self.commit("add binary disguised as json")
+
+        self.assert_policy_fails(base, relative, "reference-assets-lfs")
+
+    def test_binary_disguised_as_markdown_is_rejected(self) -> None:
+        base = self.base_commit()
+        relative = "docs/design/FAN-3470/payload.md"
+        self.write(relative, b"# Title\n\n\x00\x01\x02binary payload\n")
+        self.commit("add binary disguised as markdown")
+
+        self.assert_policy_fails(base, relative, "reference-assets-lfs")
+
+    def test_large_genuine_text_manifest_is_allowed(self) -> None:
+        base = self.base_commit()
+        self.write(
+            "docs/design/data/FAN-3470/manifest.json",
+            b'{"entries": [' + b", ".join(b'"entry-%d"' % index for index in range(20_000)) + b"]}\n",
+        )
+        self.commit("add large genuine text manifest")
+
+        self.assert_policy_passes(base)
+
+    def test_text_disguise_probe_reads_only_leading_bytes(self) -> None:
+        base = self.base_commit()
+        relative = "docs/design/data/FAN-3470/payload.json"
+        self.write(relative, b"\x00" * 1_048_576)
+        self.commit("add large disguised binary")
+
+        probe = POLICY.head_blob_probe(self.repo, relative)
+        self.assertLessEqual(len(probe), POLICY.CONTENT_PROBE_BYTES)
+        self.assert_policy_fails(base, relative, "reference-assets-lfs")
+
     def test_unchanged_legacy_binary_is_grandfathered(self) -> None:
         self.write("docs/design/references/old-pack/source.png", b"old binary")
         base = self.base_commit()
@@ -323,6 +359,27 @@ class ActiveProducerRoutingTests(unittest.TestCase):
     def test_generator_rejects_relative_output_escape(self) -> None:
         with self.assertRaises(SystemExit):
             GENERATOR_MODULE.resolve_output(self.project, "FAN-3470/../../../outside.png")
+
+    def test_generator_rejects_symlinked_references_root(self) -> None:
+        outside = self.project.parent / "outside-refs"
+        outside.mkdir(exist_ok=True)
+        references = self.project / "docs/design/reference-assets-lfs"
+        references.rmdir()
+        references.symlink_to(outside, target_is_directory=True)
+
+        with self.assertRaises(SystemExit):
+            GENERATOR_MODULE.resolve_output(self.project, "FAN-3470/source")
+
+    def test_generator_rejects_symlinked_pack_directory(self) -> None:
+        outside = self.project.parent / "outside-pack"
+        outside.mkdir(exist_ok=True)
+        pack = self.project / "docs/design/reference-assets-lfs/FAN-3470"
+        pack.mkdir()
+        pack.rmdir()
+        pack.symlink_to(outside, target_is_directory=True)
+
+        with self.assertRaises(SystemExit):
+            GENERATOR_MODULE.resolve_output(self.project, "FAN-3470/source")
 
     def test_active_producer_instructions_have_no_legacy_binary_routes(self) -> None:
         producers = (

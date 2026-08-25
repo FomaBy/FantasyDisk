@@ -29,8 +29,13 @@ route; this is unconditional and has no size threshold. Unchanged legacy files
 remain grandfathered and deletions are allowed. A conservative text-extension
 allowlist keeps manifests, docs, scenes, resources, and scripts textual; any
 other extension is treated as binary, while extensionless files use an 8 KiB
-size/content probe. This catches unknown formats without materializing large
-blobs.
+size/content probe. The extension alone never proves text: every text-declared
+blob is content-probed over its leading 8 KiB and fails closed on NUL bytes,
+invalid UTF-8, or control characters, so a binary payload renamed to `.json`
+or `.md` cannot bypass the LFS route. The probe reads only leading bytes and
+discards the rest of the stream, so a disguised multi-gigabyte blob is never
+materialized in Python or the worktree; binary content hidden after a longer
+text prefix remains a known documented limitation.
 
 The policy asks Git for each candidate blob size before content. Legacy binary
 rejections never read the blob. Future blobs larger than the 256-byte pointer
@@ -38,7 +43,10 @@ bound fail without a content read; only bounded candidates are checked against
 the exact three-line canonical LFS v1 form in fixed order, with one lowercase
 64-hex SHA-256 OID, one canonical decimal size, a final newline, and no other
 content. Runtime `assets/**` is deliberately outside the LFS mapping and remains
-present in sparse clean checkouts.
+present in sparse clean checkouts. The asset generator anchors its output
+containment at the symlink-resolved real project root, so a symlinked
+`reference-assets-lfs` root or pack directory cannot route generated files
+outside the repository.
 
 ## Validation
 

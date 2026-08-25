@@ -123,15 +123,28 @@ def slugify(value: str) -> str:
     return value[:64] or "generated_asset"
 
 
+def _inside(candidate: Path, root: Path) -> bool:
+    try:
+        candidate.resolve().relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
 def resolve_output(project_root: Path, output_arg: str) -> Path:
+    # Containment is anchored at the real (symlink-resolved) project root with
+    # an unresolved expected path below it: if any component of
+    # docs/design/reference-assets-lfs is itself a symlink pointing outside
+    # the project, output.resolve() will leave the anchor and the check fails
+    # closed instead of silently following the escape.
+    project_real = project_root.resolve()
     references_root = project_root / FUTURE_REFERENCE_ROOT
+    anchor = project_real / FUTURE_REFERENCE_ROOT
     raw = Path(output_arg).expanduser()
 
     if raw.is_absolute():
         output = raw
-        try:
-            output.resolve().relative_to(references_root.resolve())
-        except ValueError:
+        if not _inside(output, anchor):
             fail("absolute --output must be inside docs/design/reference-assets-lfs/<issue-or-pack>/")
     else:
         parts = raw.parts
@@ -146,10 +159,9 @@ def resolve_output(project_root: Path, output_arg: str) -> Path:
 
     if output.suffix.lower() != ".png":
         output = output.with_suffix(".png")
-    try:
-        relative = output.resolve().relative_to(references_root.resolve())
-    except ValueError:
+    if not _inside(output, anchor):
         fail("--output must remain inside docs/design/reference-assets-lfs/<issue-or-pack>/")
+    relative = output.resolve().relative_to(anchor)
     if len(relative.parts) < 2:
         fail("--output must include <issue-or-pack>/<file> under docs/design/reference-assets-lfs/")
     output.parent.mkdir(parents=True, exist_ok=True)
