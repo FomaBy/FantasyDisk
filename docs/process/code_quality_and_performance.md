@@ -7,44 +7,62 @@
 
 Частый candidate gate использует `actions/checkout@v6` с `lfs: false` и
 `fetch-depth: 2` для pull request/merge queue; push сохраняет полную ancestry,
-потому что static gate сравнивает `github.event.before`. Sparse checkout обязан
-содержать ровно его runtime/test/tool/policy inputs:
+потому что static gate сравнивает `github.event.before`. Shallow candidate
+дополнительно получает exact event base depth 2 в `refs/remotes/origin/dev`.
+Sparse checkout обязан содержать ровно его runtime/test/tool/policy inputs:
 
 ```text
 .claude .github assets data references scenes scripts services skills source_docs
-tests tools docs/process docs/tasks docs/design/templates/release_notes
+tests tools build/qa/scrum434_soldier_pixellab docs/process docs/tasks
+docs/design/data docs/design/templates/release_notes
+docs/design/mockups/release_0_2_4
 docs/design/mockups/scrum1061_semantic_typography
 docs/design/references/weapon_ultimates
 ```
 
 Наличие sparse-конфигурации включает в checkout `filter=blob:none`; отдельный
-`filter` не задавать. Shallow candidate дополнительно получает только две
-закреплённые legacy-фикстуры, каждая depth 1:
+`filter` не задавать. После event base candidate получает две закреплённые
+legacy-фикстуры, каждая depth 1:
 `2cba1b7050cb168bca70b6354cc7b654334dd53e` и
 `5d23555117c11620ee0f0834e6c30877fd1dafb8`. Остальные provenance-исключения
 остаются bounded: nightly static — depth 8 плюс эти фикстуры, A5 — depth 300 до
 закреплённого `be90b38df38788fc53190c862a873f4aab80ea28`.
 
-Локальный `file://` upload-pack замер на том же источнике дал:
+Static guard продолжает проверять все tracked runtime/resource и credential
+sources: если файл отсутствует в sparse worktree, текст читается из exact
+`HEAD:<path>`. Sparse checkout не уменьшает resource-case, architecture или
+credential coverage.
+
+Свежий локальный `file://` upload-pack замер синтетического двухродительского PR
+на candidate `e6ecf11dbfaf63d73d34b748561ca16b43e387fb` (tree
+`120b625169f16ecfc4377b5411d1941eb1a22f30`) дал:
 
 | Режим | Candidate | `size-pack` | Checkout disk | `.git` disk | Wall |
 |---|---:|---:|---:|---:|---:|
 | До: full clone | `db934d213` | 3,445,553 KiB (3,528,246,272 B) | 6,554,760 KiB | 3,463,084 KiB | ≈28 s |
-| После: depth 2 + sparse + две фикстуры | `0be9d8a52` | 2,640,082 KiB (2,703,443,968 B) | 3,354,824 KiB | 2,648,600 KiB | 18.11 s |
+| После: depth 2 + sparse + event base + фикстуры | `e6ecf11db` | 2,640,164 KiB (2,703,527,936 B) | 3,359,448 KiB | 2,648,264 KiB | 19.82 s |
 
-Итого: checkout disk −48.8%, packed storage −23.4%, `.git` disk −23.5%, wall
-−35.3%. Сумма after `.pack` файлов — 2,702,478,133 B. Локальный сервер трижды
-предупредил `filtering not recognized by server, ignoring`, поэтому pack/network
-результат консервативен; GitHub partial clone может передать меньше blob-данных.
+Итого: checkout disk −48.7%, packed storage −23.4%, `.git` disk −23.5%, wall
+−29.2%. Сумма after `.pack` файлов — 2,702,559,406 B. Локальный сервер при clone
+и fetch предупреждал `filtering not recognized by server, ignoring`, поэтому
+pack — консервативный proxy packed-storage/fetch, а не замер network bytes;
+GitHub partial clone может передать меньше blob-данных.
 
-Новые крупные исходники и референсы хранятся только под
+Все новые source/reference binaries независимо от размера хранятся только под
 `docs/design/reference-assets-lfs/<issue-or-pack>/` как валидные Git LFS
 pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`. Существующие
 файлы в `docs/design/{references,previews,mockups,backups}/` и `build/qa/`
-grandfathered, пока не меняются; новый/скопированный/изменённый/переименованный
-raw binary там запрещён от 1 MiB, а совокупность изменённых raw binaries — свыше
-5 MiB. Runtime `assets/**` остаётся обычным Git-контентом и всегда входит в
-чистый build/test checkout.
+grandfathered, пока не меняются; добавлять туда даже малые binaries нельзя.
+Автоматические запреты от 1 MiB на один изменённый legacy raw binary и свыше
+5 MiB на их совокупность — минимальная fail-closed защита, а не разрешение для
+меньших файлов. Runtime `assets/**` остаётся обычным Git-контентом и всегда
+входит в чистый build/test checkout.
+
+На clean synthetic candidate YAML и focused workflow/storage/tool suites
+прошли (`82/82`). Static-only дошёл через все sparse reads и остался красным
+только из-за уже отсутствующего в `origin/dev`
+`tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`. Это исходный
+repository invariant, а не исправление или waiver FAN-3470.
 
 Эта оптимизация относится только к candidate quality checkout. Release/tag
 операции обязаны иметь полную историю и tags, материализовать exact tag либо
