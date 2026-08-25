@@ -110,9 +110,14 @@ def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> 
     class_cache = os.path.join(project_path, ".godot", "global_script_class_cache.cfg")
     if not os.path.isdir(imported_dir) or not os.path.exists(class_cache):
         return True
-    if not any(Path(imported_dir).iterdir()):
+    tracked_sources = [
+        source for source in PLAYER_TEXTURE_IMPORTS if Path(project_path, source).is_file()
+    ]
+    if tracked_sources and not any(Path(imported_dir).iterdir()):
+        # An empty imported/ only signals a stale cache for a project that
+        # actually owns importable assets; a fixture with none is legitimate.
         return True
-    for source in PLAYER_TEXTURE_IMPORTS:
+    for source in tracked_sources:
         sidecar = Path(project_path, f"{source}.import")
         try:
             match = re.search(r'^path="res://(.godot/imported/[^\"]+\.ctex)"$', sidecar.read_text(encoding="utf-8"), re.MULTILINE)
@@ -134,7 +139,8 @@ def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False
         code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
         if code != 0 or _needs_import_cache(args, require_script=False):
             return code or 1
-    if needs_import or force:
+    probe_path = os.path.join(project_path, PLAYER_IMPORT_PROBE.removeprefix("res://"))
+    if (needs_import or force) and os.path.isfile(probe_path):
         return _run_godot(
             [godot, "--headless", "--path", project_path, "--script", PLAYER_IMPORT_PROBE],
             fail_on_fatal_output=True,
