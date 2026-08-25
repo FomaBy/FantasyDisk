@@ -72,13 +72,16 @@ Git blob: legacy binary вообще не читается, а future blob св�
 трёхстрочным LFS v1 pointer с lowercase SHA-256, decimal size и без добавленного
 payload.
 
-На rebased candidate focused storage suite прошёл (`36/36`). Связанный набор
-workflow/archive/static выполнил `43/44`: единственная ошибка — уже отсутствующий
-в `origin/dev` `tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`.
-Более широкий Python-набор выполнил `115/117`; оба оставшихся import-cache сбоя
-в `LiveEngineSignatureTests` отдельно воспроизводятся на clean exact
-`origin/dev` `919c0a3ee`. Это исходные repository invariants, а не исправления
-или waivers FAN-3470.
+На rebased candidate focused storage suite прошёл (`36/36`), workflow/archive —
+`21/21`, sparse-source regressions — `3/3`. Certifying static gate подтвердил
+storage policy, syntax, audit, validators, Git/shell и security config; полный
+Python-набор выполнил 475 тестов с тремя failures и тремя skips. Одна ошибка
+повторяет уже
+отсутствующий в `origin/dev`
+`tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`; два
+import-cache сбоя в `LiveEngineSignatureTests` отдельно воспроизводятся на clean
+exact `origin/dev` `919c0a3ee`. Это исходные repository invariants, а не
+исправления или waivers FAN-3470.
 
 Эта оптимизация относится только к candidate quality checkout. Release/tag
 операции обязаны иметь полную историю и tags, материализовать exact tag либо
