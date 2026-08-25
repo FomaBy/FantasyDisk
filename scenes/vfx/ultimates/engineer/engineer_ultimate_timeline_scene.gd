@@ -289,6 +289,10 @@ func _build_v2_overlay() -> void:
 		_sigil.texture = texture
 		_sigil.z_index = V2_SIGIL_Z
 		_sigil.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		# Owned by _apply_v2_overlay(), not the combat formation: stays inside
+		# capture_content_bounds() (no `fullscreen_layer`) but must not satisfy a
+		# formation-pose/motion assertion. See engineer_ultimate_presentation_test.gd.
+		_sigil.set_meta("overlay_layer", true)
 		add_child(_sigil)
 
 

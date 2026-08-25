@@ -55,6 +55,7 @@ func _initialize() -> void:
 	_test_animation_pack(errors)
 	_test_capture_evidence(errors)
 	_test_v2_overlay(registry, errors)
+	_test_frozen_formation_ignores_overlay_motion(registry, errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_test_scene_lifecycle(registry, str(weapon_id), errors)
 
@@ -394,6 +395,33 @@ func _test_v2_overlay(registry, errors: Array[String]) -> void:
 		sibling.free()
 
 
+## FAN-3425: `_scene_pose()` must represent only formation-owned combat
+## elements. WrenchSigil is owned by `_apply_v2_overlay()`, so moving it alone
+## (formation untouched, no `step()` between snapshots) must not change the
+## pose signature — a frozen combat formation must stay reported as frozen even
+## while the overlay animation keeps moving.
+func _test_frozen_formation_ignores_overlay_motion(registry, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(Pack.SENTRY_WRENCH, "")))
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	scene.begin(registry, _probes(), 0)
+	scene.step(0.45)
+	var frozen_pose := _scene_pose(scene)
+
+	var sigil := scene.get_node_or_null("WrenchSigil") as Sprite2D
+	_expect(sigil != null, "sentry v2 scene must expose WrenchSigil for the ownership probe", errors)
+	if sigil != null:
+		sigil.position += Vector2(500.0, 500.0)
+		sigil.scale *= 3.0
+		sigil.modulate.a = clampf(sigil.modulate.a + 0.3, 0.0, 1.0)
+		_expect(
+			_scene_pose(scene) == frozen_pose,
+			"WrenchSigil overlay motion must not move the frozen Sentry Wrench formation pose",
+			errors
+		)
+	scene.free()
+
+
 ## Children that would still draw: not yet queued for deletion.
 func _live_canvas_items(scene: Node2D) -> int:
 	var count := 0
@@ -496,12 +524,17 @@ func _runtime_image(weapon_id: String) -> Image:
 	return texture.get_image() if texture != null else null
 
 
-## Snapshot every formation sprite the scene currently owns.
+## Snapshot every formation sprite the scene currently owns. `fullscreen_layer`
+## (BackdropDim, CrossfireChord0..2) and `overlay_layer` (WrenchSigil) are owned
+## by `_apply_v2_overlay()`, not the combat formation, and must not satisfy a
+## resume-motion assertion while the formation itself is frozen.
 func _scene_pose(scene: Node2D) -> String:
 	var parts: Array[String] = []
 	for child in scene.get_children():
 		var sprite := child as Sprite2D
-		if sprite == null or bool(sprite.get_meta("fullscreen_layer", false)):
+		if sprite == null:
+			continue
+		if bool(sprite.get_meta("fullscreen_layer", false)) or bool(sprite.get_meta("overlay_layer", false)):
 			continue
 		parts.append("%.3f:%.3f:%.3f:%.3f" % [
 			sprite.position.x,
