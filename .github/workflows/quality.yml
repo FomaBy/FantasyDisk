@@ -36,7 +36,35 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          # Sparse checkout makes checkout@v6 fetch with `blob:none`. Pushes
+          # keep full ancestry for event.before; merge candidates need both
+          # direct parents only.
+          fetch-depth: ${{ github.event_name != 'push' && 2 || 0 }}
+          lfs: false
+          sparse-checkout: |
+            .github
+            assets
+            data
+            references
+            scenes
+            scripts
+            services
+            skills
+            source_docs
+            tests
+            tools
+            docs/process
+            docs/tasks
+            docs/design/templates/release_notes
+            docs/design/mockups/scrum1061_semantic_typography
+            docs/design/references/weapon_ultimates
+      - name: Fetch pinned legacy commits for shallow candidates
+        if: github.event_name != 'push'
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin \
+            2cba1b7050cb168bca70b6354cc7b654334dd53e \
+            5d23555117c11620ee0f0834e6c30877fd1dafb8
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"

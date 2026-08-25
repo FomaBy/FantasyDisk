@@ -13,6 +13,9 @@ class QualityWorkflowContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.source = WORKFLOW.read_text(encoding="utf-8")
+        start = cls.source.index("\n  static-quality:\n")
+        end = cls.source.index("\n  dev-runtime-health-static:\n", start)
+        cls.candidate_job = cls.source[start:end]
 
     def test_all_candidate_event_types_are_covered(self) -> None:
         self.assertIn("push:", self.source)
@@ -23,6 +26,55 @@ class QualityWorkflowContractTests(unittest.TestCase):
     def test_checkout_is_asserted_to_be_exact_github_sha(self) -> None:
         self.assertIn('test "$(git rev-parse HEAD)" = "$GITHUB_SHA"', self.source)
         self.assertIn("quality_gate_candidate_sha.txt", self.source)
+
+    def test_candidate_checkout_is_sparse_and_event_specific(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+
+        self.assertEqual(checkout.count("uses: actions/checkout@v6"), 1)
+        self.assertIn(
+            "fetch-depth: ${{ github.event_name != 'push' && 2 || 0 }}",
+            checkout,
+        )
+        self.assertIn("lfs: false", checkout)
+        self.assertIn("sparse-checkout: |", checkout)
+        for required_path in (
+            ".github",
+            "assets",
+            "data",
+            "references",
+            "scenes",
+            "scripts",
+            "services",
+            "skills",
+            "source_docs",
+            "tests",
+            "tools",
+            "docs/process",
+            "docs/tasks",
+            "docs/design/templates/release_notes",
+            "docs/design/mockups/scrum1061_semantic_typography",
+            "docs/design/references/weapon_ultimates",
+        ):
+            self.assertIn(f"          {required_path}\n", checkout)
+
+    def test_shallow_candidate_events_fetch_pinned_legacy_commits(self) -> None:
+        start = self.candidate_job.index(
+            "- name: Fetch pinned legacy commits for shallow candidates"
+        )
+        end = self.candidate_job.index("- uses: actions/setup-python@v6", start)
+        history_step = self.candidate_job[start:end]
+
+        self.assertIn("if: github.event_name != 'push'", history_step)
+        self.assertIn("git fetch --no-tags --depth=1 origin", history_step)
+        self.assertIn(
+            "2cba1b7050cb168bca70b6354cc7b654334dd53e",
+            history_step,
+        )
+        self.assertIn(
+            "5d23555117c11620ee0f0834e6c30877fd1dafb8",
+            history_step,
+        )
 
     def test_machine_readable_evidence_is_hashed_and_uploaded(self) -> None:
         self.assertIn("build/quality_gate_report.json", self.source)
