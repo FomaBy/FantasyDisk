@@ -39,6 +39,7 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("lfs: false", checkout)
         self.assertIn("sparse-checkout: |", checkout)
         for required_path in (
+            ".claude",
             ".github",
             "assets",
             "data",

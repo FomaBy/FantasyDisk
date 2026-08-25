@@ -42,6 +42,7 @@ jobs:
           fetch-depth: ${{ github.event_name != 'push' && 2 || 0 }}
           lfs: false
           sparse-checkout: |
+            .claude
             .github
             assets
             data
