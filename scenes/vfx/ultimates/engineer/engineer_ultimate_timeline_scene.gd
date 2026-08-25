@@ -277,6 +277,7 @@ func _build_v2_overlay() -> void:
 		chord.scale = Vector2(endpoint.length() * 2.0 / float(overlay_texture.get_width()), V2_CHORD_WIDTH / float(overlay_texture.get_height()))
 		chord.modulate = _v2_color(overlay.get("chord_color", {}), 0.0)
 		chord.z_index = V2_CHORD_Z
+		chord.set_meta("fullscreen_layer", true)
 		add_child(chord)
 		_chords.append(chord)
 

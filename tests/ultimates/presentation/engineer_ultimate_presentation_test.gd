@@ -339,6 +339,13 @@ func _test_v2_overlay(registry, errors: Array[String]) -> void:
 	scene.begin(registry, _probes(), 0)
 	for node_name in ["BackdropDim", "WrenchSigil", "CrossfireChord0", "CrossfireChord1", "CrossfireChord2"]:
 		_expect(scene.get_node_or_null(node_name) != null, "sentry v2 scene must build %s" % node_name, errors)
+	for node_name in ["BackdropDim", "CrossfireChord0", "CrossfireChord1", "CrossfireChord2"]:
+		var layer := scene.get_node_or_null(node_name) as Sprite2D
+		_expect(
+			layer != null and bool(layer.get_meta("fullscreen_layer", false)),
+			"%s must be excluded from capture bounds and scene poses" % node_name,
+			errors
+		)
 	_expect(
 		_live_canvas_items(scene) == 11,
 		"sentry v2 scene must own 11 drawing nodes (6 pylons + 5 overlay), got %d" % _live_canvas_items(scene),
