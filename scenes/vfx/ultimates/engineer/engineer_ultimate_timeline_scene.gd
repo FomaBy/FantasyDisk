@@ -258,6 +258,7 @@ func _build_v2_overlay() -> void:
 	_backdrop.scale = half_size * 2.0 / Vector2(overlay_texture.get_width(), overlay_texture.get_height())
 	_backdrop.modulate = _v2_color(overlay.get("backdrop_color", {}), 0.0)
 	_backdrop.z_index = V2_BACKDROP_Z
+	_backdrop.set_meta("fullscreen_layer", true)
 	add_child(_backdrop)
 
 	var formation: Dictionary = Pack.weapon_config(weapon_id).get("formation", {})
@@ -295,15 +296,13 @@ func _v2_seat(index: int, count: int, radius: float) -> Vector2:
 	return Vector2(cos(angle), sin(angle) * 0.62) * radius
 
 
+## The committed radial veil resource: same asset the backdrop dim and the
+## crossfire chords draw through, `load()` shares the one cached instance.
+const V2_OVERLAY_TEXTURE_PATH := "res://assets/vfx/ultimates/engineer/sentry_wrench_overlay_veil.tres"
+
+
 func _v2_overlay_texture() -> GradientTexture2D:
-	var gradient := Gradient.new()
-	gradient.offsets = PackedFloat32Array([0.0, 1.0])
-	gradient.colors = PackedColorArray([Color.WHITE, Color.WHITE])
-	var texture := GradientTexture2D.new()
-	texture.gradient = gradient
-	texture.width = 64
-	texture.height = 64
-	return texture
+	return load(V2_OVERLAY_TEXTURE_PATH) as GradientTexture2D
 
 
 func _v2_color(raw, alpha: float) -> Color:

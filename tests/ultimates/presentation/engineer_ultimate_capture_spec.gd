@@ -140,6 +140,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var sprite := child as Sprite2D
 		if sprite == null or not sprite.visible or sprite.modulate.a <= 0.01:
 			continue
+		if bool(sprite.get_meta("fullscreen_layer", false)):
+			continue
 		var rect := sprite.get_rect()
 		var item := Rect2(sprite.position + rect.position * sprite.scale, rect.size * sprite.scale)
 		bounds = item if not found else bounds.merge(item)
