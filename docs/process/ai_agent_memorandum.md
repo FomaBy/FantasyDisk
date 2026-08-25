@@ -11,10 +11,11 @@ or domain reference only when a concrete gap requires it.
 - Jira/SCRUM and local task Markdown are history or mirrors, never a queue.
 - Work exactly one issue assigned to the current agent. Do not self-claim,
   assign another worker, start competing QA, or cross an active lock.
-- PM owns scope/readiness judgment. Qwen Operations Dispatcher alone performs
-  PM-gated mechanical allocation. Developers implement; assigned QA verifies
-  the exact pushed candidate independently; assigned DevOps integrates that
-  same approved SHA into `dev`.
+- PM owns scope/readiness judgment. The canonical dispatcher in
+  `docs/process/dispatcher-authority.md` alone performs PM-gated mechanical
+  allocation. Developers implement; assigned QA verifies the exact pushed
+  candidate independently; assigned DevOps integrates that same approved SHA
+  into `dev`.
 - Direct user-control work uses the explicit manual-ownership contract and must
   not overlap a daemon assignment.
 
@@ -26,7 +27,7 @@ Use `docs/process/multica_workflow.md` for lifecycle details and
 Read only what the issue needs:
 
 - CUE/readiness: `docs/process/story_points.md`
-- PM→Qwen: `docs/process/pm_workflow.md`
+- PM→canonical dispatcher: `docs/process/pm_workflow.md`
 - QA: `docs/process/qa_protocol.md`
 - Git/version/release: `docs/process/versioning_and_branching.md`
 - comment style: `docs/process/human_readable_comments.md`
@@ -68,7 +69,7 @@ fixes production code in the review scope and never calls a blocked or
 unexecuted check PASS.
 
 Publish `PASSED|FAILED|INCONCLUSIVE`, finish the QA child, and trigger PM once.
-Parent/rework allocation remains a PM/Qwen lifecycle concern.
+Parent/rework allocation remains a PM/canonical-dispatcher lifecycle concern.
 
 ## DevOps loop
 

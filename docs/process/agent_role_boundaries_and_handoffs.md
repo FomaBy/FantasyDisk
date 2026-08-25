@@ -6,12 +6,15 @@ One issue has one live owner and one non-overlapping locked scope. Roles may
 collaborate through independently acceptable child issues, not by editing the
 same files or assets concurrently.
 
+Dispatch authority is pinned by `docs/process/dispatcher-authority.md`; worker
+provider or model names do not replace that record.
+
 ## Authority map
 
 | Role | Owns | Must not do |
 | --- | --- | --- |
 | PM | outcome, CUE/Fibonacci, AC, dependencies, complexity, routing, QA/rework readiness | assign delivery agents, launch lifecycle, implement product scope, perform independent QA |
-| Qwen dispatcher | deterministic assignment and lifecycle from PM-ready metadata | estimate, change AC/scope/routing, implement, test, interpret product ambiguity |
+| Canonical dispatcher | deterministic assignment and lifecycle from PM-ready metadata | estimate, change AC/scope/routing, implement, test, interpret product ambiguity |
 | Developer | one assigned implementation scope, tests/docs, pushed candidate evidence | self-claim, dispatch, select QA, review its own work independently |
 | QA | one assigned exact-SHA child and independent verdict | self-select parent, repair production code, allocate rework, accept stale SHA |
 | Design/UI | visual system, mockup/art package, screen/layout evidence in assigned scope | backend/gameplay changes outside the handoff |
@@ -59,7 +62,7 @@ gameplay behavior without an explicit issue scope.
 
 Own acceptance evidence and verdict for the assigned exact candidate. QA may
 create evidence/probes that do not modify production code. Confirmed defects are
-reported to PM for bounded estimation and Qwen dispatch.
+reported to PM for bounded estimation and canonical dispatcher handoff.
 
 ## Handoff content
 
@@ -97,8 +100,8 @@ Developer evidence:
 - one PM completion trigger.
 
 QA evidence follows `docs/process/qa_protocol.md`. PM then prepares the next
-consistent gate; Qwen performs the mechanical transition. No role selects its
-own successor.
+consistent gate; the canonical dispatcher performs the mechanical transition.
+No role selects its own successor.
 
 ## Subagents
 

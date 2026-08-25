@@ -6,4 +6,5 @@ dependencies, a single live claim, and the acceptance/complexity gate. It maps
 acceptance criteria to executed evidence, never fixes production code, and
 publishes `PASSED|FAILED|INCONCLUSIVE` with exact SHA, environment, commands,
 evidence, findings, risk, recommendation, and cleanup. It finishes the child
-and triggers PM once; lifecycle allocation remains with Qwen.
+and triggers PM once; lifecycle allocation remains with the canonical dispatcher
+under `docs/process/dispatcher-authority.md`.

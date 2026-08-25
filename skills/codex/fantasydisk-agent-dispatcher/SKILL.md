@@ -1,6 +1,6 @@
 ---
 name: fantasydisk-agent-dispatcher
-description: Execute or supervise the current Qwen-only mechanical dispatch contract for FantasyDisk Multica issues. Use for readiness handoff, capacity-safe assignment, exact-SHA QA launch, deterministic parent release, or dispatcher reconciliation; PM supplies judgment and Qwen alone performs allocation.
+description: Execute or supervise the canonical mechanical dispatch contract for FantasyDisk Multica issues. Use for readiness handoff, capacity-safe assignment, exact-SHA QA launch, deterministic parent release, or dispatcher reconciliation; PM supplies judgment and the canonical dispatcher alone performs allocation.
 ---
 
 # FantasyDisk Agent Dispatcher
@@ -10,9 +10,11 @@ Markdown are references only.
 
 This skill does not grant general allocation authority:
 
+- The runnable authority record is `docs/process/dispatcher-authority.md`.
+
 - PM defines scope, acceptance criteria, CUE/Fibonacci, complexity,
   dependencies, routing, and QA/rework readiness.
-- Qwen Operations Dispatcher alone performs mechanical assignment and
+- The canonical dispatcher alone performs mechanical assignment and
   deterministic lifecycle transitions from a complete gate.
 - Developers implement one assigned issue.
 - QA verifies one assigned exact-SHA child independently.

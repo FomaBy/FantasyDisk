@@ -1,9 +1,9 @@
 # FantasyDisk routing guide
 
 Routing begins in Multica, not in local task files. PM decides the lane from
-CUE, scope, risk, acceptance criteria, dependencies, and capability. Qwen
-Operations Dispatcher then selects an eligible live worker inside that approved
-lane.
+CUE, scope, risk, acceptance criteria, dependencies, and capability. The
+canonical dispatcher described in `docs/process/dispatcher-authority.md` then
+selects an eligible live worker inside that approved lane.
 
 ## Canonical lanes
 
@@ -21,7 +21,7 @@ borrowing is forbidden.
 
 ## Readiness gate
 
-Before Qwen can see a candidate, PM leaves it unassigned in `backlog` and makes
+Before the canonical dispatcher can see a candidate, PM leaves it unassigned in `backlog` and makes
 these agree after re-read:
 
 - description with Story Points, CUE rationale, complexity rationale, routing,
@@ -52,8 +52,8 @@ discipline work into independently acceptable children with explicit handoffs.
 
 ## Dispatch boundary
 
-Only Qwen performs assignment and `backlog → todo`, using the canonical
-workspace dispatcher skill. PM never substitutes a manual launch; workers never
-self-claim; QA never selects its own parent. If capacity, quota, dependency,
+Only the canonical dispatcher performs assignment and `backlog → todo`, using
+the canonical workspace dispatcher skill. PM never substitutes a manual launch;
+workers never self-claim; QA never selects its own parent. If capacity, quota, dependency,
 overlap, or gate evidence is missing, leave the issue unassigned in `backlog`
 with the exact waiting condition.
