@@ -1,7 +1,56 @@
 # Code Quality & Windows Performance Gate
 
-Обновлено: 2026-08-01. Аудит FAN-1040 выполнен на исходном
+Обновлено: 2026-08-25. Аудит FAN-1040 выполнен на исходном
 `1190db1d1de10ab90e21d2cdea32be908efbeada`; исправления проверяются единым gate.
+
+## Checkout и хранение repository evidence
+
+Частый candidate gate использует `actions/checkout@v6` с `lfs: false` и
+`fetch-depth: 2` для pull request/merge queue; push сохраняет полную ancestry,
+потому что static gate сравнивает `github.event.before`. Sparse checkout обязан
+содержать ровно его runtime/test/tool/policy inputs:
+
+```text
+.claude .github assets data references scenes scripts services skills source_docs
+tests tools docs/process docs/tasks docs/design/templates/release_notes
+docs/design/mockups/scrum1061_semantic_typography
+docs/design/references/weapon_ultimates
+```
+
+Наличие sparse-конфигурации включает в checkout `filter=blob:none`; отдельный
+`filter` не задавать. Shallow candidate дополнительно получает только две
+закреплённые legacy-фикстуры, каждая depth 1:
+`2cba1b7050cb168bca70b6354cc7b654334dd53e` и
+`5d23555117c11620ee0f0834e6c30877fd1dafb8`. Остальные provenance-исключения
+остаются bounded: nightly static — depth 8 плюс эти фикстуры, A5 — depth 300 до
+закреплённого `be90b38df38788fc53190c862a873f4aab80ea28`.
+
+Локальный `file://` upload-pack замер на том же источнике дал:
+
+| Режим | Candidate | `size-pack` | Checkout disk | `.git` disk | Wall |
+|---|---:|---:|---:|---:|---:|
+| До: full clone | `db934d213` | 3,445,553 KiB (3,528,246,272 B) | 6,554,760 KiB | 3,463,084 KiB | ≈28 s |
+| После: depth 2 + sparse + две фикстуры | `0be9d8a52` | 2,640,082 KiB (2,703,443,968 B) | 3,354,824 KiB | 2,648,600 KiB | 18.11 s |
+
+Итого: checkout disk −48.8%, packed storage −23.4%, `.git` disk −23.5%, wall
+−35.3%. Сумма after `.pack` файлов — 2,702,478,133 B. Локальный сервер трижды
+предупредил `filtering not recognized by server, ignoring`, поэтому pack/network
+результат консервативен; GitHub partial clone может передать меньше blob-данных.
+
+Новые крупные исходники и референсы хранятся только под
+`docs/design/reference-assets-lfs/<issue-or-pack>/` как валидные Git LFS
+pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`. Существующие
+файлы в `docs/design/{references,previews,mockups,backups}/` и `build/qa/`
+grandfathered, пока не меняются; новый/скопированный/изменённый/переименованный
+raw binary там запрещён от 1 MiB, а совокупность изменённых raw binaries — свыше
+5 MiB. Runtime `assets/**` остаётся обычным Git-контентом и всегда входит в
+чистый build/test checkout.
+
+Эта оптимизация относится только к candidate quality checkout. Release/tag
+операции обязаны иметь полную историю и tags, материализовать exact tag либо
+закреплённый candidate в отдельном detached worktree и сверять commit/tree
+provenance. Shallow/sparse candidate нельзя использовать как release source;
+опубликованную историю и существующие binaries нельзя переписывать ради LFS.
 
 ## Lean default и risk-профили
 
