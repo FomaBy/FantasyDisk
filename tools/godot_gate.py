@@ -47,6 +47,11 @@ SCRIPT_LOAD_FAILURE_PATTERNS = (
     "Failed loading resource",
 )
 IMPORT_CACHE_MISSING_MESSAGE = "godot_gate: import cache missing, running headless import first"
+PLAYER_IMPORT_PROBE = "res://tests/import_cache_player_load_test.gd"
+PLAYER_TEXTURE_IMPORTS = (
+    "assets/sprites/characters/berserk_unarmed.png",
+    "assets/sprites/characters/berserk_walk_sheet_v2.png",
+)
 MACHINE_RUN_TOKENS = 64
 
 
@@ -105,22 +110,36 @@ def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> 
     class_cache = os.path.join(project_path, ".godot", "global_script_class_cache.cfg")
     if not os.path.isdir(imported_dir) or not os.path.exists(class_cache):
         return True
-    try:
-        next(os.scandir(imported_dir)).name
-    except (StopIteration, FileNotFoundError, NotADirectoryError):
+    if not any(Path(imported_dir).iterdir()):
         return True
+    for source in PLAYER_TEXTURE_IMPORTS:
+        sidecar = Path(project_path, f"{source}.import")
+        try:
+            match = re.search(r'^path="res://(.godot/imported/[^\"]+\.ctex)"$', sidecar.read_text(encoding="utf-8"), re.MULTILINE)
+        except OSError:
+            return True
+        if match is None or not Path(project_path, match.group(1)).is_file():
+            return True
     return False
 
 
 def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False) -> int:
-    if not _needs_import_cache(args, require_script=not force):
-        return 0
     project_path = _project_path(args)
-    sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
-    # The import pre-pass is intentionally diagnostic-tolerant: existing green
-    # suites can emit unrelated import/resource warnings while warming the
-    # cache. Only the requested executable run below is a certifying call site.
-    return _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+    needs_import = _needs_import_cache(args, require_script=not force)
+    if needs_import:
+        sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
+        # The import pre-pass is intentionally diagnostic-tolerant: existing green
+        # suites can emit unrelated import/resource warnings while warming the
+        # cache. The Player probe below is the certifying call site.
+        code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+        if code != 0 or _needs_import_cache(args, require_script=False):
+            return code or 1
+    if needs_import or force:
+        return _run_godot(
+            [godot, "--headless", "--path", project_path, "--script", PLAYER_IMPORT_PROBE],
+            fail_on_fatal_output=True,
+        )
+    return 0
 
 
 def _write_live_output(chunk: bytes) -> None:

@@ -319,19 +319,69 @@ class GodotGateTest(unittest.TestCase):
         # log contract (exactly one cold emission), so a leak from this suite
         # would double it in every certifying run.
         captured_stderr = io.StringIO()
-        with mock.patch.object(self.module, "_needs_import_cache", return_value=True):
+        with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
             with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
                 with contextlib.redirect_stderr(captured_stderr):
                     self.assertEqual(
                         self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
                         0,
                     )
-        run.assert_called_once_with(
+        self.assertEqual(run.call_args_list[0], mock.call(
             ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
-        )
+        ))
         self.assertIn(
             "godot_gate: import cache missing, running headless import first",
             captured_stderr.getvalue(),
+        )
+
+    def test_import_cache_requires_the_player_texture_artifacts(self):
+        """A stray import must not let a clean checkout skip its real import."""
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            imported = project / ".godot" / "imported"
+            imported.mkdir(parents=True)
+            (project / ".godot" / "global_script_class_cache.cfg").touch()
+            (imported / "unrelated.ctex").touch()
+            self.assertTrue(
+                self.module._needs_import_cache(["--path", str(project)], require_script=False)
+            )
+
+    def test_import_prepass_rechecks_artifacts_and_loads_player(self):
+        with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+            with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
+                self.assertEqual(
+                    self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
+                    0,
+                )
+        self.assertEqual(
+            run.call_args_list,
+            [
+                mock.call(["/godot", "--headless", "--path", "/repo", "--import", "--quit"]),
+                mock.call(
+                    [
+                        "/godot", "--headless", "--path", "/repo", "--script",
+                        "res://tests/import_cache_player_load_test.gd",
+                    ],
+                    fail_on_fatal_output=True,
+                ),
+            ],
+        )
+
+    def test_forced_import_check_still_loads_player_when_cache_is_complete(self):
+        with mock.patch.object(self.module, "_needs_import_cache", return_value=False):
+            with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                self.assertEqual(
+                    self.module._ensure_import_cache(
+                        ["--path", "/repo"], "/godot", force=True
+                    ),
+                    0,
+                )
+        run.assert_called_once_with(
+            [
+                "/godot", "--headless", "--path", "/repo", "--script",
+                "res://tests/import_cache_player_load_test.gd",
+            ],
+            fail_on_fatal_output=True,
         )
 
     def test_ensure_import_cache_only_skips_the_requested_godot_command(self):
