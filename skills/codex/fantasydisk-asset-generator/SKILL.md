@@ -39,7 +39,7 @@ Always produce assets with:
 2. Classify the requested image before choosing a generator. Route background imagery to `$fantasydisk-builtin-image-generator` and continue here only for non-background assets.
 3. Build a concise PixelLab prompt/spec from the task: asset type, canonical ID, target use, size/aspect, style, forbidden text, safe zones, alpha needs, and animation/state needs.
 4. Use PixelLab MCP to create, revise, or fetch the source asset. Prefer stable tags matching the canonical ID, for example `berserk`, `artifact_blood_sigil`, `ui_frame_combat_hud_health`.
-5. Export source PNGs from PixelLab into `docs/design/references/<task_or_pack>/`.
+5. Export source PNGs from PixelLab into `docs/design/reference-assets-lfs/<task_or_pack>/` through Git LFS.
 6. Save a `manifest.json` beside the source files with PixelLab IDs/tags, prompt/spec, export dimensions, frame/state names, and source filenames. Never store API tokens or Authorization headers.
 7. Postprocess the result before presenting it as game-ready.
 8. Create preview/contact sheets when useful, especially for batches, state sheets, frames, or animations.
@@ -86,8 +86,8 @@ For animated characters, also follow `$fantasydisk-pixellab-animation-integrator
 
 ## Output Paths
 
-- Save references under `docs/design/references/<task_or_pack>/`.
-- Save preview/contact sheets under `docs/design/previews/`.
+- Save new binary references and preview/contact sheets under `docs/design/reference-assets-lfs/<task_or_pack>/` through Git LFS.
+- Treat `docs/design/references/` and `docs/design/previews/` as grandfathered legacy locations; do not add or modify binary assets there.
 - Save accepted runtime assets under the correct `assets/sprites/...` folder only after the visual is accepted.
 - Keep generated source/reference files separate from final runtime assets.
 

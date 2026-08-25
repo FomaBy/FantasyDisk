@@ -32,3 +32,21 @@
 *.exe  binary
 *.zip  binary
 *.res  binary
+
+# Future-only design source/reference binaries. Runtime assets stay ordinary Git blobs.
+docs/design/reference-assets-lfs/**/*.png  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.jpg  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.webp filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.gif  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.svg  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.wav  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.ogg  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.mp3  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.ttf  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.otf  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.ico  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.dmg  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.exe  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.zip  filter=lfs diff=lfs merge=lfs -text
+docs/design/reference-assets-lfs/**/*.res  filter=lfs diff=lfs merge=lfs -text

@@ -57,8 +57,8 @@ Then read only the references needed for the current step:
 4. Generate or update assets:
    - use `$fantasydisk-builtin-image-generator` for backgrounds and illustrated underlays, with built-in OpenAI generation as the default and no PixelLab;
    - use `$fantasydisk-asset-generator` for PixelLab MCP generated frames, buttons, icons, non-background mockup art, and UI reference sheets;
-   - keep source references under `docs/design/references/<topic>/`;
-   - keep previews under `docs/design/previews/`;
+   - keep new binary source references and previews under `docs/design/reference-assets-lfs/<topic>/` through Git LFS;
+   - treat `docs/design/references/` and `docs/design/previews/` as grandfathered legacy locations; do not add or modify binary assets there;
    - move accepted runtime assets to `assets/...` only when integration is part of the task.
 5. Implement in Godot:
    - use stable Control anchors, containers, custom minimum sizes, StyleBoxTexture margins, TextureRect stretch settings, and responsive constraints;

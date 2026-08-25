@@ -534,6 +534,17 @@ def run_static_checks(
     python_commands = python_unit_commands()
     commands: list[tuple[str, list[str]]] = [
         ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
+        (
+            "repository-storage-policy",
+            [
+                sys.executable,
+                "tools/repository_storage_policy.py",
+                "--root",
+                str(ROOT),
+                "--changed-ref",
+                changed_ref,
+            ],
+        ),
         *python_commands,
         ("python-syntax", [sys.executable, "-m", "compileall", "-q", "tools", "tests"]),
         ("asset-audit", [sys.executable, "tools/test_audit_unused_assets.py"]),
