@@ -29,13 +29,11 @@ route; this is unconditional and has no size threshold. Unchanged legacy files
 remain grandfathered and deletions are allowed. A conservative text-extension
 allowlist keeps manifests, docs, scenes, resources, and scripts textual; any
 other extension is treated as binary, while extensionless files use an 8 KiB
-size/content probe. The extension alone never proves text: every text-declared
-blob is content-probed over its leading 8 KiB and fails closed on NUL bytes,
-invalid UTF-8, or control characters, so a binary payload renamed to `.json`
-or `.md` cannot bypass the LFS route. The probe reads only leading bytes and
-discards the rest of the stream, so a disguised multi-gigabyte blob is never
-materialized in Python or the worktree; binary content hidden after a longer
-text prefix remains a known documented limitation.
+size/content threshold. The extension alone never proves text: every
+text-declared blob is streamed completely in bounded 8 KiB chunks and fails
+closed on NUL bytes, invalid UTF-8, or control characters, so binary payloads
+renamed to `.json` or `.md` cannot bypass the LFS route without materializing
+the blob in Python or the worktree.
 
 The policy asks Git for each candidate blob size before content. Legacy binary
 rejections never read the blob. Future blobs larger than the 256-byte pointer

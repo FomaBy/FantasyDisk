@@ -157,7 +157,7 @@ def resolve_output(project_root: Path, output_arg: str) -> Path:
         else:
             output = references_root / "generated_assets" / date.today().strftime("%Y_%m_%d") / raw
 
-    if output.suffix.lower() != ".png":
+    if output.suffix != ".png":
         output = output.with_suffix(".png")
     if not _inside(output, anchor):
         fail("--output must remain inside docs/design/reference-assets-lfs/<issue-or-pack>/")

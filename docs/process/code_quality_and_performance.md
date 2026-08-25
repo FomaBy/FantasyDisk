@@ -60,20 +60,25 @@ pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`
 checkout.
 
 Детерминированное распознавание считает известные текстовые расширения
-(`.md`, `.json`, `.csv`, Godot/Python/shell/config форматы) текстом, любое иное
-расширение — binary, а файл без расширения проверяет по размеру и максимум 8 KiB
-содержимого. Поэтому новые `.docx`, `.xlsx`, `.pdf`, `.gz` и неизвестные binary
-форматы не обходят правило, а обычные документы и manifests не получают ложный
-запрет. Сначала запрашивается размер Git blob: legacy binary вообще не читается,
-а future blob свыше 256 B отклоняется до чтения. Меньший future blob обязан быть
-ровно каноническим трёхстрочным LFS v1 pointer с lowercase SHA-256, decimal size
-и без добавленного payload.
+(`.md`, `.json`, `.csv`, `.log`, Godot/Python/shell/config форматы) заявкой на
+текст, но проверяет весь blob потоково по 8 KiB: NUL, управляющие байты и
+некорректный UTF-8 переводят файл в binary независимо от позиции содержимого.
+Любое иное расширение считается binary, а файл без расширения проверяется по
+размеру и содержимому. Поэтому новые `.docx`, `.xlsx`, `.pdf`, `.gz`, неизвестные
+binary-форматы и binary под текстовым расширением не обходят правило, а обычные
+документы и manifests не получают ложный запрет. Сначала запрашивается размер
+Git blob: legacy binary вообще не читается, а future blob свыше 256 B
+отклоняется до чтения. Меньший future blob обязан быть ровно каноническим
+трёхстрочным LFS v1 pointer с lowercase SHA-256, decimal size и без добавленного
+payload.
 
-На clean synthetic candidate YAML и focused workflow/storage/tool suites
-прошли (`82/82`). Static-only дошёл через все sparse reads и остался красным
-только из-за уже отсутствующего в `origin/dev`
-`tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`. Это исходный
-repository invariant, а не исправление или waiver FAN-3470.
+На rebased candidate focused storage suite прошёл (`36/36`). Связанный набор
+workflow/archive/static выполнил `43/44`: единственная ошибка — уже отсутствующий
+в `origin/dev` `tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`.
+Более широкий Python-набор выполнил `115/117`; оба оставшихся import-cache сбоя
+в `LiveEngineSignatureTests` отдельно воспроизводятся на clean exact
+`origin/dev` `919c0a3ee`. Это исходные repository invariants, а не исправления
+или waivers FAN-3470.
 
 Эта оптимизация относится только к candidate quality checkout. Release/tag
 операции обязаны иметь полную историю и tags, материализовать exact tag либо

@@ -31,11 +31,11 @@
 - Consumes: GitHub `push`, `pull_request`, and `merge_group` event SHAs.
 - Produces: sparse `blob:none` candidate checkout; depth 2 plus an exact event-base ref for merge candidates; full push ancestry; targeted legacy fixture commits; exact-`HEAD` reads for tracked source omitted from the worktree.
 
-- [ ] Add workflow assertions that fail while `static-quality` still uses unconditional `fetch-depth: 0` and has no sparse list.
-- [ ] Run `python3 -m unittest tests.test_quality_workflow -v` and confirm the new assertions fail.
-- [ ] Add the minimal sparse checkout, event-specific depth, explicit `lfs: false`, and shallow-only pinned legacy fetch.
-- [ ] Preserve static resource, architecture, and credential coverage by reading sparse-absent tracked source from exact `HEAD` while keeping materialized and untracked files disk-first.
-- [ ] Re-run the focused workflow test and confirm it passes.
+- [x] Add workflow assertions that fail while `static-quality` still uses unconditional `fetch-depth: 0` and has no sparse list.
+- [x] Run `python3 -m unittest tests.test_quality_workflow -v` and confirm the new assertions fail.
+- [x] Add the minimal sparse checkout, event-specific depth, explicit `lfs: false`, and shallow-only pinned legacy fetch.
+- [x] Preserve static resource, architecture, and credential coverage by reading sparse-absent tracked source from exact `HEAD` while keeping materialized and untracked files disk-first.
+- [x] Re-run the focused workflow test and confirm it passes.
 
 ### Task 2: Future-only LFS and size policy
 
@@ -56,16 +56,16 @@
   runtime assets, and exact bounded LFS pointers; exit 1 for every changed
   design/build-QA binary outside the nested future route or any invalid pointer.
 
-- [ ] Add strict-pointer unit tests plus temporary real-Git tests for small
+- [x] Add strict-pointer unit tests plus temporary real-Git tests for small
   add/modify, copy/rename destinations, known and unknown formats, required pack
   nesting, grandfathering, deletion, and ordinary runtime asset acceptance.
-- [ ] Run `python3 -m unittest tests.test_repository_storage_policy -v` and confirm failure because the policy tool does not exist.
-- [ ] Implement status-aware parsing, size-first Git blob inspection, the
+- [x] Run `python3 -m unittest tests.test_repository_storage_policy -v` and confirm failure because the policy tool does not exist.
+- [x] Implement status-aware parsing, size-first Git blob inspection, the
   conservative text allowlist, strict 256-byte LFS pointer validation, and the
   required Git LFS mappings.
-- [ ] Add the guard to the static quality command list and update every active
+- [x] Add the guard to the static quality command list and update every active
   source/reference/mockup producer without changing runtime `assets/**` routes.
-- [ ] Re-run storage-policy and quality-tool tests and confirm they pass.
+- [x] Re-run storage-policy and quality-tool tests and confirm they pass.
 
 ### Task 3: Verification and benchmark
 
@@ -80,9 +80,9 @@
 - Consumes: final candidate diff and a disposable clean clone.
 - Produces: before/after bytes, disk, wall time, clean-checkout/static-gate proof, exact commit/tree SHAs.
 
-- [ ] Document candidate sparse inputs, unconditional future LFS routing, strict
+- [x] Document candidate sparse inputs, unconditional future LFS routing, strict
   pointer/size-first behavior, synthetic merge provenance, and release
   full-history rule.
-- [ ] Run focused unit tests, `tools/quality_gate.py --static-only`, YAML syntax validation available locally, and a clean sparse-clone check; distinguish candidate regressions from an exact `origin/dev` baseline failure.
-- [ ] Record benchmark numbers from identical local upload-pack inputs and note the local filter limitation.
-- [ ] Inspect the full diff, remove task-owned planning/benchmark directories, commit, push, and post the exact-SHA handoff.
+- [x] Run focused unit tests, `tools/quality_gate.py --static-only`, YAML syntax validation available locally, and a clean sparse-clone check; distinguish candidate regressions from an exact `origin/dev` baseline failure.
+- [x] Record benchmark numbers from identical local upload-pack inputs and note the local filter limitation.
+- [x] Inspect the full diff, remove task-owned planning/benchmark directories, commit, push, and post the exact-SHA handoff.

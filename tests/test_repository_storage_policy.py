@@ -216,6 +216,13 @@ class RepositoryStoragePolicyTests(unittest.TestCase):
 
         self.assert_policy_passes(base)
 
+    def test_text_qa_log_is_allowed(self) -> None:
+        base = self.base_commit()
+        self.write("build/qa/FAN-3470/import.log", b"import completed\n")
+        self.commit("add text QA log")
+
+        self.assert_policy_passes(base)
+
     def test_binary_disguised_as_json_is_rejected(self) -> None:
         base = self.base_commit()
         relative = "docs/design/data/FAN-3470/payload.json"
@@ -232,6 +239,14 @@ class RepositoryStoragePolicyTests(unittest.TestCase):
 
         self.assert_policy_fails(base, relative, "reference-assets-lfs")
 
+    def test_binary_disguised_after_long_text_prefix_is_rejected(self) -> None:
+        base = self.base_commit()
+        relative = "docs/design/data/FAN-3470/payload.json"
+        self.write(relative, b'{"padding":"' + b"a" * 9_000 + b"\x00\xff" + b'"}\n')
+        self.commit("add binary after long text prefix")
+
+        self.assert_policy_fails(base, relative, "reference-assets-lfs")
+
     def test_large_genuine_text_manifest_is_allowed(self) -> None:
         base = self.base_commit()
         self.write(
@@ -242,15 +257,16 @@ class RepositoryStoragePolicyTests(unittest.TestCase):
 
         self.assert_policy_passes(base)
 
-    def test_text_disguise_probe_reads_only_leading_bytes(self) -> None:
+    def test_large_disguised_binary_is_rejected_without_full_blob_helper(self) -> None:
         base = self.base_commit()
         relative = "docs/design/data/FAN-3470/payload.json"
         self.write(relative, b"\x00" * 1_048_576)
         self.commit("add large disguised binary")
 
-        probe = POLICY.head_blob_probe(self.repo, relative)
-        self.assertLessEqual(len(probe), POLICY.CONTENT_PROBE_BYTES)
-        self.assert_policy_fails(base, relative, "reference-assets-lfs")
+        with mock.patch.object(POLICY, "head_blob", side_effect=AssertionError("full blob read")):
+            errors = POLICY.collect_errors(self.repo, base)
+
+        self.assertTrue(any(relative in error and "reference-assets-lfs" in error for error in errors))
 
     def test_unchanged_legacy_binary_is_grandfathered(self) -> None:
         self.write("docs/design/references/old-pack/source.png", b"old binary")
@@ -350,6 +366,14 @@ class ActiveProducerRoutingTests(unittest.TestCase):
         body = task.read_text(encoding="utf-8")
         self.assertIn("docs/design/reference-assets-lfs/FAN-3470/source.png", body)
         self.assertNotIn("docs/design/references/", body)
+
+    def test_generator_normalizes_uppercase_png_suffix(self) -> None:
+        output = GENERATOR_MODULE.resolve_output(self.project, "FAN-3470/source.PNG")
+
+        self.assertEqual(
+            output,
+            self.project / "docs/design/reference-assets-lfs/FAN-3470/source.png",
+        )
 
     def test_generator_rejects_legacy_absolute_output(self) -> None:
         legacy = self.project / "docs/design/references/FAN-3470/source.png"

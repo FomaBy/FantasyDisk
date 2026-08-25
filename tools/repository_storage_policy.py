@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import codecs
 import re
 import subprocess
 import sys
@@ -13,10 +14,10 @@ from typing import NamedTuple, Sequence
 FUTURE_PREFIX = "docs/design/reference-assets-lfs/"
 RESTRICTED_PREFIXES = ("docs/design/", "build/qa/")
 MAX_LFS_POINTER_BYTES = 256
-CONTENT_PROBE_BYTES = 8192
+CONTENT_SCAN_CHUNK_BYTES = 8192
 TEXT_SUFFIXES = frozenset({
     ".cfg", ".csv", ".gd", ".godot", ".html", ".import", ".ini", ".js",
-    ".json", ".md", ".py", ".rst", ".sh", ".toml", ".tres", ".tscn",
+    ".json", ".log", ".md", ".py", ".rst", ".sh", ".toml", ".tres", ".tscn",
     ".tsv", ".txt", ".xml", ".yaml", ".yml",
 })
 TEXT_FILENAMES = frozenset({".gitattributes", ".gdignore", ".gitignore"})
@@ -93,34 +94,42 @@ def head_blob(root: Path, path: str) -> bytes:
     return _git(root, "cat-file", "blob", f"HEAD:{path}")
 
 
-def head_blob_probe(root: Path, path: str, limit: int = CONTENT_PROBE_BYTES) -> bytes:
-    """Read only the first ``limit`` bytes of the HEAD blob.
-
-    The rest of the stream is discarded so a disguised multi-gigabyte blob is
-    never materialized in Python or the worktree.
-    """
+def head_blob_is_binary(root: Path, path: str) -> bool:
+    """Scan the HEAD blob without materializing it in Python or the worktree."""
     process = subprocess.Popen(
         ["git", "cat-file", "blob", f"HEAD:{path}"],
         cwd=root,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
+    decoder = codecs.getincrementaldecoder("utf-8")()
+    is_binary = False
     try:
-        content = process.stdout.read(limit)
+        while chunk := process.stdout.read(CONTENT_SCAN_CHUNK_BYTES):
+            if any(byte < 32 and byte not in b"\t\n\r\f\b" for byte in chunk):
+                is_binary = True
+                break
+            try:
+                decoder.decode(chunk)
+            except UnicodeDecodeError:
+                is_binary = True
+                break
+        if not is_binary:
+            try:
+                decoder.decode(b"", final=True)
+            except UnicodeDecodeError:
+                is_binary = True
     finally:
-        # Kill before draining stderr: a blob larger than the pipe buffer
-        # otherwise deadlocks — git blocks writing stdout while we block
-        # waiting for git to exit before reading stderr.
-        if process.poll() is None:
+        if is_binary and process.poll() is None:
             process.kill()
         return_code = process.wait()
         errors = process.stderr.read()
         process.stdout.close()
         process.stderr.close()
-    if return_code not in (0, -9):
+    if not is_binary and return_code != 0:
         message = errors.decode(errors="replace").strip()
         raise RuntimeError(message or f"git cat-file blob HEAD:{path} failed")
-    return content
+    return is_binary
 
 
 def is_lfs_pointer(content: bytes) -> bool:
@@ -134,23 +143,12 @@ def _is_binary(root: Path, path: str, size: int) -> bool:
     )
     if candidate.suffix and not declared_text:
         return True
-    if not declared_text and size > CONTENT_PROBE_BYTES:
+    if not declared_text and size > CONTENT_SCAN_CHUNK_BYTES:
         return True
-    # A text extension must not mask binary content: probe the leading bytes
-    # of every text-declared blob and fail closed on NUL bytes, invalid UTF-8,
-    # or control characters. Binary payloads hidden after a long text prefix
-    # beyond CONTENT_PROBE_BYTES remain a known, documented limitation.
-    return _is_binary_bytes(head_blob_probe(root, path))
-
-
-def _is_binary_bytes(content: bytes) -> bool:
-    if b"\0" in content:
-        return True
-    try:
-        content.decode("utf-8")
-    except UnicodeDecodeError:
-        return True
-    return any(byte < 32 and byte not in b"\t\n\r\f\b" for byte in content)
+    # A text extension must not mask binary content. Scan the complete stream
+    # and fail closed on invalid UTF-8 or control bytes while keeping memory
+    # bounded to one chunk.
+    return head_blob_is_binary(root, path)
 
 
 def _has_pack_nesting(path: str) -> bool:
