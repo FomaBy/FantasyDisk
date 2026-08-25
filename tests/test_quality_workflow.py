@@ -51,9 +51,12 @@ class QualityWorkflowContractTests(unittest.TestCase):
             "source_docs",
             "tests",
             "tools",
+            "build/qa/scrum434_soldier_pixellab",
             "docs/process",
             "docs/tasks",
+            "docs/design/data",
             "docs/design/templates/release_notes",
+            "docs/design/mockups/release_0_2_4",
             "docs/design/mockups/scrum1061_semantic_typography",
             "docs/design/references/weapon_ultimates",
         ):
@@ -67,6 +70,17 @@ class QualityWorkflowContractTests(unittest.TestCase):
         history_step = self.candidate_job[start:end]
 
         self.assertIn("if: github.event_name != 'push'", history_step)
+        self.assertIn(
+            "BASE_SHA: ${{ github.event_name == 'pull_request'"
+            " && github.event.pull_request.base.sha"
+            " || github.event.merge_group.base_sha }}",
+            history_step,
+        )
+        self.assertIn("git fetch --no-tags --depth=2 origin", history_step)
+        self.assertIn(
+            '"+$BASE_SHA:refs/remotes/origin/dev"',
+            history_step,
+        )
         self.assertIn("git fetch --no-tags --depth=1 origin", history_step)
         self.assertIn(
             "2cba1b7050cb168bca70b6354cc7b654334dd53e",

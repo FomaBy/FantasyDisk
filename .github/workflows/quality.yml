@@ -54,15 +54,22 @@ jobs:
             source_docs
             tests
             tools
+            build/qa/scrum434_soldier_pixellab
             docs/process
             docs/tasks
+            docs/design/data
             docs/design/templates/release_notes
+            docs/design/mockups/release_0_2_4
             docs/design/mockups/scrum1061_semantic_typography
             docs/design/references/weapon_ultimates
       - name: Fetch pinned legacy commits for shallow candidates
         if: github.event_name != 'push'
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
         run: |
           set -euo pipefail
+          git fetch --no-tags --depth=2 origin \
+            "+$BASE_SHA:refs/remotes/origin/dev"
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
             5d23555117c11620ee0f0834e6c30877fd1dafb8
