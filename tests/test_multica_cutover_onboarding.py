@@ -36,6 +36,7 @@ CORE_ACTIVE_SURFACES = [
     "skills/codex/fantasydisk-agent-dispatcher/references/animator-loop.md",
     "skills/codex/fantasydisk-agent-dispatcher/references/dispatcher-heartbeat.md",
     "docs/process/ai_agent_memorandum.md",
+    "docs/process/dispatcher-authority.md",
 ]
 
 
@@ -68,6 +69,7 @@ AUTHORITY_SURFACES = tuple(
         "skills/scheduled-tasks/fantasydisk-backend-developer/SKILL.md",
         "skills/codex/fantasydisk-agent-dispatcher/SKILL.md",
         "docs/process/ai_agent_memorandum.md",
+        "docs/process/dispatcher-authority.md",
         "skills/codex/perenos-chata/SKILL.md",
     }
     or (rel.startswith("skills/codex/fantasydisk-") and rel.endswith("/SKILL.md"))
@@ -228,14 +230,16 @@ class CutoverOnboardingTest(unittest.TestCase):
         self.assertNotIn('comment add FAN-123 --content "', workflow)
         self.assertNotRegex(workflow, r"comment add\b[^\n]*--content(?:\s|=)")
 
-    def test_dispatcher_is_qwen_only_and_uses_one_launch_mechanism(self):
+    def test_dispatcher_uses_canonical_authority_and_one_launch_mechanism(self):
         text = read("skills/codex/fantasydisk-agent-dispatcher/SKILL.md")
-        self.assertIn("Qwen Operations Dispatcher", text)
+        self.assertIn("dispatcher-authority.md", text)
+        self.assertIn("canonical dispatcher", text.lower())
         self.assertIn("unassigned", text)
         self.assertIn("one launch mechanism", text)
         self.assertNotIn("--status backlog --assignee-id", text)
         self.assertNotIn("autonomous QA", text)
         self.assertNotIn("D:\\FantasyDisk", text)
+        self.assertNotIn("q" + "wen", text.lower())
 
     def test_dispatcher_role_prompts_are_path_portable(self):
         for rel in ACTIVE_SURFACES:

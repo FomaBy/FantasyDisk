@@ -14,10 +14,11 @@ lifecycle and repository evidence.
 ## Roles
 
 - PM: scope, acceptance criteria, CUE/Fibonacci, decomposition, dependencies,
-  complexity, routing, QA/rework readiness, Qwen supervision.
-- Qwen Operations Dispatcher: mechanical selection of an eligible worker,
-  assignment, `backlog → todo`, exact-SHA QA launch, and deterministic lifecycle
-  transitions. It does not make product judgments.
+  complexity, routing, QA/rework readiness, canonical dispatcher supervision.
+- Canonical dispatcher: mechanical selection of an eligible worker, assignment,
+  `backlog → todo`, exact-SHA QA launch, and deterministic lifecycle
+  transitions under `docs/process/dispatcher-authority.md`. It does not make
+  product judgments.
 - Developer: one explicitly assigned implementation issue.
 - QA: one explicitly assigned child pinned to the pushed candidate SHA; no
   production fixes in review scope.
@@ -56,7 +57,7 @@ holistic judgment.
 - dependencies, hold state, and locked scope are unambiguous.
 
 PM re-reads the complete card. A mismatch leaves `dispatch_ready=false` with an
-exact `waiting_on`; it is not repaired by Qwen or a worker.
+exact `waiting_on`; it is not repaired by the canonical dispatcher or a worker.
 
 Ready handoff fields:
 
@@ -74,7 +75,7 @@ one independently estimated QA child before implementation handoff is complete.
 
 ## Mechanical launch
 
-Qwen reads the ready index, current quota registry, runtime/agent capacity,
+The canonical dispatcher reads the ready index, current quota registry, runtime/agent capacity,
 active issue/run ownership, dependencies, and overlaps. It acts only on an
 unassigned ready `backlog` issue and an eligible idle target.
 
@@ -107,8 +108,9 @@ The assigned worker:
    untested checks, and residual risk.
 7. Triggers PM once. It does not create/assign QA or take another issue.
 
-The implementation parent remains owned/active until PM prepares and Qwen
-launches its exact-SHA QA child. After that launch, Qwen may unassign the parent
+The implementation parent remains owned/active until PM prepares and the
+canonical dispatcher launches its exact-SHA QA child. After that launch, the
+canonical dispatcher may unassign the parent
 and move it to `in_review` only when child/parent SHA, reviewer independence, and
 live QA state all agree.
 
@@ -130,7 +132,8 @@ focused commands/results, findings, residual risk, and one recommendation.
 
 QA finishes its child and triggers PM once. It does not repair production code,
 reassign the parent, or allocate rework. PM prepares any bounded
-defect/rework/lifecycle gate; Qwen executes the mechanical transition.
+defect/rework/lifecycle gate; the canonical dispatcher executes the mechanical
+transition.
 
 Broad `changed/full` profiles, repeat matrices, mutation probes, screenshots,
 and extra documentation are not default. Require a full gate only for a release,
@@ -140,7 +143,7 @@ whose scope cannot be isolated by focused checks.
 ## DevOps integration
 
 After terminal exact-SHA QA `PASSED`, PM pins equal candidate/dispatch/QA SHAs
-and Qwen launches the dedicated DevOps issue. DevOps:
+and the canonical dispatcher launches the dedicated DevOps issue. DevOps:
 
 1. Confirms the PR head is still the QA-approved SHA and is mergeable.
 2. Requires one green PR CI for that unchanged current head. An existing green

@@ -22,7 +22,8 @@ For the compact lifecycle, read `docs/process/ai_agent_memorandum.md`. Load the
 full process reference only when the task needs it:
 
 - delivery/ownership: `docs/process/multica_workflow.md`
-- PM readiness and PM→Qwen handoff: `docs/process/pm_workflow.md`
+- PM readiness and canonical dispatcher handoff: `docs/process/pm_workflow.md`
+- Canonical dispatcher authority: `docs/process/dispatcher-authority.md`
 - role boundaries: `docs/process/agent_role_boundaries_and_handoffs.md`
 - independent review: `docs/process/qa_protocol.md`
 - CUE/Fibonacci: `docs/process/story_points.md`

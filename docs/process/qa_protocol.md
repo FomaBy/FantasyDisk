@@ -7,7 +7,9 @@ QA does not self-select a parent, create competing review, repair production
 code, or allocate rework.
 
 Multica workspace lifecycle and dispatch transactions live in
-`multica-workspace-governance`; this reference defines FantasyDisk verification.
+`multica-workspace-governance`; the canonical dispatcher record is
+`docs/process/dispatcher-authority.md`; this reference defines FantasyDisk
+verification.
 
 ## Entry gate
 
@@ -164,4 +166,5 @@ Disk cleanup:
   condition and trigger PM once.
 
 QA does not directly close/reassign the implementation parent or launch the next
-stage. PM prepares the deterministic gate and Qwen executes it.
+stage. PM prepares the deterministic gate and the canonical dispatcher executes
+it.

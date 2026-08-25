@@ -1,11 +1,11 @@
 ---
 name: fantasydisk-backend-developer
-description: Execute one explicitly assigned FantasyDisk backend implementation issue. Use for a daemon developer run after PM readiness and Qwen dispatch; never use it to discover, self-claim, or allocate work.
+description: Execute one explicitly assigned FantasyDisk backend implementation issue. Use for a daemon developer run after PM readiness and canonical dispatcher handoff; never use it to discover, self-claim, or allocate work.
 ---
 
 # FantasyDisk Backend Developer
 
-Read repository `AGENTS.md` and the assigned `FAN-*` issue. Use the bound
+Read repository `AGENTS.md`, `docs/process/dispatcher-authority.md`, and the assigned `FAN-*` issue. Use the bound
 `multica-workspace-governance` developer-delivery reference for ownership,
 evidence, and completion.
 
