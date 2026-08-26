@@ -3,6 +3,11 @@ extends SceneTree
 ## Reproducible class-local captures for the four supported presentation
 ## viewports. Each column is a real SubViewport render of the authored scene
 ## at release, including its backdrop, cast pose, silhouette, and phase nodes.
+##
+## Headless runs skip rendering instead of writing an empty sheet: the dummy
+## rasterizer owns no SubViewport texture, so the readback is always empty. The
+## release presence this column asserts is certified headlessly by
+## sniper_runtime_presentation_test.gd for all three weapons.
 
 const OUTPUT_ROOT := "res://docs/design/references/weapon_ultimates/sniper"
 const CAPTURES := {
@@ -28,6 +33,10 @@ const WEAPONS := [
 
 
 func _initialize() -> void:
+	if DisplayServer.get_name() == "headless":
+		print("FAN-3391 Sniper ultimate contact capture skipped (headless); run windowed for PNGs.")
+		quit(0)
+		return
 	for suffix in CAPTURES:
 		var exported := await _export_capture(str(suffix), CAPTURES[suffix] as Vector2i)
 		if not exported:
