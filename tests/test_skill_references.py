@@ -35,6 +35,7 @@ def scratch_surface(content):
 def temporary_surface(rel_path, content):
     """Create a disposable fixture at a path covered by a classification rule."""
     path = ROOT / rel_path
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
     try:
         yield rel_path

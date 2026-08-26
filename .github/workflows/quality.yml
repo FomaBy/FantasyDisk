@@ -61,6 +61,7 @@ jobs:
             docs/design/templates/release_notes
             docs/design/mockups/release_0_2_4
             docs/design/mockups/scrum1061_semantic_typography
+            docs/design/references/weapon_attack_animations
             docs/design/references/weapon_ultimates
       - name: Fetch pinned legacy commits for shallow candidates
         if: github.event_name != 'push'
