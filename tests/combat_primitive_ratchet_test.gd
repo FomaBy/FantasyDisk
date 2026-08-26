@@ -37,10 +37,6 @@ const NON_COMBAT_EXEMPT_FILES: Array[String] = [
 # violation fails; any count drift fails (up = new violation, down or gone =
 # stale entry that must shrink with the fix that removed it).
 const SCENE_ALLOWLIST := {
-	"res://scenes/vfx/BerserkAxeCleaveVfx.tscn": 3,
-	"res://scenes/vfx/BerserkHammerSlamVfx.tscn": 4,
-	"res://scenes/vfx/HolyFlailSpiralVfx.tscn": 3,
-	"res://scenes/vfx/RobotHydraulicPressCompressionVfx.tscn": 5,
 	"res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn": 5,
 	"res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn": 3,
 	"res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn": 3,
@@ -75,7 +71,7 @@ const SCENE_ALLOWLIST := {
 const SCRIPT_ALLOWLIST := {
 	"res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd": 1,
 	"res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd": 2,
-	"res://scripts/class_weapon.gd": 1,
+	"res://scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd": 2,
 	"res://scripts/combat_director.gd": 1,
 	"res://scripts/encounters/features/captains/captain_feature.gd": 1,
 	"res://scripts/encounters/features/marked_target_feature.gd": 1,

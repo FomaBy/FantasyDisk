@@ -29,12 +29,12 @@ class OverBudgetRuntime extends PresentationRuntime:
 	var observed_scene: Node = null
 	var observed_parent: Node = null
 
-	func _within_declared_budget(runtime: Dictionary) -> bool:
+	func _within_declared_budget(runtime: Dictionary, key: String) -> bool:
 		observed_scene = get("_scene") as Node
 		if observed_scene != null:
 			observed_parent = observed_scene.get_parent()
 			observed_scene.add_child(Sprite2D.new())
-		return super._within_declared_budget(runtime)
+		return super._within_declared_budget(runtime, key)
 
 
 class TimelineOnlyPauseRuntime extends PresentationRuntime:

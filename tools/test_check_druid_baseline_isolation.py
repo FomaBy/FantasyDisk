@@ -59,6 +59,15 @@ def main() -> int:
     if find_non_druid_drift(base_rows, rows_by_key(dropped_druid_row)):
         failures.append("a dropped Druid row is out of this guard's scope and must not be flagged")
 
+    # FAN-2533 reuses the guard for `guitarist`: re-scoping must move the
+    # exemption with it, so the Druid row is now a foreign row like any other.
+    if find_non_druid_drift(base_rows, rows_by_key(copy.deepcopy(BASE_DOCUMENT)), "guitarist"):
+        failures.append("an unchanged candidate must produce no violations under any scope")
+    druid_drift = copy.deepcopy(BASE_DOCUMENT)
+    druid_drift["rows"][1]["scenarios"]["crowd_20"]["targets_struck"] = 99.0
+    if not find_non_druid_drift(base_rows, rows_by_key(druid_drift), "guitarist"):
+        failures.append("a Druid row drift must be flagged when the guard is scoped to guitarist")
+
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}")

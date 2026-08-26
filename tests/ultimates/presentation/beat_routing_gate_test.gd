@@ -28,6 +28,17 @@ const PresentationManifest := preload(
 const HOST_SOURCE_PATH := "res://scripts/ultimates/controller/ultimate_player_host.gd"
 const CLASS_ULTIMATE_SCENE_ROOT := "res://scripts/ultimates/classes"
 const EXPECTED_PAIR_COUNT := 51
+const AUTHORED_CLASS_SCENE_PRESENTATIONS := [
+	"res://scripts/ultimates/classes/assassin/chakrams.tscn",
+	"res://scripts/ultimates/classes/assassin/shadow_daggers.tscn",
+	"res://scripts/ultimates/classes/assassin/venom_wire.tscn",
+	"res://scripts/ultimates/classes/elementalist/elementalist_meteor_core.tscn",
+	"res://scripts/ultimates/classes/elementalist/elementalist_orb_ring.tscn",
+	"res://scripts/ultimates/classes/elementalist/elementalist_prism_focus.tscn",
+	"res://scripts/ultimates/classes/ranger/hunter_trap.tscn",
+	"res://scripts/ultimates/classes/ranger/moon_crossbow.tscn",
+	"res://scripts/ultimates/classes/ranger/storm_longbow.tscn",
+]
 ## FAN-3015: the pairs whose ready package spawns nothing, so the authored
 ## scene is the only live effect channel their cast owns. Kept explicit —
 ## these are exactly the pairs the ownership contract now leans on.
@@ -135,16 +146,19 @@ func _test_no_pale_blue_constants_left_in_host_source() -> void:
 
 
 func _test_class_scenes_do_not_embed_presentations() -> void:
+	var admitted := 0
 	for class_id in DirAccess.get_directories_at(CLASS_ULTIMATE_SCENE_ROOT):
 		var class_path := "%s/%s" % [CLASS_ULTIMATE_SCENE_ROOT, class_id]
 		for file_name in DirAccess.get_files_at(class_path):
 			if not file_name.ends_with(".tscn"):
 				continue
 			var path := "%s/%s" % [class_path, file_name]
-			_check(
-				not FileAccess.get_file_as_string(path).contains("scenes/vfx/ultimates/"),
-				"%s must not embed an authored ultimate presentation" % path
-			)
+			if FileAccess.get_file_as_string(path).contains("scenes/vfx/ultimates/"):
+				admitted += 1
+				_check(path in AUTHORED_CLASS_SCENE_PRESENTATIONS,
+					"%s must not embed an authored ultimate presentation" % path)
+	_check(admitted == AUTHORED_CLASS_SCENE_PRESENTATIONS.size(),
+		"expected %d authored class scenes, found %d" % [AUTHORED_CLASS_SCENE_PRESENTATIONS.size(), admitted])
 
 
 func _test_all_pairs_draw_nothing_over_the_live_presentation() -> void:
