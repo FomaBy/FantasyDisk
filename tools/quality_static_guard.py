@@ -20,6 +20,15 @@ from release_version_mapping import platform_version_mapping, release_assignment
 
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
 RESOURCE_RE = re.compile(r"res://[A-Za-z0-9_./@+\-]+")
+FANTASYDISK_PROJECT_NAME = "FantasyDisk"
+FANTASYDISK_PLAYER_IDENTITY = ("scenes/Player.tscn", "scripts/player.gd")
+PLAYER_IMPORT_PROBE = "tests/import_cache_player_load_test.gd"
+PLAYER_IMPORT_PROBE_CONTRACT = (
+    "extends SceneTree",
+    'preload("res://scenes/Player.tscn")',
+    "PlayerScene.instantiate()",
+    "player.free()",
+)
 LEGACY_LINE_CEILINGS = {
     "scripts/ui_screens.gd": 17000,
     "scripts/class_weapon.gd": 6000,
@@ -69,6 +78,17 @@ def _tracked_text(root: Path, relative: str, *, errors: str = "strict") -> str:
     if path.is_file():
         return path.read_text(encoding="utf-8", errors=errors)
     return _head_blob(root.resolve(), relative).decode("utf-8", errors=errors)
+
+
+def _index_has_path(root: Path, relative: str) -> bool:
+    result = subprocess.run(
+        ["git", "ls-files", "--cached", "--error-unmatch", "--", relative],
+        cwd=root,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return result.returncode == 0
 
 
 def _quoted_value(text: str, key: str) -> str:
@@ -205,6 +225,46 @@ def script_uid_errors(root: Path, tracked: list[str]) -> list[str]:
     return errors
 
 
+def player_import_probe_errors(root: Path, tracked: list[str]) -> list[str]:
+    """Require the real Player import probe only in the full FantasyDisk tree."""
+    if "project.godot" not in tracked:
+        return []
+    try:
+        project = _tracked_text(root, "project.godot")
+    except (OSError, RuntimeError, UnicodeDecodeError):
+        return []
+    if _quoted_value(project, "config/name") != FANTASYDISK_PROJECT_NAME:
+        return []
+    if not all(path in tracked for path in FANTASYDISK_PLAYER_IDENTITY):
+        return []
+
+    errors: list[str] = []
+    if not _index_has_path(root, PLAYER_IMPORT_PROBE):
+        errors.append(
+            f"{PLAYER_IMPORT_PROBE}: required FantasyDisk Player import probe must be tracked"
+        )
+    probe = root / PLAYER_IMPORT_PROBE
+    if not probe.is_file() or probe.is_symlink():
+        errors.append(
+            f"{PLAYER_IMPORT_PROBE}: required FantasyDisk Player import probe is missing"
+        )
+        return errors
+    try:
+        source = probe.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        errors.append(
+            f"{PLAYER_IMPORT_PROBE}: required Player import probe contract is unreadable"
+        )
+        return errors
+    missing = [fragment for fragment in PLAYER_IMPORT_PROBE_CONTRACT if fragment not in source]
+    if missing:
+        errors.append(
+            f"{PLAYER_IMPORT_PROBE}: required Player import probe contract is incomplete: "
+            + ", ".join(missing)
+        )
+    return errors
+
+
 def credential_errors(root: Path, tracked: list[str]) -> list[str]:
     errors: list[str] = []
     forbidden_marker = "BUILTIN_WEBHOOK_" + "B64"
@@ -224,6 +284,7 @@ def collect_errors(root: Path) -> list[str]:
         + version_and_windows_errors(root)
         + architecture_errors(root, tracked)
         + script_uid_errors(root, tracked)
+        + player_import_probe_errors(root, tracked)
         + credential_errors(root, tracked)
     )
 
