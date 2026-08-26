@@ -7,9 +7,11 @@ name one that actually exists under `.claude/skills/`, `skills/codex/` or
 `skills/scheduled-tasks/`. A renamed or retired skill silently orphans that
 reference and misroutes the next agent that reads it (FAN-3450).
 
-Historical/evidence documents (CHANGELOG, docs/tasks/*, docs/design mirrors)
-are allowed to keep dead names as record of what happened; they are exempted
-via ``HISTORICAL_ALLOWLIST`` instead of being scanned at all.
+Historical/evidence documents (CHANGELOG, docs/tasks/* and explicitly archived
+design evidence) are allowed to keep dead names as record of what happened;
+they are exempted via ``HISTORICAL_ALLOWLIST``/``HISTORICAL_GLOBS`` instead of
+being scanned at all. Design references remain active because handoff/routing
+documents live there.
 """
 from __future__ import annotations
 
@@ -27,6 +29,10 @@ ACTIVE_SURFACES = [
     *sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "skills/codex").glob("*/SKILL.md")),
     *sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "skills/scheduled-tasks").glob("*/SKILL.md")),
     *sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "docs/process").glob("*.md")),
+    *sorted(
+        p.relative_to(ROOT).as_posix()
+        for p in (ROOT / "docs/design/references").rglob("*.md")
+    ),
 ]
 
 # Historical/evidence documents: dead skill names there are record, not routing.
@@ -40,7 +46,9 @@ HISTORICAL_ALLOWLIST = [
 ]
 HISTORICAL_GLOBS = [
     "docs/tasks/**/*.md",
-    "docs/design/**/*.md",
+    "docs/design/audits/**/*.md",
+    "docs/design/backups/**/*.md",
+    "docs/design/previews/**/*.md",
 ]
 
 # Backtick token that looks like a skill/agent slug: lowercase words joined by

@@ -31,6 +31,31 @@ def scratch_surface(content):
         path.unlink(missing_ok=True)
 
 
+@contextmanager
+def temporary_surface(rel_path, content):
+    """Create a disposable fixture at a path covered by a classification rule."""
+    path = ROOT / rel_path
+    path.write_text(content, encoding="utf-8")
+    try:
+        yield rel_path
+    finally:
+        path.unlink(missing_ok=True)
+
+
+@contextmanager
+def mutate_surface(rel_path, needle, replacement):
+    """Temporarily break a real repository fixture and restore it afterwards."""
+    path = ROOT / rel_path
+    original = path.read_text(encoding="utf-8")
+    if needle not in original:
+        raise AssertionError(f"fixture does not contain expected text: {needle!r}")
+    path.write_text(original.replace(needle, replacement, 1), encoding="utf-8")
+    try:
+        yield rel_path
+    finally:
+        path.write_text(original, encoding="utf-8")
+
+
 class SkillReferenceCheckerTest(unittest.TestCase):
     def test_repo_has_no_dangling_active_references(self):
         dangling = checker.find_dangling_references()
@@ -71,6 +96,36 @@ class SkillReferenceCheckerTest(unittest.TestCase):
     def test_default_surfaces_include_the_actual_onboarding_files(self):
         self.assertIn(".claude/skills/fantasydisk-onboarding/SKILL.md", checker.ACTIVE_SURFACES)
         self.assertIn(".claude/skills/add-character/SKILL.md", checker.ACTIVE_SURFACES)
+
+    def test_default_surfaces_include_active_design_references(self):
+        active_reference = "docs/design/references/character_animation_style_sheet_0_1_5.md"
+        self.assertIn(active_reference, checker.ACTIVE_SURFACES)
+
+    def test_real_animator_handoff_fixture_fails_closed_when_mutated(self):
+        active_reference = "docs/design/references/character_animation_style_sheet_0_1_5.md"
+        with mutate_surface(
+            active_reference,
+            "`fantasydisk-pixellab-animation-integrator`",
+            "`fantasydisk-does-not-exist`",
+        ):
+            dangling = checker.find_dangling_references()
+        self.assertTrue(
+            any(
+                rel == active_reference and token == "fantasydisk-does-not-exist"
+                for rel, _line_no, token in dangling
+            ),
+            f"mutated active handoff was not rejected: {dangling}",
+        )
+
+    def test_precise_historical_design_evidence_remains_exempt(self):
+        historical_reference = "docs/design/previews/_scratch_historical_skill_reference.md"
+        with temporary_surface(
+            historical_reference,
+            "Retired evidence: `fantasydisk-does-not-exist`.\n",
+        ):
+            self.assertTrue(checker.is_historical(historical_reference))
+            dangling = checker.find_dangling_references(surfaces=[historical_reference])
+        self.assertEqual(dangling, [])
 
 
 if __name__ == "__main__":
