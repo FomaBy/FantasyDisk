@@ -15,7 +15,7 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
-const GAMEPLAY_TIME_SCALE := 0.5
+const GAMEPLAY_TIME_SCALE := 1.0
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
 const WARD_PREVENTION_PROBE := 40.0
