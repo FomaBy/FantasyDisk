@@ -74,6 +74,8 @@ static func manifest_for_profile(profile: Dictionary) -> Dictionary:
 			"scene_path": scene_path,
 			"max_visual_nodes": int(local.get("max_visual_nodes", 0)),
 			"crowd_cap": int(local.get("crowd_cap", 0)),
+			"max_unique_materials": local.get("max_unique_materials"),
+			"max_fullscreen_materials": local.get("max_fullscreen_materials"),
 		},
 	}
 	# v2 presence/identity declarations pass through only when the class-local
@@ -131,6 +133,8 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 		"pivot": weapon.get("pivot", {}),
 		"max_visual_nodes": max_visual_nodes,
 		"crowd_cap": crowd_cap,
+		"max_unique_materials": (performance as Dictionary).get("max_unique_materials"),
+		"max_fullscreen_materials": (performance as Dictionary).get("max_fullscreen_materials"),
 	}
 	for block in ["presence", "identity", "quality"]:
 		if weapon.get(block) is Dictionary:
