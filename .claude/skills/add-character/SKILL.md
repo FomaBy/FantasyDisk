@@ -19,7 +19,7 @@ before starting to confirm the class is not already implemented.
 - Back-end: class config, three selectable weapons, data-driven mechanics,
   balance, tests, docs.
 - Design: character/weapon source art through `fantasydisk-asset-generator`.
-- Animator: SpriteFrames/rig/motion through `fantasydisk-animation-director`.
+- Animator: SpriteFrames/rig/motion through `fantasydisk-pixellab-animation-integrator`.
 - QA: separate acceptance pass.
 
 Create Multica issues/handoffs (project FantasyDisk, `FAN-*`) for each discipline

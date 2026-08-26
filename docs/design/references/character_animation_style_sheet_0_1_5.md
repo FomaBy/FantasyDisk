@@ -180,7 +180,7 @@ Animator owns:
 - fps/loop/non-loop settings;
 - pivot verification in motion;
 - attack state naming and preview GIFs;
-- `fantasydisk-animation-director` manifest validation.
+- `fantasydisk-pixellab-animation-integrator` manifest validation.
 
 Back-end owns:
 
