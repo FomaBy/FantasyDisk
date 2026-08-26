@@ -78,9 +78,6 @@ const ADOPTION_GAPS := {
 		"engineer": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 	},
-	"cleanup": {
-		"soldier": "soldier_grenade declares cancel == recovery (8.40s): no cleanup window",
-	},
 	"direction": {
 		"engineer": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
@@ -293,7 +290,8 @@ static func _check_material_budget(declaration: Dictionary, key: String, errors:
 static func scene_material_violations(
 	scene: Node,
 	key: String,
-	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST
+	allowlist: Dictionary = Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST,
+	runtime_budget: Dictionary = {}
 ) -> Array[String]:
 	var errors: Array[String] = []
 	if allowlist.has(key):
@@ -301,8 +299,8 @@ static func scene_material_violations(
 	if scene == null or not is_instance_valid(scene):
 		errors.append("budget.scene_missing: %s" % key)
 		return errors
-	var declared_unique: Variant = _declared_meta(scene, "max_unique_materials")
-	var declared_fullscreen: Variant = _declared_meta(scene, "max_fullscreen_materials")
+	var declared_unique: Variant = _declared_cap(runtime_budget, scene, "max_unique_materials")
+	var declared_fullscreen: Variant = _declared_cap(runtime_budget, scene, "max_fullscreen_materials")
 	_check_material_budget(
 		{"max_unique_materials": declared_unique, "max_fullscreen_materials": declared_fullscreen},
 		key,
@@ -322,6 +320,11 @@ static func scene_material_violations(
 			% [key, int(counts["fullscreen"]), int(declared_fullscreen)]
 		)
 	return errors
+
+
+static func _declared_cap(runtime_budget: Dictionary, scene: Node, key: String) -> Variant:
+	var value: Variant = runtime_budget.get(key)
+	return value if value != null else _declared_meta(scene, key)
 
 
 ## A missing scene declaration reads as null, the same "not declared" value the
