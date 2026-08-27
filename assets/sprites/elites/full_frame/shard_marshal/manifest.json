@@ -1,0 +1,72 @@
+{
+  "character_id": "shard_marshal",
+  "source_manifest": "assets/sprites/elites/pixellab/shard_marshal/manifest.json",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "directions": [
+    "east",
+    "south_east",
+    "south",
+    "south_west",
+    "west",
+    "north_west",
+    "north",
+    "north_east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "fps": 1.0,
+      "loop": true
+    },
+    "move": {
+      "frame_count": 8,
+      "fps": 9.0,
+      "loop": true
+    },
+    "attack": {
+      "frame_count": 7,
+      "fps": 12.0,
+      "loop": false
+    },
+    "hit": {
+      "frame_count": 5,
+      "fps": 10.0,
+      "loop": false
+    },
+    "death": {
+      "frame_count": 7,
+      "fps": 10.0,
+      "loop": false
+    },
+    "skill_shard_fan": {
+      "frame_count": 7,
+      "fps": 12.0,
+      "loop": false
+    },
+    "skill_command_pulse": {
+      "frame_count": 7,
+      "fps": 12.0,
+      "loop": false
+    }
+  },
+  "aliases": {
+    "attack_primary": "attack",
+    "attack_shard_fan": "skill_shard_fan",
+    "attack_command_pulse": "skill_command_pulse"
+  },
+  "normalization": {
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "target_visible_height": 245,
+    "bottom_padding": 32,
+    "scale_strategy": "one global nearest-neighbor scale; every frame bottom-aligned",
+    "global_scale": 4.803921568627451,
+    "source_dir": "assets/sprites/elites/pixellab/shard_marshal",
+    "runtime_dir": "assets/sprites/elites/full_frame/shard_marshal"
+  }
+}

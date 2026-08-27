@@ -1,0 +1,8850 @@
+{
+  "idle_east": [
+    {
+      "source": "shard_marshal_idle_east.png",
+      "runtime": "shard_marshal_idle_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        33,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        269,
+        321,
+        480
+      ],
+      "encoded_sha256": "2f9a4817c8235ee94fcf58c5b6c6bd5a8f4bcea308642ee79519424d88bbb14e"
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "shard_marshal_idle_south_east.png",
+      "runtime": "shard_marshal_idle_south_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        40,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "843f03d69792c9c0dfebc328723b157e60865b4b5592a3b500df45af57957889"
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "shard_marshal_idle_south.png",
+      "runtime": "shard_marshal_idle_south.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        2,
+        2,
+        46,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "9aeb6e95e58299dbe8a7c4a5e4d452d876828dc68d2f67d0e24706a6da0b1486"
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "shard_marshal_idle_south_west.png",
+      "runtime": "shard_marshal_idle_south_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        43,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "920b606962eec4e1dba2876b74353f7a7b05b6ae2246d24a61802e3fdca94d8d"
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "shard_marshal_idle_west.png",
+      "runtime": "shard_marshal_idle_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        2,
+        39,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        269,
+        313,
+        480
+      ],
+      "encoded_sha256": "8973ba912f32e68cd421bf36f7ca7b993c4e9d411321f1de7f6fd14704955580"
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "shard_marshal_idle_north_west.png",
+      "runtime": "shard_marshal_idle_north_west.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        2,
+        43,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "243d0102bb9a26bb7c2e6e9ba453399ef1dd86cb6e57c8bd472c6971085496c3"
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "shard_marshal_idle_north.png",
+      "runtime": "shard_marshal_idle_north.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        2,
+        46,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "6d7287c2537b435f0d398c9641ccccadbfcd8b2f234e26d9c9a42ab235523b9f"
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "shard_marshal_idle_north_east.png",
+      "runtime": "shard_marshal_idle_north_east.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        9,
+        2,
+        44,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "dd49a3ad5d3396c12a7134ef04de0fef798831d3c280dc47b7aac9f6170dbf2a"
+    }
+  ],
+  "move_east": [
+    {
+      "source": "shard_marshal_move_east_00.png",
+      "runtime": "shard_marshal_move_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        37,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        273,
+        328,
+        480
+      ],
+      "encoded_sha256": "a8cfcebc6464c00cce70a4ccf3e58fefe9bc869bd423ba99083d96035f940a06"
+    },
+    {
+      "source": "shard_marshal_move_east_01.png",
+      "runtime": "shard_marshal_move_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        3,
+        35,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        283,
+        331,
+        480
+      ],
+      "encoded_sha256": "0a0dc2fd49b1a2988463256597016d7295458d3e8195d33240f71573eb3f11b4"
+    },
+    {
+      "source": "shard_marshal_move_east_02.png",
+      "runtime": "shard_marshal_move_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        3,
+        37,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        288,
+        333,
+        480
+      ],
+      "encoded_sha256": "d352504fe6240783c2bf65600385890c48ebb8095543c08adf4354c931c39b58"
+    },
+    {
+      "source": "shard_marshal_move_east_03.png",
+      "runtime": "shard_marshal_move_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        3,
+        36,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        278,
+        331,
+        480
+      ],
+      "encoded_sha256": "8b12894a828dc5774996708d7bd6c5ea928b4c8ae1a40e39eb45525d5a73a860"
+    },
+    {
+      "source": "shard_marshal_move_east_04.png",
+      "runtime": "shard_marshal_move_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        3,
+        34,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        283,
+        323,
+        480
+      ],
+      "encoded_sha256": "e37904b27c4f6edbb5523e1bf6ebb83da781c541daec8f5c42bd6ae5a8c55285"
+    },
+    {
+      "source": "shard_marshal_move_east_05.png",
+      "runtime": "shard_marshal_move_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        33,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        283,
+        321,
+        480
+      ],
+      "encoded_sha256": "a4984db9841fb3923f92a34c0c021e056cd2f47c0cf2d9579dfa54c719af3d9e"
+    },
+    {
+      "source": "shard_marshal_move_east_06.png",
+      "runtime": "shard_marshal_move_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        32,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        283,
+        319,
+        480
+      ],
+      "encoded_sha256": "8c3d4fcf8fe910beeffdbef3ec23fd95f44734cd5072128471f7edeb410c7d85"
+    },
+    {
+      "source": "shard_marshal_move_east_07.png",
+      "runtime": "shard_marshal_move_east_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        2,
+        34,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        278,
+        323,
+        480
+      ],
+      "encoded_sha256": "b2149ff3304b7040c00c37d24ce1eff4518745b558675f1a292de82ef9948ad5"
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "shard_marshal_move_south_east_00.png",
+      "runtime": "shard_marshal_move_south_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        41,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        283,
+        337,
+        480
+      ],
+      "encoded_sha256": "648a9cd8b6da030589ef5e9707bd9c3f360155a5e2aada76d9b303fe2c502395"
+    },
+    {
+      "source": "shard_marshal_move_south_east_01.png",
+      "runtime": "shard_marshal_move_south_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        33,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        293,
+        319,
+        480
+      ],
+      "encoded_sha256": "4d5f7e9cdc16cc74b06c480571b0cdd9336569acf0e030d133a9aac0e46aed1c"
+    },
+    {
+      "source": "shard_marshal_move_south_east_02.png",
+      "runtime": "shard_marshal_move_south_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        41,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        288,
+        337,
+        480
+      ],
+      "encoded_sha256": "401437d288accdf38916227d8211a4978a2429611be160802b8b7136e3e47cd1"
+    },
+    {
+      "source": "shard_marshal_move_south_east_03.png",
+      "runtime": "shard_marshal_move_south_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        31,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        293,
+        313,
+        480
+      ],
+      "encoded_sha256": "9f55213c153bd2bee0d4c9ac61629aa57396e50e56fc2cac84c4e217e6546f57"
+    },
+    {
+      "source": "shard_marshal_move_south_east_04.png",
+      "runtime": "shard_marshal_move_south_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        3,
+        30,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        283,
+        313,
+        480
+      ],
+      "encoded_sha256": "f86ae584e4b8e5aed9435bfd8afd35ad058ef6067291d14d8873cbfe942b85bd"
+    },
+    {
+      "source": "shard_marshal_move_south_east_05.png",
+      "runtime": "shard_marshal_move_south_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        293,
+        335,
+        480
+      ],
+      "encoded_sha256": "9acb6e3cf4f916c7a889c7c803f85d89bb8e0d2865ea3e1fd642c911b453b512"
+    },
+    {
+      "source": "shard_marshal_move_south_east_06.png",
+      "runtime": "shard_marshal_move_south_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        3,
+        34,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        288,
+        321,
+        480
+      ],
+      "encoded_sha256": "af49b5b5cda296de31a2c71925bfc44ce104ebeec0c2d0be1b03956207425e4e"
+    },
+    {
+      "source": "shard_marshal_move_south_east_07.png",
+      "runtime": "shard_marshal_move_south_east_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        41,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        283,
+        337,
+        480
+      ],
+      "encoded_sha256": "dcf5872bf6dd9ca8f0cb7c6329373b492d27905c0f1a9c17795ac39f0c7d80e0"
+    }
+  ],
+  "move_south": [
+    {
+      "source": "shard_marshal_move_south_00.png",
+      "runtime": "shard_marshal_move_south_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        297,
+        323,
+        480
+      ],
+      "encoded_sha256": "e8069684428083e4ad7a5069f3c6053d82806c95b5741ddc389a105c5bbd755c"
+    },
+    {
+      "source": "shard_marshal_move_south_01.png",
+      "runtime": "shard_marshal_move_south_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        297,
+        323,
+        480
+      ],
+      "encoded_sha256": "67b4fc12288a4a4dfcde579ca11ac9c93c748330965552ede0378d999910ea9a"
+    },
+    {
+      "source": "shard_marshal_move_south_02.png",
+      "runtime": "shard_marshal_move_south_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        297,
+        323,
+        480
+      ],
+      "encoded_sha256": "2d904ea0f0d3d1bae4457bc99291dcb8d922b9d1712e7fccd4c36347625a220a"
+    },
+    {
+      "source": "shard_marshal_move_south_03.png",
+      "runtime": "shard_marshal_move_south_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        297,
+        323,
+        480
+      ],
+      "encoded_sha256": "b88dc130cc7f130515aee239c9676d1a60386971caa1d372599a7a0eb1377641"
+    },
+    {
+      "source": "shard_marshal_move_south_04.png",
+      "runtime": "shard_marshal_move_south_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        302,
+        323,
+        480
+      ],
+      "encoded_sha256": "38be630f9cacddc5576327a4e742e508a863c2dba6941d543d86d003f770cf53"
+    },
+    {
+      "source": "shard_marshal_move_south_05.png",
+      "runtime": "shard_marshal_move_south_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        186,
+        297,
+        325,
+        480
+      ],
+      "encoded_sha256": "213616ec8d8bd27aa25148b0bd414a00dae6632b727127d42c3a823c03e41655"
+    },
+    {
+      "source": "shard_marshal_move_south_06.png",
+      "runtime": "shard_marshal_move_south_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        4,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        293,
+        323,
+        480
+      ],
+      "encoded_sha256": "6fbfef042c89803637ad61c5eae0d12924620b29389d87f2b50b8c0311dc01d6"
+    },
+    {
+      "source": "shard_marshal_move_south_07.png",
+      "runtime": "shard_marshal_move_south_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        38,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        302,
+        323,
+        480
+      ],
+      "encoded_sha256": "6363e4bcefda1b8a32496b459bbc701f54eef9bb4749d387e5a71305b7e50a8e"
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "shard_marshal_move_south_west_00.png",
+      "runtime": "shard_marshal_move_south_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        41,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        297,
+        340,
+        480
+      ],
+      "encoded_sha256": "dcdc5110cf720e24cf1f2414f0a1aa381f241193871bf8eb488f82c08e104357"
+    },
+    {
+      "source": "shard_marshal_move_south_west_01.png",
+      "runtime": "shard_marshal_move_south_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        41,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "4e9ddb3eb8a517bcaef6537785910fee2fe6504b52f33f0e769e49527fa9f630"
+    },
+    {
+      "source": "shard_marshal_move_south_west_02.png",
+      "runtime": "shard_marshal_move_south_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        293,
+        337,
+        480
+      ],
+      "encoded_sha256": "cbcef01ca404422460b54fe1dda4d4af5756e386f31f0bc228f907cecaca332a"
+    },
+    {
+      "source": "shard_marshal_move_south_west_03.png",
+      "runtime": "shard_marshal_move_south_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        41,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "40d07991794ff1cc5b36e7c09ff9b9ee9b25cd03efc2b4c38b6ad9a841a52db2"
+    },
+    {
+      "source": "shard_marshal_move_south_west_04.png",
+      "runtime": "shard_marshal_move_south_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        40,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        297,
+        337,
+        480
+      ],
+      "encoded_sha256": "a4ba439499fd53e8b282a93f6104bbb0674a28b38af7f19ad88dd6bcd7949a4b"
+    },
+    {
+      "source": "shard_marshal_move_south_west_05.png",
+      "runtime": "shard_marshal_move_south_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        41,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        297,
+        340,
+        480
+      ],
+      "encoded_sha256": "fd7aa54296ab7fbdfdfc70f6167a4bcb614b2715ec133e05b2220f6ee2f1dad9"
+    },
+    {
+      "source": "shard_marshal_move_south_west_06.png",
+      "runtime": "shard_marshal_move_south_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        41,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        297,
+        340,
+        480
+      ],
+      "encoded_sha256": "1135f9f29de6f23575f63b8e80a831bca7553379a953a02abecd824b17f5afea"
+    },
+    {
+      "source": "shard_marshal_move_south_west_07.png",
+      "runtime": "shard_marshal_move_south_west_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        4,
+        40,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        297,
+        337,
+        480
+      ],
+      "encoded_sha256": "1ede420bdcbd331020164dfec85ca5c0181b8b2a32c17a59161c3fbf05f26adf"
+    }
+  ],
+  "move_west": [
+    {
+      "source": "shard_marshal_move_west_00.png",
+      "runtime": "shard_marshal_move_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        17,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        201,
+        293,
+        311,
+        480
+      ],
+      "encoded_sha256": "8b4f4180fd891bd7c1cc547f7790ea56dcc7e7aac58d93ebbef8072ac885ee49"
+    },
+    {
+      "source": "shard_marshal_move_west_01.png",
+      "runtime": "shard_marshal_move_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        16,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        293,
+        313,
+        480
+      ],
+      "encoded_sha256": "276eb3af95ddd36dfb708c22fe1e668698824e492ba7f06cc28edadee0f20360"
+    },
+    {
+      "source": "shard_marshal_move_west_02.png",
+      "runtime": "shard_marshal_move_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        11,
+        4,
+        41,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        293,
+        328,
+        480
+      ],
+      "encoded_sha256": "cc36f9298434e8814eae8ebc321eb99a86639fe7809dded98144992539f63ace"
+    },
+    {
+      "source": "shard_marshal_move_west_03.png",
+      "runtime": "shard_marshal_move_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        16,
+        4,
+        41,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        293,
+        316,
+        480
+      ],
+      "encoded_sha256": "ecba338144022934efec7ce83186dfcfbb31768ebd596d986c9170b29929aa25"
+    },
+    {
+      "source": "shard_marshal_move_west_04.png",
+      "runtime": "shard_marshal_move_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        293,
+        316,
+        480
+      ],
+      "encoded_sha256": "1ea25b229f076c32d2b0590486d7b52ff1f42a06540c4842452703b67d6966f1"
+    },
+    {
+      "source": "shard_marshal_move_west_05.png",
+      "runtime": "shard_marshal_move_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        16,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        293,
+        313,
+        480
+      ],
+      "encoded_sha256": "2ff4bf2077a8b4e4cd57dad0db2314e0d03e1a61f005be8d882d9f4f49e14d0e"
+    },
+    {
+      "source": "shard_marshal_move_west_06.png",
+      "runtime": "shard_marshal_move_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        293,
+        316,
+        480
+      ],
+      "encoded_sha256": "d5ffbc2757db5de3c9530657d8618e3314d09fad4a9e0db75be5e006f579cf7c"
+    },
+    {
+      "source": "shard_marshal_move_west_07.png",
+      "runtime": "shard_marshal_move_west_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        293,
+        316,
+        480
+      ],
+      "encoded_sha256": "eaf5fd4e798edb63b392a25ccb9e906ef38837ec8bde529e59b00269bb5e518d"
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "shard_marshal_move_north_west_00.png",
+      "runtime": "shard_marshal_move_north_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        201,
+        293,
+        311,
+        480
+      ],
+      "encoded_sha256": "7599712b65f99107eea2fa9cbcd834e201aa871e70e2de4cbd9c45e394593b88"
+    },
+    {
+      "source": "shard_marshal_move_north_west_01.png",
+      "runtime": "shard_marshal_move_north_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        14,
+        4,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        293,
+        313,
+        480
+      ],
+      "encoded_sha256": "671cfda5e0625cf38f0091f202a173a125f563d9053a39b02d2aedee8744499d"
+    },
+    {
+      "source": "shard_marshal_move_north_west_02.png",
+      "runtime": "shard_marshal_move_north_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        5,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        297,
+        313,
+        480
+      ],
+      "encoded_sha256": "957fed12954e28dbb74a96b68a5adcfddf4cc4389333f2271726e6ac96167ec8"
+    },
+    {
+      "source": "shard_marshal_move_north_west_03.png",
+      "runtime": "shard_marshal_move_north_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        39,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        297,
+        313,
+        480
+      ],
+      "encoded_sha256": "69abcc1e2a786a5757dbbd659550096a75848af1406c51f358732a2872769369"
+    },
+    {
+      "source": "shard_marshal_move_north_west_04.png",
+      "runtime": "shard_marshal_move_north_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        293,
+        331,
+        480
+      ],
+      "encoded_sha256": "2d55f8e9b0d98f7d32ed9c7007ee2db14f1400d5aac77a45403a8bde66c011ac"
+    },
+    {
+      "source": "shard_marshal_move_north_west_05.png",
+      "runtime": "shard_marshal_move_north_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        4,
+        38,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        201,
+        288,
+        311,
+        480
+      ],
+      "encoded_sha256": "2c77b82e01bd79d4aea962d7df04dc23527ce71b482748c468e4b216c25ee7af"
+    },
+    {
+      "source": "shard_marshal_move_north_west_06.png",
+      "runtime": "shard_marshal_move_north_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        4,
+        38,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        288,
+        331,
+        480
+      ],
+      "encoded_sha256": "99b16031ae3f3a6516f79de5053e581244d01e1a2031aeedbc19841687f025d7"
+    },
+    {
+      "source": "shard_marshal_move_north_west_07.png",
+      "runtime": "shard_marshal_move_north_west_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        14,
+        4,
+        38,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        288,
+        313,
+        480
+      ],
+      "encoded_sha256": "585de83701c6b7edd2589b3c95281d99af0d971ca54a89917c812746b53757b8"
+    }
+  ],
+  "move_north": [
+    {
+      "source": "shard_marshal_move_north_00.png",
+      "runtime": "shard_marshal_move_north_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        32,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        293,
+        323,
+        480
+      ],
+      "encoded_sha256": "aa4f0b7c97e3fd7338a8c8240ba7866a1a56ef13440c78b3a253ea343163fdda"
+    },
+    {
+      "source": "shard_marshal_move_north_01.png",
+      "runtime": "shard_marshal_move_north_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        31,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        293,
+        321,
+        480
+      ],
+      "encoded_sha256": "662ecc06dee671a35e58d77e96e1c84cb36c92356724c2451d950d0dbcb6f4cd"
+    },
+    {
+      "source": "shard_marshal_move_north_02.png",
+      "runtime": "shard_marshal_move_north_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        31,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        293,
+        321,
+        480
+      ],
+      "encoded_sha256": "18e8aebd558d2a1219a2b3ef0b944afcb457c67891c6349c8163bca840d8c686"
+    },
+    {
+      "source": "shard_marshal_move_north_03.png",
+      "runtime": "shard_marshal_move_north_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        31,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        293,
+        321,
+        480
+      ],
+      "encoded_sha256": "e9c39b10469ceb2f229efc2f5ecae7a01a490a1404dea4b9e7e916b981cb94e8"
+    },
+    {
+      "source": "shard_marshal_move_north_04.png",
+      "runtime": "shard_marshal_move_north_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "5779d5e6135da626dc63edfe98cb6e13473a0a6bd915bd427099890c6f897797"
+    },
+    {
+      "source": "shard_marshal_move_north_05.png",
+      "runtime": "shard_marshal_move_north_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "4811829201310ca1aa4bb35602b1c9e7664abb6c6cbf5a5535071e33de7c6daf"
+    },
+    {
+      "source": "shard_marshal_move_north_06.png",
+      "runtime": "shard_marshal_move_north_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "a9a930e65c556483c3fa7ba533a7cf6cca7e8eb1805234cb82f6a304d84e161a"
+    },
+    {
+      "source": "shard_marshal_move_north_07.png",
+      "runtime": "shard_marshal_move_north_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        4,
+        39,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        293,
+        340,
+        480
+      ],
+      "encoded_sha256": "2aecc82f76070838dd5a18127db26b0d760d0cacc7102f62c99fe36abfabb079"
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "shard_marshal_move_north_east_00.png",
+      "runtime": "shard_marshal_move_north_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        2,
+        41,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        269,
+        335,
+        480
+      ],
+      "encoded_sha256": "9d144a10dd4702310a7da4301c44fedd621797a772ddcea09babe2a165432fe2"
+    },
+    {
+      "source": "shard_marshal_move_north_east_01.png",
+      "runtime": "shard_marshal_move_north_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        2,
+        45,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "40bf7b3139b794b39d44f13f4f0efdd6dffedc0e4fee8f3d937a8a633093c93f"
+    },
+    {
+      "source": "shard_marshal_move_north_east_02.png",
+      "runtime": "shard_marshal_move_north_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        2,
+        45,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        269,
+        347,
+        480
+      ],
+      "encoded_sha256": "f438f1bfa72539e37d06a1ae3fbda376932de5c0b3b7c8844d4770d0e755a06e"
+    },
+    {
+      "source": "shard_marshal_move_north_east_03.png",
+      "runtime": "shard_marshal_move_north_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        2,
+        42,
+        46
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "a086a5b512007c6c86f7d838296ca854bbafd1acd3926766aa44acef704574eb"
+    },
+    {
+      "source": "shard_marshal_move_north_east_04.png",
+      "runtime": "shard_marshal_move_north_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        2,
+        36,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        273,
+        323,
+        480
+      ],
+      "encoded_sha256": "6ba7f0180bbf5f95c5742e41f085b0988bca13bf34de69d1b3fbc74784b0426f"
+    },
+    {
+      "source": "shard_marshal_move_north_east_05.png",
+      "runtime": "shard_marshal_move_north_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        2,
+        40,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        273,
+        333,
+        480
+      ],
+      "encoded_sha256": "46c9d1398f64bdd9995624a57dff92db2e34080349c16ed154872913489bdb55"
+    },
+    {
+      "source": "shard_marshal_move_north_east_06.png",
+      "runtime": "shard_marshal_move_north_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        2,
+        37,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        273,
+        333,
+        480
+      ],
+      "encoded_sha256": "4951fdfec3ac14dba07a1d86bf8f40bf939c10ccfb971c926df647b64cd3d53f"
+    },
+    {
+      "source": "shard_marshal_move_north_east_07.png",
+      "runtime": "shard_marshal_move_north_east_07.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        2,
+        40,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "1438dd15f108b53b31ec266dba04b8e1e1f2b1e3914a2488c3bab85446894ffa"
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "shard_marshal_attack_east_00.png",
+      "runtime": "shard_marshal_attack_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        41,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        269,
+        321,
+        480
+      ],
+      "encoded_sha256": "2f9a4817c8235ee94fcf58c5b6c6bd5a8f4bcea308642ee79519424d88bbb14e"
+    },
+    {
+      "source": "shard_marshal_attack_east_01.png",
+      "runtime": "shard_marshal_attack_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        44,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        269,
+        331,
+        480
+      ],
+      "encoded_sha256": "96c988b3c2cb5af52a0b3964d36dbbc8835d4da1704ff1ad28a925a455618e2c"
+    },
+    {
+      "source": "shard_marshal_attack_east_02.png",
+      "runtime": "shard_marshal_attack_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        46,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        269,
+        335,
+        480
+      ],
+      "encoded_sha256": "6839b723b0bf9222c42632b8086a4a7f3bbcecc63459a2b168a4e9582c2c75c4"
+    },
+    {
+      "source": "shard_marshal_attack_east_03.png",
+      "runtime": "shard_marshal_attack_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        278,
+        355,
+        480
+      ],
+      "encoded_sha256": "b12c7be1d7a5a89e3125e323261ef81c34c7d491b49b03914ee940ab723aaf89"
+    },
+    {
+      "source": "shard_marshal_attack_east_04.png",
+      "runtime": "shard_marshal_attack_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        12,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        278,
+        364,
+        480
+      ],
+      "encoded_sha256": "d90300ef333eba00e483cee4e1ddb71e10e64a8be0e82facb2d0f6b4a10b8000"
+    },
+    {
+      "source": "shard_marshal_attack_east_05.png",
+      "runtime": "shard_marshal_attack_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        283,
+        371,
+        480
+      ],
+      "encoded_sha256": "debbac5ab8ffb48a64356e02a71fc896b5a603a335a031639136b57ab741cc57"
+    },
+    {
+      "source": "shard_marshal_attack_east_06.png",
+      "runtime": "shard_marshal_attack_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        12,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        278,
+        371,
+        480
+      ],
+      "encoded_sha256": "0f1bd0f64a72f6382a17206da83e6c8a2389101e689ca45726b6a3186269a92e"
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "shard_marshal_attack_south_east_00.png",
+      "runtime": "shard_marshal_attack_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "843f03d69792c9c0dfebc328723b157e60865b4b5592a3b500df45af57957889"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_01.png",
+      "runtime": "shard_marshal_attack_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        269,
+        340,
+        480
+      ],
+      "encoded_sha256": "e9dd6ffc3b5ccefcb0e04bfb6ad8ef58325ae0542856d253e8747dc20a353e00"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_02.png",
+      "runtime": "shard_marshal_attack_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        269,
+        343,
+        480
+      ],
+      "encoded_sha256": "ad234fe8e7d079364f9cc91469ac4dc3a57a611dec6953f03e79861a0dc72f62"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_03.png",
+      "runtime": "shard_marshal_attack_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        273,
+        349,
+        480
+      ],
+      "encoded_sha256": "1da1abbf3c2d8e77874faeeecf4b023b4f9118df4f4b7d97990bc7905b2b1fce"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_04.png",
+      "runtime": "shard_marshal_attack_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        278,
+        359,
+        480
+      ],
+      "encoded_sha256": "c466005cfeb83ef5580e1466cc15c45e9153858a57d642009d924b1e0460bce9"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_05.png",
+      "runtime": "shard_marshal_attack_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        283,
+        367,
+        480
+      ],
+      "encoded_sha256": "40f4b65a2f2a3f099340b19fa612fbff1ae12c5a1b854284e01879c4d489231b"
+    },
+    {
+      "source": "shard_marshal_attack_south_east_06.png",
+      "runtime": "shard_marshal_attack_south_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        12,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        278,
+        371,
+        480
+      ],
+      "encoded_sha256": "16fbc35200530cd25ebb84dc7af9b3488e1cb22d8f39da034f543e97fe3f21cf"
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "shard_marshal_attack_south_00.png",
+      "runtime": "shard_marshal_attack_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "9aeb6e95e58299dbe8a7c4a5e4d452d876828dc68d2f67d0e24706a6da0b1486"
+    },
+    {
+      "source": "shard_marshal_attack_south_01.png",
+      "runtime": "shard_marshal_attack_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "6826bf2d9155c81f1eb173eb9ce3a80a3c683102ee598fbe3e2e7275c88b0584"
+    },
+    {
+      "source": "shard_marshal_attack_south_02.png",
+      "runtime": "shard_marshal_attack_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        269,
+        364,
+        480
+      ],
+      "encoded_sha256": "d6f02dbceb4d8f91fa9c8158394e4c9cb8bb2b7278cb728702b03b7562392225"
+    },
+    {
+      "source": "shard_marshal_attack_south_03.png",
+      "runtime": "shard_marshal_attack_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        12,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        278,
+        367,
+        480
+      ],
+      "encoded_sha256": "3c8a71b509d5e7693087634c8cecaec321af5ed149eda90d8b5cc4d3f53e7a4e"
+    },
+    {
+      "source": "shard_marshal_attack_south_04.png",
+      "runtime": "shard_marshal_attack_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        13,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        283,
+        361,
+        480
+      ],
+      "encoded_sha256": "981013677f4a43b8f514f8dbbaa9c25f646a2ea53a59c3763158095cdf204a35"
+    },
+    {
+      "source": "shard_marshal_attack_south_05.png",
+      "runtime": "shard_marshal_attack_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        283,
+        367,
+        480
+      ],
+      "encoded_sha256": "c311ad8c797fce42610cb1f6cf8baeadc3c8d92280aa6920751c4b0b87e594de"
+    },
+    {
+      "source": "shard_marshal_attack_south_06.png",
+      "runtime": "shard_marshal_attack_south_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        273,
+        361,
+        480
+      ],
+      "encoded_sha256": "45400a23925e75dba4fb0923ad58fd7258317fac84aaa5196014f28ecc603b8b"
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "shard_marshal_attack_south_west_00.png",
+      "runtime": "shard_marshal_attack_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "920b606962eec4e1dba2876b74353f7a7b05b6ae2246d24a61802e3fdca94d8d"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_01.png",
+      "runtime": "shard_marshal_attack_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        269,
+        352,
+        480
+      ],
+      "encoded_sha256": "8eef936226ed3b64fed1b6ad9bdb0f6406ca5ec3c8bdab66d08a2d2252495b94"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_02.png",
+      "runtime": "shard_marshal_attack_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "c1d4f72beb7cf67146e6894a0f708d7a4cc606fff6a8a3c51c9b086da26c7460"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_03.png",
+      "runtime": "shard_marshal_attack_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        278,
+        367,
+        480
+      ],
+      "encoded_sha256": "6b0fc488ae22489c07595e94d2eee6ac252543f9b1ef04d0c1228df4cb8f63dc"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_04.png",
+      "runtime": "shard_marshal_attack_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        13,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        283,
+        369,
+        480
+      ],
+      "encoded_sha256": "a430620105f8f6d46849db03a47aa418234398d383e2331a2a93dec7ba68fee5"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_05.png",
+      "runtime": "shard_marshal_attack_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        278,
+        361,
+        480
+      ],
+      "encoded_sha256": "dacb91aa04937fd275542fcbd800e94003493fa8af6c022c1729087f2bb9daba"
+    },
+    {
+      "source": "shard_marshal_attack_south_west_06.png",
+      "runtime": "shard_marshal_attack_south_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        273,
+        355,
+        480
+      ],
+      "encoded_sha256": "a13cd27f5facc09a1aaf49e6c3fe17435c13c1ded25268fb6becaeab49ac9577"
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "shard_marshal_attack_west_00.png",
+      "runtime": "shard_marshal_attack_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        269,
+        313,
+        480
+      ],
+      "encoded_sha256": "8973ba912f32e68cd421bf36f7ca7b993c4e9d411321f1de7f6fd14704955580"
+    },
+    {
+      "source": "shard_marshal_attack_west_01.png",
+      "runtime": "shard_marshal_attack_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        11,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        273,
+        313,
+        480
+      ],
+      "encoded_sha256": "4746cf99596b8c648bbc61c805797422fbdbc83aff09b8f82be1b95dd70847f4"
+    },
+    {
+      "source": "shard_marshal_attack_west_02.png",
+      "runtime": "shard_marshal_attack_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        273,
+        321,
+        480
+      ],
+      "encoded_sha256": "e92948c9202546e6b52741f1958ff58d9ef1c832bf93acb26814acf3165996b9"
+    },
+    {
+      "source": "shard_marshal_attack_west_03.png",
+      "runtime": "shard_marshal_attack_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "80db71dd189a08552fa78b476e3610185cb06c75d4446a1e4702458aef1ec28c"
+    },
+    {
+      "source": "shard_marshal_attack_west_04.png",
+      "runtime": "shard_marshal_attack_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "51b46b6b351f21315efca22d681e72b4a03f33712671e4d849d9629ad6eff7e4"
+    },
+    {
+      "source": "shard_marshal_attack_west_05.png",
+      "runtime": "shard_marshal_attack_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        278,
+        352,
+        480
+      ],
+      "encoded_sha256": "168251ed84f0111a7a96ca393e22f16f1cfabd5e0649f9ccfa3766ed63eb8289"
+    },
+    {
+      "source": "shard_marshal_attack_west_06.png",
+      "runtime": "shard_marshal_attack_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        11,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        273,
+        347,
+        480
+      ],
+      "encoded_sha256": "4b31cd3e62991175c0a81755eff21c18d23a538827b03e066255988edfa6924d"
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "shard_marshal_attack_north_west_00.png",
+      "runtime": "shard_marshal_attack_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "243d0102bb9a26bb7c2e6e9ba453399ef1dd86cb6e57c8bd472c6971085496c3"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_01.png",
+      "runtime": "shard_marshal_attack_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "4ee72dfabadd767c26e1802821735d963592665537366a0b4b53eedaab1199cd"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_02.png",
+      "runtime": "shard_marshal_attack_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        48,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        273,
+        328,
+        480
+      ],
+      "encoded_sha256": "a7f97a6220b0593746f13553b25567b5b7a971e287f0af007cdd8bd4527e09de"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_03.png",
+      "runtime": "shard_marshal_attack_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        50,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        278,
+        345,
+        480
+      ],
+      "encoded_sha256": "0c2fe965c01f8faec9e19d84b019cb9b6b59fdd6696e8c1c409a951095f3566c"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_04.png",
+      "runtime": "shard_marshal_attack_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        48,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        283,
+        347,
+        480
+      ],
+      "encoded_sha256": "e4b6a57c345752f64f2fd535915cab1d35a0fc8311f6837a4cc66a29c38cf7d6"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_05.png",
+      "runtime": "shard_marshal_attack_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        48,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        283,
+        347,
+        480
+      ],
+      "encoded_sha256": "b8cd42c367e03235738917b19f526cef8e4d3d7df73f87ad7abdd9e8daacb003"
+    },
+    {
+      "source": "shard_marshal_attack_north_west_06.png",
+      "runtime": "shard_marshal_attack_north_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        49,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        278,
+        345,
+        480
+      ],
+      "encoded_sha256": "2abdaa607dbf6ab2298c42bcc76178fef99ca20f31e93f6b8c90c5766dab94cc"
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "shard_marshal_attack_north_00.png",
+      "runtime": "shard_marshal_attack_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "6d7287c2537b435f0d398c9641ccccadbfcd8b2f234e26d9c9a42ab235523b9f"
+    },
+    {
+      "source": "shard_marshal_attack_north_01.png",
+      "runtime": "shard_marshal_attack_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        273,
+        357,
+        480
+      ],
+      "encoded_sha256": "b79ee2a1900f79fd103fab090ba3a00707242a992a222207f13a529e79111be7"
+    },
+    {
+      "source": "shard_marshal_attack_north_02.png",
+      "runtime": "shard_marshal_attack_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        53,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "b4e71c56eca470ac9fb8dba0ba97a386c7355eb2b3540154c3c94103180584a0"
+    },
+    {
+      "source": "shard_marshal_attack_north_03.png",
+      "runtime": "shard_marshal_attack_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        278,
+        364,
+        480
+      ],
+      "encoded_sha256": "a742a11de9a3c433b04b5ab576eec473df82d797b857add79f5d477b0f510935"
+    },
+    {
+      "source": "shard_marshal_attack_north_04.png",
+      "runtime": "shard_marshal_attack_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        273,
+        357,
+        480
+      ],
+      "encoded_sha256": "5be5372026fb3652c08ff8f37811e63d8c95ebdca1cbead525a8859ba4eaa9d0"
+    },
+    {
+      "source": "shard_marshal_attack_north_05.png",
+      "runtime": "shard_marshal_attack_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        12,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        283,
+        361,
+        480
+      ],
+      "encoded_sha256": "cf2ee48679b94974f0e06f5ed8dc41a39e81efe29e5af15aea433cb114eafda5"
+    },
+    {
+      "source": "shard_marshal_attack_north_06.png",
+      "runtime": "shard_marshal_attack_north_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        12,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        283,
+        367,
+        480
+      ],
+      "encoded_sha256": "a73606f57b6965609e39007e32dbc6f37249ad1fd69225a774561a5b32cb4348"
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "shard_marshal_attack_north_east_00.png",
+      "runtime": "shard_marshal_attack_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "dd49a3ad5d3396c12a7134ef04de0fef798831d3c280dc47b7aac9f6170dbf2a"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_01.png",
+      "runtime": "shard_marshal_attack_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        273,
+        347,
+        480
+      ],
+      "encoded_sha256": "e742ae577839ab84e329488904fb24196194aa2daefcc0b0e4d2223a059fbb3d"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_02.png",
+      "runtime": "shard_marshal_attack_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "9e0e21494141c6c535781e9f633284c761db5e7f2182bb9efb3412715ba7b1f1"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_03.png",
+      "runtime": "shard_marshal_attack_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        364,
+        480
+      ],
+      "encoded_sha256": "18999feed720c605dc23146665ee24dac876dbc0d6fedb68cabb749168c69d42"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_04.png",
+      "runtime": "shard_marshal_attack_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        47,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        273,
+        347,
+        480
+      ],
+      "encoded_sha256": "f58a1e17ec5a9b2816b6d4ef662f71fdf44759bd377c9db5319ec2af4f58b680"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_05.png",
+      "runtime": "shard_marshal_attack_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        364,
+        480
+      ],
+      "encoded_sha256": "eb3a8d0e619e6e90fb6d6c076f90648f234f87084df1c758a3b183daadb10dc9"
+    },
+    {
+      "source": "shard_marshal_attack_north_east_06.png",
+      "runtime": "shard_marshal_attack_north_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        364,
+        480
+      ],
+      "encoded_sha256": "b8995f44c5703d7b6246ad505ba1f664d4228c036df86506086c23ea9fc5017c"
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "shard_marshal_hit_east_00.png",
+      "runtime": "shard_marshal_hit_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        41,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        269,
+        321,
+        480
+      ],
+      "encoded_sha256": "2f9a4817c8235ee94fcf58c5b6c6bd5a8f4bcea308642ee79519424d88bbb14e"
+    },
+    {
+      "source": "shard_marshal_hit_east_01.png",
+      "runtime": "shard_marshal_hit_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        42,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        186,
+        273,
+        325,
+        480
+      ],
+      "encoded_sha256": "6ab062cd9761915c7e8a016a70131c0bead52f2665b0bd4728e5e039bb0d6ca8"
+    },
+    {
+      "source": "shard_marshal_hit_east_02.png",
+      "runtime": "shard_marshal_hit_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        12,
+        46,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        278,
+        337,
+        480
+      ],
+      "encoded_sha256": "6bc3b605ade4da2d0ab82e332e4d855a23ad354663368ba94965ea392df6e3c0"
+    },
+    {
+      "source": "shard_marshal_hit_east_03.png",
+      "runtime": "shard_marshal_hit_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        16,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        297,
+        357,
+        480
+      ],
+      "encoded_sha256": "33bf7fe69742e7e1f4500c86004d3a6899703f408644b15d2cfad802a378b02c"
+    },
+    {
+      "source": "shard_marshal_hit_east_04.png",
+      "runtime": "shard_marshal_hit_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        18,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        307,
+        361,
+        480
+      ],
+      "encoded_sha256": "cf3947b5015e9bfbe9eb001238bc0eb8f8c2e88e18ac0d00c5a7cb9a06b5c28a"
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "shard_marshal_hit_south_east_00.png",
+      "runtime": "shard_marshal_hit_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "843f03d69792c9c0dfebc328723b157e60865b4b5592a3b500df45af57957889"
+    },
+    {
+      "source": "shard_marshal_hit_south_east_01.png",
+      "runtime": "shard_marshal_hit_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        273,
+        337,
+        480
+      ],
+      "encoded_sha256": "30891b4a5f23e1df04a40a94feb122514ff639658d9cc804e1ecc487e728feae"
+    },
+    {
+      "source": "shard_marshal_hit_south_east_02.png",
+      "runtime": "shard_marshal_hit_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        273,
+        345,
+        480
+      ],
+      "encoded_sha256": "aa50c82e40aeee107389499840babdf62f5ccafee2ce7b4763985054cf94c2fb"
+    },
+    {
+      "source": "shard_marshal_hit_south_east_03.png",
+      "runtime": "shard_marshal_hit_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        13,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        283,
+        357,
+        480
+      ],
+      "encoded_sha256": "76e55c8fea4f0b6e549d5395a531b051519fa06bf8dc3e24bc059f0ba1bf505f"
+    },
+    {
+      "source": "shard_marshal_hit_south_east_04.png",
+      "runtime": "shard_marshal_hit_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        283,
+        361,
+        480
+      ],
+      "encoded_sha256": "5563a66e73527d78af86a17e555335ea6ca9f5d15ed46ab53b11a6342ab6bf09"
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "shard_marshal_hit_south_00.png",
+      "runtime": "shard_marshal_hit_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "9aeb6e95e58299dbe8a7c4a5e4d452d876828dc68d2f67d0e24706a6da0b1486"
+    },
+    {
+      "source": "shard_marshal_hit_south_01.png",
+      "runtime": "shard_marshal_hit_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        364,
+        480
+      ],
+      "encoded_sha256": "6ca3db2efd80328308ec44974fa8ad96d05846b81faf8b79d4458660d212273c"
+    },
+    {
+      "source": "shard_marshal_hit_south_02.png",
+      "runtime": "shard_marshal_hit_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        10,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        269,
+        364,
+        480
+      ],
+      "encoded_sha256": "a244d7aafbd72dcb05c808e1372af51b1498f1de5abd7fe1a69d903b19fa54d0"
+    },
+    {
+      "source": "shard_marshal_hit_south_03.png",
+      "runtime": "shard_marshal_hit_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        12,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        278,
+        369,
+        480
+      ],
+      "encoded_sha256": "b61741df756a3b55dd1a5bdbcb6be05414c817bd3d554962b43aa28071e5b56e"
+    },
+    {
+      "source": "shard_marshal_hit_south_04.png",
+      "runtime": "shard_marshal_hit_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        269,
+        371,
+        480
+      ],
+      "encoded_sha256": "bfd36c20c08a8b64d57a57a10919859b552a94a78ea8eea371cf7d9743faa26e"
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "shard_marshal_hit_south_west_00.png",
+      "runtime": "shard_marshal_hit_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "920b606962eec4e1dba2876b74353f7a7b05b6ae2246d24a61802e3fdca94d8d"
+    },
+    {
+      "source": "shard_marshal_hit_south_west_01.png",
+      "runtime": "shard_marshal_hit_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        269,
+        347,
+        480
+      ],
+      "encoded_sha256": "66b94feb55d093c40e6fe940b2c99fafbaa360aa1788dd46289cf8817e0ae9f8"
+    },
+    {
+      "source": "shard_marshal_hit_south_west_02.png",
+      "runtime": "shard_marshal_hit_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        269,
+        349,
+        480
+      ],
+      "encoded_sha256": "1775e4a2f28f1ed841e54a416c4933a9d3f43a92398fa07006ddfb8a202fef0f"
+    },
+    {
+      "source": "shard_marshal_hit_south_west_03.png",
+      "runtime": "shard_marshal_hit_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        12,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        278,
+        355,
+        480
+      ],
+      "encoded_sha256": "2011ea15bb3f0993dae7a8d2926630a855c7193d1117128a1d448fd4fe93c923"
+    },
+    {
+      "source": "shard_marshal_hit_south_west_04.png",
+      "runtime": "shard_marshal_hit_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        12,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        278,
+        349,
+        480
+      ],
+      "encoded_sha256": "1dbc240d8a5e749a57c73a0419f5596f0f470c2cc8be07c1349470980ee765d5"
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "shard_marshal_hit_west_00.png",
+      "runtime": "shard_marshal_hit_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        269,
+        313,
+        480
+      ],
+      "encoded_sha256": "8973ba912f32e68cd421bf36f7ca7b993c4e9d411321f1de7f6fd14704955580"
+    },
+    {
+      "source": "shard_marshal_hit_west_01.png",
+      "runtime": "shard_marshal_hit_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        21,
+        11,
+        46,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        273,
+        316,
+        480
+      ],
+      "encoded_sha256": "5c5ee483443da25e0ed19d4afaea06667325517ec4dad79ad1582a0dcd84d8cf"
+    },
+    {
+      "source": "shard_marshal_hit_west_02.png",
+      "runtime": "shard_marshal_hit_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        45,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        288,
+        321,
+        480
+      ],
+      "encoded_sha256": "83bee2168976bdd8786a88798a3983b9693a462811f9ac00a5ce1533d39c9eab"
+    },
+    {
+      "source": "shard_marshal_hit_west_03.png",
+      "runtime": "shard_marshal_hit_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        18,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        307,
+        343,
+        480
+      ],
+      "encoded_sha256": "b10d3c521dcfc982dcc43128e8eb47bed28f6374c5c96140320b3f492406f19d"
+    },
+    {
+      "source": "shard_marshal_hit_west_04.png",
+      "runtime": "shard_marshal_hit_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        35
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        312,
+        340,
+        480
+      ],
+      "encoded_sha256": "41afb4ec042a9cf48018ae881eb8899418193728e1794438ac624a7e3193d448"
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "shard_marshal_hit_north_west_00.png",
+      "runtime": "shard_marshal_hit_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "243d0102bb9a26bb7c2e6e9ba453399ef1dd86cb6e57c8bd472c6971085496c3"
+    },
+    {
+      "source": "shard_marshal_hit_north_west_01.png",
+      "runtime": "shard_marshal_hit_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        48,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "836f2e752ac95344e8318e52dd97ebef14d7e4e1fa40e131d19e7cf639b9929c"
+    },
+    {
+      "source": "shard_marshal_hit_north_west_02.png",
+      "runtime": "shard_marshal_hit_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        45,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        278,
+        335,
+        480
+      ],
+      "encoded_sha256": "28a2aa318481dd97f774c75b7fca3f4efa01927c9ee5c96e01ae3e94ad8a2d25"
+    },
+    {
+      "source": "shard_marshal_hit_north_west_03.png",
+      "runtime": "shard_marshal_hit_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        13,
+        47,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        288,
+        340,
+        480
+      ],
+      "encoded_sha256": "680453fff6a5e5b3ba8a7fbd8af62fa0220457d4d8536affdb0f2598919b0694"
+    },
+    {
+      "source": "shard_marshal_hit_north_west_04.png",
+      "runtime": "shard_marshal_hit_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        13,
+        47,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        288,
+        337,
+        480
+      ],
+      "encoded_sha256": "ba40ce9063d66e3f050b516a9fd2e1443ee11c5f9a23cb1de195521036b3e582"
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "shard_marshal_hit_north_00.png",
+      "runtime": "shard_marshal_hit_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "6d7287c2537b435f0d398c9641ccccadbfcd8b2f234e26d9c9a42ab235523b9f"
+    },
+    {
+      "source": "shard_marshal_hit_north_01.png",
+      "runtime": "shard_marshal_hit_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        273,
+        361,
+        480
+      ],
+      "encoded_sha256": "8830a613de77e91adc123002491e530f06241e9b0752e09bd5172a2a241187b7"
+    },
+    {
+      "source": "shard_marshal_hit_north_02.png",
+      "runtime": "shard_marshal_hit_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        273,
+        361,
+        480
+      ],
+      "encoded_sha256": "7aa8de8ebf0a93ffcccf4ddc4502e4b6a58b0a7f495a8889156334d51c1628a0"
+    },
+    {
+      "source": "shard_marshal_hit_north_03.png",
+      "runtime": "shard_marshal_hit_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        278,
+        364,
+        480
+      ],
+      "encoded_sha256": "62bdc354b9643cfaef9ea09206c7e694023fc8bedd06666abab7b9443003437f"
+    },
+    {
+      "source": "shard_marshal_hit_north_04.png",
+      "runtime": "shard_marshal_hit_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        11,
+        53,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        278,
+        364,
+        480
+      ],
+      "encoded_sha256": "157c7bc978447e9ae38ea05103e7dcac7bbe72c6a5d5c0e949fc45fc73b155d6"
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "shard_marshal_hit_north_east_00.png",
+      "runtime": "shard_marshal_hit_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "dd49a3ad5d3396c12a7134ef04de0fef798831d3c280dc47b7aac9f6170dbf2a"
+    },
+    {
+      "source": "shard_marshal_hit_north_east_01.png",
+      "runtime": "shard_marshal_hit_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        273,
+        343,
+        480
+      ],
+      "encoded_sha256": "1c587c64cd4c901db95fbb3f8ea9215db129c3c47feaf3e06aeb16bf3fe13b71"
+    },
+    {
+      "source": "shard_marshal_hit_north_east_02.png",
+      "runtime": "shard_marshal_hit_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        273,
+        352,
+        480
+      ],
+      "encoded_sha256": "ec54849b9c454156c646fe97a83228b719fcda895602afe96ffe328af412d997"
+    },
+    {
+      "source": "shard_marshal_hit_north_east_03.png",
+      "runtime": "shard_marshal_hit_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        12,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        41
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        283,
+        369,
+        480
+      ],
+      "encoded_sha256": "9d2f70724eb4822fecf1125f387fcd4bc7b760b421aada796afc432e52636473"
+    },
+    {
+      "source": "shard_marshal_hit_north_east_04.png",
+      "runtime": "shard_marshal_hit_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        13,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        288,
+        371,
+        480
+      ],
+      "encoded_sha256": "97e7f250516ca78cb4b7a234789983d493a0ead2d4a3b30e16bb5c31fbe9523a"
+    }
+  ],
+  "death_east": [
+    {
+      "source": "shard_marshal_death_east_00.png",
+      "runtime": "shard_marshal_death_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        10,
+        37,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        33
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        321,
+        333,
+        480
+      ],
+      "encoded_sha256": "2ca68ea15e2b6b4c5a1142c8eb76a686a4768fe622e27491e735e3e5359c4e6b"
+    },
+    {
+      "source": "shard_marshal_death_east_01.png",
+      "runtime": "shard_marshal_death_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        11,
+        37,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        32
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        326,
+        333,
+        480
+      ],
+      "encoded_sha256": "957415ec53ff3e3d7ad0b99839d51a280b1750feb386c5217a2412d41565ca04"
+    },
+    {
+      "source": "shard_marshal_death_east_02.png",
+      "runtime": "shard_marshal_death_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        12,
+        40,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        31
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        331,
+        345,
+        480
+      ],
+      "encoded_sha256": "c16a01c39d8abdd394f8ba951c355db305a0fdc595cbf11ebde572e02a487a44"
+    },
+    {
+      "source": "shard_marshal_death_east_03.png",
+      "runtime": "shard_marshal_death_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        0,
+        11,
+        45,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        25
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        360,
+        364,
+        480
+      ],
+      "encoded_sha256": "1533cd6db0f067c69d740b3199df0543c5f862ac28e98141887653f930640ab2"
+    },
+    {
+      "source": "shard_marshal_death_east_04.png",
+      "runtime": "shard_marshal_death_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        1,
+        10,
+        42,
+        38
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        28
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        345,
+        355,
+        480
+      ],
+      "encoded_sha256": "23bb94b00abefeb6abc3e08a7c56204a9262a6851b6a280e5bf7d34a191f3c2d"
+    },
+    {
+      "source": "shard_marshal_death_east_05.png",
+      "runtime": "shard_marshal_death_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        1,
+        10,
+        40,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        27
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        350,
+        349,
+        480
+      ],
+      "encoded_sha256": "ec154e4061d7335541d58ff1ba4ceab6075ffb9c032975f7b1135ba90e4dff32"
+    },
+    {
+      "source": "shard_marshal_death_east_06.png",
+      "runtime": "shard_marshal_death_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        22,
+        40,
+        41
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        19
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        389,
+        343,
+        480
+      ],
+      "encoded_sha256": "733c2e8259048fb8e44f70ee9cb5d16df57011ef9d6b83b1aeeca0e3bbd108ea"
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "shard_marshal_death_south_east_00.png",
+      "runtime": "shard_marshal_death_south_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        8,
+        40,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        34
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        317,
+        335,
+        480
+      ],
+      "encoded_sha256": "38e34230c617b76afb06b89d840ea8a1115f1d8534f7ecdff588c12562fce2a1"
+    },
+    {
+      "source": "shard_marshal_death_south_east_01.png",
+      "runtime": "shard_marshal_death_south_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        8,
+        40,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        34
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        317,
+        333,
+        480
+      ],
+      "encoded_sha256": "b8385b0fafe777d02bfb51e14ab0fbb6e401f31e996160bf1f01e02faa10e1fc"
+    },
+    {
+      "source": "shard_marshal_death_south_east_02.png",
+      "runtime": "shard_marshal_death_south_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        7,
+        38,
+        41
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        34
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        317,
+        323,
+        480
+      ],
+      "encoded_sha256": "4168c38cb25c4d9fb0ae7632c7f4992fe12dd98d5a8854111af1550fb81c70fe"
+    },
+    {
+      "source": "shard_marshal_death_south_east_03.png",
+      "runtime": "shard_marshal_death_south_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        5,
+        39,
+        40
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        35
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        312,
+        333,
+        480
+      ],
+      "encoded_sha256": "0d3064183f34c395779e0313cd279d97ce0d9d42677290ed79ceaf05ec966ea9"
+    },
+    {
+      "source": "shard_marshal_death_south_east_04.png",
+      "runtime": "shard_marshal_death_south_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        14,
+        7,
+        42,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        29
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        341,
+        323,
+        480
+      ],
+      "encoded_sha256": "40e8d4a8175943d1054b919b011cdf3f91e10fe2b5dace4487cd9ccca9750179"
+    },
+    {
+      "source": "shard_marshal_death_south_east_05.png",
+      "runtime": "shard_marshal_death_south_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        12,
+        43,
+        34
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        22
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        374,
+        340,
+        480
+      ],
+      "encoded_sha256": "22a06c22110a41e689936ac94ad166ae3b90fc5ff665625dafe286e37e42ba9c"
+    },
+    {
+      "source": "shard_marshal_death_south_east_06.png",
+      "runtime": "shard_marshal_death_south_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        4,
+        16,
+        43,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        20
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        384,
+        349,
+        480
+      ],
+      "encoded_sha256": "eed955d003211ab12affe8be9a49349bee31d473f1fc7648d84f318d5c90aede"
+    }
+  ],
+  "death_south": [
+    {
+      "source": "shard_marshal_death_south_00.png",
+      "runtime": "shard_marshal_death_south_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        9,
+        39,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        186,
+        307,
+        325,
+        480
+      ],
+      "encoded_sha256": "9874c26d93524266f35a1a4da1b370c18d4a62ade386e2b052c37018ff4edc97"
+    },
+    {
+      "source": "shard_marshal_death_south_01.png",
+      "runtime": "shard_marshal_death_south_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        8,
+        37,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        35
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        312,
+        333,
+        480
+      ],
+      "encoded_sha256": "acb3c809588005824adb429868101502e8a47301973bee72e53b631fe608f35f"
+    },
+    {
+      "source": "shard_marshal_death_south_02.png",
+      "runtime": "shard_marshal_death_south_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        6,
+        39,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        39
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        293,
+        335,
+        480
+      ],
+      "encoded_sha256": "19f25dcc50ed045de8e965b60c11de21489c17f341b584eb88216af05573b11e"
+    },
+    {
+      "source": "shard_marshal_death_south_03.png",
+      "runtime": "shard_marshal_death_south_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        7,
+        41,
+        47
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        288,
+        335,
+        480
+      ],
+      "encoded_sha256": "d6198045394a650636cb39a11e14e0551736c553191e9cf2436eaa50adaa57ee"
+    },
+    {
+      "source": "shard_marshal_death_south_04.png",
+      "runtime": "shard_marshal_death_south_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        8,
+        43,
+        40
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        32
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        326,
+        340,
+        480
+      ],
+      "encoded_sha256": "b41582864b10440230d3c22a34b454c35dff93b3b0f150bd850c28845f487b7e"
+    },
+    {
+      "source": "shard_marshal_death_south_05.png",
+      "runtime": "shard_marshal_death_south_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        11,
+        46,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        25
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        360,
+        355,
+        480
+      ],
+      "encoded_sha256": "d8f80f4fab3c3054080ef23a2f85a1b299a82bb53f276841c98d8fbf78e04f8c"
+    },
+    {
+      "source": "shard_marshal_death_south_06.png",
+      "runtime": "shard_marshal_death_south_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        12,
+        16,
+        46,
+        35
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        19
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        389,
+        337,
+        480
+      ],
+      "encoded_sha256": "e856247ddc439b63b9f12c0d415075c12dd32aaea9cc558c98aa8ffa546cc786"
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "shard_marshal_death_south_west_00.png",
+      "runtime": "shard_marshal_death_south_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        0,
+        7,
+        45,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        302,
+        364,
+        480
+      ],
+      "encoded_sha256": "4a0590dfa475f646c16568285892cac554df5f6b83f737d8dd007a17af6f8c69"
+    },
+    {
+      "source": "shard_marshal_death_south_west_01.png",
+      "runtime": "shard_marshal_death_south_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        7,
+        38,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        307,
+        335,
+        480
+      ],
+      "encoded_sha256": "62986bd0391c3fb68c9c0b427c6abdb976a8bb74f965c84cb07d3225115dca15"
+    },
+    {
+      "source": "shard_marshal_death_south_west_02.png",
+      "runtime": "shard_marshal_death_south_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        2,
+        8,
+        42,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        307,
+        352,
+        480
+      ],
+      "encoded_sha256": "3cae225a86080850a97e1c74ecd01f25ad0dba254fb7bced70a3f95c25b5c64f"
+    },
+    {
+      "source": "shard_marshal_death_south_west_03.png",
+      "runtime": "shard_marshal_death_south_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        2,
+        6,
+        41,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        297,
+        349,
+        480
+      ],
+      "encoded_sha256": "af316d1d98aa43b50ebc69a059815a12b8af8bdf0f08b1fa80a3cd0c35402200"
+    },
+    {
+      "source": "shard_marshal_death_south_west_04.png",
+      "runtime": "shard_marshal_death_south_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        0,
+        8,
+        44,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        34
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        317,
+        361,
+        480
+      ],
+      "encoded_sha256": "a3830ecca9c5b7ebb8787909c6a1c64c89518900bc7b4f1feaf1382348b7c12d"
+    },
+    {
+      "source": "shard_marshal_death_south_west_05.png",
+      "runtime": "shard_marshal_death_south_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        1,
+        11,
+        45,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        26
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        355,
+        361,
+        480
+      ],
+      "encoded_sha256": "13bb9c7b52a10e7d6abe320acf6137611aa203f9695de54fe2e51c4697468b4d"
+    },
+    {
+      "source": "shard_marshal_death_south_west_06.png",
+      "runtime": "shard_marshal_death_south_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        1,
+        14,
+        48,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        30
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        336,
+        369,
+        480
+      ],
+      "encoded_sha256": "13e632bb37cb8513c5109e20475f818622008f76e3de9da3f047428d21025e5c"
+    }
+  ],
+  "death_west": [
+    {
+      "source": "shard_marshal_death_west_00.png",
+      "runtime": "shard_marshal_death_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        11,
+        5,
+        37,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        302,
+        319,
+        480
+      ],
+      "encoded_sha256": "b573c89797ef0fd3a02b36a5e197d306cc2552917c06f7c48c72b496e6d03ad2"
+    },
+    {
+      "source": "shard_marshal_death_west_01.png",
+      "runtime": "shard_marshal_death_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        11,
+        6,
+        32,
+        41
+      ],
+      "source_alpha_bbox_size": [
+        21,
+        35
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        206,
+        312,
+        307,
+        480
+      ],
+      "encoded_sha256": "88aee8afa85e5377f6ae4c819ccb3f61c31a745c39c66975b964c0b57878ecb9"
+    },
+    {
+      "source": "shard_marshal_death_west_02.png",
+      "runtime": "shard_marshal_death_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        10,
+        37,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        32
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        326,
+        328,
+        480
+      ],
+      "encoded_sha256": "a18b05d8ca0ab38ade4e188608240250451d56225cb9ed9c5f50d483615170bd"
+    },
+    {
+      "source": "shard_marshal_death_west_03.png",
+      "runtime": "shard_marshal_death_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        9,
+        40,
+        41
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        32
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        326,
+        340,
+        480
+      ],
+      "encoded_sha256": "cd82662231f3f657dc24eb5717c9ee73b62e97a581934cb09116fd1f33075bb1"
+    },
+    {
+      "source": "shard_marshal_death_west_04.png",
+      "runtime": "shard_marshal_death_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        37,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        26
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        355,
+        323,
+        480
+      ],
+      "encoded_sha256": "8f6d9e9dd2384d17f82c948e26891eddd2d560f5ff6ef95862701c3f3eef8844"
+    },
+    {
+      "source": "shard_marshal_death_west_05.png",
+      "runtime": "shard_marshal_death_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        9,
+        16,
+        39,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        20
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        384,
+        328,
+        480
+      ],
+      "encoded_sha256": "f5e2b1bc44d66124046253904e5a4eb99442996c723048fc4af3390b942e4599"
+    },
+    {
+      "source": "shard_marshal_death_west_06.png",
+      "runtime": "shard_marshal_death_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        19,
+        41,
+        38
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        19
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        389,
+        331,
+        480
+      ],
+      "encoded_sha256": "ac29a671fff62fb59f0e5ffd3e808eb3bd4d9b5294257cdaad116c503c08ccbb"
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "shard_marshal_death_north_west_00.png",
+      "runtime": "shard_marshal_death_north_west_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        5,
+        40,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        302,
+        328,
+        480
+      ],
+      "encoded_sha256": "9c96f436c5024ccb237baad0facae513ae782c52ca07298780db6d8d6ed61a83"
+    },
+    {
+      "source": "shard_marshal_death_north_west_01.png",
+      "runtime": "shard_marshal_death_north_west_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        7,
+        40,
+        40
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        33
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        321,
+        328,
+        480
+      ],
+      "encoded_sha256": "6d71bb7f2c438d67ddfd52f48358802375f193ac7c7feed68a8d78c3ef062e67"
+    },
+    {
+      "source": "shard_marshal_death_north_west_02.png",
+      "runtime": "shard_marshal_death_north_west_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        35,
+        40
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        31
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        203,
+        331,
+        309,
+        480
+      ],
+      "encoded_sha256": "f02ee1aba0dca328c1a0643d7ead4e917b9894985b071d380485305e12ceb9d4"
+    },
+    {
+      "source": "shard_marshal_death_north_west_03.png",
+      "runtime": "shard_marshal_death_north_west_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        11,
+        33,
+        39
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        28
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        345,
+        319,
+        480
+      ],
+      "encoded_sha256": "bc80d39f260d55d3385b3d878c6d4d2abbfd9b9bce3467d36014fa704ed558e9"
+    },
+    {
+      "source": "shard_marshal_death_north_west_04.png",
+      "runtime": "shard_marshal_death_north_west_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        7,
+        31,
+        35
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        28
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        345,
+        316,
+        480
+      ],
+      "encoded_sha256": "e3377704d9b9277f25d4c1cfd8de63e2cf87dae4e8d1395f22e3986dd67b6791"
+    },
+    {
+      "source": "shard_marshal_death_north_west_05.png",
+      "runtime": "shard_marshal_death_north_west_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        12,
+        36,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        25
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        360,
+        335,
+        480
+      ],
+      "encoded_sha256": "6204a3d133585f7bc2720ea5b2fc59adf9bd29fa5d0e04c3f7469c5f3e949f6a"
+    },
+    {
+      "source": "shard_marshal_death_north_west_06.png",
+      "runtime": "shard_marshal_death_north_west_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        6,
+        8,
+        41,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        29
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        341,
+        340,
+        480
+      ],
+      "encoded_sha256": "88957108898014e02849843514213b61bb5f9e285d605188ebb6361d13084014"
+    }
+  ],
+  "death_north": [
+    {
+      "source": "shard_marshal_death_north_00.png",
+      "runtime": "shard_marshal_death_north_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        6,
+        42,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        37
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        302,
+        321,
+        480
+      ],
+      "encoded_sha256": "4292f9d52c44219e94d7d96961f37eb268ba9ab172b15843bbe79a57a2e55f45"
+    },
+    {
+      "source": "shard_marshal_death_north_01.png",
+      "runtime": "shard_marshal_death_north_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        15,
+        7,
+        38,
+        42
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        35
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        201,
+        312,
+        311,
+        480
+      ],
+      "encoded_sha256": "b7cfc73bbbb0c99e2bbf7e25f214d9075d92e93ceab761657efc0089eb8c7b39"
+    },
+    {
+      "source": "shard_marshal_death_north_02.png",
+      "runtime": "shard_marshal_death_north_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        41,
+        39
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        28
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        345,
+        331,
+        480
+      ],
+      "encoded_sha256": "f7bc870a78cb1a5d006abefb446011a839cda555ac7d057b5d2c12d84d922c78"
+    },
+    {
+      "source": "shard_marshal_death_north_03.png",
+      "runtime": "shard_marshal_death_north_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        7,
+        33,
+        43
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        36
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        307,
+        323,
+        480
+      ],
+      "encoded_sha256": "8831d9aeec3ad964bb421f23cdce62ae5ee20227c2a34605e2e051b4bdc25efd"
+    },
+    {
+      "source": "shard_marshal_death_north_04.png",
+      "runtime": "shard_marshal_death_north_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        5,
+        9,
+        33,
+        38
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        29
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        341,
+        323,
+        480
+      ],
+      "encoded_sha256": "c93609dd5363270d470985861d4b25078a40e766360e18450c39de194ce4802c"
+    },
+    {
+      "source": "shard_marshal_death_north_05.png",
+      "runtime": "shard_marshal_death_north_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        0,
+        15,
+        43,
+        36
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        21
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        379,
+        359,
+        480
+      ],
+      "encoded_sha256": "be4a58f40413b35cfe24a0649050d4d24497304d8141eceb994d31007c4519da"
+    },
+    {
+      "source": "shard_marshal_death_north_06.png",
+      "runtime": "shard_marshal_death_north_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        0,
+        20,
+        47,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        17
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        398,
+        369,
+        480
+      ],
+      "encoded_sha256": "dc64b679d0aa5380ee3ec67cd4cfbac4b82f73e47dcf98a2f3a0ecf924fd5bed"
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "shard_marshal_death_north_east_00.png",
+      "runtime": "shard_marshal_death_north_east_00.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        9,
+        6,
+        37,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        188,
+        297,
+        323,
+        480
+      ],
+      "encoded_sha256": "6fa8b47e2ab8bdb800103b66118fe2f80974fa008fbd8c8cd26afafa45874d3f"
+    },
+    {
+      "source": "shard_marshal_death_north_east_01.png",
+      "runtime": "shard_marshal_death_north_east_01.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        8,
+        6,
+        37,
+        44
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        186,
+        297,
+        325,
+        480
+      ],
+      "encoded_sha256": "648f6c3ecec855f6627e00822b4688238d8045e2c8178ed1fb0c20db90c43fa7"
+    },
+    {
+      "source": "shard_marshal_death_north_east_02.png",
+      "runtime": "shard_marshal_death_north_east_02.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        7,
+        7,
+        47,
+        45
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        38
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        297,
+        352,
+        480
+      ],
+      "encoded_sha256": "46abee3d89925dc6efe8139f70d85791dbf9674696ff18e16b676238b8f19ccb"
+    },
+    {
+      "source": "shard_marshal_death_north_east_03.png",
+      "runtime": "shard_marshal_death_north_east_03.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        9,
+        46,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        28
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        345,
+        359,
+        480
+      ],
+      "encoded_sha256": "7e1839f68725b5dec6da28f8248b235f4104c056a900ed3df3d5c518e0ba74a9"
+    },
+    {
+      "source": "shard_marshal_death_north_east_04.png",
+      "runtime": "shard_marshal_death_north_east_04.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        2,
+        6,
+        36,
+        33
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        27
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        350,
+        337,
+        480
+      ],
+      "encoded_sha256": "9bc155b848adb27dd4d2e81f40f1b0431043993342b1f9720e1f1c0d27f44d30"
+    },
+    {
+      "source": "shard_marshal_death_north_east_05.png",
+      "runtime": "shard_marshal_death_north_east_05.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        10,
+        44,
+        35
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        25
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        360,
+        355,
+        480
+      ],
+      "encoded_sha256": "5e3138b17e7d873e628acb8d3b7c8758b7cb27afe772a4af3b4e237eaffe4915"
+    },
+    {
+      "source": "shard_marshal_death_north_east_06.png",
+      "runtime": "shard_marshal_death_north_east_06.png",
+      "source_size": [
+        48,
+        48
+      ],
+      "source_alpha_bbox": [
+        3,
+        12,
+        39,
+        37
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        25
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        360,
+        343,
+        480
+      ],
+      "encoded_sha256": "01b9feccb4a344000c1ad25011aaaea659f5c216a7bbdf1c2d4e7301b426c4e6"
+    }
+  ],
+  "skill_shard_fan_east": [
+    {
+      "source": "shard_marshal_skill_shard_fan_east_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        41,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        269,
+        321,
+        480
+      ],
+      "encoded_sha256": "2f9a4817c8235ee94fcf58c5b6c6bd5a8f4bcea308642ee79519424d88bbb14e"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        45,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        179,
+        269,
+        333,
+        480
+      ],
+      "encoded_sha256": "0c6d07c0940883af5a621e7a4f8017ae1ae45e9530ac9332975c5d001f18c98c"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        10,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        269,
+        355,
+        480
+      ],
+      "encoded_sha256": "adf36cf1236e8c2a9edd06fecc980615d3c07440a5225d8067411fb4de28d541"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "e47b3337c9f6cf12ff15e34c56945e6637256c0f2d7314226e31decbbc416473"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        7,
+        54,
+        52
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        264,
+        369,
+        480
+      ],
+      "encoded_sha256": "e5cbf2369ea7bfd1b9368a0d252f400411cf843f388b023674162fa71344771a"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        11,
+        58,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        136,
+        278,
+        376,
+        480
+      ],
+      "encoded_sha256": "546881f0ecd9209bffb79782331a99ac91cd9c4f324b5ed7d09447e2f62ba92f"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_east_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        57,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        269,
+        373,
+        480
+      ],
+      "encoded_sha256": "45c9ab52fea1e52a0d1a513cfe534b7b8716e417db820bd10ecf9aea46fcc87a"
+    }
+  ],
+  "skill_shard_fan_south_east": [
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "843f03d69792c9c0dfebc328723b157e60865b4b5592a3b500df45af57957889"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        264,
+        337,
+        480
+      ],
+      "encoded_sha256": "a3202a692754a691f8792e87db41797c8a5b22a93be8f0b5e62778362324c302"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        9,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        264,
+        349,
+        480
+      ],
+      "encoded_sha256": "31f843a18ec17d6bf421dd95a8e158ccfe2a6d6475d2c00512e6bd369e58db18"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        50,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        269,
+        352,
+        480
+      ],
+      "encoded_sha256": "3ae8f165d994c12fec10ba09e054a2d42f2b8ebc9b143aaa1835647bf800f637"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        273,
+        367,
+        480
+      ],
+      "encoded_sha256": "cf7b66c94b5b732bba4a7b8e507639f7a07f80f72297b473ab546b47bccd2491"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        5,
+        11,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        134,
+        273,
+        379,
+        480
+      ],
+      "encoded_sha256": "a30125ee56338e18833eb02aeedd6f84cce0d6294af175d4afe7981dbdfaf8ab"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_east_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        11,
+        57,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        136,
+        269,
+        376,
+        480
+      ],
+      "encoded_sha256": "16996dbbfe8602ffa6a151040407371b99e6a1f57fda36ea354fc7919c84b5de"
+    }
+  ],
+  "skill_shard_fan_south": [
+    {
+      "source": "shard_marshal_skill_shard_fan_south_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "9aeb6e95e58299dbe8a7c4a5e4d452d876828dc68d2f67d0e24706a6da0b1486"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        269,
+        364,
+        480
+      ],
+      "encoded_sha256": "f381388307daade40e78665b84235a25bd965561920ca6774a9ae01bff3b8292"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "1b16709189abdbafa5946e019cffb04a47e3206003fd047160ba2d3468726b87"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        269,
+        369,
+        480
+      ],
+      "encoded_sha256": "713efac60dafb07ba3c5a50cbef7ed09805de4c4f39f7c6527a43e27f6f4a41f"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        264,
+        364,
+        480
+      ],
+      "encoded_sha256": "5444cee6b555e461cf434e0ef2c25efb9ec22f32b335e8fd48f4f55c2195a07f"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        264,
+        367,
+        480
+      ],
+      "encoded_sha256": "8191b8b604a058ab8208f061f8dc2bbe2f809e7f4555787027dce3e9af589472"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        8,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        46
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        259,
+        371,
+        480
+      ],
+      "encoded_sha256": "d4f3418badec0f720e795e7c9d20d01676823157b1bad2598ec3050f0a0863c6"
+    }
+  ],
+  "skill_shard_fan_south_west": [
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "920b606962eec4e1dba2876b74353f7a7b05b6ae2246d24a61802e3fdca94d8d"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        269,
+        355,
+        480
+      ],
+      "encoded_sha256": "4fc5fc5ef9a83af9a76f7dab9686767d25d1b900b3cb5c8b1d021853e111142c"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        269,
+        367,
+        480
+      ],
+      "encoded_sha256": "4380bb2a3b5bff49fa2bdf410fdd16eba3e6873958513248fe6c94b238c3befd"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        57,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        269,
+        371,
+        480
+      ],
+      "encoded_sha256": "cea06f28ba1c578ab3155c748115bdffa97fc83d74ecd5ebe0b4f3e8dba517ad"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        11,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "3c11c03a8ae125b72e78315d3fb1ed5a689b09f1474dd349b5fa0e3f83483902"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        269,
+        349,
+        480
+      ],
+      "encoded_sha256": "c9ff39e3acd016d36cc58cf600a6b8d40b3362d8bab5f387cf011e7e9d22cefa"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_south_west_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_south_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        9,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        264,
+        373,
+        480
+      ],
+      "encoded_sha256": "ac920f1514d167dcbf059a59f6f73b503ea4278298936424c57a783479577573"
+    }
+  ],
+  "skill_shard_fan_west": [
+    {
+      "source": "shard_marshal_skill_shard_fan_west_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        269,
+        313,
+        480
+      ],
+      "encoded_sha256": "8973ba912f32e68cd421bf36f7ca7b993c4e9d411321f1de7f6fd14704955580"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        20,
+        10,
+        45,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        25,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        196,
+        269,
+        316,
+        480
+      ],
+      "encoded_sha256": "00bc1921cbf89e66026ee07783d48e2410a204551461f2c207d1ede58996bd82"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        19,
+        10,
+        45,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        269,
+        319,
+        480
+      ],
+      "encoded_sha256": "45a944f31ae5a1ff2c2b32efd2d708113b9bf9e1100e8c34e9fe9106ad96ae7d"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        31,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        182,
+        269,
+        331,
+        480
+      ],
+      "encoded_sha256": "0dd58080d6760bd5c37e196330a93fe7b83ed8a541aa05bf7ffd1d83fee81171"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        264,
+        361,
+        480
+      ],
+      "encoded_sha256": "8d794f910b875b6ae5bd98a80568e58bf8c1df107c15e3c2ae6d0392688ce039"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        57,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        264,
+        373,
+        480
+      ],
+      "encoded_sha256": "60b4a630cd2290189d0d180f734c2e52012cf97eb307754e3cf086246092828c"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_west_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        9,
+        53,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "a1fac7bc9436694f76d1764ed336c6151725b3c0f9caf66d340a09ddfd00b1d1"
+    }
+  ],
+  "skill_shard_fan_north_west": [
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "243d0102bb9a26bb7c2e6e9ba453399ef1dd86cb6e57c8bd472c6971085496c3"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        9,
+        58,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        269,
+        352,
+        480
+      ],
+      "encoded_sha256": "a19b51848f415de97fb56216b4406a29cccb145d25a151f5d08965607a8f580a"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        57,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        273,
+        352,
+        480
+      ],
+      "encoded_sha256": "3d3ff78c2df2c5313503c9638a323a8aff6c12e5e2486f8f36c132070ee3821d"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        11,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        278,
+        373,
+        480
+      ],
+      "encoded_sha256": "a4a934a6084e9cfee22695ced5b5ed8d04af3519b36c40ff3e97f8561d3dfa91"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        13,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        29,
+        40
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        186,
+        288,
+        325,
+        480
+      ],
+      "encoded_sha256": "cae2b3a1096523fbbbb7a3392f1e2e2df5e67bfd6eaa18189a25f289f057275c"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        50,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        278,
+        355,
+        480
+      ],
+      "encoded_sha256": "2151fa03bed09b9b6bd410dfe8eb5b88206e6d1ac8dd442f596bf4bf2c50f1f0"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_west_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        11,
+        50,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        278,
+        340,
+        480
+      ],
+      "encoded_sha256": "a207e559c67cd34b09534313e2b40514e0b27f2b9da0f212a949d27d47462433"
+    }
+  ],
+  "skill_shard_fan_north": [
+    {
+      "source": "shard_marshal_skill_shard_fan_north_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "6d7287c2537b435f0d398c9641ccccadbfcd8b2f234e26d9c9a42ab235523b9f"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        278,
+        364,
+        480
+      ],
+      "encoded_sha256": "a58338a5a4d0803c12d6b5049f4d94791b1d3922386f860566d50f0c50c8c796"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        57,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        273,
+        357,
+        480
+      ],
+      "encoded_sha256": "f39b167b351627f5b6d54a308e522d91c9c45356b506a012f22699088caec443"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        273,
+        349,
+        480
+      ],
+      "encoded_sha256": "7b9aa78329cd34c62984f1fd045d2a3656d71d686f2102cb4c9ec498d37c7ce3"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        11,
+        45,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        164,
+        278,
+        347,
+        480
+      ],
+      "encoded_sha256": "4444ef9af6c13c0a515c697279a404b831b11582c5d51a17633d4f12fc073502"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        11,
+        46,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        278,
+        343,
+        480
+      ],
+      "encoded_sha256": "b3d4a79b807ae36e43c9e55bc1f0187438d7a4e9dd171e135b50f3d39ddfae2f"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        53,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        273,
+        349,
+        480
+      ],
+      "encoded_sha256": "c0663f3f3757ffc9500b33901b733bddfa357a8853794e6dd937aa5159925074"
+    }
+  ],
+  "skill_shard_fan_north_east": [
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_00.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "dd49a3ad5d3396c12a7134ef04de0fef798831d3c280dc47b7aac9f6170dbf2a"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_01.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        273,
+        343,
+        480
+      ],
+      "encoded_sha256": "1210641babc4396c482d947dae0922edaf11c8bdba07399475e8b219a7cd3465"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_02.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        158,
+        273,
+        355,
+        480
+      ],
+      "encoded_sha256": "eb3500eb997d8d17f6f171f97b251dccef599f1e2d63d0d0d5b493fbc0423304"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_03.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        273,
+        364,
+        480
+      ],
+      "encoded_sha256": "63f36eb2c5c196cffc4141f3205d1f9fb221404b43e9c7728f770e737dc7b5b4"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_04.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        10,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        273,
+        371,
+        480
+      ],
+      "encoded_sha256": "c0d13d78c880c1c23538ac718f81877369239f70563bc9ed2f84ddb3207df8e2"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_05.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        273,
+        369,
+        480
+      ],
+      "encoded_sha256": "16c7735a443ff56cdc1d2c0cc5764bd58875ffe6288fd6b85c82d00592e8f363"
+    },
+    {
+      "source": "shard_marshal_skill_shard_fan_north_east_06.png",
+      "runtime": "shard_marshal_skill_shard_fan_north_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        273,
+        369,
+        480
+      ],
+      "encoded_sha256": "4f2a8e772c1d23657fa858cc1b308af703caeb1395cd086cc61fa0989dfa028f"
+    }
+  ],
+  "skill_command_pulse_east": [
+    {
+      "source": "shard_marshal_skill_command_pulse_east_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        41,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        27,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        191,
+        269,
+        321,
+        480
+      ],
+      "encoded_sha256": "2f9a4817c8235ee94fcf58c5b6c6bd5a8f4bcea308642ee79519424d88bbb14e"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        11,
+        43,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        184,
+        273,
+        328,
+        480
+      ],
+      "encoded_sha256": "f91a0e5b69c2959fab0799a650767d884c5035eecbb2de508c1c40dcce123cc2"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        11,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        273,
+        345,
+        480
+      ],
+      "encoded_sha256": "c0ff00ce71adce059d262085c34804c2c85b4f48a4f4494146b09585a84959c2"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        52,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        269,
+        359,
+        480
+      ],
+      "encoded_sha256": "1c2fa1d85de9fe76e31723cdea5a9b6ec41760ca8498cea6437fe9e80b1f1f38"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        11,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        273,
+        367,
+        480
+      ],
+      "encoded_sha256": "32df28da8df558cb72ab12e6f87ae46cc29dcd47fc799294edc67597811b866a"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        269,
+        369,
+        480
+      ],
+      "encoded_sha256": "47799892f64cb8a3e5b5e2e93120c837299eb3aaba7b33e073ac0642199f0f9c"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_east_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        11,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        273,
+        361,
+        480
+      ],
+      "encoded_sha256": "06c5bce1ae9fcdd1af030f2f43fab04f221c6eaf1f59b63ae432384e8f90292b"
+    }
+  ],
+  "skill_command_pulse_south_east": [
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        269,
+        337,
+        480
+      ],
+      "encoded_sha256": "843f03d69792c9c0dfebc328723b157e60865b4b5592a3b500df45af57957889"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        49,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        269,
+        343,
+        480
+      ],
+      "encoded_sha256": "e67946479b49d173e692255cc5c7c36f8abe613888313b971b999202eb76e846"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        51,
+        58
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        49
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        245,
+        349,
+        480
+      ],
+      "encoded_sha256": "384675ce36d018282482409933f40645ecebc73a0c678ba7271df8f3bc254e80"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        53,
+        55
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        264,
+        361,
+        480
+      ],
+      "encoded_sha256": "4ac1ca02a6539f6b95e7637ba865797d1424f096fcf2477c287ecf193fc5f41a"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        9,
+        57,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        136,
+        264,
+        376,
+        480
+      ],
+      "encoded_sha256": "46ceaf5f59565c7840a6243e6656dbe8d508ce059d93e279f57d3f5b738e0eb7"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        269,
+        359,
+        480
+      ],
+      "encoded_sha256": "f2b10d911d71afa9853dd277408b5e7b0277e450723d3e0d00a65fcf2756b3bc"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_east_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        9,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        264,
+        369,
+        480
+      ],
+      "encoded_sha256": "d99d5f1c0321ddec3d9acba7ee04fdd93e9fee2da71a149fffb241e3fe534258"
+    }
+  ],
+  "skill_command_pulse_south": [
+    {
+      "source": "shard_marshal_skill_command_pulse_south_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        10,
+        10,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "9aeb6e95e58299dbe8a7c4a5e4d452d876828dc68d2f67d0e24706a6da0b1486"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        269,
+        367,
+        480
+      ],
+      "encoded_sha256": "bcbe292b9c0c0e63cefb2fff04867c3bca13e7b49c70c1ab49044cf254e6c4dd"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        264,
+        369,
+        480
+      ],
+      "encoded_sha256": "f2c5a38f84fb6c9268b432b9bce4b93df805456ac9c2ed30f652eaadaa902a2d"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        10,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        269,
+        371,
+        480
+      ],
+      "encoded_sha256": "bd84de126fda61f7bcf5b84b86811f6ef0d64bd1cf6e226b1004decd03a31bf8"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        7,
+        10,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        269,
+        373,
+        480
+      ],
+      "encoded_sha256": "55c4b6b0841bd597ad67dafc1de3971a1de4df26cf785a3aba5c05f049665b9e"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        10,
+        56,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        136,
+        269,
+        376,
+        480
+      ],
+      "encoded_sha256": "7fbec16db06ee09e78953c05d7ea46be7c621cd1e5ae31cbb46f4fd3e601b829"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        10,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        138,
+        269,
+        373,
+        480
+      ],
+      "encoded_sha256": "0ef4b2a7cb6f6f9938f4adc6370df2888cd8dd4905557729e828535680a035a5"
+    }
+  ],
+  "skill_command_pulse_south_west": [
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        269,
+        345,
+        480
+      ],
+      "encoded_sha256": "920b606962eec4e1dba2876b74353f7a7b05b6ae2246d24a61802e3fdca94d8d"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        269,
+        349,
+        480
+      ],
+      "encoded_sha256": "16070bcc303d018e3bcc40a933362639b383ecbdcaa2cacc7801791a6a79c5b0"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "ef9f8f27234ffa14357fa38a85ed63e44025c4e467cf2ec9e4d764409733fc1d"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        273,
+        343,
+        480
+      ],
+      "encoded_sha256": "5ca588600fbb6a91ef9cb5ebc5ea2ad2ec04bc923dabd46bd7d5d436e7d8cf76"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        273,
+        343,
+        480
+      ],
+      "encoded_sha256": "a0fed9dfc6e446e630787f77a4bf29f7539147b7681eed3bc3043e3fd50de925"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "3155ddc6da4bbaaf21be6d077807c69cc08234d38189c96b0e07c5062f4650b0"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_south_west_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_south_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        11,
+        53,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "a7b55ebf2ab03353ebbc16cbab5a61011f0e068fd4dcf0ee3e82c8a2934088ec"
+    }
+  ],
+  "skill_command_pulse_west": [
+    {
+      "source": "shard_marshal_skill_command_pulse_west_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        23,
+        10,
+        47,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        198,
+        269,
+        313,
+        480
+      ],
+      "encoded_sha256": "8973ba912f32e68cd421bf36f7ca7b993c4e9d411321f1de7f6fd14704955580"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        22,
+        10,
+        48,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        194,
+        269,
+        319,
+        480
+      ],
+      "encoded_sha256": "c8b72090b590fdb0e4f91acabf91b02fab9d8dee8b6eff1b2bd6c69f0b588991"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        50,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        269,
+        335,
+        480
+      ],
+      "encoded_sha256": "4a0125a22d3160353a7f33eb0a4c44f9e4de17be4f44451aa8a713f8bc12151b"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        51,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        269,
+        343,
+        480
+      ],
+      "encoded_sha256": "abb618c0dcb01e3ccf397877bd1d700e07335bf047b4cbf7f4d49fce44d43eae"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        8,
+        52,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        46
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        259,
+        361,
+        480
+      ],
+      "encoded_sha256": "6924fdb06382a238d1ad7d4091c717357d702e64baeada9218589f82f87279d0"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        5,
+        56,
+        56
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        51
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        235,
+        369,
+        480
+      ],
+      "encoded_sha256": "a3173770ac0d39878419b7ea842348f4fda1fb67c381c50d4a9b67a179d16778"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_west_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        11,
+        57,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        273,
+        357,
+        480
+      ],
+      "encoded_sha256": "e992a4ba4da0a98a46f13acab46141b79e0004325958f782ce15fc3c84821cc6"
+    }
+  ],
+  "skill_command_pulse_north_west": [
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        273,
+        335,
+        480
+      ],
+      "encoded_sha256": "243d0102bb9a26bb7c2e6e9ba453399ef1dd86cb6e57c8bd472c6971085496c3"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        51,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        273,
+        337,
+        480
+      ],
+      "encoded_sha256": "9e9d751ac9d15d2985b4a0a27dd960aba00e2d954875958b132e48f7c17f4190"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        162,
+        269,
+        349,
+        480
+      ],
+      "encoded_sha256": "7a09f05056f1a8160206a55839d7f85c6fb481b9bb94eeeac9269860a7b20e2f"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        37,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        167,
+        273,
+        345,
+        480
+      ],
+      "encoded_sha256": "8a322acf695571698afb41c2c3555b869d3ae022385f7a5c49b1a7294b0f4fe3"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        49,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        273,
+        337,
+        480
+      ],
+      "encoded_sha256": "9f5e2afeb30f674093fae4904e0cd2eef94493cfc4b5ccfd4898fa59506b7ca5"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        11,
+        49,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        42
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        176,
+        278,
+        335,
+        480
+      ],
+      "encoded_sha256": "16425c2b4bcdbe1e0810c7015ed87e219c1548c08162933bab8b096f38a4fb3f"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_west_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_west_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        18,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        174,
+        273,
+        337,
+        480
+      ],
+      "encoded_sha256": "9161f2d74199cae84715717b53fdfa315eace0f01f54aa8ec2576433e99ba6f3"
+    }
+  ],
+  "skill_command_pulse_north": [
+    {
+      "source": "shard_marshal_skill_command_pulse_north_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        43,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        152,
+        273,
+        359,
+        480
+      ],
+      "encoded_sha256": "6d7287c2537b435f0d398c9641ccccadbfcd8b2f234e26d9c9a42ab235523b9f"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        9,
+        55,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        150,
+        269,
+        361,
+        480
+      ],
+      "encoded_sha256": "92e4dd7d7ccb996c35d0eab35db4a219de0749afe766f035e0600de328af6e95"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        11,
+        9,
+        56,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        148,
+        269,
+        364,
+        480
+      ],
+      "encoded_sha256": "b594210242532ffdfbb15bde5a78456054bf6af371da11c543cc9ce4bb12981d"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        9,
+        11,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        273,
+        367,
+        480
+      ],
+      "encoded_sha256": "c791c28a417e09579908ddab7ac227855614be9f0115abde82d20ac3414f26a6"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        6,
+        11,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        140,
+        273,
+        371,
+        480
+      ],
+      "encoded_sha256": "e6c9feb1ce550890f75db55fdde4c30989b7937de0998d977974b6fdb1c844b9"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        54,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        264,
+        367,
+        480
+      ],
+      "encoded_sha256": "b905db01132074d4ca2bea331d6415c32875f22d7247c3487d2cd745a0ce0c32"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        55,
+        54
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        45
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        143,
+        264,
+        369,
+        480
+      ],
+      "encoded_sha256": "3c9b20a429623f1bb72d757e3e5abd85e12c4a287aff0e5cdffe28070c2dbc0e"
+    }
+  ],
+  "skill_command_pulse_north_east": [
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_00.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_00.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        17,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        35,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        172,
+        273,
+        340,
+        480
+      ],
+      "encoded_sha256": "dd49a3ad5d3396c12a7134ef04de0fef798831d3c280dc47b7aac9f6170dbf2a"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_01.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_01.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        16,
+        10,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        36,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        170,
+        273,
+        343,
+        480
+      ],
+      "encoded_sha256": "f9aee4f995be92b9ccb809f482afdae1f2ae941594cac1bd3b4c8244de585117"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_02.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_02.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        42,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        155,
+        269,
+        357,
+        480
+      ],
+      "encoded_sha256": "ed131c0a88fd3f4c589e42ec68ace4f424d5672bb9fa19797d04e27981dc93ad"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_03.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_03.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        269,
+        367,
+        480
+      ],
+      "encoded_sha256": "91d52e5573f1c46d166f2f69805dbfd11c006a808c115393924eddcd8d4994c8"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_04.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_04.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        8,
+        9,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        146,
+        269,
+        367,
+        480
+      ],
+      "encoded_sha256": "f0c850b1d1fd7d7544bf778ee3003c99fa098fbbdfc10ac901d8a376eb6fbd7e"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_05.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_05.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        52,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        44
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        269,
+        352,
+        480
+      ],
+      "encoded_sha256": "58592819585dcc8d08d90e4404935c125931cfab4383f905878d7978c36b6e52"
+    },
+    {
+      "source": "shard_marshal_skill_command_pulse_north_east_06.png",
+      "runtime": "shard_marshal_skill_command_pulse_north_east_06.png",
+      "source_size": [
+        64,
+        64
+      ],
+      "source_alpha_bbox": [
+        14,
+        10,
+        54,
+        53
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        43
+      ],
+      "scale": 4.803921568627451,
+      "runtime_alpha_bbox": [
+        160,
+        273,
+        352,
+        480
+      ],
+      "encoded_sha256": "7337b325a509f9bbfe90f5566c481a45300b76662352b8539c7365cb9290da4a"
+    }
+  ]
+}

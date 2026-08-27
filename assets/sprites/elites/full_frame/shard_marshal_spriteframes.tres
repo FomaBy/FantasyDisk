@@ -1,284 +1,2758 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_00.png" id="1_sm1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_01.png" id="2_sm2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_02.png" id="3_sm3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_03.png" id="4_sm4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_04.png" id="5_sm5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_05.png" id="6_sm6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_00.png" id="7_sm7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_01.png" id="8_sm8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_02.png" id="9_sm9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_03.png" id="10_sm10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_04.png" id="11_sm11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_05.png" id="12_sm12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_00.png" id="13_sm13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_01.png" id="14_sm14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_02.png" id="15_sm15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_03.png" id="16_sm16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_04.png" id="17_sm17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_05.png" id="18_sm18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_00.png" id="19_sm19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_01.png" id="20_sm20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_02.png" id="21_sm21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_03.png" id="22_sm22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_04.png" id="23_sm23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_05.png" id="24_sm24"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_00.png" id="25_sm25"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_01.png" id="26_sm26"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_02.png" id="27_sm27"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_03.png" id="28_sm28"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_04.png" id="29_sm29"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_05.png" id="30_sm30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_east.png" id="1_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_south_east.png" id="2_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_south.png" id="3_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_south_west.png" id="4_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_west.png" id="5_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_north_west.png" id="6_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_north.png" id="7_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_idle_north_east.png" id="8_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_00.png" id="9_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_01.png" id="10_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_02.png" id="11_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_03.png" id="12_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_04.png" id="13_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_05.png" id="14_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_06.png" id="15_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_east_07.png" id="16_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_00.png" id="17_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_01.png" id="18_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_02.png" id="19_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_03.png" id="20_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_04.png" id="21_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_05.png" id="22_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_06.png" id="23_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_east_07.png" id="24_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_00.png" id="25_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_01.png" id="26_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_02.png" id="27_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_03.png" id="28_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_04.png" id="29_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_05.png" id="30_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_06.png" id="31_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_07.png" id="32_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_00.png" id="33_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_01.png" id="34_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_02.png" id="35_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_03.png" id="36_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_04.png" id="37_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_05.png" id="38_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_06.png" id="39_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_south_west_07.png" id="40_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_00.png" id="41_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_01.png" id="42_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_02.png" id="43_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_03.png" id="44_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_04.png" id="45_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_05.png" id="46_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_06.png" id="47_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_west_07.png" id="48_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_00.png" id="49_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_01.png" id="50_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_02.png" id="51_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_03.png" id="52_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_04.png" id="53_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_05.png" id="54_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_06.png" id="55_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_west_07.png" id="56_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_00.png" id="57_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_01.png" id="58_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_02.png" id="59_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_03.png" id="60_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_04.png" id="61_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_05.png" id="62_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_06.png" id="63_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_07.png" id="64_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_00.png" id="65_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_01.png" id="66_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_02.png" id="67_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_03.png" id="68_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_04.png" id="69_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_05.png" id="70_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_06.png" id="71_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_north_east_07.png" id="72_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_00.png" id="73_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_01.png" id="74_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_02.png" id="75_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_03.png" id="76_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_04.png" id="77_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_05.png" id="78_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_east_06.png" id="79_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_00.png" id="80_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_01.png" id="81_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_02.png" id="82_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_03.png" id="83_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_04.png" id="84_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_05.png" id="85_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_east_06.png" id="86_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_00.png" id="87_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_01.png" id="88_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_02.png" id="89_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_03.png" id="90_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_04.png" id="91_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_05.png" id="92_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_06.png" id="93_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_00.png" id="94_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_01.png" id="95_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_02.png" id="96_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_03.png" id="97_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_04.png" id="98_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_05.png" id="99_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_south_west_06.png" id="100_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_00.png" id="101_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_01.png" id="102_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_02.png" id="103_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_03.png" id="104_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_04.png" id="105_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_05.png" id="106_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_west_06.png" id="107_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_00.png" id="108_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_01.png" id="109_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_02.png" id="110_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_03.png" id="111_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_04.png" id="112_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_05.png" id="113_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_west_06.png" id="114_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_00.png" id="115_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_01.png" id="116_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_02.png" id="117_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_03.png" id="118_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_04.png" id="119_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_05.png" id="120_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_06.png" id="121_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_00.png" id="122_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_01.png" id="123_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_02.png" id="124_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_03.png" id="125_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_04.png" id="126_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_05.png" id="127_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_north_east_06.png" id="128_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_east_00.png" id="129_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_east_01.png" id="130_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_east_02.png" id="131_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_east_03.png" id="132_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_east_04.png" id="133_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_east_00.png" id="134_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_east_01.png" id="135_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_east_02.png" id="136_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_east_03.png" id="137_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_east_04.png" id="138_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_00.png" id="139_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_01.png" id="140_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_02.png" id="141_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_03.png" id="142_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_04.png" id="143_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_west_00.png" id="144_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_west_01.png" id="145_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_west_02.png" id="146_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_west_03.png" id="147_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_south_west_04.png" id="148_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_west_00.png" id="149_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_west_01.png" id="150_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_west_02.png" id="151_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_west_03.png" id="152_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_west_04.png" id="153_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_west_00.png" id="154_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_west_01.png" id="155_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_west_02.png" id="156_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_west_03.png" id="157_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_west_04.png" id="158_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_00.png" id="159_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_01.png" id="160_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_02.png" id="161_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_03.png" id="162_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_04.png" id="163_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_east_00.png" id="164_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_east_01.png" id="165_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_east_02.png" id="166_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_east_03.png" id="167_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_hit_north_east_04.png" id="168_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_00.png" id="169_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_01.png" id="170_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_02.png" id="171_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_03.png" id="172_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_04.png" id="173_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_05.png" id="174_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_east_06.png" id="175_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_00.png" id="176_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_01.png" id="177_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_02.png" id="178_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_03.png" id="179_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_04.png" id="180_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_05.png" id="181_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_east_06.png" id="182_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_00.png" id="183_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_01.png" id="184_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_02.png" id="185_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_03.png" id="186_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_04.png" id="187_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_05.png" id="188_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_06.png" id="189_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_00.png" id="190_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_01.png" id="191_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_02.png" id="192_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_03.png" id="193_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_04.png" id="194_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_05.png" id="195_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_south_west_06.png" id="196_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_00.png" id="197_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_01.png" id="198_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_02.png" id="199_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_03.png" id="200_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_04.png" id="201_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_05.png" id="202_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_west_06.png" id="203_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_00.png" id="204_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_01.png" id="205_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_02.png" id="206_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_03.png" id="207_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_04.png" id="208_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_05.png" id="209_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_west_06.png" id="210_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_00.png" id="211_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_01.png" id="212_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_02.png" id="213_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_03.png" id="214_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_04.png" id="215_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_05.png" id="216_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_06.png" id="217_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_00.png" id="218_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_01.png" id="219_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_02.png" id="220_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_03.png" id="221_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_04.png" id="222_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_05.png" id="223_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_death_north_east_06.png" id="224_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_00.png" id="225_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_01.png" id="226_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_02.png" id="227_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_03.png" id="228_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_04.png" id="229_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_05.png" id="230_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_east_06.png" id="231_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_00.png" id="232_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_01.png" id="233_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_02.png" id="234_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_03.png" id="235_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_04.png" id="236_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_05.png" id="237_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_east_06.png" id="238_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_00.png" id="239_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_01.png" id="240_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_02.png" id="241_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_03.png" id="242_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_04.png" id="243_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_05.png" id="244_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_06.png" id="245_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_00.png" id="246_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_01.png" id="247_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_02.png" id="248_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_03.png" id="249_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_04.png" id="250_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_05.png" id="251_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_south_west_06.png" id="252_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_00.png" id="253_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_01.png" id="254_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_02.png" id="255_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_03.png" id="256_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_04.png" id="257_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_05.png" id="258_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_west_06.png" id="259_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_00.png" id="260_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_01.png" id="261_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_02.png" id="262_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_03.png" id="263_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_04.png" id="264_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_05.png" id="265_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_west_06.png" id="266_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_00.png" id="267_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_01.png" id="268_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_02.png" id="269_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_03.png" id="270_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_04.png" id="271_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_05.png" id="272_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_06.png" id="273_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_00.png" id="274_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_01.png" id="275_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_02.png" id="276_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_03.png" id="277_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_04.png" id="278_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_05.png" id="279_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_north_east_06.png" id="280_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_00.png" id="281_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_01.png" id="282_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_02.png" id="283_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_03.png" id="284_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_04.png" id="285_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_05.png" id="286_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_east_06.png" id="287_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_00.png" id="288_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_01.png" id="289_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_02.png" id="290_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_03.png" id="291_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_04.png" id="292_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_05.png" id="293_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_east_06.png" id="294_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_00.png" id="295_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_01.png" id="296_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_02.png" id="297_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_03.png" id="298_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_04.png" id="299_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_05.png" id="300_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_06.png" id="301_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_00.png" id="302_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_01.png" id="303_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_02.png" id="304_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_03.png" id="305_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_04.png" id="306_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_05.png" id="307_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_south_west_06.png" id="308_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_00.png" id="309_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_01.png" id="310_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_02.png" id="311_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_03.png" id="312_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_04.png" id="313_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_05.png" id="314_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_west_06.png" id="315_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_00.png" id="316_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_01.png" id="317_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_02.png" id="318_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_03.png" id="319_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_04.png" id="320_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_05.png" id="321_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_west_06.png" id="322_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_00.png" id="323_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_01.png" id="324_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_02.png" id="325_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_03.png" id="326_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_04.png" id="327_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_05.png" id="328_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_06.png" id="329_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_00.png" id="330_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_01.png" id="331_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_02.png" id="332_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_03.png" id="333_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_04.png" id="334_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_05.png" id="335_sm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_north_east_06.png" id="336_sm"]
 
 [resource]
 animations = [
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_sm1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sm2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sm3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sm4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sm5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sm6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_sm1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_sm2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_sm3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_sm4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_sm5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_sm6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_sm7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_sm8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_sm9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_sm10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_sm11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_sm12")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_sm13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_sm14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_sm15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_sm16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_sm17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_sm18")
-}
-],
+"texture": ExtResource("1_sm")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_sm")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sm")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_sm")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_sm")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_sm")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_sm")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_sm")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sm")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_sm19")
+"texture": ExtResource("17_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_sm20")
+"texture": ExtResource("18_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_sm21")
+"texture": ExtResource("19_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_sm22")
+"texture": ExtResource("20_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_sm23")
+"texture": ExtResource("21_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_sm24")
-}
-],
+"texture": ExtResource("22_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sm")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_sm")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_sm")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("41_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_sm")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("51_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_sm")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_sm")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_sm")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("73_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_sm")
+}],
 "loop": false,
-"name": &"skill_shard_fan",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_sm19")
+"texture": ExtResource("80_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_sm20")
+"texture": ExtResource("81_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_sm21")
+"texture": ExtResource("82_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_sm22")
+"texture": ExtResource("83_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_sm23")
+"texture": ExtResource("84_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_sm24")
-}
-],
+"texture": ExtResource("85_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_sm")
+}],
 "loop": false,
-"name": &"attack_shard_fan",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_sm25")
+"texture": ExtResource("87_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_sm26")
+"texture": ExtResource("88_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_sm27")
+"texture": ExtResource("89_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_sm28")
+"texture": ExtResource("90_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_sm29")
+"texture": ExtResource("91_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_sm30")
-}
-],
+"texture": ExtResource("92_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_sm")
+}],
 "loop": false,
-"name": &"skill_command_pulse",
+"name": &"attack_south",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_sm25")
+"texture": ExtResource("94_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_sm26")
+"texture": ExtResource("95_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_sm27")
+"texture": ExtResource("96_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_sm28")
+"texture": ExtResource("97_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_sm29")
+"texture": ExtResource("98_sm")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_sm30")
-}
-],
+"texture": ExtResource("99_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_sm")
+}],
 "loop": false,
-"name": &"attack_command_pulse",
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_sm")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("108_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_sm")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("115_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_sm")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("122_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_sm")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_sm")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("134_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_sm")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("139_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_sm")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("144_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_sm")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_sm")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("154_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_sm")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("159_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_sm")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("164_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_sm")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("169_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_sm")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("176_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_sm")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("183_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_sm")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("190_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_sm")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_sm")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("204_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_sm")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("211_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_sm")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("218_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_sm")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("225_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("232_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("246_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("251_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("253_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("257_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("260_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("267_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("269_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("274_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("275_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_sm")
+}],
+"loop": false,
+"name": &"skill_shard_fan_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("287_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("288_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("293_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("295_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("299_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("302_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("305_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("306_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("307_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("308_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("309_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("310_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("311_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("312_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("313_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("314_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("315_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("316_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("317_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("318_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("319_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("320_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("321_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("322_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("323_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("324_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("325_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("326_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("327_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("328_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("329_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("330_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("331_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("332_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("333_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("334_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("335_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("336_sm")
+}],
+"loop": false,
+"name": &"skill_command_pulse_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("73_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_sm")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("80_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_sm")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_sm")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("94_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_sm")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_sm")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("108_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_sm")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("115_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_sm")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("122_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_sm")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("225_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("232_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("246_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("251_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("253_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("257_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("260_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("267_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("269_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("274_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("275_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_sm")
+}],
+"loop": false,
+"name": &"attack_shard_fan_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("287_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("288_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("293_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("295_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("299_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("302_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("305_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("306_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("307_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("308_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("309_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("310_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("311_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("312_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("313_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("314_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("315_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("316_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("317_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("318_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("319_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("320_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("321_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("322_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("323_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("324_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("325_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("326_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("327_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("328_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("329_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("330_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("331_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("332_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("333_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("334_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("335_sm")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("336_sm")
+}],
+"loop": false,
+"name": &"attack_command_pulse_north_east",
 "speed": 12.0
 }
 ]

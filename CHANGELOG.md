@@ -38,6 +38,15 @@
   5 `death_north_east` (полная бирюзовая подмена вместо зелёно-фиолетово-
   золотой идентичности, отклонено QA FAN-2768) — устранён, геометрия кадра
   (canvas/pivot/footline/alpha-bbox) не изменена (FAN-3088).
+- Маршал Осколков (`shard_marshal`) получил новый явный 8-направленный
+  PixelLab-пак (`06de6f32-fca4-43f2-a657-b011a85d7632`) с сохранением
+  shipped-идентичности: idle, move, attack, hit, death, `skill_shard_fan` и
+  `skill_command_pulse` содержат все 8 ракурсов (56 directional rows), без
+  `flip_h`; единая нормализация даёт 512×512 full-frame canvas, общий pivot и
+  footline. Источник и runtime разделены в
+  `assets/sprites/elites/pixellab/shard_marshal/` и
+  `assets/sprites/elites/full_frame/shard_marshal/`. Намеренный
+  `mini_swarm_sniper → shard_marshal` fallback сохранён (FAN-2623).
 - Элементалист (`elementalist`) получил новый 8-направленный PixelLab-пак тела
   (idle ×8 + move ×8×6 = 56 кадров) на свежесозданном PixelLab-персонаже —
   прежний `pixellab_character_id` удалён на стороне PixelLab (404), а старый
