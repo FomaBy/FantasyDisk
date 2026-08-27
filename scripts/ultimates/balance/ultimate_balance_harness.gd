@@ -33,7 +33,6 @@ const READY_SEARCH_LIMIT := 24
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"guitarist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"robot": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -91,7 +90,16 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## Shield counter resolves every eligible enemy in its guard arc, and every
 ## Holy Flail ring resolves every eligible enemy in its radius. Per-target
 ## rails and the total boss caps bound outcome without capping reach.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "knight", "sniper"]
+##
+## `guitarist` (FAN-2533): every Last Chord riff strip selects the whole map
+## and keeps the perpendicular chord as its aimed corridor bonus, every Wall of
+## Sound feedback pulse and its overload reach every live enemy with the linked
+## square as presentation shape only, and all four Hell Subwoofer waves
+## re-enumerate every eligible enemy in their expanding rings. The trio carries
+## no count-shaped parameter at all; per-target rails and the shared nine-percent
+## boss cap bound outcome. Proven in
+## `tests/ultimates/mechanics/guitarist_ultimate_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "guitarist", "knight", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
