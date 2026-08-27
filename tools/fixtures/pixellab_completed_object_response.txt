@@ -1,0 +1,25 @@
+status: completed
+id: <object-id>
+name: sanitized animation canary
+state_name: base
+directions: 1
+size: 256x256px
+view: n/a
+group: <object-group-id>
+
+pending jobs (1):
+  sanitized animation [group: <animation-group-id>]
+    status: pending
+    progress: 50%
+
+rotations:
+  unknown: https://fixture.invalid/rotation.png
+
+animations (1 groups):
+  sanitized animation [group: <animation-group-id>]
+    description: sanitized animation description
+    directions: unknown (1/1)
+    frames: 5
+    unknown: https://fixture.invalid/animations/<animation-group-id>/unknown/{i}.png  (i=0..4)
+
+download: https://fixture.invalid/objects/<object-id>/download
