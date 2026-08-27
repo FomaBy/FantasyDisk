@@ -135,10 +135,10 @@ jobs:
         run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
       - name: Repository, Python and Godot gates (pull request range)
         if: github.event_name == 'pull_request'
-        run: python3 tools/quality_gate.py --profile changed --changed-ref "${{ github.event.pull_request.base.sha }}"
+        run: python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
       - name: Repository, Python and Godot gates (merge queue candidate)
         if: github.event_name == 'merge_group'
-        run: python3 tools/quality_gate.py --profile changed --changed-ref "${{ github.event.merge_group.base_sha }}"
+        run: python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
       # The gate's exit code already fails on a red suite.  This guards the
       # other half of the same bug: a green required check whose own evidence
       # says it executed no game test at all.
