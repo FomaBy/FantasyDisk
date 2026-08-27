@@ -154,7 +154,7 @@ headers, or raw service output.
 | Case | First-hand observation | Result |
 | --- | --- | --- |
 | Real orphan, `FAN-3089` | Task `c625ca94-1ed7-4a52-9951-78f15a6c85b1` completed at `2026-08-19T05:45:20Z` with `status=completed`, no error, and a background-and-yield wait statement. The agent was idle with no active task. | The sweep released the card at `2026-08-19T05:58:40Z` — `13m20s` after measured death, within one 20-minute cycle. Remote inspection found no work-in-progress commit; the card was authorized for a clean relaunch. Source: Multica comment `1a245a65-7db3-469a-bd5a-fcee9f5348b2`. |
-| Live run protected, `FAN-3099` | PM sweep run `3efe588e-61ac-4e30-ae17-726a7cb724e1` recorded the card as `status=running` and explicitly left it untouched. | The run completed on its own at `2026-08-19T06:05:14Z`; delivery comment `a175521a-cbdc-4603-b25d-dfd086847275` confirms the normal handoff. No orphan-release metadata was written. |
+| Live run protected, `FAN-3099` | PM sweep run `3efe588e-61ac-4e30-ae17-726a7cb724e1` recorded the card as `status=running` and explicitly left it untouched. | The run completed on its own at `2026-08-19T06:05:22Z`; delivery comment `a175521a-cbdc-4603-b25d-dfd086847275`, posted at `2026-08-19T06:05:14Z`, confirms the normal handoff. No orphan-release metadata was written. |
 
 These observations are reproducible through the Multica records named above:
 measure the agent task state, compare the issue's `updated_at` to the UTC
