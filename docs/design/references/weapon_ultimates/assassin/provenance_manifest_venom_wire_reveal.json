@@ -1,98 +1,100 @@
 {
   "tool": "tools/pixellab_generate_pack.py",
   "tool_version": "1.0.0",
-  "generated_at": "2026-08-27T14:55:48Z",
+  "generated_at": "2026-08-27T17:11:14Z",
   "encoder": {
     "library": "Pillow",
     "library_version": "11.3.0",
     "builder_version": "1.0.0"
   },
   "object": {
-    "pixel_lab_object_id": "c35c4947-673a-4305-bc24-5786117bc417",
+    "pixel_lab_object_id": "0d00f9e4-6527-432e-bed1-14fa04f01d50",
     "create_tool": "create_1_direction_object",
     "create_params": {
-      "description": "one single six-anchor poison shadow web, thin black-violet wires joining six small acid-green venom nodes into a hexagonal trap, dark fantasy pixel art seen from above, centered isolated object on transparent background, no character, no hands, no text",
+      "description": "one sparse centered poison web reveal effect on a transparent 256 by 256 canvas: exactly six identical small acid-green venom anchor nodes arranged at the vertices of a loose hexagon, a tiny dark-violet central junction and only very short faint black-violet starter wire segments, most of the interior must remain empty transparent, dark fantasy pixel art seen from above, isolated effect, no character, no hands, no text, no white fill, no gray, no extra objects",
       "size": 256,
       "view": "top-down"
     },
     "animate_tool": "animate_object",
     "animate_params": {
       "mode": "v3",
-      "animation_description": "the web keeps six identical anchor nodes and the same centered geometry; black-violet wires draw outward from the center to each anchor in a smooth radial reveal while faint acid-green light wakes along each strand, every frame remains visible and distinct, no blank frame, nothing leaves the canvas",
+      "animation_description": "animate the same six-anchor poison web materializing outward in exactly nine readable stages with a monotonic growth profile: frame 0 shows only six acid-green anchor nodes, the central junction and tiny starter marks; frame 1 draws the first short radial wire; frame 2 extends two opposite wires; frame 3 extends four radial wires; frame 4 connects all six anchors with a sparse hexagon; frame 5 adds the first inner web crossings; frame 6 adds more inner crossings; frame 7 completes the connected web; frame 8 holds the complete web with a subtle acid-green poison glow. Preserve the exact anchor positions and colors, keep early frames visibly sparse and transparent, make new black-violet strands appear and grow rather than recolor a static web. No full web silhouette in frames 0 through 3, no node-color-only flicker, no white or pale filled fabric, no changing geometry, no blank frame, nothing touches the canvas border",
       "frame_count": 8
     }
   },
   "frames": [
     {
       "file": "venom_wire_reveal_f00.png",
-      "bytes": 30381,
+      "bytes": 4764,
       "url_kind": "template",
-      "encoded_sha256": "99366a7065186a11f4b762fdd3916577137850a35b5bd1ccd479f15cedf5f961",
-      "pixel_sha256": "99bbd6d130fd5eacf972a3af631d459a8373cef02b976244b94ac530682d2d77"
+      "encoded_sha256": "56040d9fda32e18dcc8349aad11fc8de7e15819ba26e6d45d9e71fd32052ecd4",
+      "pixel_sha256": "4cce6ae8fff180bd7a4c594502bbfc27c8506d788251dc0c3fe0adbfb4eaf721"
     },
     {
       "file": "venom_wire_reveal_f01.png",
-      "bytes": 39541,
+      "bytes": 3952,
       "url_kind": "template",
-      "encoded_sha256": "03a5cc5e6f7cc6384f9d3839a3136f6f724aad2af83163730f3cab2e1ae54cf2",
-      "pixel_sha256": "84154c04b1a948021da68386c4df48443caad9024e10acf3a2748e664b1c45e3"
+      "encoded_sha256": "60d46a3d676727e5dc0380f5edd37a6cd51a9e069ea18ccc111fd0940445a26e",
+      "pixel_sha256": "d84185e87586b9e1ad32bb8d05948c036571ec0e5a3a9fd9b7aca0c9fd87a720"
     },
     {
       "file": "venom_wire_reveal_f02.png",
-      "bytes": 38303,
+      "bytes": 3818,
       "url_kind": "template",
-      "encoded_sha256": "aae0619889bafa814d82a8d2322f2decc98cb716b114f4049cae649b4817af5d",
-      "pixel_sha256": "2c63c6cb2834e443ef5ed8b3c95dbfe57dc278bc25ffcd02c76f1fb1961fad32"
+      "encoded_sha256": "0a7551f6b1ca20b8e32e1ab775bf4d970ccc287e9e357a6c21abf151c0223872",
+      "pixel_sha256": "ed9351761eba53e6f7ae9fc605892ab3b80d41f2c7da335bc4d3f15c8142c79b"
     },
     {
       "file": "venom_wire_reveal_f03.png",
-      "bytes": 37096,
+      "bytes": 4381,
       "url_kind": "template",
-      "encoded_sha256": "8af285426e2b0f701023e9d058798710cff8f844a7a4c5cfe29db36015221e68",
-      "pixel_sha256": "a9c2c050bd9b554fb64d13d0a2f5b84db1bb7b2d5f6ad1b710994ef6aebcdaa6"
+      "encoded_sha256": "b2f61a8549c39adcbd2a023cf090f74329f399a6f12224c615eaadf45d98bd13",
+      "pixel_sha256": "8c693500c4f6565a7cef79e9702e8d569b9519597d7ff22f280bcc674887dbb5"
     },
     {
       "file": "venom_wire_reveal_f04.png",
-      "bytes": 35035,
+      "bytes": 4863,
       "url_kind": "template",
-      "encoded_sha256": "cb500eaf0ee5bf7b58ccbae1ee9af881532bc9e4a7e0f850be884250c32b62ae",
-      "pixel_sha256": "f6ee5c752058c231674db422bd0915e9aace2541f320f68795d95185dd4cee10"
+      "encoded_sha256": "62040d4da4d9d88325a66cfa1cea2aa8adbd8fab1b06f9f22dbc0262752bbe85",
+      "pixel_sha256": "14871fe843172e1d48532e4c01e1cf9ad591da4d00570f8cb24e43a8ee50aef5"
     },
     {
       "file": "venom_wire_reveal_f05.png",
-      "bytes": 36384,
+      "bytes": 4298,
       "url_kind": "template",
-      "encoded_sha256": "05d70fc9fbdc99ef417fb6c2abcab59eac2171350b2773b300be2d957ee23b50",
-      "pixel_sha256": "08f790ab9f93d789bc9d3b113f9031984afa3ac16fb3dd54e648f3557e542d6c"
+      "encoded_sha256": "a8687340736cc1ad7dd94804d9d01e191334d12d391be636f50e15dc6ae4b607",
+      "pixel_sha256": "9d4c699268ae7ba7b2f481460a9bfff5bfc59f04f20eb697c70e368aaad038dd"
     },
     {
       "file": "venom_wire_reveal_f06.png",
-      "bytes": 35145,
+      "bytes": 4285,
       "url_kind": "template",
-      "encoded_sha256": "0415bb25936093d1e7f6ea93d434da442d2697846b7fff68ad2b9bdd2385e03d",
-      "pixel_sha256": "4d9b1c1285c11c5edd6e5b3c8d7dcbd59061c0d9f033569aeca62720b346fb75"
+      "encoded_sha256": "fe9061268ba3513035bb44a99144f7932e179fe3a5cff22abe8b6124b595d29b",
+      "pixel_sha256": "b22566f536015f2f5525c60f4d7d2999ead69c57d51b981bf55ec16f20a24a6c"
     },
     {
       "file": "venom_wire_reveal_f07.png",
-      "bytes": 36126,
+      "bytes": 4886,
       "url_kind": "template",
-      "encoded_sha256": "264183d84393df0b74f93f00ec32dcfd6bdb1883d4ec3660d9f586e3e5fc92f1",
-      "pixel_sha256": "0cb1e893b7780eabd5048264347ef112fd67678c757cbdb43d2418cd759b9193"
+      "encoded_sha256": "ac8728d78b1a0382cb4a61825ddd2fb56a89a438bb0516c86bed8245a7b7debc",
+      "pixel_sha256": "a92c56882c1ef782bfdc53f8ad3b3563a0dad6ad0ad3c39f04c37ba58243445a"
     },
     {
       "file": "venom_wire_reveal_f08.png",
-      "bytes": 34711,
+      "bytes": 6054,
       "url_kind": "template",
-      "encoded_sha256": "f5fa498a9dc1a4f3187948110799deeb1340d3dcc41a4520cf61fa3465c46989",
-      "pixel_sha256": "6cdbe66c0057bf545627a98ee3cc9d7531e2c415803c9fd32648daf24a6e8e1e"
+      "encoded_sha256": "a2bf3094d14b9e695f07afe30f629869284d75d22d5a034deedca66493fcfa42",
+      "pixel_sha256": "a7af26966ec8e0e3632ed01a268b633033b54f7b9ffc032a2b61fee8ea0d40cd"
     }
   ],
   "frame_count": 9,
   "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
-  "schema_version": 1,
-  "issue": "FAN-3013",
+  "schema_version": 2,
+  "issue": "FAN-3586",
+  "replaces_candidate": "1b6f107b54f29464e5cee24e079b2d5a7b600067",
   "weapon": "assassin/venom_wire",
   "effect": "reveal",
+  "source_tag": "fan3586.venom_wire.reveal",
   "asset": {
     "source_dir": "docs/design/references/weapon_ultimates/assassin/source/venom_wire_reveal",
     "source_frames": [
@@ -118,8 +120,8 @@
     "fps": 12.0
   },
   "frame_verification": {
-    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
-    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "method": "Pillow RGBA decode; source/runtime pixel hashes, canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, source/runtime pixels match, border remains transparent and consecutive frames change",
     "frames": [
       {
         "index": 0,
@@ -127,15 +129,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          46,
+          36,
+          210,
+          222
         ],
-        "visible_pixels": 26593,
+        "visible_pixels": 1633,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "56040d9fda32e18dcc8349aad11fc8de7e15819ba26e6d45d9e71fd32052ecd4",
+        "pixel_sha256": "4cce6ae8fff180bd7a4c594502bbfc27c8506d788251dc0c3fe0adbfb4eaf721",
+        "runtime_encoded_sha256": "56040d9fda32e18dcc8349aad11fc8de7e15819ba26e6d45d9e71fd32052ecd4"
       },
       {
         "index": 1,
@@ -143,15 +149,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          45,
+          33,
+          211,
+          222
         ],
-        "visible_pixels": 26733,
+        "visible_pixels": 1327,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "60d46a3d676727e5dc0380f5edd37a6cd51a9e069ea18ccc111fd0940445a26e",
+        "pixel_sha256": "d84185e87586b9e1ad32bb8d05948c036571ec0e5a3a9fd9b7aca0c9fd87a720",
+        "runtime_encoded_sha256": "60d46a3d676727e5dc0380f5edd37a6cd51a9e069ea18ccc111fd0940445a26e"
       },
       {
         "index": 2,
@@ -159,15 +169,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          48,
+          37,
+          207,
+          218
         ],
-        "visible_pixels": 26780,
+        "visible_pixels": 1393,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "0a7551f6b1ca20b8e32e1ab775bf4d970ccc287e9e357a6c21abf151c0223872",
+        "pixel_sha256": "ed9351761eba53e6f7ae9fc605892ab3b80d41f2c7da335bc4d3f15c8142c79b",
+        "runtime_encoded_sha256": "0a7551f6b1ca20b8e32e1ab775bf4d970ccc287e9e357a6c21abf151c0223872"
       },
       {
         "index": 3,
@@ -175,15 +189,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          54,
+          41,
+          202,
+          214
         ],
-        "visible_pixels": 26785,
+        "visible_pixels": 1534,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "b2f61a8549c39adcbd2a023cf090f74329f399a6f12224c615eaadf45d98bd13",
+        "pixel_sha256": "8c693500c4f6565a7cef79e9702e8d569b9519597d7ff22f280bcc674887dbb5",
+        "runtime_encoded_sha256": "b2f61a8549c39adcbd2a023cf090f74329f399a6f12224c615eaadf45d98bd13"
       },
       {
         "index": 4,
@@ -191,15 +209,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          61,
+          46,
+          194,
+          208
         ],
-        "visible_pixels": 26788,
+        "visible_pixels": 1891,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "62040d4da4d9d88325a66cfa1cea2aa8adbd8fab1b06f9f22dbc0262752bbe85",
+        "pixel_sha256": "14871fe843172e1d48532e4c01e1cf9ad591da4d00570f8cb24e43a8ee50aef5",
+        "runtime_encoded_sha256": "62040d4da4d9d88325a66cfa1cea2aa8adbd8fab1b06f9f22dbc0262752bbe85"
       },
       {
         "index": 5,
@@ -207,15 +229,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          67,
+          51,
+          188,
+          205
         ],
-        "visible_pixels": 26789,
+        "visible_pixels": 1743,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "a8687340736cc1ad7dd94804d9d01e191334d12d391be636f50e15dc6ae4b607",
+        "pixel_sha256": "9d4c699268ae7ba7b2f481460a9bfff5bfc59f04f20eb697c70e368aaad038dd",
+        "runtime_encoded_sha256": "a8687340736cc1ad7dd94804d9d01e191334d12d391be636f50e15dc6ae4b607"
       },
       {
         "index": 6,
@@ -223,15 +249,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          71,
+          55,
+          184,
+          199
         ],
-        "visible_pixels": 26790,
+        "visible_pixels": 1721,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "fe9061268ba3513035bb44a99144f7932e179fe3a5cff22abe8b6124b595d29b",
+        "pixel_sha256": "b22566f536015f2f5525c60f4d7d2999ead69c57d51b981bf55ec16f20a24a6c",
+        "runtime_encoded_sha256": "fe9061268ba3513035bb44a99144f7932e179fe3a5cff22abe8b6124b595d29b"
       },
       {
         "index": 7,
@@ -239,15 +269,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          37,
+          50,
+          219,
+          205
         ],
-        "visible_pixels": 26792,
+        "visible_pixels": 1934,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "ac8728d78b1a0382cb4a61825ddd2fb56a89a438bb0516c86bed8245a7b7debc",
+        "pixel_sha256": "a92c56882c1ef782bfdc53f8ad3b3563a0dad6ad0ad3c39f04c37ba58243445a",
+        "runtime_encoded_sha256": "ac8728d78b1a0382cb4a61825ddd2fb56a89a438bb0516c86bed8245a7b7debc"
       },
       {
         "index": 8,
@@ -255,23 +289,42 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          14,
-          233,
-          246
+          41,
+          44,
+          213,
+          210
         ],
-        "visible_pixels": 26792,
+        "visible_pixels": 2600,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "a2bf3094d14b9e695f07afe30f629869284d75d22d5a034deedca66493fcfa42",
+        "pixel_sha256": "a7af26966ec8e0e3632ed01a268b633033b54f7b9ffc032a2b61fee8ea0d40cd",
+        "runtime_encoded_sha256": "a2bf3094d14b9e695f07afe30f629869284d75d22d5a034deedca66493fcfa42"
       }
     ],
+    "visible_area_profile_alpha_gt_10": [
+      1633,
+      1327,
+      1393,
+      1534,
+      1891,
+      1743,
+      1721,
+      1934,
+      2600
+    ],
+    "visible_area_spread_percent": 95.93,
     "motion": {
-      "consecutive_changed_pixels_min": 10210,
-      "consecutive_changed_pixels_max": 14220,
-      "loop_wrap_changed_pixels": 17490
+      "consecutive_changed_pixels_min": 1827,
+      "consecutive_changed_pixels_max": 3291,
+      "loop_wrap_changed_pixels": 4030
     },
     "frame_count": 9,
     "transparent_edge_max_alpha": 0
+  },
+  "postprocess": {
+    "result": "none; final frames are the direct PixelLab export"
   }
 }

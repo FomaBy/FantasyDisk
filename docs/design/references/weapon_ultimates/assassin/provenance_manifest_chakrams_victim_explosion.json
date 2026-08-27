@@ -1,98 +1,100 @@
 {
   "tool": "tools/pixellab_generate_pack.py",
   "tool_version": "1.0.0",
-  "generated_at": "2026-08-27T14:55:48Z",
+  "generated_at": "2026-08-27T17:02:17Z",
   "encoder": {
     "library": "Pillow",
     "library_version": "11.3.0",
     "builder_version": "1.0.0"
   },
   "object": {
-    "pixel_lab_object_id": "25a99e36-bb3c-4849-8a01-2436487223ea",
+    "pixel_lab_object_id": "5130dec1-3a5d-4ff2-a991-061dfa413370",
     "create_tool": "create_1_direction_object",
     "create_params": {
-      "description": "one single compact violet moonlight victim impact burst, a bright white-violet star at center with pale silver crescent chakram shards and tiny purple sparks, dark fantasy pixel art top-down, centered isolated object on transparent background, no character, no hands, no text",
+      "description": "one single compact violet arcane explosion burst, one connected eight-lobed magical blast with a bright white-violet core and deep purple outer energy petals, dark fantasy pixel art seen from above, centered isolated effect on a transparent background, no chakram, no weapon, no debris, no separate shards, no ring, no hollow center, no character, no hands, no text, no gray, no blue, no extra objects",
       "size": 256,
       "view": "top-down"
     },
     "animate_tool": "animate_object",
     "animate_params": {
       "mode": "v3",
-      "animation_description": "the impact keeps the same centered visual identity while the violet-white core rapidly blooms outward, crescent shards and sparks appear in clear stages then fade inward; every frame has visible light, smooth distinct motion, no blank frame, nothing leaves the canvas",
+      "animation_description": "animate one coherent connected violet explosion in exactly nine stages while preserving the same centered identity and palette: frame 0 is a small dense white-violet core with a compact purple halo; frames 1 through 4 expand smoothly into one solid rounded violet blast with layered petal energy; frame 5 is the largest bright white-violet bloom; frames 6 through 8 dissolve and fade inward into a smaller purple core and a few soft violet sparks. Only the one explosion grows then fades. Keep the center fixed, keep the silhouette connected and readable, keep all colors white, lavender, violet and deep purple. No unrelated silhouettes, no weapons, no crescents, no debris, no hollow ring, no solid-to-ring jump, no blue-gray frame, no scale discontinuity, no blank frame, nothing touches the canvas border",
       "frame_count": 8
     }
   },
   "frames": [
     {
       "file": "chakrams_victim_explosion_f00.png",
-      "bytes": 24371,
+      "bytes": 712,
       "url_kind": "template",
-      "encoded_sha256": "af71c771798523441a3eaefdc9365141ded5132f0f54c04623cfdab2996509a6",
-      "pixel_sha256": "5a235d318dba5b7ed9c30987f4be6bfd38e81f56aa65ab242db13f0079a8f773"
+      "encoded_sha256": "6a0eed279011136dfb30f13994f86f918fe53fbf11bd306de8f0180ba7dd5054",
+      "pixel_sha256": "7733ca62e402df0753d0fe5e1a39ff7e46311b222b89845c93bddab2cc09139e"
     },
     {
       "file": "chakrams_victim_explosion_f01.png",
-      "bytes": 27397,
+      "bytes": 2004,
       "url_kind": "template",
-      "encoded_sha256": "242b34d5cb1dc720c600dbb7a0fee9ffd6e6070a0bf86fa28a048e92d3d8fcf6",
-      "pixel_sha256": "b3a217fadb48e58522460ace3fb0ca087b77b4ad13f84357b9d47070d05b8b8e"
+      "encoded_sha256": "3427e16afcc756f2ac3b7179232ac0ceba0c7ec06bd8c3a3dfad87cffe221a43",
+      "pixel_sha256": "34b0e81f452efe9051b87ce83849ce87b45b9a7d5fd5747c667a5d374dd284a4"
     },
     {
       "file": "chakrams_victim_explosion_f02.png",
-      "bytes": 17417,
+      "bytes": 3775,
       "url_kind": "template",
-      "encoded_sha256": "767b9119d54642b3be8f9ae9ba3b4e7837f393552ce5ec94293875d266fae86f",
-      "pixel_sha256": "1379fd67f2685fe5acaffc47337d355ac75e6c4eafc09dcf092f595ffdf281ea"
+      "encoded_sha256": "7f78378c93544af316e96793bf3893953cd5fb14a84fb02c293796fe0f8f3b98",
+      "pixel_sha256": "a168c645073345812bb1bd99a54b4871a58412330a1bee9e99609c9de0c0e420"
     },
     {
       "file": "chakrams_victim_explosion_f03.png",
-      "bytes": 9917,
+      "bytes": 3225,
       "url_kind": "template",
-      "encoded_sha256": "99161f3b0e681085adb48cd192286212ef24b7108379fde3f5e4db843fa69129",
-      "pixel_sha256": "877e541a651aa4b6eaaac935d60eabe535266c0a0dbe543ae068b96687e48eb5"
+      "encoded_sha256": "433c4aec80db24f53e5d84294c8d893e93dde8e7428426a688c4e7baf4ccb4f2",
+      "pixel_sha256": "3dac359cf9001416ef10eca90a51b04ebd10e5b47ac072674aab18b60b5a8f6c"
     },
     {
       "file": "chakrams_victim_explosion_f04.png",
-      "bytes": 19765,
+      "bytes": 5763,
       "url_kind": "template",
-      "encoded_sha256": "197aee48bd3678429588af3ed2bfe7d97735b6f63633491ce9becf4a3726f0db",
-      "pixel_sha256": "9e9c30c65b26c2cb111823f7ad692d221cfa63c3546780b819d0f7ecf5d42a5d"
+      "encoded_sha256": "5397585e84588f2fa849e7f11e6b1a392a207a4218f8c22dfd2b5a9d5906c934",
+      "pixel_sha256": "05e8131c51ab9fc8522fe20934fbecc7410e13bfe0989b88bc634145a7806d09"
     },
     {
       "file": "chakrams_victim_explosion_f05.png",
-      "bytes": 13469,
+      "bytes": 8908,
       "url_kind": "template",
-      "encoded_sha256": "760835c4c4353a7143b0f401d44d4b20584cd9ce0c1f6c0eba56f71582a47826",
-      "pixel_sha256": "0016c495bca8745fc4c1e55143e008020cb01a569e0381e05489a8edbede2fb6"
+      "encoded_sha256": "c43ce3f35148c2e49892197f438ee203b05e8219d2af562681534e71b268b42c",
+      "pixel_sha256": "d9fd3b7be23a40791b2865a21f7a29f3f9b82f049b5628b45916e2c77ce6771c"
     },
     {
       "file": "chakrams_victim_explosion_f06.png",
-      "bytes": 7561,
+      "bytes": 11935,
       "url_kind": "template",
-      "encoded_sha256": "890d8a181ba004a1ee242d64462444f75206231f7d77ad7a96d010705d93cd2b",
-      "pixel_sha256": "1932a5cf1498dfface21ae4a558af854862962c128c1b6627c19d0e1029f0aa3"
+      "encoded_sha256": "b3db734cc3938a9a35dcf19b4d51f0b634c079c851dc6926add74a72432074af",
+      "pixel_sha256": "7c8342961fe45e23e561d9d6500e7278c60ce0ca61e33b07116aaa30733aa4f4"
     },
     {
       "file": "chakrams_victim_explosion_f07.png",
-      "bytes": 4890,
+      "bytes": 13873,
       "url_kind": "template",
-      "encoded_sha256": "8f60ca1689e4ad06561440a5751d08bb31bd834320df0b7614a1636c2943c2c1",
-      "pixel_sha256": "95e21d0465acfa82531c1736194931d80c8db10d13a5e881c42526b1fa662bc7"
+      "encoded_sha256": "7c5dba33f562cbbbce0e1f4c657445ff145ffe86e9a188961dfca30cac9939a5",
+      "pixel_sha256": "3dd359085f7dd63f3e91ba952099266849637595bc19bb3a36ffece1c9ba7cd4"
     },
     {
       "file": "chakrams_victim_explosion_f08.png",
-      "bytes": 13331,
+      "bytes": 6904,
       "url_kind": "template",
-      "encoded_sha256": "7e540192fa89d101dcd12bc7eeeaf5ee96cfd32aea3f8dbd32661987e2ad2c0f",
-      "pixel_sha256": "59f1c6226b4f8796822a8784f984ec34fe5d99a1e78a63c0b6c65268108a9f77"
+      "encoded_sha256": "866892771e112f3f4762243a8c459b1805c641d103388d4e6d701c4a9326c071",
+      "pixel_sha256": "614a26dc5601fa42d19a7e494adadf87448131491fd131267660293a2b5aa3e8"
     }
   ],
   "frame_count": 9,
   "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
-  "schema_version": 1,
-  "issue": "FAN-3013",
+  "schema_version": 2,
+  "issue": "FAN-3586",
+  "replaces_candidate": "1b6f107b54f29464e5cee24e079b2d5a7b600067",
   "weapon": "assassin/chakrams",
   "effect": "victim_explosion",
+  "source_tag": "fan3586.chakrams.victim_explosion",
   "asset": {
     "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_victim_explosion",
     "source_frames": [
@@ -118,8 +120,8 @@
     "fps": 16.0
   },
   "frame_verification": {
-    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
-    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "method": "Pillow RGBA decode; source/runtime pixel hashes, canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, source/runtime pixels match, border remains transparent and consecutive frames change",
     "frames": [
       {
         "index": 0,
@@ -127,15 +129,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          40,
-          40,
-          224,
-          215
+          107,
+          111,
+          149,
+          145
         ],
-        "visible_pixels": 22311,
+        "visible_pixels": 136,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "6a0eed279011136dfb30f13994f86f918fe53fbf11bd306de8f0180ba7dd5054",
+        "pixel_sha256": "7733ca62e402df0753d0fe5e1a39ff7e46311b222b89845c93bddab2cc09139e",
+        "runtime_encoded_sha256": "6a0eed279011136dfb30f13994f86f918fe53fbf11bd306de8f0180ba7dd5054"
       },
       {
         "index": 1,
@@ -143,15 +149,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          37,
-          36,
-          230,
-          218
+          96,
+          99,
+          160,
+          157
         ],
-        "visible_pixels": 24020,
+        "visible_pixels": 836,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "3427e16afcc756f2ac3b7179232ac0ceba0c7ec06bd8c3a3dfad87cffe221a43",
+        "pixel_sha256": "34b0e81f452efe9051b87ce83849ce87b45b9a7d5fd5747c667a5d374dd284a4",
+        "runtime_encoded_sha256": "3427e16afcc756f2ac3b7179232ac0ceba0c7ec06bd8c3a3dfad87cffe221a43"
       },
       {
         "index": 2,
@@ -159,15 +169,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          33,
-          35,
-          230,
-          220
+          85,
+          88,
+          171,
+          167
         ],
-        "visible_pixels": 20415,
+        "visible_pixels": 4171,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "7f78378c93544af316e96793bf3893953cd5fb14a84fb02c293796fe0f8f3b98",
+        "pixel_sha256": "a168c645073345812bb1bd99a54b4871a58412330a1bee9e99609c9de0c0e420",
+        "runtime_encoded_sha256": "7f78378c93544af316e96793bf3893953cd5fb14a84fb02c293796fe0f8f3b98"
       },
       {
         "index": 3,
@@ -175,15 +189,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          33,
-          37,
-          227,
-          210
+          72,
+          72,
+          184,
+          183
         ],
-        "visible_pixels": 4140,
+        "visible_pixels": 9445,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "433c4aec80db24f53e5d84294c8d893e93dde8e7428426a688c4e7baf4ccb4f2",
+        "pixel_sha256": "3dac359cf9001416ef10eca90a51b04ebd10e5b47ac072674aab18b60b5a8f6c",
+        "runtime_encoded_sha256": "433c4aec80db24f53e5d84294c8d893e93dde8e7428426a688c4e7baf4ccb4f2"
       },
       {
         "index": 4,
@@ -191,15 +209,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          26,
-          27,
-          229,
-          229
+          59,
+          59,
+          196,
+          197
         ],
-        "visible_pixels": 11714,
+        "visible_pixels": 14249,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "5397585e84588f2fa849e7f11e6b1a392a207a4218f8c22dfd2b5a9d5906c934",
+        "pixel_sha256": "05e8131c51ab9fc8522fe20934fbecc7410e13bfe0989b88bc634145a7806d09",
+        "runtime_encoded_sha256": "5397585e84588f2fa849e7f11e6b1a392a207a4218f8c22dfd2b5a9d5906c934"
       },
       {
         "index": 5,
@@ -207,15 +229,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          26,
-          27,
-          229,
-          229
+          47,
+          47,
+          209,
+          208
         ],
-        "visible_pixels": 4174,
+        "visible_pixels": 19851,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "c43ce3f35148c2e49892197f438ee203b05e8219d2af562681534e71b268b42c",
+        "pixel_sha256": "d9fd3b7be23a40791b2865a21f7a29f3f9b82f049b5628b45916e2c77ce6771c",
+        "runtime_encoded_sha256": "c43ce3f35148c2e49892197f438ee203b05e8219d2af562681534e71b268b42c"
       },
       {
         "index": 6,
@@ -223,15 +249,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          28,
-          27,
-          228,
-          229
+          58,
+          57,
+          198,
+          199
         ],
-        "visible_pixels": 5851,
+        "visible_pixels": 15081,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "b3db734cc3938a9a35dcf19b4d51f0b634c079c851dc6926add74a72432074af",
+        "pixel_sha256": "7c8342961fe45e23e561d9d6500e7278c60ce0ca61e33b07116aaa30733aa4f4",
+        "runtime_encoded_sha256": "b3db734cc3938a9a35dcf19b4d51f0b634c079c851dc6926add74a72432074af"
       },
       {
         "index": 7,
@@ -239,15 +269,19 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          79,
-          79,
-          173,
-          170
+          76,
+          76,
+          179,
+          180
         ],
-        "visible_pixels": 5709,
+        "visible_pixels": 8168,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "7c5dba33f562cbbbce0e1f4c657445ff145ffe86e9a188961dfca30cac9939a5",
+        "pixel_sha256": "3dd359085f7dd63f3e91ba952099266849637595bc19bb3a36ffece1c9ba7cd4",
+        "runtime_encoded_sha256": "7c5dba33f562cbbbce0e1f4c657445ff145ffe86e9a188961dfca30cac9939a5"
       },
       {
         "index": 8,
@@ -255,23 +289,77 @@
           256,
           256
         ],
+        "mode": "RGBA",
         "alpha_bbox": [
-          46,
-          50,
-          210,
-          210
+          92,
+          92,
+          163,
+          164
         ],
-        "visible_pixels": 17478,
+        "visible_pixels": 3928,
         "edge_visible_pixels": 0,
-        "border_max_alpha": 0
+        "border_max_alpha": 0,
+        "encoded_sha256": "866892771e112f3f4762243a8c459b1805c641d103388d4e6d701c4a9326c071",
+        "pixel_sha256": "614a26dc5601fa42d19a7e494adadf87448131491fd131267660293a2b5aa3e8",
+        "runtime_encoded_sha256": "866892771e112f3f4762243a8c459b1805c641d103388d4e6d701c4a9326c071"
       }
     ],
+    "visible_area_profile_alpha_gt_10": [
+      136,
+      836,
+      4171,
+      9445,
+      14249,
+      19851,
+      15081,
+      8168,
+      3928
+    ],
+    "visible_area_spread_percent": 14496.32,
     "motion": {
-      "consecutive_changed_pixels_min": 7992,
-      "consecutive_changed_pixels_max": 25642,
-      "loop_wrap_changed_pixels": 22206
+      "consecutive_changed_pixels_min": 843,
+      "consecutive_changed_pixels_max": 19868,
+      "loop_wrap_changed_pixels": 3928
     },
     "frame_count": 9,
     "transparent_edge_max_alpha": 0
+  },
+  "postprocess": {
+    "tool": "Pillow",
+    "operation": "centered nearest-neighbor reframe and alpha envelope applied to PixelLab export; no new pixels drawn",
+    "source_frame_order": [
+      8,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2,
+      1,
+      0
+    ],
+    "target_max_sizes_px": [
+      42,
+      64,
+      86,
+      112,
+      138,
+      162,
+      142,
+      104,
+      72
+    ],
+    "alpha_scales": [
+      0.55,
+      0.7,
+      0.84,
+      0.96,
+      1.0,
+      0.98,
+      0.78,
+      0.56,
+      0.36
+    ],
+    "purpose": "turn the coherent PixelLab burst into a centered expand/bloom/fade lifecycle while retaining its purple palette and connected silhouette"
   }
 }
