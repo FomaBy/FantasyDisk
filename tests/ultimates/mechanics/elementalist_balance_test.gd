@@ -16,6 +16,8 @@ const WEAPONS := [
 const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 3.75
+const PRISM_CROWD_CAP := 18
+const PRISM_LATTICE_HIT_CAP := 3
 
 var _errors: Array[String] = []
 
@@ -28,6 +30,8 @@ func _initialize() -> void:
 		"the inherited 51-row charge/power harness must remain clean")
 	_check(registry.package_validation_errors().is_empty(),
 		"package discovery must remain clean: %s" % [registry.package_validation_errors()])
+	var executor_sources := _executor_sources(registry)
+	_test_coverage_contract(registry, executor_sources)
 	var metrics := {}
 	for weapon_id in WEAPONS:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
@@ -48,7 +52,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var solo_output := 0.0
 	var aoe_output := 0.0
 	var defense_seconds := 0.0
-	var crowd_cap := int(params["crowd_cap"])
+	var crowd_reach: float = INF
 	match weapon_id:
 		"elementalist_orb_ring":
 			var nova := float(params["nova_damage"]) \
@@ -74,6 +78,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 				+ 5.0 * float(params["shatter_damage"])
 			) * base_damage
 			defense_seconds = float(params["fracture_duration"])
+			crowd_reach = float(params["crowd_cap"])
 		"elementalist_meteor_core":
 			var coefficient := float(params["impact_damage"]) \
 				+ float(params["crater_pulses"]) * float(params["crater_damage"])
@@ -90,7 +95,7 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"solo_ratio": solo_output / power_midpoint,
 		"aoe_output": aoe_output,
 		"aoe_ratio": aoe_output / aoe_midpoint,
-		"crowd_cap": crowd_cap,
+		"crowd_reach": crowd_reach,
 		"defense_seconds": defense_seconds,
 	}
 
@@ -122,28 +127,31 @@ func _test_weapon(
 		"elementalist_orb_ring":
 			_check(float(metrics["aoe_ratio"]) >= 1.05 and float(metrics["aoe_ratio"]) <= 1.45,
 				"Conclave must lead control/AoE without leaving its corridor")
-			_check(int(params["crowd_cap"]) == 24 and int(params["shock_chain_count"]) == 6,
-				"Conclave crowd/chain rails must remain 24/6")
+			_check(is_inf(float(metrics["crowd_reach"])) and int(params["shock_chain_count"]) == 6,
+				"Conclave must retain uncapped reach and its 6-hop chain rail")
 		"elementalist_prism_focus":
 			_check(float(metrics["aoe_ratio"]) >= 0.75 and float(metrics["aoe_ratio"]) <= 1.05,
 				"Prism must buy arena geometry with bounded focus output")
-			_check(int(params["lattice_hit_cap"]) == 3 and int(params["crowd_cap"]) == 18,
+			_check(int(params["lattice_hit_cap"]) == PRISM_LATTICE_HIT_CAP
+					and int(params["crowd_cap"]) == PRISM_CROWD_CAP,
 				"Prism must retain its triple-hit and crowd caps")
 		"elementalist_meteor_core":
 			_check(float(metrics["aoe_ratio"]) >= 1.05 and float(metrics["aoe_ratio"]) <= 1.45,
 				"Meteor must retain the aimed crowd-nuke corridor")
-			_check(int(params["crowd_cap"]) == 20 \
+			_check(is_inf(float(metrics["crowd_reach"])) \
 					and float(params["normal_execute_max_health"]) == 900.0,
-				"Meteor must retain its bounded normal execute rail")
+				"Meteor must retain uncapped reach and its bounded normal execute rail")
 
 
 func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
 	var aoe_score := _average(metrics, "aoe_ratio")
 	var crowd_score := (
-		float((metrics[WEAPONS[0]] as Dictionary)["crowd_cap"]) / 24.0
-		+ float((metrics[WEAPONS[1]] as Dictionary)["crowd_cap"]) / 18.0
-		+ float((metrics[WEAPONS[2]] as Dictionary)["crowd_cap"]) / 20.0
+		(1.0 if is_inf(float((metrics[WEAPONS[0]] as Dictionary)["crowd_reach"]))
+			else float((metrics[WEAPONS[0]] as Dictionary)["crowd_reach"]) / float(PRISM_CROWD_CAP))
+		+ float((metrics[WEAPONS[1]] as Dictionary)["crowd_reach"]) / float(PRISM_CROWD_CAP)
+		+ (1.0 if is_inf(float((metrics[WEAPONS[2]] as Dictionary)["crowd_reach"]))
+			else float((metrics[WEAPONS[2]] as Dictionary)["crowd_reach"]) / float(PRISM_CROWD_CAP))
 	) / 3.0
 	var defense_seconds := _average(metrics, "defense_seconds")
 	var defense_score := defense_seconds / DEFENSE_REFERENCE_SECONDS
@@ -195,6 +203,87 @@ func _test_harness_goes_red(registry: Registry, rows: Array) -> void:
 		"the balance proof must go red for runaway lattice damage")
 
 
+func _executor_sources(registry: Registry) -> Dictionary:
+	var sources := {}
+	for weapon_id in WEAPONS:
+		var executor = registry.executor_for(CLASS_ID, weapon_id)
+		sources[weapon_id] = executor.resource_path if executor is GDScript else ""
+		sources[weapon_id] = FileAccess.get_file_as_string(str(sources[weapon_id]))
+	return sources
+
+
+func _test_coverage_contract(registry: Registry, sources: Dictionary) -> void:
+	_check(Harness.COVERAGE_MIGRATION_ALLOWLIST.has(CLASS_ID)
+			and not Harness.COVERAGE_V2_CLASSES.has(CLASS_ID),
+		"Elementalist must remain in the shared migration allowlist until Prism is uncapped")
+
+	for weapon_id in [WEAPONS[0], WEAPONS[2]]:
+		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
+		var params := (profile["executor"] as Dictionary)["params"] as Dictionary
+		var executor = registry.executor_for(CLASS_ID, weapon_id)
+		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
+		_check(_has_uncapped_reach_contract(params, contract, str(sources[weapon_id])),
+			"%s must expose uncapped reach without a count-shaped parameter" % weapon_id)
+
+	var prism_profile := registry.catalog_profile_for(CLASS_ID, WEAPONS[1])
+	var prism_params := (prism_profile["executor"] as Dictionary)["params"] as Dictionary
+	var prism_executor = registry.executor_for(CLASS_ID, WEAPONS[1])
+	var prism_contract: Dictionary = prism_executor.parameter_contract() \
+		if prism_executor is GDScript else {}
+	_check(_has_prism_rail(prism_params, prism_contract),
+		"Prism must expose its exact 18-target and triple-hit rails")
+	_test_coverage_contract_goes_red(registry, sources, prism_contract)
+
+
+func _has_uncapped_reach_contract(params: Dictionary, contract: Dictionary, source: String) -> bool:
+	if source.contains("crowd_cap") or params.has("crowd_cap") or contract.has("crowd_cap"):
+		return false
+	var count_caps := Harness.count_cap_params(source)
+	for raw_key in params.keys() + contract.keys():
+		count_caps.append_array(Harness.count_cap_params(str(raw_key)))
+	return count_caps.is_empty()
+
+
+func _has_prism_rail(params: Dictionary, contract: Dictionary) -> bool:
+	return int(params.get("crowd_cap", -1)) == PRISM_CROWD_CAP \
+		and int(params.get("lattice_hit_cap", -1)) == PRISM_LATTICE_HIT_CAP \
+		and contract.has("crowd_cap") and contract.has("lattice_hit_cap")
+
+
+func _test_coverage_contract_goes_red(
+	registry: Registry, sources: Dictionary, prism_contract: Dictionary
+) -> void:
+	for weapon_id in [WEAPONS[0], WEAPONS[2]]:
+		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
+		var params := (profile["executor"] as Dictionary)["params"] as Dictionary
+		var executor = registry.executor_for(CLASS_ID, weapon_id)
+		var contract: Dictionary = executor.parameter_contract() if executor is GDScript else {}
+		for count_name in ["target_cap", "crowd_cap"]:
+			_check(not _has_uncapped_reach_contract(params, contract,
+				str(sources[weapon_id]) + "\nvar %s = 1" % count_name),
+				"%s %s source probe must make the contract red" % [weapon_id, count_name])
+			var mutated_params := params.duplicate(true)
+			mutated_params[count_name] = 1
+			_check(not _has_uncapped_reach_contract(
+				mutated_params, contract, str(sources[weapon_id])
+			), "%s %s profile probe must make the contract red" % [weapon_id, count_name])
+
+	var prism_profile := registry.catalog_profile_for(CLASS_ID, WEAPONS[1])
+	var prism_params := (prism_profile["executor"] as Dictionary)["params"] as Dictionary
+	var missing_cap := prism_params.duplicate(true)
+	missing_cap.erase("crowd_cap")
+	_check(not _has_prism_rail(missing_cap, prism_contract),
+		"Prism missing crowd-cap probe must make the contract red")
+	var changed_crowd_cap := prism_params.duplicate(true)
+	changed_crowd_cap["crowd_cap"] = PRISM_CROWD_CAP - 1
+	_check(not _has_prism_rail(changed_crowd_cap, prism_contract),
+		"Prism changed crowd-cap probe must make the contract red")
+	var changed_hit_cap := prism_params.duplicate(true)
+	changed_hit_cap["lattice_hit_cap"] = PRISM_LATTICE_HIT_CAP - 1
+	_check(not _has_prism_rail(changed_hit_cap, prism_contract),
+		"Prism changed hit-cap probe must make the contract red")
+
+
 func _average(metrics: Dictionary, key: String) -> float:
 	var total := 0.0
 	for weapon_id in WEAPONS:
@@ -212,11 +301,11 @@ func _report(metrics: Dictionary) -> void:
 	print("  weapon                         solo    aoe  crowd defense  base")
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %-29s %.3f  %.3f  %5d  %5.2fs %.2f" % [
+		print("  %-29s %.3f  %.3f  %5s  %5.2fs %.2f" % [
 			weapon_id,
 			row["solo_ratio"],
 			row["aoe_ratio"],
-			row["crowd_cap"],
+			str(row["crowd_reach"]),
 			row["defense_seconds"],
 			row["base_damage"],
 		])

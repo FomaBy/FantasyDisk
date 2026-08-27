@@ -19,6 +19,14 @@ No new raster asset was needed. The manifest records the accepted source and
 runtime VFX for every weapon; vector composition supplies the new silhouettes,
 so PixelLab was not invoked and no PixelLab source or export ID exists.
 
+The integrated Guitarist executors now select every live enemy for their
+primary effects (FAN-2533). The `performance.crowd_cap` values this manifest
+declares are unchanged and stay a PRESENTATION budget: they bound how many
+visual nodes a timeline may draw and are matched against each scene's own
+`crowd_cap` metadata by the focused test below. They have never been an enemy
+count, so the coverage-v2 conversion leaves them — and the scenes they are
+checked against — untouched.
+
 The four contact sheets use the actual local scenes at 648p, 720p, 1080p, and
 2K. Their title placement is measured with `ThemeDB.fallback_font` before
 centering; the focused test proves the measured title rectangle remains inside
