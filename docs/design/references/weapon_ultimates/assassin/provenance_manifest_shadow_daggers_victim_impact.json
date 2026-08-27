@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T15:09:11Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "71af4870-558c-4d00-a136-49461978aaf3",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single compact shadow dagger victim impact burst, black-violet slashing shards, a white-violet star glint and smoky purple fragments, dark fantasy pixel art top-down, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the impact stays centered while a sharp white-violet star flashes, black-violet dagger shards burst outward and smoky fragments curl then fade inward in clear distinct stages; every one of the 9 returned frames MUST contain a visible central violet or white light and visible shadow fragments, including the first and last frame; no fully transparent or empty frame, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "shadow_daggers_victim_impact_f00.png",
+      "bytes": 28271,
+      "url_kind": "template",
+      "encoded_sha256": "397d558a9099e9614e5b5eb891e9504ce573d8e32dfeead9593271b0a77ee67f",
+      "pixel_sha256": "f32d9b15ad0efa46adb32e6a160eadfc3e274ea8fb11d0cd0daea820f01c6374"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f01.png",
+      "bytes": 37754,
+      "url_kind": "template",
+      "encoded_sha256": "8ea54c7c8adcdf90d28d194d2d616db6a2511a9e10a8006b92df3bba6833ab44",
+      "pixel_sha256": "ff326ac58d5b445f95e83fa9c8cc4b2dc5c0e0e33b2d55f764d99a0720ef1813"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f02.png",
+      "bytes": 35488,
+      "url_kind": "template",
+      "encoded_sha256": "b544aceff1b8b17121467eb279cfcb480ff76defc7ec638ac5b81471e40c8d06",
+      "pixel_sha256": "c4694af12f504398f7ea52faa3c37ea19c535009f5e7c6a29a82648ec060dbd6"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f03.png",
+      "bytes": 29431,
+      "url_kind": "template",
+      "encoded_sha256": "ec76b6ba06b1b419ca27f7ab9bf47b2e668761b16be4c841809641fd56753944",
+      "pixel_sha256": "e08010f5ec1db0019e24ebff49f8dc2f44d67ffae32da1fb126a712e38fc9203"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f04.png",
+      "bytes": 25574,
+      "url_kind": "template",
+      "encoded_sha256": "72bff10389a6a94ab502ca203e0a27bea00643479444199ad0cadea957756437",
+      "pixel_sha256": "4c44b43a56416dd125592098ceda3e102669a13836b10bde9d971f25fdb2f886"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f05.png",
+      "bytes": 12117,
+      "url_kind": "template",
+      "encoded_sha256": "749ca2debe8ca88d0dda9bf8533b68011f861a659242746ac291207e2a6692b9",
+      "pixel_sha256": "7803749eec4d2862443c818a293e567c535c7ad167214fe07ed0d4ed1cd62916"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f06.png",
+      "bytes": 7439,
+      "url_kind": "template",
+      "encoded_sha256": "2e4a1cb38b0563e4120e0b26e56f9a5b0b918d68363d81d38b576d4637602331",
+      "pixel_sha256": "bc747359e162630bb1550e700c0af7c900f9286a61129b5f27a976635a766f30"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f07.png",
+      "bytes": 6119,
+      "url_kind": "template",
+      "encoded_sha256": "0449d9348e274380153d1a22a71a92d6f1ae0961dea9fce09b01bc4d391b6887",
+      "pixel_sha256": "aa29e7cedbf30264c7ba1b00dd5fda772e164e86df2410611e9527fae415cc4d"
+    },
+    {
+      "file": "shadow_daggers_victim_impact_f08.png",
+      "bytes": 2311,
+      "url_kind": "template",
+      "encoded_sha256": "708f8f6c49c43e41fd89db83f93784ac06d965d3d5d123b0eaaa00e9cf2300a4",
+      "pixel_sha256": "930a8604dd094092c68d4b7c28ef00e08470664ecb564e235d20c332e4aafde7"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/shadow_daggers",
+  "effect": "victim_impact",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/shadow_daggers_victim_impact",
+    "source_frames": [
+      "shadow_daggers_victim_impact_f00.png",
+      "shadow_daggers_victim_impact_f01.png",
+      "shadow_daggers_victim_impact_f02.png",
+      "shadow_daggers_victim_impact_f03.png",
+      "shadow_daggers_victim_impact_f04.png",
+      "shadow_daggers_victim_impact_f05.png",
+      "shadow_daggers_victim_impact_f06.png",
+      "shadow_daggers_victim_impact_f07.png",
+      "shadow_daggers_victim_impact_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/shadow_daggers/victim_impact",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/shadow_daggers/victim_impact/victim_impact_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "victim_impact",
+    "loop": false,
+    "fps": 16.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          24,
+          26,
+          230,
+          229
+        ],
+        "visible_pixels": 26476,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          22,
+          24,
+          238,
+          229
+        ],
+        "visible_pixels": 26884,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          18,
+          15,
+          246,
+          241
+        ],
+        "visible_pixels": 27247,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          19,
+          17,
+          231,
+          229
+        ],
+        "visible_pixels": 23407,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          18,
+          21,
+          232,
+          230
+        ],
+        "visible_pixels": 20696,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          26,
+          22,
+          229,
+          217
+        ],
+        "visible_pixels": 15512,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          31,
+          36,
+          229,
+          217
+        ],
+        "visible_pixels": 9403,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          49,
+          36,
+          212,
+          200
+        ],
+        "visible_pixels": 4473,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          46,
+          58,
+          207,
+          180
+        ],
+        "visible_pixels": 1170,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 5175,
+      "consecutive_changed_pixels_max": 27074,
+      "loop_wrap_changed_pixels": 26465
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}

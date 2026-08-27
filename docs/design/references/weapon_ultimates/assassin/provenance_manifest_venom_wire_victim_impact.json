@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T15:01:27Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "bb0a0bff-2ec7-4cfe-b56f-8c4cb53e3cbb",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single compact toxic wire victim impact burst, acid-green venom splash with black-violet wire snap arcs and six tiny poison sparks, dark fantasy pixel art top-down, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the toxic impact remains centered while black-violet wire arcs snap inward and the acid-green core blooms into a bright poison splash, droplets and sparks appear then fade in clear stages; every frame has visible light, smooth distinct motion, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "venom_wire_victim_impact_f00.png",
+      "bytes": 32237,
+      "url_kind": "template",
+      "encoded_sha256": "3ea41d012d0d33069638568ec41e52f41afa4ba2206f5809bdc43d0c2395b7b0",
+      "pixel_sha256": "d52ebff97db3c82f57b70e2f44946b633c5f5a593f53962341db58d1a0db3533"
+    },
+    {
+      "file": "venom_wire_victim_impact_f01.png",
+      "bytes": 40689,
+      "url_kind": "template",
+      "encoded_sha256": "bc6d1e74390796c46896643775985974922cce7baf66d1b7a44a20e2d556c85a",
+      "pixel_sha256": "75aa005fbb2fc0244f0fc58bc6f6079ebf6d7be500b4af662d33f54ccbfd1939"
+    },
+    {
+      "file": "venom_wire_victim_impact_f02.png",
+      "bytes": 35246,
+      "url_kind": "template",
+      "encoded_sha256": "3d4cc0a262a859c2ba3b4e389e6b798cfda70d2dc87e17cc09c05a1a3a5a1460",
+      "pixel_sha256": "86e70ee5c5ae567b2d77e7b1aa90b244fe1953599663f7026394326cb7d2f3a3"
+    },
+    {
+      "file": "venom_wire_victim_impact_f03.png",
+      "bytes": 26242,
+      "url_kind": "template",
+      "encoded_sha256": "06089fc26012890c9f41617241535eda249341fbbee8c533050ff8dac8dbcffa",
+      "pixel_sha256": "9a89c09712e1964488e20fa62f03f9010e6d518575829b9e985d522c6e45d5e8"
+    },
+    {
+      "file": "venom_wire_victim_impact_f04.png",
+      "bytes": 23260,
+      "url_kind": "template",
+      "encoded_sha256": "ebec4147527f1416c622fc914305923ea8de2add1e3fb70ea0ec15b2bea29e54",
+      "pixel_sha256": "0b4a3552063829b56950e5a24b271fa52bb7944586c8dfa64bc8ae8bb84d79e4"
+    },
+    {
+      "file": "venom_wire_victim_impact_f05.png",
+      "bytes": 23967,
+      "url_kind": "template",
+      "encoded_sha256": "d2dfae0bd96aaaae980d3a190a628f853e8344b027e6aef27f1750b044467728",
+      "pixel_sha256": "ff940f00ce1de90a05b7b1c6d3f7e5450516c3651dafdf4f58fc505bd513eab3"
+    },
+    {
+      "file": "venom_wire_victim_impact_f06.png",
+      "bytes": 32176,
+      "url_kind": "template",
+      "encoded_sha256": "546ecf1ff6ddb997a4ca5599368e01f848ac9e8a7ff893c86a3be9aeed7696c5",
+      "pixel_sha256": "6986cc6f3ae4c08c69854bff58170455cfd78e663f58b44177a65802329e8abf"
+    },
+    {
+      "file": "venom_wire_victim_impact_f07.png",
+      "bytes": 31483,
+      "url_kind": "template",
+      "encoded_sha256": "b6b1e3fb45ee3b55c63954cea08587067019bb6f8cfc673f801a180ec483df7c",
+      "pixel_sha256": "fb658da711c52caea99f07db9ddeeabbce44081bbf3eff1bdafe3f0482f5acbe"
+    },
+    {
+      "file": "venom_wire_victim_impact_f08.png",
+      "bytes": 32466,
+      "url_kind": "template",
+      "encoded_sha256": "c52d3853fb4b72b9c43a72989bb6be3ccead7b5b1310bbfaf1a1a8636e1ba893",
+      "pixel_sha256": "b1001ff625c612eaea1614b62dc32dbbf63dfaee28d8d2ed315b6245e138c568"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/venom_wire",
+  "effect": "victim_impact",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/venom_wire_victim_impact",
+    "source_frames": [
+      "venom_wire_victim_impact_f00.png",
+      "venom_wire_victim_impact_f01.png",
+      "venom_wire_victim_impact_f02.png",
+      "venom_wire_victim_impact_f03.png",
+      "venom_wire_victim_impact_f04.png",
+      "venom_wire_victim_impact_f05.png",
+      "venom_wire_victim_impact_f06.png",
+      "venom_wire_victim_impact_f07.png",
+      "venom_wire_victim_impact_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/venom_wire/victim_impact",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/venom_wire/victim_impact/victim_impact_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "victim_impact",
+    "loop": false,
+    "fps": 16.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          35,
+          238,
+          225
+        ],
+        "visible_pixels": 19423,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          17,
+          31,
+          241,
+          229
+        ],
+        "visible_pixels": 19712,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          25,
+          28,
+          237,
+          221
+        ],
+        "visible_pixels": 18800,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          35,
+          242,
+          222
+        ],
+        "visible_pixels": 18730,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          18,
+          36,
+          231,
+          227
+        ],
+        "visible_pixels": 18866,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          29,
+          51,
+          231,
+          213
+        ],
+        "visible_pixels": 17537,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          29,
+          54,
+          231,
+          213
+        ],
+        "visible_pixels": 16299,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          30,
+          54,
+          230,
+          215
+        ],
+        "visible_pixels": 16053,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          30,
+          48,
+          230,
+          215
+        ],
+        "visible_pixels": 17121,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 12650,
+      "consecutive_changed_pixels_max": 19312,
+      "loop_wrap_changed_pixels": 18553
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}

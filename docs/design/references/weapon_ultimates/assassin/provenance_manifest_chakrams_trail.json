@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T14:49:55Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "99dc7af8-e307-4c35-ae60-bc625befe5e6",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single pale silver crescent-moon throwing chakram, flat round razor ring with a violet moonlit edge and a short violet comet tail, dark fantasy pixel art seen straight from above, centered isolated object on transparent background, no hands, no character, no extra props, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the chakram keeps exactly the same round shape, size, thickness, pale silver metal and centered position in every frame; only the violet moonlight trail moves behind the ring as it spins, sweeping from short to long and back with clear directional motion; every frame has visible light, smooth distinct stages, no blank frames, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "chakrams_trail_f00.png",
+      "bytes": 33838,
+      "url_kind": "template",
+      "encoded_sha256": "5df9be0fff3c57c45a892bfe41b741e4e016480146fd893dd21172ed5d577bfc",
+      "pixel_sha256": "4dbffbf4353f30cf06585685240ed5cda0eacabca050aeb238ae80a251629a06"
+    },
+    {
+      "file": "chakrams_trail_f01.png",
+      "bytes": 47095,
+      "url_kind": "template",
+      "encoded_sha256": "7250943656f3c9d33722bb09da2a4b4d8183ebebab20b7355b39408b53cfde17",
+      "pixel_sha256": "7fb618418665443b826db71c086ac56224af39228b751495c138b60982b3cb8b"
+    },
+    {
+      "file": "chakrams_trail_f02.png",
+      "bytes": 45967,
+      "url_kind": "template",
+      "encoded_sha256": "052b69396dba8f92949a25835c4979275eeee891fc0c49da4154169fe282744c",
+      "pixel_sha256": "6da50b682503d2624e09529cabeef53ff35bbb95a7fb9da339ef41e8efe4d963"
+    },
+    {
+      "file": "chakrams_trail_f03.png",
+      "bytes": 45977,
+      "url_kind": "template",
+      "encoded_sha256": "dce60afa05d86f2c3fc806051bc76e7320418cdcc87eb5f71fc229d3f13aef57",
+      "pixel_sha256": "626e7c57b383c6cccef94712919d64c4190023ec27d79ea1e3344a626f779abd"
+    },
+    {
+      "file": "chakrams_trail_f04.png",
+      "bytes": 45528,
+      "url_kind": "template",
+      "encoded_sha256": "a803e643faa950bdf7c9356640d7987f942fd192d1cff304afb056f999a6e14e",
+      "pixel_sha256": "9d7ef32ee39e416fa44d13e0fcc92739b39da782966aeff46adba2c78f400e6d"
+    },
+    {
+      "file": "chakrams_trail_f05.png",
+      "bytes": 45274,
+      "url_kind": "template",
+      "encoded_sha256": "5aee4fe0df1c49b458853298413637bc4d7a749d1681a5686f5b21454509c4f4",
+      "pixel_sha256": "4c2e44a46ba8475e2a1a9a6afccee035b5ee8af1d9621d2b5b885870f55e9071"
+    },
+    {
+      "file": "chakrams_trail_f06.png",
+      "bytes": 46759,
+      "url_kind": "template",
+      "encoded_sha256": "6c5535168c9bfd0070bcef5bfb4e9257a79f421120d7a4fd35094eb0583d2031",
+      "pixel_sha256": "2776abaca408740d2bc920cd671e84485b1c70b226f0e15ef832395c3fd03126"
+    },
+    {
+      "file": "chakrams_trail_f07.png",
+      "bytes": 44342,
+      "url_kind": "template",
+      "encoded_sha256": "0cec3925a8feace14ffad62073a37688d8bc24d472fc60b30b0a9f9f3a9b847b",
+      "pixel_sha256": "4cad08e8f3dd126ae4a2a77458053b33df5e20923d7a35654ba3dca5c5e6d11b"
+    },
+    {
+      "file": "chakrams_trail_f08.png",
+      "bytes": 47220,
+      "url_kind": "template",
+      "encoded_sha256": "13d8bd8568b2d77ddf6fa26863a168345f67cfd75c7cdfdc339d3b186a8bbd0b",
+      "pixel_sha256": "ad9d50d413ff141abdb58f970b0b41e68e07aa80355ca3a556ff248437c0bb15"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/chakrams",
+  "effect": "trail",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_trail",
+    "source_frames": [
+      "chakrams_trail_f00.png",
+      "chakrams_trail_f01.png",
+      "chakrams_trail_f02.png",
+      "chakrams_trail_f03.png",
+      "chakrams_trail_f04.png",
+      "chakrams_trail_f05.png",
+      "chakrams_trail_f06.png",
+      "chakrams_trail_f07.png",
+      "chakrams_trail_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/chakrams/trail",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "chakram_trail",
+    "loop": true,
+    "fps": 12.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          19,
+          12,
+          250,
+          240
+        ],
+        "visible_pixels": 30612,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          15,
+          11,
+          245,
+          236
+        ],
+        "visible_pixels": 30187,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          22,
+          235,
+          236
+        ],
+        "visible_pixels": 28007,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          21,
+          235,
+          235
+        ],
+        "visible_pixels": 27796,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          22,
+          235,
+          236
+        ],
+        "visible_pixels": 28531,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          22,
+          235,
+          236
+        ],
+        "visible_pixels": 28913,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          22,
+          235,
+          236
+        ],
+        "visible_pixels": 30385,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          22,
+          235,
+          236
+        ],
+        "visible_pixels": 27791,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          20,
+          235,
+          235
+        ],
+        "visible_pixels": 29180,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 11685,
+      "consecutive_changed_pixels_max": 21418,
+      "loop_wrap_changed_pixels": 24349
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}

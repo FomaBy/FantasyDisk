@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T15:01:27Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "decfe221-0c72-41a0-9e1b-f6af7911e353",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single compact shadow assassin cast flash, a black-violet star sigil with a white-violet razor glint and smoky dark petals, dark fantasy pixel art top-down, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the shadow sigil keeps the same centered identity while a sharp white-violet glint flashes across the black-violet star, dark petals flare outward and fold back smoothly in distinct stages; every frame has visible light, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "shadow_daggers_cast_flash_f00.png",
+      "bytes": 21649,
+      "url_kind": "template",
+      "encoded_sha256": "afdd0856d6e0cbd7206dae5d7f11198ef46612a7a239906332cff5e73716b192",
+      "pixel_sha256": "f01b50db7cf8775666c500068e1fb3650bb156479fb14665c9f80bdbb65439a9"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f01.png",
+      "bytes": 29166,
+      "url_kind": "template",
+      "encoded_sha256": "46f57cd421119a4648e35a785a739ccc02e5df71900775a2979edb17698cddc3",
+      "pixel_sha256": "4424bf7c2c058c277277bfa53477c01ba227c08e5965f7198acc8c4e1a334b49"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f02.png",
+      "bytes": 26850,
+      "url_kind": "template",
+      "encoded_sha256": "02f7d35d4b804d4a1ec9fb2601a5ded84d18c885c1988b2837d383b1293a1619",
+      "pixel_sha256": "a5f3f75ba93201c0b1bc82e09219e426000ac57b2ebaed24aac3629f1845f9a3"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f03.png",
+      "bytes": 26442,
+      "url_kind": "template",
+      "encoded_sha256": "0f55272c55a25605974590825260a81348a375393a3ad77701109f1329877618",
+      "pixel_sha256": "b3756815cc7386bbd925fff3f4e36451d28905cd4bc5fc93c50488ebe2ce3272"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f04.png",
+      "bytes": 21714,
+      "url_kind": "template",
+      "encoded_sha256": "d78a1fb1a454fcca8b77e9ea64c2ad3a0ea9adab199c56c60cdd5c46899a7acc",
+      "pixel_sha256": "280e04f42c017189773df0e6cbed8a430e2f0cb863a8d6d04d200abc9e1dfc72"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f05.png",
+      "bytes": 25676,
+      "url_kind": "template",
+      "encoded_sha256": "a24fdecdd5e5716848fb9f5c6e60d7d8b31628d14c732138c18b6229d28cb0c5",
+      "pixel_sha256": "12d188b1007d63ff30f76f87c849be32916133dbb0c9337a3eef3469c2217d8e"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f06.png",
+      "bytes": 18796,
+      "url_kind": "template",
+      "encoded_sha256": "871ec85c638494a39de3a83874912e003dcd03ec92cbf6816293b450741b611e",
+      "pixel_sha256": "85459f759754bba08aca15e51ebaa4b4cefbe249b7c7f2721d19246631ba3957"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f07.png",
+      "bytes": 26975,
+      "url_kind": "template",
+      "encoded_sha256": "aa2be430748695a568aedc9232e972131e7205d961461a3e3e0936be2e460c4d",
+      "pixel_sha256": "d042d471098bec2750bccd51c25edcafec3919531378c1201179dbf560fee99c"
+    },
+    {
+      "file": "shadow_daggers_cast_flash_f08.png",
+      "bytes": 26364,
+      "url_kind": "template",
+      "encoded_sha256": "2d3a23463099f5d32b121cd3ebb4f20dd5e60f7feb12b2e70093e07986403a05",
+      "pixel_sha256": "0ed7c9b0f1e2666ba7230cd3fa06d03f840e66f6eb749adb96c81b4d3d64a25e"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/shadow_daggers",
+  "effect": "cast_flash",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/shadow_daggers_cast_flash",
+    "source_frames": [
+      "shadow_daggers_cast_flash_f00.png",
+      "shadow_daggers_cast_flash_f01.png",
+      "shadow_daggers_cast_flash_f02.png",
+      "shadow_daggers_cast_flash_f03.png",
+      "shadow_daggers_cast_flash_f04.png",
+      "shadow_daggers_cast_flash_f05.png",
+      "shadow_daggers_cast_flash_f06.png",
+      "shadow_daggers_cast_flash_f07.png",
+      "shadow_daggers_cast_flash_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/shadow_daggers/cast_flash",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/shadow_daggers/cast_flash/cast_flash_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "cast_flash",
+    "loop": false,
+    "fps": 14.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          18,
+          21,
+          238,
+          237
+        ],
+        "visible_pixels": 34088,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          16,
+          20,
+          238,
+          237
+        ],
+        "visible_pixels": 34003,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          17,
+          21,
+          238,
+          234
+        ],
+        "visible_pixels": 33405,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          21,
+          25,
+          235,
+          232
+        ],
+        "visible_pixels": 32089,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          26,
+          26,
+          234,
+          229
+        ],
+        "visible_pixels": 25423,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          27,
+          25,
+          231,
+          229
+        ],
+        "visible_pixels": 29530,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          27,
+          22,
+          230,
+          229
+        ],
+        "visible_pixels": 24527,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          24,
+          25,
+          229,
+          231
+        ],
+        "visible_pixels": 30913,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          20,
+          23,
+          237,
+          236
+        ],
+        "visible_pixels": 33213,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 18705,
+      "consecutive_changed_pixels_max": 22574,
+      "loop_wrap_changed_pixels": 17668
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}

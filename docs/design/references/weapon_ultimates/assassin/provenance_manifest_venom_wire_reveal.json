@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T14:55:48Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "c35c4947-673a-4305-bc24-5786117bc417",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single six-anchor poison shadow web, thin black-violet wires joining six small acid-green venom nodes into a hexagonal trap, dark fantasy pixel art seen from above, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the web keeps six identical anchor nodes and the same centered geometry; black-violet wires draw outward from the center to each anchor in a smooth radial reveal while faint acid-green light wakes along each strand, every frame remains visible and distinct, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "venom_wire_reveal_f00.png",
+      "bytes": 30381,
+      "url_kind": "template",
+      "encoded_sha256": "99366a7065186a11f4b762fdd3916577137850a35b5bd1ccd479f15cedf5f961",
+      "pixel_sha256": "99bbd6d130fd5eacf972a3af631d459a8373cef02b976244b94ac530682d2d77"
+    },
+    {
+      "file": "venom_wire_reveal_f01.png",
+      "bytes": 39541,
+      "url_kind": "template",
+      "encoded_sha256": "03a5cc5e6f7cc6384f9d3839a3136f6f724aad2af83163730f3cab2e1ae54cf2",
+      "pixel_sha256": "84154c04b1a948021da68386c4df48443caad9024e10acf3a2748e664b1c45e3"
+    },
+    {
+      "file": "venom_wire_reveal_f02.png",
+      "bytes": 38303,
+      "url_kind": "template",
+      "encoded_sha256": "aae0619889bafa814d82a8d2322f2decc98cb716b114f4049cae649b4817af5d",
+      "pixel_sha256": "2c63c6cb2834e443ef5ed8b3c95dbfe57dc278bc25ffcd02c76f1fb1961fad32"
+    },
+    {
+      "file": "venom_wire_reveal_f03.png",
+      "bytes": 37096,
+      "url_kind": "template",
+      "encoded_sha256": "8af285426e2b0f701023e9d058798710cff8f844a7a4c5cfe29db36015221e68",
+      "pixel_sha256": "a9c2c050bd9b554fb64d13d0a2f5b84db1bb7b2d5f6ad1b710994ef6aebcdaa6"
+    },
+    {
+      "file": "venom_wire_reveal_f04.png",
+      "bytes": 35035,
+      "url_kind": "template",
+      "encoded_sha256": "cb500eaf0ee5bf7b58ccbae1ee9af881532bc9e4a7e0f850be884250c32b62ae",
+      "pixel_sha256": "f6ee5c752058c231674db422bd0915e9aace2541f320f68795d95185dd4cee10"
+    },
+    {
+      "file": "venom_wire_reveal_f05.png",
+      "bytes": 36384,
+      "url_kind": "template",
+      "encoded_sha256": "05d70fc9fbdc99ef417fb6c2abcab59eac2171350b2773b300be2d957ee23b50",
+      "pixel_sha256": "08f790ab9f93d789bc9d3b113f9031984afa3ac16fb3dd54e648f3557e542d6c"
+    },
+    {
+      "file": "venom_wire_reveal_f06.png",
+      "bytes": 35145,
+      "url_kind": "template",
+      "encoded_sha256": "0415bb25936093d1e7f6ea93d434da442d2697846b7fff68ad2b9bdd2385e03d",
+      "pixel_sha256": "4d9b1c1285c11c5edd6e5b3c8d7dcbd59061c0d9f033569aeca62720b346fb75"
+    },
+    {
+      "file": "venom_wire_reveal_f07.png",
+      "bytes": 36126,
+      "url_kind": "template",
+      "encoded_sha256": "264183d84393df0b74f93f00ec32dcfd6bdb1883d4ec3660d9f586e3e5fc92f1",
+      "pixel_sha256": "0cb1e893b7780eabd5048264347ef112fd67678c757cbdb43d2418cd759b9193"
+    },
+    {
+      "file": "venom_wire_reveal_f08.png",
+      "bytes": 34711,
+      "url_kind": "template",
+      "encoded_sha256": "f5fa498a9dc1a4f3187948110799deeb1340d3dcc41a4520cf61fa3465c46989",
+      "pixel_sha256": "6cdbe66c0057bf545627a98ee3cc9d7531e2c415803c9fd32648daf24a6e8e1e"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/venom_wire",
+  "effect": "reveal",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/venom_wire_reveal",
+    "source_frames": [
+      "venom_wire_reveal_f00.png",
+      "venom_wire_reveal_f01.png",
+      "venom_wire_reveal_f02.png",
+      "venom_wire_reveal_f03.png",
+      "venom_wire_reveal_f04.png",
+      "venom_wire_reveal_f05.png",
+      "venom_wire_reveal_f06.png",
+      "venom_wire_reveal_f07.png",
+      "venom_wire_reveal_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/venom_wire/reveal",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/venom_wire/reveal/reveal_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "web_reveal",
+    "loop": false,
+    "fps": 12.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26593,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26733,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26780,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26785,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26788,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26789,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26790,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26792,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          14,
+          233,
+          246
+        ],
+        "visible_pixels": 26792,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 10210,
+      "consecutive_changed_pixels_max": 14220,
+      "loop_wrap_changed_pixels": 17490
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}
