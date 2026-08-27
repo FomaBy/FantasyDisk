@@ -118,11 +118,45 @@ Key flags: `--poll-interval` seconds between status polls (default 30),
 Exit codes: `0` success; `3` timeout (the unfinished object id and its status
 are printed); `4` API error (create/animate/download failure, JSON-RPC error);
 `5` incomplete pack (fewer frames downloaded than `--frame-count`). On a
-non-zero exit do NOT retry silently: for a timeout, re-run once with
-`--object-id <id from the log>` and a larger `--timeout` — the job keeps
-running server-side; for `4`/`5`, report the error on the Multica card.
+non-zero exit, the delivery agent MUST stop the current run and hand the issue
+off as blocked. Do not sleep, poll manually, or finish the turn while the issue
+is still `in_progress`, and do not promise a later report. Capture the complete
+redacted output first; when the service provides them, it contains the
+object/job id and the last reported status.
+Then use the issue id from the current assignment and post the evidence before
+leaving the run:
+
+```bash
+multica issue status <FAN-issue-id> blocked --no-start
+multica issue comment add <FAN-issue-id> --content-file ./pixellab-failure.md
+```
+
+The comment must include the exact command, exit code, object/job id (or
+`unavailable` when the output provides none), last status, and the unblock
+condition. A timeout may be retried with `--object-id <id from the log>` and a
+larger `--timeout` only in a newly dispatched run; never retry it silently in
+the failed run. Exit codes `4` and `5` are reported as-is and are not converted
+into success.
 
 The token comes only from env `PIXELLAB_BEARER_TOKEN`; it is never printed,
 written to the manifest, or committed. Import of a downloaded pack into
 runtime assets stays with `tools/update_pixellab_character_animations.py`.
 Mocked no-network self-test: `python3 tools/test_pixellab_generate_pack.py`.
+
+## Orphaned-run sweep evidence (sanitized)
+
+The mandatory first-step sweep was recorded as shipped in the PM instructions
+at `2026-08-18T03:57:00Z`. Its enabled schedule trigger was `*/20 * * * *`
+(Europe/Vilnius), so the 20-minute bound below is measured against the observed
+death, not against a guessed completion time. The records contain no tokens,
+headers, or raw service output.
+
+| Case | First-hand observation | Result |
+| --- | --- | --- |
+| Real orphan, `FAN-3089` | Task `c625ca94-1ed7-4a52-9951-78f15a6c85b1` completed at `2026-08-19T05:45:20Z` with `status=completed`, no error, and a background-and-yield wait statement. The agent was idle with no active task. | The sweep released the card at `2026-08-19T05:58:40Z` — `13m20s` after measured death, within one 20-minute cycle. Remote inspection found no work-in-progress commit; the card was authorized for a clean relaunch. Source: Multica comment `1a245a65-7db3-469a-bd5a-fcee9f5348b2`. |
+| Live run protected, `FAN-3099` | PM sweep run `3efe588e-61ac-4e30-ae17-726a7cb724e1` recorded the card as `status=running` and explicitly left it untouched. | The run completed on its own at `2026-08-19T06:05:14Z`; delivery comment `a175521a-cbdc-4603-b25d-dfd086847275` confirms the normal handoff. No orphan-release metadata was written. |
+
+These observations are reproducible through the Multica records named above:
+measure the agent task state, compare the issue's `updated_at` to the UTC
+cutoff, inspect the latest comment, and verify the release order and final card
+state. A live run is never released merely because another card is stale.
