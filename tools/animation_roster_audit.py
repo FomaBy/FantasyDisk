@@ -58,13 +58,6 @@ AL = "assets/sprites/allies"
 #   druid summons   registry "ally" ghost_* entries
 #   homunculi       scripts/ally_minion.gd homunculus_tank / homunculus_caster;
 #                   both play the shared ally homunculus pack
-MINI_ELITE_FALLBACK = {
-    "mini_siege_rammer": "iron_bastion",
-    "mini_swarm_sniper": "shard_marshal",
-    "mini_plague_berserker": "plague_prophet",
-    "mini_void_phantom": "night_stalker",
-}
-
 ROSTER = (
     [{"id": h, "group": "hero", "frames": f"{CH}/{h}_spriteframes.tres", "directional": True}
      for h in [
@@ -82,16 +75,12 @@ ROSTER = (
        ]]
     + [{"id": e, "group": "monster", "frames": f"{EL}/{e}_spriteframes.tres"}
        for e in ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal"]]
-    + [{"id": "mini_scavenger_reaper", "group": "monster", "frames": f"{EL}/mini_scavenger_reaper_spriteframes.tres"},
-       {"id": "mini_plague_bellringer", "group": "monster", "frames": f"{EL}/mini_plague_bellringer_spriteframes.tres"},
-       {"id": "mini_bone_warden", "group": "monster", "frames": f"{EL}/mini_bone_warden_spriteframes.tres"},
-       {"id": "mini_spark_wight", "group": "monster", "frames": f"{EL}/mini_spark_wight_spriteframes.tres"},
-       {"id": "mini_rot_hound", "group": "monster", "frames": f"{EL}/mini_rot_hound_spriteframes.tres"},
-       {"id": "mini_shadow_devourer", "group": "monster", "frames": f"{EL}/mini_shadow_devourer_spriteframes.tres"}]
-    + [{"id": m, "group": "monster",
-        "frames": f"{EL}/{MINI_ELITE_FALLBACK[m]}_spriteframes.tres",
-        "fallback_of": MINI_ELITE_FALLBACK[m]}
-       for m in MINI_ELITE_FALLBACK]
+    + [{"id": m, "group": "monster", "frames": f"{EL}/{m}_spriteframes.tres", "directional": True}
+       for m in [
+           "mini_scavenger_reaper", "mini_plague_bellringer", "mini_bone_warden",
+           "mini_spark_wight", "mini_shadow_devourer", "mini_siege_rammer",
+           "mini_swarm_sniper", "mini_plague_berserker", "mini_void_phantom"]]
+    + [{"id": "mini_rot_hound", "group": "monster", "frames": f"{EL}/mini_rot_hound_spriteframes.tres"}]
     + [{"id": b, "group": "boss", "frames": f"{BO}/{b}_spriteframes.tres"}
        for b in [
            "rift_warden", "disk_devourer", "bone_archon", "brood_mother",

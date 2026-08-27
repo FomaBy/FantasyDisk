@@ -180,56 +180,61 @@
   {
     "id": "mini_scavenger_reaper",
     "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres"
+    "frames": "res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "mini_plague_bellringer",
     "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_plague_bellringer_spriteframes.tres"
+    "frames": "res://assets/sprites/elites/full_frame/mini_plague_bellringer_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "mini_bone_warden",
     "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_bone_warden_spriteframes.tres"
+    "frames": "res://assets/sprites/elites/full_frame/mini_bone_warden_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "mini_spark_wight",
     "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_spark_wight_spriteframes.tres"
+    "frames": "res://assets/sprites/elites/full_frame/mini_spark_wight_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "mini_shadow_devourer",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "mini_siege_rammer",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_siege_rammer_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "mini_swarm_sniper",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_swarm_sniper_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "mini_plague_berserker",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres",
+    "directional": true
+  },
+  {
+    "id": "mini_void_phantom",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_void_phantom_spriteframes.tres",
+    "directional": true
   },
   {
     "id": "mini_rot_hound",
     "group": "monster",
     "frames": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres"
-  },
-  {
-    "id": "mini_shadow_devourer",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres"
-  },
-  {
-    "id": "mini_siege_rammer",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
-    "fallback_of": "iron_bastion"
-  },
-  {
-    "id": "mini_swarm_sniper",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",
-    "fallback_of": "shard_marshal"
-  },
-  {
-    "id": "mini_plague_berserker",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
-    "fallback_of": "plague_prophet"
-  },
-  {
-    "id": "mini_void_phantom",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
-    "fallback_of": "night_stalker"
   },
   {
     "id": "rift_warden",

@@ -28,6 +28,17 @@
 
 ### Анимация
 
+- Девять mini-elite (`mini_scavenger_reaper`, `mini_plague_bellringer`,
+  `mini_bone_warden`, `mini_spark_wight`, `mini_shadow_devourer`,
+  `mini_siege_rammer`, `mini_swarm_sniper`, `mini_plague_berserker`,
+  `mini_void_phantom`) переведены на dedicated PixelLab full-frame пакеты с
+  восемью реальными направлениями для idle/move/attack/hit/death и игровых
+  skill-состояний. Исходные кадры и provenance-манифесты лежат в
+  `assets/sprites/elites/pixellab/mini_*/`, нормализованный runtime — в
+  `assets/sprites/elites/full_frame/mini_*/`; реестр больше не зеркалит эти
+  mini-elite через `flip_h` (FAN-3325). Игровые состояния, AI, урон и тайминги
+  не менялись.
+
 - Пожиратель Диска (`disk_devourer`) получил полноценный 8-направленный
   PixelLab-пак (idle/move/attack/hit/death/`skill_vampiric_bite`/
   `skill_rift_zone` по всем восьми ракурсам, 56 строк) вместо
