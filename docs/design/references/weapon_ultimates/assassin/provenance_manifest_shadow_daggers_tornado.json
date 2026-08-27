@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T15:01:27Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "d4d9b2df-fe32-42d3-ad03-4e4170700b76",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single tight shadow tornado made of three black-violet assassin daggers circling a dark core, sharp violet edges and smoky purple wisps, dark fantasy pixel art seen from above, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the tornado keeps the same three dagger silhouettes, dark core, size and centered position in every frame; the dagger ring rotates smoothly around the core while violet edge light and shadow wisps trail the direction, clear distinct stages with visible motion, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "shadow_daggers_tornado_f00.png",
+      "bytes": 20389,
+      "url_kind": "template",
+      "encoded_sha256": "df0dea0625fe77cb354136804a6fee070dd3731850ec2287d46e84cf11a43a68",
+      "pixel_sha256": "5ecc228a478d999664c29a03f0eb82196e943703d82519134b63f0d78d8676d4"
+    },
+    {
+      "file": "shadow_daggers_tornado_f01.png",
+      "bytes": 29912,
+      "url_kind": "template",
+      "encoded_sha256": "beb85be1dd79acad6ea6fe075139d6ab4fb6c1df387f36c543273ca22fef5ba5",
+      "pixel_sha256": "dc7333675966886c627ff890c24e6e77d6fc3968b645eccfa7b8734e83ef07d4"
+    },
+    {
+      "file": "shadow_daggers_tornado_f02.png",
+      "bytes": 27916,
+      "url_kind": "template",
+      "encoded_sha256": "9c9d82e55b30c64fbf86df2159276588d48dcf80d64d56b65722b7611b3127b1",
+      "pixel_sha256": "ef32bd7773fdc9284cd4307c3b9c220c311851b22bd0b9fd7e76d4944831c47d"
+    },
+    {
+      "file": "shadow_daggers_tornado_f03.png",
+      "bytes": 28489,
+      "url_kind": "template",
+      "encoded_sha256": "34badbb0c51dfcb57f0c36b868f8f04c8c8ad0e57284a600efb8a5ee7753ae60",
+      "pixel_sha256": "dc5e6c47e340f0842664ecefc1479a098ee70b7ff1d29fa71bc8dbcc11fa6ef0"
+    },
+    {
+      "file": "shadow_daggers_tornado_f04.png",
+      "bytes": 26631,
+      "url_kind": "template",
+      "encoded_sha256": "169901ba19a33db66d946243d3c6fc7955eb6c938341dce68451c9b98116b502",
+      "pixel_sha256": "bd4e7ad19d54a4719df1227b24c4e6c5ad4ce82fcf334ab655dc81b57e57f01d"
+    },
+    {
+      "file": "shadow_daggers_tornado_f05.png",
+      "bytes": 24488,
+      "url_kind": "template",
+      "encoded_sha256": "56772f93b91d641474873dafd6d8ad23ad190d3465d02303f930b42501ec7a50",
+      "pixel_sha256": "1327e2333ff72d4eb052d768ee76c2c0900dbfc2dbe3f38303c84f0ad561a596"
+    },
+    {
+      "file": "shadow_daggers_tornado_f06.png",
+      "bytes": 22809,
+      "url_kind": "template",
+      "encoded_sha256": "2547bbebd05c1c7e102c181918822597f852428c86ebcf361585c3d630dab5da",
+      "pixel_sha256": "35ddd7d50cd3e2589641736e760ab9de9d48939f58e7e71b70a391764e8d59f0"
+    },
+    {
+      "file": "shadow_daggers_tornado_f07.png",
+      "bytes": 22834,
+      "url_kind": "template",
+      "encoded_sha256": "6043a8c7917ca804c6eaf0b8aace388e1e5024de9e3e8dc9b21925dfeddfb31d",
+      "pixel_sha256": "c7c4c0c9d31cd8355a91e52a38a3bd2b61d4ab8d803dfac4d931ad4117f5e096"
+    },
+    {
+      "file": "shadow_daggers_tornado_f08.png",
+      "bytes": 26014,
+      "url_kind": "template",
+      "encoded_sha256": "223b85cd658a53f5012ec6c8ec3e143d067d81660e1fd91a9b73d2280d585382",
+      "pixel_sha256": "c552a2474ec78f155077c3c8c9fdc121d035c6f7cd5f7fd6f31558f5d40cb13d"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/shadow_daggers",
+  "effect": "tornado",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/shadow_daggers_tornado",
+    "source_frames": [
+      "shadow_daggers_tornado_f00.png",
+      "shadow_daggers_tornado_f01.png",
+      "shadow_daggers_tornado_f02.png",
+      "shadow_daggers_tornado_f03.png",
+      "shadow_daggers_tornado_f04.png",
+      "shadow_daggers_tornado_f05.png",
+      "shadow_daggers_tornado_f06.png",
+      "shadow_daggers_tornado_f07.png",
+      "shadow_daggers_tornado_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/shadow_daggers/tornado",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/shadow_daggers/tornado/tornado_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "shadow_tornado",
+    "loop": true,
+    "fps": 12.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          23,
+          28,
+          228,
+          230
+        ],
+        "visible_pixels": 26504,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          28,
+          36,
+          226,
+          230
+        ],
+        "visible_pixels": 24780,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          33,
+          29,
+          215,
+          227
+        ],
+        "visible_pixels": 24348,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          33,
+          29,
+          218,
+          231
+        ],
+        "visible_pixels": 24411,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          24,
+          24,
+          230,
+          232
+        ],
+        "visible_pixels": 25352,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          38,
+          45,
+          215,
+          215
+        ],
+        "visible_pixels": 20580,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          41,
+          44,
+          212,
+          215
+        ],
+        "visible_pixels": 20693,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          41,
+          39,
+          211,
+          215
+        ],
+        "visible_pixels": 19864,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          35,
+          31,
+          225,
+          229
+        ],
+        "visible_pixels": 24155,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 17700,
+      "consecutive_changed_pixels_max": 23661,
+      "loop_wrap_changed_pixels": 24316
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}

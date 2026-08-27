@@ -1,0 +1,277 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T14:55:48Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "25a99e36-bb3c-4849-8a01-2436487223ea",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single compact violet moonlight victim impact burst, a bright white-violet star at center with pale silver crescent chakram shards and tiny purple sparks, dark fantasy pixel art top-down, centered isolated object on transparent background, no character, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the impact keeps the same centered visual identity while the violet-white core rapidly blooms outward, crescent shards and sparks appear in clear stages then fade inward; every frame has visible light, smooth distinct motion, no blank frame, nothing leaves the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "chakrams_victim_explosion_f00.png",
+      "bytes": 24371,
+      "url_kind": "template",
+      "encoded_sha256": "af71c771798523441a3eaefdc9365141ded5132f0f54c04623cfdab2996509a6",
+      "pixel_sha256": "5a235d318dba5b7ed9c30987f4be6bfd38e81f56aa65ab242db13f0079a8f773"
+    },
+    {
+      "file": "chakrams_victim_explosion_f01.png",
+      "bytes": 27397,
+      "url_kind": "template",
+      "encoded_sha256": "242b34d5cb1dc720c600dbb7a0fee9ffd6e6070a0bf86fa28a048e92d3d8fcf6",
+      "pixel_sha256": "b3a217fadb48e58522460ace3fb0ca087b77b4ad13f84357b9d47070d05b8b8e"
+    },
+    {
+      "file": "chakrams_victim_explosion_f02.png",
+      "bytes": 17417,
+      "url_kind": "template",
+      "encoded_sha256": "767b9119d54642b3be8f9ae9ba3b4e7837f393552ce5ec94293875d266fae86f",
+      "pixel_sha256": "1379fd67f2685fe5acaffc47337d355ac75e6c4eafc09dcf092f595ffdf281ea"
+    },
+    {
+      "file": "chakrams_victim_explosion_f03.png",
+      "bytes": 9917,
+      "url_kind": "template",
+      "encoded_sha256": "99161f3b0e681085adb48cd192286212ef24b7108379fde3f5e4db843fa69129",
+      "pixel_sha256": "877e541a651aa4b6eaaac935d60eabe535266c0a0dbe543ae068b96687e48eb5"
+    },
+    {
+      "file": "chakrams_victim_explosion_f04.png",
+      "bytes": 19765,
+      "url_kind": "template",
+      "encoded_sha256": "197aee48bd3678429588af3ed2bfe7d97735b6f63633491ce9becf4a3726f0db",
+      "pixel_sha256": "9e9c30c65b26c2cb111823f7ad692d221cfa63c3546780b819d0f7ecf5d42a5d"
+    },
+    {
+      "file": "chakrams_victim_explosion_f05.png",
+      "bytes": 13469,
+      "url_kind": "template",
+      "encoded_sha256": "760835c4c4353a7143b0f401d44d4b20584cd9ce0c1f6c0eba56f71582a47826",
+      "pixel_sha256": "0016c495bca8745fc4c1e55143e008020cb01a569e0381e05489a8edbede2fb6"
+    },
+    {
+      "file": "chakrams_victim_explosion_f06.png",
+      "bytes": 7561,
+      "url_kind": "template",
+      "encoded_sha256": "890d8a181ba004a1ee242d64462444f75206231f7d77ad7a96d010705d93cd2b",
+      "pixel_sha256": "1932a5cf1498dfface21ae4a558af854862962c128c1b6627c19d0e1029f0aa3"
+    },
+    {
+      "file": "chakrams_victim_explosion_f07.png",
+      "bytes": 4890,
+      "url_kind": "template",
+      "encoded_sha256": "8f60ca1689e4ad06561440a5751d08bb31bd834320df0b7614a1636c2943c2c1",
+      "pixel_sha256": "95e21d0465acfa82531c1736194931d80c8db10d13a5e881c42526b1fa662bc7"
+    },
+    {
+      "file": "chakrams_victim_explosion_f08.png",
+      "bytes": 13331,
+      "url_kind": "template",
+      "encoded_sha256": "7e540192fa89d101dcd12bc7eeeaf5ee96cfd32aea3f8dbd32661987e2ad2c0f",
+      "pixel_sha256": "59f1c6226b4f8796822a8784f984ec34fe5d99a1e78a63c0b6c65268108a9f77"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3013",
+  "weapon": "assassin/chakrams",
+  "effect": "victim_explosion",
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_victim_explosion",
+    "source_frames": [
+      "chakrams_victim_explosion_f00.png",
+      "chakrams_victim_explosion_f01.png",
+      "chakrams_victim_explosion_f02.png",
+      "chakrams_victim_explosion_f03.png",
+      "chakrams_victim_explosion_f04.png",
+      "chakrams_victim_explosion_f05.png",
+      "chakrams_victim_explosion_f06.png",
+      "chakrams_victim_explosion_f07.png",
+      "chakrams_victim_explosion_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/assassin/chakrams/victim_explosion",
+    "runtime_spriteframes": "assets/sprites/effects/assassin/chakrams/victim_explosion/victim_explosion_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "animation": "victim_explosion",
+    "loop": false,
+    "fps": 16.0
+  },
+  "frame_verification": {
+    "method": "Pillow RGBA decode; canvas, alpha edge, bbox and visible-pixel metrics",
+    "result": "PASS: all frames decode as 256x256 RGBA, non-empty, inset from transparent edges, with measurable consecutive-frame motion",
+    "frames": [
+      {
+        "index": 0,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          40,
+          40,
+          224,
+          215
+        ],
+        "visible_pixels": 22311,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 1,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          37,
+          36,
+          230,
+          218
+        ],
+        "visible_pixels": 24020,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 2,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          33,
+          35,
+          230,
+          220
+        ],
+        "visible_pixels": 20415,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 3,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          33,
+          37,
+          227,
+          210
+        ],
+        "visible_pixels": 4140,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 4,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          26,
+          27,
+          229,
+          229
+        ],
+        "visible_pixels": 11714,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 5,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          26,
+          27,
+          229,
+          229
+        ],
+        "visible_pixels": 4174,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 6,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          28,
+          27,
+          228,
+          229
+        ],
+        "visible_pixels": 5851,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 7,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          79,
+          79,
+          173,
+          170
+        ],
+        "visible_pixels": 5709,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      },
+      {
+        "index": 8,
+        "size": [
+          256,
+          256
+        ],
+        "alpha_bbox": [
+          46,
+          50,
+          210,
+          210
+        ],
+        "visible_pixels": 17478,
+        "edge_visible_pixels": 0,
+        "border_max_alpha": 0
+      }
+    ],
+    "motion": {
+      "consecutive_changed_pixels_min": 7992,
+      "consecutive_changed_pixels_max": 25642,
+      "loop_wrap_changed_pixels": 22206
+    },
+    "frame_count": 9,
+    "transparent_edge_max_alpha": 0
+  }
+}
