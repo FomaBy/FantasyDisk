@@ -32,7 +32,7 @@ jobs:
     # merge_group), so the required check's behavior on them is unchanged.
     if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
         with:
