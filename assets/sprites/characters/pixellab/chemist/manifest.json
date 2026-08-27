@@ -1239,12 +1239,12 @@
         "mode": "RGBA",
         "alpha_bbox": [
           90,
-          58,
+          67,
           170,
           192
         ],
-        "encoded_sha256": "293c443575be68e33e988651e8a651bec41c7cd875dc02464549fac3425c262d",
-        "pixel_sha256": "e0d90ecf5b995f340e76277031718b437bd8c8f5b743a2115cc0f54265463240"
+        "encoded_sha256": "b6fa2536ab6f53d70be12936ec5c1463e39d6c63c98b522a1f2840acc5f0c013",
+        "pixel_sha256": "b57db5e74ef994ec8abde491cad8dd5bd4e73e7a87432ee386126f2875ac0892"
       },
       "chemist_move_west_00.png": {
         "size": [
