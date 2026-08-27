@@ -107,7 +107,7 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("if-no-files-found: error", self.source)
 
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 30", self.source)
+        self.assertIn("timeout-minutes: 60", self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [
