@@ -14,6 +14,13 @@ esac
 HOOKS_DIR="$GIT_COMMON_DIR/hooks"
 mkdir -p "$HOOKS_DIR"
 
+MARKER="Installed by tools/install_hooks.sh (FAN-3593)"
+if [ -e "$HOOKS_DIR/pre-push" ] && ! grep -q "$MARKER" "$HOOKS_DIR/pre-push" 2>/dev/null; then
+	echo "error: $HOOKS_DIR/pre-push already exists and was not installed by this script." >&2
+	echo "Refusing to overwrite an unrelated pre-push hook. Back it up or remove it, then re-run bash tools/install_hooks.sh." >&2
+	exit 1
+fi
+
 cat >"$HOOKS_DIR/pre-push" <<'HOOK'
 #!/usr/bin/env bash
 # Installed by tools/install_hooks.sh (FAN-3593). Blocks a push that would

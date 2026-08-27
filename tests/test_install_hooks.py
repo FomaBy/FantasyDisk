@@ -87,6 +87,23 @@ class InstallHooksTest(unittest.TestCase):
             hook = self._installed_hook(root)
             self.assertTrue(hook.is_file())
 
+    def test_installer_refuses_to_overwrite_a_foreign_pre_push_hook(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._init_fixture_repo(Path(tmp), guard_exit=0)
+            hook = self._installed_hook(root)
+            hook.parent.mkdir(parents=True, exist_ok=True)
+            foreign_hook = "#!/usr/bin/env bash\necho 'my own pre-push check'\n"
+            hook.write_text(foreign_hook, encoding="utf-8")
+            hook.chmod(0o755)
+
+            result = subprocess.run(
+                ["bash", "tools/install_hooks.sh"], cwd=root, capture_output=True, text=True
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(hook.read_text(encoding="utf-8"), foreign_hook)
+            self.assertTrue(hook.stat().st_mode & stat.S_IXUSR)
+
 
 if __name__ == "__main__":
     unittest.main()
