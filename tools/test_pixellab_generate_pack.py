@@ -22,6 +22,7 @@ FAN-2929 — регрессия трёх дефектов, найденных н
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import os
 import shutil
@@ -29,11 +30,20 @@ import sys
 import tempfile
 from pathlib import Path
 
+from PIL import Image
+
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "tools" / "pixellab_generate_pack.py"
 LIVE_RESPONSE_FIXTURE = ROOT / "tools" / "fixtures" / "pixellab_completed_object_response.txt"
 
 FRAME_COUNT = 4
+
+
+def _fake_png_bytes(fill=(10, 20, 30, 255)):
+    """A tiny real PNG, decodable and re-encodable, standing in for a downloaded frame."""
+    buf = io.BytesIO()
+    Image.new("RGBA", (2, 2), fill).save(buf, format="PNG")
+    return buf.getvalue()
 
 
 def load_module():
@@ -122,9 +132,10 @@ def run_case(module, script, frame_count=FRAME_COUNT):
 
     def download_fn(url, path):
         downloaded.append((url, path))
+        data = _fake_png_bytes()
         with open(path, "wb") as fh:
-            fh.write(b"png")
-        return 3
+            fh.write(data)
+        return len(data)
 
     args = Args(Path(tmp), frame_count=frame_count)
     token = os.environ.get("PIXELLAB_BEARER_TOKEN")
@@ -162,8 +173,16 @@ def case_success(module):
     assert manifest["object"]["pixel_lab_object_id"] == "obj-123"
     assert manifest["tool_version"] == module.TOOL_VERSION
     assert "test-token" not in json.dumps(manifest), "token leaked into manifest"
+    assert manifest["encoder"]["library"] == "Pillow"
+    assert manifest["encoder"]["library_version"], manifest["encoder"]
+    assert manifest["encoder"]["builder_version"] == module.TOOL_VERSION
+    for frame in manifest["frames"]:
+        assert frame["encoded_sha256"], frame
+        assert frame["pixel_sha256"], frame
+    ok = module.check_pack(str(tmp / "manifest.json"), str(tmp / "frames"), log=lambda *_: None)
+    assert ok, "check_pack must pass right after generation"
     shutil.rmtree(tmp)
-    print("  ok: success path (exit 0, manifest written, %d frames)" % FRAME_COUNT)
+    print("  ok: success path (exit 0, manifest written with encoder/frame hashes, %d frames)" % FRAME_COUNT)
 
 
 def case_timeout(module):
@@ -320,6 +339,114 @@ def case_empty_completed_response(module):
     print("  ok: empty completed response -> exit %d without false manifest" % module.EXIT_INCOMPLETE)
 
 
+def _write_check_fixture(module, tmp, fill=(10, 20, 30, 255), library_version=None):
+    """A one-frame pack (frames dir + manifest) matching what run() would write."""
+    frames_dir = tmp / "frames"
+    frames_dir.mkdir()
+    path = frames_dir / "f00.png"
+    path.write_bytes(_fake_png_bytes(fill))
+    encoded_sha256, pixel_sha256 = module.frame_hashes(str(path))
+    manifest = {
+        "encoder": {
+            "library": "Pillow",
+            "library_version": library_version or module.Image.__version__,
+            "builder_version": module.TOOL_VERSION,
+        },
+        "frames": [{"file": "f00.png", "encoded_sha256": encoded_sha256, "pixel_sha256": pixel_sha256}],
+    }
+    manifest_path = tmp / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    return str(manifest_path), str(frames_dir)
+
+
+def case_check_pack_unchanged(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert ok, messages
+    assert not any(m.startswith("FAIL") for m in messages), messages
+    shutil.rmtree(tmp)
+    print("  ok: unchanged pack -> check_pack passes")
+
+
+def case_check_pack_encoder_version_drift_warns(module):
+    """Same decoded pixels, different recorded Pillow version, different encoded bytes -> WARN, not FAIL."""
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp, library_version="1.0.0-fixture-old")
+    frame_path = Path(frames_dir) / "f00.png"
+    with Image.open(frame_path) as im:
+        im.convert("RGBA").save(frame_path, format="PNG", compress_level=1)
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert ok, "an encoder-version-only mismatch must not fail: %r" % messages
+    warnings = [m for m in messages if m.startswith("WARN")]
+    assert warnings, messages
+    assert "1.0.0-fixture-old" in warnings[0] and module.Image.__version__ in warnings[0], warnings
+    shutil.rmtree(tmp)
+    print("  ok: encoder version differs, pixels identical -> warns with both versions, exit 0")
+
+
+def case_check_pack_real_pixel_drift_fails(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    (tmp / "frames" / "f00.png").write_bytes(_fake_png_bytes(fill=(200, 5, 5, 255)))
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert not ok, "real pixel drift must fail, not warn: %r" % messages
+    assert any("decoded pixels changed" in m for m in messages), messages
+    shutil.rmtree(tmp)
+    print("  ok: real decoded-pixel drift -> check_pack fails closed")
+
+
+def case_check_pack_missing_encoder_fails(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    manifest = json.loads(Path(manifest_path).read_text())
+    del manifest["encoder"]
+    Path(manifest_path).write_text(json.dumps(manifest), encoding="utf-8")
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert not ok, "a manifest without encoder provenance must never pass: %r" % messages
+    shutil.rmtree(tmp)
+    print("  ok: manifest missing \"encoder\" block -> check_pack fails closed")
+
+
+def case_check_pack_missing_pixel_hash_fails(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    manifest = json.loads(Path(manifest_path).read_text())
+    del manifest["frames"][0]["pixel_sha256"]
+    Path(manifest_path).write_text(json.dumps(manifest), encoding="utf-8")
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert not ok, "a frame entry without pixel_sha256 must never pass: %r" % messages
+    shutil.rmtree(tmp)
+    print("  ok: manifest frame missing pixel_sha256 -> check_pack fails closed")
+
+
+def case_check_pack_corrupt_manifest_json_fails(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    Path(manifest_path).write_text("{not valid json", encoding="utf-8")
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert not ok, "a corrupt manifest must never pass: %r" % messages
+    shutil.rmtree(tmp)
+    print("  ok: corrupt manifest JSON -> check_pack fails closed")
+
+
+def case_check_pack_missing_frame_file_fails(module):
+    tmp = Path(tempfile.mkdtemp(prefix="pixellab_check_test_"))
+    manifest_path, frames_dir = _write_check_fixture(module, tmp)
+    (tmp / "frames" / "f00.png").unlink()
+    messages = []
+    ok = module.check_pack(manifest_path, frames_dir, log=messages.append)
+    assert not ok, "a missing frame file must never pass: %r" % messages
+    shutil.rmtree(tmp)
+    print("  ok: frame file missing on disk -> check_pack fails closed")
+
+
 def main():
     module = load_module()
     print("FAN-2924 pixellab_generate_pack mocked polling tests:")
@@ -333,6 +460,14 @@ def main():
     case_defect3_reference_frame_extra(module)
     case_live_text_response_waits_for_frames(module)
     case_empty_completed_response(module)
+    print("FAN-2921 encoder-provenance check_pack tests:")
+    case_check_pack_unchanged(module)
+    case_check_pack_encoder_version_drift_warns(module)
+    case_check_pack_real_pixel_drift_fails(module)
+    case_check_pack_missing_encoder_fails(module)
+    case_check_pack_missing_pixel_hash_fails(module)
+    case_check_pack_corrupt_manifest_json_fails(module)
+    case_check_pack_missing_frame_file_fails(module)
     print("all cases passed")
 
 

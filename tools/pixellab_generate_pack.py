@@ -9,14 +9,30 @@ incomplete pack, so a calling agent never has to "wait and check later".
 
 Auth: env PIXELLAB_BEARER_TOKEN (see tools/pixellab.env.example). The token is
 never printed or written to any output file.
+
+FAN-2921: manifest/provenance contract for byte-reproducible packs. Every frame
+is decoded with Pillow once (to prove it is a valid image and to fingerprint
+its pixels) and the manifest records both the raw encoded-file SHA-256 and the
+decoded-pixel SHA-256, plus the Pillow version and builder version that
+produced them (`encoder_provenance`). `--check` (`check_pack`) re-validates a
+pack against its manifest: an encoded-byte mismatch with matching decoded
+pixels and a different recorded Pillow version is a harmless re-encode (WARN,
+still exit 0); any decoded-pixel mismatch, or a byte mismatch that the
+manifest cannot explain, is real drift (FAIL). Missing/corrupt/unknown
+manifest fields always fail closed — they never read as success. These
+helpers (`encoder_provenance`, `frame_hashes`, `check_pack`) are reusable by
+other pack-building tools; they do not touch any already-accepted pack.
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
 import time
 import urllib.error
 import urllib.request
+
+from PIL import Image
 
 API = "https://api.pixellab.ai/mcp"
 USER_AGENT = (
@@ -27,6 +43,109 @@ TOOL_VERSION = "1.0.0"
 EXIT_TIMEOUT = 3
 EXIT_API_ERROR = 4
 EXIT_INCOMPLETE = 5
+EXIT_CHECK_FAILED = 6
+
+
+def encoder_provenance():
+    """Pillow version and builder version that fingerprinted this pack's frames.
+
+    Recorded so `--check` can tell "same pixels, re-encoded by a newer Pillow"
+    (harmless) apart from "the pixels actually changed" (real drift).
+    """
+    return {
+        "library": "Pillow",
+        "library_version": Image.__version__,
+        "builder_version": TOOL_VERSION,
+    }
+
+
+def frame_hashes(path):
+    """(encoded_sha256, pixel_sha256) for a PNG file on disk.
+
+    encoded_sha256 hashes the raw file bytes; pixel_sha256 hashes the decoded
+    RGBA pixel data, so it stays stable across re-encodes of identical pixels.
+    Raises OSError/PIL errors on a missing or corrupt image — callers must
+    treat that as a failure, never as a match.
+    """
+    with open(path, "rb") as fh:
+        raw = fh.read()
+    encoded_sha256 = hashlib.sha256(raw).hexdigest()
+    with Image.open(path) as im:
+        pixel_sha256 = hashlib.sha256(im.convert("RGBA").tobytes()).hexdigest()
+    return encoded_sha256, pixel_sha256
+
+
+def check_pack(manifest_path, source_dir, log=print):
+    """Re-validate a pack's frames on disk against its manifest.
+
+    Returns True only when every frame's decoded pixels match the manifest and
+    every encoded-byte mismatch is explained by a recorded Pillow version
+    change. Any real pixel drift, missing file, or manifest that lacks the
+    fields this check needs fails closed (returns False) — it never reports
+    success on data it cannot verify.
+    """
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as fh:
+            manifest = json.load(fh)
+    except (OSError, ValueError) as exc:
+        log("FAIL: cannot read manifest %s: %s" % (manifest_path, exc))
+        return False
+
+    encoder = manifest.get("encoder")
+    if not isinstance(encoder, dict) or not encoder.get("library_version"):
+        log("FAIL: manifest is missing a valid \"encoder\" block")
+        return False
+    manifest_pillow_version = encoder["library_version"]
+
+    frames = manifest.get("frames")
+    if not isinstance(frames, list) or not frames:
+        log("FAIL: manifest has no frames")
+        return False
+
+    ok = True
+    for frame in frames:
+        name = frame.get("file") if isinstance(frame, dict) else None
+        stored_encoded = frame.get("encoded_sha256") if isinstance(frame, dict) else None
+        stored_pixel = frame.get("pixel_sha256") if isinstance(frame, dict) else None
+        if not name or not stored_encoded or not stored_pixel:
+            log("FAIL: manifest frame entry is missing file/encoded_sha256/pixel_sha256: %r" % (frame,))
+            ok = False
+            continue
+
+        path = os.path.join(source_dir, name)
+        if not os.path.exists(path):
+            log("FAIL: %s: missing on disk" % name)
+            ok = False
+            continue
+        try:
+            current_encoded, current_pixel = frame_hashes(path)
+        except Exception as exc:  # noqa: BLE001 - any decode failure is a hard fail
+            log("FAIL: %s: cannot decode: %s" % (name, exc))
+            ok = False
+            continue
+
+        if current_encoded == stored_encoded:
+            continue
+        if current_pixel != stored_pixel:
+            log("FAIL: %s: decoded pixels changed (real drift)" % name)
+            ok = False
+            continue
+        current_pillow_version = Image.__version__
+        if current_pillow_version != manifest_pillow_version:
+            log(
+                "WARN: %s: encoded bytes changed but decoded pixels are identical "
+                "(Pillow %s -> %s)" % (name, manifest_pillow_version, current_pillow_version)
+            )
+            continue
+        log(
+            "FAIL: %s: encoded bytes changed under the same Pillow version %s "
+            "(unexplained)" % (name, current_pillow_version)
+        )
+        ok = False
+
+    if ok:
+        log("check passed: %d frames match the manifest" % len(frames))
+    return ok
 
 
 class ApiError(Exception):
@@ -259,8 +378,20 @@ def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
     try:
         for idx, url in enumerate(urls):
             name = "%s%02d.png" % (prefix, idx)
-            size = download_fn(url, os.path.join(args.source_dir, name))
-            frames.append({"file": name, "bytes": size, "url_kind": url_kind})
+            path = os.path.join(args.source_dir, name)
+            size = download_fn(url, path)
+            try:
+                encoded_sha256, pixel_sha256 = frame_hashes(path)
+            except Exception as exc:  # noqa: BLE001 - a corrupt download is not a usable frame
+                log("ERROR: %s: downloaded frame is not a decodable image: %s" % (name, exc))
+                return EXIT_INCOMPLETE
+            frames.append({
+                "file": name,
+                "bytes": size,
+                "url_kind": url_kind,
+                "encoded_sha256": encoded_sha256,
+                "pixel_sha256": pixel_sha256,
+            })
     except ApiError as exc:
         log("ERROR: %s" % exc)
         return EXIT_API_ERROR
@@ -274,6 +405,7 @@ def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
         "tool": "tools/pixellab_generate_pack.py",
         "tool_version": TOOL_VERSION,
         "generated_at": started,
+        "encoder": encoder_provenance(),
         "object": {
             "pixel_lab_object_id": object_id,
             "create_tool": "create_1_direction_object",
@@ -312,8 +444,12 @@ def main(argv=None):
     parser.add_argument("--description", default=None,
                         help="object description for create_1_direction_object "
                              "(required unless --object-id is given)")
-    parser.add_argument("--animation-description", required=True,
-                        help="animation description for animate_object")
+    parser.add_argument("--animation-description", default=None,
+                        help="animation description for animate_object "
+                             "(required unless --check is given)")
+    parser.add_argument("--check", action="store_true",
+                        help="re-validate the frames in --source-dir against "
+                             "--manifest-out instead of generating a new pack")
     parser.add_argument("--object-id", default=None,
                         help="reuse an existing PixelLab object id")
     parser.add_argument("--frame-prefix", default=None,
@@ -328,8 +464,12 @@ def main(argv=None):
                         help="hard wall-clock ceiling per job in seconds "
                              "(default 900 = 15 minutes)")
     args = parser.parse_args(argv)
+    if args.check:
+        return 0 if check_pack(args.manifest_out, args.source_dir) else EXIT_CHECK_FAILED
     if not args.object_id and not args.description:
         parser.error("--description is required unless --object-id is given")
+    if not args.animation_description:
+        parser.error("--animation-description is required unless --check is given")
     return run(args)
 
 
