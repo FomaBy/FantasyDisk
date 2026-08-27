@@ -4,12 +4,18 @@ baseline against the FAN-2665 defect, where a full-file regeneration silently
 changed an unrelated `doctor/restore_potion` row.
 
 This compares the baseline row-by-row, keyed by `class_id/weapon_id`, against
-a known-good base revision. Only `druid/*` rows may differ; any other row that
-moved is reported as a violation. It is a pure data diff — no Godot run is
-needed, so it is immune to any live-measurement noise in unrelated classes.
+a known-good base revision. Only the scoped class's rows may differ; any other
+row that moved is reported as a violation. It is a pure data diff — no Godot
+run is needed, so it is immune to any live-measurement noise in unrelated
+classes.
+
+`--class` scopes the guard to whichever class-conversion card is in flight
+(FAN-2533 reuses it for `guitarist`); it defaults to the Druid scope it shipped
+with.
 
 Usage:
     python3 tools/check_druid_baseline_isolation.py --base origin/dev
+    python3 tools/check_druid_baseline_isolation.py --base origin/dev --class guitarist
     python3 tools/check_druid_baseline_isolation.py --base <sha> --path build/ultimate_effectiveness_baseline.json
 """
 from __future__ import annotations
@@ -64,19 +70,25 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True, help="git ref holding the known-good baseline")
     parser.add_argument("--path", default=DEFAULT_PATH, help="repo-relative path to the baseline JSON")
+    parser.add_argument(
+        "--class", dest="allowed_class", default=ALLOWED_DRIFT_CLASS,
+        help="the only class_id whose rows may differ",
+    )
     args = parser.parse_args()
 
     base_document = _git_show(args.base, args.path)
     candidate_document = json.loads(Path(args.path).read_text(encoding="utf-8"))
 
-    violations = find_non_druid_drift(rows_by_key(base_document), rows_by_key(candidate_document))
+    violations = find_non_druid_drift(
+        rows_by_key(base_document), rows_by_key(candidate_document), args.allowed_class
+    )
     if violations:
         for violation in violations:
             print(f"check_druid_baseline_isolation: {violation}", file=sys.stderr)
         print(f"check_druid_baseline_isolation: FAIL ({len(violations)} violation(s))", file=sys.stderr)
         return 1
 
-    print("check_druid_baseline_isolation: PASS (no non-Druid row drift)")
+    print(f"check_druid_baseline_isolation: PASS (no row drift outside {args.allowed_class})")
     return 0
 
 

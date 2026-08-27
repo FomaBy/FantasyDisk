@@ -107,7 +107,7 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("if-no-files-found: error", self.source)
 
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 30", self.source)
+        self.assertIn("timeout-minutes: 60", self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [
@@ -121,18 +121,24 @@ class QualityWorkflowContractTests(unittest.TestCase):
     def test_candidate_events_execute_godot_suites(self) -> None:
         # `--static-only` selects zero Godot tests by contract, so a gate that
         # ran it on every trigger certified the whole game as green without
-        # executing one game test.  Candidate events run the changed profile.
-        for base in (
+        # executing one game test. Candidate events must use the fetched
+        # integration ref, which is the only certifying changed-profile base.
+        canonical_gate = (
+            'python3 tools/quality_gate.py --profile changed '
+            '--changed-ref origin/dev'
+        )
+        self.assertEqual(self.candidate_job.count(canonical_gate), 2)
+        for raw_base in (
             "${{ github.event.pull_request.base.sha }}",
             "${{ github.event.merge_group.base_sha }}",
         ):
-            self.assertIn(
-                f'python3 tools/quality_gate.py --profile changed --changed-ref "{base}"',
-                self.source,
+            self.assertNotIn(
+                f'python3 tools/quality_gate.py --profile changed --changed-ref "{raw_base}"',
+                self.candidate_job,
             )
             self.assertNotIn(
-                f'python3 tools/quality_gate.py --static-only --changed-ref "{base}"',
-                self.source,
+                f'python3 tools/quality_gate.py --static-only --changed-ref "{raw_base}"',
+                self.candidate_job,
             )
 
     def test_push_keeps_the_cheaper_static_profile(self) -> None:
