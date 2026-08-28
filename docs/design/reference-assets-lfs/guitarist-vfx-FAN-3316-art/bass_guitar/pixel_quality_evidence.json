@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3708",
+  "weapon_id": "bass_guitar",
+  "visual_identity": "infernal bass subwoofer core with concentric cyan, violet and ember-orange compression rings",
+  "motion_contract": "inner cone throbs, rings pull inward, a heavy orange subwoofer wave expands in successive radii, then settles",
+  "palette_contract": "cyan, violet, ember orange, hot pink, yellow accents, charcoal iron outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.210876,
+    "max": 0.294815,
+    "mean": 0.26383
+  },
+  "all_pair_changed_pixel_ratio_min": 0.210876,
+  "alpha_bbox_gt_8": [
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ],
+    [
+      21,
+      21,
+      234,
+      234
+    ]
+  ],
+  "minimum_gutter_px": 21,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.463348,
+    "max": 0.491577
+  },
+  "main_component_count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2
+  ],
+  "tiny_component_px_after_threshold": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "ff7a469cf6ab304bb7ea1d3d2920204d97043c8e43ba7019b5a3c600e1f78329",
+    "bab650994fc963773515b7a02a4a6824d798f7406d8e099442aea11f73ef5475",
+    "cf0e8fe86834bec5ced7174ee4cb433385627362abba3ba1445630ff763ebda0",
+    "09ccc890e653fcb96fe4328adb44593fa7cdc43703fc545241f26ae6204ff1e9",
+    "92f3878cae78b54cc473a50c3754c3f1253ac01d1483e7e030de049eb558275d",
+    "e474317db67b58cc37cfc50359ef1064ba788467b54a8ae55918cffb1a943bab",
+    "12d79272ecb0b880d95b0468cc0f93c452d600bf71c80c5f143bc1910cf5c869",
+    "0c16087aa31a3599f87ac0f9f316e95582613552ae3bb6067be320d639de3070",
+    "c5820629ca35dbd45e6be0ec1ef4093d20ae37fb06c3a46788b5782619e21a7b"
+  ]
+}
