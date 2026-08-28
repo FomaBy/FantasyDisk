@@ -783,5 +783,33 @@
       "alpha": "RGBA transparent",
       "naming": "actor_move_direction_00..05"
     }
+  },
+  "fan2607_reaudit": {
+    "task": "FAN-2607",
+    "reaudited_at": "2026-08-29",
+    "accepted_source_move_rows_unchanged_from": "c9bafe419a04fd7a68bbe9db4f019a8029cb5bb0",
+    "accepted_move_rows": [
+      "south-east",
+      "east",
+      "south-west"
+    ],
+    "regenerated_move_rows": [
+      "south",
+      "north-east",
+      "north",
+      "north-west",
+      "west"
+    ],
+    "runtime": {
+      "frame_count": 56,
+      "canvas": [
+        512,
+        512
+      ],
+      "visible_height": 245,
+      "alpha_bbox_bottom": 480
+    },
+    "contact_sheet": "build/qa/scrum434_soldier_pixellab/soldier_pixellab_contact.png",
+    "contact_sheet_sha256": "13fe9279a0afea871f50108014d38f205aa55641856b2e53eb726f7d37d59177"
   }
 }
