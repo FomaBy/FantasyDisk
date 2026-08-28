@@ -190,15 +190,15 @@ def collect_errors(root: Path, changed_ref: str) -> list[str]:
                 f"{entry.path}: future binaries require {FUTURE_PREFIX}<issue-or-pack>/<file> nesting"
             )
             continue
-        attribute_error = lfs_attribute_error(root, entry.path)
-        if attribute_error:
-            errors.append(attribute_error)
         if size > MAX_LFS_POINTER_BYTES:
             errors.append(
                 f"{entry.path}: Git LFS pointer blob is too large ({size} bytes; maximum "
                 f"{MAX_LFS_POINTER_BYTES}); add the binary through Git LFS"
             )
             continue
+        attribute_error = lfs_attribute_error(root, entry.path)
+        if attribute_error:
+            errors.append(attribute_error)
         if not is_lfs_pointer(head_blob(root, entry.path)):
             errors.append(
                 f"{entry.path}: expected an exact canonical Git LFS pointer; add the file through Git LFS"

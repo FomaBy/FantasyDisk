@@ -319,8 +319,18 @@ class RepositoryStoragePolicyTests(unittest.TestCase):
     def test_oversized_future_blob_is_rejected_without_blob_read(self) -> None:
         base = self.base_commit()
         relative = "docs/design/reference-assets-lfs/FAN-3470/source.png"
-        self.write(relative, canonical_pointer() + b"x" * POINTER_LIMIT)
-        self.commit("add oversized future blob")
+        payload = canonical_pointer() + b"x" * POINTER_LIMIT
+        blob = subprocess.run(
+            ["git", "hash-object", "-w", "--stdin"],
+            cwd=self.repo,
+            input=payload,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
+        ).stdout.decode().strip()
+        self.git("update-index", "--add", "--cacheinfo", "100644,%s,%s" % (blob, relative))
+        self.git("commit", "-q", "-m", "add oversized future raw blob")
+        self.assertGreater(int(self.git("cat-file", "-s", "HEAD:%s" % relative)), POINTER_LIMIT)
 
         with mock.patch.object(POLICY, "head_blob", side_effect=AssertionError("blob read")):
             errors = POLICY.collect_errors(self.repo, base)
