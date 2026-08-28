@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "plague_syringe",
+  "weapon": "doctor/plague_syringe",
+  "effect_id": "cast_flash",
+  "effect_role": "cast",
+  "generated_at": "2026-08-28T03:27:52Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "493d5f63-e522-44f6-8ae0-e9883bf888ad",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single oversized black-green medical syringe with oxidized metal, toxic emerald fluid and a faint plague sigil glow, dark fantasy D&D pixel art, top-down isolated object, centered on transparent background, no hands, no character, no extra props, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "e5978f6d-7f6e-4027-a3c4-959ec6ae9352",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same plague syringe keeps identical silhouette, scale and centered position in every frame; toxic fluid sloshes, the needle glints and black-green plague energy pulses along the barrel with clear measurable motion each frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/plague_syringe/cast_flash",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_00.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_01.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_02.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_03.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_05.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_06.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_07.png",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_00.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_01.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_02.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_03.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_05.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_06.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_07.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": false,
+    "fps": 14
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_00.png",
+      "bytes": 25299,
+      "source_encoded_sha256": "a3e43ac92084b203892e7f989f1cd7fb28faa24a8d6763bbf57d9990c8eba6fe",
+      "source_pixel_sha256": "03090253b0e5f9bc278c0de2b68310a2041176f28e14034b034a62791c31b02e",
+      "runtime_encoded_sha256": "a3e43ac92084b203892e7f989f1cd7fb28faa24a8d6763bbf57d9990c8eba6fe",
+      "runtime_pixel_sha256": "03090253b0e5f9bc278c0de2b68310a2041176f28e14034b034a62791c31b02e",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        12,
+        11,
+        241,
+        244
+      ],
+      "visible_pixels": 10216,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_01.png",
+      "bytes": 23429,
+      "source_encoded_sha256": "c367feddb99842e4687cbb3ced510876dcf65935d2d8d161c56ea6d160c24b6b",
+      "source_pixel_sha256": "3189df4a7b7a989addf723daa924d04936371fef54b28497af5021b80b3950fa",
+      "runtime_encoded_sha256": "c367feddb99842e4687cbb3ced510876dcf65935d2d8d161c56ea6d160c24b6b",
+      "runtime_pixel_sha256": "3189df4a7b7a989addf723daa924d04936371fef54b28497af5021b80b3950fa",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        11,
+        9,
+        241,
+        242
+      ],
+      "visible_pixels": 10392,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 7772
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_02.png",
+      "bytes": 25239,
+      "source_encoded_sha256": "b3b49eb5ecbef6825f50641cbe9ce39a2e9111a1f2b159602dc1452041261a8a",
+      "source_pixel_sha256": "7727f693000e916eab4b3c40b3e16ca6e4e969a75772e05553b1e8ce683d22b7",
+      "runtime_encoded_sha256": "b3b49eb5ecbef6825f50641cbe9ce39a2e9111a1f2b159602dc1452041261a8a",
+      "runtime_pixel_sha256": "7727f693000e916eab4b3c40b3e16ca6e4e969a75772e05553b1e8ce683d22b7",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        14,
+        13,
+        243,
+        246
+      ],
+      "visible_pixels": 12287,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 10167
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_03.png",
+      "bytes": 27757,
+      "source_encoded_sha256": "6e6fb6c6daff3cc04164d353848b629834dc0ebc7992f491be2dc066d0d9ed0c",
+      "source_pixel_sha256": "8824bc859d6d34f54a72b861d3e59f8e36db95f96149b8b41791637b9378d1f1",
+      "runtime_encoded_sha256": "6e6fb6c6daff3cc04164d353848b629834dc0ebc7992f491be2dc066d0d9ed0c",
+      "runtime_pixel_sha256": "8824bc859d6d34f54a72b861d3e59f8e36db95f96149b8b41791637b9378d1f1",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        15,
+        14,
+        244,
+        247
+      ],
+      "visible_pixels": 13104,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9429
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png",
+      "bytes": 26916,
+      "source_encoded_sha256": "c39a129b1e56f0fa7545dda3c5d96714307f3e2497cff3eb73c1e382b72abed9",
+      "source_pixel_sha256": "84c4a6c374044c55ec7818b52562808316aeb18e8bdc52c534f8a23c1d3c2844",
+      "runtime_encoded_sha256": "c39a129b1e56f0fa7545dda3c5d96714307f3e2497cff3eb73c1e382b72abed9",
+      "runtime_pixel_sha256": "84c4a6c374044c55ec7818b52562808316aeb18e8bdc52c534f8a23c1d3c2844",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        10,
+        12,
+        243,
+        248
+      ],
+      "visible_pixels": 11868,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 10301
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_05.png",
+      "bytes": 25983,
+      "source_encoded_sha256": "8d81c4285c451c0f7743373191cd488eb972548403cd653c707820e016f3c2cc",
+      "source_pixel_sha256": "334bbf3e683535d747fa163288a468b75c0c31cb2c1a24e41b92fb2aba0219b6",
+      "runtime_encoded_sha256": "8d81c4285c451c0f7743373191cd488eb972548403cd653c707820e016f3c2cc",
+      "runtime_pixel_sha256": "334bbf3e683535d747fa163288a468b75c0c31cb2c1a24e41b92fb2aba0219b6",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        8,
+        10,
+        241,
+        247
+      ],
+      "visible_pixels": 10870,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9475
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_06.png",
+      "bytes": 25739,
+      "source_encoded_sha256": "5d781f8869dd90b539c8d215f473fe11e1b03f0cdccca8f3d678a14496c1bdeb",
+      "source_pixel_sha256": "7329fc8d359eba4d0754b18feed1922228f8c9af5aba44b3c77df90de4aa9f96",
+      "runtime_encoded_sha256": "5d781f8869dd90b539c8d215f473fe11e1b03f0cdccca8f3d678a14496c1bdeb",
+      "runtime_pixel_sha256": "7329fc8d359eba4d0754b18feed1922228f8c9af5aba44b3c77df90de4aa9f96",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        9,
+        9,
+        241,
+        244
+      ],
+      "visible_pixels": 10598,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 7100
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_07.png",
+      "bytes": 25224,
+      "source_encoded_sha256": "18276ae638b3bc2b5273eea42aceec86327eb31375336e3672f59d4d3fc7d1d5",
+      "source_pixel_sha256": "1cddc20b7f63f9f215e33497fd6bd169163d4ab35b05a3843b7488c194a7cfaf",
+      "runtime_encoded_sha256": "18276ae638b3bc2b5273eea42aceec86327eb31375336e3672f59d4d3fc7d1d5",
+      "runtime_pixel_sha256": "1cddc20b7f63f9f215e33497fd6bd169163d4ab35b05a3843b7488c194a7cfaf",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        12,
+        12,
+        242,
+        245
+      ],
+      "visible_pixels": 10247,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 8636
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash/plague_syringe_cast_flash_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_08.png",
+      "bytes": 24912,
+      "source_encoded_sha256": "de780317501b41afd1fbd3eafa8530c2336375498402886a4f08d9579c9ca393",
+      "source_pixel_sha256": "7cbb0f8a6100a391ce7f4aec7f898562bd0ee903280e7c92c067eafa619850aa",
+      "runtime_encoded_sha256": "de780317501b41afd1fbd3eafa8530c2336375498402886a4f08d9579c9ca393",
+      "runtime_pixel_sha256": "7cbb0f8a6100a391ce7f4aec7f898562bd0ee903280e7c92c067eafa619850aa",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        15,
+        14,
+        244,
+        248
+      ],
+      "visible_pixels": 10362,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 8096
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 7100,
+    "consecutive_changed_pixels_max": 10301,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

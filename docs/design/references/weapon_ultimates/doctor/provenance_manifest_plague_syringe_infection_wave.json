@@ -1,0 +1,358 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3631",
+  "class_id": "doctor",
+  "weapon_id": "plague_syringe",
+  "weapon": "doctor/plague_syringe",
+  "effect_id": "infection_wave",
+  "effect_role": "signature",
+  "generated_at": "2026-08-28T09:34:36Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py + bounded loop-closure selection",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+    "rework": {
+      "issue": "FAN-3631",
+      "source_issue": "FAN-3613",
+      "selected_frame_0": "plague_syringe_infection_wave_f08.png",
+      "selection_source_object_id": "323d851c-6a27-4a0c-9d5c-82eb04952975",
+      "selection_source_animation_group_id": "551cc5e0-1ee1-4bc6-bdde-66c05f231c0a",
+      "selection_reason": "The original f00 was the dark outlier. Reusing the original light f08 phase makes 8->0 pixel-identical and keeps f01..f08 unchanged; source and runtime f00 are byte-identical parity copies.",
+      "generation_route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+      "generation_attempts": [
+        {
+          "object_id": "9d99e56d-6d47-47c1-b07f-5c28fa1bce59",
+          "animation_group_id": "21ce9a5e-74fb-4ec1-9f2c-67eec8098df7",
+          "result": "rejected_visual_candidate_ring_spiral"
+        },
+        {
+          "object_id": "284de061-50a4-4d6a-901d-fca5e3cb8446",
+          "animation_group_id": "45c9917d-eabb-401d-88c8-82bb206a375b",
+          "result": "source_candidate_recorded_but_not_selected_due_to_silhouette_mismatch",
+          "generated_at": "2026-08-28T09:34:36Z",
+          "frame_count": 9
+        }
+      ],
+      "cost_note": "The blocking CLI output exposed no numeric billed total. The documented 256x256 v3 animation scaling is 8 generations per 8-frame animation; two 9-frame candidate packs were generated in this run."
+    }
+  },
+  "pixellab": {
+    "object_id": "323d851c-6a27-4a0c-9d5c-82eb04952975",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single black-green plague infection wave with branching vascular tendrils and toxic emerald sparks, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animation_group_id": "551cc5e0-1ee1-4bc6-bdde-66c05f231c0a",
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same black-green vascular plague wave stays centered with stable palette; branching veins and toxic sparks grow from a tight patient-zero mark into a broad ring and recede with clear directional measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the selected light loop-closure frame from the original PixelLab source pack; f01..f08 are the eight original generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/plague_syringe/infection_wave",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_00.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_01.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_02.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_03.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_04.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_05.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_06.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_07.png",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_00.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_01.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_02.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_03.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_04.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_05.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_06.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_07.png.import",
+      "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": true,
+    "fps": 12
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Replaced the dark original f00 with the original light f08 loop-closure phase; f01..f08 were not altered. Both source/runtime f00 files are byte-identical."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_00.png",
+      "bytes": 24912,
+      "source_encoded_sha256": "4ea0b92525a5e5c3fd5c4232cf7e1cfba714d58cd77359b3584dbd4ea8223bb5",
+      "source_pixel_sha256": "30737b34faece4875322bf6a6904cb5a9c3e7e947ccd26ac9d6f36b395b44137",
+      "runtime_encoded_sha256": "4ea0b92525a5e5c3fd5c4232cf7e1cfba714d58cd77359b3584dbd4ea8223bb5",
+      "runtime_pixel_sha256": "30737b34faece4875322bf6a6904cb5a9c3e7e947ccd26ac9d6f36b395b44137",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        13,
+        17,
+        237,
+        238
+      ],
+      "visible_pixels": 19329,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 0
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_01.png",
+      "bytes": 27512,
+      "source_encoded_sha256": "68bcbade84db3192a22c606da2928b3855efc0612c8f613c94fb1499af326584",
+      "source_pixel_sha256": "d57f5c545876f94e3af5f68d2ad0667c843894910d15dabeb83bb23bcf3232c5",
+      "runtime_encoded_sha256": "68bcbade84db3192a22c606da2928b3855efc0612c8f613c94fb1499af326584",
+      "runtime_pixel_sha256": "d57f5c545876f94e3af5f68d2ad0667c843894910d15dabeb83bb23bcf3232c5",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        10,
+        17,
+        238,
+        241
+      ],
+      "visible_pixels": 20372,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17808
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_02.png",
+      "bytes": 25586,
+      "source_encoded_sha256": "cd0616be105b7cf49e3052182e0b852ae32762b2771bab73f26b232e3855d826",
+      "source_pixel_sha256": "fc195e47b94af31df16d88f8782e0734523a7e85e89543b8e1baa388d4bb8b62",
+      "runtime_encoded_sha256": "cd0616be105b7cf49e3052182e0b852ae32762b2771bab73f26b232e3855d826",
+      "runtime_pixel_sha256": "fc195e47b94af31df16d88f8782e0734523a7e85e89543b8e1baa388d4bb8b62",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        10,
+        16,
+        237,
+        239
+      ],
+      "visible_pixels": 19989,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 10380
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_03.png",
+      "bytes": 25921,
+      "source_encoded_sha256": "89fcdeba6a70c4a59753574928a77b777fdb8972f840251527f8801582692b7a",
+      "source_pixel_sha256": "d850aaa191f236e3dda88e47e7033663a367b19d0d2acee3eedccbe7fd980a04",
+      "runtime_encoded_sha256": "89fcdeba6a70c4a59753574928a77b777fdb8972f840251527f8801582692b7a",
+      "runtime_pixel_sha256": "d850aaa191f236e3dda88e47e7033663a367b19d0d2acee3eedccbe7fd980a04",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        10,
+        16,
+        237,
+        239
+      ],
+      "visible_pixels": 19997,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 5705
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_04.png",
+      "bytes": 27680,
+      "source_encoded_sha256": "f400c027bdd964c0aea95c5e35730ee89432042a54a1c8f513f8c6fdd4c4b319",
+      "source_pixel_sha256": "aa945a1303ee4fcc592ca513623e2d31f2a3fb875a0965e0914ed8dd6afd0489",
+      "runtime_encoded_sha256": "f400c027bdd964c0aea95c5e35730ee89432042a54a1c8f513f8c6fdd4c4b319",
+      "runtime_pixel_sha256": "aa945a1303ee4fcc592ca513623e2d31f2a3fb875a0965e0914ed8dd6afd0489",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        13,
+        15,
+        240,
+        240
+      ],
+      "visible_pixels": 20660,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18645
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_05.png",
+      "bytes": 27777,
+      "source_encoded_sha256": "7a2c9a799b242744c8b5bb27401b91d6b3bf7ee35fdfe296e8baa7390a4c527d",
+      "source_pixel_sha256": "e53d33367281682dcd30e6128b3f8cad181e90fb80bd5381cb64e346d3518a68",
+      "runtime_encoded_sha256": "7a2c9a799b242744c8b5bb27401b91d6b3bf7ee35fdfe296e8baa7390a4c527d",
+      "runtime_pixel_sha256": "e53d33367281682dcd30e6128b3f8cad181e90fb80bd5381cb64e346d3518a68",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        14,
+        16,
+        240,
+        240
+      ],
+      "visible_pixels": 19850,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 12546
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_06.png",
+      "bytes": 27407,
+      "source_encoded_sha256": "b653e59aaf411aa89348fc615fe93051fafc87895029971c2932db478b06377f",
+      "source_pixel_sha256": "21b0a8f59e5b05eef0c687d2264826e703db73a315f799b070e22c3acabbddf8",
+      "runtime_encoded_sha256": "b653e59aaf411aa89348fc615fe93051fafc87895029971c2932db478b06377f",
+      "runtime_pixel_sha256": "21b0a8f59e5b05eef0c687d2264826e703db73a315f799b070e22c3acabbddf8",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        14,
+        17,
+        239,
+        239
+      ],
+      "visible_pixels": 19543,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 15548
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_07.png",
+      "bytes": 26234,
+      "source_encoded_sha256": "8880319eeac290cdaf3d877dd2317bfcdf1319a5378a91baa05f036c4175a827",
+      "source_pixel_sha256": "fb0d2d89de6b12a6747b4103245db288afec73cfe7a442569096e4711423c1c8",
+      "runtime_encoded_sha256": "8880319eeac290cdaf3d877dd2317bfcdf1319a5378a91baa05f036c4175a827",
+      "runtime_pixel_sha256": "fb0d2d89de6b12a6747b4103245db288afec73cfe7a442569096e4711423c1c8",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        11,
+        17,
+        238,
+        242
+      ],
+      "visible_pixels": 19334,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 14201
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/plague_syringe_infection_wave_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_08.png",
+      "bytes": 24912,
+      "source_encoded_sha256": "4ea0b92525a5e5c3fd5c4232cf7e1cfba714d58cd77359b3584dbd4ea8223bb5",
+      "source_pixel_sha256": "30737b34faece4875322bf6a6904cb5a9c3e7e947ccd26ac9d6f36b395b44137",
+      "runtime_encoded_sha256": "4ea0b92525a5e5c3fd5c4232cf7e1cfba714d58cd77359b3584dbd4ea8223bb5",
+      "runtime_pixel_sha256": "30737b34faece4875322bf6a6904cb5a9c3e7e947ccd26ac9d6f36b395b44137",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        13,
+        17,
+        237,
+        238
+      ],
+      "visible_pixels": 19329,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 14068
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 0,
+    "consecutive_changed_pixels_max": 18645,
+    "loop_wrap_pixel_hashes_differ": false
+  },
+  "source_issue": "FAN-3613",
+  "visual_evidence": {
+    "contact_sheet": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/infection_wave_rework_contact.png",
+    "first_last_native": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/infection_wave_rework_first_last.png",
+    "native_scale_px": [
+      256,
+      256
+    ],
+    "loop_seam": {
+      "frame_8_to_0_changed_pixels": 0,
+      "frame_0_to_1_changed_pixels": 17808,
+      "fps": 12,
+      "loop": true
+    }
+  }
+}

@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "bone_saw",
+  "weapon": "doctor/bone_saw",
+  "effect_id": "victim_impact",
+  "effect_role": "victim_impact",
+  "generated_at": "2026-08-28T03:52:18Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "9d002c3c-aa60-4c3b-bedc-0824bd47912b",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single bone saw victim impact burst with ivory serration, surgical gold sparks, restrained crimson slash and green healing stitches, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "61f293ad-7bc0-4018-af6c-9a82fc3c8be7",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same surgical victim impact stays centered with stable palette; a bright ivory serration and restrained crimson slash snap across the target, gold sparks scatter, then a green stitch seam closes with obvious measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/bone_saw/victim_impact",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_00.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_01.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_02.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_03.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_04.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_05.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_06.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_07.png",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_00.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_01.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_02.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_03.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_04.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_05.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_06.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_07.png.import",
+      "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": false,
+    "fps": 16
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_00.png",
+      "bytes": 17438,
+      "source_encoded_sha256": "e9664098db50c4b73e92794edb53246a4d5439cbbcc3f8a3380330eedadf2d8d",
+      "source_pixel_sha256": "29b8f0dc93c9be8690477d566a86295e39884c35fa31c873466b0f91c52b0360",
+      "runtime_encoded_sha256": "e9664098db50c4b73e92794edb53246a4d5439cbbcc3f8a3380330eedadf2d8d",
+      "runtime_pixel_sha256": "29b8f0dc93c9be8690477d566a86295e39884c35fa31c873466b0f91c52b0360",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        58,
+        204,
+        206
+      ],
+      "visible_pixels": 11396,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_01.png",
+      "bytes": 21778,
+      "source_encoded_sha256": "bba222d2c5ce171bd66de7a567712a14fc782f2c6c9b2fee1046f6526e7d3a4d",
+      "source_pixel_sha256": "2dbe81ae749bb16fef3cf6584946c619173dd9da95a52885c945da3eedf6028b",
+      "runtime_encoded_sha256": "bba222d2c5ce171bd66de7a567712a14fc782f2c6c9b2fee1046f6526e7d3a4d",
+      "runtime_pixel_sha256": "2dbe81ae749bb16fef3cf6584946c619173dd9da95a52885c945da3eedf6028b",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        54,
+        205,
+        207
+      ],
+      "visible_pixels": 11722,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 8990
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_02.png",
+      "bytes": 10852,
+      "source_encoded_sha256": "a3afd45ab42934c15a98bb4e8180a9ec1f2bbf8f1c98c3020286fdc72fb17778",
+      "source_pixel_sha256": "79797f3045de78215a1811250369d6a7367ff9854fd7a526ac3742bac3ba8c63",
+      "runtime_encoded_sha256": "a3afd45ab42934c15a98bb4e8180a9ec1f2bbf8f1c98c3020286fdc72fb17778",
+      "runtime_pixel_sha256": "79797f3045de78215a1811250369d6a7367ff9854fd7a526ac3742bac3ba8c63",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        54,
+        206,
+        210
+      ],
+      "visible_pixels": 11819,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9696
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_03.png",
+      "bytes": 9737,
+      "source_encoded_sha256": "3c10aa74a528d4b7ea10ab3b98522636130fd35d7ddf9a7add637284d6d0e52d",
+      "source_pixel_sha256": "3511a3d1f66c03f68dbceed39e4691a2cb53ee9ac64f6550213838b8cff3a8d8",
+      "runtime_encoded_sha256": "3c10aa74a528d4b7ea10ab3b98522636130fd35d7ddf9a7add637284d6d0e52d",
+      "runtime_pixel_sha256": "3511a3d1f66c03f68dbceed39e4691a2cb53ee9ac64f6550213838b8cff3a8d8",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        46,
+        204,
+        218
+      ],
+      "visible_pixels": 6788,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 10307
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_04.png",
+      "bytes": 10756,
+      "source_encoded_sha256": "9c1b00abcdfe3f8ae67dc598f2cf14a85e61c823151e2db4f8e9bfa727652b9a",
+      "source_pixel_sha256": "13fe42806859bd19e9081e2cb76b3591534613f82ed293ad6a021e98aba2e4cc",
+      "runtime_encoded_sha256": "9c1b00abcdfe3f8ae67dc598f2cf14a85e61c823151e2db4f8e9bfa727652b9a",
+      "runtime_pixel_sha256": "13fe42806859bd19e9081e2cb76b3591534613f82ed293ad6a021e98aba2e4cc",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        61,
+        204,
+        206
+      ],
+      "visible_pixels": 3424,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 6181
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_05.png",
+      "bytes": 8475,
+      "source_encoded_sha256": "bf992f6265edf1c1242052939374e81bcc3d5b5130f852d6e15049b679b90664",
+      "source_pixel_sha256": "052fc9521e979b2cc03770ede8fac476496f589fb34eb3601163e9aaec0bae0c",
+      "runtime_encoded_sha256": "bf992f6265edf1c1242052939374e81bcc3d5b5130f852d6e15049b679b90664",
+      "runtime_pixel_sha256": "052fc9521e979b2cc03770ede8fac476496f589fb34eb3601163e9aaec0bae0c",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        70,
+        204,
+        205
+      ],
+      "visible_pixels": 2745,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 1962
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_06.png",
+      "bytes": 6740,
+      "source_encoded_sha256": "479c57f38b56d18db47d8fca2d52924da399732314900960c6d6575075a9c832",
+      "source_pixel_sha256": "5efe55a62c3595929b4c93970e322873cfedab7e207bd384b7df1da682e26ef2",
+      "runtime_encoded_sha256": "479c57f38b56d18db47d8fca2d52924da399732314900960c6d6575075a9c832",
+      "runtime_pixel_sha256": "5efe55a62c3595929b4c93970e322873cfedab7e207bd384b7df1da682e26ef2",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        73,
+        204,
+        205
+      ],
+      "visible_pixels": 2388,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 1174
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_07.png",
+      "bytes": 6564,
+      "source_encoded_sha256": "ec6d5b48f82602bc5fe5064fac9ef64fbcb2acb6b6b44feaffa72e293fe75adb",
+      "source_pixel_sha256": "ee207f639d6813b83c84ae5765f42038f65fc4f0c7ff92a4a4994c4e8bdf083e",
+      "runtime_encoded_sha256": "ec6d5b48f82602bc5fe5064fac9ef64fbcb2acb6b6b44feaffa72e293fe75adb",
+      "runtime_pixel_sha256": "ee207f639d6813b83c84ae5765f42038f65fc4f0c7ff92a4a4994c4e8bdf083e",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        73,
+        204,
+        205
+      ],
+      "visible_pixels": 2399,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 775
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact/bone_saw_victim_impact_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_08.png",
+      "bytes": 6799,
+      "source_encoded_sha256": "2a2e99c2d043403acb05d3ff70a72f81b7f1c4f40eebd49e89ae6c7da8858bdc",
+      "source_pixel_sha256": "412bf6101f2e40fbeea7b58f3811413b197437816049856ac7c1aa9e5b1fd02c",
+      "runtime_encoded_sha256": "2a2e99c2d043403acb05d3ff70a72f81b7f1c4f40eebd49e89ae6c7da8858bdc",
+      "runtime_pixel_sha256": "412bf6101f2e40fbeea7b58f3811413b197437816049856ac7c1aa9e5b1fd02c",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        48,
+        73,
+        204,
+        205
+      ],
+      "visible_pixels": 2420,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 385
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 385,
+    "consecutive_changed_pixels_max": 10307,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

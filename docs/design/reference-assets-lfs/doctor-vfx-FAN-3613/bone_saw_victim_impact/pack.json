@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:52:18Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "9d002c3c-aa60-4c3b-bedc-0824bd47912b",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single bone saw victim impact burst with ivory serration, surgical gold sparks, restrained crimson slash and green healing stitches, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same surgical victim impact stays centered with stable palette; a bright ivory serration and restrained crimson slash snap across the target, gold sparks scatter, then a green stitch seam closes with obvious measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "bone_saw_victim_impact_f00.png",
+      "bytes": 17438,
+      "url_kind": "template",
+      "encoded_sha256": "e9664098db50c4b73e92794edb53246a4d5439cbbcc3f8a3380330eedadf2d8d",
+      "pixel_sha256": "29b8f0dc93c9be8690477d566a86295e39884c35fa31c873466b0f91c52b0360"
+    },
+    {
+      "file": "bone_saw_victim_impact_f01.png",
+      "bytes": 21778,
+      "url_kind": "template",
+      "encoded_sha256": "bba222d2c5ce171bd66de7a567712a14fc782f2c6c9b2fee1046f6526e7d3a4d",
+      "pixel_sha256": "2dbe81ae749bb16fef3cf6584946c619173dd9da95a52885c945da3eedf6028b"
+    },
+    {
+      "file": "bone_saw_victim_impact_f02.png",
+      "bytes": 10852,
+      "url_kind": "template",
+      "encoded_sha256": "a3afd45ab42934c15a98bb4e8180a9ec1f2bbf8f1c98c3020286fdc72fb17778",
+      "pixel_sha256": "79797f3045de78215a1811250369d6a7367ff9854fd7a526ac3742bac3ba8c63"
+    },
+    {
+      "file": "bone_saw_victim_impact_f03.png",
+      "bytes": 9737,
+      "url_kind": "template",
+      "encoded_sha256": "3c10aa74a528d4b7ea10ab3b98522636130fd35d7ddf9a7add637284d6d0e52d",
+      "pixel_sha256": "3511a3d1f66c03f68dbceed39e4691a2cb53ee9ac64f6550213838b8cff3a8d8"
+    },
+    {
+      "file": "bone_saw_victim_impact_f04.png",
+      "bytes": 10756,
+      "url_kind": "template",
+      "encoded_sha256": "9c1b00abcdfe3f8ae67dc598f2cf14a85e61c823151e2db4f8e9bfa727652b9a",
+      "pixel_sha256": "13fe42806859bd19e9081e2cb76b3591534613f82ed293ad6a021e98aba2e4cc"
+    },
+    {
+      "file": "bone_saw_victim_impact_f05.png",
+      "bytes": 8475,
+      "url_kind": "template",
+      "encoded_sha256": "bf992f6265edf1c1242052939374e81bcc3d5b5130f852d6e15049b679b90664",
+      "pixel_sha256": "052fc9521e979b2cc03770ede8fac476496f589fb34eb3601163e9aaec0bae0c"
+    },
+    {
+      "file": "bone_saw_victim_impact_f06.png",
+      "bytes": 6740,
+      "url_kind": "template",
+      "encoded_sha256": "479c57f38b56d18db47d8fca2d52924da399732314900960c6d6575075a9c832",
+      "pixel_sha256": "5efe55a62c3595929b4c93970e322873cfedab7e207bd384b7df1da682e26ef2"
+    },
+    {
+      "file": "bone_saw_victim_impact_f07.png",
+      "bytes": 6564,
+      "url_kind": "template",
+      "encoded_sha256": "ec6d5b48f82602bc5fe5064fac9ef64fbcb2acb6b6b44feaffa72e293fe75adb",
+      "pixel_sha256": "ee207f639d6813b83c84ae5765f42038f65fc4f0c7ff92a4a4994c4e8bdf083e"
+    },
+    {
+      "file": "bone_saw_victim_impact_f08.png",
+      "bytes": 6799,
+      "url_kind": "template",
+      "encoded_sha256": "2a2e99c2d043403acb05d3ff70a72f81b7f1c4f40eebd49e89ae6c7da8858bdc",
+      "pixel_sha256": "412bf6101f2e40fbeea7b58f3811413b197437816049856ac7c1aa9e5b1fd02c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
