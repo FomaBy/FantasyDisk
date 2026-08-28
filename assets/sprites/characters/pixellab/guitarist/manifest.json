@@ -228,5 +228,650 @@
     "runtime_bottom_padding": 112,
     "source": "PixelLab MCP download endpoint",
     "legacy_or_manual_fallback_used": false
+  },
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
+    "directions": [
+      "south",
+      "south-east",
+      "east",
+      "north-east",
+      "north",
+      "north-west"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "south": {
+        "group_id": "4bac0889-3c3d-4a47-9891-c8a3069c51b9",
+        "animation_id": "56178f35-7daa-4de4-9e51-b24c8512c74c",
+        "frames": [
+          "guitarist_move_south_00.png",
+          "guitarist_move_south_01.png",
+          "guitarist_move_south_02.png",
+          "guitarist_move_south_03.png",
+          "guitarist_move_south_04.png",
+          "guitarist_move_south_05.png"
+        ]
+      },
+      "south-east": {
+        "group_id": "58eaaec8-c3f7-4bd7-80cd-084868635b89",
+        "animation_id": "e5c49968-1e7d-4f45-9846-4ebae78a0a8e",
+        "frames": [
+          "guitarist_move_south-east_00.png",
+          "guitarist_move_south-east_01.png",
+          "guitarist_move_south-east_02.png",
+          "guitarist_move_south-east_03.png",
+          "guitarist_move_south-east_04.png",
+          "guitarist_move_south-east_05.png"
+        ]
+      },
+      "east": {
+        "group_id": "ed891edb-2baa-4921-95af-fe74a9f40392",
+        "animation_id": "299f5cc5-921e-4867-af84-1a623d06f6ff",
+        "frames": [
+          "guitarist_move_east_00.png",
+          "guitarist_move_east_01.png",
+          "guitarist_move_east_02.png",
+          "guitarist_move_east_03.png",
+          "guitarist_move_east_04.png",
+          "guitarist_move_east_05.png"
+        ]
+      },
+      "north-east": {
+        "group_id": "8aab5586-7c07-4883-ba28-6d35edabf624",
+        "animation_id": "d3c54328-1ccf-44ea-ad51-f04ddc0d6313",
+        "frames": [
+          "guitarist_move_north-east_00.png",
+          "guitarist_move_north-east_01.png",
+          "guitarist_move_north-east_02.png",
+          "guitarist_move_north-east_03.png",
+          "guitarist_move_north-east_04.png",
+          "guitarist_move_north-east_05.png"
+        ]
+      },
+      "north": {
+        "group_id": "4b826a36-8bc2-4489-89e4-bc089cdeb4a7",
+        "animation_id": "e1cf6994-4cfe-474e-ae6e-d6072f97fb19",
+        "frames": [
+          "guitarist_move_north_00.png",
+          "guitarist_move_north_01.png",
+          "guitarist_move_north_02.png",
+          "guitarist_move_north_03.png",
+          "guitarist_move_north_04.png",
+          "guitarist_move_north_05.png"
+        ]
+      },
+      "north-west": {
+        "group_id": "9d76a53f-b2d1-4d95-91de-24f9db1135ff",
+        "animation_id": "8851f5e9-3fe6-429d-93e9-e3c8da0e2cb0",
+        "frames": [
+          "guitarist_move_north-west_00.png",
+          "guitarist_move_north-west_01.png",
+          "guitarist_move_north-west_02.png",
+          "guitarist_move_north-west_03.png",
+          "guitarist_move_north-west_04.png",
+          "guitarist_move_north-west_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "guitarist_move_south_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          69,
+          63,
+          177,
+          179
+        ],
+        "encoded_sha256": "ae50db88ca1f2f0a0a372e3691ce70990e55787daa5f59a726f1d51d81de8afc",
+        "pixel_sha256": "91fcb3aa81a3d70c7cfa08b75ac88bef6b1f141c35511c83b085e244b5ac29c1"
+      },
+      "guitarist_move_south_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          67,
+          64,
+          178,
+          179
+        ],
+        "encoded_sha256": "ed885f4be762b2e04c3163ad15adcb54cf6e776a06210f8dffb965a089d5b658",
+        "pixel_sha256": "2a9b8cb3cd227b50d99f938c03dbc702d77a2201a44b02380ec2667a7f50e027"
+      },
+      "guitarist_move_south_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          65,
+          64,
+          178,
+          179
+        ],
+        "encoded_sha256": "e45dea0792fed2b7991b6cb6be43d634986424db9e265a35f7cbfbe3ec297d36",
+        "pixel_sha256": "8cfd565eb3accdb7d4e8dd7bfebe17b27d85cee094c6830c4c17eedcd740a5b3"
+      },
+      "guitarist_move_south_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          62,
+          178,
+          179
+        ],
+        "encoded_sha256": "0069abfcc67e6c6fcb088f880c2853305902ad352e8849db208df648755a6e7b",
+        "pixel_sha256": "853aac69c4c0a89c4298bef1e133fe6f51b7057606daf4bfa7f9c5c7d61c7060"
+      },
+      "guitarist_move_south_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          61,
+          61,
+          178,
+          179
+        ],
+        "encoded_sha256": "0c812f7d1b4cf733778f21476946996aad6573bcb1ceabb9f579d4aa58067574",
+        "pixel_sha256": "3579ac9cd9f611771683b0aaa0537b3fae36ca1f6713a83de09a969cbb18931c"
+      },
+      "guitarist_move_south_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          61,
+          61,
+          177,
+          179
+        ],
+        "encoded_sha256": "a68b1cb0451cdf7ba77a6ce1e537bc9253342003c426664ede31827765f2f332",
+        "pixel_sha256": "2ede5dffc8fa00bbd147c0803c7768fdd115390282993017c285f9e971b67dfc"
+      },
+      "guitarist_move_south-east_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          69,
+          60,
+          177,
+          180
+        ],
+        "encoded_sha256": "935274033eb061f30202ba63507de6ee711efb7dfced2d3f20e746c00683c85d",
+        "pixel_sha256": "b834817fde271fe7d2ff4cc6937dd9a8ed66e828cea46c2ca63749c97dde6ad3"
+      },
+      "guitarist_move_south-east_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          61,
+          177,
+          180
+        ],
+        "encoded_sha256": "7922b6b053d5d75d286ac728f9e112a33a2c10577d8c28e7a9acd103a04560c8",
+        "pixel_sha256": "0e6f0b7f481d1c59f3cfc3016fda3a97ac0415f3284beff5198fc5dbef462e0a"
+      },
+      "guitarist_move_south-east_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          60,
+          176,
+          180
+        ],
+        "encoded_sha256": "4c7544f2ef5e8c2b1115763cab3362e1257cebceda17fec2f11dcebd59d1314b",
+        "pixel_sha256": "70aabd25b80337a4a9f0aa0dc1a9688058ac49a43c7a688c0810696f2e95dd5a"
+      },
+      "guitarist_move_south-east_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          60,
+          174,
+          180
+        ],
+        "encoded_sha256": "7b70291ad4f4278ac5fc6d7840c81a94d95797db266c3b2f89c476545d38b32d",
+        "pixel_sha256": "43acc411be9842789b46a1cadf9b9a5e8a85367b83d8363e264c1f2d40f90e73"
+      },
+      "guitarist_move_south-east_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          61,
+          176,
+          180
+        ],
+        "encoded_sha256": "cf1b7245b20ff4614a6d132a7d8fa796197bd6ab8c71d2b4bee39170cfa94727",
+        "pixel_sha256": "8d048a2393346e5e82b6709523d08fde8212de79e2fd223e7c8f3fa0fec0a3d7"
+      },
+      "guitarist_move_south-east_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          62,
+          178,
+          180
+        ],
+        "encoded_sha256": "03c17dc232a74c88ff94ac2c4b7b6e4f1a418a15bac0efb4102f7ac49f9b9bf9",
+        "pixel_sha256": "17692f359beecbecfbc495abb86f480c306f0f1c0c27463aa4ac13374d15de75"
+      },
+      "guitarist_move_east_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          60,
+          149,
+          179
+        ],
+        "encoded_sha256": "1c0c803469694dad71d3cac5fb4a2a13b7a20321f1540352e9327fc1d2993f93",
+        "pixel_sha256": "095607ed74f773016ca0a7b84931f73a7a6c418a73a9ecd91ddcfb0f160e6f8a"
+      },
+      "guitarist_move_east_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          73,
+          63,
+          151,
+          179
+        ],
+        "encoded_sha256": "430f1e308998d97d314dcb8937ef43022af4ecc201a55fc8a0a125c158db498f",
+        "pixel_sha256": "e493739113c4462a2dbfc277fb3ee28e25221f098d4d4ab6a6493e595b32f63b"
+      },
+      "guitarist_move_east_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          73,
+          64,
+          158,
+          178
+        ],
+        "encoded_sha256": "4fcd0c22f8f790d611a2354afc21360c2f13f169f89dec746178bdb69d76874f",
+        "pixel_sha256": "04c7a340ddf23ffe0899e3a39132a589c927f134b8419a89b778b4bc74b70336"
+      },
+      "guitarist_move_east_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          62,
+          162,
+          178
+        ],
+        "encoded_sha256": "5d26aa77aae505730aa4ac5c0c890b6a5a4ee245a40a4a3ba6e5ea3b6d392c4f",
+        "pixel_sha256": "667e4695036afa3c2a630f56099e44d12d78dabdeaf8249d2ca361d35f3e5848"
+      },
+      "guitarist_move_east_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          73,
+          60,
+          164,
+          178
+        ],
+        "encoded_sha256": "b0dc8d24ca5861b6c97bf062a05a8674b25c414339e8b984f55f90bba0b067f6",
+        "pixel_sha256": "33b6559e1dea00e5326b030840d0033579dc105e71b3b28c0daf5c30e03d9d26"
+      },
+      "guitarist_move_east_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          62,
+          164,
+          178
+        ],
+        "encoded_sha256": "894039d6100ce0236b2952cf5106e01ca208f8189160d358c1bcef395581734f",
+        "pixel_sha256": "ad53c57c78e81a6ed2b095c0a03e6513cf022650c03509bdf8c90de3f4df098e"
+      },
+      "guitarist_move_north-east_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          62,
+          153,
+          177
+        ],
+        "encoded_sha256": "bba443fa6f8a73d47df5249ac20af44781c86508f5e4a7a8275e9c99e1184b32",
+        "pixel_sha256": "833af0af24e1e1da3738667ffeea6fda0cacf31840435f6fcb79d56ae9d3aa82"
+      },
+      "guitarist_move_north-east_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          64,
+          65,
+          153,
+          177
+        ],
+        "encoded_sha256": "53d560bd8984f0eaae8784d8bfbb6cf350bdb368694eeae49d7974afe86040f8",
+        "pixel_sha256": "1c280b8094c0d16b3b873e2be933116b2bd6006ad29e17aab426b428fd9e0788"
+      },
+      "guitarist_move_north-east_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          61,
+          153,
+          177
+        ],
+        "encoded_sha256": "c7b0a3d1e00b9eb835e180a0677b1527d5b880d7b30ab808ea11ba8aaaefdc6f",
+        "pixel_sha256": "a77c6513ac22c0b7ae2c99e3873670bc95dc1ad0f8b88f9b95819dfba4defdf5"
+      },
+      "guitarist_move_north-east_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          61,
+          153,
+          177
+        ],
+        "encoded_sha256": "ec48ad63da59ea7503e4f9bb0599f8dcbdbb1ab9191bf72eb266cff1581a2e30",
+        "pixel_sha256": "32545442941f130b50b6ba421ddb411ec301644e7857e97690063f53f3bb7852"
+      },
+      "guitarist_move_north-east_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          62,
+          152,
+          177
+        ],
+        "encoded_sha256": "79629beee9d0d55bc1c5e551218adc7274dcd00b49939c940046b0d3e387797b",
+        "pixel_sha256": "fbe230ddfc83e9d77448f3998ceccb9a5e65b9995426b673be70627c418f1929"
+      },
+      "guitarist_move_north-east_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          75,
+          63,
+          152,
+          176
+        ],
+        "encoded_sha256": "e47031af0d5f8ff99aa60d218f23ef5aa9a453398374c11d87c9b7aec8dbb3ce",
+        "pixel_sha256": "84867a135cf8b59aff3882d9b7300371251152f8875cc636175e80b680cf6c45"
+      },
+      "guitarist_move_north_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          64,
+          63,
+          154,
+          176
+        ],
+        "encoded_sha256": "9550779e8425bd7887f0100e884f80f5a84e10c481dd3570f552baae07b0c826",
+        "pixel_sha256": "cc656d05c56e87c54132969db240361e0df7487fc68db90bea3dbede89a23af3"
+      },
+      "guitarist_move_north_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          66,
+          154,
+          176
+        ],
+        "encoded_sha256": "ff96563db2fb375820ce354d3fef743db81cca71719bb0113b247aac931edf51",
+        "pixel_sha256": "1e6a3fa3bb965c44ebb967c073d6d91f1b0cd132d6409e0652621bdd65200473"
+      },
+      "guitarist_move_north_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          64,
+          160,
+          176
+        ],
+        "encoded_sha256": "4e9c9694714de07edf173f3a198e49300c38a3c974b96fa9d2df7ec251ebc8ca",
+        "pixel_sha256": "68bb6e7a4db63f5c0f37341ec841c0939166e9e176e66e69b2fa08341d35663f"
+      },
+      "guitarist_move_north_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          62,
+          62,
+          171,
+          176
+        ],
+        "encoded_sha256": "4e195bdba2e6c4a0dee145be3644a7376345fbe5e52e57e730d68e9ed0d5d792",
+        "pixel_sha256": "2a93093785ea264634a746e6967da799dd2585de7134cc2b077a74e59e312f65"
+      },
+      "guitarist_move_north_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          62,
+          65,
+          174,
+          176
+        ],
+        "encoded_sha256": "6f641dffa3c4cf4636304c915b0cb3b28b3085a2da70cb08db51d29dff8bab31",
+        "pixel_sha256": "589254e800ab4516d5ae08eb5f338a7920871f786918948ed9a6f3979561f132"
+      },
+      "guitarist_move_north_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          62,
+          67,
+          176,
+          176
+        ],
+        "encoded_sha256": "7f72417af7c09ae059b86ffb66fd0d12d41f86a65b16218eb173b748233831de",
+        "pixel_sha256": "2266be5a6ec77834a746eeae2d76fc168e413ea070409b0802e51b1af41f0256"
+      },
+      "guitarist_move_north-west_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          62,
+          58,
+          173,
+          177
+        ],
+        "encoded_sha256": "a1c9459916867234ad90be80ba6076803532f2178567dc93542867ed79eda9df",
+        "pixel_sha256": "c297e0ee367ef886fc863a5bc8ca6c5dec1550ccec7e83fadcaa1223541dbff0"
+      },
+      "guitarist_move_north-west_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          60,
+          173,
+          177
+        ],
+        "encoded_sha256": "c68088a72c45ac3b2a0a8b0fb9b5423ed7465ee6fd1727b552f3636eb6f5fdf1",
+        "pixel_sha256": "10e3a7080362a5dd48c40e8307c6754ccf538c618a655fc648cdcc256da2f07b"
+      },
+      "guitarist_move_north-west_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          65,
+          62,
+          169,
+          177
+        ],
+        "encoded_sha256": "e8458c8da1c544fd4b5ede5e67c35c4d03d05c577350f6737ef2dfad13bee5b1",
+        "pixel_sha256": "308cf585436d7404b9330c35c50606de1428f03304f0e44e0a9751f5e0c999e6"
+      },
+      "guitarist_move_north-west_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          67,
+          63,
+          161,
+          177
+        ],
+        "encoded_sha256": "1bdbc7de6c340a36991d0739cc02f8a199a267f71c3f9d057c63bca602ab75f1",
+        "pixel_sha256": "7047c8ffeca32302f95a243a9b9bbb157a96a6e1793709e0d606a85c5fe90e15"
+      },
+      "guitarist_move_north-west_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          60,
+          160,
+          176
+        ],
+        "encoded_sha256": "80faa7f64acb325a272fc8a942d8eee54e5010834a317518f0fbcce51ba3318b",
+        "pixel_sha256": "bda74e99a9ff5588196f900bcac1677a68ce9c1060abdcc03fde1026a9e92d71"
+      },
+      "guitarist_move_north-west_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          65,
+          60,
+          163,
+          176
+        ],
+        "encoded_sha256": "a8343b7d29e481dc08a4fbdd8ea5d1a5417d57897415ba3ea1ea8f8ded725fbc",
+        "pixel_sha256": "af80311b03310022f7960ad95d5d81c634e94b91552012f19b07b89505855b84"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
   }
 }

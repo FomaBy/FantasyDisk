@@ -241,5 +241,547 @@
     "bbox_report": "build/qa/scrum434_soldier_pixellab/soldier_pixellab_alpha_bbox_report.json",
     "contact_sheet": "build/qa/scrum434_soldier_pixellab/soldier_pixellab_contact.png",
     "validation_report": "build/qa/scrum434_soldier_pixellab/source_pack_validation.json"
+  },
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "72b487d3-feea-4012-b39f-b59ba24f7f11",
+    "directions": [
+      "south",
+      "north-east",
+      "north",
+      "north-west",
+      "west"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "south": {
+        "group_id": "966f7d54-9599-4dc0-b591-f389a92f64f4",
+        "animation_id": "3d78989e-720e-48de-8759-5c070c3b2997",
+        "frames": [
+          "soldier_move_south_00.png",
+          "soldier_move_south_01.png",
+          "soldier_move_south_02.png",
+          "soldier_move_south_03.png",
+          "soldier_move_south_04.png",
+          "soldier_move_south_05.png"
+        ]
+      },
+      "north-east": {
+        "group_id": "e03addeb-c986-44b0-b566-555754c25fbe",
+        "animation_id": "f110dc70-385d-4bca-8d83-b468a686141d",
+        "frames": [
+          "soldier_move_north-east_00.png",
+          "soldier_move_north-east_01.png",
+          "soldier_move_north-east_02.png",
+          "soldier_move_north-east_03.png",
+          "soldier_move_north-east_04.png",
+          "soldier_move_north-east_05.png"
+        ]
+      },
+      "north": {
+        "group_id": "6f707d54-6cc3-4dc8-a588-889b9c856cea",
+        "animation_id": "a460a49a-55de-485c-8e53-abddc61ed437",
+        "frames": [
+          "soldier_move_north_00.png",
+          "soldier_move_north_01.png",
+          "soldier_move_north_02.png",
+          "soldier_move_north_03.png",
+          "soldier_move_north_04.png",
+          "soldier_move_north_05.png"
+        ]
+      },
+      "north-west": {
+        "group_id": "2e464e8d-6c72-441e-9338-fca4fef5e2e7",
+        "animation_id": "e8755d4a-3347-44ff-a915-6031265bb34e",
+        "frames": [
+          "soldier_move_north-west_00.png",
+          "soldier_move_north-west_01.png",
+          "soldier_move_north-west_02.png",
+          "soldier_move_north-west_03.png",
+          "soldier_move_north-west_04.png",
+          "soldier_move_north-west_05.png"
+        ]
+      },
+      "west": {
+        "group_id": "c399ea73-a038-44ef-8ea8-8f8138165501",
+        "animation_id": "5867726a-ed91-46b0-aa66-12512c9b8886",
+        "frames": [
+          "soldier_move_west_00.png",
+          "soldier_move_west_01.png",
+          "soldier_move_west_02.png",
+          "soldier_move_west_03.png",
+          "soldier_move_west_04.png",
+          "soldier_move_west_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "soldier_move_south_00.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          59,
+          162,
+          181
+        ],
+        "encoded_sha256": "781df0f076b9276b874e2cdd4a70894755f8581f5b00d5c92776d7aa1ef24364",
+        "pixel_sha256": "e56f06b2941cd5b1bee3d017bb54ba0c91e389b7a9398e5ba4ee737249226a6b"
+      },
+      "soldier_move_south_01.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          77,
+          58,
+          165,
+          181
+        ],
+        "encoded_sha256": "09c8fecc038b0fec64c7708b2c87c872014b57481a46d181ab7bcaa2bb622911",
+        "pixel_sha256": "d117b6114a3b73e844f98d666f86040af6423eb9780cbb3168e286148271a016"
+      },
+      "soldier_move_south_02.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          63,
+          168,
+          181
+        ],
+        "encoded_sha256": "5d84497195d482c58a24aa0dae1a7263418d29c9d550878e2be62ebd612d5c20",
+        "pixel_sha256": "8bc378e53d8c038bed55a234e1f2cef636f407c270a9c1d840293d9de9b4536a"
+      },
+      "soldier_move_south_03.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          65,
+          170,
+          181
+        ],
+        "encoded_sha256": "6470a2961fadbf397f0d5f3c963773e4f26d8bf45d0f9d1194b0cf497b296713",
+        "pixel_sha256": "030e650f07a267c73e3d10f638fe98386d902c3732ced47ec19cf95b779af904"
+      },
+      "soldier_move_south_04.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          75,
+          63,
+          168,
+          181
+        ],
+        "encoded_sha256": "fa78e8829b4fe35b02bf63e635b11b971f455944d6d49d6c8fef2d8cc0e9a351",
+        "pixel_sha256": "a124534a9fcca1ec33100746142b54d5e8ac40854386a59a56f25344fd1ae30b"
+      },
+      "soldier_move_south_05.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          79,
+          63,
+          164,
+          181
+        ],
+        "encoded_sha256": "776a26a39421db5c0c83e216af57e47288f9eb7b2a77023af59585d8a22e559b",
+        "pixel_sha256": "bb6411adc2a43d16f346a5513602b93e8d5378356ae81b5990b2e0ae83429266"
+      },
+      "soldier_move_north-east_00.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          63,
+          147,
+          180
+        ],
+        "encoded_sha256": "cf8b277df85f5937730394491536f5e21a399a9db96ed40000cf8841255f5906",
+        "pixel_sha256": "7d33e72ba7a05d8de2ca8bd98245efc5a394c9a67e9c4dc7f1f6d74f3b158ad2"
+      },
+      "soldier_move_north-east_01.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          89,
+          62,
+          144,
+          180
+        ],
+        "encoded_sha256": "5a2375cc1fbf97309cfeec8d62bcfcdf7290f41947632b4932f68756f1a4af5a",
+        "pixel_sha256": "358bc81dc536801c7406f7b5dabfd9c0179f786b77d7e065f0836d5a644abfe1"
+      },
+      "soldier_move_north-east_02.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          65,
+          152,
+          180
+        ],
+        "encoded_sha256": "e0ad8828235e40e4f46b36e93253fa639a495256dcf8443389608e50d8e8167e",
+        "pixel_sha256": "4faaf256ead3a622ea08f562efbd34b8700b8b22ab0f3ede650d3fd6d17f8372"
+      },
+      "soldier_move_north-east_03.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          68,
+          149,
+          180
+        ],
+        "encoded_sha256": "9e146ec1e4c959f1163449aad374e68f734d83579285a75293c28e2ea36c2837",
+        "pixel_sha256": "cda2fe7fa12854f66a607483fbe5399a406d2cb5d95ab18b406d0968c4abd3cb"
+      },
+      "soldier_move_north-east_04.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          64,
+          146,
+          175
+        ],
+        "encoded_sha256": "4ac91ddf9c777edf4b06823dafff875a56389350df117887164f097ddcbe0471",
+        "pixel_sha256": "b8b3a3dad0cd71597dca923e3ee9d3f2874cac97e5ca5d92d0137358c4207494"
+      },
+      "soldier_move_north-east_05.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          62,
+          151,
+          175
+        ],
+        "encoded_sha256": "9e00a43891c99bd13e8f0de68772296e9a8745244ed22c31e56448cfe772e87e",
+        "pixel_sha256": "0fb636f56e7e3c7cd8e0b8cc74b6247675b9b064c76d96d0f8c380235de3bb1c"
+      },
+      "soldier_move_north_00.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          83,
+          66,
+          157,
+          179
+        ],
+        "encoded_sha256": "773b34789722f5afb28544cab7298b68ec71cbd43e692088e6fb9edba64ba465",
+        "pixel_sha256": "a9b2d94629ac974b19bafe815eb4ff1541ce0a0512a3d5a12135bd84c496b2a9"
+      },
+      "soldier_move_north_01.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          82,
+          68,
+          153,
+          179
+        ],
+        "encoded_sha256": "ea694274de60f93fd752e93b67aa18180a0a80be0d11e246e17de53d29469bfc",
+        "pixel_sha256": "1c40b2fabf927af7d72527a2414d5c853fd5a8e209876303ccf5609b115a4542"
+      },
+      "soldier_move_north_02.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          82,
+          67,
+          148,
+          178
+        ],
+        "encoded_sha256": "ef01302329dec6bb2f3aaea1f1d46062b9dfcf7afa0bf811b678837ccf8a36e5",
+        "pixel_sha256": "b64f1b114bf42f251c77a293643d90128ce0c53b295ae494347b7bc3e463fd82"
+      },
+      "soldier_move_north_03.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          86,
+          64,
+          146,
+          178
+        ],
+        "encoded_sha256": "8219a2561b0c02373f9a5199b816257e909ec73801d82532f6e47b9b14f25d82",
+        "pixel_sha256": "e6f4670993f3dcdf8c024c7e5b82a045b8b579b71bc06ab6d5ef1c6d0f64f7da"
+      },
+      "soldier_move_north_04.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          63,
+          150,
+          174
+        ],
+        "encoded_sha256": "b229b7594ca69e622f55df4bf1bc100b465a7147cd6300eddfe7859140273af3",
+        "pixel_sha256": "0f495fb92afaee6e01ea00965d64b43dc498a03b1cd2261cf9811a8b8a310899"
+      },
+      "soldier_move_north_05.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          85,
+          64,
+          156,
+          171
+        ],
+        "encoded_sha256": "ce38292ea449dc248afcdc955767e89b14053f7ac31ac0406933785bb75d6c59",
+        "pixel_sha256": "135d8785e5db612dcf58badd129ace60a0682f19fdba87e9415bec40f0a0dab3"
+      },
+      "soldier_move_north-west_00.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          64,
+          158,
+          177
+        ],
+        "encoded_sha256": "a23cf668f7d6d1a4abd951c040b62e331a31a6e6d496f8a68f90c81849748ede",
+        "pixel_sha256": "6b53ab877357a3acb9d2690ca72fc2b87b81dde3c0a4e55296a4e0c9da13e09c"
+      },
+      "soldier_move_north-west_01.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          83,
+          65,
+          161,
+          177
+        ],
+        "encoded_sha256": "084464304f4863d181e1c8134d7e0f38ae5d6e891e28ec0d0f619d01ec1723a0",
+        "pixel_sha256": "c1df8bf3f773522c93380a90cbe963410b9f39c9d89f8127562a1ce1a6550e7c"
+      },
+      "soldier_move_north-west_02.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          66,
+          164,
+          177
+        ],
+        "encoded_sha256": "8810aea4b841fbb6f0ba52853c3b457f0c67d6e172bc97f78885bb19c844da48",
+        "pixel_sha256": "2a4ffefcfd5fd347753c23f6296cb7effc3a15e26882d190ed93a05526889fe4"
+      },
+      "soldier_move_north-west_03.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          65,
+          162,
+          177
+        ],
+        "encoded_sha256": "a1c3d33f55c763b3b66fd587fb17778eb9c7d1524f220761b40b67340d80960a",
+        "pixel_sha256": "4ac958849bffe3a6c9f74aa531d232549a61aab277faae09d9e33951dcc709a8"
+      },
+      "soldier_move_north-west_04.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          94,
+          65,
+          160,
+          177
+        ],
+        "encoded_sha256": "3352db014fb655cec3827b7491e486c7c31359b380cd5414e66402fe83b86360",
+        "pixel_sha256": "15ca32f86bbbb1e0488ad24f4356bff7f4f5853b92808b38ee0e136598009e9f"
+      },
+      "soldier_move_north-west_05.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          64,
+          156,
+          177
+        ],
+        "encoded_sha256": "9f0be68df5b3db1dfc7f7383e39b7206fb77b34d9b80e864bc8ac4e8ab323626",
+        "pixel_sha256": "5c54421966df53961b8d4f73e639c6f729ff601cce324286cd8b101225415c26"
+      },
+      "soldier_move_west_00.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          92,
+          63,
+          156,
+          180
+        ],
+        "encoded_sha256": "57bc25582afa6003af0476e940bee8a7af5dd6f07c7b79e2218a460ad98e75ee",
+        "pixel_sha256": "356b912bc00d0021b3183ec4504cdd76d3605d43a7e6c1b9cf45597582910744"
+      },
+      "soldier_move_west_01.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          67,
+          155,
+          180
+        ],
+        "encoded_sha256": "53e3a83243ce4c71903cab3f3bbadceb12a35907979c3d96422d60a69dd49857",
+        "pixel_sha256": "6e1ccfd3dc0cebeb12575d09feb9bfdfe2418851705ca8276797b7fc14b246c3"
+      },
+      "soldier_move_west_02.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          67,
+          157,
+          179
+        ],
+        "encoded_sha256": "83a8dfe89937be09a242dce2aead1131ffae540650c21f50372449a2844c004b",
+        "pixel_sha256": "dc6f1bd46fd698ddbb9dc58e8e8049ef1b25794fb67b70d0a632b085f19400ac"
+      },
+      "soldier_move_west_03.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          104,
+          63,
+          157,
+          177
+        ],
+        "encoded_sha256": "5346145b51119d227d6ad2f84877e552e5d73845cf19b3ee53f9b395bcf75dbc",
+        "pixel_sha256": "bb4ef17215009c4aecce06d854bcc2148be74964f69f947b1c4d434cd6680f38"
+      },
+      "soldier_move_west_04.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          97,
+          63,
+          157,
+          178
+        ],
+        "encoded_sha256": "8252f1bc4cc2913c186d5ba3e7e2ac4406ccf7b646e487a30b6dbc99e1a348fa",
+        "pixel_sha256": "09f8eb22f1fda5809ee354b7f15d3f6abf43cfd204079742fbed3ed5fa7a8686"
+      },
+      "soldier_move_west_05.png": {
+        "size": [
+          244,
+          244
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          86,
+          66,
+          160,
+          179
+        ],
+        "encoded_sha256": "3b6e5ade87dba1775697b9f82dc8912c4e18cf6e41daa0cca18cd81888c3c52e",
+        "pixel_sha256": "f820a6e981736b5e9458274cbe590c0e5ef45fa26f996d9e0b820ed34c8cf6c9"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
   }
 }
