@@ -11,26 +11,71 @@
     "mechanics_owner": "FAN-1487"
   },
   "generator_provenance": {
-    "route": "reused_accepted_doctor_assets_no_new_raster_generation",
+    "route": "reused_accepted_fan3613_animation_packs",
     "new_pixellab_assets": [],
+    "asset_source_issue": "FAN-3613",
+    "pack_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_fan3613.json",
+    "pixel_lab": "nine weapon-local animation packs accepted under FAN-3613; PixelLab object and animation IDs live in the per-pack provenance manifests",
     "reused_sources": {
       "restore_potion": {
-        "source_path": "docs/design/references/weapon_attack_animations/restore_potion/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_restore_potion.png",
-        "weapon_path": "assets/sprites/weapons/restore_potion.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "poison_pool",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_poison_pool.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_victim_impact.json"
+        }
       },
       "plague_syringe": {
-        "source_path": "docs/design/references/weapon_attack_animations/plague_syringe/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_plague_syringe.png",
-        "weapon_path": "assets/sprites/weapons/plague_syringe.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "infection_wave",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_infection_wave.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_victim_impact.json"
+        }
       },
       "bone_saw": {
-        "source_path": "docs/design/references/weapon_attack_animations/bone_saw/vfx_weapon_bone_saw_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_bone_saw.png",
-        "weapon_path": "assets/sprites/weapons/bone_saw.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "orbit_slash",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/orbit_slash/orbit_slash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_orbit_slash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_orbit_slash.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_victim_impact.json"
+        }
       }
     }
   },
@@ -165,11 +210,12 @@
   },
   "evidence": {
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_2k.png"
     ],
+    "contact_sheet_storage": "Git LFS, docs/design/reference-assets-lfs/<issue-or-pack>/ (tools/repository_storage_policy.py)",
     "capture_script": "tests/ultimates/presentation/doctor_ultimate_contact_capture.gd",
     "focused_test": "tests/ultimates/presentation/doctor_ultimate_timelines.gd"
   }

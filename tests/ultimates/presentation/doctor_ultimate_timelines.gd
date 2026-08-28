@@ -14,6 +14,10 @@ const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/doctor.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/doctor/manifest.json"
+const README_PATH := "res://docs/design/references/weapon_ultimates/doctor/README.md"
+## Retired claims: the runtime samples the FAN-3613 packs, never the weapon
+## sprites or the attack-VFX rasters the first package described.
+const STALE_PROVENANCE_CLAIMS: Array[String] = ["assets/sprites/weapons/", "gpt-image", "vfx_weapon_"]
 const SCENE_PATHS := {
 	Pack.RESTORE_POTION: "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
 	Pack.PLAGUE_SYRINGE: "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
@@ -57,11 +61,14 @@ const PACKS := [
 		],
 	},
 ]
+## Derived evidence, so it lives in the LFS zone the repository storage policy
+## mandates for changed design binaries — never next to the hand-written docs.
+const CAPTURE_ROOT := "res://docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691"
 const CAPTURES := [
-	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"name": "2k", "path": "res://docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"name": "648p", "path": CAPTURE_ROOT + "/doctor_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "path": CAPTURE_ROOT + "/doctor_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "path": CAPTURE_ROOT + "/doctor_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2k", "path": CAPTURE_ROOT + "/doctor_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 ## The integrated FAN-3613 packs each scene must draw, and which named node
 ## draws which. A pack is weapon-local: a scene wired to a sibling weapon's pack
@@ -119,6 +126,32 @@ const SHEET_TITLE_FONT_RATIO := 0.036
 const SHEET_TEXT_MARGIN := 8.0
 const CAPTURE_ALPHA_EPSILON := 0.01
 
+## FAN-3691 seam window. Bone Saw's fastest phase turns at ~41 rad/s, so 2 ms of
+## drawn motion is ~0.08 rad; the rejected candidate reset its phase-local spin
+## term and snapped ~2.79 rad at every boundary instead.
+const SEAM_EPSILON := 0.002
+const MAX_SEAM_ROTATION_STEP := 0.20
+const SEAM_BOUNDARIES: Array[String] = ["release", "active", "recovery"]
+
+## Step of the sweeps that drive `preview_at()` from a run's history rather than
+## from a fresh scene.
+const SEEK_SWEEP_STEP := 0.05
+
+## Real wall time the pause ratchet burns before it re-reads the pose: the burst
+## flipbook plays its pack in `BURST_SECONDS`, so an unfrozen one advances
+## several frames over this window. `RESUME_SLACK_SECONDS` is the only slack the
+## resumed read gets on top of its own measured wall time.
+const PAUSE_TICK_MSEC := 60
+const PAUSE_TICKS := 3
+const RESUME_SLACK_SECONDS := 0.05
+
+## One beat plan, replayed per run: two eligible enemies, a payload that names
+## the same enemy twice, a beat that hit nobody, and the first beat delivered a
+## second time. Indices address the eligible probes; every other probe must stay
+## at zero impacts.
+const MULTIPLICITY_RUNS := 2
+const MULTIPLICITY_PLAN := [[0, 1], [2, 2], [], [0, 1]]
+
 
 class HandleProbe extends RefCounted:
 	var released := 0
@@ -158,10 +191,16 @@ func _initialize() -> void:
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
+	_check_phase_seams(errors)
+	_check_seek_determinism(errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_check_scene_lifecycle(registry, str(weapon_id), errors)
 		_check_repeat_activation(registry, str(weapon_id), errors)
 		_check_victim_impacts(registry, str(weapon_id), errors)
+		_check_restart_over_active_run(registry, str(weapon_id), errors)
+		_check_impact_multiplicity(registry, str(weapon_id), errors)
+	# Last: the freeze ratchet is the only check that needs real engine ticks.
+	await _check_pause_freeze(registry, errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -221,23 +260,68 @@ func _check_manifest_document(manifests: Dictionary, errors: Array[String]) -> v
 	_expect(str(contract.get("runtime_adapter_status", "")).contains("FAN-1541"), "manifest must retain the runtime integration owner", errors)
 	_expect(str(contract.get("mechanics_owner", "")) == "FAN-1487", "manifest must keep gameplay with FAN-1487", errors)
 	var provenance := document.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_accepted_doctor_assets_no_new_raster_generation", "provenance must record accepted-asset reuse", errors)
+	_expect(str(provenance.get("route", "")) == "reused_accepted_fan3613_animation_packs", "provenance must record the FAN-3613 pack integration", errors)
 	_expect((provenance.get("new_pixellab_assets", []) as Array).is_empty(), "no new PixelLab assets may be claimed", errors)
-	var reused := provenance.get("reused_sources", {}) as Dictionary
+	_check_bound_pack_provenance(provenance, errors)
 	var packages := _packages_by_weapon(document)
 	for weapon_id in Pack.WEAPON_IDS:
 		var key := str(weapon_id)
 		var config := Pack.weapon_config(key)
-		var source := reused.get(key, {}) as Dictionary
-		for field in ["source_path", "runtime_path", "weapon_path"]:
-			var resource_path := "res://%s" % str(source.get(field, ""))
-			_expect(FileAccess.file_exists(resource_path), "%s provenance %s must exist" % [key, field], errors)
 		var package := packages.get(key, {}) as Dictionary
 		_expect((package.get("timing_seconds", {}) as Dictionary) == (manifests.get(key, {}) as Dictionary).get("timing", {}), "%s evidence timing must match the runtime manifest" % key, errors)
 		_expect(str(package.get("silhouette", "")) == str(config.get("silhouette", "")), "%s silhouette evidence must match the scene contract" % key, errors)
 		_expect(str(package.get("motion_path", "")) == str(config.get("motion", "")), "%s motion evidence must match the scene contract" % key, errors)
 		_expect(str(package.get("impact_language", "")) == str(config.get("impact", "")), "%s impact evidence must match the scene contract" % key, errors)
 		_expect(int((package.get("performance", {}) as Dictionary).get("max_visual_nodes", -1)) == int(config.get("max_visual_nodes", 0)), "%s visual budget must match the scene" % key, errors)
+
+
+## Provenance must name the packs the scenes really draw. The class manifest,
+## the FAN-3613 pack manifest, the README and the scene exports are cross-read
+## against each other, and no document may still claim the retired GPT-image
+## weapon sprites the runtime stopped sampling.
+func _check_bound_pack_provenance(provenance: Dictionary, errors: Array[String]) -> void:
+	var pack_manifest := _load_json("res://%s" % str(provenance.get("pack_manifest", "")), errors)
+	var pack_rows := {}
+	for raw_row in pack_manifest.get("packs", []) as Array:
+		var row := raw_row as Dictionary
+		pack_rows["%s/%s" % [str(row.get("weapon_id", "")), str(row.get("effect_id", ""))]] = row
+	var readme := FileAccess.get_file_as_string(README_PATH)
+	_expect(not readme.is_empty(), "Doctor README must be readable", errors)
+	var bound := provenance.get("reused_sources", {}) as Dictionary
+	var enumerated := 0
+	for weapon_id in Pack.WEAPON_IDS:
+		var key := str(weapon_id)
+		var binding: Dictionary = PACK_BINDINGS.get(key, {})
+		var packed: PackedScene = load(str(SCENE_PATHS.get(key, "")))
+		if packed == null:
+			continue
+		var scene := packed.instantiate() as Node2D
+		root.add_child(scene)
+		var declared := bound.get(key, {}) as Dictionary
+		_expect(declared.size() == PACK_ROLES.size(), "%s provenance must enumerate all three bound packs" % key, errors)
+		for role in PACK_ROLES:
+			var export_name := "%s_frames" % role
+			var entry := declared.get(export_name, {}) as Dictionary
+			var effect := str(binding.get(role, ""))
+			var frames: SpriteFrames = scene.get(export_name)
+			var spriteframes := str(entry.get("spriteframes", ""))
+			_expect(str(entry.get("effect_id", "")) == effect, "%s %s provenance must name effect %s" % [key, export_name, effect], errors)
+			_expect(frames != null and spriteframes == frames.resource_path.trim_prefix("res://"),
+				"%s %s provenance must name the pack the scene binds" % [key, export_name], errors)
+			_expect(pack_rows.has("%s/%s" % [key, effect]), "%s/%s must exist in the FAN-3613 pack manifest" % [key, effect], errors)
+			_expect(str((pack_rows.get("%s/%s" % [key, effect], {}) as Dictionary).get("runtime_spriteframes", "")) == spriteframes,
+				"%s %s must match the FAN-3613 pack manifest" % [key, export_name], errors)
+			for field in ["source_dir", "provenance_manifest"]:
+				_expect(FileAccess.file_exists("res://%s" % str(entry.get(field, ""))) \
+						or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://%s" % str(entry.get(field, "")))),
+					"%s %s provenance %s must exist" % [key, export_name, field], errors)
+			_expect(readme.contains(spriteframes), "Doctor README must name the bound %s %s pack" % [key, export_name], errors)
+			enumerated += 1
+		scene.free()
+	_expect(enumerated == 9, "provenance must enumerate the nine bound FAN-3613 packs, enumerated %d" % enumerated, errors)
+	for stale in STALE_PROVENANCE_CLAIMS:
+		_expect(not JSON.stringify(provenance).contains(stale), "manifest provenance must not claim %s" % stale, errors)
+		_expect(not readme.contains(stale), "Doctor README must not claim %s" % stale, errors)
 
 
 func _check_distinction(manifests: Dictionary, errors: Array[String]) -> void:
@@ -558,14 +642,13 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 		_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES \
 				and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES,
 			"%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
-		# A paused cast freezes the ripple with the rest of the pose. Godot only
-		# turns a fresh node's `_process` on at the next frame, so the flag is
-		# set here first and the assertions below measure the pause alone.
-		(impacts as Node).set_process(true)
+		# A paused cast freezes the ripple with the rest of the pose: the whole
+		# subtree stops, so the queue and every burst flipboook under it hold
+		# together. `_check_pause_freeze` measures the frozen frames themselves.
 		scene.set_paused(true)
-		_expect(not (impacts as Node).is_processing(), "%s pause must freeze the victim ripple" % weapon_id, errors)
+		_expect((impacts as Node).process_mode == Node.PROCESS_MODE_DISABLED, "%s pause must freeze the victim ripple" % weapon_id, errors)
 		scene.set_paused(false)
-		_expect((impacts as Node).is_processing(), "%s resume must continue the victim ripple" % weapon_id, errors)
+		_expect((impacts as Node).process_mode == Node.PROCESS_MODE_INHERIT, "%s resume must continue the victim ripple" % weapon_id, errors)
 		# A multi-beat cast pulses the same crowd again: the later beat joins the
 		# running ripple instead of restarting it.
 		scene.present("fixture.beat", {"victims": [victims[0]]})
@@ -586,6 +669,318 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 	for victim in victims:
 		victim.free()
 	scene.free()
+
+
+## A phase boundary is a seam in the driver, never in the picture: a node drawn
+## on both sides of one may not jump. Bone Saw additionally has to keep turning
+## the same way across every boundary.
+func _check_phase_seams(errors: Array[String]) -> void:
+	for weapon_id in Pack.WEAPON_IDS:
+		var key := str(weapon_id)
+		var packed: PackedScene = load(str(SCENE_PATHS.get(key, "")))
+		if packed == null:
+			continue
+		var scene := packed.instantiate() as Node2D
+		root.add_child(scene)
+		var timing: Dictionary = Pack.weapon_config(key).get("timing", {})
+		# Only the orbiting flipbooks carry a turn of their own; the rest are
+		# still geometry whose rotation is a constant on both sides of a seam.
+		var forward: Dictionary = (PACK_BINDINGS.get(key, {}) as Dictionary).get("nodes", {}) if key == Pack.BONE_SAW else {}
+		for phase_name in SEAM_BOUNDARIES:
+			var boundary := float(timing.get(phase_name, 0.0))
+			var samples: Array[Dictionary] = []
+			for offset in [-SEAM_EPSILON, 0.0, SEAM_EPSILON]:
+				scene.preview_at(boundary + offset)
+				samples.append(_rotation_sample(scene))
+			for step in samples.size() - 1:
+				_compare_seam(key, boundary, samples[step], samples[step + 1], forward, errors)
+		scene.free()
+
+
+func _compare_seam(weapon_id: String, boundary: float, before: Dictionary, after: Dictionary, forward: Dictionary, errors: Array[String]) -> void:
+	for node_name in before:
+		if not after.has(node_name):
+			continue
+		var delta := angle_difference(float(before[node_name]), float(after[node_name]))
+		_expect(absf(delta) <= MAX_SEAM_ROTATION_STEP,
+			"%s/%s rotation jumps %.4f rad across the %.2fs boundary" % [weapon_id, node_name, delta, boundary], errors)
+		if forward.has(node_name):
+			_expect(delta > 0.0,
+				"%s/%s must keep turning the same way across the %.2fs boundary (delta %.4f rad)" % [weapon_id, node_name, boundary, delta], errors)
+
+
+func _rotation_sample(scene: Node2D) -> Dictionary:
+	var sample := {}
+	for child in scene.get_children():
+		var item := child as CanvasItem
+		if item == null or not item.visible:
+			continue
+		sample[str(child.name)] = (child as Node2D).rotation
+	return sample
+
+
+## `preview_at()` is a pure function of elapsed time: the same moment must draw
+## the same pose whether it is reached fresh, swept forwards, swept past and
+## back, or re-read. Anything a phase mutates and a later phase leaves alone
+## would otherwise leak the run's history into the picture.
+func _check_seek_determinism(errors: Array[String]) -> void:
+	for raw_pack in PACKS:
+		var pack := raw_pack as Dictionary
+		var key := str(pack.get("weapon_id", ""))
+		var frames := pack.get("frames", []) as Array
+		var probe := float((frames[frames.size() - 1] as Dictionary).get("time", 0.0))
+		var total := Pack.timeline_seconds(key)
+		var fresh := _seek_snapshot(pack, [probe])
+		var routes := {
+			"sequential": _sweep_times(0.0, probe),
+			"backward_then_forward": _sweep_times(0.0, total) + _sweep_times(total, probe),
+			"repeated": [probe, probe, probe],
+		}
+		for route in routes:
+			_expect(_seek_snapshot(pack, routes[route] as Array) == fresh,
+				"%s %s seek to %.2fs must draw the same pose as a fresh seek" % [key, str(route), probe], errors)
+
+
+func _seek_snapshot(pack: Dictionary, times: Array) -> String:
+	var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
+	root.add_child(scene)
+	for time in times:
+		scene.preview_at(float(time))
+	var snapshot := _scene_snapshot(scene)
+	scene.free()
+	return snapshot
+
+
+func _sweep_times(from_seconds: float, to_seconds: float) -> Array:
+	var times: Array = []
+	var span := absf(to_seconds - from_seconds)
+	var steps := int(span / SEEK_SWEEP_STEP)
+	var direction := signf(to_seconds - from_seconds)
+	for index in steps:
+		times.append(from_seconds + direction * float(index) * SEEK_SWEEP_STEP)
+	times.append(to_seconds)
+	return times
+
+
+## Re-activation over a live run. `begin()` finishes the previous run first, so
+## the old run's pending and active impacts, its victim state and its handles are
+## gone before the new run can draw anything, and only the new run emits.
+func _check_restart_over_active_run(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	for stage in ["before_impact", "impact_active", "beats_pending"]:
+		var scene := packed.instantiate() as Node2D
+		root.add_child(scene)
+		var first := _probes()
+		scene.begin(registry, first, 0)
+		var declared := scene.get_child_count()
+		var stale := _victim_probes(3)
+		if stage != "before_impact":
+			scene.present("stale.beat", {"victims": stale})
+			var running := _impact_player(scene)
+			_expect(running != null, "%s %s must open the old run's ripple" % [weapon_id, stage], errors)
+			if running != null and stage == "impact_active":
+				running.call("advance", 0.05)
+		var carried := _flash_counts(stale)
+
+		scene.begin(registry, _probes(), 0)
+		_expect(_impact_player(scene) == null, "%s %s restart must drop the old run's ripple" % [weapon_id, stage], errors)
+		_expect(scene.get_child_count() == declared, "%s %s restart must rebuild exactly the declared visual nodes" % [weapon_id, stage], errors)
+		for handle in first.values():
+			_expect((handle as HandleProbe).released == 1, "%s %s restart must release every old handle once" % [weapon_id, stage], errors)
+		scene.step(0.5)
+		_expect(_flash_counts(stale) == carried, "%s %s restart must not emit the old run's impacts" % [weapon_id, stage], errors)
+
+		var fresh := _victim_probes(2, 900.0)
+		scene.present("fresh.beat", {"victims": fresh})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s %s new run must open its own ripple" % [weapon_id, stage], errors)
+		if impacts != null:
+			impacts.call("advance", 2.0)
+		for victim in fresh:
+			_expect((victim as VictimProbe).flashes == 1, "%s %s new run must burst once on its own enemies" % [weapon_id, stage], errors)
+		_expect(_flash_counts(stale) == carried, "%s %s old-run enemies must never receive a new-run impact" % [weapon_id, stage], errors)
+		scene.finish("cancel")
+		_free_victims(stale)
+		_free_victims(fresh)
+		scene.free()
+
+
+## Exact impact multiplicity. Every (run, beat, eligible enemy) tuple draws
+## exactly one impact — a payload naming the same enemy twice still draws one,
+## a beat that hit nobody draws none, an unaffected enemy never appears, and a
+## beat arriving after the run ended draws nothing at all.
+func _check_impact_multiplicity(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	var eligible := _victim_probes(3)
+	var untouched := _victim_probes(2, 900.0)
+	var watched: Array[Node2D] = []
+	watched.append_array(eligible)
+	watched.append_array(untouched)
+	var expected: Array[String] = []
+	var observed: Array[String] = []
+	for run in MULTIPLICITY_RUNS:
+		scene.begin(registry, _probes(), 0)
+		for beat in MULTIPLICITY_PLAN.size():
+			var indices := MULTIPLICITY_PLAN[beat] as Array
+			var payload: Array[Node2D] = []
+			var unique := {}
+			for index in indices:
+				payload.append(eligible[int(index)])
+				unique[int(index)] = true
+			for index in unique:
+				expected.append("run%d.beat%d.victim%d" % [run, beat, int(index)])
+			var before := _flash_counts(watched)
+			scene.present("multiplicity.beat.%d" % beat, {"victims": payload})
+			var impacts := _impact_player(scene)
+			if impacts != null:
+				impacts.call("advance", 2.0)
+			var after := _flash_counts(watched)
+			for slot in watched.size():
+				for _repeat in after[slot] - before[slot]:
+					observed.append("run%d.beat%d.victim%d" % [run, beat, slot])
+		scene.finish("cancel")
+	expected.sort()
+	observed.sort()
+	_expect(observed == expected, "%s impact multiset %s must equal the eligible expectation %s" % [weapon_id, observed, expected], errors)
+
+	var ended := _flash_counts(watched)
+	scene.present("multiplicity.beat.stale", {"victims": eligible})
+	_expect(_impact_player(scene) == null, "%s must not open a ripple for a beat that arrives after the run ended" % weapon_id, errors)
+	_expect(_flash_counts(watched) == ended, "%s stale beat must not flash any enemy" % weapon_id, errors)
+	_free_victims(watched)
+	scene.free()
+
+
+## Pause freezes the whole cast, the running victim burst included. The burst is
+## a child flipbook playing on its own clock, so freezing the container's
+## `_process` alone left it running: the pose is re-read after real wall time
+## has passed, and the resumed burst may only advance by its own resumed time.
+func _check_pause_freeze(registry, errors: Array[String]) -> void:
+	for weapon_id in Pack.WEAPON_IDS:
+		var key := str(weapon_id)
+		var packed: PackedScene = load(str(SCENE_PATHS.get(key, "")))
+		if packed == null:
+			continue
+		var scene := packed.instantiate() as Node2D
+		root.add_child(scene)
+		scene.begin(registry, _probes(), 0)
+		var victims := _victim_probes(3)
+		scene.present("pause.beat", {"victims": victims})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s must open a ripple to freeze" % key, errors)
+		if impacts == null:
+			_free_victims(victims)
+			scene.free()
+			continue
+		impacts.call("advance", 0.0)
+		await process_frame
+		var opened := _impact_progress(impacts)
+		_expect(opened >= 0.0, "%s must expose a live burst to freeze" % key, errors)
+
+		scene.set_paused(true)
+		var frozen_impacts := _impact_pose(impacts)
+		var frozen_scene := _scene_snapshot(scene)
+		for tick in PAUSE_TICKS:
+			OS.delay_msec(PAUSE_TICK_MSEC)
+			await process_frame
+			await physics_frame
+		_expect(_impact_pose(impacts) == frozen_impacts, "%s pause must freeze the running victim burst" % key, errors)
+		_expect(_scene_snapshot(scene) == frozen_scene, "%s pause must freeze the cast pose" % key, errors)
+
+		var held := _impact_progress(impacts)
+		scene.set_paused(false)
+		var resumed_at := Time.get_ticks_msec()
+		OS.delay_msec(PAUSE_TICK_MSEC)
+		await process_frame
+		await process_frame
+		var resumed_seconds := float(Time.get_ticks_msec() - resumed_at) / 1000.0
+		var advanced := _impact_progress(impacts) - held
+		_expect(advanced > 0.0, "%s resume must continue the victim burst" % key, errors)
+		_expect(advanced <= (resumed_seconds + RESUME_SLACK_SECONDS) * _burst_frames_per_second(impacts),
+			"%s resume must not add the paused wall time (advanced %.3f frames in %.3fs)" % [key, advanced, resumed_seconds], errors)
+
+		scene.finish("cancel")
+		_free_victims(victims)
+		scene.free()
+
+
+## Total frames the first live burst has played, fractional part included.
+func _impact_progress(impacts: Node) -> float:
+	for child in impacts.get_children():
+		var sprite := child as AnimatedSprite2D
+		if sprite != null and sprite.visible:
+			return float(sprite.frame) + sprite.frame_progress
+	return -1.0
+
+
+func _burst_frames_per_second(impacts: Node) -> float:
+	for child in impacts.get_children():
+		var sprite := child as AnimatedSprite2D
+		if sprite != null and sprite.sprite_frames != null:
+			return float(sprite.sprite_frames.get_frame_count(sprite.animation)) / ImpactPlayer.BURST_SECONDS
+	return 1.0
+
+
+func _impact_pose(impacts: Node) -> String:
+	var parts: Array[String] = [str(impacts.call("snapshot"))]
+	for child in impacts.get_children():
+		var sprite := child as AnimatedSprite2D
+		if sprite == null:
+			continue
+		parts.append("%s|%s|%d|%.6f|%.6f,%.6f|%.6f" % [
+			sprite.name, sprite.visible, sprite.frame, sprite.frame_progress,
+			sprite.global_position.x, sprite.global_position.y, sprite.modulate.a,
+		])
+	return "\n".join(parts)
+
+
+## Every property `preview_at()` may mutate, at full precision.
+func _scene_snapshot(scene: Node2D) -> String:
+	var parts: Array[String] = []
+	for child in scene.get_children():
+		var item := child as CanvasItem
+		if item == null:
+			continue
+		var node := child as Node2D
+		var frame := -1
+		var progress := 0.0
+		if child is AnimatedSprite2D:
+			frame = (child as AnimatedSprite2D).frame
+			progress = (child as AnimatedSprite2D).frame_progress
+		parts.append("%s|%s|%.6f,%.6f|%.6f|%.6f,%.6f|%.6f|%d|%.6f" % [
+			child.name, item.visible, node.position.x, node.position.y, node.rotation,
+			node.scale.x, node.scale.y, item.modulate.a, frame, progress,
+		])
+	return "\n".join(parts)
+
+
+func _victim_probes(count: int, offset := 0.0) -> Array[Node2D]:
+	var victims: Array[Node2D] = []
+	for index in count:
+		var victim := VictimProbe.new()
+		victim.global_position = Vector2(80.0 + offset + float(index) * 120.0, 0.0)
+		root.add_child(victim)
+		victims.append(victim)
+	return victims
+
+
+func _flash_counts(victims: Array) -> Array[int]:
+	var counts: Array[int] = []
+	for victim in victims:
+		counts.append((victim as VictimProbe).flashes)
+	return counts
+
+
+func _free_victims(victims: Array) -> void:
+	for victim in victims:
+		if is_instance_valid(victim):
+			(victim as Node).free()
 
 
 func _impact_player(scene: Node) -> Node:

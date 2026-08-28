@@ -30,6 +30,11 @@ const WAVE_PACK_SCALE := 0.64
 ## continues the active count instead of restarting, so the pool never seams.
 const POOL_ACTIVE_PLAYS := 4.0
 
+## Blade spin per whole orbit revolution, on top of the orbit angle itself. It
+## rides the cumulative turn count for the same reason the orbit does: a
+## phase-local spin resets at every boundary and snaps the blades back.
+const SAW_SPIN_PER_TURN := 3.5
+
 @export var weapon_id: String = Pack.RESTORE_POTION
 
 ## Weapon-local animated packs (FAN-3613), assigned per scene.
@@ -69,7 +74,7 @@ func set_paused(value: bool) -> void:
 	if _timeline != null:
 		_timeline.set_paused(value)
 	if _impacts != null and is_instance_valid(_impacts):
-		_impacts.set_process(not value)
+		_impacts.set_paused(value)
 
 
 func is_active() -> bool:
@@ -101,8 +106,13 @@ func preview_at(elapsed: float) -> void:
 
 ## One executor beat. A beat that names the enemies it actually damaged gets the
 ## weapon-local impact burst on each of them; every other beat draws nothing
-## here, so an unaffected target can never receive one.
+## here, so an unaffected target can never receive one. Only the live run draws:
+## the mechanics chain outlasts the presentation, so a beat arriving after this
+## run ended — or belonging to a run `begin()` has already replaced — is dropped
+## instead of opening a ripple nothing would ever tick.
 func present(_event_id: String, payload: Dictionary) -> void:
+	if not is_active():
+		return
 	var victims: Array = payload.get(VICTIMS_KEY, [])
 	if victims.is_empty() or impact_frames == null:
 		return
@@ -117,8 +127,9 @@ func present(_event_id: String, payload: Dictionary) -> void:
 
 
 func finish(reason: String) -> Dictionary:
-	# Ahead of the early return: `begin()` finishes the previous run first, so a
-	# repeat activation must not inherit its predecessor's live bursts.
+	# Every ending releases the ripple, including a `finish()` on a run that is
+	# already gone: `begin()` finishes the previous run before it builds the new
+	# one, so a repeat activation can never inherit live bursts.
 	_clear_impacts()
 	if _timeline == null:
 		return {}
@@ -214,6 +225,7 @@ func _preview_restore(phase: String, progress: float) -> void:
 		"release":
 			_play(bottle, 1.0 - progress * 0.55, progress)
 			bottle.position = target
+			bottle.rotation = 1.1 + progress * 0.08
 			bottle.scale = Vector2.ONE * (0.84 + sin(progress * PI) * 0.22)
 			_show(shards, 0.92)
 			shards.position = target
@@ -239,16 +251,19 @@ func _preview_restore(phase: String, progress: float) -> void:
 			# closes across the phase boundary instead of snapping back to frame 0.
 			_play(outer, (1.0 - progress) * 0.46, POOL_ACTIVE_PLAYS + progress)
 			outer.position = target
+			outer.rotation = -1.3 - progress * 0.35
 			outer.scale = Vector2.ONE * (1.22 + progress * 0.20)
 			_show(inner, (1.0 - progress) * 0.68)
 			inner.position = target
 			inner.rotation = 2.6 + progress * 1.2
+			inner.scale = Vector2.ONE * (0.62 + progress * 0.10)
 			_show(shield, (1.0 - progress) * 0.86)
 			shield.position = Vector2(-72, 20)
 			shield.scale = Vector2.ONE * (0.86 + sin(progress * PI) * 0.08)
 		"cancel":
 			_show(shield, (1.0 - progress) * 0.35)
 			shield.position = Vector2(-72, 20)
+			shield.scale = Vector2.ONE * 0.86
 
 
 func _preview_plague(phase: String, progress: float) -> void:
@@ -285,6 +300,7 @@ func _preview_plague(phase: String, progress: float) -> void:
 			_show(patient, 0.88 - progress * 0.24)
 			patient.position = target
 			patient.rotation = progress * 2.0
+			patient.scale = Vector2.ONE * 0.90
 			for vein in [veins_a, veins_b]:
 				_show(vein, 0.78 - progress * 0.18)
 				vein.position = target
@@ -304,6 +320,7 @@ func _preview_plague(phase: String, progress: float) -> void:
 		"cancel":
 			_show(patient, 0.26 * (1.0 - progress))
 			patient.position = target
+			patient.scale = Vector2.ONE * 0.90
 
 
 func _preview_saw(phase: String, progress: float) -> void:
@@ -340,7 +357,7 @@ func _preview_saw(phase: String, progress: float) -> void:
 		# stance and then hold the finished blade for the rest of the orbit.
 		_play(saw, alpha, turns)
 		saw.position = center + Vector2.from_angle(angle) * radius
-		saw.rotation = angle + progress * 3.5
+		saw.rotation = angle + turns * SAW_SPIN_PER_TURN
 		saw.scale = Vector2.ONE * (0.38 + (0.08 if phase == "active" else 0.0))
 	var arc := _visuals["arc"] as AnimatedSprite2D
 	# One pass of the serration pack per revolution of the orbit it draws.
@@ -436,9 +453,19 @@ func _polygon(node_name: String, points: PackedVector2Array, color: Color) -> Po
 	return polygon
 
 
+## Every `preview_at()` starts from the same zero pose. A phase then assigns
+## only what it draws, and the drawn moment stays a pure function of elapsed
+## time instead of inheriting whatever the previous seek left behind.
 func _hide_all() -> void:
 	for visual in _visuals.values():
-		(visual as CanvasItem).visible = false
+		var node := visual as Node2D
+		node.visible = false
+		node.modulate.a = 1.0
+		node.position = Vector2.ZERO
+		node.rotation = 0.0
+		node.scale = Vector2.ONE
+		if node is AnimatedSprite2D:
+			(node as AnimatedSprite2D).set_frame_and_progress(0, 0.0)
 
 
 func _show(visual: CanvasItem, alpha: float) -> void:
