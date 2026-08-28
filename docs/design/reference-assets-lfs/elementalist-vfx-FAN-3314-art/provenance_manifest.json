@@ -1,0 +1,1125 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3622",
+  "source_brief": "FAN-3314",
+  "class_id": "elementalist",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "flipbook_duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16
+  },
+  "postprocess": {
+    "accepted_source_cleaned": true,
+    "raw_preserved": true,
+    "method": "Each raw PixelLab frame was resized to 224x224 and padded to a 256x256 transparent canvas with a uniform 16px minimum gutter; runtime PNGs are byte-for-byte copies of accepted source frames.",
+    "source_runtime_parity": true
+  },
+  "packs": [
+    {
+      "weapon_id": "elementalist_orb_ring",
+      "class_id": "elementalist",
+      "ultimate_role": "grand_conclave",
+      "title": "Grand Conclave",
+      "visual_identity": "four elemental avatars on a square orbit; sequential elemental beats converge into a central supernova",
+      "pixel_lab": {
+        "object_id": "d255550a-e3c8-4833-870d-6d1a70ca79ee",
+        "animation_group_id": "68777900-d04c-4d2a-9279-bf7dee0dcb88",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "four distinct elemental orbs linked by a luminous square arcane ring, fire ember, ice crystal, leaf gale and violet lightning, centered isolated VFX prop, dark fantasy D&D pixel art seen from above, crisp readable silhouettes, bright inner cores, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the four elemental orbs and square ring centered with stable proportions; the ring traces clockwise, each elemental orb pulses and moves around its corner in sequence, the four energies converge into a clean white-gold impact flare for a per-victim hit, then the ring contracts and settles; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring",
+        "generated_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/elementalist/orb_ring",
+        "spriteframes": "assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres"
+      },
+      "animation": {
+        "name": "elementalist_orb_ring_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f00.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f00.png",
+          "raw_encoded_sha256": "a0ea3f24de826ef2e6b2c4cf908d7978e355622d8136db37b0d21dee1af3dbdf",
+          "raw_pixel_sha256": "9a6072595e8e14ef70ace00d30a436e0fcc81b0e1b30d8ad854d8b68a6e47fdc",
+          "accepted_encoded_sha256": "d2952109d0dde30bb59d2a54105450cf313cc5e6c2604579ba88489c87eb4079",
+          "accepted_pixel_sha256": "64c815e087476a8a40b7973581fb33b795c73a3ea52a3eadae8ab923bdd8a73d",
+          "runtime_encoded_sha256": "d2952109d0dde30bb59d2a54105450cf313cc5e6c2604579ba88489c87eb4079",
+          "runtime_pixel_sha256": "64c815e087476a8a40b7973581fb33b795c73a3ea52a3eadae8ab923bdd8a73d",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            39,
+            18,
+            221,
+            219
+          ],
+          "minimum_gutter_px": 18,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f01.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f01.png",
+          "raw_encoded_sha256": "7d8e91f9360211484d3a6cecf042bfc60827570018f05bd2dc2f716ade111292",
+          "raw_pixel_sha256": "51596f5a487da9a7b3392bf5275f8454b242a8307bb93ab6f021375580c07c0c",
+          "accepted_encoded_sha256": "71e2be7200a57d3649f17a3ac1ac3b490b7e21510e7100e17956e5739840e2f8",
+          "accepted_pixel_sha256": "291f26da746800bbea5b82a84e779fcdc33eed64119736c7cc333149e72a32d8",
+          "runtime_encoded_sha256": "71e2be7200a57d3649f17a3ac1ac3b490b7e21510e7100e17956e5739840e2f8",
+          "runtime_pixel_sha256": "291f26da746800bbea5b82a84e779fcdc33eed64119736c7cc333149e72a32d8",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            23,
+            222,
+            221
+          ],
+          "minimum_gutter_px": 23,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f02.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f02.png",
+          "raw_encoded_sha256": "03d2ed26ae16e7ec3c31932c1be21e46c020db3a1ddc96701d68f81716c62985",
+          "raw_pixel_sha256": "83ae829281f3a5b268ef2d4da9b225801a3784fad6db3c333d6c68a34724de82",
+          "accepted_encoded_sha256": "f5435f5fe6667c160323463bacc5f6923f8e4a69a9824d95ceb131c60e205078",
+          "accepted_pixel_sha256": "618cf13f74ee88297b218860369af2dc29e2108bc4bed4399c430a959cb00c23",
+          "runtime_encoded_sha256": "f5435f5fe6667c160323463bacc5f6923f8e4a69a9824d95ceb131c60e205078",
+          "runtime_pixel_sha256": "618cf13f74ee88297b218860369af2dc29e2108bc4bed4399c430a959cb00c23",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            35,
+            33,
+            223,
+            225
+          ],
+          "minimum_gutter_px": 31,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f03.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f03.png",
+          "raw_encoded_sha256": "3f1428f9306b4e043776530e2ccc3a8a32772080a0dd0c58893a1624e4f28317",
+          "raw_pixel_sha256": "4c7af60491b766f7e69cfd4d1a22da74feae8ae4b4b3354b6884e24bf7c21187",
+          "accepted_encoded_sha256": "66a58fcd5686dd0689ff774b4c39363b9e2932909cb13a4c5454e7e08089a7e8",
+          "accepted_pixel_sha256": "43ba8c8728eaba67c32bc5b2f3cd55244c4535e3dedb0e35bd5576a5a074765f",
+          "runtime_encoded_sha256": "66a58fcd5686dd0689ff774b4c39363b9e2932909cb13a4c5454e7e08089a7e8",
+          "runtime_pixel_sha256": "43ba8c8728eaba67c32bc5b2f3cd55244c4535e3dedb0e35bd5576a5a074765f",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            36,
+            42,
+            220,
+            219
+          ],
+          "minimum_gutter_px": 36,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f04.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f04.png",
+          "raw_encoded_sha256": "0d780e34779b21cb3cdbc60cc9c7cd35679017372dc6f2c691ff4e0f3d84c6ad",
+          "raw_pixel_sha256": "bad81fc7900c0728db248d38df94848957e7ebee51bc536faecf61e18b9902be",
+          "accepted_encoded_sha256": "8ce9c1a79130fc818eca6109a8c49d4fe4ec68db84744248bc14d74907630e8c",
+          "accepted_pixel_sha256": "05173a91d8566a23279cadf9b1b96edb74a59e4f4071d96da11230fb8a39d67a",
+          "runtime_encoded_sha256": "8ce9c1a79130fc818eca6109a8c49d4fe4ec68db84744248bc14d74907630e8c",
+          "runtime_pixel_sha256": "05173a91d8566a23279cadf9b1b96edb74a59e4f4071d96da11230fb8a39d67a",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            30,
+            30,
+            225,
+            227
+          ],
+          "minimum_gutter_px": 29,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f05.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f05.png",
+          "raw_encoded_sha256": "49b24788e5480a760c7ba5d4b67bb75562e3962154a1ad109c161f5b260273ed",
+          "raw_pixel_sha256": "226a056f3508c6f8db90316a04fea71529e5d682d7bbd369025ab4c4a5bd5265",
+          "accepted_encoded_sha256": "6b9cbaeeb141c16b291a24d3a0ca7c47bddf0d40d240f76baa4e37d067d06756",
+          "accepted_pixel_sha256": "4d75c06178a6aac18f0cd4c014881fdab95ac56a75445b64029e121131b4a0f7",
+          "runtime_encoded_sha256": "6b9cbaeeb141c16b291a24d3a0ca7c47bddf0d40d240f76baa4e37d067d06756",
+          "runtime_pixel_sha256": "4d75c06178a6aac18f0cd4c014881fdab95ac56a75445b64029e121131b4a0f7",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            33,
+            31,
+            224,
+            226
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f06.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f06.png",
+          "raw_encoded_sha256": "1cc91ed803b28b00aebcc0ef9aae19f6d1082ed4f8dba2ac44e3c411af7769ab",
+          "raw_pixel_sha256": "c5acf679fbecf37e9453f6ea716a88b4d0e4caf4f112d805dbe8e08c8c484da0",
+          "accepted_encoded_sha256": "14b3eecafff79856a880e37d9c19a328e2a88f289e74816ca322e545932d8d98",
+          "accepted_pixel_sha256": "e79184b5b8b8b8689c9a565de86f793e889cedafb1992f1e736bef25edf9797c",
+          "runtime_encoded_sha256": "14b3eecafff79856a880e37d9c19a328e2a88f289e74816ca322e545932d8d98",
+          "runtime_pixel_sha256": "e79184b5b8b8b8689c9a565de86f793e889cedafb1992f1e736bef25edf9797c",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            30,
+            33,
+            225,
+            229
+          ],
+          "minimum_gutter_px": 27,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f07.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f07.png",
+          "raw_encoded_sha256": "67545993f1c32f8d10f61a74c5fb1e109cb1a0ce4c8e78b12b4e431e792e2a09",
+          "raw_pixel_sha256": "e140781a5c98aec2a240a32d7a026455a1a7b5fb7c1dffafaf2533b9f1e1aff9",
+          "accepted_encoded_sha256": "1820063611a86cf69899c59123b46da56a949ddee23fcb507f811f2a2ec1d661",
+          "accepted_pixel_sha256": "02e66f0b08649d366fc0996aa2c98cece7dcdb34ad9c5b2af93375ad1f6dde77",
+          "runtime_encoded_sha256": "1820063611a86cf69899c59123b46da56a949ddee23fcb507f811f2a2ec1d661",
+          "runtime_pixel_sha256": "02e66f0b08649d366fc0996aa2c98cece7dcdb34ad9c5b2af93375ad1f6dde77",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            25,
+            34,
+            231,
+            228
+          ],
+          "minimum_gutter_px": 25,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/orb_ring_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/orb_ring/raw/orb_ring_f08.png",
+          "runtime_file": "assets/sprites/effects/elementalist/orb_ring/orb_ring_f08.png",
+          "raw_encoded_sha256": "a46724f6e4e0f58fc0993670481f8e3f7239c5e7d96c1341bbf92e55f32d269f",
+          "raw_pixel_sha256": "a98cff478f85b819f4ee4ba658c78bddd524f958b11cc406c03024c99e728601",
+          "accepted_encoded_sha256": "6597746c8d4c0c57e7c0900e334457d8bf8c17ed29df11563594bad9b232bf35",
+          "accepted_pixel_sha256": "9f8fbaeb3182514a5870610c75305c4f0d83971f90bdc67fbccd28fc4b8a1628",
+          "runtime_encoded_sha256": "6597746c8d4c0c57e7c0900e334457d8bf8c17ed29df11563594bad9b232bf35",
+          "runtime_pixel_sha256": "9f8fbaeb3182514a5870610c75305c4f0d83971f90bdc67fbccd28fc4b8a1628",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            40,
+            42,
+            216,
+            217
+          ],
+          "minimum_gutter_px": 39,
+          "edge_visible_pixels": 0
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          17105,
+          16795,
+          17240,
+          16874,
+          20025,
+          18344,
+          18193,
+          25357,
+          17837
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            39,
+            18,
+            221,
+            219
+          ],
+          [
+            37,
+            23,
+            222,
+            221
+          ],
+          [
+            35,
+            33,
+            223,
+            225
+          ],
+          [
+            36,
+            42,
+            220,
+            219
+          ],
+          [
+            30,
+            30,
+            225,
+            227
+          ],
+          [
+            33,
+            31,
+            224,
+            226
+          ],
+          [
+            30,
+            33,
+            225,
+            229
+          ],
+          [
+            25,
+            34,
+            231,
+            228
+          ],
+          [
+            40,
+            42,
+            216,
+            217
+          ]
+        ],
+        "visible_area_spread_percent": 50.98,
+        "adjacent_changed_pixels": [
+          17181,
+          17243,
+          17758,
+          20438,
+          20076,
+          19945,
+          25955,
+          25506
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          33.0399,
+          33.7986,
+          37.0402,
+          61.958,
+          51.2389,
+          61.369,
+          98.6513,
+          87.8919
+        ],
+        "minimum_gutter_px_all_frames": 18,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T12:43:25Z"
+    },
+    {
+      "weapon_id": "elementalist_prism_focus",
+      "class_id": "elementalist",
+      "ultimate_role": "prismatic_verdict",
+      "title": "Prismatic Verdict",
+      "visual_identity": "single faceted prism; contained X-shaped refraction and rainbow fracture",
+      "pixel_lab": {
+        "object_id": "8371106c-b45f-4f09-8a32-a4ef32b27eeb",
+        "animation_group_id": "e09093a8-cf21-4680-a5fd-b8e602f9fcca",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered faceted prismatic focus crystal with a small arcane lens core, cyan magenta violet and gold spectral facets, sharp clean edges and a contained X-shaped refraction aura, dark fantasy D&D pixel art seen from above, isolated game VFX prop, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the faceted prism centered with stable proportions; the crystal unfolds and rotates slightly, thin cyan and magenta refracted beams extend into a clean X, three small focus points flash in sequence for per-victim hits, then the prism fractures into a controlled rainbow starburst and reforms; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus",
+        "generated_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/elementalist/prism_focus",
+        "spriteframes": "assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres"
+      },
+      "animation": {
+        "name": "elementalist_prism_focus_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f00.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f00.png",
+          "raw_encoded_sha256": "c1356e87e66d122c186ace1e3b76a8a1e1b76823c4982f02b7bbec4f027f55da",
+          "raw_pixel_sha256": "3736cccce17dfc51f3105a7396295071b6a64dcadfcd8c3d0427096d3dfd0af6",
+          "accepted_encoded_sha256": "9404d85b8005c832b36b31d973c16f70e36ea911b54b8c9d7c18ebc957e62a86",
+          "accepted_pixel_sha256": "5a089f6201a07054000c3754138c90e345d4bdf2c3c306a9b61b0277083c9ff3",
+          "runtime_encoded_sha256": "9404d85b8005c832b36b31d973c16f70e36ea911b54b8c9d7c18ebc957e62a86",
+          "runtime_pixel_sha256": "5a089f6201a07054000c3754138c90e345d4bdf2c3c306a9b61b0277083c9ff3",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            30,
+            30,
+            226,
+            226
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f01.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f01.png",
+          "raw_encoded_sha256": "56a2473b0571bf21b8d955672227b5abec487ab7840847b4dedeff0b3317e8a4",
+          "raw_pixel_sha256": "c81b635e573f63205745990dbf39e7424aadb2d4bc3c75e84ee07db727953ac9",
+          "accepted_encoded_sha256": "81b7f40e94fb09a6cab5be81eeb5263ae5f3698884493079463456e1ae0e7553",
+          "accepted_pixel_sha256": "a279fd8506d8dee18356029a199979973632238a23b92997faa52fcacea79e0e",
+          "runtime_encoded_sha256": "81b7f40e94fb09a6cab5be81eeb5263ae5f3698884493079463456e1ae0e7553",
+          "runtime_pixel_sha256": "a279fd8506d8dee18356029a199979973632238a23b92997faa52fcacea79e0e",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            32,
+            31,
+            224,
+            226
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f02.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f02.png",
+          "raw_encoded_sha256": "728c47703f167aa0b50e8edbd749e06b0dfdc5481d2c48f9c40b1f6d225669c9",
+          "raw_pixel_sha256": "74124b2a00ccace20805ee12900c9206af16f7512cf03f05cb83e59fea9fffa2",
+          "accepted_encoded_sha256": "db295b0681ce9a81b12f70c017788ff9430785e4ed4084d48f8689276ad99ecf",
+          "accepted_pixel_sha256": "a268491dfc80f6f49198f8216ea47248fb085182c14cc8b6d5dd5c6d51e69c0e",
+          "runtime_encoded_sha256": "db295b0681ce9a81b12f70c017788ff9430785e4ed4084d48f8689276ad99ecf",
+          "runtime_pixel_sha256": "a268491dfc80f6f49198f8216ea47248fb085182c14cc8b6d5dd5c6d51e69c0e",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            35,
+            34,
+            220,
+            224
+          ],
+          "minimum_gutter_px": 32,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f03.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f03.png",
+          "raw_encoded_sha256": "959ee303ca99a08d9a05f0ba3fd984ba2fc4b132dfdc71260476fbc32331952b",
+          "raw_pixel_sha256": "ac1600647734cd1e05ae280d3dec3c90e83adc331697591ee7f01e48f679048d",
+          "accepted_encoded_sha256": "5f848e9d7adc99fcf8838a657e78374cc4f53220622aa6c188a881c984d6d1d6",
+          "accepted_pixel_sha256": "590093e7c70621bb6ff381fab6b2fd81006077398d48945e2dad4032b7258a3f",
+          "runtime_encoded_sha256": "5f848e9d7adc99fcf8838a657e78374cc4f53220622aa6c188a881c984d6d1d6",
+          "runtime_pixel_sha256": "590093e7c70621bb6ff381fab6b2fd81006077398d48945e2dad4032b7258a3f",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            16,
+            16,
+            240,
+            240
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f04.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f04.png",
+          "raw_encoded_sha256": "cfd636cd45c04d042e49d41f5601bce0707ff792b939314fc3cd32d1bafef99c",
+          "raw_pixel_sha256": "53b75f5550833d9e891a6f95db1c823bdb05540f1b91eb5217ccdd2b0b02941e",
+          "accepted_encoded_sha256": "0dbe0da94693cf25d8d286712c6fe6826d16bb52e05a3135648a3b386f0b5ff6",
+          "accepted_pixel_sha256": "1a1a10181c38079359c106412ff8c400796f5ae81062bc46697b0a81c2116949",
+          "runtime_encoded_sha256": "0dbe0da94693cf25d8d286712c6fe6826d16bb52e05a3135648a3b386f0b5ff6",
+          "runtime_pixel_sha256": "1a1a10181c38079359c106412ff8c400796f5ae81062bc46697b0a81c2116949",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            16,
+            21,
+            240,
+            240
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f05.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f05.png",
+          "raw_encoded_sha256": "ca117745224f9c475d35378c461ba84254c58c451d780d627e1eabf2c5c5d5f8",
+          "raw_pixel_sha256": "d5e073445d2f3c66153ad100b60680f1ed9fc049e2d9f0a57f08e59f497ea516",
+          "accepted_encoded_sha256": "09f4c6e8f5f46639f8e38b8912e85b6aa52bfe8b4f4b0cd18666711dec99aa7d",
+          "accepted_pixel_sha256": "bd70ac3da547e3cf0f3ce696b7b5e0899b693531b7f72f14057d39f6c47db1ce",
+          "runtime_encoded_sha256": "09f4c6e8f5f46639f8e38b8912e85b6aa52bfe8b4f4b0cd18666711dec99aa7d",
+          "runtime_pixel_sha256": "bd70ac3da547e3cf0f3ce696b7b5e0899b693531b7f72f14057d39f6c47db1ce",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            45,
+            43,
+            212,
+            214
+          ],
+          "minimum_gutter_px": 42,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f06.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f06.png",
+          "raw_encoded_sha256": "fc2b953a52b8e0bf290b955004da9228e43396ccd6148474b5160ae090685172",
+          "raw_pixel_sha256": "213cfb1d831bee59d30746837a49478c2630eff348ed402294c97d239c077657",
+          "accepted_encoded_sha256": "e280229eea581e6b785a4a83b6629513e8932e1ec9d750b31f79392bedfd1b14",
+          "accepted_pixel_sha256": "0e3ddff6f66f21d9cf3337567ef53e9bbcce0a77e095b61b0f8fd57d1b11a09f",
+          "runtime_encoded_sha256": "e280229eea581e6b785a4a83b6629513e8932e1ec9d750b31f79392bedfd1b14",
+          "runtime_pixel_sha256": "0e3ddff6f66f21d9cf3337567ef53e9bbcce0a77e095b61b0f8fd57d1b11a09f",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            39,
+            38,
+            217,
+            219
+          ],
+          "minimum_gutter_px": 37,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f07.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f07.png",
+          "raw_encoded_sha256": "48e248eb8a3d697c63bba494bdde6f45f52e07022d1660a74175981e9e945455",
+          "raw_pixel_sha256": "1065051d4dadb0943f97c8703bbe7044020553e99893078000a66fbb432d0589",
+          "accepted_encoded_sha256": "421fc2b0986fc50190392d165c199a0be27c2533d553800b6bb5ef04c524c249",
+          "accepted_pixel_sha256": "7025d6b448c80e8c3b0de3644bd370ae4c8c56f84fef474033ce021e9b4f8c97",
+          "runtime_encoded_sha256": "421fc2b0986fc50190392d165c199a0be27c2533d553800b6bb5ef04c524c249",
+          "runtime_pixel_sha256": "7025d6b448c80e8c3b0de3644bd370ae4c8c56f84fef474033ce021e9b4f8c97",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            35,
+            35,
+            221,
+            223
+          ],
+          "minimum_gutter_px": 33,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/prism_focus_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/prism_focus/raw/prism_focus_f08.png",
+          "runtime_file": "assets/sprites/effects/elementalist/prism_focus/prism_focus_f08.png",
+          "raw_encoded_sha256": "df286459d25537d1f9af6f237a5cf448dd3cbd29804dc1db1c33dfc433656114",
+          "raw_pixel_sha256": "70bf3320d9a3a84b915b6ac67204c51f1aae24117be7703641028f7abbe931c8",
+          "accepted_encoded_sha256": "ba9dbf5281553ba24e6142736ee3ab1d53557428f8a955cabcb420827021f7d4",
+          "accepted_pixel_sha256": "62b0e99158f5c994faacc3b4d38a3036a00361216d1013e13aaf2e8c9cf476af",
+          "runtime_encoded_sha256": "ba9dbf5281553ba24e6142736ee3ab1d53557428f8a955cabcb420827021f7d4",
+          "runtime_pixel_sha256": "62b0e99158f5c994faacc3b4d38a3036a00361216d1013e13aaf2e8c9cf476af",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            30,
+            30,
+            226,
+            226
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          26530,
+          26158,
+          24608,
+          24708,
+          23264,
+          20080,
+          22501,
+          24377,
+          26529
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            30,
+            30,
+            226,
+            226
+          ],
+          [
+            32,
+            31,
+            224,
+            226
+          ],
+          [
+            35,
+            34,
+            220,
+            224
+          ],
+          [
+            16,
+            16,
+            240,
+            240
+          ],
+          [
+            16,
+            21,
+            240,
+            240
+          ],
+          [
+            45,
+            43,
+            212,
+            214
+          ],
+          [
+            39,
+            38,
+            217,
+            219
+          ],
+          [
+            35,
+            35,
+            221,
+            223
+          ],
+          [
+            30,
+            30,
+            226,
+            226
+          ]
+        ],
+        "visible_area_spread_percent": 32.12,
+        "adjacent_changed_pixels": [
+          25404,
+          25546,
+          25207,
+          25093,
+          23022,
+          21839,
+          23618,
+          25408
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          30.0305,
+          43.9327,
+          52.8734,
+          48.2664,
+          49.8456,
+          44.874,
+          40.9539,
+          41.5069
+        ],
+        "minimum_gutter_px_all_frames": 16,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T12:48:57Z"
+    },
+    {
+      "weapon_id": "elementalist_meteor_core",
+      "class_id": "elementalist",
+      "ultimate_role": "starfall",
+      "title": "Starfall",
+      "visual_identity": "single molten meteor with rune telegraph, heavy impact burst and lingering crater embers",
+      "pixel_lab": {
+        "object_id": "1f65c1eb-132e-43d9-853c-9478cfaa223d",
+        "animation_group_id": "466c64a9-7576-43f8-9946-09a0db946abc",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered colossal molten meteor core descending through a small rune shadow, ember tail and cracked volcanic shell, deep crimson orange and gold fire with a subtle violet gravity halo, dark fantasy D&D pixel art seen from above, isolated impact VFX prop, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the meteor core centered with stable proportions; a circular rune telegraph grows first, the meteor drops with a bright ember trail, the core slams into the target with a strong per-victim impact burst, then a pulsing molten crater and a few ember shards linger before contracting; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core",
+        "generated_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/elementalist/meteor_core",
+        "spriteframes": "assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres"
+      },
+      "animation": {
+        "name": "elementalist_meteor_core_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f00.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f00.png",
+          "raw_encoded_sha256": "1dfe77944db79c4813275fe2e99d2d137f61c504f4174a1f316c221247b29f01",
+          "raw_pixel_sha256": "5c3d62fb06181d1a7797c019ff0e7635cee935f17480689ea38af54116a6cc78",
+          "accepted_encoded_sha256": "00c96daa1105a6347271a7c5f22f56c12f8fad214bd1dbf6cc2f12577e0abf5e",
+          "accepted_pixel_sha256": "2b5cf5982fc4b6cc10221ec774fe469ddf647a922a90b5614ca81c93206a96a1",
+          "runtime_encoded_sha256": "00c96daa1105a6347271a7c5f22f56c12f8fad214bd1dbf6cc2f12577e0abf5e",
+          "runtime_pixel_sha256": "2b5cf5982fc4b6cc10221ec774fe469ddf647a922a90b5614ca81c93206a96a1",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            42,
+            18,
+            212,
+            218
+          ],
+          "minimum_gutter_px": 18,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f01.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f01.png",
+          "raw_encoded_sha256": "ca3dac055379dea6f3fb20387e8faab4c925ed06873095a359b1de1d41b1696b",
+          "raw_pixel_sha256": "4fde6436db83cf94cb2269ab3b48018142a0e3de1672a097d9b1f1491b53153d",
+          "accepted_encoded_sha256": "3eedef3f1cdf7d34ec242ba331b05d979786129eb1d87f3c75e818555fd85b49",
+          "accepted_pixel_sha256": "91e0d278de7c3b35f291cb40ff6060ebee886ccca03bbf55f9fd2ff0618c63e8",
+          "runtime_encoded_sha256": "3eedef3f1cdf7d34ec242ba331b05d979786129eb1d87f3c75e818555fd85b49",
+          "runtime_pixel_sha256": "91e0d278de7c3b35f291cb40ff6060ebee886ccca03bbf55f9fd2ff0618c63e8",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            44,
+            16,
+            214,
+            218
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f02.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f02.png",
+          "raw_encoded_sha256": "b70273c31683524ff9a678d90a9e3c1e96a1e1a5a373978cfc4b8caffa133de9",
+          "raw_pixel_sha256": "3b6c9c3d9932a4f352a27778714f5219021467eed6452c3e275dbc8bd7501ced",
+          "accepted_encoded_sha256": "0ce93f219467287ca2be1d289a31246aa22c019f45019ce25d3ad50e4de30251",
+          "accepted_pixel_sha256": "e1aee1365adb775689cf41e09e60589883c5fac1442e342809b548accf7749f7",
+          "runtime_encoded_sha256": "0ce93f219467287ca2be1d289a31246aa22c019f45019ce25d3ad50e4de30251",
+          "runtime_pixel_sha256": "e1aee1365adb775689cf41e09e60589883c5fac1442e342809b548accf7749f7",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            44,
+            20,
+            213,
+            218
+          ],
+          "minimum_gutter_px": 20,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f03.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f03.png",
+          "raw_encoded_sha256": "eb19514e713f376aca0d54ab92950a7ac4bcf4d85028c9d4d5a77307a02d052d",
+          "raw_pixel_sha256": "fa8f7e0303e614adbc2fef89d39aa7eeefad9993190354f64f7e662fc1f0ed3a",
+          "accepted_encoded_sha256": "086e9ede2b514f32ee2e1bafda486dc2ba9cc299bb71414b6428cfab47fd5c81",
+          "accepted_pixel_sha256": "b4785b3305e1d42434c473c62ec9c22a3573778d4de96fc9d363f75850c3270a",
+          "runtime_encoded_sha256": "086e9ede2b514f32ee2e1bafda486dc2ba9cc299bb71414b6428cfab47fd5c81",
+          "runtime_pixel_sha256": "b4785b3305e1d42434c473c62ec9c22a3573778d4de96fc9d363f75850c3270a",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            41,
+            18,
+            211,
+            218
+          ],
+          "minimum_gutter_px": 18,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f04.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f04.png",
+          "raw_encoded_sha256": "f892c7ffb3747dbc75a67ecf25879c083c7b5c3bc8ded9d119ab5188356c362f",
+          "raw_pixel_sha256": "a0058abcdec170a93ef53849660d3c2cbe76cbf22cba08af225e561639b7c0ba",
+          "accepted_encoded_sha256": "273c4c9e453b9e8c1a1347f2d305cb38b2595aadb4399dcf4378d65e654eadf6",
+          "accepted_pixel_sha256": "65029ae834b5b2c5e7f07289b246f457c698cc23916e33fd05d2b466b86d82ac",
+          "runtime_encoded_sha256": "273c4c9e453b9e8c1a1347f2d305cb38b2595aadb4399dcf4378d65e654eadf6",
+          "runtime_pixel_sha256": "65029ae834b5b2c5e7f07289b246f457c698cc23916e33fd05d2b466b86d82ac",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            44,
+            28,
+            213,
+            218
+          ],
+          "minimum_gutter_px": 28,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f05.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f05.png",
+          "raw_encoded_sha256": "a313365e5e5f8ceee312b497ee35085e68ba23c8d2c2bbeed4c85d2144167a3f",
+          "raw_pixel_sha256": "74e637b6a2b1f7110ae730eee36935dc756b08dd7fbbd1822a235d08804a1fc7",
+          "accepted_encoded_sha256": "8098f40d1108a536e168b95f207f3656565493c29850a005ec20bc072eb6d079",
+          "accepted_pixel_sha256": "ef118314013b2e13ef307e4c54f01f6138a46a0a819041e2456c78a8c9990712",
+          "runtime_encoded_sha256": "8098f40d1108a536e168b95f207f3656565493c29850a005ec20bc072eb6d079",
+          "runtime_pixel_sha256": "ef118314013b2e13ef307e4c54f01f6138a46a0a819041e2456c78a8c9990712",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            43,
+            29,
+            212,
+            218
+          ],
+          "minimum_gutter_px": 29,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f06.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f06.png",
+          "raw_encoded_sha256": "af9aeb5a7e7f6553d114396927f53bc6ca58671668eefd4bc2846ef770849ef6",
+          "raw_pixel_sha256": "feebd968908b8fb67f1c45902aeafabdd8e8922b93d571524dbbd7ca1ceb9963",
+          "accepted_encoded_sha256": "a774b69b22ba38cc97f0ff49b5cb3ab6950c5cda4a2f0c5ea8e73d5fe4e2d592",
+          "accepted_pixel_sha256": "ec0b02d53fc32e16e7a0a550cef5781ccc9859e63dccadc5286dfccf05205e67",
+          "runtime_encoded_sha256": "a774b69b22ba38cc97f0ff49b5cb3ab6950c5cda4a2f0c5ea8e73d5fe4e2d592",
+          "runtime_pixel_sha256": "ec0b02d53fc32e16e7a0a550cef5781ccc9859e63dccadc5286dfccf05205e67",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            41,
+            69,
+            211,
+            218
+          ],
+          "minimum_gutter_px": 38,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f07.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f07.png",
+          "raw_encoded_sha256": "7cb357002050b22f95757f33e88c5e3535808db9fa794eabcdc6c30852eb6751",
+          "raw_pixel_sha256": "62b96b9a7eaabe2a02d1eab45b13bf51a53c6202174f8a963117ce262a38496f",
+          "accepted_encoded_sha256": "f79cad2fe80bd1f4ab1ed1193d87706117dcde00625805a6abf8e981f7fcefe5",
+          "accepted_pixel_sha256": "98453546fbdc178645398c3748dc9c9b6ec5a8017d5627af5f346d2b4a3db0e8",
+          "runtime_encoded_sha256": "f79cad2fe80bd1f4ab1ed1193d87706117dcde00625805a6abf8e981f7fcefe5",
+          "runtime_pixel_sha256": "98453546fbdc178645398c3748dc9c9b6ec5a8017d5627af5f346d2b4a3db0e8",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            43,
+            38,
+            213,
+            218
+          ],
+          "minimum_gutter_px": 38,
+          "edge_visible_pixels": 0
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/meteor_core_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/meteor_core/raw/meteor_core_f08.png",
+          "runtime_file": "assets/sprites/effects/elementalist/meteor_core/meteor_core_f08.png",
+          "raw_encoded_sha256": "31f66ee3b4206f4f2c9e1e7131279758dba7df6462121452b6a39d83048239d6",
+          "raw_pixel_sha256": "aa9380eb2fb5b21823b26547b667c1382671f1dcecbe7a3019cf8fe2697c1e98",
+          "accepted_encoded_sha256": "76b63a7aa540e9b34962df9bdfe915e020c932cf38af7d6ed4aea9943421e69a",
+          "accepted_pixel_sha256": "166fc52bd5bcdb80c2439ea6e8244c704502ffe7b37088a1c3306dff50f98845",
+          "runtime_encoded_sha256": "76b63a7aa540e9b34962df9bdfe915e020c932cf38af7d6ed4aea9943421e69a",
+          "runtime_pixel_sha256": "166fc52bd5bcdb80c2439ea6e8244c704502ffe7b37088a1c3306dff50f98845",
+          "source_runtime_byte_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            40,
+            28,
+            213,
+            218
+          ],
+          "minimum_gutter_px": 28,
+          "edge_visible_pixels": 0
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          21150,
+          21589,
+          21017,
+          20213,
+          19609,
+          19102,
+          18129,
+          18740,
+          19092
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            42,
+            18,
+            212,
+            218
+          ],
+          [
+            44,
+            16,
+            214,
+            218
+          ],
+          [
+            44,
+            20,
+            213,
+            218
+          ],
+          [
+            41,
+            18,
+            211,
+            218
+          ],
+          [
+            44,
+            28,
+            213,
+            218
+          ],
+          [
+            43,
+            29,
+            212,
+            218
+          ],
+          [
+            41,
+            69,
+            211,
+            218
+          ],
+          [
+            43,
+            38,
+            213,
+            218
+          ],
+          [
+            40,
+            28,
+            213,
+            218
+          ]
+        ],
+        "visible_area_spread_percent": 19.09,
+        "adjacent_changed_pixels": [
+          22354,
+          21522,
+          21201,
+          20538,
+          19767,
+          18446,
+          18548,
+          17220
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          44.538,
+          31.7412,
+          47.5337,
+          40.7668,
+          30.5509,
+          35.3858,
+          54.0605,
+          33.34
+        ],
+        "minimum_gutter_px_all_frames": 16,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T12:54:13Z"
+    }
+  ]
+}
