@@ -106,6 +106,12 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("quality-${{ github.event_name }}-${{ github.sha }}", self.source)
         self.assertIn("if-no-files-found: error", self.source)
 
+    def test_coverage_ratchet_reports_are_uploaded_with_quality_evidence(self) -> None:
+        self.assertIn("tools/test_coverage_gate.py", self.source)
+        self.assertIn("build/test_coverage_report.json", self.source)
+        self.assertIn("build/test_coverage_report.md", self.source)
+        self.assertIn("test_coverage_report.sha256", self.source)
+
     def test_job_has_bounded_runtime(self) -> None:
         self.assertIn("timeout-minutes: 60", self.candidate_job)
 

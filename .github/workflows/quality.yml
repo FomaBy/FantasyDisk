@@ -149,12 +149,24 @@ jobs:
           executed=$(python3 -c "import json; print(len(json.load(open('build/quality_gate_report.json'))['godot_tests']))")
           echo "executed Godot suites: $executed"
           test "$executed" -gt 0
+      - name: Measure and ratchet test coverage surface
+        id: coverage-gate
+        continue-on-error: true
+        run: >-
+          python3 tools/test_coverage_gate.py
+          --json-report build/test_coverage_report.json
+          --markdown-report build/test_coverage_report.md
+          --max-duration-seconds 5
       - name: Hash quality evidence
         if: always()
         run: |
           test -f build/quality_gate_report.json
+          test -f build/test_coverage_report.json
+          test -f build/test_coverage_report.md
           (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum test_coverage_report.json test_coverage_report.md > test_coverage_report.sha256)
           (cd build && sha256sum -c quality_gate_report.sha256)
+          (cd build && sha256sum -c test_coverage_report.sha256)
       - name: Upload exact-SHA quality evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -164,8 +176,14 @@ jobs:
             build/quality_gate_candidate_sha.txt
             build/quality_gate_report.json
             build/quality_gate_report.sha256
+            build/test_coverage_report.json
+            build/test_coverage_report.md
+            build/test_coverage_report.sha256
           if-no-files-found: error
           retention-days: 30
+      - name: Fail test coverage ratchet
+        if: steps.coverage-gate.outcome == 'failure'
+        run: exit 1
 
   # Nightly/manual full-profile run on dev (FAN-1869). The full gate is split
   # into independent runners because one OOM-killed runner otherwise loses all
@@ -210,13 +228,25 @@ jobs:
         id: quality-gate
         continue-on-error: true
         run: python3 tools/quality_gate.py --static-only
+      - name: Measure and ratchet test coverage surface
+        id: coverage-gate
+        continue-on-error: true
+        run: >-
+          python3 tools/test_coverage_gate.py
+          --json-report build/test_coverage_report.json
+          --markdown-report build/test_coverage_report.md
+          --max-duration-seconds 5
       - name: Hash static quality evidence
         if: always()
         run: |
           set -euo pipefail
           test -f build/quality_gate_report.json
+          test -f build/test_coverage_report.json
+          test -f build/test_coverage_report.md
           (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum test_coverage_report.json test_coverage_report.md > test_coverage_report.sha256)
           (cd build && sha256sum -c quality_gate_report.sha256)
+          (cd build && sha256sum -c test_coverage_report.sha256)
       - name: Upload static quality evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -226,10 +256,13 @@ jobs:
             build/quality_gate_candidate_sha.txt
             build/quality_gate_report.json
             build/quality_gate_report.sha256
+            build/test_coverage_report.json
+            build/test_coverage_report.md
+            build/test_coverage_report.sha256
           if-no-files-found: error
           retention-days: 30
       - name: Fail static quality gate
-        if: steps.quality-gate.outcome == 'failure'
+        if: steps.quality-gate.outcome == 'failure' || steps.coverage-gate.outcome == 'failure'
         run: exit 1
 
   dev-runtime-health-godot:
