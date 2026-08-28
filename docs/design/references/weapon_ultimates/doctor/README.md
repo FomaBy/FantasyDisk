@@ -1,14 +1,21 @@
 # Doctor weapon ultimate presentation pack
 
-FAN-1486 supplies three isolated, class-local presentation timelines. It does
-not change damage, healing, shields, infection, armor shred, targeting,
-cooldowns, balance, shared registries, or the live runtime adapter.
+FAN-1486 supplies three isolated, class-local presentation timelines. FAN-2529
+records their class-wide Ultimate Direction v2 aggregate without changing
+damage, healing, shields, infection, armor shred, targeting, cooldowns, shared
+registries, or the live runtime adapter.
 
 | Weapon | Presentation | Timeline |
 | --- | --- | --- |
 | `restore_potion` | Aimed giant flask, green outer pool, white inner spiral, shield crystal | 6.20 s |
 | `plague_syringe` | Patient-zero pierce, branching veins, timed plague waves, mask vapor | 6.85 s |
 | `bone_saw` | Fast close saw orbit, sparks, red-to-green drain ribbons, shield stitches | 3.85 s |
+
+| Weapon | Identity | Reach contract |
+| --- | --- | --- |
+| `restore_potion` | aimed outer pool, healing spiral, and absorb shield | every eligible enemy receives the outer damage channel; the 220 px ring remains presentation geometry |
+| `plague_syringe` | patient-zero pierce, infection waves, and mask finale | every eligible enemy receives the five fixed waves; `wave_visual_radius` is presentation-only |
+| `bone_saw` | close orbit cuts, drain ribbons, and stitch shield | the existing 240 px orbit keeps its close-range identity without a count-shaped cap |
 
 All timelines bind the frozen Doctor Cast IDs as `windup`,
 `release→execute`, `active→active`, `recovery→recover`, and
@@ -32,9 +39,20 @@ panel labels, and frame labels are centered from
 `ThemeDB.fallback_font.get_string_size(...)` and checked against their measured
 rectangles.
 
+The manifest's `effectiveness_evidence` section mirrors the six canonical
+scenarios from `build/ultimate_effectiveness_baseline.json`. Baseline and
+final metrics are intentionally identical for this aggregate-only change; the
+shared coverage ratchet and class evidence are the changed surfaces.
+
 ```bash
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/doctor_ultimate_timelines.gd
 python3 tools/godot_gate.py --path . \
   --script res://tests/ultimates/presentation/doctor_ultimate_contact_capture.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/mechanics/doctor_package_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/mechanics/doctor_balance_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/mechanics/doctor_live_test.gd
 ```

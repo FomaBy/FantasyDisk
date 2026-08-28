@@ -111,6 +111,58 @@
       }
     }
   ],
+  "effectiveness_evidence": {
+    "runner": "res://tools/ultimate_effectiveness_report.gd",
+    "baseline_source_sha": "b7d3c3776684bc46c676f849ab3b9560a37d25cf",
+    "scenario_order": ["solo", "crowd_5", "crowd_10", "crowd_20", "elite", "boss"],
+    "rows": [
+      {
+        "weapon_id": "restore_potion",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1748.921061888, 8744.60530944, 17489.21061888, 34978.42123776, 1748.921061888, 1748.921061888]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1748.921061888, 8744.60530944, 17489.21061888, 34978.42123776, 1748.921061888, 1748.921061888]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "plague_syringe",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1815.75, 7195.978998144, 13921.265245824, 27371.837741184, 1815.75, 1815.75]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1815.75, 7195.978998144, 13921.265245824, 27371.837741184, 1815.75, 1815.75]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "bone_saw",
+        "baseline": {
+          "targets_struck": [1, 4, 7, 10, 1, 1],
+          "damage_applied": [1798.2, 7192.8, 12587.4, 17982.0, 1798.2, 1798.2]
+        },
+        "final": {
+          "targets_struck": [1, 4, 7, 10, 1, 1],
+          "damage_applied": [1798.2, 7192.8, 12587.4, 17982.0, 1798.2, 1798.2]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      }
+    ]
+  },
   "evidence": {
     "contact_sheets": [
       "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_648p.png",

@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
+const Harness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const PD := preload("res://scripts/progression_data.gd")
@@ -8,6 +9,7 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "doctor"
 const WEAPONS := ["restore_potion", "plague_syringe", "bone_saw"]
 const CROWD_COUNTS := [1, 5, 10, 20, 100, 1000]
+const EXECUTOR_DIR := "res://scripts/ultimates/classes/doctor"
 
 var _errors: Array[String] = []
 
@@ -15,10 +17,20 @@ var _errors: Array[String] = []
 func _initialize() -> void:
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	var rows := Budget.build_rows(PD.WEAPONS_BY_CLASS, PD)
+	var report := Harness.measure(rows)
+	_check(Harness.violations(report).is_empty(), "the inherited 51-row harness must stay clean")
+	_check(Harness.COVERAGE_V2_CLASSES.has(CLASS_ID),
+		"Doctor must be recorded in the coverage v2 ledger")
+	_check(not Harness.COVERAGE_MIGRATION_ALLOWLIST.has(CLASS_ID),
+		"Doctor must leave the coverage migration allowlist")
+	_check(registry.package_validation_errors().is_empty(),
+		"Doctor package discovery must remain clean: %s" % [registry.package_validation_errors()])
 	var metrics := {}
 	for weapon_id in WEAPONS:
 		var profile := registry.catalog_profile_for(CLASS_ID, weapon_id)
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
+		_check(Harness.count_cap_params(FileAccess.get_file_as_string("%s/%s.gd" % [EXECUTOR_DIR, weapon_id])).is_empty(),
+			"%s must declare no count-shaped reach parameter" % weapon_id)
 		metrics[weapon_id] = _measure(weapon_id, profile)
 		_check(float((metrics[weapon_id] as Dictionary)["power_seconds"]) >= Budget.POWER_SECONDS_MIN,
 			"%s must clear the one-activation power floor" % weapon_id)
