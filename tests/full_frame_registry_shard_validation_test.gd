@@ -29,6 +29,18 @@ extends SceneTree
 # the collision — the physical file backing either name resolves to the same
 # valid content either way.
 #
+# QA FAN-3681 (rejected 060c1f748): the invalid-first duplicate pair above
+# used that same "one physical file, two names" trick — but both names then
+# necessarily read the SAME invalid document, so the test could not tell
+# apart "canonical id claimed before validation" (correct) from "canonical id
+# claimed only after validation" (the FAN-3680 mutant): both readings excluded
+# the pair for a reason that had nothing to do with claim order. The
+# "invalid_first_duplicate"/"Invalid_First_Duplicate" pair is therefore driven
+# through `_load_shards`' `document_reader` seam instead, giving the two
+# case-variant names genuinely different documents — first invalid for a
+# reason independent of existence/type validation, second fully valid — on
+# every filesystem, case-sensitive or not.
+#
 # Запуск: Godot --headless --path . --script res://tests/full_frame_registry_shard_validation_test.gd
 
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
@@ -49,13 +61,39 @@ const NONEXISTENT_FRAMES_PATH := "res://data/animation/testkind/fan3680_definite
 # SpriteFrames (a GDScript file resource).
 const WRONG_TYPE_FRAMES_PATH := "res://scripts/full_frame_animation_registry.gd"
 
+# In-memory documents for the invalid-first duplicate pair, keyed by the exact
+# case-variant file name — see the class-level FAN-3681 comment for why these
+# cannot be two physical files. "Invalid_First_Duplicate.json" sorts first
+# (uppercase 'I' < lowercase 'i') and is invalid for a reason independent of
+# the existence/type checks (a non-numeric 'scale.x'), so it must still claim
+# the canonical id before failing; "invalid_first_duplicate.json" sorts
+# second and is otherwise fully valid.
+const INVALID_FIRST_DUPLICATE_DOCUMENTS := {
+	"Invalid_First_Duplicate.json": {
+		"frames": REAL_SPRITEFRAMES_PATH,
+		"scale": {"x": "not_a_number", "y": 0.5},
+		"position": {"x": 0.0, "y": -10.0},
+		"source_faces_left": true,
+	},
+	"invalid_first_duplicate.json": {
+		"frames": REAL_SPRITEFRAMES_PATH,
+		"scale": {"x": 0.5, "y": 0.5},
+		"position": {"x": 0.0, "y": -10.0},
+		"source_faces_left": true,
+	},
+}
+
 
 func _initialize() -> void:
 	var errors: Array = []
 	var fixture_dir := "%s/%s" % [FIXTURE_ROOT, FIXTURE_KIND]
 	var file_names := _write_fixtures(fixture_dir, errors)
+	var document_reader := func(file_name: String):
+		if INVALID_FIRST_DUPLICATE_DOCUMENTS.has(file_name):
+			return INVALID_FIRST_DUPLICATE_DOCUMENTS[file_name]
+		return JSON.parse_string(FileAccess.get_file_as_string("%s/%s" % [fixture_dir, file_name]))
 
-	var table: Dictionary = FullFrameAnimationRegistry._load_shards(FIXTURE_KIND, fixture_dir, file_names)
+	var table: Dictionary = FullFrameAnimationRegistry._load_shards(FIXTURE_KIND, fixture_dir, file_names, document_reader)
 
 	if not table.has("valid_actor"):
 		errors.append("valid_actor: a well-formed shard must still load.")
@@ -88,10 +126,11 @@ func _initialize() -> void:
 			errors.append("duplicate_actor: a case-insensitive duplicate identity must exclude BOTH shards, found '%s' admitted." % duplicate_key)
 
 	# Invalid-first canonical duplicate: the shard that sorts first ("Invalid_First_Duplicate.json")
-	# fails schema validation on its own (nonexistent 'frames'); its canonical
-	# identity must still be claimed so the second, differently-cased shard is
-	# excluded as a duplicate rather than silently falling through to be admitted
-	# on its own merits. See FAN-3680 fix note above _load_shards' dedup registration.
+	# fails schema validation on its own (non-numeric 'scale.x', independent of
+	# the existence/type checks); its canonical identity must still be claimed
+	# so the second, differently-cased and otherwise-valid shard is excluded as
+	# a duplicate rather than silently admitted on its own merits. See FAN-3680
+	# fix note above _load_shards' dedup registration.
 	for invalid_first_key in table.keys():
 		if str(invalid_first_key).to_lower() == "invalid_first_duplicate":
 			errors.append("invalid_first_duplicate: a canonical duplicate whose first-discovered shard fails validation must still exclude BOTH shards, found '%s' admitted." % invalid_first_key)
@@ -156,15 +195,10 @@ func _write_fixtures(fixture_dir: String, errors: Array) -> Array:
 			"position": {"x": 0.0, "y": -10.0},
 			"source_faces_left": true,
 		}),
-		# Genuinely fails validation on its own (nonexistent 'frames') — see the
-		# class-level comment on why its case-variant duplicate below cannot be a
-		# separate on-disk file.
-		"invalid_first_duplicate.json": JSON.stringify({
-			"frames": NONEXISTENT_FRAMES_PATH,
-			"scale": {"x": 0.5, "y": 0.5},
-			"position": {"x": 0.0, "y": -10.0},
-			"source_faces_left": true,
-		}),
+		# No physical file: both "invalid_first_duplicate.json" and
+		# "Invalid_First_Duplicate.json" are sourced from
+		# INVALID_FIRST_DUPLICATE_DOCUMENTS via the document_reader seam below,
+		# not from disk — see the class-level FAN-3681 comment.
 	}
 	for file_name in shards.keys():
 		var file := FileAccess.open("%s/%s" % [fixture_dir, file_name], FileAccess.WRITE)
@@ -175,10 +209,7 @@ func _write_fixtures(fixture_dir: String, errors: Array) -> Array:
 		file.close()
 	var file_names := shards.keys()
 	file_names.append("Duplicate_Actor.json")
-	# Sorts BEFORE "invalid_first_duplicate.json" (uppercase 'I' < lowercase 'i'),
-	# so the case-insensitive filesystem resolves this name to the same physical
-	# file — the failing shard is discovered first either way.
-	file_names.append("Invalid_First_Duplicate.json")
+	file_names.append_array(INVALID_FIRST_DUPLICATE_DOCUMENTS.keys())
 	file_names.sort()
 	return file_names
 

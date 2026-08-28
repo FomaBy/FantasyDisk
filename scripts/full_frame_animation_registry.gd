@@ -63,8 +63,13 @@ static func _load_kind(entity_kind: String, data_root := DATA_ROOT) -> Dictionar
 # an explicit file-name list — a real duplicate-identity fixture (two files
 # whose names differ only by case) cannot exist on a case-preserving but
 # case-INsensitive filesystem such as default macOS/APFS, which silently
-# collapses both writes into one file.
-static func _load_shards(entity_kind: String, directory_path: String, file_names: Array) -> Dictionary:
+# collapses both writes into one file. `document_reader`, when given, is
+# called with a file name and must return the same shape JSON.parse_string
+# would (a Dictionary, or a non-Dictionary for "malformed"); it lets tests
+# supply genuinely distinct content per case-variant name regardless of the
+# host filesystem's case sensitivity. Production callers (_load_kind) never
+# pass it, so on-disk behavior is unchanged.
+static func _load_shards(entity_kind: String, directory_path: String, file_names: Array, document_reader := Callable()) -> Dictionary:
 	var table := {}
 	var seen_canonical_ids := {}
 	for file_name_variant in file_names:
@@ -88,7 +93,7 @@ static func _load_shards(entity_kind: String, directory_path: String, file_names
 		# prior claim and be silently admitted, defeating the dedup check whenever
 		# the invalid shard happened to sort first.
 		seen_canonical_ids[canonical_id] = where
-		var parsed = JSON.parse_string(
+		var parsed = document_reader.call(file_name) if document_reader.is_valid() else JSON.parse_string(
 			FileAccess.get_file_as_string("%s/%s" % [directory_path, file_name])
 		)
 		if not parsed is Dictionary:
