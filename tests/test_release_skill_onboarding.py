@@ -47,6 +47,9 @@ VERSIONS_RELATIVE_PATH = Path(
     ".fantasydisk-release-director.versions",
 )
 SELECTED_RELATIVE_PATH = Path(".codex", "skills", "fantasydisk-release-director")
+# Keep the child watchdog below quality_gate.py's 60-second idle watchdog.
+ONBOARD_WATCHDOG_SECONDS = 15.0
+_ONBOARD_CLEANUP_SECONDS = 2.0
 
 
 def _file_sha256(path: Path) -> str:
@@ -138,16 +141,44 @@ def _run_onboard(
     *,
     path_prefix: Path | None = None,
     extra: dict[str, str] | None = None,
+    args: tuple[str, ...] = (),
+    timeout: float = ONBOARD_WATCHDOG_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        ["bash", str(script)],
+    command = ["bash", str(script), *args]
+    process = subprocess.Popen(
+        command,
         cwd=script.parents[1],
         env=_onboard_environment(script, home, path_prefix=path_prefix, extra=extra),
         encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        check=False,
+        start_new_session=os.name != "nt",
     )
+    try:
+        stdout, _ = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired as timeout_error:
+        _kill_process_group(process)
+        try:
+            stdout, _ = process.communicate(timeout=_ONBOARD_CLEANUP_SECONDS)
+        except subprocess.TimeoutExpired as cleanup_error:
+            _kill_process_group(process)
+            if process.stdout is not None:
+                process.stdout.close()
+            try:
+                process.wait(timeout=_ONBOARD_CLEANUP_SECONDS)
+            except subprocess.TimeoutExpired as wait_error:
+                raise AssertionError(
+                    "onboarding child cleanup exceeded the watchdog window; "
+                    f"process group root pid={process.pid}"
+                ) from wait_error
+            stdout = cleanup_error.output
+        captured = _captured_output(stdout)
+        raise AssertionError(
+            f"onboarding child timed out after {timeout:.2f}s; "
+            f"terminated and reaped process group root pid={process.pid}; "
+            f"task home={home}; captured output:\n{captured or '<no output captured>'}"
+        ) from timeout_error
+    return subprocess.CompletedProcess(command, process.returncode, stdout=stdout)
 
 
 def _run_release_only(
@@ -155,15 +186,14 @@ def _run_release_only(
     home: Path,
     *,
     extra: dict[str, str] | None = None,
+    timeout: float = ONBOARD_WATCHDOG_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        ["bash", str(script), "--release-only"],
-        cwd=script.parents[1],
-        env=_onboard_environment(script, home, extra=extra),
-        encoding="utf-8",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
+    return _run_onboard(
+        script,
+        home,
+        extra=extra,
+        args=("--release-only",),
+        timeout=timeout,
     )
 
 
@@ -182,6 +212,38 @@ def _start_onboard(
         stderr=subprocess.STDOUT,
         start_new_session=True,
     )
+
+
+def _kill_process_group(process: subprocess.Popen[str]) -> None:
+    if os.name == "nt":
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        return
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        if process.poll() is None:
+            process.kill()
+
+
+def _captured_output(output: str | bytes | None) -> str:
+    if output is None:
+        return ""
+    if isinstance(output, bytes):
+        return output.decode("utf-8", errors="replace")
+    return output
+
+
+def _process_is_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 
 
 def _wait_for_marker(marker: Path, process: subprocess.Popen[str]) -> None:
@@ -1018,6 +1080,49 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertIn("BLOCK", result.stdout)
             self.assertEqual(_inventory(target), before)
             self.assertTrue(fifo.exists())
+
+    def test_watchdog_terminates_process_group_and_reports_captured_output(self) -> None:
+        temp_root: Path | None = None
+        child_pids: list[int] = []
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-watchdog-") as raw:
+            temp_root = Path(raw)
+            script = temp_root / "checkout" / "scripts" / "hang.sh"
+            pid_file = temp_root / "child-pids.txt"
+            script.parent.mkdir(parents=True)
+            script.write_text(
+                "#!/bin/bash\n"
+                f"printf 'parent=%s\\n' \"$$\" > {pid_file}\n"
+                "printf 'watchdog fixture started\\n'\n"
+                "sleep 300 &\n"
+                "printf 'child=%s\\n' \"$!\" >> "
+                f"{pid_file}\n"
+                "wait\n",
+                encoding="utf-8",
+            )
+            script.chmod(0o755)
+
+            with self.assertRaises(AssertionError) as raised:
+                _run_onboard(script, temp_root / "home", timeout=0.2)
+            message = str(raised.exception)
+            self.assertIn("onboarding child timed out after", message)
+            self.assertIn("captured output:\nwatchdog fixture started", message)
+
+            child_pids = [
+                int(line.split("=", 1)[1])
+                for line in pid_file.read_text(encoding="ascii").splitlines()
+            ]
+            deadline = time.monotonic() + 2
+            while time.monotonic() < deadline:
+                if all(
+                    not _process_is_alive(pid)
+                    for pid in child_pids
+                ):
+                    break
+                time.sleep(0.01)
+            self.assertTrue(all(not _process_is_alive(pid) for pid in child_pids))
+
+        self.assertIsNotNone(temp_root)
+        self.assertFalse(temp_root.exists())
 
     def test_mode_drift_is_preserved_and_blocks(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-mode-") as raw:
