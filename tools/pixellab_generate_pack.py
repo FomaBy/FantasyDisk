@@ -27,6 +27,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -300,6 +301,153 @@ def extract_frame_urls(obj, frame_count):
     return [], "none"
 
 
+def extract_character_frame_urls(info, animation_name, directions):
+    """Collect URLs for one completed named animation on a character."""
+    raw = info.get("_raw", "")
+    lines = raw.splitlines()
+    start = None
+    for index, line in enumerate(lines):
+        if line.startswith("  ") and not line.startswith("    ") and " — " in line:
+            if line[2:].split(" — ", 1)[0] == animation_name:
+                start = index + 1
+                break
+    if start is None:
+        return {}
+
+    rows = {}
+    for line in lines[start:]:
+        if line.startswith("  ") and not line.startswith("    ") and line.strip():
+            break
+        match = re.match(r"^    ([a-z-]+): (.+)$", line)
+        if not match:
+            continue
+        direction, url_text = match.groups()
+        rows[direction] = re.findall(r"https?://[^,\s]+\.png(?:\?[^,\s]+)?", url_text)
+    return {direction: rows.get(direction, []) for direction in directions}
+
+
+def wait_character(character_id, animation_name, directions, bearer, timeout_s,
+                   interval_s, call_fn=call, sleep_fn=time.sleep,
+                   clock=time.time, log=print):
+    """Poll a character until a named animation has all requested directions."""
+    deadline = clock() + timeout_s
+    call_id = 100
+    while True:
+        info = call_fn("get_character", {"character_id": character_id,
+                                          "include_preview": False}, bearer, call_id)
+        call_id += 1
+        if "_raw" in info:
+            raw = info["_raw"]
+            parsed = _parse_object_text(raw)
+            parsed["_raw"] = raw
+            info = parsed
+        status = info.get("status")
+        rows = extract_character_frame_urls(info, animation_name, directions)
+        if status == "failed":
+            return info
+        if status == "completed" and all(rows.get(direction) for direction in directions):
+            return info
+        log("character=%s status=%s progress=%s animation=%s" %
+            (character_id, status, info.get("progress"), animation_name))
+        if clock() >= deadline:
+            raise TimeoutError(
+                "timed out after %ss: character %s has no complete %r animation" %
+                (timeout_s, character_id, animation_name))
+        sleep_fn(interval_s)
+
+
+def run_character(args, bearer, started, call_fn=call, download_fn=download,
+                  sleep_fn=time.sleep, clock=time.time, log=print):
+    """Generate selected directions on an existing PixelLab character."""
+    if not args.animation_name:
+        raise SystemExit("--animation-name is required with --character-id")
+    directions = args.directions or []
+    if not directions:
+        raise SystemExit("--directions is required with --character-id")
+
+    character_id = args.character_id
+    log("character_id: %s" % character_id)
+    animate_params = {
+        "character_id": character_id,
+        "mode": args.animate_mode,
+        "action_description": args.animation_description,
+        "animation_name": args.animation_name,
+        "directions": directions,
+        "frame_count": args.frame_count,
+    }
+    try:
+        anim = call_fn("animate_character", animate_params, bearer, 1)
+        log("animate job: %s" % json.dumps(anim)[:300])
+        info = wait_character(character_id, args.animation_name, directions, bearer,
+                               args.timeout, args.poll_interval,
+                               call_fn=call_fn, sleep_fn=sleep_fn,
+                               clock=clock, log=log)
+    except TimeoutError as exc:
+        log("ERROR: %s" % exc)
+        return EXIT_TIMEOUT
+    except ApiError as exc:
+        log("ERROR: %s" % exc)
+        return EXIT_API_ERROR
+    if info.get("status") != "completed":
+        log("ERROR: character animation failed: %s" % json.dumps(info)[:400])
+        return EXIT_API_ERROR
+
+    rows = extract_character_frame_urls(info, args.animation_name, directions)
+    prefix = args.frame_prefix or (args.animation_name + "_")
+    frames = []
+    try:
+        for direction in directions:
+            direction_prefix = "%s%s" % (prefix, direction.replace("-", "_"))
+            urls = rows.get(direction, [])
+            for index, url in enumerate(urls[:args.frame_count]):
+                name = "%s_%02d.png" % (direction_prefix, index)
+                path = os.path.join(args.source_dir, name)
+                size = download_fn(url, path)
+                try:
+                    encoded_sha256, pixel_sha256 = frame_hashes(path)
+                except Exception as exc:  # noqa: BLE001 - corrupt downloads fail closed
+                    log("ERROR: %s: downloaded frame is not a decodable image: %s" % (name, exc))
+                    return EXIT_INCOMPLETE
+                frames.append({
+                    "file": name,
+                    "direction": direction,
+                    "index": index,
+                    "bytes": size,
+                    "url_kind": "character_direct",
+                    "encoded_sha256": encoded_sha256,
+                    "pixel_sha256": pixel_sha256,
+                })
+    except ApiError as exc:
+        log("ERROR: %s" % exc)
+        return EXIT_API_ERROR
+
+    expected = len(directions) * args.frame_count
+    if len(frames) != expected:
+        log("ERROR: incomplete pack: downloaded %d frames, expected %d (character %s)" %
+            (len(frames), expected, character_id))
+        return EXIT_INCOMPLETE
+
+    manifest = {
+        "tool": "tools/pixellab_generate_pack.py",
+        "tool_version": TOOL_VERSION,
+        "generated_at": started,
+        "encoder": encoder_provenance(),
+        "character": {
+            "pixel_lab_character_id": character_id,
+            "animate_tool": "animate_character",
+            "animate_params": animate_params,
+        },
+        "frames": frames,
+        "frame_count": len(frames),
+        "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+    }
+    with open(args.manifest_out, "w") as fh:
+        json.dump(manifest, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
+    log("wrote %s with %d frames" % (args.manifest_out, len(frames)))
+    return 0
+
+
 def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
         clock=time.time, log=print):
     bearer = os.environ.get("PIXELLAB_BEARER_TOKEN")
@@ -308,6 +456,11 @@ def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
 
     os.makedirs(args.source_dir, exist_ok=True)
     started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    if args.character_id:
+        return run_character(args, bearer, started, call_fn=call_fn,
+                             download_fn=download_fn, sleep_fn=sleep_fn,
+                             clock=clock, log=log)
 
     if args.object_id:
         object_id = args.object_id
@@ -452,6 +605,12 @@ def main(argv=None):
                              "--manifest-out instead of generating a new pack")
     parser.add_argument("--object-id", default=None,
                         help="reuse an existing PixelLab object id")
+    parser.add_argument("--character-id", default=None,
+                        help="animate an existing PixelLab character id")
+    parser.add_argument("--animation-name", default=None,
+                        help="named animation group for --character-id")
+    parser.add_argument("--directions", nargs="+", default=None,
+                        help="directions for --character-id")
     parser.add_argument("--frame-prefix", default=None,
                         help="frame filename prefix (default: <object_id[:8]>_f)")
     parser.add_argument("--frame-count", type=int, default=16)
@@ -466,8 +625,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.check:
         return 0 if check_pack(args.manifest_out, args.source_dir) else EXIT_CHECK_FAILED
-    if not args.object_id and not args.description:
-        parser.error("--description is required unless --object-id is given")
+    if not args.character_id and not args.object_id and not args.description:
+        parser.error("--description is required unless --object-id or --character-id is given")
     if not args.animation_description:
         parser.error("--animation-description is required unless --check is given")
     return run(args)
