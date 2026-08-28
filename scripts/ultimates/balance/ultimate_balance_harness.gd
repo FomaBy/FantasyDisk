@@ -31,7 +31,7 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"elementalist": "awaiting Prism Focus coverage conversion; crowd_cap=18 remains a declared profile rail (FAN-2531 / FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",

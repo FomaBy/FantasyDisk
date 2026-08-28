@@ -3,6 +3,7 @@ extends SceneTree
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
 const Harness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
+const Runner := preload("res://scripts/ultimates/balance/ultimate_effectiveness_runner.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const PD := preload("res://scripts/progression_data.gd")
@@ -18,11 +19,17 @@ const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 3.75
 const PRISM_CROWD_CAP := 18
 const PRISM_LATTICE_HIT_CAP := 3
+const CROWD_COUNTS := [1, 5, 10, 20]
 
 var _errors: Array[String] = []
 
 
 func _initialize() -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	var rows := Budget.build_rows(PD.WEAPONS_BY_CLASS, PD)
 	var inherited_report := Harness.measure(rows)
@@ -41,7 +48,54 @@ func _initialize() -> void:
 	_test_trio(metrics)
 	_test_charge_contract(rows)
 	_test_harness_goes_red(registry, rows)
+	await _test_live_effectiveness(holder, registry, rows)
+	holder.queue_free()
+	await process_frame
 	_report(metrics)
+
+
+func _test_live_effectiveness(holder: Node2D, registry, rows: Array) -> void:
+	var elementalist_rows: Array[Dictionary] = []
+	for raw_row in rows:
+		if raw_row is Dictionary and str((raw_row as Dictionary).get("class_id", "")) == CLASS_ID:
+			elementalist_rows.append(raw_row as Dictionary)
+	var measured: Array[Dictionary] = await Runner.new().measure(
+		holder, registry, elementalist_rows, PD
+	)
+	_check(measured.size() == WEAPONS.size(),
+		"the live runner must produce all three Elementalist effectiveness rows")
+	for raw_row in measured:
+		var row := raw_row as Dictionary
+		var scenarios := row["scenarios"] as Dictionary
+		var reference_dps := float(row["reference_solo_dps"])
+		var live_pool := Budget.live_standard_pool(reference_dps)
+		for raw_scenario in Runner.SCENARIOS:
+			var scenario := raw_scenario as Dictionary
+			var scenario_id := str(scenario["id"])
+			var result := scenarios[scenario_id] as Dictionary
+			_check(is_equal_approx(float(result["targets_struck"]), float(scenario["probes"])),
+				"%s/%s must strike every live probe" % [row["weapon_id"], scenario_id])
+		for enemy_count in CROWD_COUNTS:
+			var crowd_scenario_id := "solo" if enemy_count == 1 else "crowd_%d" % enemy_count
+			var crowd_result := scenarios[crowd_scenario_id] as Dictionary
+			var per_enemy_damage := float(crowd_result["damage_applied"]) / float(enemy_count)
+			var per_enemy_floor := Budget.PER_ENEMY_FLOOR_FRACTION * live_pool / float(enemy_count)
+			_check(per_enemy_damage >= per_enemy_floor,
+				"%s/%s per-enemy damage %.2f must keep the %.2f live floor" % [
+					row["weapon_id"], crowd_scenario_id, per_enemy_damage, per_enemy_floor,
+				])
+		var elite := scenarios["elite"] as Dictionary
+		var elite_floor := Budget.PER_ENEMY_FLOOR_FRACTION * Budget.live_standard_pool(
+			reference_dps, Budget.ENCOUNTER_ELITE
+		)
+		_check(float(elite["damage_applied"]) >= elite_floor,
+			"%s/elite per-enemy damage %.2f must keep the %.2f live floor" % [
+				row["weapon_id"], elite["damage_applied"], elite_floor,
+			])
+		var boss := scenarios["boss"] as Dictionary
+		_check(float(boss["damage_applied"]) > 0.0
+			and float(boss["boss_cap_ratio"]) <= 1.0,
+			"%s boss must take damage without exceeding its whole-activation cap" % row["weapon_id"])
 
 
 func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictionary:
