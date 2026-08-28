@@ -270,10 +270,10 @@
   "evidence": {
     "pixellab_source_contact_sheet": "docs/design/references/weapon_ultimates/dark_mage/dark_mage_pixellab_frames_contact.png",
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/dark_mage_ultimate_contact_capture.gd",
     "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd"

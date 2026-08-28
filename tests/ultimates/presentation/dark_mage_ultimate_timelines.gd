@@ -47,10 +47,10 @@ const PACKS := [
 	},
 ]
 const CAPTURES := [
-	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"name": "2k", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"name": "648p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2k", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
