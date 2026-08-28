@@ -797,7 +797,7 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		if int(state["last_active_ms"]) >= 0:
 			for error in _late_completion_errors(
 				label,
-				float(int(state["last_active_ms"]) - int(state["started_ms"])) / 1000.0,
+				float(state["tween_elapsed"]),
 				float(state["deadline"])
 			):
 				_check(false, error)
