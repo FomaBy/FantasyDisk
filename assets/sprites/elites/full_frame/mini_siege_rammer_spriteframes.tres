@@ -1,0 +1,2694 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_east.png" id="1_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_south_east.png" id="2_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_south.png" id="3_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_south_west.png" id="4_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_west.png" id="5_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_north_west.png" id="6_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_north.png" id="7_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_idle_north_east.png" id="8_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_00.png" id="9_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_01.png" id="10_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_02.png" id="11_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_03.png" id="12_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_04.png" id="13_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_east_05.png" id="14_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_00.png" id="15_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_01.png" id="16_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_02.png" id="17_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_03.png" id="18_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_04.png" id="19_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_east_05.png" id="20_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_00.png" id="21_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_01.png" id="22_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_02.png" id="23_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_03.png" id="24_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_04.png" id="25_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_05.png" id="26_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_00.png" id="27_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_01.png" id="28_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_02.png" id="29_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_03.png" id="30_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_04.png" id="31_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_south_west_05.png" id="32_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_00.png" id="33_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_01.png" id="34_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_02.png" id="35_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_03.png" id="36_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_04.png" id="37_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_west_05.png" id="38_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_00.png" id="39_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_01.png" id="40_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_02.png" id="41_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_03.png" id="42_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_04.png" id="43_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_west_05.png" id="44_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_00.png" id="45_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_01.png" id="46_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_02.png" id="47_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_03.png" id="48_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_04.png" id="49_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_05.png" id="50_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_00.png" id="51_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_01.png" id="52_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_02.png" id="53_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_03.png" id="54_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_04.png" id="55_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_move_north_east_05.png" id="56_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_00.png" id="57_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_01.png" id="58_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_02.png" id="59_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_03.png" id="60_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_04.png" id="61_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_east_05.png" id="62_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_00.png" id="63_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_01.png" id="64_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_02.png" id="65_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_03.png" id="66_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_04.png" id="67_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_east_05.png" id="68_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_00.png" id="69_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_01.png" id="70_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_02.png" id="71_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_03.png" id="72_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_04.png" id="73_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_05.png" id="74_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_00.png" id="75_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_01.png" id="76_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_02.png" id="77_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_03.png" id="78_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_04.png" id="79_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_south_west_05.png" id="80_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_00.png" id="81_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_01.png" id="82_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_02.png" id="83_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_03.png" id="84_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_04.png" id="85_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_west_05.png" id="86_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_00.png" id="87_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_01.png" id="88_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_02.png" id="89_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_03.png" id="90_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_04.png" id="91_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_west_05.png" id="92_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_00.png" id="93_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_01.png" id="94_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_02.png" id="95_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_03.png" id="96_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_04.png" id="97_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_05.png" id="98_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_00.png" id="99_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_01.png" id="100_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_02.png" id="101_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_03.png" id="102_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_04.png" id="103_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_attack_north_east_05.png" id="104_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_00.png" id="105_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_01.png" id="106_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_02.png" id="107_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_03.png" id="108_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_04.png" id="109_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_east_05.png" id="110_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_00.png" id="111_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_01.png" id="112_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_02.png" id="113_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_03.png" id="114_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_04.png" id="115_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_east_05.png" id="116_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_00.png" id="117_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_01.png" id="118_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_02.png" id="119_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_03.png" id="120_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_04.png" id="121_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_05.png" id="122_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_00.png" id="123_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_01.png" id="124_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_02.png" id="125_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_03.png" id="126_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_04.png" id="127_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_south_west_05.png" id="128_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_00.png" id="129_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_01.png" id="130_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_02.png" id="131_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_03.png" id="132_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_04.png" id="133_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_west_05.png" id="134_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_00.png" id="135_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_01.png" id="136_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_02.png" id="137_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_03.png" id="138_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_04.png" id="139_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_west_05.png" id="140_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_00.png" id="141_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_01.png" id="142_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_02.png" id="143_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_03.png" id="144_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_04.png" id="145_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_05.png" id="146_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_00.png" id="147_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_01.png" id="148_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_02.png" id="149_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_03.png" id="150_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_04.png" id="151_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_hit_north_east_05.png" id="152_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_00.png" id="153_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_01.png" id="154_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_02.png" id="155_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_03.png" id="156_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_04.png" id="157_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_east_05.png" id="158_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_00.png" id="159_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_01.png" id="160_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_02.png" id="161_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_03.png" id="162_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_04.png" id="163_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_east_05.png" id="164_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_00.png" id="165_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_01.png" id="166_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_02.png" id="167_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_03.png" id="168_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_04.png" id="169_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_05.png" id="170_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_00.png" id="171_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_01.png" id="172_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_02.png" id="173_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_03.png" id="174_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_04.png" id="175_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_south_west_05.png" id="176_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_00.png" id="177_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_01.png" id="178_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_02.png" id="179_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_03.png" id="180_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_04.png" id="181_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_west_05.png" id="182_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_00.png" id="183_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_01.png" id="184_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_02.png" id="185_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_03.png" id="186_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_04.png" id="187_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_west_05.png" id="188_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_00.png" id="189_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_01.png" id="190_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_02.png" id="191_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_03.png" id="192_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_04.png" id="193_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_05.png" id="194_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_00.png" id="195_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_01.png" id="196_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_02.png" id="197_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_03.png" id="198_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_04.png" id="199_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_death_north_east_05.png" id="200_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_00.png" id="201_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_01.png" id="202_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_02.png" id="203_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_03.png" id="204_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_04.png" id="205_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_east_05.png" id="206_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_00.png" id="207_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_01.png" id="208_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_02.png" id="209_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_03.png" id="210_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_04.png" id="211_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_east_05.png" id="212_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_00.png" id="213_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_01.png" id="214_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_02.png" id="215_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_03.png" id="216_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_04.png" id="217_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_05.png" id="218_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_00.png" id="219_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_01.png" id="220_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_02.png" id="221_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_03.png" id="222_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_04.png" id="223_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_south_west_05.png" id="224_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_00.png" id="225_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_01.png" id="226_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_02.png" id="227_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_03.png" id="228_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_04.png" id="229_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_west_05.png" id="230_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_00.png" id="231_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_01.png" id="232_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_02.png" id="233_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_03.png" id="234_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_04.png" id="235_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_west_05.png" id="236_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_00.png" id="237_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_01.png" id="238_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_02.png" id="239_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_03.png" id="240_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_04.png" id="241_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_05.png" id="242_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_00.png" id="243_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_01.png" id="244_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_02.png" id="245_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_03.png" id="246_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_04.png" id="247_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_shield_block_north_east_05.png" id="248_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_00.png" id="249_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_01.png" id="250_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_02.png" id="251_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_03.png" id="252_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_04.png" id="253_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_east_05.png" id="254_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_00.png" id="255_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_01.png" id="256_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_02.png" id="257_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_03.png" id="258_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_04.png" id="259_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_east_05.png" id="260_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_00.png" id="261_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_01.png" id="262_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_02.png" id="263_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_03.png" id="264_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_04.png" id="265_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_05.png" id="266_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_00.png" id="267_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_01.png" id="268_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_02.png" id="269_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_03.png" id="270_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_04.png" id="271_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_south_west_05.png" id="272_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_00.png" id="273_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_01.png" id="274_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_02.png" id="275_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_03.png" id="276_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_04.png" id="277_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_west_05.png" id="278_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_00.png" id="279_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_01.png" id="280_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_02.png" id="281_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_03.png" id="282_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_04.png" id="283_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_west_05.png" id="284_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_00.png" id="285_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_01.png" id="286_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_02.png" id="287_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_03.png" id="288_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_04.png" id="289_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_05.png" id="290_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_00.png" id="291_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_01.png" id="292_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_02.png" id="293_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_03.png" id="294_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_04.png" id="295_rs"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_siege_rammer/mini_siege_rammer_skill_slam_wave_north_east_05.png" id="296_rs"]
+
+[resource]
+animations = [
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_rs")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_rs")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_rs")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_rs")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_rs")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_rs")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_rs")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_rs")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_rs")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_rs")
+}],
+"loop": true,
+"name": &"walk_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_rs")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_rs")
+}],
+"loop": true,
+"name": &"walk_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_rs")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_rs")
+}],
+"loop": true,
+"name": &"walk_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_rs")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_rs")
+}],
+"loop": true,
+"name": &"walk_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_rs")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_rs")
+}],
+"loop": true,
+"name": &"walk_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_rs")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_rs")
+}],
+"loop": true,
+"name": &"walk_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_rs")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_rs")
+}],
+"loop": true,
+"name": &"walk_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_rs")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_rs")
+}],
+"loop": true,
+"name": &"walk_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_rs")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_rs")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_rs")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_rs")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_rs")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_rs")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_rs")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_rs")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rs")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rs")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rs")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rs")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rs")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rs")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rs")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rs")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_rs")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("111_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_rs")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_rs")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_rs")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_rs")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("135_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_rs")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("141_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_rs")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("147_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_rs")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_rs")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("159_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_rs")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("165_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_rs")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("171_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_rs")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("177_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_rs")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("183_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_rs")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("189_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_rs")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("195_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_rs")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("207_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("207_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("209_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("213_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("213_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("219_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("219_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("225_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("225_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("231_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("231_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("237_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("239_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("237_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("239_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("243_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_rs")
+}],
+"loop": false,
+"name": &"skill_shield_block_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("243_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_rs")
+}],
+"loop": false,
+"name": &"attack_skill_shield_block_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("249_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("251_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("249_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("251_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("255_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("257_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("255_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("257_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("261_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("261_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("267_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("269_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("267_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("269_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("273_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("275_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("273_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("275_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("279_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("281_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("279_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("281_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("285_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("287_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("285_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("287_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("291_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("293_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_rs")
+}],
+"loop": false,
+"name": &"skill_slam_wave_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("291_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("293_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_rs")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_rs")
+}],
+"loop": false,
+"name": &"attack_skill_slam_wave_north_east",
+"speed": 12.0
+}
+]
