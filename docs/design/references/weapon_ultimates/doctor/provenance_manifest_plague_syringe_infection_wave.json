@@ -342,8 +342,8 @@
   },
   "source_issue": "FAN-3613",
   "visual_evidence": {
-    "contact_sheet": "docs/design/previews/doctor_plague_syringe_infection_wave_rework_contact.png",
-    "first_last_native": "docs/design/previews/doctor_plague_syringe_infection_wave_rework_first_last.png",
+    "contact_sheet": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/infection_wave_rework_contact.png",
+    "first_last_native": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave/infection_wave_rework_first_last.png",
     "native_scale_px": [
       256,
       256
