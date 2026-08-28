@@ -1,9 +1,9 @@
 {
   "character_id": "stone_bruiser",
   "pixellab_character_id": "acc9d3d5-8c44-448f-be81-6583bb91b2c0",
-  "generated_at": "2026-08-18",
+  "generated_at": "2026-08-27",
   "source": "PixelLab MCP",
-  "mode": "standard (idle rotations) + template walking-6-frames (move) + v3 custom (attack/hit/death)",
+  "mode": "standard (idle rotations) + template walking-6-frames (move) + v3 custom reference-stripped (attack/hit/death)",
   "body_type": "humanoid",
   "view": "low top-down",
   "runtime_canvas": [
@@ -34,23 +34,36 @@
       "action_description": "lumbering forward slowly, heavy stone footsteps"
     },
     "attack": {
-      "frame_count": 7,
+      "frame_count": 6,
       "mode": "v3",
+      "animation_group_id": "a7e42e09-24af-4469-8239-ac8f07b3bb85",
+      "animation_name": "fan3102_attack_clean",
+      "keep_first_frame": false,
       "action_description": "heavy overhead smash with both boulder fists",
       "fps": 12.0
     },
     "hit": {
-      "frame_count": 7,
+      "frame_count": 6,
       "mode": "v3",
+      "animation_group_id": "ca78b85b-48db-4e04-91a3-317a1b5a3742",
+      "animation_name": "fan3102_hit_clean",
+      "keep_first_frame": false,
       "action_description": "recoiling backward from a heavy blow, cracks flashing across the stone body",
       "fps": 10.0
     },
     "death": {
-      "frame_count": 9,
+      "frame_count": 8,
       "mode": "v3",
+      "animation_group_id": "f5c08227-f0f6-4ea4-945b-73392de1d0e0",
+      "animation_name": "fan3102_death_clean",
+      "keep_first_frame": false,
       "action_description": "crumbling and collapsing into a pile of rubble",
       "fps": 10.0
     }
   },
-  "notes": "FAN-2612: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/stone_bruiser. 8 idle rotations + 8x6 move frames + 8x7 attack frames + 8x7 hit frames + 8x9 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32."
+  "source_paths": [
+    "assets/sprites/enemies/pixellab/stone_bruiser/stone_bruiser_<state>_<direction>[_<frame>].png"
+  ],
+  "runtime_path": "assets/sprites/enemies/full_frame/stone_bruiser_8dir/",
+  "notes": "FAN-2612: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/stone_bruiser. FAN-3102 regenerated attack/hit/death with PixelLab animate_character v3 using keep_first_frame=false, preserving idle and move byte-for-byte: 8 idle rotations + 8x6 move frames + 8x6 attack frames + 8x6 hit frames + 8x8 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. Total FAN-3102 PixelLab cost: 24 generations (8 per regenerated state)."
 }
