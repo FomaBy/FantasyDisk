@@ -230,10 +230,10 @@
   ],
   "evidence": {
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/assassin_ultimate_contact_capture.gd",
     "focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd"
