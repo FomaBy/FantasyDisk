@@ -46,7 +46,8 @@
   "no_baked_weapon_or_held_prop": true,
   "qa_notes": [
     "North-west move uses PixelLab v3 custom replacement f82b711b-d1e1-4ffa-907c-75046dda6934, source frames 1..6, after deleting failed walking-6-frames north-west because frames 0..2 baked a hammer-like prop.",
-    "Visual QA contact sheet inspected after replacement; accepted as empty-handed PixelLab output."
+    "Visual QA contact sheet inspected after replacement; accepted as empty-handed PixelLab output.",
+    "FAN-2593 re-audit after the FAN-3324 regeneration: all eight directions accepted. The identity morph and baked axe/sword/dagger that rejected south, south-east, north-east, north and west are gone; east, north-west and south-west source rows stayed byte-identical."
   ],
   "directions": [
     "south",
@@ -147,7 +148,7 @@
   "spriteframes": "assets/sprites/characters/berserk_spriteframes.tres",
   "pixellab_metadata": "assets/sprites/characters/pixellab/berserk/pixellab_metadata.json",
   "qa_report": "assets/sprites/characters/pixellab/berserk/alpha_bbox_report.json",
-  "preview_contact_sheet": "docs/design/previews/scrum703_berserk_pixellab_contact.png",
+  "preview_contact_sheet": "docs/design/previews/fan2593_berserk_8dir_contact.png",
   "fan3324_regeneration": {
     "task": "FAN-3324",
     "generated_at": "2026-08-27T13:55:40+00:00",
