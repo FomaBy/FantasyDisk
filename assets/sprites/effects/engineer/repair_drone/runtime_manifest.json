@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_repair_drone",
+  "source_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/manifest.json",
+  "pixel_lab_object_id": "2c1a6640-f468-41fc-8e5d-629eb4089200",
+  "pixel_lab_animation_group_id": "a6fff150-ebc2-46cc-8a00-d509e1be6276",
+  "frame_count": 9,
+  "frame_order": [
+    "repair_drone_f00.png",
+    "repair_drone_f01.png",
+    "repair_drone_f02.png",
+    "repair_drone_f03.png",
+    "repair_drone_f04.png",
+    "repair_drone_f05.png",
+    "repair_drone_f06.png",
+    "repair_drone_f07.png",
+    "repair_drone_f08.png"
+  ],
+  "spriteframes": "assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres",
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0
+  },
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f00.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f00.png.import",
+        "sha256": "44dd15d5fff13b92ad55e13b83b902ccaaecbfd4ae5e9edd35475ff8ca8652eb",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f01.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f01.png.import",
+        "sha256": "e8b19c85157df786eadb4d15665be39cad3a27faf2567765647127cb9417d1a0",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f02.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f02.png.import",
+        "sha256": "a7b27dc307e95818dd87707e483f3a2e778a0a74da1b593ad6e9a1bf1511f9fd",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f03.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f03.png.import",
+        "sha256": "b5aa21e98b1e097cd9424cd9023ac7a8687353d0bf20ad1d42a80a629ad1922a",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f04.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f04.png.import",
+        "sha256": "ea1a005c53856858c348f84312042bad9335e497dc94c5b9f404db9e1bd1b48e",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f05.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f05.png.import",
+        "sha256": "ae5cfaa69216bd1be762deb06044e09040fb702abf27eac8de4ac3884f1985bf",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f06.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f06.png.import",
+        "sha256": "1145842414875194dc76d06cc35dc8bb45ff031390f964ff1184e3e36a293130",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f07.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f07.png.import",
+        "sha256": "73f71929479debfe3c6e165552a42e1077c9f8838f49b03c64315475f7eadc28",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/repair_drone/repair_drone_f08.png": {
+        "path": "assets/sprites/effects/engineer/repair_drone/repair_drone_f08.png.import",
+        "sha256": "8b7daa9c4a4e544573bdd5bd3d7b79bb5add4915c080a42d6f0f23fce88d8f14",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f00.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f00.png",
+      "source_sha256": "ff685c5a1c3a0f8d8ec168ef59d5e0b235298975dcb13bea89aaa31525ca7f86",
+      "runtime_sha256": "ff685c5a1c3a0f8d8ec168ef59d5e0b235298975dcb13bea89aaa31525ca7f86",
+      "source_pixel_sha256": "d1ee3dc64ae29193b47f5167294e8cb1ef9ba0f2d1b61da0a012ec52a2cfc7c7",
+      "runtime_pixel_sha256": "d1ee3dc64ae29193b47f5167294e8cb1ef9ba0f2d1b61da0a012ec52a2cfc7c7",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        47,
+        226,
+        208
+      ]
+    },
+    {
+      "frame": 1,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f01.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f01.png",
+      "source_sha256": "464aaa7f7e975ae9b98740232a5e0155630482fbcc1a34f67b39ca5787ce8ba8",
+      "runtime_sha256": "464aaa7f7e975ae9b98740232a5e0155630482fbcc1a34f67b39ca5787ce8ba8",
+      "source_pixel_sha256": "3b65e52b880fe75fabd765b7d369577820ee370d62b3f2195f8771c0df3698cf",
+      "runtime_pixel_sha256": "3b65e52b880fe75fabd765b7d369577820ee370d62b3f2195f8771c0df3698cf",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        48,
+        226,
+        208
+      ]
+    },
+    {
+      "frame": 2,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f02.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f02.png",
+      "source_sha256": "5f15dfb7378fb05972712e31f2bfe1b687c8ccf2216b3f7c2d3018857b269c98",
+      "runtime_sha256": "5f15dfb7378fb05972712e31f2bfe1b687c8ccf2216b3f7c2d3018857b269c98",
+      "source_pixel_sha256": "781ad329445a48803446ef654f4d350619377cc7d529754552fc64a0fc5f1cb1",
+      "runtime_pixel_sha256": "781ad329445a48803446ef654f4d350619377cc7d529754552fc64a0fc5f1cb1",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        50,
+        226,
+        210
+      ]
+    },
+    {
+      "frame": 3,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f03.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f03.png",
+      "source_sha256": "9c24bca3fb2ec82c811d2547428f449747326c28090f3602c258db1e223ada42",
+      "runtime_sha256": "9c24bca3fb2ec82c811d2547428f449747326c28090f3602c258db1e223ada42",
+      "source_pixel_sha256": "7e1f222870b32a6e44cf8b8c608a2808ee428e2a2f66898a077b64fcd2967644",
+      "runtime_pixel_sha256": "7e1f222870b32a6e44cf8b8c608a2808ee428e2a2f66898a077b64fcd2967644",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        29,
+        51,
+        226,
+        211
+      ]
+    },
+    {
+      "frame": 4,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f04.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f04.png",
+      "source_sha256": "ffebdda795fa11b5df49306812aba2f57703f33afa876ded29ccca03411381ec",
+      "runtime_sha256": "ffebdda795fa11b5df49306812aba2f57703f33afa876ded29ccca03411381ec",
+      "source_pixel_sha256": "5ae60873797c2b06b122ba2755d85380f1abeef6690b8ce388ff08bc4661bc32",
+      "runtime_pixel_sha256": "5ae60873797c2b06b122ba2755d85380f1abeef6690b8ce388ff08bc4661bc32",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        52,
+        226,
+        212
+      ]
+    },
+    {
+      "frame": 5,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f05.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f05.png",
+      "source_sha256": "302bd20cc3ef30898056f30db89f3ac4a9a4e395710e04411c62064489dcaf58",
+      "runtime_sha256": "302bd20cc3ef30898056f30db89f3ac4a9a4e395710e04411c62064489dcaf58",
+      "source_pixel_sha256": "83613b6341c9943c33f587ff344adf43290a078ebf00289db8e591df73dcbae5",
+      "runtime_pixel_sha256": "83613b6341c9943c33f587ff344adf43290a078ebf00289db8e591df73dcbae5",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        29,
+        50,
+        226,
+        210
+      ]
+    },
+    {
+      "frame": 6,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f06.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f06.png",
+      "source_sha256": "eefed79878ab6e1949e7de39c461f2b238c7a61207dd62dcb048003328e442e0",
+      "runtime_sha256": "eefed79878ab6e1949e7de39c461f2b238c7a61207dd62dcb048003328e442e0",
+      "source_pixel_sha256": "1e89d04d69941e90b96b19da9f0e8192e8ae0854b5a2b823b18d48a3809864ca",
+      "runtime_pixel_sha256": "1e89d04d69941e90b96b19da9f0e8192e8ae0854b5a2b823b18d48a3809864ca",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        48,
+        226,
+        208
+      ]
+    },
+    {
+      "frame": 7,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f07.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f07.png",
+      "source_sha256": "80a721f7383284bb559dd3adde8c7c2f778c65dc2847056bdd24aaca50ab2db9",
+      "runtime_sha256": "80a721f7383284bb559dd3adde8c7c2f778c65dc2847056bdd24aaca50ab2db9",
+      "source_pixel_sha256": "7445efc7928eecda509ffcb7f6d34daf9a3f088bc22ceae02336517e385077c5",
+      "runtime_pixel_sha256": "7445efc7928eecda509ffcb7f6d34daf9a3f088bc22ceae02336517e385077c5",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        30,
+        46,
+        227,
+        206
+      ]
+    },
+    {
+      "frame": 8,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/repair_drone_f08.png",
+      "runtime": "assets/sprites/effects/engineer/repair_drone/repair_drone_f08.png",
+      "source_sha256": "04cc8f6ab95b9a17acf21d5085bca99c68f6075d2d73a9f4fe08073582480435",
+      "runtime_sha256": "04cc8f6ab95b9a17acf21d5085bca99c68f6075d2d73a9f4fe08073582480435",
+      "source_pixel_sha256": "1a5a9a9cf9ce27bebed658a3de832a31a2156a5295dd1de972df4da5be6ca06c",
+      "runtime_pixel_sha256": "1a5a9a9cf9ce27bebed658a3de832a31a2156a5295dd1de972df4da5be6ca06c",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        27,
+        44,
+        226,
+        204
+      ]
+    }
+  ],
+  "parity": "source and runtime encoded/pixel hashes must match for every frame; SpriteFrames order mirrors frame_order",
+  "secret_handling": "no credentials stored; PixelLab token was environment-only",
+  "spriteframes_sha256": "9b47de6b4cabb518e54a6bfdcbed3e08c52af9f13c6053aea3a58822d8051a41"
+}

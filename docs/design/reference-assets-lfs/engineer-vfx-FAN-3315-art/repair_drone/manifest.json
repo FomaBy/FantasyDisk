@@ -1,0 +1,140 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T20:20:02Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "2c1a6640-f468-41fc-8e5d-629eb4089200",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single compact brass repair microdrone for an engineer ultimate: a beetle-like hovering machine with two flat rotor blades, a teal circular core and tiny copper arms, dark fantasy D&D pixel art seen straight from above, centered isolated sprite on a transparent background, crisp readable silhouette, workshop teal brass and emerald palette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same single compact repair drone stays centered and keeps the exact same outline, proportions, palette and position in every frame: only the two rotor blades turn, the teal core pulses, two thin emerald repair beams sweep in a small orbit and tiny copper sparks flicker; every frame remains visibly occupied, clean and readable, with nothing entering or leaving the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "repair_drone_f00.png",
+      "bytes": 37702,
+      "url_kind": "template",
+      "encoded_sha256": "ff685c5a1c3a0f8d8ec168ef59d5e0b235298975dcb13bea89aaa31525ca7f86",
+      "pixel_sha256": "d1ee3dc64ae29193b47f5167294e8cb1ef9ba0f2d1b61da0a012ec52a2cfc7c7"
+    },
+    {
+      "file": "repair_drone_f01.png",
+      "bytes": 37806,
+      "url_kind": "template",
+      "encoded_sha256": "464aaa7f7e975ae9b98740232a5e0155630482fbcc1a34f67b39ca5787ce8ba8",
+      "pixel_sha256": "3b65e52b880fe75fabd765b7d369577820ee370d62b3f2195f8771c0df3698cf"
+    },
+    {
+      "file": "repair_drone_f02.png",
+      "bytes": 35834,
+      "url_kind": "template",
+      "encoded_sha256": "5f15dfb7378fb05972712e31f2bfe1b687c8ccf2216b3f7c2d3018857b269c98",
+      "pixel_sha256": "781ad329445a48803446ef654f4d350619377cc7d529754552fc64a0fc5f1cb1"
+    },
+    {
+      "file": "repair_drone_f03.png",
+      "bytes": 37875,
+      "url_kind": "template",
+      "encoded_sha256": "9c24bca3fb2ec82c811d2547428f449747326c28090f3602c258db1e223ada42",
+      "pixel_sha256": "7e1f222870b32a6e44cf8b8c608a2808ee428e2a2f66898a077b64fcd2967644"
+    },
+    {
+      "file": "repair_drone_f04.png",
+      "bytes": 38097,
+      "url_kind": "template",
+      "encoded_sha256": "ffebdda795fa11b5df49306812aba2f57703f33afa876ded29ccca03411381ec",
+      "pixel_sha256": "5ae60873797c2b06b122ba2755d85380f1abeef6690b8ce388ff08bc4661bc32"
+    },
+    {
+      "file": "repair_drone_f05.png",
+      "bytes": 37185,
+      "url_kind": "template",
+      "encoded_sha256": "302bd20cc3ef30898056f30db89f3ac4a9a4e395710e04411c62064489dcaf58",
+      "pixel_sha256": "83613b6341c9943c33f587ff344adf43290a078ebf00289db8e591df73dcbae5"
+    },
+    {
+      "file": "repair_drone_f06.png",
+      "bytes": 37112,
+      "url_kind": "template",
+      "encoded_sha256": "eefed79878ab6e1949e7de39c461f2b238c7a61207dd62dcb048003328e442e0",
+      "pixel_sha256": "1e89d04d69941e90b96b19da9f0e8192e8ae0854b5a2b823b18d48a3809864ca"
+    },
+    {
+      "file": "repair_drone_f07.png",
+      "bytes": 37477,
+      "url_kind": "template",
+      "encoded_sha256": "80a721f7383284bb559dd3adde8c7c2f778c65dc2847056bdd24aaca50ab2db9",
+      "pixel_sha256": "7445efc7928eecda509ffcb7f6d34daf9a3f088bc22ceae02336517e385077c5"
+    },
+    {
+      "file": "repair_drone_f08.png",
+      "bytes": 39313,
+      "url_kind": "template",
+      "encoded_sha256": "04cc8f6ab95b9a17acf21d5085bca99c68f6075d2d73a9f4fe08073582480435",
+      "pixel_sha256": "1a5a9a9cf9ce27bebed658a3de832a31a2156a5295dd1de972df4da5be6ca06c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_repair_drone",
+  "title": "Ремонтный дрон",
+  "source_dir": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone",
+  "pixel_lab": {
+    "tool": "create_1_direction_object + animate_object",
+    "object_id": "2c1a6640-f468-41fc-8e5d-629eb4089200",
+    "animation_group_id": "a6fff150-ebc2-46cc-8a00-d509e1be6276",
+    "mode": "v3",
+    "size": 256,
+    "view": "top-down"
+  },
+  "generation_cost": {
+    "unit": "PixelLab generations",
+    "per_pack": "not exposed by the blocking CLI or get_object response",
+    "balance_snapshot_after_generation": {
+      "credits": "$0.00",
+      "generations_remaining": 4819,
+      "generations_used": 5181,
+      "generations_total": 10000
+    },
+    "note": "No paid operation, purchase, or credit top-up was performed; the live response did not expose a per-job cost."
+  },
+  "runtime": {
+    "runtime_dir": "assets/sprites/effects/engineer/repair_drone",
+    "frame_prefix": "repair_drone_f",
+    "frame_order": [
+      "repair_drone_f00.png",
+      "repair_drone_f01.png",
+      "repair_drone_f02.png",
+      "repair_drone_f03.png",
+      "repair_drone_f04.png",
+      "repair_drone_f05.png",
+      "repair_drone_f06.png",
+      "repair_drone_f07.png",
+      "repair_drone_f08.png"
+    ],
+    "spriteframes": "assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres",
+    "animation_name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "class_palette_id": "class_palette.engineer.workshop_teal_brass_emerald",
+    "motion_contract": "rotor turn, teal core pulse, orbiting emerald repair beams, copper sparks",
+    "source_runtime_policy": "runtime PNGs are byte-for-byte copies of the verified PixelLab source frames",
+    "godot_import_policy": "lossless CompressedTexture2D, mipmaps disabled, nearest filtering"
+  }
+}
