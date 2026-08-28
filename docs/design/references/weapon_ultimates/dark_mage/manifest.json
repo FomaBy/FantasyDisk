@@ -36,8 +36,8 @@
     "historical_source_note": "The accepted attack-VFX PNGs were generated under an explicit 2026-06-30 user override with OpenAI gpt-image-2. Their source prompts and alpha-cleanup records remain in docs/design/references/weapon_attack_animations/<weapon_id>/prompt_notes.md.",
     "reused_sources": {
       "dark_book": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_book/vfx_weapon_dark_book_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_book/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_book/dark_book_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_book.png",
         "weapon_sha256": "39f10fff41f2f1540628d771aeb704d4fa230321075552eda0b697ee49b681c2",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_book.png",
@@ -46,8 +46,8 @@
         "modified": false
       },
       "cursed_skull": {
-        "source_reference": "docs/design/references/weapon_attack_animations/cursed_skull/vfx_weapon_cursed_skull_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/cursed_skull/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/cursed_skull/cursed_skull_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json",
         "weapon_runtime_path": "assets/sprites/weapons/cursed_skull.png",
         "weapon_sha256": "c6a76bcf7d07f80e362028ba3712a652e850281ddc90fce8944a13ec9c0c6684",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
@@ -56,8 +56,8 @@
         "modified": false
       },
       "dark_wand": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_wand/vfx_weapon_dark_wand_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_wand/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_wand/dark_wand_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_wand.png",
         "weapon_sha256": "703b9dfc3f1b56fbc5dcadf0c94c550d645f7e2fd3055ffe326f33338481e168",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_wand.png",

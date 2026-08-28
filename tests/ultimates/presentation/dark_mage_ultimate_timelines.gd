@@ -54,6 +54,7 @@ const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const REQUIRED_CHANNELS := ["animation", "vfx", "sfx"]
 const MAX_TIMELINE_SECONDS := 10.0
+const SOURCE_LFS_ROOT := "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616"
 
 
 class HandleProbe extends RefCounted:
@@ -110,6 +111,8 @@ func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 		for key in ["source_reference", "source_notes", "weapon_runtime_path", "vfx_runtime_path", "runtime_scene"]:
 			var path := str(source.get(key, ""))
 			_expect(not path.is_empty() and FileAccess.file_exists("res://%s" % path), "%s %s must be recorded and exist" % [weapon_id, key], errors)
+		_expect(str(source.get("source_reference", "")).begins_with(SOURCE_LFS_ROOT + "/"), "%s source reference must use the dedicated LFS pack" % weapon_id, errors)
+		_expect(str(source.get("source_notes", "")) == str((provenance.get("new_pack_manifests", {}) as Dictionary).get(weapon_id, "")), "%s source notes must point to its provenance manifest" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("weapon_runtime_path", ""))) == str(source.get("weapon_sha256", "")), "%s weapon SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("vfx_runtime_path", ""))) == str(source.get("vfx_sha256", "")), "%s VFX SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(source.get("modified", true) == false, "%s reused assets must remain unmodified" % weapon_id, errors)
@@ -140,6 +143,12 @@ func _check_pixellab_pack_provenance(provenance: Dictionary, errors: Array[Strin
 		_expect(not animation_group_ids.has(animation_group_id), "%s PixelLab animation group ID must be unique to this weapon" % weapon_id, errors)
 		object_ids[object_id] = true
 		animation_group_ids[animation_group_id] = true
+		var asset := pack.get("asset", {}) as Dictionary
+		var source_dir := str(asset.get("source_dir", ""))
+		_expect(source_dir.begins_with(SOURCE_LFS_ROOT + "/"), "%s source frames must use the dedicated LFS pack" % weapon_id, errors)
+		for raw_frame in asset.get("source_frames", []) as Array:
+			var source_frame := "%s/%s" % [source_dir, str(raw_frame)]
+			_expect(FileAccess.file_exists("res://%s" % source_frame), "%s LFS source frame must resolve: %s" % [weapon_id, source_frame], errors)
 
 
 func _check_provenance_negative_cases(manifest: Dictionary, errors: Array[String]) -> void:
