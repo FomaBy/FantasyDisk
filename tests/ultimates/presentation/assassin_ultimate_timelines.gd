@@ -25,10 +25,10 @@ const V2_PRESENCE_FIELDS := {
 }
 const V2_SILHOUETTE_ASSET := "res://assets/sprites/weapons/chakrams.png"
 const CAPTURES := [
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 const PIXELLAB_WEAPON_IDS := ["chakrams", "shadow_daggers"]
 const REUSED_WEAPON_IDS := ["venom_wire"]
