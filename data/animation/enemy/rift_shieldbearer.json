@@ -1,0 +1,14 @@
+{
+	"provenance": "FAN-2616: dedicated 8-direction pack replacing the single authored horizontal view + flip.",
+	"frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
+	"scale": {
+		"x": 0.42,
+		"y": 0.42
+	},
+	"position": {
+		"x": 0.0,
+		"y": -50.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}
