@@ -1,0 +1,121 @@
+{
+  "issue": "FAN-3602",
+  "class_id": "dark_mage",
+  "weapon_id": "dark_wand",
+  "canonical_id": "dark_mage/dark_wand",
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T23:53:51Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1528e3f0-f696-4216-8702-b2efc13b15aa",
+    "pixel_lab_animation_group_id": "a78c4870-0bb3-4c2d-9f62-1e8184aa1370",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single black ritual wand with one thin zigzag void thread and three branching violet nodes, dark fantasy D&D pixel art seen straight from above, centered isolated effect, only one wand and thread, empty transparent background, clean silhouette, no characters, no extra props, no text, no border",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the wand anchored with the same shape and size in every frame; the thin void thread draws forward, three violet branch nodes appear one by one and pulse, then all nodes contract into thin black afterimages at once; every frame stays visibly active, transparent background, no new objects, no text, no cropping",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "dark_wand_f00.png",
+      "bytes": 9007,
+      "url_kind": "template",
+      "encoded_sha256": "a1bfc928778f2e0fa6a0e6e0008ec231394aff69faaa259b628ba9c09d2fc570",
+      "pixel_sha256": "72d808d68676c000cee187ae04c7719b1d3aab23cb71ebb0acdc1afed298a4aa"
+    },
+    {
+      "file": "dark_wand_f01.png",
+      "bytes": 9417,
+      "url_kind": "template",
+      "encoded_sha256": "4e8d46e6c34630878dfdbb02664e20f38c8578d312dc045291e9b17ba5f307d7",
+      "pixel_sha256": "1c8885d87d0eef6c0dde2d33feb0d6c87b0db78dc9a24711a6954ccbf7bcf7d9"
+    },
+    {
+      "file": "dark_wand_f02.png",
+      "bytes": 9470,
+      "url_kind": "template",
+      "encoded_sha256": "1503f9e81220c08071ce0911a7318642ff35ca2f382dd0ed6a10f783437e9a07",
+      "pixel_sha256": "3464bc248da6ac1d6a9cdf7614acd516570251e7df7cd8b6567d6c5d4a3cdc82"
+    },
+    {
+      "file": "dark_wand_f03.png",
+      "bytes": 9378,
+      "url_kind": "template",
+      "encoded_sha256": "cfa025b68ec30571f9c04e5d3735ff5ee1a5ec58358d60ef1f3257ca8c9bb007",
+      "pixel_sha256": "841812af53208749e8d07521f71ac90b72aab40c1f3415f9cd98ef39b4cf5c4e"
+    },
+    {
+      "file": "dark_wand_f04.png",
+      "bytes": 9808,
+      "url_kind": "template",
+      "encoded_sha256": "bfe59e84a1fa91e4b02579f08e01e830bc98da859076e17abcf04e6d95b5cc57",
+      "pixel_sha256": "3e1ddf05e071e0f843ab8ae14f8a6cbfa40c77f7d796d2f5e15dd6141ddd1b49"
+    },
+    {
+      "file": "dark_wand_f05.png",
+      "bytes": 9849,
+      "url_kind": "template",
+      "encoded_sha256": "27852632cb7df819c00458913e86b1a44068b114f778a235ce535c0322422252",
+      "pixel_sha256": "76bc1049c71015c8e3fefcd949786e1ccaf0c73320d6f539fa7e9f2f204fb45b"
+    },
+    {
+      "file": "dark_wand_f06.png",
+      "bytes": 10692,
+      "url_kind": "template",
+      "encoded_sha256": "2cf0cd51214b2fdb19adfabf987269a2350766c60849cbc85ca4102c4a720193",
+      "pixel_sha256": "541bee2cba74e6cb8a8e1459a52193f9a17ece2ef44e93dde44272cfd9f7bd98"
+    },
+    {
+      "file": "dark_wand_f07.png",
+      "bytes": 11636,
+      "url_kind": "template",
+      "encoded_sha256": "9577089ad4469f0e11fe50ed72f12dbb5bf6cd4d4ae82dec6040e40e78f77a0e",
+      "pixel_sha256": "8bd69949e4cd86ec037ecd0041d55f19c102a88702b86ef87f32d5f897c18405"
+    },
+    {
+      "file": "dark_wand_f08.png",
+      "bytes": 10869,
+      "url_kind": "template",
+      "encoded_sha256": "5963b258a247732c82f9d59d39d485316d81ceb5496a7928add2d36b958ac372",
+      "pixel_sha256": "c7fccc5223b42cd41c03149da4920cd3d37eaf92ba37d1b6a394b587056d2c79"
+    }
+  ],
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/dark_mage/source/pixellab_dark_wand",
+    "runtime_dir": "assets/sprites/effects/dark_mage/dark_wand",
+    "runtime_spriteframes": "assets/sprites/effects/dark_mage/dark_wand/dark_wand_spriteframes.tres",
+    "animation": "vanishing_thread",
+    "frame_width": 256,
+    "frame_height": 256,
+    "frame_count": 9,
+    "source_frame_pattern": "dark_wand_f%02d.png (00..08)",
+    "runtime_frame_pattern": "dark_wand_%02d.png (00..08)",
+    "frame_order": "ascending numeric suffix 00 -> 08",
+    "source_runtime_parity": "each runtime frame is a byte-exact copy of the matching source frame by index",
+    "loop": false,
+    "speed_fps": 10.0
+  },
+  "verification": {
+    "frame_size": "256x256 RGBA",
+    "max_border_alpha": 0,
+    "semi_transparent_pixels_per_frame": 0,
+    "distinct_pixel_hashes": 9,
+    "visible_pixels_alpha_gt_40_range": [4853, 5645],
+    "adjacent_frame_changed_pixels_range": [1665, 2423],
+    "visual_review": "source frames 00, 05 and 08 reviewed; wand, thread and branching violet nodes remain readable"
+  },
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
