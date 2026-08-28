@@ -198,6 +198,10 @@ GENERATED_IMPORT_SIDECARS = (
 def discover_godot_tests() -> list[Path]:
     tests: list[Path] = []
     for path in sorted(TEST_DIR.rglob("*.gd")):
+        # This is a CLI renderer, not a self-contained test. It requires
+        # `--out` and is invoked only by the visual-gate capture contract.
+        if path == TEST_DIR / "visual_regression" / "capture.gd":
+            continue
         try:
             source = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
