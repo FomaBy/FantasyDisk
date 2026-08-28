@@ -147,5 +147,547 @@
   "spriteframes": "assets/sprites/characters/berserk_spriteframes.tres",
   "pixellab_metadata": "assets/sprites/characters/pixellab/berserk/pixellab_metadata.json",
   "qa_report": "assets/sprites/characters/pixellab/berserk/alpha_bbox_report.json",
-  "preview_contact_sheet": "docs/design/previews/scrum703_berserk_pixellab_contact.png"
+  "preview_contact_sheet": "docs/design/previews/scrum703_berserk_pixellab_contact.png",
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
+    "directions": [
+      "south",
+      "south-east",
+      "north",
+      "west",
+      "north-east"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "south": {
+        "group_id": "8d430c39-db1c-4fe3-a097-2b3bbafc33bc",
+        "animation_id": "3c9cee22-b962-45d6-b0fd-235cf54032b8",
+        "frames": [
+          "berserk_move_south_00.png",
+          "berserk_move_south_01.png",
+          "berserk_move_south_02.png",
+          "berserk_move_south_03.png",
+          "berserk_move_south_04.png",
+          "berserk_move_south_05.png"
+        ]
+      },
+      "south-east": {
+        "group_id": "3aeef894-8323-42b9-a87c-d3ca3a036fce",
+        "animation_id": "b88422cc-9df8-4367-a081-72d901e3f916",
+        "frames": [
+          "berserk_move_south-east_00.png",
+          "berserk_move_south-east_01.png",
+          "berserk_move_south-east_02.png",
+          "berserk_move_south-east_03.png",
+          "berserk_move_south-east_04.png",
+          "berserk_move_south-east_05.png"
+        ]
+      },
+      "north": {
+        "group_id": "cd009186-4cec-4942-a93f-2f049e03bdb2",
+        "animation_id": "48df518c-b4f7-455a-a2e4-27d1da47be6e",
+        "frames": [
+          "berserk_move_north_00.png",
+          "berserk_move_north_01.png",
+          "berserk_move_north_02.png",
+          "berserk_move_north_03.png",
+          "berserk_move_north_04.png",
+          "berserk_move_north_05.png"
+        ]
+      },
+      "west": {
+        "group_id": "47f3687d-587b-4d91-a69b-44f15b3be9cc",
+        "animation_id": "df6e9ab5-1c3a-4778-90fd-36ccdb9f390e",
+        "frames": [
+          "berserk_move_west_00.png",
+          "berserk_move_west_01.png",
+          "berserk_move_west_02.png",
+          "berserk_move_west_03.png",
+          "berserk_move_west_04.png",
+          "berserk_move_west_05.png"
+        ]
+      },
+      "north-east": {
+        "group_id": "fecfa2ea-94bf-46cd-9b2b-69c44a789408",
+        "animation_id": "6d99262c-82f9-4198-b673-04212e6da43c",
+        "frames": [
+          "berserk_move_north-east_00.png",
+          "berserk_move_north-east_01.png",
+          "berserk_move_north-east_02.png",
+          "berserk_move_north-east_03.png",
+          "berserk_move_north-east_04.png",
+          "berserk_move_north-east_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "berserk_move_south_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          70,
+          67,
+          178,
+          187
+        ],
+        "encoded_sha256": "8c92c462592a03d547d06185adcc58be9994425f88e6ef51e7f938460e366215",
+        "pixel_sha256": "7655e280fa8408893fcd26208a7333c72de3dae34e4f07f76288f0505e34677b"
+      },
+      "berserk_move_south_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          67,
+          68,
+          178,
+          187
+        ],
+        "encoded_sha256": "c05e36717eaed9944c98e7c6dd9d8fb836b39013e36a3caff470bef07e3eaddb",
+        "pixel_sha256": "7dc9aa15be6a42aaeb232bb87710fc9c0d516de5eefd20607eeb27390a897cf8"
+      },
+      "berserk_move_south_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          65,
+          67,
+          179,
+          187
+        ],
+        "encoded_sha256": "d954e9982d9fa14cb5badab1f9e4ca2b643c4311501a5b6068281ebd759df9ff",
+        "pixel_sha256": "54e8ff98f3849dc8a102fe219f9a6f1017aa22f26a7bd0fbf316531c389596ee"
+      },
+      "berserk_move_south_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          66,
+          180,
+          187
+        ],
+        "encoded_sha256": "d0a3b8af9d9ec2b12e011b31e262646db8b81bcb214ccbf463b243c33ac58287",
+        "pixel_sha256": "018ac650c3a5f3cb6e1be64a322d3aacfaff30daec5c932805d296a1b7566db6"
+      },
+      "berserk_move_south_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          66,
+          179,
+          187
+        ],
+        "encoded_sha256": "0c329e65011a553d2d0b1ed1eab3a71034b429bc48c3cb6407a2d23e27924914",
+        "pixel_sha256": "3534e70b6a0dbbf5d1de68ee27d8c105bcaa07732b320a8913bcda1759596189"
+      },
+      "berserk_move_south_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          66,
+          179,
+          187
+        ],
+        "encoded_sha256": "e1f7b1a5f2151353c32cb95c486397da07a78822b7557c9ad672e2da542a2f5a",
+        "pixel_sha256": "9efd56a409dc22ce122a644eebbf0d793478ff4d80cb203e94261d95c0bc32c7"
+      },
+      "berserk_move_south-east_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          70,
+          175,
+          187
+        ],
+        "encoded_sha256": "11ad60901975f1dfb8fe7aa9b09e5190228adfa502153b8768a013478378719f",
+        "pixel_sha256": "f6ec4ed254e0031a43d7316c9dd20eb0818f4aa0263a3f0f008fbc7501d1cd03"
+      },
+      "berserk_move_south-east_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          62,
+          72,
+          178,
+          187
+        ],
+        "encoded_sha256": "15e2b0653ba0c3f995f728f6f3789c6ded078c362fc94d09da8fa207a8ae05cd",
+        "pixel_sha256": "a29508d66337badc6a585d49e9478b21fdd4fc81b7ead4286ddb04ae7ff1e33c"
+      },
+      "berserk_move_south-east_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          61,
+          70,
+          181,
+          187
+        ],
+        "encoded_sha256": "3a161bcaa89f5256f9afa571c61ae308f210e368fb06197754e7d66df4c50651",
+        "pixel_sha256": "f8ae4ecc872f0ce582f5cbe464b6e1110c3ba029944ae8e9e25dd2477a533795"
+      },
+      "berserk_move_south-east_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          59,
+          68,
+          187,
+          187
+        ],
+        "encoded_sha256": "3fcb75ca13667576f9b87ca9a88cc7bf3a3ac79137085884e8aa91ae7d96db75",
+        "pixel_sha256": "2d19d689ead0e5d1beef20ed6e5dd9b0ce0c530c4cb3558d24ca39b752c4f634"
+      },
+      "berserk_move_south-east_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          60,
+          65,
+          192,
+          187
+        ],
+        "encoded_sha256": "4945e60cd760443cf954313691baeadc0da0bc3abf09253aa27ccdbf0149b70a",
+        "pixel_sha256": "d6f5deb64bd32e4052f4ebc973c14d7f1975c19548974e9cf86c54be6d210a08"
+      },
+      "berserk_move_south-east_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          64,
+          188,
+          187
+        ],
+        "encoded_sha256": "5a90bcfb4c72f42926175f88c861cf264a5ffcfd396406f048c85a58f7a1593d",
+        "pixel_sha256": "17778ffa31db5420a5f10d22b3b1012966f7284aa378ca181eda1f4bd84e30e9"
+      },
+      "berserk_move_north_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          60,
+          169,
+          188
+        ],
+        "encoded_sha256": "2258a3a940ed9780bcea4537d082d66085ee1601e5a6ae5aa1adc00b286b7815",
+        "pixel_sha256": "ba2e34221dc7882e924392cecce7539d4c688d45b1210c0de66cfd19fcece005"
+      },
+      "berserk_move_north_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          63,
+          61,
+          174,
+          191
+        ],
+        "encoded_sha256": "d018ee44a51ddc04f7f24be24579b828a34f818aea21dc54bda33805a5748f00",
+        "pixel_sha256": "4a02bbc0f54da42bc57b3a64aa3eebfb3f2d36d2ffa0f9614a74b041cb3dc0fe"
+      },
+      "berserk_move_north_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          64,
+          64,
+          178,
+          192
+        ],
+        "encoded_sha256": "73fbe3c8161bfa2e0cc11acee90578a3298141fcfb31f42903bbe61084621822",
+        "pixel_sha256": "3d745c1b2f95fb0194b49e8065d4905b702789c952cce056f9920287016c1683"
+      },
+      "berserk_move_north_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          67,
+          63,
+          178,
+          192
+        ],
+        "encoded_sha256": "4378da40591e3a1219cdbee55b92ca546d7d4f7620436c1db8c5c56849782c8c",
+        "pixel_sha256": "140ac934bafc735a4250c92b90617f0ba48cfc0976798992388fbd97360e8a42"
+      },
+      "berserk_move_north_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          71,
+          60,
+          175,
+          191
+        ],
+        "encoded_sha256": "0f67de2d83c9daa15caf2b3af1aee61ee771041ca9a94caa42daa0e75c74684c",
+        "pixel_sha256": "a34838acb3aef138c7d5df73b4b1c112b61b0a1e07f1ad7697c26aa5f950cffe"
+      },
+      "berserk_move_north_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          58,
+          171,
+          188
+        ],
+        "encoded_sha256": "5bef75f24a81ace198753fa98bbd24268f9c877d48d145de5ead5634ccac5d25",
+        "pixel_sha256": "fabb2c1c643d2ca0c5fef4dfe633a89f972f3025cfaea2fc6e79e0f9c4f3133c"
+      },
+      "berserk_move_west_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          67,
+          173,
+          189
+        ],
+        "encoded_sha256": "c7147a1d28dd6c2ec12d562d900c88021dab05f28d2ff8190007a06cfbecbe8b",
+        "pixel_sha256": "21c1c7bfe40ed287289ae3e93d98a62dc7e5910ee15120be296aa984fc4da903"
+      },
+      "berserk_move_west_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          89,
+          70,
+          177,
+          190
+        ],
+        "encoded_sha256": "8fe0929d5f8118d6eb890aa7fa3435fde01db9896fa23aa645732458a2e9e223",
+        "pixel_sha256": "f3a818aed54083ee1e1d0710e5034b4d4aebbd832e8ced09e1b9d0d8a3af0589"
+      },
+      "berserk_move_west_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          96,
+          66,
+          182,
+          187
+        ],
+        "encoded_sha256": "da871a5e5d92b4242d725b2e0246bfd834f27a729253946f67c5b635bed5e857",
+        "pixel_sha256": "d7915464ea743035f19a470eb7c279a7027b1639990b220b45a8a980f19d3a8c"
+      },
+      "berserk_move_west_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          64,
+          187,
+          188
+        ],
+        "encoded_sha256": "fbf1fae26e285da54c131a214494df024e23f3ea09279f57d3d3bff835500ed6",
+        "pixel_sha256": "7134cc99f0a01a0d163615428a93215d3ecdfc681b47e1849d3bca7a87429493"
+      },
+      "berserk_move_west_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          67,
+          184,
+          187
+        ],
+        "encoded_sha256": "f0601a512bd05ac5f0796dffe49efee49692cfd7e06f261c1824e06708341c20",
+        "pixel_sha256": "c20c32fd20bbe2aba8c936f70a6741206dcde431385c9815e71fa138e36cd8fe"
+      },
+      "berserk_move_west_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          84,
+          70,
+          179,
+          189
+        ],
+        "encoded_sha256": "7501615efe450d7253225fe367a719e6f41cdc6109f71512c07ef8707b5b7cbf",
+        "pixel_sha256": "45fd88636714569ecfb049f1995dc7bdea2d7d7f7528cbea9b5f182a46a01c79"
+      },
+      "berserk_move_north-east_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          69,
+          64,
+          149,
+          187
+        ],
+        "encoded_sha256": "47a9e32f9836059c5c2f3bc15e39d8dc2d9094d635b661212a2ee0ec14ecb196",
+        "pixel_sha256": "1e4fa330332166ee652542a483b143d17a09402c49be6957986f694ff2c53d15"
+      },
+      "berserk_move_north-east_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          67,
+          163,
+          190
+        ],
+        "encoded_sha256": "910f2d161a9cca1ec97e14ad72186878e1bf5393ec85abcad202913e30f515d3",
+        "pixel_sha256": "8b13b4e5fba14d46e9e57e0c3a11f45314b347ed5b477cafc81c7f8003ba386d"
+      },
+      "berserk_move_north-east_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          68,
+          173,
+          189
+        ],
+        "encoded_sha256": "849ef6a7d8eba87696fd1607db1444bbbb9637e72cf11fb39955a3d2181d0f17",
+        "pixel_sha256": "931d2a0bd2f8e5b0e98c881effb886e076708f86d2325e301e2000560c01a7f0"
+      },
+      "berserk_move_north-east_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          72,
+          64,
+          178,
+          187
+        ],
+        "encoded_sha256": "195af8fd41c2d773e00a2b41d4f90b34238e1ef129e803dd2541275538b7af1a",
+        "pixel_sha256": "382c5dfcdd5a0e7888b6f05a377fd6e547f1c2ca0615fd4eb4400da49f7c9795"
+      },
+      "berserk_move_north-east_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          62,
+          175,
+          185
+        ],
+        "encoded_sha256": "123d85b4b9a1e808474e76b86c14a89eb67328486b60959b0088184c7d9cb64e",
+        "pixel_sha256": "40ad1e1ebb5fe2c95e736d0de70a91f2258114d4667cbff0864c1bb6723df13b"
+      },
+      "berserk_move_north-east_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          76,
+          64,
+          169,
+          188
+        ],
+        "encoded_sha256": "570c0b1fffb355c423a8f80a733df032412add269c794f729c09d19a8d38e3bc",
+        "pixel_sha256": "6986111a5efa78e4e4c7c95c5b21d7a682bea18b3033e54492864a93b934437e"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
+  }
 }

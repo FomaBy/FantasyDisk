@@ -234,5 +234,444 @@
     "runtime_bottom_padding": 8,
     "source": "PixelLab MCP download endpoint",
     "legacy_or_manual_fallback_used": false
+  },
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "c1a7d633-7353-4861-aea3-8d937b601cba",
+    "directions": [
+      "west",
+      "south-west",
+      "north-east",
+      "north-west"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "west": {
+        "group_id": "8b3438a3-13b1-4d8b-b03f-383195eacec9",
+        "animation_id": "977f3ac3-6489-4121-9ac1-39468acb80d2",
+        "frames": [
+          "knight_move_west_00.png",
+          "knight_move_west_01.png",
+          "knight_move_west_02.png",
+          "knight_move_west_03.png",
+          "knight_move_west_04.png",
+          "knight_move_west_05.png"
+        ]
+      },
+      "south-west": {
+        "group_id": "193a3acb-f3bb-4b09-996a-97b0f21c5c02",
+        "animation_id": "2725a1df-e8fd-4ec4-bd36-033bb184d974",
+        "frames": [
+          "knight_move_south-west_00.png",
+          "knight_move_south-west_01.png",
+          "knight_move_south-west_02.png",
+          "knight_move_south-west_03.png",
+          "knight_move_south-west_04.png",
+          "knight_move_south-west_05.png"
+        ]
+      },
+      "north-east": {
+        "group_id": "287875f8-dd16-461d-bab7-e47004d5370c",
+        "animation_id": "520a1a56-d812-4d6e-adcb-fe68b1e74b57",
+        "frames": [
+          "knight_move_north-east_00.png",
+          "knight_move_north-east_01.png",
+          "knight_move_north-east_02.png",
+          "knight_move_north-east_03.png",
+          "knight_move_north-east_04.png",
+          "knight_move_north-east_05.png"
+        ]
+      },
+      "north-west": {
+        "group_id": "0b6b10ba-d110-48fa-af16-7a2bf7bf4d2f",
+        "animation_id": "99bc48d5-d670-4f8e-a380-3dc60b17a942",
+        "frames": [
+          "knight_move_north-west_00.png",
+          "knight_move_north-west_01.png",
+          "knight_move_north-west_02.png",
+          "knight_move_north-west_03.png",
+          "knight_move_north-west_04.png",
+          "knight_move_north-west_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "knight_move_west_00.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          99,
+          61,
+          152,
+          184
+        ],
+        "encoded_sha256": "292083904e117660292dc53ca4cb6a697d1bb5cbc2a8147bbb5773b408fc105b",
+        "pixel_sha256": "0001c480c9bde62a5b77ae8ee02bf47105f3d8b831ce35b5abd7b3292194ec6a"
+      },
+      "knight_move_west_01.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          63,
+          153,
+          182
+        ],
+        "encoded_sha256": "290a8d38482167b036e0465deb639df601e400d3478489be3ade0db05fbb7b6f",
+        "pixel_sha256": "85e5888f999bcd09cd746ffca6f1615acc86baa004cd3a8d937071f5ed0531cf"
+      },
+      "knight_move_west_02.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          67,
+          160,
+          182
+        ],
+        "encoded_sha256": "411b16f6788412a0d9ad82d2472c6e45163c463cbb18b43c835bcc809641dfac",
+        "pixel_sha256": "462c4608f8e2d1271b288b7674571e93927a3261c740e2746dca17b17b5bdfec"
+      },
+      "knight_move_west_03.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          103,
+          67,
+          160,
+          181
+        ],
+        "encoded_sha256": "f374b5c5007c3c134b22e59d8c22554c8ccede6f65b2db85f88970ff1e33d720",
+        "pixel_sha256": "1e5a28d913c3b716896d6a8b69099c8672b959818d6d7033df56fc0b0fa49289"
+      },
+      "knight_move_west_04.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          101,
+          61,
+          163,
+          183
+        ],
+        "encoded_sha256": "21edd02ecf30024d2c88631e26594546eed8a67f71a53791866bfb2dfc1f43b7",
+        "pixel_sha256": "e3ad95086d19923bedfd54468610d49738685cdbb061d6a42989b58b060872d6"
+      },
+      "knight_move_west_05.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          62,
+          167,
+          185
+        ],
+        "encoded_sha256": "8f67da92fd1dc3b4d1bc104e0ad64ade855bec4f6844e65dfe5c5f5bf4c04ddf",
+        "pixel_sha256": "973e85014f3d852090c77e596006963b7cf1a6db14918122659b98610866f9c1"
+      },
+      "knight_move_south-west_00.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          61,
+          166,
+          186
+        ],
+        "encoded_sha256": "d7aa152bed8456d333e003f26592637ebf65c92d46c61afe84b6a205665a3980",
+        "pixel_sha256": "b3bb00cd0d20228059e6d12bb0c8c843c687ffbf2483f521852b496cdb90b951"
+      },
+      "knight_move_south-west_01.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          61,
+          168,
+          186
+        ],
+        "encoded_sha256": "6613e6868afa4e0120c37bbab5c9167cc5f3aa6f328adc2495718f1763dcb12e",
+        "pixel_sha256": "10a7a8dfe667b954921759811aecbe3ffbbc166732dd2310f18babd1f9c5ab64"
+      },
+      "knight_move_south-west_02.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          85,
+          62,
+          170,
+          186
+        ],
+        "encoded_sha256": "3ce1172aa37731f7053c3b4c56e5ccfa4b6185572d4c591a4ba95e01a048c54f",
+        "pixel_sha256": "bd66d5eb2241befc5b86f7e1deb645ea95913378f26f5fbc417af5e66a9809e6"
+      },
+      "knight_move_south-west_03.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          84,
+          64,
+          170,
+          186
+        ],
+        "encoded_sha256": "0d75fc160d5ba1ffb06a2fb70c26eca094f43a6b19515685d317435cb9bed78b",
+        "pixel_sha256": "0eed11947892165aef641935f66e534d75763a178f682a95bf00cb2fedccf4c5"
+      },
+      "knight_move_south-west_04.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          85,
+          65,
+          168,
+          186
+        ],
+        "encoded_sha256": "2565ecb6f0aed565a306a7f670ca76ae1d9966c2d886feb5321ac52cee7be006",
+        "pixel_sha256": "df0870bf4460a0323c1ad2ebae0c88b28bae86747dec2f6f6b2a2a52ec397355"
+      },
+      "knight_move_south-west_05.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          64,
+          167,
+          186
+        ],
+        "encoded_sha256": "c6d70c050ca2319c0999a6995cbd55b04e7901a40ad3f966fd7c975bd145215e",
+        "pixel_sha256": "117e1412a94e5533a698a0d24f803878640407b4d58a36ad85bcfbc94b87e11f"
+      },
+      "knight_move_north-east_00.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          95,
+          61,
+          147,
+          182
+        ],
+        "encoded_sha256": "250974034f46f535819c0a540dcf688820536e6a3b05c6dd939a973a4665d022",
+        "pixel_sha256": "d9fce4ce35c0d9be35361c9654301e5b19b0d0d38d7d6b1d926c051e665359d7"
+      },
+      "knight_move_north-east_01.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          95,
+          63,
+          151,
+          186
+        ],
+        "encoded_sha256": "688f019ffb71fe11837ea1e63c6715321045c3d9da6b7691f3540e56d5da73bc",
+        "pixel_sha256": "99146124797bd04a3215a2d8a0f5895c58c119867fe698c3ed328c2d71680646"
+      },
+      "knight_move_north-east_02.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          66,
+          159,
+          189
+        ],
+        "encoded_sha256": "f5f3c95ef05e7ea7d1754f1966ceee99228d4681d0d2ed4f313cd918ef2a3f3a",
+        "pixel_sha256": "9c7820a049fcf7db5915a6efa77e640650c43933964923b11e9cbef6672c1691"
+      },
+      "knight_move_north-east_03.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          66,
+          167,
+          186
+        ],
+        "encoded_sha256": "9e306f8369d235317728d26c8f277596d4f71dbef9100fbe98ca13b78c6af447",
+        "pixel_sha256": "3b98ad856a043064d2e4aaaca1ad9add0c80c01a995bd43d3710d397d9206f01"
+      },
+      "knight_move_north-east_04.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          63,
+          168,
+          183
+        ],
+        "encoded_sha256": "d10786f3900c0d018a55e5c9ef649650a994a1c8ecf790e6a87cdf50dbb9ad1f",
+        "pixel_sha256": "63020129432bc7213b6092a1e02ba71ece49ccd6f5d5edc42b46fea54a475d3f"
+      },
+      "knight_move_north-east_05.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          63,
+          165,
+          184
+        ],
+        "encoded_sha256": "f8cdd508ad8367f841c2bd21705d608938e42c692e737f35473b722d4bdba618",
+        "pixel_sha256": "20b058d540de6ee3f78983135201126181652f9611c37b441a64597098794131"
+      },
+      "knight_move_north-west_00.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          85,
+          60,
+          167,
+          179
+        ],
+        "encoded_sha256": "2cf471570a085a8f4b8c88f6f867734cd88252848fd2d6e3b49e060ff4deb0cc",
+        "pixel_sha256": "1315b131f3c0b2860ddcfdcbda7f3d1aeb1eedb6e874f7e51b80732bb42fe645"
+      },
+      "knight_move_north-west_01.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          82,
+          63,
+          163,
+          178
+        ],
+        "encoded_sha256": "da4acd11f64f22364d038ca8bbfa28ae2b0057e1a2a2759c372af9f12f1aab4d",
+        "pixel_sha256": "269be57da16422635628cea5a8c9a010255aec8520d39f5df5585d2789aab398"
+      },
+      "knight_move_north-west_02.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          66,
+          165,
+          182
+        ],
+        "encoded_sha256": "ae8e796b3e9366d7cb56ff74ed3d7e6eb20c34bc854ab89ae39d05daf01921a1",
+        "pixel_sha256": "7128b5d797b4a05a6211fee7ba3f9e435dbbcd8c94cb4ee21d21d0b52bc3b7e8"
+      },
+      "knight_move_north-west_03.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          80,
+          63,
+          168,
+          189
+        ],
+        "encoded_sha256": "98cc01b44249387ac1a368ce2002ecba09f9236cf045a4289c7ade7bde48c251",
+        "pixel_sha256": "1d441c660ac0b8e38283c860e12918ef3c309dbbfb648fbbdca24b70970d4ded"
+      },
+      "knight_move_north-west_04.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          60,
+          171,
+          187
+        ],
+        "encoded_sha256": "eb796736c144f5ab70e4b279ee252e6e715a5fc8c85380e95efb2a1bfe21c333",
+        "pixel_sha256": "431827843d554f83a0a6c2e466be3300890ae683ba1b9a1ea5237af9f071f358"
+      },
+      "knight_move_north-west_05.png": {
+        "size": [
+          248,
+          248
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          64,
+          168,
+          186
+        ],
+        "encoded_sha256": "dd6c9a4f29dee9148319a2a8656f2385a763ea71dfc4370448317c47e32e7b9a",
+        "pixel_sha256": "3120cb27d9e30dd0f23a83be0b246a8ce8eec599fc601d747eea3269c2b03b6b"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
   }
 }

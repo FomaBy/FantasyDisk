@@ -911,5 +911,444 @@
     "runtime_bottom_padding": 4,
     "source": "PixelLab MCP download endpoint",
     "legacy_or_manual_fallback_used": false
+  },
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "c7fe44d3-1f15-45a1-b762-b2862833b151",
+    "directions": [
+      "north-east",
+      "north-west",
+      "east",
+      "west"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "north-east": {
+        "group_id": "7fdb1973-3f33-48d3-9d77-09290dac353a",
+        "animation_id": "ba12846a-3ef3-4e4e-943b-8b6061bc2031",
+        "frames": [
+          "chemist_move_north-east_00.png",
+          "chemist_move_north-east_01.png",
+          "chemist_move_north-east_02.png",
+          "chemist_move_north-east_03.png",
+          "chemist_move_north-east_04.png",
+          "chemist_move_north-east_05.png"
+        ]
+      },
+      "north-west": {
+        "group_id": "9a142bb4-518e-436b-893b-e9307110d2c5",
+        "animation_id": "4afa14e2-b42a-4c7e-97eb-720663d428ad",
+        "frames": [
+          "chemist_move_north-west_00.png",
+          "chemist_move_north-west_01.png",
+          "chemist_move_north-west_02.png",
+          "chemist_move_north-west_03.png",
+          "chemist_move_north-west_04.png",
+          "chemist_move_north-west_05.png"
+        ]
+      },
+      "east": {
+        "group_id": "190c2ee6-3017-4456-9bef-e7dd696e8847",
+        "animation_id": "3093be57-fd4b-4bd8-8b43-5e1b0f814489",
+        "frames": [
+          "chemist_move_east_00.png",
+          "chemist_move_east_01.png",
+          "chemist_move_east_02.png",
+          "chemist_move_east_03.png",
+          "chemist_move_east_04.png",
+          "chemist_move_east_05.png"
+        ]
+      },
+      "west": {
+        "group_id": "f8d39841-b52f-4be3-90fb-8ec13f692e87",
+        "animation_id": "cea10411-b2f6-4833-8df0-7902676948cf",
+        "frames": [
+          "chemist_move_west_00.png",
+          "chemist_move_west_01.png",
+          "chemist_move_west_02.png",
+          "chemist_move_west_03.png",
+          "chemist_move_west_04.png",
+          "chemist_move_west_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "chemist_move_north-east_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          63,
+          150,
+          186
+        ],
+        "encoded_sha256": "bc77f6f3777b359bb8f46b000b784bcad34fb1697b9b0e9325b70afad7fd13b7",
+        "pixel_sha256": "fd356da15367b9638bb98d75aa066b1d4b7830bb27af76354d44d0e1f0e7b75d"
+      },
+      "chemist_move_north-east_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          67,
+          158,
+          186
+        ],
+        "encoded_sha256": "e5ab4366d2a93d003dede08f13bb25575794f974942143948e87230f1074bfa0",
+        "pixel_sha256": "0a6cc5a715ad00beb2f88d110aa9cf55341d7bdc2db074ff87bcd85c04f68151"
+      },
+      "chemist_move_north-east_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          68,
+          150,
+          185
+        ],
+        "encoded_sha256": "5373f80761eaa91a3fa7ea84c3f4b595e079996ac2e77618fd1313419c55a523",
+        "pixel_sha256": "4beea02f4474b41521bdf9a1d5908754a21ee94913b4e0aa4862ee6606735980"
+      },
+      "chemist_move_north-east_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          65,
+          145,
+          187
+        ],
+        "encoded_sha256": "95f4f6d81409bd413c2df9ebc35ce502eade87752ec09a0b2f492f5346da50e4",
+        "pixel_sha256": "10417a13c836e14978d90ba85ebe7b3183fb7d1e21f15c75cd794e4d35180e87"
+      },
+      "chemist_move_north-east_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          63,
+          155,
+          183
+        ],
+        "encoded_sha256": "3b5f61e388cc18652ba763ca1181bb404e33b526b549a61cc8785948d736c682",
+        "pixel_sha256": "b47241b32883ecfe186e4920a02410efd71cab4d18c87732cbf165de2d14f628"
+      },
+      "chemist_move_north-east_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          66,
+          166,
+          186
+        ],
+        "encoded_sha256": "9734f2820f11c8594a8388d3388979a3be5df79ae3d7dc6e75f3c8451cc457b1",
+        "pixel_sha256": "8d1010757b7d680a59262a108c60a66be245c692d3ad10516cdc7d880dbb25a2"
+      },
+      "chemist_move_north-west_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          89,
+          67,
+          156,
+          182
+        ],
+        "encoded_sha256": "371a6f45532752916213cea6f46a08568e8baefaf1228737dff6351031effc00",
+        "pixel_sha256": "d0b037e536fdc411e9c4e76881041a05de19f932087a9adcaf9fe1e7e5286541"
+      },
+      "chemist_move_north-west_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          68,
+          154,
+          182
+        ],
+        "encoded_sha256": "accd2154cc3cc1137b0c0c23d3429dca964923738a69afb8ec06df5d7e39d1d6",
+        "pixel_sha256": "5a5f8cd2f2500ce5a69b889ea0cbc00e5a2a93fef1bc1d54d4609053113ff046"
+      },
+      "chemist_move_north-west_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          65,
+          154,
+          182
+        ],
+        "encoded_sha256": "05c1d96c97aace922986a57604567e953335d4950583fd8d4fa4db6bde7f5911",
+        "pixel_sha256": "ae99064c4f96dcc2c2f4e859ed0654fa883e26916488fae1715796760c6bcd1e"
+      },
+      "chemist_move_north-west_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          93,
+          63,
+          153,
+          182
+        ],
+        "encoded_sha256": "d0f998e1a8c9d2af531c2fc87ccc0b735f14625331be0e4237b8673164e3d99d",
+        "pixel_sha256": "96a59d40aec5a0fa08a56f577611e8f0950204414563a4760a710cc8f634fe3e"
+      },
+      "chemist_move_north-west_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          92,
+          63,
+          153,
+          182
+        ],
+        "encoded_sha256": "6606172f2dc3d567205d304c008b6181cf33b68ae5f3c32ba439b8eecc77096b",
+        "pixel_sha256": "13b865343dd1036f8cb0159cb2d4852ec5b4e9e32a27c93a281002e4a502d1e2"
+      },
+      "chemist_move_north-west_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          65,
+          155,
+          182
+        ],
+        "encoded_sha256": "603b45d779c267a11286d2a29cd47630e86c7123e68ee7ad36fe5b1a8d2723b8",
+        "pixel_sha256": "e44328969ff9f9d3fbdce30f3442739c1dc07947dc36b7f2719966d1bd78061d"
+      },
+      "chemist_move_east_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          86,
+          61,
+          160,
+          187
+        ],
+        "encoded_sha256": "91ea303c0f36bc5302ffeb30aee611d56576f44841235f7386f86929c624103e",
+        "pixel_sha256": "3c58decbcf663f9d94568e0af53ef269a5d9c5313b7cd94fb960f9ad7cdcaa83"
+      },
+      "chemist_move_east_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          87,
+          71,
+          160,
+          186
+        ],
+        "encoded_sha256": "7e48e4641547fc88cb9758c9870a7adbabacff20845e0186b9f0882fc536d47d",
+        "pixel_sha256": "1e954c983019539c14fca524506a27ebb6ac483bdb71620be0e2751c0127b2bf"
+      },
+      "chemist_move_east_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          70,
+          154,
+          187
+        ],
+        "encoded_sha256": "b72e23961af6ce8236336a29871d660c2c878ac6cf8f7bee4406be7c3d9d921e",
+        "pixel_sha256": "37e3cecdb1e8da9c33322e73c68c69583b96d5c022cb56a63dd7ea489d3688ec"
+      },
+      "chemist_move_east_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          89,
+          68,
+          154,
+          184
+        ],
+        "encoded_sha256": "69bcde315260830ec90de695e2f5a2113c196d43b3ef4ea46c8f0f46056f5783",
+        "pixel_sha256": "a52c7e4a5b22d094065e1f4682021c96b199d6b92cc61805446d22b136cc5c0a"
+      },
+      "chemist_move_east_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          60,
+          162,
+          190
+        ],
+        "encoded_sha256": "44191a4c9a7883d43e28dfd19b2eb605e78188cff24f4363c265a305966808ea",
+        "pixel_sha256": "26e8081b65c405b45a0c3abc8afff58aabc752d681a721a12a51afd3f3221284"
+      },
+      "chemist_move_east_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          90,
+          67,
+          170,
+          192
+        ],
+        "encoded_sha256": "b6fa2536ab6f53d70be12936ec5c1463e39d6c63c98b522a1f2840acc5f0c013",
+        "pixel_sha256": "b57db5e74ef994ec8abde491cad8dd5bd4e73e7a87432ee386126f2875ac0892"
+      },
+      "chemist_move_west_00.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          95,
+          64,
+          158,
+          186
+        ],
+        "encoded_sha256": "2ea3e7a3a8baf23d5923918f6920597dcae31515141b5a3dc30d7f5df9bd2c18",
+        "pixel_sha256": "ad2015750d6ed43e0d06167f8d1c462e4734f73ab244e454381b0f6a4148f343"
+      },
+      "chemist_move_west_01.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          67,
+          158,
+          186
+        ],
+        "encoded_sha256": "1313cebbe27227034999067979727225a28c38d5eff4b1de2a8c145ba4c28fd5",
+        "pixel_sha256": "950c6da33d5529116940f3e89799c8a1f91991a20c90f8b507e8728cb1b3ed56"
+      },
+      "chemist_move_west_02.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          88,
+          68,
+          156,
+          187
+        ],
+        "encoded_sha256": "d62ab03060c69489e95839a1df1096a409d4ba1bfa84a02dbcb01fb499c7137b",
+        "pixel_sha256": "03ca4ca6e6a6f68cb693122db50deb7064612d08b109345a788a04050bfb9d3d"
+      },
+      "chemist_move_west_03.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          91,
+          68,
+          154,
+          187
+        ],
+        "encoded_sha256": "67e6b6e215638fce740e72e52972f3035aff5dc4744109c74b5b39bd3bb1d555",
+        "pixel_sha256": "0a1ef4102603b8933c93cbb518cd9a9b1d49c347fcc09b75d0c2c576e89a1428"
+      },
+      "chemist_move_west_04.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          102,
+          64,
+          158,
+          185
+        ],
+        "encoded_sha256": "ccc188eb866730a52fdc641114dcd8e14f3027d1d7d274500a61d15afec3cdeb",
+        "pixel_sha256": "2bf481fc1b3cb019b41d55e8768b399adced72fecfbcddcf2c6b8b64311b06ca"
+      },
+      "chemist_move_west_05.png": {
+        "size": [
+          252,
+          252
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          97,
+          65,
+          160,
+          184
+        ],
+        "encoded_sha256": "ffeb48f71e4d7533c8c8f35959f60c7553d332607898f6f0e3943392fc296d91",
+        "pixel_sha256": "e3dddc65c8eb38fb057e83be653c4f5daecb6fc6fb4a89d6c46a0740b147ba96"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
   }
 }
