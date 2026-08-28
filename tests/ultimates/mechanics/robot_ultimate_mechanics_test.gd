@@ -5,9 +5,11 @@ const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const BalanceHarness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 
 const CLASS_ID := "robot"
 const WEAPONS := ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"]
+const EXECUTOR_DIR := "res://scripts/ultimates/classes/robot"
 const STEP := 0.01
 
 
@@ -81,10 +83,14 @@ func _initialize() -> void:
 	await process_frame
 	_registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(_registry.package_validation_errors().is_empty(), "Robot package admission must be clean")
+	_check(BalanceHarness.COVERAGE_V2_CLASSES.has(CLASS_ID),
+		"Robot mechanics must use the coverage v2 contract")
 	for weapon_id in WEAPONS:
 		_check(_registry.resolution_source(CLASS_ID, weapon_id) == Resolver.SOURCE_WEAPON_PROFILE,
 			"%s must resolve through its exact Robot executor" % weapon_id)
 		_check(_registry.has_exact_executor_pair(CLASS_ID, weapon_id), "%s must own its exact pair" % weapon_id)
+		_check(BalanceHarness.count_cap_params(FileAccess.get_file_as_string("%s/%s.gd" % [EXECUTOR_DIR, weapon_id])).is_empty(),
+			"%s must enumerate targets without a count-shaped reach cap" % weapon_id)
 	_check(_registry.resolution_source("engineer", "engineer_sentry_wrench") != Resolver.SOURCE_WEAPON_PROFILE
 		or _registry.executor_for("engineer", "engineer_sentry_wrench") != _registry.executor_for(CLASS_ID, WEAPONS[0]),
 		"Robot executor must not leak into another class")
