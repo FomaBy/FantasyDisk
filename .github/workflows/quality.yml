@@ -185,6 +185,67 @@ jobs:
         if: steps.coverage-gate.outcome == 'failure'
         run: exit 1
 
+  # FAN-3308 visual regression gate.  Capturing pixels needs a real display —
+  # Godot's headless display server owns no SubViewport texture, so a headless
+  # capture can only read back empty images — which is why the baselines are
+  # certified on the windowed platform named by the manifest.  This job runs
+  # every part of the gate that is display-independent: manifest integrity,
+  # baseline hash/geometry integrity, the comparison maths, and the negative
+  # probe that proves a visibly mutated frame is still rejected.
+  visual-regression:
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          lfs: false
+          # The gate resolves every manifest scene/pack on disk, so the cases'
+          # source trees must be present even though nothing is rendered here.
+          sparse-checkout: |
+            .github
+            assets/sprites/effects
+            scenes
+            tests
+            tools
+            docs/process
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install CI Python dependencies
+        run: python -m pip install --requirement requirements-ci.txt
+      - name: Resolve the certified capture platform
+        run: |
+          set -euo pipefail
+          platform=$(python3 -c "import json; print(json.load(open('tests/visual_regression/manifest.json'))['capture']['certified_platform'])")
+          echo "VISUAL_GATE_PLATFORM=$platform" >> "$GITHUB_ENV"
+      - name: Validate manifest and baseline integrity
+        run: >-
+          python3 tools/visual_gate.py --validate-only --require-baselines
+          --platform "$VISUAL_GATE_PLATFORM"
+      - name: Run visual gate contract tests
+        run: python3 -m unittest tests.test_visual_gate -v
+      # The probe exits 1 when it detects its own visible mutation, so an exit
+      # of 0 here means the comparison went blind and the gate is worthless.
+      - name: Prove a visible mutation is still rejected
+        run: |
+          set -uo pipefail
+          python3 tools/visual_gate.py --negative-probe --platform "$VISUAL_GATE_PLATFORM"
+          status=$?
+          echo "negative probe exit: $status"
+          test "$status" -eq 1
+      - name: Confirm the probe left the checkout unchanged
+        run: git diff --exit-code -- tests/visual_regression
+      - name: Upload visual gate evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-gate-${{ github.event_name }}-${{ github.sha }}
+          path: build/visual_gate
+          if-no-files-found: ignore
+          retention-days: 30
+
   # Nightly/manual full-profile run on dev (FAN-1869). The full gate is split
   # into independent runners because one OOM-killed runner otherwise loses all
   # of its own evidence before an `always()` upload can start (FAN-2133).

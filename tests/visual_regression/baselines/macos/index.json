@@ -1,0 +1,42 @@
+{
+  "flipbook_berserk_axe_cleave": {
+    "sha256": "ca702455b04916634613fa270e0ad791d50367331b6beaed0cd4ccf65d59aed6",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "flipbook_holy_flail_spiral": {
+    "sha256": "39f28dd24b312e7779333f0faa8694891f1737fb648e358a8cde6772edb28779",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "flipbook_robot_hydraulic_press": {
+    "sha256": "cb7481a4efb68d93426d533c6d2355690aed6111f4473b6bec7bf35c4be8ea21",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "flipbook_storm_longbow_release": {
+    "sha256": "cc89fd900dbbee6c2d90f122d56ce77c828abae433aada2e39559291ceac7f47",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "hud_ultimate_widget": {
+    "sha256": "ad488010faa8ebd5f3e521bfa7f9e417b2b656624c71318d106442d1fe787332",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "main_menu_1280x720": {
+    "sha256": "d45e33c5c9bb68e59c68c69b48e619e6c75ef8597cb17666f78eac36d1bc7ab6",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "main_menu_1920x1080": {
+    "sha256": "097c9e7b27159299fb6990a4303cd818885220a99919e3d8fc0998948e4642be",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "ultimate_sniper_deadeye_rifle": {
+    "sha256": "f3752db03eedebf6faa9c78c402d2f94fb8070c2b78a25426bdd209c2687847c",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "ultimate_sniper_shatter_rounds": {
+    "sha256": "66e719af64be117c8a8b1258058b20bb0a95a1fcf85d60859c0629a58d858510",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  },
+  "ultimate_sniper_spotter_scope": {
+    "sha256": "27c46982d3435031db09e1aa73d659bf7d815a83aee535ea8fd4d46d67390190",
+    "review": "FAN-3308 initial baselines reviewed by developer on windowed macOS gl_compatibility capture"
+  }
+}
