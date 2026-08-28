@@ -4,8 +4,10 @@ const PlayerScene := preload("res://scenes/Player.tscn")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const BalanceHarness := preload("res://scripts/ultimates/balance/ultimate_balance_harness.gd")
 
 const WEAPONS := ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"]
+const EXECUTOR_DIR := "res://scripts/ultimates/classes/robot"
 var _errors: Array[String] = []
 var _holder: Node2D
 
@@ -19,7 +21,11 @@ func _initialize() -> void:
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(registry.package_validation_errors().is_empty(),
 		"Robot packages must admit cleanly: %s" % [registry.package_validation_errors()])
+	_check(BalanceHarness.COVERAGE_V2_CLASSES.has("robot"),
+		"Robot live casts must use the coverage v2 contract")
 	for weapon_id in WEAPONS:
+		_check(BalanceHarness.count_cap_params(FileAccess.get_file_as_string("%s/%s.gd" % [EXECUTOR_DIR, weapon_id])).is_empty(),
+			"%s live executor must have uncapped target reach" % weapon_id)
 		await _cast(weapon_id, registry)
 	_holder.queue_free()
 	await process_frame

@@ -35,7 +35,6 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
-	"robot": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"thief": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 }
@@ -99,7 +98,15 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## no count-shaped parameter at all; per-target rails and the shared nine-percent
 ## boss cap bound outcome. Proven in
 ## `tests/ultimates/mechanics/guitarist_ultimate_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "guitarist", "knight", "sniper"]
+##
+## `robot` (FAN-2537): Magnetic Anchor, Hydraulic Press and Reactor Core
+## use their existing singularity, corridor and reactor-wave geometry. Direct
+## target queries carry no executor-local count-shaped parameter; the Reactor's
+## fixed one-target-per-vent lane remains an identity-shaped attribution while
+## its terminal exhaust re-enumerates the eligible set. Per-target damage,
+## control and the shared boss cap bound outcome. Proven in
+## `tests/ultimates/mechanics/robot_ultimate_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "guitarist", "knight", "robot", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

@@ -86,6 +86,58 @@
       "performance": {"max_visual_nodes": 8, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
     }
   ],
+  "effectiveness_evidence": {
+    "runner": "res://tools/ultimate_effectiveness_report.gd",
+    "baseline_source_sha": "fef0e5e5cca9332ad742d3945c928e081ac89427",
+    "scenario_order": ["solo", "crowd_5", "crowd_10", "crowd_20", "elite", "boss"],
+    "rows": [
+      {
+        "weapon_id": "robot_magnetic_anchor",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1533.64387176, 7668.2193588, 15336.4387176, 30672.8774352, 1533.64387176, 1533.64387176]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [1533.64387176, 7668.2193588, 15336.4387176, 30672.8774352, 1533.64387176, 1533.64387176]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 34.7,
+        "elite_charge": 44.7,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "robot_hydraulic_press",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 18, 1, 1],
+          "damage_applied": [1389.7755144, 6948.877572, 13897.755144, 25015.9592592, 1389.7755144, 1389.7755144]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 18, 1, 1],
+          "damage_applied": [1389.7755144, 6948.877572, 13897.755144, 25015.9592592, 1389.7755144, 1389.7755144]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 34.7,
+        "elite_charge": 44.7,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "robot_reactor_core",
+        "baseline": {
+          "targets_struck": [1, 5, 9, 16, 1, 1],
+          "damage_applied": [1340.696448, 3188.41272, 5888.4264, 8253.265968, 1340.696448, 1340.696448]
+        },
+        "final": {
+          "targets_struck": [1, 5, 9, 16, 1, 1],
+          "damage_applied": [1340.696448, 3188.41272, 5888.4264, 8253.265968, 1340.696448, 1340.696448]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 34.7,
+        "elite_charge": 44.7,
+        "encounters_to_ready": 3
+      }
+    ]
+  },
   "evidence": {
     "contact_sheets": [
       "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_648p.png",
