@@ -77,6 +77,7 @@ func _initialize() -> void:
 	_expect(is_equal_approx(float(contract.get("max_timeline_seconds", -1.0)), MAX_TIMELINE_SECONDS), "manifest must retain the ten-second cap", errors)
 	_expect(not str(contract.get("runtime_adapter_status", "")).is_empty(), "runtime adapter boundary must be documented", errors)
 	_check_provenance(manifest, errors)
+	_check_provenance_negative_cases(manifest, errors)
 	var profiles := _profiles_by_weapon(profile_root)
 	var packages := _packages_by_weapon(manifest)
 	_expect(packages.size() == 3, "manifest must contain exactly three Dark Mage weapon packages", errors)
@@ -95,8 +96,13 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must explain why no new raster source was generated", errors)
-	_expect((provenance.get("new_pixellab_assets", []) as Array).is_empty(), "no PixelLab IDs may be invented when no new raster asset was created", errors)
+	_expect(str(provenance.get("route", "")) == "reused_approved_assets_plus_new_pixellab_animation_frames", "provenance must declare the reused-assets-plus-new-PixelLab-frames route", errors)
+	var new_assets := {}
+	for raw_id in provenance.get("new_pixellab_assets", []) as Array:
+		new_assets[str(raw_id)] = true
+	_expect(new_assets.size() == WEAPON_IDS.size(), "new PixelLab assets must list each Dark Mage weapon exactly once, with no foreign or duplicate entries", errors)
+	for weapon_id in WEAPON_IDS:
+		_expect(new_assets.has(weapon_id), "%s must be declared as a newly generated PixelLab asset" % weapon_id, errors)
 	_expect(not str(provenance.get("historical_source_note", "")).is_empty(), "historical generator provenance must be retained", errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
@@ -107,6 +113,51 @@ func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 		_expect(_file_sha256(str(source.get("weapon_runtime_path", ""))) == str(source.get("weapon_sha256", "")), "%s weapon SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("vfx_runtime_path", ""))) == str(source.get("vfx_sha256", "")), "%s VFX SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(source.get("modified", true) == false, "%s reused assets must remain unmodified" % weapon_id, errors)
+	_check_pixellab_pack_provenance(provenance, errors)
+
+
+func _check_pixellab_pack_provenance(provenance: Dictionary, errors: Array[String]) -> void:
+	var pack_manifests := provenance.get("new_pack_manifests", {}) as Dictionary
+	_expect(pack_manifests.size() == WEAPON_IDS.size(), "manifest must declare a pack provenance file for exactly the three Dark Mage weapons", errors)
+	var object_ids := {}
+	var animation_group_ids := {}
+	for weapon_id in WEAPON_IDS:
+		var manifest_path := str(pack_manifests.get(weapon_id, ""))
+		_expect(not manifest_path.is_empty(), "%s must record a PixelLab pack provenance manifest path" % weapon_id, errors)
+		if manifest_path.is_empty():
+			continue
+		var pack := _load_json("res://%s" % manifest_path, errors)
+		if pack.is_empty():
+			continue
+		_expect(str(pack.get("class_id", "")) == "dark_mage", "%s pack provenance must be class-local to Dark Mage" % weapon_id, errors)
+		_expect(str(pack.get("weapon_id", "")) == weapon_id, "%s pack provenance weapon ID must be exact" % weapon_id, errors)
+		var pack_object := pack.get("object", {}) as Dictionary
+		var object_id := str(pack_object.get("pixel_lab_object_id", ""))
+		var animation_group_id := str(pack_object.get("pixel_lab_animation_group_id", ""))
+		_expect(not object_id.is_empty(), "%s must record a PixelLab object ID" % weapon_id, errors)
+		_expect(not animation_group_id.is_empty(), "%s must record a PixelLab animation group ID" % weapon_id, errors)
+		_expect(not object_ids.has(object_id), "%s PixelLab object ID must be unique to this weapon" % weapon_id, errors)
+		_expect(not animation_group_ids.has(animation_group_id), "%s PixelLab animation group ID must be unique to this weapon" % weapon_id, errors)
+		object_ids[object_id] = true
+		animation_group_ids[animation_group_id] = true
+
+
+func _check_provenance_negative_cases(manifest: Dictionary, errors: Array[String]) -> void:
+	_expect_provenance_case_rejected(manifest, {"route": "reused_approved_assets_no_new_raster_generation", "new_pixellab_assets": []}, "superseded no-new-raster contract", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": []}, "empty PixelLab asset list", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": ["dark_book", "cursed_skull", "unknown_weapon"]}, "foreign PixelLab asset ID", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": ["dark_book", "dark_book", "cursed_skull"]}, "duplicate PixelLab asset ID", errors)
+
+
+func _expect_provenance_case_rejected(manifest: Dictionary, overrides: Dictionary, case_name: String, errors: Array[String]) -> void:
+	var mutated := manifest.duplicate(true)
+	var provenance := (mutated.get("generator_provenance", {}) as Dictionary).duplicate(true)
+	for key in overrides:
+		provenance[key] = overrides[key]
+	mutated["generator_provenance"] = provenance
+	var case_errors: Array[String] = []
+	_check_provenance(mutated, case_errors)
+	_expect(not case_errors.is_empty(), "provenance check must fail-closed on %s" % case_name, errors)
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
