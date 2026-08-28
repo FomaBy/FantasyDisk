@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/elites/full_frame/mini_bone_warden_spriteframes.tres",
+	"scale": {
+		"x": 0.52,
+		"y": 0.52
+	},
+	"position": {
+		"x": 0.0,
+		"y": -62.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

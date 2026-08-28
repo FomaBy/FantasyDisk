@@ -1,0 +1,12 @@
+{
+	"frames": "res://assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres",
+	"scale": {
+		"x": 0.82,
+		"y": 0.82
+	},
+	"position": {
+		"x": 0.0,
+		"y": -94.0
+	},
+	"source_faces_left": true
+}

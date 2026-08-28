@@ -1,0 +1,12 @@
+{
+	"frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres",
+	"scale": {
+		"x": 0.76,
+		"y": 0.76
+	},
+	"position": {
+		"x": 0.0,
+		"y": -88.0
+	},
+	"source_faces_left": true
+}
