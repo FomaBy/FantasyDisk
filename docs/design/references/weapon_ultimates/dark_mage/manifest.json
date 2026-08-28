@@ -24,14 +24,20 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
-    "pixel_lab": "not used; no new isolated raster source or frame was created, so there are no PixelLab IDs to record",
+    "route": "reused_approved_assets_plus_new_pixellab_animation_frames",
+    "new_pixellab_assets": ["dark_book", "cursed_skull", "dark_wand"],
+    "pixel_lab": "three class-local isolated v3 animation packs; object and animation IDs are recorded in the weapon-local provenance manifests",
+    "asset_update_issue": "FAN-3602",
+    "new_pack_manifests": {
+      "dark_book": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json",
+      "cursed_skull": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json",
+      "dark_wand": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json"
+    },
     "historical_source_note": "The accepted attack-VFX PNGs were generated under an explicit 2026-06-30 user override with OpenAI gpt-image-2. Their source prompts and alpha-cleanup records remain in docs/design/references/weapon_attack_animations/<weapon_id>/prompt_notes.md.",
     "reused_sources": {
       "dark_book": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_book/vfx_weapon_dark_book_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_book/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_book/dark_book_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_book.png",
         "weapon_sha256": "39f10fff41f2f1540628d771aeb704d4fa230321075552eda0b697ee49b681c2",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_book.png",
@@ -40,8 +46,8 @@
         "modified": false
       },
       "cursed_skull": {
-        "source_reference": "docs/design/references/weapon_attack_animations/cursed_skull/vfx_weapon_cursed_skull_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/cursed_skull/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/cursed_skull/cursed_skull_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json",
         "weapon_runtime_path": "assets/sprites/weapons/cursed_skull.png",
         "weapon_sha256": "c6a76bcf7d07f80e362028ba3712a652e850281ddc90fce8944a13ec9c0c6684",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
@@ -50,8 +56,8 @@
         "modified": false
       },
       "dark_wand": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_wand/vfx_weapon_dark_wand_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_wand/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_wand/dark_wand_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_wand.png",
         "weapon_sha256": "703b9dfc3f1b56fbc5dcadf0c94c550d645f7e2fd3055ffe326f33338481e168",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_wand.png",
@@ -87,7 +93,14 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_dark_book.png",
-        "sfx": "assets/audio/sfx/sfx_artifact_reveal.ogg"
+        "sfx": "assets/audio/sfx/sfx_artifact_reveal.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres",
+          "animation": "abyss_mirror",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json"
+        }
       },
       "pivot": [0.5, 0.56],
       "presence": {
@@ -146,7 +159,14 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
-        "sfx": "assets/audio/sfx/sfx_boss_phase.ogg"
+        "sfx": "assets/audio/sfx/sfx_boss_phase.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres",
+          "animation": "cursed_crown",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json"
+        }
       },
       "pivot": [0.5, 0.72],
       "presence": {
@@ -205,7 +225,14 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_dark_wand.png",
-        "sfx": "assets/audio/sfx/sfx_hit_magic.ogg"
+        "sfx": "assets/audio/sfx/sfx_hit_magic.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/dark_wand/dark_wand_spriteframes.tres",
+          "animation": "vanishing_thread",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json"
+        }
       },
       "pivot": [0.18, 0.55],
       "presence": {
@@ -241,6 +268,7 @@
     }
   ],
   "evidence": {
+    "pixellab_source_contact_sheet": "docs/design/references/weapon_ultimates/dark_mage/dark_mage_pixellab_frames_contact.png",
     "contact_sheets": [
       "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png",

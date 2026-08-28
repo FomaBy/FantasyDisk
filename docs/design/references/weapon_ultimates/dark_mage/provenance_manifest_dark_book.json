@@ -1,0 +1,121 @@
+{
+  "issue": "FAN-3602",
+  "class_id": "dark_mage",
+  "weapon_id": "dark_book",
+  "canonical_id": "dark_mage/dark_book",
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T23:42:52Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "7cc4e1eb-b2d2-4217-967a-56b786307e72",
+    "pixel_lab_animation_group_id": "f5fd46ad-5acc-491a-88e6-8dc6a8831deb",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single open black grimoire split by a vertical obsidian mirror, two opposed violet shadow silhouettes reflected in the pages, dark fantasy D&D pixel art seen straight from above, centered isolated effect, only one book and mirror, no characters, no text, empty transparent background, clean silhouette, no border",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the open grimoire and mirror centered with the same shape and size in every frame; the mirror slowly unfolds, twin violet lenses swell on both sides, then one synchronized paired violet detonation expands and contracts; every frame remains visibly active, transparent background, no new objects, no text, no cropping",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "dark_book_f00.png",
+      "bytes": 23774,
+      "url_kind": "template",
+      "encoded_sha256": "39f46a008d2a4d7591024e9d74ac12a49f14d12a0a76ed703e9bbb01c6ed7cb8",
+      "pixel_sha256": "1e8ed124697823c2e8b5eb1f74ee7ed82ac18b0151989e68bf26ce0c3cea3fda"
+    },
+    {
+      "file": "dark_book_f01.png",
+      "bytes": 34157,
+      "url_kind": "template",
+      "encoded_sha256": "6f8208bb192b78072d10eee2c75cbe04f8cd3530ed0a738e7b876435b0b0ff9c",
+      "pixel_sha256": "83bafcb998d18baa8b6708d457fbeb271b13b698b4dd82c607e089b268802f54"
+    },
+    {
+      "file": "dark_book_f02.png",
+      "bytes": 32464,
+      "url_kind": "template",
+      "encoded_sha256": "b634a8317db3b454e5cb3f64f46aad73eb421cd883ef374e2ec11a1e3bd054b0",
+      "pixel_sha256": "de5246a7eeefa29c46e8290fce5d12bebe71eeae993d71f56afdcf52c6fb7a04"
+    },
+    {
+      "file": "dark_book_f03.png",
+      "bytes": 33846,
+      "url_kind": "template",
+      "encoded_sha256": "6f531da2168606025f01f5b6ab192ec3ce7763f237dfef1afe7889396328591d",
+      "pixel_sha256": "3c978f6a7fd7fe2d6c71a19f9289299919e350e4028059f494acf63762e885e5"
+    },
+    {
+      "file": "dark_book_f04.png",
+      "bytes": 32230,
+      "url_kind": "template",
+      "encoded_sha256": "4b215583eaa15e20aa8ce71b93b0b6ff1d0232577067bb943ec5e0efc3d31639",
+      "pixel_sha256": "a671315c62f7d560f4a8a4ff09b80e5f9980dc6c473de9427943cc8bca0eade2"
+    },
+    {
+      "file": "dark_book_f05.png",
+      "bytes": 30256,
+      "url_kind": "template",
+      "encoded_sha256": "b39032fab50a732d3c64a4b9b95303287e4f7de2c127e8a5edc6d17d4622480d",
+      "pixel_sha256": "3d9bcfd1f9af4b69daabe7e607543b73cea3e68dd1aa770e354cd1084ad94ec2"
+    },
+    {
+      "file": "dark_book_f06.png",
+      "bytes": 31982,
+      "url_kind": "template",
+      "encoded_sha256": "de2725da506bbfcebd2caea85690726777c2812fffc1b65f11f43cf06066b1d2",
+      "pixel_sha256": "7049f074a2687747e5e47dd6f7349cd15f1f0444710a32bb4532dec70e3096d8"
+    },
+    {
+      "file": "dark_book_f07.png",
+      "bytes": 31319,
+      "url_kind": "template",
+      "encoded_sha256": "4eeb8df59e83a6c6aaf15ef29f1e5108865e5b37a12892e8424dd8330d51daeb",
+      "pixel_sha256": "5cc6d7001b1c533ce4e0769d73db5b3a4304515e2f6eff15085d13f69454a6dc"
+    },
+    {
+      "file": "dark_book_f08.png",
+      "bytes": 27988,
+      "url_kind": "template",
+      "encoded_sha256": "2a234106d334e908cc54ba6f121beb027d459dc3af47efd625d86929b41ffb05",
+      "pixel_sha256": "771347569dc8e7f9fe8f0892251df55deef0b5cc66ef7b85daf311cd1ded5941"
+    }
+  ],
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_book",
+    "runtime_dir": "assets/sprites/effects/dark_mage/dark_book",
+    "runtime_spriteframes": "assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres",
+    "animation": "abyss_mirror",
+    "frame_width": 256,
+    "frame_height": 256,
+    "frame_count": 9,
+    "source_frame_pattern": "dark_book_f%02d.png (00..08)",
+    "runtime_frame_pattern": "dark_book_%02d.png (00..08)",
+    "frame_order": "ascending numeric suffix 00 -> 08",
+    "source_runtime_parity": "each runtime frame is a byte-exact copy of the matching source frame by index",
+    "loop": false,
+    "speed_fps": 8.0
+  },
+  "verification": {
+    "frame_size": "256x256 RGBA",
+    "max_border_alpha": 0,
+    "semi_transparent_pixels_per_frame": 0,
+    "distinct_pixel_hashes": 9,
+    "visible_pixels_alpha_gt_40_range": [29482, 40102],
+    "adjacent_frame_changed_pixels_range": [7438, 23001],
+    "visual_review": "source frames 00, 05 and 08 reviewed; book, mirror and paired violet detonation remain readable"
+  },
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
