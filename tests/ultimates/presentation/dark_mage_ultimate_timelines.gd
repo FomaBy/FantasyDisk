@@ -5,10 +5,16 @@ const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/dark_mage/
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const SCENES := {
 	"dark_book": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn"),
 	"cursed_skull": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn"),
 	"dark_wand": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn"),
+}
+const EFFECT_SCENES := {
+	"dark_book": preload("res://scripts/ultimates/classes/dark_mage/dark_book.tscn"),
+	"cursed_skull": preload("res://scripts/ultimates/classes/dark_mage/cursed_skull.tscn"),
+	"dark_wand": preload("res://scripts/ultimates/classes/dark_mage/dark_wand.tscn"),
 }
 const WEAPON_IDS := ["dark_book", "cursed_skull", "dark_wand"]
 const PACKS := [
@@ -19,7 +25,7 @@ const PACKS := [
 		"title": "DARK BOOK — ABYSS MIRROR",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.76, 0.42, 1.0),
-		"required_nodes": ["BookGhost", "MirrorPlane", "OriginalShadow", "ReflectionShadow", "PairedDetonation"],
+		"required_nodes": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
 	},
 	{
 		"weapon_id": "cursed_skull",
@@ -28,7 +34,7 @@ const PACKS := [
 		"title": "CURSED SKULL — CURSED CROWN",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.68, 0.9, 0.42),
-		"required_nodes": ["SkullCrown", "CurseChains", "SoulWispLeft", "HarvestBite"],
+		"required_nodes": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
 	},
 	{
 		"weapon_id": "dark_wand",
@@ -37,7 +43,7 @@ const PACKS := [
 		"title": "DARK WAND — VANISHING THREAD",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.4, 0.84, 1.0),
-		"required_nodes": ["WandGhost", "OuterThread", "NodeMarks", "CollapseAfterimage"],
+		"required_nodes": ["VanishingThread", "ThreadEchoNear", "ThreadEchoFar"],
 	},
 ]
 const CAPTURES := [
@@ -64,6 +70,46 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var health := 100.0
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
+class ImpactActivationProbe extends RefCounted:
+	var values := {}
+
+	func origin() -> Vector2:
+		return Vector2.ZERO
+
+	func is_finished() -> bool:
+		return false
+
+	func param_float(_key: String, fallback: float) -> float:
+		return fallback
+
+	func scaled_damage(_key: String, fallback: float) -> float:
+		return fallback
+
+	func present(_phase_id: String, _payload: Dictionary) -> void:
+		pass
+
+	func apply_control(_target: Node, _impulse: Vector2, _status_id: String, _status: Dictionary) -> Dictionary:
+		return {"status_applied": true}
+
+	func record_target_value(target: Node, key: String, value: Variant, _event_id: String) -> bool:
+		values["%d:%s" % [target.get_instance_id(), key]] = value
+		return true
+
+	func target_value(target: Node, key: String, fallback: Variant) -> Variant:
+		return values.get("%d:%s" % [target.get_instance_id(), key], fallback)
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -86,6 +132,7 @@ func _initialize() -> void:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_v2_adoption(manifest, packages, errors)
 	_check_distinction(packages, errors)
+	_check_weapon_local_impacts(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
@@ -179,6 +226,10 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 		return
 	_expect(str(package.get("weapon_id", "")) == weapon_id, "%s package weapon ID must be exact" % weapon_id, errors)
 	var timing := package.get("timing_seconds", {}) as Dictionary
+	_expect(float(timing.get("cancel", 0.0)) >= 2.5 and float(timing.get("cancel", 0.0)) <= 4.0,
+		"%s presentation must last 2.5-4.0 seconds" % weapon_id, errors)
+	_expect(float(timing.get("recovery", 0.0)) - float(timing.get("active", 0.0)) >= 1.2,
+		"%s active window must last at least 1.2 seconds" % weapon_id, errors)
 	var phases := package.get("phase_ids", {}) as Dictionary
 	var previous := -1.0
 	for phase_name in REQUIRED_PHASES:
@@ -261,7 +312,90 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 		"%s scene and manifest material budgets must agree" % weapon_id, errors)
 	_expect(DirectionContract.scene_material_violations(instance, "dark_mage/%s" % weapon_id).is_empty(),
 		"%s scene must fit its declared V2 material budget" % weapon_id, errors)
+	_check_scene_flipbook(weapon_id, package, instance, errors)
 	instance.queue_free()
+
+
+func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Node2D, errors: Array[String]) -> void:
+	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+	var expected_path := "res://%s" % str(flipbook.get("spriteframes", ""))
+	var expected_animation := StringName(str(flipbook.get("animation", "")))
+	var matching_flipbooks := 0
+	var pending: Array[Node] = [instance]
+	while not pending.is_empty():
+		var node := pending.pop_back() as Node
+		for child in node.get_children():
+			pending.append(child)
+			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D),
+				"%s must not contain visible flat geometry: %s" % [weapon_id, child.name], errors)
+			if child is AnimatedSprite2D:
+				var sprite := child as AnimatedSprite2D
+				if sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_path \
+						and sprite.animation == expected_animation:
+					matching_flipbooks += 1
+	_expect(matching_flipbooks >= 1,
+		"%s must render its exact integrated SpriteFrames/animation identity" % weapon_id, errors)
+
+
+func _check_weapon_local_impacts(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var effect := (EFFECT_SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(effect)
+		effect.set("ultimate_damage_sink", Callable(self, "_damage_sink"))
+		var activation := ImpactActivationProbe.new()
+		var victims: Array = []
+		for index in 3:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(80.0 + float(index) * 120.0, 0.0)
+			root.add_child(victim)
+			victims.append(victim)
+		match weapon_id:
+			"dark_book":
+				effect.call("configure", activation, victims)
+				for index in victims.size():
+					effect.call("detonate_pair", index)
+			"cursed_skull":
+				effect.call("configure", activation, victims)
+				effect.call("crown_targets")
+			"dark_wand":
+				effect.call("configure", activation, victims, victims[0])
+				for index in victims.size():
+					effect.call("mark_node", index)
+				effect.call("collapse")
+		var impacts := _impact_player(effect)
+		_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size(),
+				"%s must enqueue every actually affected enemy" % weapon_id, errors)
+			_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6,
+				"%s victim impact must last 0.3-0.6 seconds" % weapon_id, errors)
+			_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES \
+					and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES,
+				"%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
+			impacts.call("advance", 1.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(int(played.get("flashes", 0)) == victims.size(),
+				"%s load degradation must never drop the existing white victim flash" % weapon_id, errors)
+			var flipbook := (((packages.get(weapon_id, {}) as Dictionary).get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+			var expected_path := "res://%s" % str(flipbook.get("spriteframes", ""))
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == expected_path,
+				"%s victim impact must use its own integrated flipbook" % weapon_id, errors)
+		effect.queue_free()
+		for victim in victims:
+			(victim as Node).queue_free()
+
+
+func _impact_player(effect: Node) -> Node:
+	for child in effect.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
+
+
+func _damage_sink(_target: Node, _amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
+	return {"killed": false}
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:
@@ -449,6 +583,15 @@ static func is_capture_item_visible(item: CanvasItem, scene: Node2D) -> bool:
 
 
 static func _capture_item_local_rect(item: CanvasItem) -> Rect2:
+	if item is AnimatedSprite2D:
+		var sprite := item as AnimatedSprite2D
+		if sprite.sprite_frames == null:
+			return Rect2()
+		var texture := sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+		if texture == null:
+			return Rect2()
+		var size := texture.get_size()
+		return Rect2((-size * 0.5 if sprite.centered else Vector2.ZERO) + sprite.offset, size)
 	if item is Sprite2D:
 		return (item as Sprite2D).get_rect()
 	if item is Line2D:

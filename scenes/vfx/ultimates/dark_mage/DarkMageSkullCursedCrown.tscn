@@ -1,118 +1,107 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/weapons/cursed_skull.png" id="1_skull"]
-[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_cursed_skull.png" id="2_vfx"]
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="3_v2_driver"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
-blend_mode = 1
-light_mode = 1
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres" id="1_flipbook"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="2_driver"]
 
 [sub_resource type="Animation" id="Animation_cursed_crown"]
 resource_name = "ultimate"
 length = 3.6
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SkullCrown:position")
+tracks/0/path = NodePath("CursedCrown:frame")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.3, 2.55, 2.9, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, -16), Vector2(0, -108), Vector2(0, -142), Vector2(0, -136), Vector2(0, -98), Vector2(0, -24)]
+"times": PackedFloat32Array(0, 0.45, 0.9, 1.35, 1.8, 2.25, 2.7, 3.15, 3.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SkullCrown:scale")
+tracks/1/path = NodePath("CursedCrown:position")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.85, 1.3, 2.55, 2.9, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.28, 0.28), Vector2(0.58, 0.58), Vector2(0.78, 0.78), Vector2(0.82, 0.82), Vector2(0.94, 0.68), Vector2(0.12, 0.12)]
+"values": [Vector2(0, 34), Vector2(0, -58), Vector2(0, -92), Vector2(0, -86), Vector2(0, -52), Vector2(0, 20)]
 }
 tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CrownHalo:modulate:a")
+tracks/2/path = NodePath("CursedCrown:scale")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.3, 2.9, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.85, 1.3, 2.55, 2.9, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.35, 1.0, 0.62, 0.0]
+"values": [Vector2(0.18, 0.18), Vector2(0.46, 0.46), Vector2(0.72, 0.72), Vector2(0.82, 0.82), Vector2(0.94, 0.72), Vector2(0.08, 0.08)]
 }
 tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("CurseChains:modulate:a")
+tracks/3/path = NodePath("CursedCrown:modulate:a")
 tracks/3/interp = 1
-tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.3, 2.5, 2.9, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.35, 2.9, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.88, 0.72, 0.2, 0.0]
+"values": [0.0, 1.0, 0.85, 0.0]
 }
 tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SoulWispLeft:position")
+tracks/4/path = NodePath("SoulOrbitLeft:position")
 tracks/4/interp = 1
-tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 1.3, 1.7, 2.0, 2.3, 2.55, 3.6),
+"times": PackedFloat32Array(0, 1.3, 1.7, 2.1, 2.55, 2.9, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-190, 96), Vector2(-190, 96), Vector2(-82, 34), Vector2(0, 92), Vector2(112, 38), Vector2(190, 96), Vector2(0, -40)]
+"values": [Vector2(-176, 96), Vector2(-176, 96), Vector2(-82, 26), Vector2(0, 82), Vector2(176, 96), Vector2(92, 18), Vector2(0, -42)]
 }
 tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("SoulWispRight:position")
+tracks/5/path = NodePath("SoulOrbitRight:position")
 tracks/5/interp = 1
-tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 1.3, 1.7, 2.0, 2.3, 2.55, 3.6),
+"times": PackedFloat32Array(0, 1.3, 1.7, 2.1, 2.55, 2.9, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(190, 96), Vector2(190, 96), Vector2(92, 20), Vector2(0, 76), Vector2(-104, 28), Vector2(-190, 96), Vector2(0, -40)]
+"values": [Vector2(176, 96), Vector2(176, 96), Vector2(82, 18), Vector2(0, 72), Vector2(-176, 96), Vector2(-92, 26), Vector2(0, -42)]
 }
 tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("HarvestBite:modulate:a")
+tracks/6/path = NodePath("SoulOrbitLeft:frame")
 tracks/6/interp = 1
-tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 2.45, 2.55, 2.9, 3.2, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 1.0, 0.58, 0.16, 0.0]
+"times": PackedFloat32Array(0, 1.3, 1.65, 2, 2.35, 2.7, 3.05, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("CurseAura:modulate:a")
+tracks/7/path = NodePath("SoulOrbitRight:frame")
 tracks/7/interp = 1
-tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 1.3, 1.8, 2.5, 2.9, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.3, 1.65, 2, 2.35, 2.7, 3.05, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("SoulOrbitLeft:modulate:a")
+tracks/8/interp = 1
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.5, 2.9, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.44, 0.72, 0.3, 0.0]
+"values": [0.0, 0.0, 0.82, 0.48, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("SoulOrbitRight:modulate:a")
+tracks/9/interp = 1
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.5, 2.9, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.82, 0.48, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cursed_crown"]
 _data = {"ultimate": SubResource("Animation_cursed_crown")}
 
 [node name="DarkMageSkullCursedCrown" type="Node2D"]
-script = ExtResource("3_v2_driver")
+script = ExtResource("2_driver")
 weapon_id = "cursed_skull"
 metadata/ultimate_id = "dark_mage/cursed_skull"
 metadata/silhouette = "giant_raised_skull_crown_with_three_hanging_curse_chains"
@@ -125,67 +114,29 @@ metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
 metadata/pivot = Vector2(0.5, 0.72)
 
-[node name="CrownHalo" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-118, -118, -92, -190, -42, -152, 0, -220, 42, -152, 92, -190, 118, -118)
-width = 12.0
-default_color = Color(0.78, 0.27, 0.94, 0.9)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+[node name="CursedCrown" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"cursed_crown"
+position = Vector2(0, 34)
+scale = Vector2(0.18, 0.18)
+modulate = Color(0.86, 1, 0.55, 0)
+z_index = 2
 
-[node name="CurseAura" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("2_vfx")
-position = Vector2(0, -68)
-rotation = -1.08
-scale = Vector2(1.45, 1.45)
-modulate = Color(0.72, 1, 0.56, 0)
+[node name="SoulOrbitLeft" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"cursed_crown"
+position = Vector2(-176, 96)
+scale = Vector2(0.38, 0.38)
+modulate = Color(0.62, 1, 0.42, 0)
+z_index = 1
 
-[node name="SkullCrown" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_skull")
-position = Vector2(0, -16)
-scale = Vector2(0.28, 0.28)
-modulate = Color(1, 0.88, 0.64, 0.98)
-
-[node name="CurseChains" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-64, -92, -104, -44, -142, 12, -190, 96, -142, 12, -104, -44, 0, -76, 0, 92, 0, -76, 104, -44, 142, 12, 190, 96)
-width = 7.0
-default_color = Color(0.55, 0.14, 0.72, 0.86)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
-
-[node name="CurseMarks" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-220, 96, -190, 62, -160, 96, -190, 130, -220, 96, 0, 92, -30, 126, 0, 160, 30, 126, 0, 92, 220, 96, 190, 62, 160, 96, 190, 130, 220, 96)
-width = 8.0
-default_color = Color(0.62, 0.92, 0.36, 0.78)
-antialiased = true
-
-[node name="SoulWispLeft" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("2_vfx")
-position = Vector2(-190, 96)
-rotation = 1.2
-scale = Vector2(0.34, 0.34)
-modulate = Color(0.75, 1, 0.58, 0.76)
-
-[node name="SoulWispRight" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("2_vfx")
-position = Vector2(190, 96)
-rotation = -1.95
-scale = Vector2(-0.28, 0.28)
-modulate = Color(0.9, 0.46, 1, 0.68)
-
-[node name="HarvestBite" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-172, -34, -124, 18, -86, -18, -48, 34, 0, -14, 48, 34, 86, -18, 124, 18, 172, -34)
-width = 19.0
-default_color = Color(0.94, 0.84, 0.54, 0.96)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+[node name="SoulOrbitRight" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"cursed_crown"
+position = Vector2(176, 96)
+scale = Vector2(-0.38, 0.38)
+modulate = Color(0.9, 0.42, 1, 0)
+z_index = 1
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_cursed_crown")}

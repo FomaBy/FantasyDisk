@@ -1,6 +1,8 @@
 extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/dark_mage/dark_wand/dark_wand_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.dark_mage.dark_wand"
 const EXECUTOR_ID := "weapon_ultimate.executor.dark_mage.dark_wand"
@@ -14,6 +16,7 @@ var collapse_count_for_tests := 0
 var _activation = null
 var _nodes: Array = []
 var _focus_target_id := 0
+var _impacts: Node2D = null
 
 
 static func parameter_contract() -> Dictionary:
@@ -99,6 +102,7 @@ func mark_node(index: int) -> void:
 func collapse() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var victims: Array = []
 	for index in _nodes.size():
 		var target := _nodes[index] as Node
 		if target == null or not is_instance_valid(target):
@@ -107,6 +111,7 @@ func collapse() -> void:
 		if not (ramp is float or ramp is int):
 			continue
 		collapse_count_for_tests += 1
+		victims.append(target)
 		_deal(
 			target,
 			_activation.scaled_damage("base_collapse_damage", 0.0) * float(ramp),
@@ -114,6 +119,16 @@ func collapse() -> void:
 			false,
 			{"ultimate_mechanic": "vanishing_collapse", "ramp": float(ramp), "node": index}
 		)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null:
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+	_impacts.play(VICTIM_FRAMES, victims, global_position)
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
