@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T10:59:00Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "847b515a-069c-43ec-9335-4569eb72e6d8",
+    "pixel_lab_animation_group_id": "937920c9-6252-42b8-b35c-c12dc1d2e536",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered spectral dire wolf bursting from a pale mint amulet hunt sigil, dark fantasy D&D pixel art seen from above, translucent emerald ghost fur and bone-white eyes, one clean isolated effect, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the wolf and sigil centered with stable proportions; the eight-point hunt sigil flares, the spectral wolf lunges forward, a mint impact burst blooms on the bite beat, then the wolf snaps back into the sigil; every frame has visible motion, clean silhouette, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "summon_amulet_f00.png",
+      "bytes": 31801,
+      "url_kind": "template",
+      "encoded_sha256": "a70ccde06e9fd6131440e380e69c63e4a399fc0bbb7c295510b616a3a32f3c1b",
+      "pixel_sha256": "23bcbb1ab9e7e11bbb17aa5daa5e9903a49f99a7ae97096b5a62e2859c901a74"
+    },
+    {
+      "file": "summon_amulet_f01.png",
+      "bytes": 52058,
+      "url_kind": "template",
+      "encoded_sha256": "c95f91ccc5c5d7ca5a7b34cea951e98752b7eb9d13960e62887de768c08690f8",
+      "pixel_sha256": "6bfada6eb9e8035bfa417fce42becc6015de0e4bab868342111a92759ee5b7be"
+    },
+    {
+      "file": "summon_amulet_f02.png",
+      "bytes": 49609,
+      "url_kind": "template",
+      "encoded_sha256": "3e847f5b8e6948822c9dc6573f1f6712a1ea64b31aaca11e14f6df8e60e742d1",
+      "pixel_sha256": "1e63b8b4737228ed0e71c44521e1aa95c28eb62114bce9742e858486b7a798c5"
+    },
+    {
+      "file": "summon_amulet_f03.png",
+      "bytes": 50718,
+      "url_kind": "template",
+      "encoded_sha256": "837ff06591a66e54884c4503e0883e42cd2e5c967837b7c96c51f37befaba7ce",
+      "pixel_sha256": "071d7acaa94a5696dbeb920148a989ed65e4df2ac0018289bc961f79779bd863"
+    },
+    {
+      "file": "summon_amulet_f04.png",
+      "bytes": 49689,
+      "url_kind": "template",
+      "encoded_sha256": "ea9a1ad158d1228d382cde19f170a24046a6fee8bc0b3e2cdefdb5ab6d82f74f",
+      "pixel_sha256": "c0c5ed1e2bd622f6d2a65c55bf4b88dba47ce0e06bafc7fd45d9813a77fff27f"
+    },
+    {
+      "file": "summon_amulet_f05.png",
+      "bytes": 47064,
+      "url_kind": "template",
+      "encoded_sha256": "61e42b02dc9825553877dd63f5463707f7681b9bf02d021d1374b3cf3416fd09",
+      "pixel_sha256": "68e9aee5f711bd805b2fc66bc7ade531e90aa60f7e106647b4a57ca4ee1af5fa"
+    },
+    {
+      "file": "summon_amulet_f06.png",
+      "bytes": 47823,
+      "url_kind": "template",
+      "encoded_sha256": "748ca2418f9ea014a09ca77688a09c18a72c34cb4f96b84840465b3768ec63eb",
+      "pixel_sha256": "4713a7ac0faf272d1f24a4b8ef33d0b60e022a71fe4171589d775cdb8f878b6b"
+    },
+    {
+      "file": "summon_amulet_f07.png",
+      "bytes": 48156,
+      "url_kind": "template",
+      "encoded_sha256": "c25bd459ef0e128e2f44a6a71ae51e6c9970d022c0737b903cdaeff0d8c302c8",
+      "pixel_sha256": "1bd14a5a3e872bacfb4d80dcbbcd52f149cefa74850ad7f3c551ccc80f28da5a"
+    },
+    {
+      "file": "summon_amulet_f08.png",
+      "bytes": 43776,
+      "url_kind": "template",
+      "encoded_sha256": "b0b21f29ceb25dbd90f15e025ac052f1fd46aada39b919e4f568c577f4a952a4",
+      "pixel_sha256": "00f7e9c38ff200e34b76d3c874a02e0eb2b2db74a8f1b6a8ba6a9e57ec877814"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
