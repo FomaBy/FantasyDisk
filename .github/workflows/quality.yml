@@ -255,11 +255,17 @@ jobs:
           set -euo pipefail
           git fetch --no-tags --depth=300 origin \
             be90b38df38788fc53190c862a873f4aab80ea28
+          git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev
       - name: Assert exact audited SHA
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           mkdir -p build
           printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      - name: Capture resource diagnostics before cache and swap
+        run: |
+          df -h "$RUNNER_TEMP"
+          df --output=avail -B1 "$RUNNER_TEMP"
+          free -m
       - name: Resolve pinned Godot location
         run: echo "GODOT_DIR=$RUNNER_TOOL_CACHE/fsd-godot/$GODOT_BUILD_ID" >> "$GITHUB_ENV"
       - name: Restore pinned Godot
@@ -297,17 +303,31 @@ jobs:
       - name: Report Godot import cache
         run: |
           echo "godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}"
-      - name: Configure extra swap for the measured Godot peak
+      - name: Configure disk-budgeted extra swap for the Godot peak
         run: |
           set -euo pipefail
-          df -h "$RUNNER_TEMP"
-          free -m
+          min_free_bytes=$((4 * 1024 * 1024 * 1024))
+          max_swap_bytes=$((8 * 1024 * 1024 * 1024))
+          available_bytes=$(df --output=avail -B1 "$RUNNER_TEMP" | tail -n 1)
+          swap_bytes=$((available_bytes - min_free_bytes))
+          if [ "$swap_bytes" -gt "$max_swap_bytes" ]; then
+            swap_bytes=$max_swap_bytes
+          fi
+          echo "available disk before swap: $available_bytes bytes"
+          echo "reserved free disk: $min_free_bytes bytes"
+          echo "requested swap: $swap_bytes bytes"
+          test "$swap_bytes" -gt 0
           swap_file="$RUNNER_TEMP/fantasydisk-quality.swap"
-          sudo fallocate -l 8G "$swap_file"
+          sudo fallocate -l "$swap_bytes" "$swap_file"
           sudo chmod 600 "$swap_file"
           sudo mkswap "$swap_file"
           sudo swapon "$swap_file"
           echo "FSD_SWAP_FILE=$swap_file" >> "$GITHUB_ENV"
+          free -m
+      - name: Capture resource diagnostics before full-profile gate
+        run: |
+          df -h "$RUNNER_TEMP"
+          df --output=avail -B1 "$RUNNER_TEMP"
           free -m
       - name: Repository, Python and Godot gates (full profile shard)
         id: quality-gate
@@ -359,6 +379,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 1
+      - name: Fetch integration base for canonical report
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev
       - name: Assert exact audited SHA
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"

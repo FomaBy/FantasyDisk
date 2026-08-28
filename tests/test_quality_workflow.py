@@ -222,6 +222,35 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("--script", self.source)
         self.assertNotIn("$GODOT_DIR/godot --headless", self.source)
 
+    def test_full_profile_health_jobs_budget_resources_and_resolve_base(self) -> None:
+        shards_start = self.source.index("  dev-runtime-health-godot:\n")
+        summary_start = self.source.index("  dev-runtime-health:\n", shards_start)
+        shards = self.source[shards_start:summary_start]
+        summary = self.source[summary_start:]
+
+        before_cache = "Capture resource diagnostics before cache and swap"
+        before_gate = "Capture resource diagnostics before full-profile gate"
+        post_shard = "Capture post-shard resource diagnostics"
+        self.assertIn(before_cache, shards)
+        self.assertIn(before_gate, shards)
+        self.assertIn(post_shard, shards)
+        self.assertLess(shards.index(before_cache), shards.index("Restore Godot import cache"))
+        self.assertLess(shards.index(before_cache), shards.index("Configure disk-budgeted extra swap"))
+        self.assertLess(shards.index(before_gate), shards.index("Repository, Python and Godot gates (full profile shard)"))
+        self.assertLess(shards.index(post_shard), shards.index("Hash shard quality evidence"))
+        self.assertIn("df --output=avail -B1", shards)
+        self.assertIn("free -m", shards)
+        self.assertIn("min_free_bytes=$((4 * 1024 * 1024 * 1024))", shards)
+        self.assertIn("max_swap_bytes=$((8 * 1024 * 1024 * 1024))", shards)
+        self.assertIn("swap_bytes=$((available_bytes - min_free_bytes))", shards)
+        self.assertIn('sudo fallocate -l "$swap_bytes" "$swap_file"', shards)
+        self.assertNotIn("sudo fallocate -l 8G", shards)
+        self.assertIn("git fetch --no-tags --depth=300 origin", shards)
+        self.assertIn("git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev", shards)
+        self.assertIn("Fetch integration base for canonical report", summary)
+        self.assertIn("git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev", summary)
+        self.assertLess(summary.index("Fetch integration base for canonical report"), summary.index("Combine static and Godot shard reports"))
+
     def test_required_check_job_id_is_stable(self) -> None:
         # Branch protection binds to the job id: renaming it detaches the
         # required gate without any visible failure.
