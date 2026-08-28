@@ -282,6 +282,18 @@ class QualityWorkflowContractTests(unittest.TestCase):
         # required gate without any visible failure.
         self.assertIn("\n  static-quality:\n", self.source)
 
+    def test_visual_negative_probe_captures_its_expected_failure(self) -> None:
+        start = self.source.index("  visual-regression:\n")
+        end = self.source.index("\n  dev-runtime-health-static:\n", start)
+        job = self.source[start:end]
+        probe = job[job.index("- name: Prove a visible mutation is still rejected"):]
+
+        self.assertIn("set +e", probe)
+        self.assertIn("status=$?", probe)
+        self.assertIn('test "$status" -eq 1', probe)
+        self.assertLess(probe.index("set +e"), probe.index("--negative-probe"))
+        self.assertLess(probe.index("--negative-probe"), probe.index("status=$?"))
+
 
 if __name__ == "__main__":
     unittest.main()

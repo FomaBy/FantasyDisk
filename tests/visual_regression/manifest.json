@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "capture": {
+    "godot_build_id": "4.7.stable.official.5b4e0cb0f",
+    "renderer": "gl_compatibility",
+    "locale": "en",
+    "seed": 20260828,
+    "settle_frames": 12,
+    "certified_platform": "macos"
+  },
+  "defaults": {
+    "pixel_tolerance": 8,
+    "max_diff_ratio": 0.004
+  },
+  "cases": [
+    {
+      "id": "ultimate_sniper_deadeye_rifle",
+      "kind": "ultimate_v2",
+      "scene": "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+      "viewport": [
+        640,
+        640
+      ],
+      "advance_seconds": 0.76
+    },
+    {
+      "id": "ultimate_sniper_spotter_scope",
+      "kind": "ultimate_v2",
+      "scene": "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+      "viewport": [
+        640,
+        640
+      ],
+      "advance_seconds": 0.86
+    },
+    {
+      "id": "ultimate_sniper_shatter_rounds",
+      "kind": "ultimate_v2",
+      "scene": "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+      "viewport": [
+        640,
+        640
+      ],
+      "advance_seconds": 0.66
+    },
+    {
+      "id": "flipbook_berserk_axe_cleave",
+      "kind": "flipbook",
+      "pack": "res://assets/sprites/effects/scrum895_berserk/axe_cleave_spriteframes.tres",
+      "animation": "cleave",
+      "frame": 3,
+      "viewport": [
+        512,
+        512
+      ]
+    },
+    {
+      "id": "flipbook_holy_flail_spiral",
+      "kind": "flipbook",
+      "pack": "res://assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_spriteframes.tres",
+      "animation": "spiral",
+      "frame": 4,
+      "viewport": [
+        512,
+        512
+      ]
+    },
+    {
+      "id": "flipbook_storm_longbow_release",
+      "kind": "flipbook",
+      "pack": "res://assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres",
+      "animation": "release",
+      "frame": 3,
+      "viewport": [
+        512,
+        512
+      ]
+    },
+    {
+      "id": "flipbook_robot_hydraulic_press",
+      "kind": "flipbook",
+      "pack": "res://assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compression_spriteframes.tres",
+      "animation": "compress",
+      "frame": 3,
+      "viewport": [
+        512,
+        512
+      ]
+    },
+    {
+      "id": "main_menu_1280x720",
+      "kind": "main_menu",
+      "scene": "res://scenes/Main.tscn",
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "main_menu_1920x1080",
+      "kind": "main_menu",
+      "scene": "res://scenes/Main.tscn",
+      "viewport": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "id": "hud_ultimate_widget",
+      "kind": "hud_widget",
+      "scene": "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+      "viewport": [
+        480,
+        200
+      ]
+    }
+  ]
+}

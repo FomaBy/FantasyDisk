@@ -241,6 +241,18 @@ class QualityGateTests(unittest.TestCase):
         )
         self.assertEqual(discovered, selected)
 
+    def test_visual_capture_utility_is_not_a_godot_suite(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/visual_regression/capture.gd": "extends SceneTree\n",
+                "tests/visual_regression/real_visual_test.gd": "extends SceneTree\n",
+            })
+            discovered = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.discover_godot_tests()
+            }
+        self.assertEqual(discovered, {"visual_regression/real_visual_test.gd"})
+
     def test_nested_suite_runs_from_its_own_resource_path(self) -> None:
         nested = ROOT / "tests" / "ultimates" / "registry_contract_test.gd"
         self.assertEqual(
