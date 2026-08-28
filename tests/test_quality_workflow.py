@@ -106,6 +106,32 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("quality-${{ github.event_name }}-${{ github.sha }}", self.source)
         self.assertIn("if-no-files-found: error", self.source)
 
+    def test_coverage_ratchet_reports_are_uploaded_with_quality_evidence(self) -> None:
+        self.assertIn("tools/test_coverage_gate.py", self.source)
+        self.assertIn("build/test_coverage_report.json", self.source)
+        self.assertIn("build/test_coverage_report.md", self.source)
+        self.assertIn("test_coverage_report.sha256", self.source)
+
+    def test_core_quality_evidence_hashing_does_not_depend_on_coverage_reports(self) -> None:
+        # A red main gate (or an absent/malformed baseline) skips or aborts the
+        # coverage-ratchet step before it writes its two report files. The
+        # pre-existing quality_gate_report.sha256 hash must still be produced
+        # on that path, so the coverage-report presence check has to be
+        # conditional rather than gating the whole "Hash quality evidence" step.
+        for hash_step in ("Hash quality evidence", "Hash static quality evidence"):
+            start = self.source.index(f"- name: {hash_step}")
+            end = self.source.index("- name:", start + 1)
+            step = self.source[start:end]
+            self.assertLess(
+                step.index("test -f build/quality_gate_report.json"),
+                step.index("if [ -f build/test_coverage_report.json ]"),
+                hash_step,
+            )
+            self.assertIn(
+                "if [ -f build/test_coverage_report.json ] && [ -f build/test_coverage_report.md ]; then",
+                step,
+            )
+
     def test_job_has_bounded_runtime(self) -> None:
         self.assertIn("timeout-minutes: 60", self.candidate_job)
 

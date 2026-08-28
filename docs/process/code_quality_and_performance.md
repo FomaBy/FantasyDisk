@@ -91,6 +91,34 @@ provenance. Shallow/sparse candidate нельзя использовать ка�
 
 ## Lean default и risk-профили
 
+## Test coverage surface ratchet
+
+`tools/test_coverage_gate.py` is the reproducible coverage tool for the mixed
+Godot/Python suite. Godot does not provide a repository-supported source-line
+coverage exporter, so this metric deliberately measures executable test
+inventory rather than pretending to measure lines: the groups are `godot`
+(the same direct/inherited `extends SceneTree` suite discovery as the quality
+gate) and `python` (`test_*.py`). Their initial minimums are stored in
+`tools/test_coverage_baseline.json` (444 and 30 files respectively).
+
+Run it on a clean candidate:
+
+```bash
+python3 tools/test_coverage_gate.py \
+  --json-report build/test_coverage_report.json \
+  --markdown-report build/test_coverage_report.md
+```
+
+The tool excludes only generated/cache/vendor path components (`.godot`,
+`__pycache__`, `build`, `vendor`) while discovering tests; product sources are
+not part of this inventory and cannot be hidden by those exclusions. It emits a
+JSON report, a readable Markdown table, per-group inventory hashes, and duration.
+The CI gate gives the measurement five seconds, uploads the reports and their
+SHA-256 manifest with the exact candidate-SHA quality artifact, and fails if a
+group drops below its baseline. Current local baseline measurement is 0.023 s;
+the scheduled static lane repeats the same bounded check without adding Godot
+runtime work.
+
 Обычное небольшое gameplay/scene/test изменение запускает один непосредственно
 затронутый suite через `tools/godot_gate.py`; второй нужен только для отдельного
 failure mode. `changed`/`full` не являются локальной матрицей по умолчанию.
