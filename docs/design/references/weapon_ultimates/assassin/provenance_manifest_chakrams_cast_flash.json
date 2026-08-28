@@ -94,7 +94,7 @@
   "weapon": "assassin/chakrams",
   "effect": "cast_flash",
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_cast_flash",
+    "source_dir": "docs/design/reference-assets-lfs/assassin-vfx-fan3586/chakrams_cast_flash",
     "source_frames": [
       "chakrams_cast_flash_f00.png",
       "chakrams_cast_flash_f01.png",

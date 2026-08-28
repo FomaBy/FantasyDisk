@@ -94,7 +94,7 @@
   "weapon": "assassin/shadow_daggers",
   "effect": "tornado",
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/shadow_daggers_tornado",
+    "source_dir": "docs/design/reference-assets-lfs/assassin-vfx-fan3586/shadow_daggers_tornado",
     "source_frames": [
       "shadow_daggers_tornado_f00.png",
       "shadow_daggers_tornado_f01.png",

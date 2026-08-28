@@ -96,7 +96,7 @@
   "effect": "victim_explosion",
   "source_tag": "fan3586.chakrams.victim_explosion",
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_victim_explosion",
+    "source_dir": "docs/design/reference-assets-lfs/assassin-vfx-fan3586/chakrams_victim_explosion",
     "source_frames": [
       "chakrams_victim_explosion_f00.png",
       "chakrams_victim_explosion_f01.png",

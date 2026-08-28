@@ -94,7 +94,7 @@
   "weapon": "assassin/venom_wire",
   "effect": "victim_impact",
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/venom_wire_victim_impact",
+    "source_dir": "docs/design/reference-assets-lfs/assassin-vfx-fan3586/venom_wire_victim_impact",
     "source_frames": [
       "venom_wire_victim_impact_f00.png",
       "venom_wire_victim_impact_f01.png",

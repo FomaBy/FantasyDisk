@@ -94,7 +94,7 @@
   "weapon": "assassin/chakrams",
   "effect": "trail",
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/chakrams_trail",
+    "source_dir": "docs/design/reference-assets-lfs/assassin-vfx-fan3586/chakrams_trail",
     "source_frames": [
       "chakrams_trail_f00.png",
       "chakrams_trail_f01.png",
