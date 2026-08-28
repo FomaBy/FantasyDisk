@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T12:48:57Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "8371106c-b45f-4f09-8a32-a4ef32b27eeb",
+    "pixel_lab_animation_group_id": "e09093a8-cf21-4680-a5fd-b8e602f9fcca",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered faceted prismatic focus crystal with a small arcane lens core, cyan magenta violet and gold spectral facets, sharp clean edges and a contained X-shaped refraction aura, dark fantasy D&D pixel art seen from above, isolated game VFX prop, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the faceted prism centered with stable proportions; the crystal unfolds and rotates slightly, thin cyan and magenta refracted beams extend into a clean X, three small focus points flash in sequence for per-victim hits, then the prism fractures into a controlled rainbow starburst and reforms; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "prism_focus_f00.png",
+      "bytes": 18162,
+      "url_kind": "template",
+      "encoded_sha256": "c1356e87e66d122c186ace1e3b76a8a1e1b76823c4982f02b7bbec4f027f55da",
+      "pixel_sha256": "3736cccce17dfc51f3105a7396295071b6a64dcadfcd8c3d0427096d3dfd0af6"
+    },
+    {
+      "file": "prism_focus_f01.png",
+      "bytes": 29252,
+      "url_kind": "template",
+      "encoded_sha256": "56a2473b0571bf21b8d955672227b5abec487ab7840847b4dedeff0b3317e8a4",
+      "pixel_sha256": "c81b635e573f63205745990dbf39e7424aadb2d4bc3c75e84ee07db727953ac9"
+    },
+    {
+      "file": "prism_focus_f02.png",
+      "bytes": 25243,
+      "url_kind": "template",
+      "encoded_sha256": "728c47703f167aa0b50e8edbd749e06b0dfdc5481d2c48f9c40b1f6d225669c9",
+      "pixel_sha256": "74124b2a00ccace20805ee12900c9206af16f7512cf03f05cb83e59fea9fffa2"
+    },
+    {
+      "file": "prism_focus_f03.png",
+      "bytes": 30396,
+      "url_kind": "template",
+      "encoded_sha256": "959ee303ca99a08d9a05f0ba3fd984ba2fc4b132dfdc71260476fbc32331952b",
+      "pixel_sha256": "ac1600647734cd1e05ae280d3dec3c90e83adc331697591ee7f01e48f679048d"
+    },
+    {
+      "file": "prism_focus_f04.png",
+      "bytes": 28889,
+      "url_kind": "template",
+      "encoded_sha256": "cfd636cd45c04d042e49d41f5601bce0707ff792b939314fc3cd32d1bafef99c",
+      "pixel_sha256": "53b75f5550833d9e891a6f95db1c823bdb05540f1b91eb5217ccdd2b0b02941e"
+    },
+    {
+      "file": "prism_focus_f05.png",
+      "bytes": 24374,
+      "url_kind": "template",
+      "encoded_sha256": "ca117745224f9c475d35378c461ba84254c58c451d780d627e1eabf2c5c5d5f8",
+      "pixel_sha256": "d5e073445d2f3c66153ad100b60680f1ed9fc049e2d9f0a57f08e59f497ea516"
+    },
+    {
+      "file": "prism_focus_f06.png",
+      "bytes": 24800,
+      "url_kind": "template",
+      "encoded_sha256": "fc2b953a52b8e0bf290b955004da9228e43396ccd6148474b5160ae090685172",
+      "pixel_sha256": "213cfb1d831bee59d30746837a49478c2630eff348ed402294c97d239c077657"
+    },
+    {
+      "file": "prism_focus_f07.png",
+      "bytes": 28121,
+      "url_kind": "template",
+      "encoded_sha256": "48e248eb8a3d697c63bba494bdde6f45f52e07022d1660a74175981e9e945455",
+      "pixel_sha256": "1065051d4dadb0943f97c8703bbe7044020553e99893078000a66fbb432d0589"
+    },
+    {
+      "file": "prism_focus_f08.png",
+      "bytes": 25572,
+      "url_kind": "template",
+      "encoded_sha256": "df286459d25537d1f9af6f237a5cf448dd3cbd29804dc1db1c33dfc433656114",
+      "pixel_sha256": "70bf3320d9a3a84b915b6ac67204c51f1aae24117be7703641028f7abbe931c8"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

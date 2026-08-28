@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T12:54:13Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1f65c1eb-132e-43d9-853c-9478cfaa223d",
+    "pixel_lab_animation_group_id": "466c64a9-7576-43f8-9946-09a0db946abc",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered colossal molten meteor core descending through a small rune shadow, ember tail and cracked volcanic shell, deep crimson orange and gold fire with a subtle violet gravity halo, dark fantasy D&D pixel art seen from above, isolated impact VFX prop, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the meteor core centered with stable proportions; a circular rune telegraph grows first, the meteor drops with a bright ember trail, the core slams into the target with a strong per-victim impact burst, then a pulsing molten crater and a few ember shards linger before contracting; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "meteor_core_f00.png",
+      "bytes": 32301,
+      "url_kind": "template",
+      "encoded_sha256": "1dfe77944db79c4813275fe2e99d2d137f61c504f4174a1f316c221247b29f01",
+      "pixel_sha256": "5c3d62fb06181d1a7797c019ff0e7635cee935f17480689ea38af54116a6cc78"
+    },
+    {
+      "file": "meteor_core_f01.png",
+      "bytes": 40884,
+      "url_kind": "template",
+      "encoded_sha256": "ca3dac055379dea6f3fb20387e8faab4c925ed06873095a359b1de1d41b1696b",
+      "pixel_sha256": "4fde6436db83cf94cb2269ab3b48018142a0e3de1672a097d9b1f1491b53153d"
+    },
+    {
+      "file": "meteor_core_f02.png",
+      "bytes": 37611,
+      "url_kind": "template",
+      "encoded_sha256": "b70273c31683524ff9a678d90a9e3c1e96a1e1a5a373978cfc4b8caffa133de9",
+      "pixel_sha256": "3b6c9c3d9932a4f352a27778714f5219021467eed6452c3e275dbc8bd7501ced"
+    },
+    {
+      "file": "meteor_core_f03.png",
+      "bytes": 35347,
+      "url_kind": "template",
+      "encoded_sha256": "eb19514e713f376aca0d54ab92950a7ac4bcf4d85028c9d4d5a77307a02d052d",
+      "pixel_sha256": "fa8f7e0303e614adbc2fef89d39aa7eeefad9993190354f64f7e662fc1f0ed3a"
+    },
+    {
+      "file": "meteor_core_f04.png",
+      "bytes": 34596,
+      "url_kind": "template",
+      "encoded_sha256": "f892c7ffb3747dbc75a67ecf25879c083c7b5c3bc8ded9d119ab5188356c362f",
+      "pixel_sha256": "a0058abcdec170a93ef53849660d3c2cbe76cbf22cba08af225e561639b7c0ba"
+    },
+    {
+      "file": "meteor_core_f05.png",
+      "bytes": 33781,
+      "url_kind": "template",
+      "encoded_sha256": "a313365e5e5f8ceee312b497ee35085e68ba23c8d2c2bbeed4c85d2144167a3f",
+      "pixel_sha256": "74e637b6a2b1f7110ae730eee36935dc756b08dd7fbbd1822a235d08804a1fc7"
+    },
+    {
+      "file": "meteor_core_f06.png",
+      "bytes": 29998,
+      "url_kind": "template",
+      "encoded_sha256": "af9aeb5a7e7f6553d114396927f53bc6ca58671668eefd4bc2846ef770849ef6",
+      "pixel_sha256": "feebd968908b8fb67f1c45902aeafabdd8e8922b93d571524dbbd7ca1ceb9963"
+    },
+    {
+      "file": "meteor_core_f07.png",
+      "bytes": 31732,
+      "url_kind": "template",
+      "encoded_sha256": "7cb357002050b22f95757f33e88c5e3535808db9fa794eabcdc6c30852eb6751",
+      "pixel_sha256": "62b96b9a7eaabe2a02d1eab45b13bf51a53c6202174f8a963117ce262a38496f"
+    },
+    {
+      "file": "meteor_core_f08.png",
+      "bytes": 28918,
+      "url_kind": "template",
+      "encoded_sha256": "31f66ee3b4206f4f2c9e1e7131279758dba7df6462121452b6a39d83048239d6",
+      "pixel_sha256": "aa9380eb2fb5b21823b26547b667c1382671f1dcecbe7a3019cf8fe2697c1e98"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
