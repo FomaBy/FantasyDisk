@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:18:15Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "ad97b62e-fa4e-4938-8199-75fe4b4da0ba",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single emerald poison pool with a pale healing spiral at its center, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same emerald poison pool stays centered with stable ring silhouette and palette; the outer toxic rim expands and contracts while the white healing spiral counter-rotates and pulses, producing clear measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "restore_potion_poison_pool_f00.png",
+      "bytes": 33838,
+      "url_kind": "template",
+      "encoded_sha256": "721c38ec1ac72d0709cbb8e898f6c9585289b9accfd7f542d99e7396c3f396f0",
+      "pixel_sha256": "2d6e8a2b953f3ac767c14c5d92725dd07a0d9e0c00eb1374f203f448c6ece190"
+    },
+    {
+      "file": "restore_potion_poison_pool_f01.png",
+      "bytes": 39016,
+      "url_kind": "template",
+      "encoded_sha256": "d96c458930fc768e64c68f4513b7d7241d092331776b831ae8c6e0d36c6cfa7e",
+      "pixel_sha256": "f2ec710ddbdf498425802dbebad7ed4edb2a53126b8c030d3e9c5e900cb69533"
+    },
+    {
+      "file": "restore_potion_poison_pool_f02.png",
+      "bytes": 36061,
+      "url_kind": "template",
+      "encoded_sha256": "78eff2afa42b8643e7c6ab1312a3068afbf7f86bae1a03a34d3fb1b12dc1ceaa",
+      "pixel_sha256": "2bb5682454962a80685e9fbd115a0c77dad777ca0262c1d56ba74f48857d3102"
+    },
+    {
+      "file": "restore_potion_poison_pool_f03.png",
+      "bytes": 36956,
+      "url_kind": "template",
+      "encoded_sha256": "9f546862fbba43f78bdac48ac408197ecae0e426882cb7bace9a0f751cf308bb",
+      "pixel_sha256": "0d1f635aca52b8323e31772fba5da8207874538d39ae1714087851244556fb24"
+    },
+    {
+      "file": "restore_potion_poison_pool_f04.png",
+      "bytes": 34680,
+      "url_kind": "template",
+      "encoded_sha256": "4203de4bdbe8b5afaa52ee552e02e54d7f38f39c30e4d0be1dd6c71176b92e41",
+      "pixel_sha256": "3546f3a53bc1412a6d12fcb527662cf068ee1dc635087370fa07cb8f6574f664"
+    },
+    {
+      "file": "restore_potion_poison_pool_f05.png",
+      "bytes": 37818,
+      "url_kind": "template",
+      "encoded_sha256": "0addcee801d43545816aa3f99049d24c383929064f264c7f155afebdd0fc2efc",
+      "pixel_sha256": "7a5d0c8f4de101bf7ad9ac866497482fbfc4e3c3337873e4afb9ba884319d117"
+    },
+    {
+      "file": "restore_potion_poison_pool_f06.png",
+      "bytes": 36369,
+      "url_kind": "template",
+      "encoded_sha256": "c69da8751dcbc718fbd3ca8d72170cc6dcdc55a61f1ed36c682f48e7046a32a9",
+      "pixel_sha256": "c50eb7bd009856f6e27e8881e9a60fe18cd42022d0b5998b961cd635a04ebe95"
+    },
+    {
+      "file": "restore_potion_poison_pool_f07.png",
+      "bytes": 37219,
+      "url_kind": "template",
+      "encoded_sha256": "5855ff228f20a21633b5a4b3db6a1e135537a213377d1aa044a86b4eef682204",
+      "pixel_sha256": "650f49b3e3a495846a537687226b4ada51de5f618113d285fc7a8713bbc82b88"
+    },
+    {
+      "file": "restore_potion_poison_pool_f08.png",
+      "bytes": 35097,
+      "url_kind": "template",
+      "encoded_sha256": "2645588ad521abe87f2e9cbe5a0cf921d3925d5f8adeb63aaa4e7f040283407a",
+      "pixel_sha256": "35da01bfe46574c8a83660c5398150c579c8a5b6066c1e5323cb2d278fa3fd92"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

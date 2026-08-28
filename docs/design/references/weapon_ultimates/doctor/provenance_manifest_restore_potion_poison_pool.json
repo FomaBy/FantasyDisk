@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "restore_potion",
+  "weapon": "doctor/restore_potion",
+  "effect_id": "poison_pool",
+  "effect_role": "signature",
+  "generated_at": "2026-08-28T03:18:15Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "ad97b62e-fa4e-4938-8199-75fe4b4da0ba",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single emerald poison pool with a pale healing spiral at its center, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "ae4ccc64-24ff-4317-a74e-9ed7e65483bd",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same emerald poison pool stays centered with stable ring silhouette and palette; the outer toxic rim expands and contracts while the white healing spiral counter-rotates and pulses, producing clear measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/restore_potion/poison_pool",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_00.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_01.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_02.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_03.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_04.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_05.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_06.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_07.png",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_00.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_01.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_02.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_03.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_04.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_05.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_06.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_07.png.import",
+      "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": true,
+    "fps": 12
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_00.png",
+      "bytes": 33838,
+      "source_encoded_sha256": "721c38ec1ac72d0709cbb8e898f6c9585289b9accfd7f542d99e7396c3f396f0",
+      "source_pixel_sha256": "2d6e8a2b953f3ac767c14c5d92725dd07a0d9e0c00eb1374f203f448c6ece190",
+      "runtime_encoded_sha256": "721c38ec1ac72d0709cbb8e898f6c9585289b9accfd7f542d99e7396c3f396f0",
+      "runtime_pixel_sha256": "2d6e8a2b953f3ac767c14c5d92725dd07a0d9e0c00eb1374f203f448c6ece190",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        15,
+        27,
+        238,
+        231
+      ],
+      "visible_pixels": 34903,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_01.png",
+      "bytes": 39016,
+      "source_encoded_sha256": "d96c458930fc768e64c68f4513b7d7241d092331776b831ae8c6e0d36c6cfa7e",
+      "source_pixel_sha256": "f2ec710ddbdf498425802dbebad7ed4edb2a53126b8c030d3e9c5e900cb69533",
+      "runtime_encoded_sha256": "d96c458930fc768e64c68f4513b7d7241d092331776b831ae8c6e0d36c6cfa7e",
+      "runtime_pixel_sha256": "f2ec710ddbdf498425802dbebad7ed4edb2a53126b8c030d3e9c5e900cb69533",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        16,
+        24,
+        237,
+        233
+      ],
+      "visible_pixels": 34632,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18382
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_02.png",
+      "bytes": 36061,
+      "source_encoded_sha256": "78eff2afa42b8643e7c6ab1312a3068afbf7f86bae1a03a34d3fb1b12dc1ceaa",
+      "source_pixel_sha256": "2bb5682454962a80685e9fbd115a0c77dad777ca0262c1d56ba74f48857d3102",
+      "runtime_encoded_sha256": "78eff2afa42b8643e7c6ab1312a3068afbf7f86bae1a03a34d3fb1b12dc1ceaa",
+      "runtime_pixel_sha256": "2bb5682454962a80685e9fbd115a0c77dad777ca0262c1d56ba74f48857d3102",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        18,
+        23,
+        236,
+        232
+      ],
+      "visible_pixels": 34440,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18220
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_03.png",
+      "bytes": 36956,
+      "source_encoded_sha256": "9f546862fbba43f78bdac48ac408197ecae0e426882cb7bace9a0f751cf308bb",
+      "source_pixel_sha256": "0d1f635aca52b8323e31772fba5da8207874538d39ae1714087851244556fb24",
+      "runtime_encoded_sha256": "9f546862fbba43f78bdac48ac408197ecae0e426882cb7bace9a0f751cf308bb",
+      "runtime_pixel_sha256": "0d1f635aca52b8323e31772fba5da8207874538d39ae1714087851244556fb24",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        20,
+        24,
+        232,
+        231
+      ],
+      "visible_pixels": 34238,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18253
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_04.png",
+      "bytes": 34680,
+      "source_encoded_sha256": "4203de4bdbe8b5afaa52ee552e02e54d7f38f39c30e4d0be1dd6c71176b92e41",
+      "source_pixel_sha256": "3546f3a53bc1412a6d12fcb527662cf068ee1dc635087370fa07cb8f6574f664",
+      "runtime_encoded_sha256": "4203de4bdbe8b5afaa52ee552e02e54d7f38f39c30e4d0be1dd6c71176b92e41",
+      "runtime_pixel_sha256": "3546f3a53bc1412a6d12fcb527662cf068ee1dc635087370fa07cb8f6574f664",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        23,
+        24,
+        230,
+        234
+      ],
+      "visible_pixels": 34066,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17906
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_05.png",
+      "bytes": 37818,
+      "source_encoded_sha256": "0addcee801d43545816aa3f99049d24c383929064f264c7f155afebdd0fc2efc",
+      "source_pixel_sha256": "7a5d0c8f4de101bf7ad9ac866497482fbfc4e3c3337873e4afb9ba884319d117",
+      "runtime_encoded_sha256": "0addcee801d43545816aa3f99049d24c383929064f264c7f155afebdd0fc2efc",
+      "runtime_pixel_sha256": "7a5d0c8f4de101bf7ad9ac866497482fbfc4e3c3337873e4afb9ba884319d117",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        23,
+        22,
+        229,
+        236
+      ],
+      "visible_pixels": 34044,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18251
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_06.png",
+      "bytes": 36369,
+      "source_encoded_sha256": "c69da8751dcbc718fbd3ca8d72170cc6dcdc55a61f1ed36c682f48e7046a32a9",
+      "source_pixel_sha256": "c50eb7bd009856f6e27e8881e9a60fe18cd42022d0b5998b961cd635a04ebe95",
+      "runtime_encoded_sha256": "c69da8751dcbc718fbd3ca8d72170cc6dcdc55a61f1ed36c682f48e7046a32a9",
+      "runtime_pixel_sha256": "c50eb7bd009856f6e27e8881e9a60fe18cd42022d0b5998b961cd635a04ebe95",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        21,
+        21,
+        231,
+        238
+      ],
+      "visible_pixels": 34033,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18094
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_07.png",
+      "bytes": 37219,
+      "source_encoded_sha256": "5855ff228f20a21633b5a4b3db6a1e135537a213377d1aa044a86b4eef682204",
+      "source_pixel_sha256": "650f49b3e3a495846a537687226b4ada51de5f618113d285fc7a8713bbc82b88",
+      "runtime_encoded_sha256": "5855ff228f20a21633b5a4b3db6a1e135537a213377d1aa044a86b4eef682204",
+      "runtime_pixel_sha256": "650f49b3e3a495846a537687226b4ada51de5f618113d285fc7a8713bbc82b88",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        21,
+        23,
+        228,
+        234
+      ],
+      "visible_pixels": 33908,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17673
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool/restore_potion_poison_pool_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_08.png",
+      "bytes": 35097,
+      "source_encoded_sha256": "2645588ad521abe87f2e9cbe5a0cf921d3925d5f8adeb63aaa4e7f040283407a",
+      "source_pixel_sha256": "35da01bfe46574c8a83660c5398150c579c8a5b6066c1e5323cb2d278fa3fd92",
+      "runtime_encoded_sha256": "2645588ad521abe87f2e9cbe5a0cf921d3925d5f8adeb63aaa4e7f040283407a",
+      "runtime_pixel_sha256": "35da01bfe46574c8a83660c5398150c579c8a5b6066c1e5323cb2d278fa3fd92",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        23,
+        27,
+        232,
+        228
+      ],
+      "visible_pixels": 33877,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 19288
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 17673,
+    "consecutive_changed_pixels_max": 19288,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:27:52Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "493d5f63-e522-44f6-8ae0-e9883bf888ad",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single oversized black-green medical syringe with oxidized metal, toxic emerald fluid and a faint plague sigil glow, dark fantasy D&D pixel art, top-down isolated object, centered on transparent background, no hands, no character, no extra props, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same plague syringe keeps identical silhouette, scale and centered position in every frame; toxic fluid sloshes, the needle glints and black-green plague energy pulses along the barrel with clear measurable motion each frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "plague_syringe_cast_flash_f00.png",
+      "bytes": 25299,
+      "url_kind": "template",
+      "encoded_sha256": "a3e43ac92084b203892e7f989f1cd7fb28faa24a8d6763bbf57d9990c8eba6fe",
+      "pixel_sha256": "03090253b0e5f9bc278c0de2b68310a2041176f28e14034b034a62791c31b02e"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f01.png",
+      "bytes": 23429,
+      "url_kind": "template",
+      "encoded_sha256": "c367feddb99842e4687cbb3ced510876dcf65935d2d8d161c56ea6d160c24b6b",
+      "pixel_sha256": "3189df4a7b7a989addf723daa924d04936371fef54b28497af5021b80b3950fa"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f02.png",
+      "bytes": 25239,
+      "url_kind": "template",
+      "encoded_sha256": "b3b49eb5ecbef6825f50641cbe9ce39a2e9111a1f2b159602dc1452041261a8a",
+      "pixel_sha256": "7727f693000e916eab4b3c40b3e16ca6e4e969a75772e05553b1e8ce683d22b7"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f03.png",
+      "bytes": 27757,
+      "url_kind": "template",
+      "encoded_sha256": "6e6fb6c6daff3cc04164d353848b629834dc0ebc7992f491be2dc066d0d9ed0c",
+      "pixel_sha256": "8824bc859d6d34f54a72b861d3e59f8e36db95f96149b8b41791637b9378d1f1"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f04.png",
+      "bytes": 26916,
+      "url_kind": "template",
+      "encoded_sha256": "c39a129b1e56f0fa7545dda3c5d96714307f3e2497cff3eb73c1e382b72abed9",
+      "pixel_sha256": "84c4a6c374044c55ec7818b52562808316aeb18e8bdc52c534f8a23c1d3c2844"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f05.png",
+      "bytes": 25983,
+      "url_kind": "template",
+      "encoded_sha256": "8d81c4285c451c0f7743373191cd488eb972548403cd653c707820e016f3c2cc",
+      "pixel_sha256": "334bbf3e683535d747fa163288a468b75c0c31cb2c1a24e41b92fb2aba0219b6"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f06.png",
+      "bytes": 25739,
+      "url_kind": "template",
+      "encoded_sha256": "5d781f8869dd90b539c8d215f473fe11e1b03f0cdccca8f3d678a14496c1bdeb",
+      "pixel_sha256": "7329fc8d359eba4d0754b18feed1922228f8c9af5aba44b3c77df90de4aa9f96"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f07.png",
+      "bytes": 25224,
+      "url_kind": "template",
+      "encoded_sha256": "18276ae638b3bc2b5273eea42aceec86327eb31375336e3672f59d4d3fc7d1d5",
+      "pixel_sha256": "1cddc20b7f63f9f215e33497fd6bd169163d4ab35b05a3843b7488c194a7cfaf"
+    },
+    {
+      "file": "plague_syringe_cast_flash_f08.png",
+      "bytes": 24912,
+      "url_kind": "template",
+      "encoded_sha256": "de780317501b41afd1fbd3eafa8530c2336375498402886a4f08d9579c9ca393",
+      "pixel_sha256": "7cbb0f8a6100a391ce7f4aec7f898562bd0ee903280e7c92c067eafa619850aa"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

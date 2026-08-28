@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:36:57Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "eefb1197-7e4d-470e-a43d-f656493b4969",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single black-green plague victim impact burst with branching veins, toxic emerald sparks and a stylized plague-mask vapor puff, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same victim impact stays centered with stable palette; a compact black-green vascular bloom expands sharply from a patient-zero core, toxic sparks snap outward, a small mask vapor puff peaks and recedes, with clear measurable motion every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "plague_syringe_victim_impact_f00.png",
+      "bytes": 31829,
+      "url_kind": "template",
+      "encoded_sha256": "ba92585d56d7be80d39f1277baa6ba5b3639c0c6e8dd958c82f9c2e00084d0c7",
+      "pixel_sha256": "40aff1df7b9571da2160db0a4c813dac6138820efd10806759ae92b1b629a218"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f01.png",
+      "bytes": 41967,
+      "url_kind": "template",
+      "encoded_sha256": "95879f1d0fe285ee3a39ada18c00e1ba7fe14def6c871b931a151c7411274703",
+      "pixel_sha256": "ea48d283868eb1f0dfb5e83c3a7d94deacc85b1946196f2cde3a8204519ea9d9"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f02.png",
+      "bytes": 42670,
+      "url_kind": "template",
+      "encoded_sha256": "eebefa2818d46e0ed96b509d26ba91e9c9c17553ed9606c9761cef60179ba920",
+      "pixel_sha256": "1946d97cbe7b7c9ffb681789d4006742e0b39caf9ffc1e23c2862a3b54b971b2"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f03.png",
+      "bytes": 43671,
+      "url_kind": "template",
+      "encoded_sha256": "9b7ea8e3bd8b1f712f63508a43272015fd011d8e3ffdb99e65b5bc957421adc9",
+      "pixel_sha256": "970f83e57c38120333ff785bb710aea417332dd1cb47c57c1cc2446ebccae111"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f04.png",
+      "bytes": 42240,
+      "url_kind": "template",
+      "encoded_sha256": "f204e67c772a280615bb807fe982ca269d9763f68ae7cf328e15895c1ee3ae3d",
+      "pixel_sha256": "a1972133ef7d396aa32ecb91086f60e1d2a7d641a4e81990201c7f90f50bffe1"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f05.png",
+      "bytes": 43301,
+      "url_kind": "template",
+      "encoded_sha256": "cb08f15b4ad9018cf0265b374118076992db74cb515a28904a56072639172f8c",
+      "pixel_sha256": "c705cfa458fdb404a864900788288e3e6e1bbbce9fb52a6f5f13f5f0753413dd"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f06.png",
+      "bytes": 39813,
+      "url_kind": "template",
+      "encoded_sha256": "69733118a3b8e8abc4ae0415e0ae77bed29d3c62b8e56973d3028d22e02c0e54",
+      "pixel_sha256": "db1217515cc947049e737d751c3f576f7b7bf7f89237b289b0c0f562a6fb2973"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f07.png",
+      "bytes": 41986,
+      "url_kind": "template",
+      "encoded_sha256": "e9fc808f3829ccc06d22ad587c997e8d12e0e7bf8812d92313160e96dd50fc2c",
+      "pixel_sha256": "dfbf1ef3d2d536ba3d918f8bcb27293765ef4342fd53cff0284aa47ea47e1a83"
+    },
+    {
+      "file": "plague_syringe_victim_impact_f08.png",
+      "bytes": 40443,
+      "url_kind": "template",
+      "encoded_sha256": "5f244eb4d7e24ad6916ef5d3210d774900805df07400fa7dc42dbb4b120d5305",
+      "pixel_sha256": "f0a194716df5f8854a680a41461b81bff0b68b9b061e45944232493199c6d794"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
