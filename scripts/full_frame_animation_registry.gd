@@ -22,12 +22,23 @@ const DIRECTION_SNAP_EPSILON := 0.001
 # FAN-3638: per-actor configs live in data/animation/<kind>/<actor_id>.json so
 # parallel actor tasks write disjoint files; this facade scans the catalog once
 # at class load and rebuilds the same table the old inline const declared.
-# JSON schema per actor: frames (res:// path), scale/position ({"x","y"}),
-# source_faces_left, optional explicit_eight_directions /
-# explicit_horizontal_directions, optional provenance (free-form history note,
-# dropped on load).
+# JSON schema per actor: frames (res:// path), scale/position ({"x","y"} numbers),
+# source_faces_left (bool), optional explicit_eight_directions /
+# explicit_horizontal_directions (bool), optional provenance (free-form history
+# note, dropped on load).
+#
+# FAN-3669 (rework of FAN-3638/FAN-3660, QA-rejected d3ddb939): a shard that
+# fails schema validation — malformed JSON, a missing/invalid required field,
+# or a canonical identity (case-insensitive filename stem) already used by
+# another shard in the same kind directory — is a fail-closed rejection: the
+# actor is EXCLUDED from the table (never admitted half-populated) and the
+# reason is logged via push_warning. An excluded actor falls through the
+# pre-existing safe-fallback contract (registry_config returns {}, callers
+# treat that as "no full-frame visual") exactly like an unregistered actor —
+# it never surfaces as a partially-valid entry.
 const DATA_ROOT := "res://data/animation"
 const ENTITY_KINDS := ["ally", "enemy", "elite", "boss", "hero"]
+const REQUIRED_NUMERIC_VECTOR_FIELDS := ["x", "y"]
 
 static var FULL_FRAME_SPRITEFRAMES: Dictionary = _load_registry()
 
@@ -39,32 +50,77 @@ static func _load_registry() -> Dictionary:
 	return registry
 
 
-static func _load_kind(entity_kind: String) -> Dictionary:
-	var table := {}
-	var directory_path := "%s/%s" % [DATA_ROOT, entity_kind]
+static func _load_kind(entity_kind: String, data_root := DATA_ROOT) -> Dictionary:
+	var directory_path := "%s/%s" % [data_root, entity_kind]
 	if DirAccess.open(directory_path) == null:
-		return table
+		return {}
 	var file_names := DirAccess.get_files_at(directory_path)
 	file_names.sort()
-	for file_name in file_names:
+	return _load_shards(entity_kind, directory_path, file_names)
+
+
+# Split out from _load_kind so tests can drive the validation/dedup logic with
+# an explicit file-name list — a real duplicate-identity fixture (two files
+# whose names differ only by case) cannot exist on a case-preserving but
+# case-INsensitive filesystem such as default macOS/APFS, which silently
+# collapses both writes into one file.
+static func _load_shards(entity_kind: String, directory_path: String, file_names: Array) -> Dictionary:
+	var table := {}
+	var seen_canonical_ids := {}
+	for file_name_variant in file_names:
+		var file_name := str(file_name_variant)
 		if not file_name.ends_with(".json"):
+			continue
+		var actor_id := file_name.trim_suffix(".json")
+		var where := "%s/%s" % [entity_kind, file_name]
+		var canonical_id := actor_id.to_lower()
+		if seen_canonical_ids.has(canonical_id):
+			var prior_where: String = seen_canonical_ids[canonical_id]
+			push_warning("full_frame_animation_registry: duplicate actor identity '%s' — %s conflicts with already-loaded %s; both excluded (safe fallback)." % [canonical_id, where, prior_where])
+			for prior_actor_id in table.keys():
+				if str(prior_actor_id).to_lower() == canonical_id:
+					table.erase(prior_actor_id)
+					break
 			continue
 		var parsed = JSON.parse_string(
 			FileAccess.get_file_as_string("%s/%s" % [directory_path, file_name])
 		)
 		if not parsed is Dictionary:
-			push_error("full_frame_animation_registry: invalid actor config %s/%s" % [entity_kind, file_name])
+			push_warning("full_frame_animation_registry: malformed JSON in %s — actor excluded (safe fallback)." % where)
 			continue
-		table[file_name.trim_suffix(".json")] = _entry_from_document(parsed as Dictionary)
+		var entry := _entry_from_document(parsed as Dictionary, where)
+		if entry.is_empty():
+			continue
+		seen_canonical_ids[canonical_id] = where
+		table[actor_id] = entry
 	return table
 
 
-static func _entry_from_document(document: Dictionary) -> Dictionary:
+# Returns {} when the document fails schema validation — callers must treat an
+# empty result as "reject this shard", never as "admit it with empty/default
+# values" (that was the FAN-3660 QA-rejected bug: _entry_from_document({})
+# silently produced a usable-looking entry).
+static func _entry_from_document(document: Dictionary, where: String) -> Dictionary:
+	var frames_path = document.get("frames")
+	if not (frames_path is String) or (frames_path as String).is_empty() or not (frames_path as String).begins_with("res://"):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid 'frames' path — actor excluded (safe fallback)." % where)
+		return {}
+	var scale: Variant = _vector2_from_document(document.get("scale"), where, "scale")
+	var position: Variant = _vector2_from_document(document.get("position"), where, "position")
+	if scale == null or position == null:
+		return {}
+	if not (document.get("source_faces_left") is bool):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid 'source_faces_left' flag — actor excluded (safe fallback)." % where)
+		return {}
+	for flag in ["explicit_eight_directions", "explicit_horizontal_directions"]:
+		if document.has(flag) and not (document.get(flag) is bool):
+			push_warning("full_frame_animation_registry: %s has a non-bool '%s' flag — actor excluded (safe fallback)." % [where, flag])
+			return {}
 	var entry := {
-		"frames": str(document.get("frames", "")),
-		"scale": _vector2_from_document(document.get("scale")),
-		"position": _vector2_from_document(document.get("position")),
-		"source_faces_left": bool(document.get("source_faces_left", true)),
+		"frames": frames_path,
+		"scale": scale,
+		"position": position,
+		"source_faces_left": document.get("source_faces_left"),
 	}
 	for flag in ["explicit_eight_directions", "explicit_horizontal_directions"]:
 		if bool(document.get(flag, false)):
@@ -72,10 +128,19 @@ static func _entry_from_document(document: Dictionary) -> Dictionary:
 	return entry
 
 
-static func _vector2_from_document(value) -> Vector2:
-	if value is Dictionary:
-		return Vector2(float(value.get("x", 0.0)), float(value.get("y", 0.0)))
-	return Vector2.ZERO
+# Returns null (not Vector2.ZERO) on an invalid/missing document so callers can
+# tell "absent transform" apart from "malformed transform admitted as zero".
+static func _vector2_from_document(value, where: String, field_name: String):
+	if not (value is Dictionary):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid '%s' transform — actor excluded (safe fallback)." % [where, field_name])
+		return null
+	for axis in REQUIRED_NUMERIC_VECTOR_FIELDS:
+		var axis_value = (value as Dictionary).get(axis)
+		if not (axis_value is float or axis_value is int):
+			push_warning("full_frame_animation_registry: %s has a non-numeric '%s.%s' — actor excluded (safe fallback)." % [where, field_name, axis])
+			return null
+	return Vector2(float((value as Dictionary).get("x")), float((value as Dictionary).get("y")))
+
 
 const STATE_ALIASES := {
 	"idle": ["idle", "move", "walk"],

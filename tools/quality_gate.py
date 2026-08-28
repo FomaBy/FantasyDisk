@@ -133,6 +133,7 @@ ANIMATION_REGISTRY_TESTS = {
     "animation_smoke_test",
     "full_frame_eight_direction_contract_test",
     "full_frame_registry_integrity_test",
+    "full_frame_registry_shard_validation_test",
 }
 BALANCE_CONTRACT_TESTS = {
     "balance_harness_test",
