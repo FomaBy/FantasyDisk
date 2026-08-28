@@ -82,6 +82,12 @@ static func _load_shards(entity_kind: String, directory_path: String, file_names
 					table.erase(prior_actor_id)
 					break
 			continue
+		# Registered before validation (not after) so an invalid shard that loses
+		# its own entry to schema rejection still claims the canonical identity —
+		# otherwise a later, valid duplicate of the same identity would see no
+		# prior claim and be silently admitted, defeating the dedup check whenever
+		# the invalid shard happened to sort first.
+		seen_canonical_ids[canonical_id] = where
 		var parsed = JSON.parse_string(
 			FileAccess.get_file_as_string("%s/%s" % [directory_path, file_name])
 		)
@@ -91,7 +97,6 @@ static func _load_shards(entity_kind: String, directory_path: String, file_names
 		var entry := _entry_from_document(parsed as Dictionary, where)
 		if entry.is_empty():
 			continue
-		seen_canonical_ids[canonical_id] = where
 		table[actor_id] = entry
 	return table
 
@@ -104,6 +109,12 @@ static func _entry_from_document(document: Dictionary, where: String) -> Diction
 	var frames_path = document.get("frames")
 	if not (frames_path is String) or (frames_path as String).is_empty() or not (frames_path as String).begins_with("res://"):
 		push_warning("full_frame_animation_registry: %s has a missing/invalid 'frames' path — actor excluded (safe fallback)." % where)
+		return {}
+	if not ResourceLoader.exists(frames_path):
+		push_warning("full_frame_animation_registry: %s references a nonexistent 'frames' resource — actor excluded (safe fallback)." % where)
+		return {}
+	if not (ResourceLoader.load(frames_path) is SpriteFrames):
+		push_warning("full_frame_animation_registry: %s references a 'frames' resource that is not SpriteFrames — actor excluded (safe fallback)." % where)
 		return {}
 	var scale: Variant = _vector2_from_document(document.get("scale"), where, "scale")
 	var position: Variant = _vector2_from_document(document.get("position"), where, "position")
