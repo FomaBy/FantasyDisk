@@ -22,6 +22,8 @@ For the compact lifecycle, read `docs/process/ai_agent_memorandum.md`. Load the
 full process reference only when the task needs it:
 
 - delivery/ownership: `docs/process/multica_workflow.md`
+- parallel write-set domains: `docs/process/ownership_map.md`
+  (decision record: `docs/process/adr/ADR-parallel-agent-ownership.md`)
 - PM readiness and canonical dispatcher handoff: `docs/process/pm_workflow.md`
 - Canonical dispatcher authority: `docs/process/dispatcher-authority.md`
 - role boundaries: `docs/process/agent_role_boundaries_and_handoffs.md`
