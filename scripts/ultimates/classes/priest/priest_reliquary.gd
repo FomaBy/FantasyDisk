@@ -5,6 +5,10 @@ const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_reliquary"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_reliquary.tscn"
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
+## Ultimate Direction v2 (FAN-2535): the three visible sanctuary rings reach
+## every live enemy. Rank falloff remains identity shaping, clamped by the
+## corridor-derived per-target floor instead of ending at a radius/count rail.
+
 var ultimate_damage_sink: Callable = Callable()
 var actual_removed_for_tests := 0.0
 
@@ -16,9 +20,8 @@ var _leased_statuses: Array[Dictionary] = []
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
-		"radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"crowd_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"crowd_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"first_ring_at": {"type": "number", "minimum": 0.0},
 		"sanctify_ring_at": {"type": "number", "minimum": 0.0},
 		"pillar_at": {"type": "number", "minimum": 0.0},
@@ -38,8 +41,8 @@ static func execute(activation) -> float:
 		return 0.0
 	var targets: Array = activation.select_targets(
 		activation.origin(),
-		activation.param_float("radius", 470.0),
-		activation.param_int("crowd_cap", 22),
+		INF,
+		0,
 		"nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -129,7 +132,10 @@ func _hit_all(event_prefix: String, amount: float, secondary: bool) -> void:
 
 
 func _crowd_multiplier(index: int) -> float:
-	return pow(_activation.param_float("crowd_falloff", 1.0), float(index))
+	return maxf(
+		pow(_activation.param_float("crowd_falloff", 1.0), float(index)),
+		_activation.param_float("crowd_floor", 0.0)
+	)
 
 
 func _lease_sanctify(target: Node2D) -> void:

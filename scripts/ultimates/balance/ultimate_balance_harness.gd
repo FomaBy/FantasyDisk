@@ -32,7 +32,6 @@ const READY_SEARCH_LIMIT := 24
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 	"elementalist": "awaiting Prism Focus coverage conversion; crowd_cap=18 remains a declared profile rail (FAN-2531 / FAN-2949 ratchet)",
-	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"thief": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -112,7 +111,13 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## orbit. Per-target damage, repair/shield utility, the shared boss cap and
 ## activation-owned cleanup bound outcome. Proven in
 ## `tests/ultimates/mechanics/doctor_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "doctor", "druid", "engineer", "guitarist", "knight", "robot", "sniper"]
+##
+## `priest` (FAN-2535): all three fixed-timeline effects enumerate every live
+## enemy. Reliquary keeps its three-ring rank falloff, Censer keeps its
+## prevention-funded counter, and Chime keeps its interrupt/chain split; their
+## per-target floor clamps replace count/radius reach rails. Proven in
+## `tests/ultimates/mechanics/priest_balance_test.gd` and `priest_live_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "doctor", "druid", "engineer", "guitarist", "knight", "priest", "robot", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,

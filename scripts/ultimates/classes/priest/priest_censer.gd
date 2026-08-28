@@ -4,6 +4,10 @@ const PROFILE_ID := "weapon_ultimate.profile.priest.priest_censer"
 const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_censer"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_censer.tscn"
 
+## Ultimate Direction v2 (FAN-2535): the ward remains a prevention-funded
+## counter, but a funded finish now reaches every live enemy. The visible arc
+## shapes rank falloff; a per-target floor replaces its old radius/count rail.
+
 var ultimate_damage_sink: Callable = Callable()
 var stored_prevented_for_tests := 0.0
 var counter_burst_for_tests := 0.0
@@ -23,9 +27,8 @@ static func parameter_contract() -> Dictionary:
 		"stored_cap": {"type": "number", "minimum": 0.0},
 		"counter_at": {"type": "number", "minimum": 0.0},
 		"counter_damage_cap": {"type": "number", "minimum": 0.0},
-		"counter_radius": {"type": "number", "minimum": 0.0},
-		"counter_target_cap": {"type": "integer", "minimum": 1},
 		"counter_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"counter_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 	}
 
 
@@ -168,8 +171,8 @@ func counter_burst() -> void:
 		return
 	var targets: Array = _activation.select_targets(
 		_activation.origin(),
-		_activation.param_float("counter_radius", 360.0),
-		_activation.param_int("counter_target_cap", 12),
+		INF,
+		0,
 		"nearest"
 	)
 	for index in targets.size():
@@ -178,7 +181,10 @@ func counter_burst() -> void:
 			continue
 		_deal(
 			target,
-			counter_burst_for_tests * pow(_activation.param_float("counter_falloff", 1.0), float(index)),
+			counter_burst_for_tests * maxf(
+				pow(_activation.param_float("counter_falloff", 1.0), float(index)),
+				_activation.param_float("counter_floor", 0.0)
+			),
 			"censer_counter:%d" % target.get_instance_id(),
 			true,
 			{"ultimate_mechanic": "censer_stored_counter", "prevented_damage": stored_prevented_for_tests}
