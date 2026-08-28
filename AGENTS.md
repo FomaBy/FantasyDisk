@@ -56,6 +56,14 @@ Read detailed design references only when the assigned scope needs them:
 
 ## Project gotchas
 
+- Never commit a `.gd` script without its paired `.gd.uid` sidecar in the same
+  commit — a missing sidecar fails `tools/quality_static_guard.py` and turns
+  `dev` red for everyone (FAN-2623, FAN-3535, FAN-3593). Run
+  `bash tools/install_hooks.sh` once per checkout/worktree to install a
+  pre-push hook that runs the guard locally and blocks the push before it
+  reaches CI. The installer never overwrites an existing pre-push hook it
+  didn't create — it refuses with an error telling you to back it up or
+  remove it first, then re-run the installer.
 - Automated Godot runs go through `tools/godot_gate.py`. A normal small gameplay
   change runs only the directly affected suite; use broad quality profiles only
   for release, saves/migrations, networking, payments/secrets/security, or an
