@@ -35,14 +35,14 @@ const FRAMES_BY_CLASS := {
 			{"phase": "recovery", "time": 3.2, "required_nodes": ["Orbit/MoonOne", "ReturnCrescents"]},
 		],
 		"shadow_daggers": [
-			{"phase": "release", "time": 0.5, "required_nodes": ["FreezeMarks", "Afterimages/BackstabOne"]},
-			{"phase": "active", "time": 2.0, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
-			{"phase": "recovery", "time": 5.2, "required_nodes": ["FreezeMarks", "FinalReveal"]},
+			{"phase": "release", "time": 0.8, "required_nodes": ["FreezeMarks", "Afterimages/BackstabOne"]},
+			{"phase": "active", "time": 2.3, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
+			{"phase": "recovery", "time": 3.0, "required_nodes": ["FreezeMarks", "FinalReveal"]},
 		],
 		"venom_wire": [
-			{"phase": "release", "time": 0.7, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
+			{"phase": "release", "time": 0.9, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
 			{"phase": "active", "time": 2.4, "required_nodes": ["HexWeb", "SnapCollapse"]},
-			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
+			{"phase": "recovery", "time": 3.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
 		],
 	},
 	"dark_mage": {

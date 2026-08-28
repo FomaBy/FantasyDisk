@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/assassin/venom_wire/victim_impact/victim_impact_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.assassin.venom_wire"
 const EXECUTOR_ID := "weapon_ultimate.executor.assassin.venom_wire"
@@ -38,6 +40,8 @@ var burst_count_for_tests := 0
 var _activation = null
 var _affected: Dictionary = {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -136,9 +140,11 @@ func cut_pulse(pulse: int) -> void:
 				continue
 			var crossed := hits_by_target[target.get_instance_id()] as Dictionary
 			crossed["crossings"] = int(crossed["crossings"]) + 1
+	var struck: Array[Node2D] = []
 	for target_id in hits_by_target:
 		var entry := hits_by_target[target_id] as Dictionary
 		var target := entry["target"] as Node2D
+		struck.append(target)
 		var cuts := clampi(
 			int(entry["crossings"]), 1, _activation.param_int("max_cuts_per_pulse", 3)
 		)
@@ -154,11 +160,13 @@ func cut_pulse(pulse: int) -> void:
 			{"ultimate_mechanic": "black_web_poison_cut", "cuts": cuts, "pulse": pulse}
 		)
 		_pull_and_poison(target, first_contact)
+	_play_impacts(struck)
 
 
 func toxin_burst() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var struck: Array[Node] = []
 	for target_id in _affected.keys():
 		var target := _affected[target_id] as Node
 		if target == null or not is_instance_valid(target):
@@ -167,6 +175,7 @@ func toxin_burst() -> void:
 		if stacks == null or float(stacks) <= 0.0:
 			continue
 		burst_count_for_tests += 1
+		struck.append(target)
 		var multiplier: float = 1.0 + maxf(float(stacks) - 1.0, 0.0) \
 			* _activation.param_float("stack_bonus", 0.08)
 		_deal(
@@ -176,6 +185,25 @@ func toxin_burst() -> void:
 			false,
 			{"ultimate_mechanic": "black_web_toxin_burst", "poison_stacks": stacks}
 		)
+	_play_impacts(struck)
+
+
+## Per-victim read (FAN-3008): every cut and the closing burst pop their own
+## poison burst on each affected enemy, on top of its white hit flash. The three
+## cut pulses and the burst are separate beats of one activation, so later beats
+## join the running ripple instead of restarting it.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _pull_and_poison(target: Node2D, first_contact: bool) -> void:

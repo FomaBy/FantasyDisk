@@ -1,5 +1,8 @@
 extends Node2D
 
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/assassin/shadow_daggers/victim_impact/victim_impact_spriteframes.tres")
+
 const PROFILE_ID := "weapon_ultimate.profile.assassin.shadow_daggers"
 const EXECUTOR_ID := "weapon_ultimate.executor.assassin.shadow_daggers"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/assassin/shadow_daggers.tscn"
@@ -16,6 +19,7 @@ var _targets: Array = []
 var _leased_player: Node = null
 var _previous_invisibility := 0.0
 var _leased_invisibility := 0.0
+var _impacts: Node2D = null
 
 
 static func parameter_contract() -> Dictionary:
@@ -106,6 +110,7 @@ func backstab(index: int) -> void:
 func reveal() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var struck: Array[Node] = []
 	for index in _targets.size():
 		var target := _targets[index] as Node
 		if target == null or not is_instance_valid(target):
@@ -116,10 +121,25 @@ func reveal() -> void:
 		if stored == null or float(stored) <= 0.0:
 			continue
 		reveal_count_for_tests += 1
+		struck.append(target)
 		_deal(target, float(stored), "reveal:%d" % index, index > 0, {
 			"ultimate_mechanic": "moment_before_death_reveal",
 			"sequence_index": index,
 		})
+	_play_impacts(struck)
+
+
+## Per-victim read (FAN-3008): the simultaneous reveal is where every stored
+## backstab actually lands, so each revealed enemy pops its own shadow burst on
+## top of its white hit flash, staggered outward from the hero. One reveal beat
+## means one ripple — `play` is the whole contract here.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+	_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
 
 
 ## Player already owns the canonical short invisibility gate used by Assassin

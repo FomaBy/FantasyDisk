@@ -58,7 +58,8 @@
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
         "note": "Approved project weapon sprite; anchor web and collapse are composed at runtime."
       }
-    }
+    },
+    "fan3586_note": "FAN-3014 scene wiring: every effect that used to be flat geometry is now a flipbook from the integrated assassin packs (assets/sprites/effects/assassin/<weapon>/<effect>/, FAN-3586 regenerated, FAN-3608 LFS-migrated); the FAN-2541 moon-disc and FAN-2542 dagger frames remain the declared runtime identity"
   },
   "weapons": [
     {
@@ -67,7 +68,7 @@
       "scene_path": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
       "silhouette": "eight silver moon-discs in a compass orbit over a darkened arena",
       "motion_path": "hero cast gleam, tight orbit expands to an arena-wide eight-lane compass sweep, then crescent return stack",
-      "impact_language": "backdrop darkens, eight-way disc launch with first-impact flash and returning crescent cut",
+      "impact_language": "per-victim moon burst on every struck enemy under a darkened arena",
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.8,
@@ -85,14 +86,11 @@
       "performance": {
         "max_visual_nodes": 14,
         "crowd_cap": 24,
-        "max_unique_materials": 16,
-        "max_fullscreen_materials": 2,
-        "material_budget": {
-          "measured_unique_materials": 2,
-          "measured_fullscreen_materials": 1
-        },
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "return_pass_damage_owner": "mechanics FAN-1473"
+        "return_pass_damage_owner": "mechanics FAN-1473",
+        "v2_budget_note": "FAN-3014 rebuild: 13 drawn nodes (backdrop veil, cast-flash windup, eight moon discs, return trail, impact flash) under a 14-node cap; one shared additive CanvasItemMaterial is the whole material budget"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -115,21 +113,26 @@
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
         "measurement": "the backdrop darken layer reaches modulate alpha 0.45 over a 2400x1400 arena rect and the first-impact flash decays from alpha 0.8 to 0 in 0.35s as a one-shot, so translucent presence spans the viewport while the opaque core (orbit plus crescents) stays under 0.30 of a 1152x648 viewport; the flash never repeats (0 Hz) and the single additive flash frame stays under the 0.25 repeating-coverage cap (tests/ultimates/presentation/assassin_ultimate_contact_capture.gd resolutions)"
-      }
+      },
+      "packs_fan3586": [
+        "assets/sprites/effects/assassin/chakrams/cast_flash/cast_flash_spriteframes.tres",
+        "assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres",
+        "assets/sprites/effects/assassin/chakrams/victim_explosion/victim_explosion_spriteframes.tres"
+      ]
     },
     {
       "weapon_id": "shadow_daggers",
       "title": "Мгновение до Смерти",
       "scene_path": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "silhouette": "four black-violet dagger afterimages around frozen marks",
-      "motion_path": "local freeze marks then sequential backstab passes across the target",
-      "impact_language": "simultaneous crimson slash reveal",
+      "silhouette": "four black-violet dagger afterimages around a frozen shadow tornado",
+      "motion_path": "local freeze tornado then sequential backstab passes across the target",
+      "impact_language": "per-victim shadow burst under one crimson slash reveal",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.45,
-        "active": 1.1,
-        "recovery": 4.9,
-        "cancel": 5.8
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 2.8,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.shadow_daggers.windup",
@@ -142,7 +145,10 @@
         "max_visual_nodes": 9,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "marked_damage_owner": "mechanics FAN-1473"
+        "marked_damage_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3014 rebuild: 8 drawn nodes (backdrop veil, shadow tornado, four backstab afterimages, final reveal flash) under a 9-node cap; one shared additive CanvasItemMaterial is the whole material budget"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.14,
@@ -152,7 +158,25 @@
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0002,
         "measurement": "peak drawn coverage 0.138 of a 1152x648 viewport, constant across the timeline because the local desaturation panel is the drawn footprint; its box x=358..793 y=206..441 leaves 206px clear above and 207px below for the HUD bands. Lit effect area (luminance > 0.15) rises 0.0024 -> 0.0089 across windup/release/active, peaks at 0.0288 on the reveal beat t=3.85s and decays to 0.0018 at cleanup t=5.80s; pixels above luminance 0.75 never exceed 0.0002 of the viewport, so there is no full-screen flash"
-      }
+      },
+      "timing_rhythm": "0.70s cast ceremony under the shadow tornado, the backstab passes bite from 1.00s with a 95ms hitstop, run to 2.80s and close on one simultaneous crimson reveal",
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 95,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.shadow_step_reverse_grip",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/shadow_daggers.png",
+        "class_palette_id": "palette.assassin.violet_shadow"
+      },
+      "packs_fan3586": [
+        "assets/sprites/effects/assassin/shadow_daggers/cast_flash/cast_flash_spriteframes.tres",
+        "assets/sprites/effects/assassin/shadow_daggers/tornado/tornado_spriteframes.tres",
+        "assets/sprites/effects/assassin/shadow_daggers/victim_impact/victim_impact_spriteframes.tres"
+      ]
     },
     {
       "weapon_id": "venom_wire",
@@ -160,13 +184,13 @@
       "scene_path": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
       "silhouette": "six needle anchors holding a neon green hexagonal web",
       "motion_path": "six anchors shoot outward then a hex web contracts toward the center",
-      "impact_language": "crossing poison sparks and a hexagonal snap-collapse",
+      "impact_language": "per-victim poison burst under a hexagonal snap-collapse",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.65,
-        "active": 1.2,
-        "recovery": 5.35,
-        "cancel": 6.2
+        "release": 0.85,
+        "active": 1.15,
+        "recovery": 3.25,
+        "cancel": 3.9
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.venom_wire.windup",
@@ -179,8 +203,29 @@
         "max_visual_nodes": 11,
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "toxin_burst_owner": "mechanics FAN-1473"
-      }
+        "toxin_burst_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3014 rebuild: 10 drawn nodes (backdrop veil, six needle anchors, poison-pulse web, snap-collapse reveal) under an 11-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "timing_rhythm": "0.85s cast ceremony while the anchors fly out, the web cuts from 1.15s with a 105ms hitstop, contracts to 3.25s and snaps shut on the toxin burst",
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 105,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.wire_draw_crossed_arms",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/venom_wire.png",
+        "class_palette_id": "palette.assassin.venom_green"
+      },
+      "packs_fan3586": [
+        "assets/sprites/effects/assassin/venom_wire/pulse/pulse_spriteframes.tres",
+        "assets/sprites/effects/assassin/venom_wire/reveal/reveal_spriteframes.tres",
+        "assets/sprites/effects/assassin/venom_wire/victim_impact/victim_impact_spriteframes.tres"
+      ]
     }
   ],
   "evidence": {

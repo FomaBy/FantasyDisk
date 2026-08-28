@@ -1,94 +1,154 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres" id="1_dagger_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/shadow_daggers/tornado/tornado_spriteframes.tres" id="2_tornado"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/shadow_daggers/cast_flash/cast_flash_spriteframes.tres" id="3_cast_flash"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.95, 1, 0.9, 1, 0.92, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_moment_before_death"]
 resource_name = "ultimate"
-length = 5.8
+length = 3.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Afterimages:position")
+tracks/0/path = NodePath("LocalDesaturation:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 3.5, 4.9, 5.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.7, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 22), Vector2(0, 8), Vector2(0, 0), Vector2(0, -10), Vector2(0, 0), Vector2(0, 16)]
+"values": [0.0, 0.62, 0.5, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FreezeMarks:scale")
+tracks/1/path = NodePath("Afterimages:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 3.5, 4.9, 5.8),
+"times": PackedFloat32Array(0, 0.35, 0.7, 2, 2.8, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.12, 0.12), Vector2(0.75, 0.75), Vector2(1, 1), Vector2(1.2, 1.2), Vector2(0.55, 0.55), Vector2(0.08, 0.08)]
+"values": [Vector2(0, 22), Vector2(0, 8), Vector2(0, 0), Vector2(0, -10), Vector2(0, 0), Vector2(0, 16)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FinalReveal:modulate:a")
+tracks/2/path = NodePath("FreezeMarks:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 3.5, 3.85, 4.3, 5.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.35, 0.7, 2, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.42, 0.0]
+"values": [Vector2(0.24, 0.24), Vector2(1.1, 1.1), Vector2(1.5, 1.5), Vector2(1.8, 1.8), Vector2(0.85, 0.85), Vector2(0.16, 0.16)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Afterimages/BackstabOne:frame")
+tracks/3/path = NodePath("FreezeMarks:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 4, 6, 8, 3, 5]
+"times": PackedFloat32Array(0, 0.35, 2.4, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.85, 0.7, 0.0]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Afterimages/BackstabTwo:frame")
+tracks/4/path = NodePath("FreezeMarks:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [2, 3, 4, 6, 8, 1, 5, 7]
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Afterimages/BackstabThree:frame")
+tracks/5/path = NodePath("FinalReveal:modulate:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [4, 5, 6, 8, 1, 3, 7, 0]
+"times": PackedFloat32Array(0, 2, 2.25, 2.7, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.42, 0.0]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("Afterimages/BackstabFour:frame")
+tracks/6/path = NodePath("FinalReveal:frame")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.45, 1.1, 2, 2.9, 3.5, 4.9, 5.8),
+"times": PackedFloat32Array(2, 2.08, 2.16, 2.24, 2.32, 2.4, 2.48, 2.56, 2.64),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Afterimages/BackstabOne:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.2, 1.7, 2, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 4, 6, 8, 3, 5]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Afterimages/BackstabTwo:frame")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.2, 1.7, 2, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [2, 3, 4, 6, 8, 1, 5, 7]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Afterimages/BackstabThree:frame")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.2, 1.7, 2, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 6, 8, 1, 3, 7, 0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Afterimages/BackstabFour:frame")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.2, 1.7, 2, 2.8, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [6, 7, 8, 1, 3, 5, 0, 2]
@@ -99,23 +159,30 @@ _data = {"ultimate": SubResource("Animation_moment_before_death")}
 
 [node name="AssassinShadowDaggersMomentBeforeDeath" type="Node2D"]
 metadata/ultimate_id = "assassin/shadow_daggers"
-metadata/silhouette = "four black-violet dagger afterimages around frozen marks"
-metadata/motion_path = "local freeze marks then sequential backstab passes across the target"
-metadata/impact_language = "simultaneous crimson slash reveal"
+metadata/silhouette = "four black-violet dagger afterimages around a frozen shadow tornado"
+metadata/motion_path = "local freeze tornado then sequential backstab passes across the target"
+metadata/impact_language = "per-victim shadow burst under one crimson slash reveal"
 metadata/max_visual_nodes = 9
 metadata/crowd_cap = 20
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="LocalDesaturation" type="Polygon2D" parent="."]
-color = Color(0.04, 0.03, 0.07, 0.62)
-polygon = PackedVector2Array(-218, -118, 218, -118, 218, 118, -218, 118)
+[node name="LocalDesaturation" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.04, 0.03, 0.07, 0)
+metadata/fullscreen_layer = true
 
-[node name="FreezeMarks" type="Line2D" parent="."]
+[node name="FreezeMarks" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(90, 0, 78, 45, 45, 78, 0, 90, -45, 78, -78, 45, -90, 0, -78, -45, -45, -78, 0, -90, 45, -78, 78, -45, 90, 0)
-width = 7.0
-default_color = Color(0.56, 0.22, 0.96, 0.8)
-closed = true
-antialiased = true
+z_index = 38
+sprite_frames = ExtResource("2_tornado")
+animation = &"shadow_tornado"
+frame = 0
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.56, 0.22, 0.96, 0)
 
 [node name="Afterimages" type="Node2D" parent="."]
 
@@ -159,13 +226,14 @@ rotation = -0.95
 scale = Vector2(0.5, 0.5)
 modulate = Color(0.92, 0.68, 1, 0.92)
 
-[node name="FinalReveal" type="Line2D" parent="."]
+[node name="FinalReveal" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-176, 82, -44, -58, 0, 0, 44, 58, 176, -82, -138, -60, 0, 0, 138, 60)
-width = 17.0
-default_color = Color(1, 0.08, 0.17, 0.94)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 45
+sprite_frames = ExtResource("3_cast_flash")
+animation = &"cast_flash"
+frame = 0
+scale = Vector2(1.4, 1.4)
+modulate = Color(1, 0.28, 0.36, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_moment_before_death")}

@@ -1,49 +1,109 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/venom_wire.png" id="1_wire"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/venom_wire/pulse/pulse_spriteframes.tres" id="2_pulse"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/venom_wire/reveal/reveal_spriteframes.tres" id="3_reveal"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.95, 1, 0.85, 1, 0.9, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_black_web"]
 resource_name = "ultimate"
-length = 6.2
+length = 3.9
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Anchors:scale")
+tracks/0/path = NodePath("ToxinTelegraph:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.65, 1.2, 4.7, 5.35, 6.2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.85, 3.25, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.16, 0.16), Vector2(0.56, 0.56), Vector2(0.8, 0.8), Vector2(1, 1), Vector2(0.42, 0.42), Vector2(0.08, 0.08)]
+"values": [0.0, 0.34, 0.28, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HexWeb:scale")
+tracks/1/path = NodePath("Anchors:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.65, 1.2, 4.7, 5.35, 6.2),
+"times": PackedFloat32Array(0, 0.45, 0.85, 3.25, 3.6, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.12, 0.12), Vector2(0.65, 0.65), Vector2(1, 1), Vector2(1.14, 1.14), Vector2(0.36, 0.36), Vector2(0.05, 0.05)]
+"values": [Vector2(0.16, 0.16), Vector2(0.56, 0.56), Vector2(0.8, 0.8), Vector2(1, 1), Vector2(0.42, 0.42), Vector2(0.08, 0.08)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SnapCollapse:modulate:a")
+tracks/2/path = NodePath("HexWeb:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 4.7, 5.1, 5.6, 6.2),
+"times": PackedFloat32Array(0, 0.45, 0.85, 3.25, 3.6, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.18, 0.18), Vector2(0.95, 0.95), Vector2(1.45, 1.45), Vector2(1.65, 1.65), Vector2(0.52, 0.52), Vector2(0.08, 0.08)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HexWeb:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.45, 3.25, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.84, 0.7, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("HexWeb:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.2, 1.6, 2, 2.4, 2.8, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SnapCollapse:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 3.25, 3.45, 3.7, 3.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.35, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("SnapCollapse:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(3.25, 3.31, 3.37, 3.43, 3.49, 3.55, 3.61, 3.67, 3.73),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_black_web"]
@@ -53,13 +113,19 @@ _data = {"ultimate": SubResource("Animation_black_web")}
 metadata/ultimate_id = "assassin/venom_wire"
 metadata/silhouette = "six needle anchors holding a neon green hexagonal web"
 metadata/motion_path = "six anchors shoot outward then a hex web contracts toward the center"
-metadata/impact_language = "crossing poison sparks and a hexagonal snap-collapse"
+metadata/impact_language = "per-victim poison burst under a hexagonal snap-collapse"
 metadata/max_visual_nodes = 11
 metadata/crowd_cap = 24
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="ToxinTelegraph" type="Polygon2D" parent="."]
-color = Color(0.08, 0.36, 0.04, 0.28)
-polygon = PackedVector2Array(0, -142, 124, -72, 124, 72, 0, 142, -124, 72, -124, -72)
+[node name="ToxinTelegraph" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.08, 0.36, 0.04, 0)
+metadata/fullscreen_layer = true
 
 [node name="Anchors" type="Node2D" parent="."]
 
@@ -110,20 +176,23 @@ rotation = 5.24
 scale = Vector2(0.24, 0.24)
 modulate = Color(0.5, 1, 0.2, 0.88)
 
-[node name="HexWeb" type="Line2D" parent="."]
+[node name="HexWeb" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(0, -142, 124, -72, 124, 72, 0, 142, -124, 72, -124, -72, 0, -142, 0, 142, -124, -72, 124, 72, -124, 72, 124, -72)
-width = 7.0
-default_color = Color(0.28, 1, 0.12, 0.84)
-antialiased = true
+z_index = 38
+sprite_frames = ExtResource("2_pulse")
+animation = &"poison_pulse"
+frame = 0
+scale = Vector2(0.18, 0.18)
+modulate = Color(0.28, 1, 0.12, 0)
 
-[node name="SnapCollapse" type="Line2D" parent="."]
+[node name="SnapCollapse" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-156, 0, 0, 0, 156, 0, 0, -142, 0, 0, 0, 142)
-width = 19.0
-default_color = Color(0.72, 1, 0.28, 0.96)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 45
+sprite_frames = ExtResource("3_reveal")
+animation = &"web_reveal"
+frame = 0
+scale = Vector2(1.7, 1.7)
+modulate = Color(0.72, 1, 0.28, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_black_web")}

@@ -1,10 +1,22 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres" id="1_moon_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/chakrams/cast_flash/cast_flash_spriteframes.tres" id="2_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres" id="3_trail"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.95, 1, 0.85, 1, 0.9, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="Animation" id="Animation_eight_moons"]
 resource_name = "ultimate"
@@ -36,166 +48,202 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("WindupMoon:modulate:a")
+tracks/2/path = NodePath("ImpactFlash:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
+"times": PackedFloat32Array(0.8, 0.84, 0.88, 0.92, 0.96, 1, 1.04, 1.08, 1.12),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("WindupMoon:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.35, 0.8, 1.3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.9, 0.95, 0.0, 0.0]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("WindupMoon:scale")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("WindupMoon:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.8, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0.35, 0.35), Vector2(1.25, 1.25), Vector2(1.25, 1.25)]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("OrbitGuide:modulate:a")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.8, 3, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.6, 0.5, 0.0]
-}
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Orbit:rotation")
+tracks/5/path = NodePath("WindupMoon:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Orbit:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
 "times": PackedFloat32Array(0, 0.8, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.6, 8.2, 9.0]
 }
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Orbit:scale")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Orbit:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
 "times": PackedFloat32Array(0, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.14, 0.14), Vector2(0.85, 0.85), Vector2(1.9, 1.9), Vector2(4.4, 4.4), Vector2(4.0, 4.0), Vector2(0.08, 0.08)]
 }
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("ReturnCrescents:modulate:a")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("ReturnCrescents:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
 "times": PackedFloat32Array(0, 2, 2.6, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.7, 0.0]
 }
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("Orbit/MoonOne:frame")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 3, 7, 2, 6, 1]
-}
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Orbit/MoonTwo:frame")
+tracks/9/path = NodePath("ReturnCrescents:frame")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [1, 2, 4, 8, 3, 7, 2]
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("Orbit/MoonThree:frame")
+tracks/10/path = NodePath("ReturnCrescents:scale")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [2, 3, 5, 0, 4, 8, 3]
+"times": PackedFloat32Array(2, 2.6, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.85, 0.85), Vector2(1.35, 1.35), Vector2(0.5, 0.5)]
 }
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("Orbit/MoonFour:frame")
+tracks/11/path = NodePath("Orbit/MoonOne:frame")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [3, 4, 6, 1, 5, 0, 4]
+"values": [0, 1, 3, 7, 2, 6, 1]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("Orbit/MoonFive:frame")
+tracks/12/path = NodePath("Orbit/MoonTwo:frame")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [4, 5, 7, 2, 6, 1, 5]
+"values": [1, 2, 4, 8, 3, 7, 2]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
 tracks/13/enabled = true
-tracks/13/path = NodePath("Orbit/MoonSix:frame")
+tracks/13/path = NodePath("Orbit/MoonThree:frame")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [5, 6, 8, 3, 7, 2, 6]
+"values": [2, 3, 5, 0, 4, 8, 3]
 }
 tracks/14/type = "value"
 tracks/14/imported = false
 tracks/14/enabled = true
-tracks/14/path = NodePath("Orbit/MoonSeven:frame")
+tracks/14/path = NodePath("Orbit/MoonFour:frame")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [6, 7, 0, 4, 8, 3, 7]
+"values": [3, 4, 6, 1, 5, 0, 4]
 }
 tracks/15/type = "value"
 tracks/15/imported = false
 tracks/15/enabled = true
-tracks/15/path = NodePath("Orbit/MoonEight:frame")
+tracks/15/path = NodePath("Orbit/MoonFive:frame")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 7, 2, 6, 1, 5]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Orbit/MoonSix:frame")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 8, 3, 7, 2, 6]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Orbit/MoonSeven:frame")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 0, 4, 8, 3, 7]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Orbit/MoonEight:frame")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.8, 1.6, 2.4, 3, 3.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -209,29 +257,28 @@ _data = {"ultimate": SubResource("Animation_eight_moons")}
 metadata/ultimate_id = "assassin/chakrams"
 metadata/silhouette = "eight silver moon-discs in a compass orbit over a darkened arena"
 metadata/motion_path = "hero cast gleam, tight orbit expands to an arena-wide eight-lane compass sweep, then crescent return stack"
-metadata/impact_language = "backdrop darkens, eight-way disc launch with first-impact flash and returning crescent cut"
+metadata/impact_language = "per-victim moon burst on every struck enemy under a darkened arena"
 metadata/max_visual_nodes = 14
 metadata/crowd_cap = 24
-metadata/material_budget = {"max_unique_materials": 16, "max_fullscreen_materials": 2}
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="BackdropDarken" type="Polygon2D" parent="."]
-color = Color(0.05, 0.02, 0.1, 1)
-polygon = PackedVector2Array(-1200, -700, 1200, -700, 1200, 700, -1200, 700)
-modulate = Color(1, 1, 1, 0)
+[node name="BackdropDarken" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.05, 0.02, 0.1, 0)
+metadata/fullscreen_layer = true
 
-[node name="WindupMoon" type="Polygon2D" parent="."]
+[node name="WindupMoon" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-color = Color(0.62, 0.36, 1, 0.34)
-polygon = PackedVector2Array(0, -96, 44, -44, 96, 0, 44, 44, 0, 96, -44, 44, -96, 0, -44, -44)
-
-[node name="OrbitGuide" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(96, 0, 83, 48, 48, 83, 0, 96, -48, 83, -83, 48, -96, 0, -83, -48, -48, -83, 0, -96, 48, -83, 83, -48, 96, 0)
-width = 4.0
-default_color = Color(0.64, 0.38, 1, 0.6)
-closed = true
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 40
+sprite_frames = ExtResource("2_cast_flash")
+animation = &"cast_flash"
+frame = 0
+scale = Vector2(0.35, 0.35)
+modulate = Color(0.72, 0.5, 1, 0)
 
 [node name="Orbit" type="Node2D" parent="."]
 
@@ -314,19 +361,23 @@ rotation = 5.49
 scale = Vector2(0.24, 0.24)
 modulate = Color(0.82, 0.65, 1, 0.9)
 
-[node name="ReturnCrescents" type="Line2D" parent="."]
+[node name="ReturnCrescents" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-174, 64, -116, -18, -42, 0, 0, 46, 42, 0, 116, -18, 174, 64)
-width = 15.0
-default_color = Color(0.94, 0.82, 1, 0.92)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+z_index = 40
+sprite_frames = ExtResource("3_trail")
+animation = &"chakram_trail"
+frame = 0
+scale = Vector2(0.85, 0.85)
+modulate = Color(0.94, 0.82, 1, 0)
 
-[node name="ImpactFlash" type="Polygon2D" parent="."]
+[node name="ImpactFlash" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-color = Color(0.78, 0.62, 1, 0.55)
-polygon = PackedVector2Array(-900, -520, 900, -520, 900, 520, -900, 520)
-modulate = Color(1, 1, 1, 0)
+z_index = 45
+sprite_frames = ExtResource("2_cast_flash")
+animation = &"cast_flash"
+frame = 0
+scale = Vector2(1.5, 1.5)
+modulate = Color(0.78, 0.62, 1, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_eight_moons")}

@@ -14,8 +14,9 @@ const REQUIRED_NODES := {
 	"shadow_daggers": ["FreezeMarks", "Afterimages/BackstabOne", "FinalReveal"],
 	"venom_wire": ["Anchors/NeedleOne", "Anchors/NeedleSix", "HexWeb", "SnapCollapse"],
 }
-# FAN-2956: the chakrams pair has left PRESENTATION_V2_MIGRATION_ALLOWLIST, so
-# its package must carry the full v2 envelope, presence and identity contract.
+# FAN-2956 for chakrams, FAN-3014 for the other two: the whole trio has left
+# PRESENTATION_V2_MIGRATION_ALLOWLIST, so every package must carry the full v2
+# envelope, presence and identity contract.
 const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const V2_WEAPON_ID := "chakrams"
 const V2_PRESENCE_FIELDS := {
@@ -24,6 +25,30 @@ const V2_PRESENCE_FIELDS := {
 	"sfx_ducking": true,
 }
 const V2_SILHOUETTE_ASSET := "res://assets/sprites/weapons/chakrams.png"
+# FAN-3014: the flat-geometry read is gone. Each scene's former primitive nodes
+# are now the integrated flipbooks, and the backdrop is a fullscreen gradient
+# layer instead of a screen-wide Polygon2D.
+const BACKDROP_NODES := {
+	"chakrams": "BackdropDarken",
+	"shadow_daggers": "LocalDesaturation",
+	"venom_wire": "ToxinTelegraph",
+}
+const FLIPBOOK_NODES := {
+	"chakrams": ["WindupMoon", "ReturnCrescents", "ImpactFlash"],
+	"shadow_daggers": ["FreezeMarks", "FinalReveal"],
+	"venom_wire": ["HexWeb", "SnapCollapse"],
+}
+const INTEGRATED_PACK_PREFIX := "res://assets/sprites/effects/assassin/"
+const VICTIM_IMPACT_FRAMES := {
+	"chakrams": "res://assets/sprites/effects/assassin/chakrams/victim_explosion/victim_explosion_spriteframes.tres",
+	"shadow_daggers": "res://assets/sprites/effects/assassin/shadow_daggers/victim_impact/victim_impact_spriteframes.tres",
+	"venom_wire": "res://assets/sprites/effects/assassin/venom_wire/victim_impact/victim_impact_spriteframes.tres",
+}
+const EXECUTORS := {
+	"chakrams": "res://scripts/ultimates/classes/assassin/chakrams.gd",
+	"shadow_daggers": "res://scripts/ultimates/classes/assassin/shadow_daggers.gd",
+	"venom_wire": "res://scripts/ultimates/classes/assassin/venom_wire.gd",
+}
 const CAPTURES := [
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
 	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
@@ -75,6 +100,10 @@ func _initialize() -> void:
 		_check_package(str(weapon_id), profiles.get(str(weapon_id), {}) as Dictionary, packages.get(str(weapon_id), {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_v2_chakrams(packages.get(V2_WEAPON_ID, {}) as Dictionary, errors)
+	for weapon_id in WEAPON_IDS:
+		_check_weapon_v2(str(weapon_id), packages.get(str(weapon_id), {}) as Dictionary, errors)
+		_check_flipbook_read(str(weapon_id), errors)
+		_check_victim_impact(str(weapon_id), errors)
 	_check_contact_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
@@ -269,6 +298,99 @@ func _check_v2_chakrams(package: Dictionary, errors: Array[String]) -> void:
 	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "chakrams identity.class_palette_id must be declared", errors)
 	var materials := package.get("performance", {}) as Dictionary
 	_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "chakrams must declare a material budget ahead of the FAN-2972 assert", errors)
+
+
+## FAN-3014: the whole trio left the v2 migration allowlist, so every package
+## carries the full Direction v2 presence/identity contract and declares the
+## material budget its scene actually measures.
+func _check_weapon_v2(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var key := "assassin/%s" % weapon_id
+	_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must have left the v2 migration allowlist" % key, errors)
+	_expect(not package.is_empty(), "%s package must exist for the v2 gate" % weapon_id, errors)
+	if package.is_empty():
+		return
+	var envelope := V2_SCHEMA.v2_envelope_errors(package.get("timing_seconds", {}), key)
+	_expect(envelope.is_empty(), "%s timing must satisfy the v2 envelope: %s" % [weapon_id, ", ".join(envelope)], errors)
+	var presence := package.get("presence", {}) as Dictionary
+	for field in V2_PRESENCE_FIELDS:
+		_expect(presence.get(field) == V2_PRESENCE_FIELDS[field], "%s presence.%s must be %s" % [weapon_id, field, str(V2_PRESENCE_FIELDS[field])], errors)
+	_expect(V2_SCHEMA.V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))), "%s presence.backdrop must be a v2 treatment" % weapon_id, errors)
+	var hitstop := float(presence.get("hitstop_ms", -1.0))
+	_expect(hitstop >= V2_SCHEMA.V2_HITSTOP_RANGE_MS[0] and hitstop <= V2_SCHEMA.V2_HITSTOP_RANGE_MS[1], "%s presence.hitstop_ms must stay in 80-150" % weapon_id, errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(str(identity.get("cast_pose_id", "")).begins_with("weapon_ultimate.cast_pose.assassin."), "%s identity.cast_pose_id must be an assassin cast pose" % weapon_id, errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "%s identity.weapon_silhouette_asset must exist: %s" % [weapon_id, silhouette], errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s identity.class_palette_id must be declared" % weapon_id, errors)
+	var performance := package.get("performance", {}) as Dictionary
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(int(performance.get(budget_key, 0)) > 0, "%s must declare a positive %s" % [weapon_id, budget_key], errors)
+	var scene := SCENES.get(weapon_id) as PackedScene
+	if scene == null:
+		return
+	var instance := scene.instantiate() as Node2D
+	root.add_child(instance)
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(int(instance.get_meta(budget_key, 0)) == int(performance.get(budget_key, -1)), "%s scene and manifest must agree on %s" % [weapon_id, budget_key], errors)
+	instance.queue_free()
+
+
+## FAN-3014: no drawn node in these scenes may be flat geometry any more, the
+## backdrop is a fullscreen gradient layer, and every effect that used to be a
+## primitive now plays an integrated assassin flipbook.
+func _check_flipbook_read(weapon_id: String, errors: Array[String]) -> void:
+	var scene := SCENES.get(weapon_id) as PackedScene
+	if scene == null:
+		return
+	var instance := scene.instantiate() as Node2D
+	root.add_child(instance)
+	for node in _drawn_nodes(instance):
+		_expect(
+			not (node is Polygon2D or node is Line2D or node is ColorRect),
+			"%s must draw no flat primitive: %s is a %s" % [weapon_id, node.name, node.get_class()],
+			errors
+		)
+	var backdrop := instance.get_node_or_null(str(BACKDROP_NODES[weapon_id])) as CanvasItem
+	_expect(backdrop != null, "%s must keep its backdrop node" % weapon_id, errors)
+	if backdrop != null:
+		_expect(bool(backdrop.get_meta("fullscreen_layer", false)), "%s backdrop must be marked as the fullscreen layer" % weapon_id, errors)
+		_expect(backdrop is Sprite2D and (backdrop as Sprite2D).texture != null, "%s backdrop must be a textured fullscreen layer, not flat fill" % weapon_id, errors)
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	var ultimate := timeline.get_animation(&"ultimate") if timeline != null and timeline.has_animation(&"ultimate") else null
+	for node_path in FLIPBOOK_NODES[weapon_id] as Array:
+		var sprite := instance.get_node_or_null(str(node_path)) as AnimatedSprite2D
+		_expect(sprite != null, "%s rebuilt effect must be an AnimatedSprite2D: %s" % [weapon_id, node_path], errors)
+		if sprite == null:
+			continue
+		var frames_path := str(sprite.sprite_frames.resource_path) if sprite.sprite_frames != null else ""
+		_expect(frames_path.begins_with(INTEGRATED_PACK_PREFIX), "%s %s must bind an integrated assassin pack, got %s" % [weapon_id, node_path, frames_path], errors)
+		_expect(sprite.sprite_frames != null and sprite.sprite_frames.has_animation(sprite.animation), "%s %s must name a real animation: %s" % [weapon_id, node_path, sprite.animation], errors)
+		# A bound but untracked flipbook would freeze on one frame, which is the
+		# static-stub failure the primitive ratchet exists to prevent.
+		_expect(ultimate != null and ultimate.find_track(NodePath("%s:frame" % node_path), Animation.TYPE_VALUE) >= 0, "%s %s must be driven by its own frame track" % [weapon_id, node_path], errors)
+	instance.queue_free()
+
+
+## FAN-3008: the caster-side spectacle never carries the read alone — each
+## executor points the shared victim-impact service at its own integrated pack.
+func _check_victim_impact(weapon_id: String, errors: Array[String]) -> void:
+	var frames_path := str(VICTIM_IMPACT_FRAMES[weapon_id])
+	var frames := ResourceLoader.load(frames_path) as SpriteFrames
+	_expect(frames != null, "%s victim-impact pack must load: %s" % [weapon_id, frames_path], errors)
+	if frames != null:
+		_expect(frames.get_animation_names().size() > 0, "%s victim-impact pack must expose an animation" % weapon_id, errors)
+	var source := FileAccess.get_file_as_string(str(EXECUTORS[weapon_id]))
+	_expect(source.contains(frames_path), "%s executor must preload its victim-impact pack" % weapon_id, errors)
+	_expect(source.contains("victim_impact_player.gd"), "%s executor must route per-victim impacts through the shared service" % weapon_id, errors)
+
+
+func _drawn_nodes(node: Node) -> Array[Node]:
+	var found: Array[Node] = []
+	if node is CanvasItem:
+		found.append(node)
+	for child in node.get_children():
+		found.append_array(_drawn_nodes(child))
+	return found
 
 
 func _check_contact_evidence(errors: Array[String]) -> void:

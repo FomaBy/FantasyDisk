@@ -1,6 +1,8 @@
 extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/assassin/chakrams/victim_explosion/victim_explosion_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.assassin.chakrams"
 const EXECUTOR_ID := "weapon_ultimate.executor.assassin.chakrams"
@@ -38,6 +40,8 @@ var _activation = null
 var _outbound_hit_ids := {}
 var _return_hit_ids := {}
 var _primary_target_id := 0
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -146,12 +150,14 @@ func launch() -> void:
 		var target := raw_target as Node2D
 		if _alive(target):
 			fan[lane_for(origin, target.global_position)].append(target)
+	var struck: Array[Node2D] = []
 	for lane in fan.size():
 		for raw_target in fan[lane]:
 			var target := raw_target as Node2D
 			if _outbound_hit_ids.has(target.get_instance_id()):
 				continue
 			_outbound_hit_ids[target.get_instance_id()] = true
+			struck.append(target)
 			if _primary_target_id == 0:
 				_primary_target_id = target.get_instance_id()
 			var ratio: float = 1.0 if target.get_instance_id() == _primary_target_id \
@@ -162,6 +168,7 @@ func launch() -> void:
 				"ultimate_mechanic": "eight_moons_outbound",
 				"compass_lane": lane,
 			})
+	_play_impacts(struck)
 
 
 ## The compass lane an enemy belongs to: the nearest of the eight launch
@@ -176,6 +183,7 @@ static func lane_for(origin: Vector2, position: Vector2) -> int:
 func return_step(step: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var struck: Array[Node2D] = []
 	for lane in return_paths_for_tests.size():
 		var path := return_paths_for_tests[lane]
 		if step <= 0 or step >= path.size():
@@ -197,6 +205,7 @@ func return_step(step: int) -> void:
 				continue
 			_return_hit_ids[target.get_instance_id()] = true
 			return_hits_for_tests += 1
+			struck.append(target)
 			var result: Dictionary = _activation.apply_control(target, Vector2.ZERO, "", {})
 			if bool(result.get("execute_allowed", false)) and _health_ratio(target) \
 					<= _activation.param_float("execute_threshold", 0.25):
@@ -210,6 +219,25 @@ func return_step(step: int) -> void:
 					"ultimate_mechanic": "eight_moons_return",
 					"compass_lane": lane,
 				})
+	_play_impacts(struck)
+
+
+## Per-victim read (FAN-3008): every disc-struck enemy pops its own moon burst
+## on top of its white hit flash, staggered outward from the hero. Each curved
+## return step joins the ripple the outbound pass started instead of replacing
+## it, so the whole eight-lane sweep reads as one cascade.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _health_ratio(target: Node) -> float:
