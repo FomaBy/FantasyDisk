@@ -32,6 +32,15 @@ must call `WeaponUltimatePresentationTimeline.set_paused()` plus
 telegraph/damage windows stay owned by mechanics card FAN-1477; the seam is the
 frozen `phase_id` set, not numbers.
 
+FAN-2531 reconciles the three integrated mechanics packages with the shared
+live-effectiveness runner without changing this presentation pack. The runner
+strikes every eligible 1/5/10/20 probe for all three weapons; Orb Ring and
+Meteor Core expose no count-shaped executor parameter. Prism Focus intentionally
+retains its `crowd_cap=18` and `lattice_hit_cap=3` profile rails, so Elementalist
+remains in the shared coverage migration allowlist; those rails do not limit the
+live target selection. The shared proof retains `total_boss_cap=0.10` and the
+rare-charge economy.
+
 The four contact sheets are rendered from the actual local scenes at 648p,
 720p, 1080p, and 2K. Action-following framing fits every visible silhouette and
 impact mark inside its own labeled panel. The focused headless test shares the

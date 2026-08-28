@@ -122,6 +122,58 @@
       }
     }
   ],
+  "effectiveness_evidence": {
+    "runner": "res://tools/ultimate_effectiveness_report.gd",
+    "baseline_source_sha": "89397858fb8d33eb3a81ad6fbee76b7ea80365c4",
+    "scenario_order": ["solo", "crowd_5", "crowd_10", "crowd_20", "elite", "boss"],
+    "rows": [
+      {
+        "weapon_id": "elementalist_orb_ring",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [637.246065456, 3156.12241229683, 5908.80750705687, 10785.1252253289, 637.246065456, 637.246065455998]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [637.246065456, 3156.12241229683, 5908.80750705687, 10785.1252253289, 637.246065456, 637.246065455998]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      },
+      {
+        "weapon_id": "elementalist_prism_focus",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [928.516404816, 4642.58202408, 9485.924351904, 19122.418931616, 928.516404816, 928.516404816]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [928.516404816, 4642.58202408, 9485.924351904, 19122.418931616, 928.516404816, 928.516404816]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      },
+      {
+        "weapon_id": "elementalist_meteor_core",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [925.7317445376, 4628.658722688, 9257.31744537599, 18514.634890752, 925.7317445376, 925.731744537599]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [925.7317445376, 4628.658722688, 9257.31744537599, 18514.634890752, 925.7317445376, 925.731744537599]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      }
+    ]
+  },
   "evidence": {
     "contact_sheets": [
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_648p.png",
