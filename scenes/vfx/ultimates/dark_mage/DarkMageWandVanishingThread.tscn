@@ -1,106 +1,107 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/weapons/dark_wand.png" id="1_wand"]
-[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_dark_wand.png" id="2_vfx"]
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="3_v2_driver"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
-blend_mode = 1
-light_mode = 1
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/dark_mage/dark_wand/dark_wand_spriteframes.tres" id="1_flipbook"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="2_driver"]
 
 [sub_resource type="Animation" id="Animation_vanishing_thread"]
 resource_name = "ultimate"
 length = 3.9
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WandGhost:position")
+tracks/0/path = NodePath("VanishingThread:frame")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.95, 1.45, 2.5, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(-244, 112), Vector2(-218, 62), Vector2(-204, 30), Vector2(-194, 20), Vector2(-168, 6), Vector2(-64, 0)]
+"times": PackedFloat32Array(0, 0.45, 0.9, 1.35, 1.8, 2.25, 2.7, 3.15, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("OuterThread:width")
+tracks/1/path = NodePath("VanishingThread:position")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.95, 1.45, 1.9, 2.3, 2.5, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.95, 1.45, 2.5, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [1.0, 2.0, 5.0, 8.0, 12.0, 15.0, 4.0, 0.5]
+"values": [Vector2(-182, 92), Vector2(-122, 42), Vector2(-58, 8), Vector2(48, -18), Vector2(102, -26), Vector2(212, -38)]
 }
 tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("VoidThread:width")
+tracks/2/path = NodePath("VanishingThread:rotation")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.95, 1.45, 2.3, 2.5, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.95, 1.45, 2.5, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.5, 1.0, 2.0, 5.0, 7.0, 1.5, 0.1]
+"values": [-0.72, -0.38, -0.14, 0.08, 0.24]
 }
 tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Branches:modulate:a")
+tracks/3/path = NodePath("VanishingThread:modulate:a")
 tracks/3/interp = 1
-tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 1.45, 1.7, 2.3, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.3, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.52, 1.0, 0.3, 0.0]
+"values": [0.0, 1.0, 0.8, 0.0]
 }
 tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("NodeMarks:scale")
+tracks/4/path = NodePath("ThreadEchoNear:position")
 tracks/4/interp = 1
-tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 1.45, 1.8, 2.1, 2.35, 2.5, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.45, 1.85, 2.2, 2.5, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.08, 0.08), Vector2(0.2, 0.2), Vector2(0.72, 0.72), Vector2(0.95, 0.95), Vector2(1.18, 1.18), Vector2(1.38, 1.38), Vector2(0.42, 0.42), Vector2(0.05, 0.05)]
+"values": [Vector2(-96, 38), Vector2(-96, 38), Vector2(-24, -48), Vector2(58, 42), Vector2(128, -52), Vector2(180, 26), Vector2(238, -18)]
 }
 tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("CollapseAfterimage:modulate:a")
+tracks/5/path = NodePath("ThreadEchoFar:position")
 tracks/5/interp = 1
-tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 2.4, 2.5, 2.8, 3.2, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.45, 1.85, 2.2, 2.5, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.72, 0.14, 0.0]
+"values": [Vector2(-42, -44), Vector2(-42, -44), Vector2(36, 54), Vector2(112, -58), Vector2(198, 48), Vector2(238, -42), Vector2(282, 8)]
 }
 tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("BeamVFX:modulate:a")
+tracks/6/path = NodePath("ThreadEchoNear:frame")
 tracks/6/interp = 1
-tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.95, 1.45, 2.3, 2.8, 3.9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.45, 1.8, 2.15, 2.5, 2.85, 3.2, 3.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("ThreadEchoFar:frame")
+tracks/7/interp = 1
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1.45, 1.8, 2.15, 2.5, 2.85, 3.2, 3.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("ThreadEchoNear:modulate:a")
+tracks/8/interp = 1
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.35, 1.65, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.38, 0.74, 0.22, 0.0]
+"values": [0.0, 0.0, 0.76, 0.4, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("ThreadEchoFar:modulate:a")
+tracks/9/interp = 1
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.55, 1.85, 2.9, 3.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.66, 0.34, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vanishing_thread"]
 _data = {"ultimate": SubResource("Animation_vanishing_thread")}
 
 [node name="DarkMageWandVanishingThread" type="Node2D"]
-script = ExtResource("3_v2_driver")
+script = ExtResource("2_driver")
 weapon_id = "dark_wand"
 metadata/ultimate_id = "dark_mage/dark_wand"
 metadata/silhouette = "one_aimed_zigzag_void_thread_with_three_branch_nodes"
@@ -113,58 +114,32 @@ metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
 metadata/pivot = Vector2(0.18, 0.55)
 
-[node name="WandGhost" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_wand")
-position = Vector2(-244, 112)
-rotation = -0.82
-scale = Vector2(0.52, 0.52)
-modulate = Color(0.76, 0.9, 1, 0.96)
+[node name="VanishingThread" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"vanishing_thread"
+position = Vector2(-182, 92)
+rotation = -0.72
+scale = Vector2(0.62, 0.62)
+modulate = Color(0.62, 0.86, 1, 0)
+z_index = 2
 
-[node name="BeamVFX" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("2_vfx")
-position = Vector2(18, -14)
-rotation = -0.08
-scale = Vector2(1.85, 1.45)
-modulate = Color(0.72, 0.72, 1, 0)
+[node name="ThreadEchoNear" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"vanishing_thread"
+position = Vector2(-96, 38)
+rotation = 0.42
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.36, 0.74, 1, 0)
+z_index = 1
 
-[node name="OuterThread" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-190, 24, -88, -46, 38, -6, 156, -76, 256, -26)
-width = 1.0
-default_color = Color(0.5, 0.2, 0.98, 0.86)
-antialiased = true
-
-[node name="VoidThread" type="Line2D" parent="."]
-points = PackedVector2Array(-190, 24, -88, -46, 38, -6, 156, -76, 256, -26)
-width = 0.5
-default_color = Color(0.004, 0.001, 0.012, 1)
-antialiased = true
-
-[node name="Branches" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(38, -6, 104, -122, 218, -146, 104, -122, 38, -6, 118, 84, 224, 126)
-width = 7.0
-default_color = Color(0.28, 0.8, 1, 0.78)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
-
-[node name="NodeMarks" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-112, -46, -88, -70, -64, -46, -88, -22, -112, -46, 14, -6, 38, -30, 62, -6, 38, 18, 14, -6, 132, -76, 156, -100, 180, -76, 156, -52, 132, -76, 194, -146, 218, -170, 242, -146, 218, -122, 194, -146, 200, 126, 224, 102, 248, 126, 224, 150, 200, 126)
-width = 6.0
-default_color = Color(0.58, 0.93, 1, 0.92)
-antialiased = true
-scale = Vector2(0.08, 0.08)
-
-[node name="CollapseAfterimage" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-88, -106, -88, 14, 38, -66, 38, 54, 156, -136, 156, -16, 218, -206, 218, -86, 224, 66, 224, 186)
-width = 13.0
-default_color = Color(0.9, 0.96, 1, 0.94)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+[node name="ThreadEchoFar" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"vanishing_thread"
+position = Vector2(-42, -44)
+rotation = -0.48
+scale = Vector2(-0.34, 0.34)
+modulate = Color(0.62, 0.3, 1, 0)
+z_index = 1
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_vanishing_thread")}

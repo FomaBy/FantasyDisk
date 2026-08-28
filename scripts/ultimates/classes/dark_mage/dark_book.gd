@@ -1,5 +1,8 @@
 extends Node2D
 
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres")
+
 const PROFILE_ID := "weapon_ultimate.profile.dark_mage.dark_book"
 const EXECUTOR_ID := "weapon_ultimate.executor.dark_mage.dark_book"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/dark_mage/dark_book.tscn"
@@ -10,6 +13,8 @@ var pair_count_for_tests := 0
 var _activation = null
 var _targets: Array = []
 var _origin := Vector2.ZERO
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -76,11 +81,27 @@ func detonate_pair(index: int) -> void:
 		false,
 		{"ultimate_mechanic": "abyss_original", "pair": index}
 	)
+	_play_impacts([original])
 	_activation.present("weapon_ultimate.phase.dark_mage.dark_book.active", {
 		"position": mirror_point,
 		"radius": _activation.param_float("reflection_radius", 150.0),
 		"shape": "orb_burst",
 	})
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null:
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+	if _impacts_started:
+		_impacts.enqueue(victims, _origin)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _origin)
+		_impacts_started = true
+
+
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null

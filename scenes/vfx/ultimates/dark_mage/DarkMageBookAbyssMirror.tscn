@@ -1,106 +1,98 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/weapons/dark_book.png" id="1_book"]
-[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_dark_book.png" id="2_vfx"]
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="3_v2_driver"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
-blend_mode = 1
-light_mode = 1
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres" id="1_flipbook"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/dark_mage/dark_mage_ultimate_v2_driver.gd" id="2_driver"]
 
 [sub_resource type="Animation" id="Animation_abyss_mirror"]
 resource_name = "ultimate"
 length = 3.1
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BookGhost:scale")
+tracks/0/path = NodePath("AbyssMirror:frame")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.05, 1.4, 1.75, 2.1, 2.45, 2.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AbyssMirror:scale")
+tracks/1/interp = 1
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.7, 1.2, 1.9, 2.5, 3.1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.3, 0.3), Vector2(0.52, 0.52), Vector2(0.62, 0.62), Vector2(0.7, 0.7), Vector2(0.48, 0.48), Vector2(0.08, 0.08)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BookGhost:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.7, 1.2, 1.9, 3.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [-0.18, 0.12, -0.06, 0.06, 0.0]
+"values": [Vector2(0.22, 0.22), Vector2(0.48, 0.48), Vector2(0.72, 0.72), Vector2(0.84, 0.84), Vector2(0.66, 0.66), Vector2(0.08, 0.08)]
 }
 tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("MirrorPlane:scale")
+tracks/2/path = NodePath("AbyssMirror:modulate:a")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.7, 1.2, 2.5, 3.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.35, 2.5, 3.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.04, 0.12), Vector2(0.12, 0.7), Vector2(1, 1), Vector2(1, 0.82), Vector2(0.03, 0.1)]
+"values": [0.0, 1.0, 0.9, 0.0]
 }
 tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("OriginalShadow:position")
+tracks/3/path = NodePath("ReflectionLeft:position")
 tracks/3/interp = 1
-tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.7, 1.2, 1.9, 2.5, 3.1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-28, -8), Vector2(-72, -20), Vector2(-142, -38), Vector2(-190, -52), Vector2(-154, -42), Vector2(-18, -4)]
+"values": [Vector2(-18, 12), Vector2(-54, 6), Vector2(-108, -6), Vector2(-178, -18), Vector2(-142, -10), Vector2(-20, 0)]
 }
 tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("ReflectionShadow:position")
+tracks/4/path = NodePath("ReflectionRight:position")
 tracks/4/interp = 1
-tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.7, 1.2, 1.9, 2.5, 3.1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(28, 8), Vector2(72, 20), Vector2(142, 38), Vector2(190, 52), Vector2(154, 42), Vector2(18, 4)]
+"values": [Vector2(18, -12), Vector2(54, -6), Vector2(108, 6), Vector2(178, 18), Vector2(142, 10), Vector2(20, 0)]
 }
 tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("AbyssEnergy:modulate:a")
+tracks/5/path = NodePath("ReflectionLeft:frame")
 tracks/5/interp = 1
-tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 1.2, 1.7, 1.9, 2.15, 2.5, 3.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 0.22, 0.95, 0.52, 0.18, 0.0]
+"times": PackedFloat32Array(0, 0.7, 1.05, 1.4, 1.75, 2.1, 2.45, 2.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("PairedDetonation:modulate:a")
+tracks/6/path = NodePath("ReflectionRight:frame")
 tracks/6/interp = 1
-tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 1.7, 1.9, 2.2, 2.5, 3.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.7, 1.05, 1.4, 1.75, 2.1, 2.45, 2.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("ReflectionLeft:modulate:a")
+tracks/7/interp = 1
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.7, 1.2, 2.5, 3.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.28, 0.08, 0.0]
+"values": [0.0, 0.34, 0.82, 0.58, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("ReflectionRight:modulate:a")
+tracks/8/interp = 1
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.7, 1.2, 2.5, 3.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.34, 0.82, 0.58, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_abyss_mirror"]
 _data = {"ultimate": SubResource("Animation_abyss_mirror")}
 
 [node name="DarkMageBookAbyssMirror" type="Node2D"]
-script = ExtResource("3_v2_driver")
+script = ExtResource("2_driver")
 weapon_id = "dark_book"
 metadata/ultimate_id = "dark_mage/dark_book"
 metadata/silhouette = "open_grimoire_split_by_vertical_mirror_with_opposed_enemy_shadows"
@@ -113,48 +105,28 @@ metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
 metadata/pivot = Vector2(0.5, 0.56)
 
-[node name="MirrorPlane" type="Polygon2D" parent="."]
-color = Color(0.018, 0.004, 0.035, 0.94)
-polygon = PackedVector2Array(-24, -182, 24, -164, 24, 164, -24, 182)
-scale = Vector2(0.04, 0.12)
+[node name="AbyssMirror" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"abyss_mirror"
+scale = Vector2(0.22, 0.22)
+modulate = Color(0.9, 0.68, 1, 0)
+z_index = 2
 
-[node name="MirrorRim" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(0, -184, -18, -126, 12, -70, -14, -10, 16, 52, -12, 112, 0, 184)
-width = 5.0
-default_color = Color(0.57, 0.18, 0.86, 0.74)
-antialiased = true
+[node name="ReflectionLeft" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"abyss_mirror"
+position = Vector2(-18, 12)
+scale = Vector2(-0.5, 0.5)
+modulate = Color(0.58, 0.2, 0.94, 0)
+z_index = 1
 
-[node name="OriginalShadow" type="Polygon2D" parent="."]
-color = Color(0.15, 0.03, 0.25, 0.9)
-polygon = PackedVector2Array(-20, 34, -27, -2, -13, -35, 9, -27, 24, 6, 12, 38, 0, 18)
-position = Vector2(-28, -8)
-
-[node name="ReflectionShadow" type="Polygon2D" parent="."]
-color = Color(0.51, 0.2, 0.72, 0.76)
-polygon = PackedVector2Array(20, -34, 27, 2, 13, 35, -9, 27, -24, -6, -12, -38, 0, -18)
-position = Vector2(28, 8)
-
-[node name="AbyssEnergy" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("2_vfx")
-scale = Vector2(1.7, 1.7)
-modulate = Color(0.78, 0.54, 1, 0)
-
-[node name="BookGhost" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_book")
-rotation = -0.18
-scale = Vector2(0.3, 0.3)
-modulate = Color(0.88, 0.66, 1, 0.96)
-
-[node name="PairedDetonation" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-242, 0, -204, -54, -152, -22, -132, 0, -152, 22, -204, 54, -242, 0, -132, 0, 0, 0, 132, 0, 242, 0, 204, -54, 152, -22, 132, 0, 152, 22, 204, 54, 242, 0)
-width = 11.0
-default_color = Color(0.82, 0.34, 1, 0.95)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
+[node name="ReflectionRight" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"abyss_mirror"
+position = Vector2(18, -12)
+scale = Vector2(0.5, 0.5)
+modulate = Color(0.76, 0.42, 1, 0)
+z_index = 1
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_abyss_mirror")}
