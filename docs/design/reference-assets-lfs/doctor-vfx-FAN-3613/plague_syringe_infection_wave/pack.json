@@ -1,7 +1,7 @@
 {
   "tool": "tools/pixellab_generate_pack.py",
   "tool_version": "1.0.0",
-  "generated_at": "2026-08-28T03:32:43Z",
+  "generated_at": "2026-08-28T09:34:36Z",
   "encoder": {
     "library": "Pillow",
     "library_version": "11.3.0",
@@ -25,10 +25,10 @@
   "frames": [
     {
       "file": "plague_syringe_infection_wave_f00.png",
-      "bytes": 35386,
-      "url_kind": "template",
-      "encoded_sha256": "f19ed01d14363d9ffa1508f53d02bdd167c2dc922b627e81e046184df61b5198",
-      "pixel_sha256": "b5b1fb9251a121415752077802d78a486729d778510715f67ec535c88175b02f"
+      "bytes": 24912,
+      "url_kind": "selected_original_source_frame",
+      "encoded_sha256": "4ea0b92525a5e5c3fd5c4232cf7e1cfba714d58cd77359b3584dbd4ea8223bb5",
+      "pixel_sha256": "30737b34faece4875322bf6a6904cb5a9c3e7e947ccd26ac9d6f36b395b44137"
     },
     {
       "file": "plague_syringe_infection_wave_f01.png",
@@ -88,5 +88,29 @@
     }
   ],
   "frame_count": 9,
-  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "rework": {
+    "issue": "FAN-3631",
+    "source_issue": "FAN-3613",
+    "selected_frame_0": "plague_syringe_infection_wave_f08.png",
+    "selection_source_object_id": "323d851c-6a27-4a0c-9d5c-82eb04952975",
+    "selection_source_animation_group_id": "551cc5e0-1ee1-4bc6-bdde-66c05f231c0a",
+    "selection_reason": "The original f00 was the dark outlier. Reusing the original light f08 phase makes 8->0 pixel-identical and keeps f01..f08 unchanged; source and runtime f00 are byte-identical parity copies.",
+    "generation_route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "generation_attempts": [
+      {
+        "object_id": "9d99e56d-6d47-47c1-b07f-5c28fa1bce59",
+        "animation_group_id": "21ce9a5e-74fb-4ec1-9f2c-67eec8098df7",
+        "result": "rejected_visual_candidate_ring_spiral"
+      },
+      {
+        "object_id": "284de061-50a4-4d6a-901d-fca5e3cb8446",
+        "animation_group_id": "45c9917d-eabb-401d-88c8-82bb206a375b",
+        "result": "source_candidate_recorded_but_not_selected_due_to_silhouette_mismatch",
+        "generated_at": "2026-08-28T09:34:36Z",
+        "frame_count": 9
+      }
+    ],
+    "cost_note": "The blocking CLI output exposed no numeric billed total. The documented 256x256 v3 animation scaling is 8 generations per 8-frame animation; two 9-frame candidate packs were generated in this run."
+  }
 }
