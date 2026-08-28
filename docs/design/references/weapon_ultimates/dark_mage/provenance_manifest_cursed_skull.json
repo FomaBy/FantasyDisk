@@ -93,7 +93,7 @@
     }
   ],
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/dark_mage/source/pixellab_cursed_skull",
+    "source_dir": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/cursed_skull",
     "runtime_dir": "assets/sprites/effects/dark_mage/cursed_skull",
     "runtime_spriteframes": "assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres",
     "animation": "cursed_crown",

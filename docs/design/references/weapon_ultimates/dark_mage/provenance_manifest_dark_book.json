@@ -93,7 +93,7 @@
     }
   ],
   "asset": {
-    "source_dir": "docs/design/references/weapon_ultimates/dark_mage/source/pixellab_dark_book",
+    "source_dir": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_book",
     "runtime_dir": "assets/sprites/effects/dark_mage/dark_book",
     "runtime_spriteframes": "assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres",
     "animation": "abyss_mirror",
