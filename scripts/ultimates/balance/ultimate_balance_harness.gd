@@ -31,7 +31,6 @@ const READY_SEARCH_LIMIT := 24
 ## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
 ## fail. A class outside the allowlist is asserted against v2 and fails closed.
 const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
-	"doctor": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"elementalist": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"priest": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
 	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
@@ -106,7 +105,14 @@ const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
 ## its terminal exhaust re-enumerates the eligible set. Per-target damage,
 ## control and the shared boss cap bound outcome. Proven in
 ## `tests/ultimates/mechanics/robot_ultimate_balance_test.gd`.
-const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "druid", "engineer", "guitarist", "knight", "robot", "sniper"]
+##
+## `doctor` (FAN-2529): Life and Death keeps its aimed release presentation
+## while its outer damage reaches every eligible enemy, Black Epidemic applies
+## its fixed waves to the whole map, and Emergency Surgery preserves its close
+## orbit. Per-target damage, repair/shield utility, the shared boss cap and
+## activation-owned cleanup bound outcome. Proven in
+## `tests/ultimates/mechanics/doctor_balance_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "doctor", "druid", "engineer", "guitarist", "knight", "robot", "sniper"]
 
 ## A count-shaped parameter bounds HOW MANY enemies an activation can reach
 ## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
