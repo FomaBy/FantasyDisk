@@ -427,6 +427,15 @@ impacts.play(impact_frames, hit_enemies, cast_position)
   `Enemy` would be the nicer entry point, but `scripts/enemy.gd` sits exactly on
   its shrink-only line ratchet, so it belongs to the card that splits that file.
 
+**Packages that spawn nothing.** A class whose executors are static and spawn no
+effect node (`beat_routing_gate_test.PRESENTATION_ONLY_PAIRS`) has no place to
+put the service except the authored scene. Those executors name the enemies a
+beat actually damaged in a `victims` payload entry on the beat they already
+emit, and the scene's `present(event_id, payload)` opens the ripple on exactly
+that set — the first beat calls `play()`, later beats `enqueue()`. A beat that
+damaged nobody carries an empty list and draws nothing, so an unaffected target
+can never receive a burst. Doctor is the reference implementation.
+
 **Ripple.** Victims are sorted by distance from the cast point and split into at
 most 8 distance waves; consecutive waves are staggered by 3-8 frames
 (`RIPPLE_BUDGET_FRAMES / (waves - 1)`, clamped), so the impact reads as one wave

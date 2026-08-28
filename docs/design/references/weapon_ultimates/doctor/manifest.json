@@ -42,7 +42,7 @@
       "silhouette": "giant overhead flask, wide poison pool, tight white healing spiral, and offset shield crystal",
       "motion_path": "the flask follows a high aimed arc, shatters at range, then the outer and inner zones counter-rotate",
       "impact_language": "green glass blast and poison ring resolve inward as a white healing spiral and crystallized absorb shield",
-      "timing_seconds": {"windup": 0.0, "release": 0.85, "active": 1.5, "recovery": 5.2, "cancel": 6.2},
+      "timing_seconds": {"windup": 0.0, "release": 0.85, "active": 1.35, "recovery": 2.85, "cancel": 3.4},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.restore_potion.windup",
         "release": "weapon_ultimate.phase.doctor.restore_potion.execute",
@@ -67,7 +67,7 @@
       "silhouette": "oversized diagonal syringe, pinned patient-zero mark, branching veins, three arena waves, and mask vapor",
       "motion_path": "the syringe pierces one target before staggered infection waves expand through the arena",
       "impact_language": "black-green vascular bloom ticks outward and ends in a sharp plague-mask vapor burst",
-      "timing_seconds": {"windup": 0.0, "release": 0.42, "active": 0.82, "recovery": 6.1, "cancel": 6.85},
+      "timing_seconds": {"windup": 0.0, "release": 0.75, "active": 1.2, "recovery": 3.3, "cancel": 3.9},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.plague_syringe.windup",
         "release": "weapon_ultimate.phase.doctor.plague_syringe.execute",
@@ -92,7 +92,7 @@
       "silhouette": "three close-orbit saws, bright surgical arc, metal sparks, paired drain ribbons, and stitched shield seam",
       "motion_path": "the saws snap from a surgical stance into a fast close orbit while vitality ribbons pull inward",
       "impact_language": "bone-white serration and sparks cut repeatedly before red drain ribbons turn green and stitch shut",
-      "timing_seconds": {"windup": 0.0, "release": 0.24, "active": 0.5, "recovery": 3.15, "cancel": 3.85},
+      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 1.05, "recovery": 2.35, "cancel": 2.8},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.bone_saw.windup",
         "release": "weapon_ultimate.phase.doctor.bone_saw.execute",

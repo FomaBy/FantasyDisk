@@ -52,6 +52,7 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var removed := 0.0
+	var struck: Array = []
 	# Ultimate Direction v2: the outer pool is map-wide; its radius remains a
 	# presentation shape, not a reach or count limit.
 	for raw_target in activation.targets(activation.origin(), INF):
@@ -66,6 +67,11 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 			pulse_index > 0
 		)
 		removed += float(result.applied)
+		if float(result.applied) > 0.0:
+			struck.append(target)
+	# The pulse beat carries the enemies this tick actually damaged, so the
+	# authored scene plays one victim burst per hit enemy and none anywhere else.
+	activation.present(EXECUTOR_ID + ".pulse", {"position": point, "victims": struck})
 	var hero := _hero(activation)
 	if hero != null:
 		activation.repair(
