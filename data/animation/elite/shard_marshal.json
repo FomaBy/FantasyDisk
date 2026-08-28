@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",
+	"scale": {
+		"x": 0.66,
+		"y": 0.66
+	},
+	"position": {
+		"x": 0.0,
+		"y": -78.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

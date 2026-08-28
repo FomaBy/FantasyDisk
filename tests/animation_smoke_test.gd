@@ -1317,6 +1317,9 @@ func _test_full_frame_animation_registry() -> void:
 		"iron_bastion": {"idle": 1, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shield_block": 7, "skill_slam_wave": 7},
 		"night_stalker": {"idle": 4, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shadow_strike": 7, "skill_phase_dash": 7},
 		"plague_prophet": {"idle": 1, "move": 8, "skill_poison_volley": 10, "hit": 5, "death": 7},
+		# FAN-3638: row lengths FAN-2623 shipped without declaring here (counts
+		# mirror tests/fan2623_shard_marshal_directional_test.gd EXPECTED_STATES).
+		"shard_marshal": {"idle": 1, "move": 8, "hit": 5, "death": 7, "skill_shard_fan": 7, "skill_command_pulse": 7},
 	}
 	for elite_id in elite_full_frame_scenes.keys():
 		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]

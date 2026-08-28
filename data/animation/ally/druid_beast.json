@@ -1,0 +1,12 @@
+{
+	"frames": "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
+	"scale": {
+		"x": 0.37,
+		"y": 0.37
+	},
+	"position": {
+		"x": 0.0,
+		"y": -37.0
+	},
+	"source_faces_left": true
+}
