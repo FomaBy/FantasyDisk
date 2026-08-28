@@ -1,7 +1,11 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_spriteframes.tres" id="2_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/doctor/bone_saw/orbit_slash/orbit_slash_spriteframes.tres" id="3_orbit_slash"]
 
 [node name="DoctorBoneSawEmergencySurgery" type="Node2D"]
 script = ExtResource("1_script")
 weapon_id = "bone_saw"
+cast_frames = ExtResource("2_cast_flash")
+signature_frames = ExtResource("3_orbit_slash")

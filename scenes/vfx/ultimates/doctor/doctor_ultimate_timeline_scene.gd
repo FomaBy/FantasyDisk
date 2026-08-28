@@ -1,14 +1,34 @@
 class_name DoctorUltimateTimelineScene
 extends Node2D
 
-## Doctor-only timeline driver. It builds a bounded set of accepted sprites and
+## Doctor-only timeline driver. It builds a bounded set of accepted flipbooks and
 ## procedural telegraphs, then advances them from the frozen U5 phase timing.
+##
+## The weapon-local FAN-3613 packs arrive as scene exports, so each `.tscn`
+## names the exact pack it draws: the cast pack animates the weapon silhouette
+## through the cast, the signature pack draws the arena effect. Frames are
+## indexed from phase progress, never played on a wall clock, so `preview_at()`
+## stays a pure function of elapsed time and a paused timeline freezes the drawn
+## frame with the rest of the pose.
 
 const Pack := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
+## The infection-wave pack draws on a 256 px canvas where the ring it replaces
+## spanned 164 px, so the wave keeps the footprint the declared coverage and the
+## contact-sheet composition were accepted against.
+const WAVE_PACK_SCALE := 0.64
+
+## Whole passes through the looping poison pool inside each phase. Recovery
+## continues the active count instead of restarting, so the pool never seams.
+const POOL_ACTIVE_PLAYS := 4.0
+
 @export var weapon_id: String = Pack.RESTORE_POTION
+
+## Weapon-local animated packs (FAN-3613), assigned per scene.
+@export var cast_frames: SpriteFrames = null
+@export var signature_frames: SpriteFrames = null
 
 signal phase_entered(phase: Dictionary)
 signal timeline_finished(reason: String)
@@ -117,28 +137,28 @@ func _build_visuals() -> void:
 
 
 func _build_restore() -> void:
-	_visuals["bottle"] = _sprite("GiantFlask", "res://assets/sprites/weapons/restore_potion.png")
-	_visuals["outer"] = _line("OuterPoisonPool", _circle_points(126.0, 32), 12.0, Color(0.25, 0.95, 0.32, 0.84), true)
+	_visuals["bottle"] = _flipbook("GiantFlask", cast_frames)
+	_visuals["outer"] = _flipbook("OuterPoisonPool", signature_frames)
 	_visuals["inner"] = _line("InnerHealingSpiral", _spiral_points(82.0, 28), 8.0, Color(0.94, 1.0, 0.88, 0.92))
 	_visuals["shards"] = _polygon("GlassImpact", PackedVector2Array([Vector2(0, -50), Vector2(15, -14), Vector2(53, -4), Vector2(18, 13), Vector2(7, 54), Vector2(-13, 17), Vector2(-52, 5), Vector2(-16, -15)]), Color(0.58, 1.0, 0.55, 0.78))
 	_visuals["shield"] = _polygon("ShieldCrystal", PackedVector2Array([Vector2(0, -58), Vector2(42, -23), Vector2(34, 42), Vector2(0, 63), Vector2(-34, 42), Vector2(-42, -23)]), Color(0.88, 1.0, 0.92, 0.78))
 
 
 func _build_plague() -> void:
-	_visuals["syringe"] = _sprite("OversizedSyringe", "res://assets/sprites/weapons/plague_syringe.png")
+	_visuals["syringe"] = _flipbook("OversizedSyringe", cast_frames)
 	_visuals["patient"] = _line("PatientZero", _circle_points(38.0, 20), 10.0, Color(0.12, 0.95, 0.34, 0.9), true)
 	_visuals["veins_a"] = _line("PlagueVeinsA", PackedVector2Array([Vector2.ZERO, Vector2(55, -28), Vector2(106, -18), Vector2(144, -57), Vector2(190, -45)]), 8.0, Color(0.08, 0.58, 0.22, 0.84))
 	_visuals["veins_b"] = _line("PlagueVeinsB", PackedVector2Array([Vector2.ZERO, Vector2(-50, 35), Vector2(-92, 22), Vector2(-132, 68), Vector2(-185, 60)]), 7.0, Color(0.18, 0.72, 0.24, 0.78))
-	_visuals["wave_a"] = _line("PlagueWaveOne", _circle_points(82.0, 28), 10.0, Color(0.04, 0.45, 0.14, 0.74), true)
-	_visuals["wave_b"] = _line("PlagueWaveTwo", _circle_points(82.0, 28), 8.0, Color(0.12, 0.72, 0.22, 0.66), true)
-	_visuals["wave_c"] = _line("PlagueWaveThree", _circle_points(82.0, 28), 6.0, Color(0.12, 0.55, 0.18, 0.68), true)
+	_visuals["wave_a"] = _flipbook("PlagueWaveOne", signature_frames)
+	_visuals["wave_b"] = _flipbook("PlagueWaveTwo", signature_frames)
+	_visuals["wave_c"] = _flipbook("PlagueWaveThree", signature_frames)
 	_visuals["mask"] = _polygon("MaskVaporBurst", PackedVector2Array([Vector2(-52, -38), Vector2(-18, -58), Vector2(0, -38), Vector2(18, -58), Vector2(52, -38), Vector2(36, 35), Vector2(12, 58), Vector2(0, 38), Vector2(-12, 58), Vector2(-36, 35)]), Color(0.08, 0.32, 0.12, 0.82))
 
 
 func _build_saw() -> void:
 	for index in 3:
-		_visuals["saw_%d" % index] = _sprite("OrbitSaw%d" % (index + 1), "res://assets/sprites/weapons/bone_saw.png")
-	_visuals["arc"] = _line("SurgicalOrbitArc", _circle_points(112.0, 32), 13.0, Color(1.0, 0.92, 0.72, 0.86), true)
+		_visuals["saw_%d" % index] = _flipbook("OrbitSaw%d" % (index + 1), cast_frames)
+	_visuals["arc"] = _flipbook("SurgicalOrbitArc", signature_frames)
 	_visuals["sparks"] = _line("MetalSparks", PackedVector2Array([Vector2(-145, -56), Vector2(-115, -24), Vector2(-154, 2), Vector2(-105, 18), Vector2(-130, 57)]), 6.0, Color(1.0, 0.68, 0.24, 0.82))
 	_visuals["drain_a"] = _line("DrainRibbonRed", PackedVector2Array([Vector2(-150, 72), Vector2(-85, 30), Vector2(-28, 18), Vector2.ZERO]), 9.0, Color(0.86, 0.12, 0.18, 0.8))
 	_visuals["drain_b"] = _line("DrainRibbonGreen", PackedVector2Array([Vector2(150, 68), Vector2(92, 25), Vector2(34, 14), Vector2.ZERO]), 8.0, Color(0.22, 0.92, 0.42, 0.78))
@@ -147,31 +167,33 @@ func _build_saw() -> void:
 
 func _preview_restore(phase: String, progress: float) -> void:
 	_hide_all()
-	var bottle := _visuals["bottle"] as Sprite2D
-	var outer := _visuals["outer"] as Line2D
+	var bottle := _visuals["bottle"] as AnimatedSprite2D
+	var outer := _visuals["outer"] as AnimatedSprite2D
 	var inner := _visuals["inner"] as Line2D
 	var shards := _visuals["shards"] as Polygon2D
 	var shield := _visuals["shield"] as Polygon2D
 	var target := Vector2(70, 24)
 	match phase:
 		"windup":
-			_show(bottle, 0.42 + progress * 0.45)
+			# The flask holds its intact frame on the aimed arc and burns through
+			# the cast pack only when it shatters at range.
+			_play(bottle, 0.42 + progress * 0.45, 0.0)
 			bottle.position = _quadratic(Vector2(-178, 54), Vector2(-40, -190), target, progress)
 			bottle.rotation = -1.0 + progress * 2.1
 			bottle.scale = Vector2.ONE * (0.52 + progress * 0.32)
 		"release":
-			_show(bottle, 1.0 - progress * 0.55)
+			_play(bottle, 1.0 - progress * 0.55, progress)
 			bottle.position = target
 			bottle.scale = Vector2.ONE * (0.84 + sin(progress * PI) * 0.22)
 			_show(shards, 0.92)
 			shards.position = target
 			shards.scale = Vector2.ONE * (0.25 + progress * 1.15)
 		"active":
-			_show(bottle, 0.42)
+			_play(bottle, 0.42, 1.0)
 			bottle.position = target + Vector2(0, -82)
 			bottle.rotation = 1.18
 			bottle.scale = Vector2.ONE * 0.48
-			_show(outer, 0.86 - progress * 0.20)
+			_play(outer, 0.86 - progress * 0.20, progress * POOL_ACTIVE_PLAYS)
 			outer.position = target
 			outer.scale = Vector2.ONE * (0.50 + progress * 0.72)
 			outer.rotation = progress * -1.3
@@ -183,7 +205,9 @@ func _preview_restore(phase: String, progress: float) -> void:
 			shield.position = Vector2(-72, 20)
 			shield.scale = Vector2.ONE * (0.45 + progress * 0.42)
 		"recovery":
-			_show(outer, (1.0 - progress) * 0.46)
+			# The pool keeps counting from where `active` left it, so the loop
+			# closes across the phase boundary instead of snapping back to frame 0.
+			_play(outer, (1.0 - progress) * 0.46, POOL_ACTIVE_PLAYS + progress)
 			outer.position = target
 			outer.scale = Vector2.ONE * (1.22 + progress * 0.20)
 			_show(inner, (1.0 - progress) * 0.68)
@@ -199,14 +223,16 @@ func _preview_restore(phase: String, progress: float) -> void:
 
 func _preview_plague(phase: String, progress: float) -> void:
 	_hide_all()
-	var syringe := _visuals["syringe"] as Sprite2D
+	var syringe := _visuals["syringe"] as AnimatedSprite2D
 	var patient := _visuals["patient"] as Line2D
 	var veins_a := _visuals["veins_a"] as Line2D
 	var veins_b := _visuals["veins_b"] as Line2D
 	var target := Vector2(24, 8)
 	match phase:
 		"windup":
-			_show(syringe, 0.48 + progress * 0.46)
+			# The syringe is carried intact and discharges its cast pack only on
+			# the pierce, then holds the emptied frame while the waves run.
+			_play(syringe, 0.48 + progress * 0.46, 0.0)
 			syringe.position = Vector2(-188, -96).lerp(Vector2(-52, -20), progress)
 			syringe.rotation = 0.58
 			syringe.scale = Vector2.ONE * (0.58 + progress * 0.20)
@@ -214,7 +240,7 @@ func _preview_plague(phase: String, progress: float) -> void:
 			patient.position = target
 			patient.scale = Vector2.ONE * (0.72 + progress * 0.18)
 		"release":
-			_show(syringe, 0.98)
+			_play(syringe, 0.98, progress)
 			syringe.position = Vector2(-52, -20).lerp(target, progress)
 			syringe.rotation = 0.58 + progress * 0.28
 			syringe.scale = Vector2.ONE * 0.82
@@ -222,7 +248,7 @@ func _preview_plague(phase: String, progress: float) -> void:
 			patient.position = target
 			patient.scale = Vector2.ONE * (0.90 + sin(progress * PI) * 0.30)
 		"active":
-			_show(syringe, 0.50)
+			_play(syringe, 0.50, 1.0)
 			syringe.position = target + Vector2(-62, -38)
 			syringe.rotation = 0.86
 			syringe.scale = Vector2.ONE * 0.62
@@ -233,9 +259,9 @@ func _preview_plague(phase: String, progress: float) -> void:
 				_show(vein, 0.78 - progress * 0.18)
 				vein.position = target
 				vein.scale = Vector2.ONE * (0.35 + progress * 0.82)
-			_update_wave(_visuals["wave_a"] as Line2D, target, progress * 3.0)
-			_update_wave(_visuals["wave_b"] as Line2D, target, progress * 3.0 - 0.82)
-			_update_wave(_visuals["wave_c"] as Line2D, target, progress * 3.0 - 1.64)
+			_update_wave(_visuals["wave_a"] as AnimatedSprite2D, target, progress * 3.0)
+			_update_wave(_visuals["wave_b"] as AnimatedSprite2D, target, progress * 3.0 - 0.82)
+			_update_wave(_visuals["wave_c"] as AnimatedSprite2D, target, progress * 3.0 - 1.64)
 		"recovery":
 			var mask := _visuals["mask"] as Polygon2D
 			_show(mask, 0.86 * (1.0 - progress))
@@ -256,6 +282,8 @@ func _preview_saw(phase: String, progress: float) -> void:
 	var radius := 56.0
 	var turns := 0.0
 	var alpha := 0.9
+	# Turns are cumulative across the phases: a per-phase count would snap the
+	# orbit — and the serration pack riding it — back to zero at every boundary.
 	match phase:
 		"windup":
 			radius = lerpf(28.0, 58.0, progress)
@@ -263,27 +291,30 @@ func _preview_saw(phase: String, progress: float) -> void:
 			alpha = 0.45 + progress * 0.45
 		"release":
 			radius = lerpf(58.0, 105.0, progress)
-			turns = progress * 1.2
+			turns = 0.35 + progress * 1.2
 		"active":
 			radius = 105.0 + sin(progress * TAU * 4.0) * 12.0
-			turns = progress * 5.5
+			turns = 1.55 + progress * 5.5
 		"recovery":
 			radius = lerpf(105.0, 40.0, progress)
-			turns = 5.5 + progress * 0.8
+			turns = 7.05 + progress * 0.8
 			alpha = 0.88 * (1.0 - progress * 0.45)
 		"cancel":
 			radius = 40.0
-			turns = 6.3
+			turns = 7.85
 			alpha = 0.42 * (1.0 - progress)
 	for index in 3:
-		var saw := _visuals["saw_%d" % index] as Sprite2D
+		var saw := _visuals["saw_%d" % index] as AnimatedSprite2D
 		var angle := turns * TAU + TAU * float(index) / 3.0
-		_show(saw, alpha)
+		# The saws burn through the cast pack as they snap out of the surgical
+		# stance and then hold the finished blade for the rest of the orbit.
+		_play(saw, alpha, turns)
 		saw.position = center + Vector2.from_angle(angle) * radius
 		saw.rotation = angle + progress * 3.5
 		saw.scale = Vector2.ONE * (0.38 + (0.08 if phase == "active" else 0.0))
-	var arc := _visuals["arc"] as Line2D
-	_show(arc, 0.76 if phase in ["release", "active"] else 0.32 * (1.0 - progress))
+	var arc := _visuals["arc"] as AnimatedSprite2D
+	# One pass of the serration pack per revolution of the orbit it draws.
+	_play(arc, 0.76 if phase in ["release", "active"] else 0.32 * (1.0 - progress), turns)
 	arc.scale = Vector2.ONE * (radius / 112.0)
 	arc.rotation = turns * TAU
 	if phase == "active":
@@ -300,21 +331,58 @@ func _preview_saw(phase: String, progress: float) -> void:
 		stitches.scale = Vector2(progress, 1.0)
 
 
-func _update_wave(wave: Line2D, position: Vector2, pulse: float) -> void:
+## One staggered infection wave: the pack runs exactly one pass over the pulse,
+## so a wave never restarts its loop while it is still on screen.
+func _update_wave(wave: AnimatedSprite2D, position: Vector2, pulse: float) -> void:
 	if pulse < 0.0 or pulse > 1.0:
 		return
-	_show(wave, sin(pulse * PI) * 0.78)
+	_play(wave, sin(pulse * PI) * 0.78, pulse)
 	wave.position = position
-	wave.scale = Vector2.ONE * (0.48 + pulse * 2.25)
+	wave.scale = Vector2.ONE * ((0.48 + pulse * 2.25) * WAVE_PACK_SCALE)
 
 
-func _sprite(node_name: String, path: String) -> Sprite2D:
-	var sprite := Sprite2D.new()
+func _flipbook(node_name: String, frames: SpriteFrames) -> AnimatedSprite2D:
+	var sprite := AnimatedSprite2D.new()
 	sprite.name = node_name
-	sprite.texture = load(path)
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var animation := _pack_animation(frames)
+	if animation.is_empty():
+		push_error("DoctorUltimateTimelineScene: %s/%s has no animated pack" % [weapon_id, node_name])
+	else:
+		sprite.sprite_frames = frames
+		sprite.animation = animation
 	add_child(sprite)
 	return sprite
+
+
+## `plays` counts whole passes through the pack, so a looping pack wraps at its
+## authored loop-closure frame and a one-shot pack holds its last frame. Nothing
+## reads a wall clock: the drawn frame is a function of the timeline alone.
+func _play(sprite: AnimatedSprite2D, alpha: float, plays: float) -> void:
+	_show(sprite, alpha)
+	sprite.frame = _pack_frame(sprite, plays)
+
+
+static func _pack_frame(sprite: AnimatedSprite2D, plays: float) -> int:
+	var frames := sprite.sprite_frames
+	if frames == null:
+		return 0
+	var animation := sprite.animation
+	var count := frames.get_frame_count(animation)
+	if count <= 0:
+		return 0
+	var index := floori(plays * float(count))
+	if frames.get_animation_loop(animation):
+		return posmod(index, count)
+	return clampi(index, 0, count - 1)
+
+
+## A FAN-3613 pack carries exactly one animation, named after its effect.
+static func _pack_animation(frames: SpriteFrames) -> StringName:
+	if frames == null:
+		return &""
+	var names := frames.get_animation_names()
+	return StringName(names[0]) if names.size() > 0 else &""
 
 
 func _line(node_name: String, points: PackedVector2Array, width: float, color: Color, closed := false) -> Line2D:
