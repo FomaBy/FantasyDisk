@@ -169,5 +169,238 @@
     "runtime_bottom_padding": 32,
     "source": "PixelLab MCP download endpoint",
     "legacy_or_manual_fallback_used": false
+  },
+  "fan3324_regeneration": {
+    "task": "FAN-3324",
+    "generated_at": "2026-08-27T13:55:40+00:00",
+    "source": "PixelLab MCP animate_character",
+    "mode": "v3 custom with rotation reference",
+    "pixellab_character_id": "1646d83c-f570-4bdd-9065-cb1b46bf13f7",
+    "directions": [
+      "north",
+      "north-west"
+    ],
+    "frame_count_per_direction": 6,
+    "animation_groups": {
+      "north": {
+        "group_id": "578a3a77-bc11-4685-82e5-69b75655aa53",
+        "animation_id": "6cdd7c45-5b3e-4f2c-bfe4-fdb09e2f3d88",
+        "frames": [
+          "ranger_move_north_00.png",
+          "ranger_move_north_01.png",
+          "ranger_move_north_02.png",
+          "ranger_move_north_03.png",
+          "ranger_move_north_04.png",
+          "ranger_move_north_05.png"
+        ]
+      },
+      "north-west": {
+        "group_id": "adf14b56-686e-4829-a8de-2b28fa857c71",
+        "animation_id": "285b4503-efe7-48e9-ab17-2c74173c9fa6",
+        "frames": [
+          "ranger_move_north-west_00.png",
+          "ranger_move_north-west_01.png",
+          "ranger_move_north-west_02.png",
+          "ranger_move_north-west_03.png",
+          "ranger_move_north-west_04.png",
+          "ranger_move_north-west_05.png"
+        ]
+      }
+    },
+    "frame_inventory": {
+      "ranger_move_north_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          61,
+          164,
+          174
+        ],
+        "encoded_sha256": "021985988bc6e5e0debf4551c02ca2a19b6d7e2f58a585b4d068f7ab306fe087",
+        "pixel_sha256": "80b1a06feca2fadb7fa3f259eed30b74b0dfd4bb99c3f061ed8f0ece012f4ae5"
+      },
+      "ranger_move_north_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          65,
+          63,
+          168,
+          174
+        ],
+        "encoded_sha256": "654575d9b1a22a591d687dbb5646499ed95833ed43c55c9f79a97452ec2e7791",
+        "pixel_sha256": "d81a68d7c05f45553c9c162530a3987a5033a023ea73301cd7d7a1699ffe5819"
+      },
+      "ranger_move_north_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          68,
+          61,
+          169,
+          174
+        ],
+        "encoded_sha256": "f42e8c4b7408d7e6e3999fe40fd876dfcb23654c3cf1d8b1e18d508c7627b349",
+        "pixel_sha256": "82efe5a7100b6c5ef5166554b2616f1334225a839f45ed2efefd7e6a3218926b"
+      },
+      "ranger_move_north_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          71,
+          59,
+          166,
+          174
+        ],
+        "encoded_sha256": "92722665a9dacf13431f5f79a721e8d2b395e7bffde91a540cce8f1c147dee7b",
+        "pixel_sha256": "c91f4d19f9f571e2a4fe4402d4ecaad2dfef13fa8ee6d17b5009d7bc7c40da84"
+      },
+      "ranger_move_north_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          77,
+          60,
+          158,
+          174
+        ],
+        "encoded_sha256": "d51a5052ba5cfa820b14a0cde74f22049ec5283135aa29619696413bcde893ab",
+        "pixel_sha256": "7e2f4b8bbc4b7583248798aebc4cf4adb4eac4b8d67f6395db3b84cbe7d370f2"
+      },
+      "ranger_move_north_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          80,
+          62,
+          159,
+          174
+        ],
+        "encoded_sha256": "4693f7b89dd0e3ce16e2edfed694b658bd7551b9d82e763ff16c3f6a5cbcf520",
+        "pixel_sha256": "b88c2ebb197fa6232a20060b7be0dcfa597ac136b4afd83f4de316e62dd523e0"
+      },
+      "ranger_move_north-west_00.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          74,
+          63,
+          170,
+          176
+        ],
+        "encoded_sha256": "48ee505314da4a5a2638dd821e63cc511534ea7cde940d9eeabff95a48f32739",
+        "pixel_sha256": "ea3655cbb2bd919376f3eaf0e128f7a225cd6c725093c79ef01415607ceb9268"
+      },
+      "ranger_move_north-west_01.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          66,
+          67,
+          175,
+          177
+        ],
+        "encoded_sha256": "bd8a4707378c18b6515f422b0eafc021d0568aff880a26a882e57cf77533fe0f",
+        "pixel_sha256": "ccad181c0843c389be498943ece13b415f3288184dec1766d21e46ad9ae76fa7"
+      },
+      "ranger_move_north-west_02.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          67,
+          64,
+          172,
+          176
+        ],
+        "encoded_sha256": "1fe52afa2af9f6e53ea43fbe2d8e27fcccb17b61c12b758afb8a98b36cc2ce17",
+        "pixel_sha256": "70d7816a38b1328c52d5a39e1d6289fae83085498b3a61e5a150652783b3a794"
+      },
+      "ranger_move_north-west_03.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          71,
+          61,
+          166,
+          173
+        ],
+        "encoded_sha256": "af0a78808c62f452a52118efee30b7d033fe052a0b31c86c2aa42b385d08b783",
+        "pixel_sha256": "eb7189fd66aa77d22298b789d0c085c9ea8ad2d5dd93040ea26db634543acfed"
+      },
+      "ranger_move_north-west_04.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          75,
+          63,
+          162,
+          172
+        ],
+        "encoded_sha256": "2d1530f02d30d7d0a3a0a2a8a3b5e0cc6b6e5ce0e97140b8877db74a3a37aef5",
+        "pixel_sha256": "e3bdd60704f7a7fc73e50e1ea34e0f1b2458c1bc1916c50bbaff8b402df4e33c"
+      },
+      "ranger_move_north-west_05.png": {
+        "size": [
+          240,
+          240
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          81,
+          67,
+          165,
+          173
+        ],
+        "encoded_sha256": "c9e90c54ad8624de8012f45cc6be907f702ad2afa6c1a9e5f16319eca7f29b46",
+        "pixel_sha256": "59a4fb7e6ed275152a143f869abcc75840e69cf1bad7e4d6b41c41d72ddffec7"
+      }
+    },
+    "runtime_promoted": false,
+    "legacy_or_manual_fallback_used": false,
+    "tokens_or_private_urls_stored": false,
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "manifest_builder": "FAN-3324"
+    },
+    "contract": {
+      "source_canvas": "PixelLab rotation-native",
+      "alpha": "RGBA transparent",
+      "naming": "actor_move_direction_00..05"
+    }
   }
 }
