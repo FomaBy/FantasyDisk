@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1494",
+  "issue": "FAN-3675",
   "class_id": "druid",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -16,23 +16,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "summon_amulet",
+      "briar_staff",
+      "raven_totem"
+    ],
+    "integrated_art_candidate": "a14f9246527b866ea12ad9d425c2f122a41cc53e",
+    "art_integration_anchor": "0bf1c18492402eb4959054653481e80fc77b1118",
     "reused_sources": {
       "summon_amulet": {
-        "source_path": "assets/sprites/effects/vfx_weapon_summon_amulet.png",
+        "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame Wild Hunt pack, integrated byte-identically."
       },
       "briar_staff": {
-        "source_path": "assets/sprites/effects/vfx_weapon_briar_staff.png",
+        "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame briar lattice pack, integrated byte-identically."
       },
       "raven_totem": {
-        "source_path": "assets/sprites/effects/vfx_weapon_raven_totem.png",
+        "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame raven vortex pack, integrated byte-identically."
       }
     }
   },
@@ -41,9 +50,18 @@
       "weapon_id": "summon_amulet",
       "title": "Дикая Охота",
       "scene_path": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "silhouette": "eight spectral beasts on an amulet hunt sigil",
-      "motion_path": "radial eight-direction burst, curved hunting sweep around the sigil, then a leap back into it",
-      "impact_language": "staggered pack bites on priority targets ending in one sigil swallow",
+      "silhouette": "spectral Wild Hunt wolf crossing eight directional marks on an amulet sigil",
+      "motion_path": "eight-direction hunt marks converge into a forward lunge, then snap back to the amulet",
+      "impact_language": "one spectral bite burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
+          "animation": "druid_summon_amulet_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.85,
@@ -73,9 +91,18 @@
       "weapon_id": "briar_staff",
       "title": "Лес за Одно Дыхание",
       "scene_path": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
-      "silhouette": "five ground roots carrying a connected bramble lattice with open safe paths",
-      "motion_path": "staff slam, then a sequential outward root race and wall growth between the tips",
-      "impact_language": "root impale hold followed by thorn crowns that burst and wither",
+      "silhouette": "sequential briar lattice with readable open paths between the root growths",
+      "motion_path": "staff slam, then ordered root growth, lattice closure, and thorn-crown wither",
+      "impact_language": "one briar impale burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
+          "animation": "druid_briar_staff_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 1.1,
@@ -105,9 +132,18 @@
       "weapon_id": "raven_totem",
       "title": "Ночь Тысячи Крыльев",
       "scene_path": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
-      "silhouette": "opened totem wings under three layered raven arcs and marked prey",
-      "motion_path": "wings open, counter-rotating flock layers gather, then staggered dives run at marked prey",
-      "impact_language": "per-mark dive streaks, returning wisps, and one final collapse pulse",
+      "silhouette": "layered raven vortex around a totem with visible marked prey",
+      "motion_path": "counter-rotating wing layers gather, then staggered dives return and collapse",
+      "impact_language": "one raven dive burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
+          "animation": "druid_raven_totem_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.6,
