@@ -110,7 +110,10 @@ func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 		var source := sources.get(weapon_id, {}) as Dictionary
 		for key in ["source_reference", "source_notes", "weapon_runtime_path", "vfx_runtime_path", "runtime_scene"]:
 			var path := str(source.get(key, ""))
-			_expect(not path.is_empty() and FileAccess.file_exists("res://%s" % path), "%s %s must be recorded and exist" % [weapon_id, key], errors)
+			var exists := FileAccess.file_exists("res://%s" % path)
+			if key == "source_reference" and not exists:
+				exists = _tracked_file_exists(path)
+			_expect(not path.is_empty() and exists, "%s %s must be recorded and exist" % [weapon_id, key], errors)
 		_expect(str(source.get("source_reference", "")).begins_with(SOURCE_LFS_ROOT + "/"), "%s source reference must use the dedicated LFS pack" % weapon_id, errors)
 		_expect(str(source.get("source_notes", "")) == str((provenance.get("new_pack_manifests", {}) as Dictionary).get(weapon_id, "")), "%s source notes must point to its provenance manifest" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("weapon_runtime_path", ""))) == str(source.get("weapon_sha256", "")), "%s weapon SHA-256 must match the reused asset" % weapon_id, errors)
@@ -516,6 +519,13 @@ func _file_sha256(path: String) -> String:
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes("res://%s" % path))
 	return context.finish().hex_encode()
+
+
+func _tracked_file_exists(path: String) -> bool:
+	var output := []
+	if OS.execute("git", ["ls-tree", "-r", "--name-only", "HEAD", "--", path], output, false) != 0:
+		return false
+	return "".join(PackedStringArray(output)).strip_edges().split("\n", false).has(path)
 
 
 func _load_json(path: String, errors: Array[String]) -> Dictionary:
