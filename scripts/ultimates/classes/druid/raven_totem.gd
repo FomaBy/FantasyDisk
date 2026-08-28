@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.druid.raven_totem"
 const EXECUTOR_ID := "weapon_ultimate.executor.druid.raven_totem"
@@ -14,6 +16,8 @@ var wisp_return_count_for_tests := 0
 var _activation = null
 var _marked: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 ## Ultimate Direction v2 (FAN-3239): the mark, every dive wave and the collapse
@@ -116,6 +120,7 @@ func dive(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	dive_count_for_tests += 1
+	var victims: Array = []
 	for raw_target in _marked:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -128,11 +133,14 @@ func dive(wave: int) -> void:
 		)
 		if result != null and float(result.applied) > 0.0:
 			wisp_return_count_for_tests += 1
+			victims.append(target)
+	_play_impacts(victims)
 
 
 func collapse() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var victims: Array = []
 	for raw_target in _marked:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -145,10 +153,26 @@ func collapse() -> void:
 		)
 		if result != null and float(result.applied) > 0.0:
 			wisp_return_count_for_tests += 1
+			victims.append(target)
+	_play_impacts(victims)
 	_activation.present(EXECUTOR_ID + ".collapse", {
 		"position": global_position, "radius": _activation.param_float("mark_radius", 520.0),
 		"shape": "ring_pulse",
 	})
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
@@ -173,4 +197,6 @@ func _exit_tree() -> void:
 			target.set_meta(StatusEffects.META_KEY, owned)
 	_leased_statuses.clear()
 	_marked.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null

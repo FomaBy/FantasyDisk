@@ -1,5 +1,8 @@
 extends Node2D
 
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres")
+
 const PROFILE_ID := "weapon_ultimate.profile.druid.summon_amulet"
 const EXECUTOR_ID := "weapon_ultimate.executor.druid.summon_amulet"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/druid/summon_amulet.tscn"
@@ -9,6 +12,8 @@ var pack_count_for_tests := 0
 var hunt_waves_for_tests := 0
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 ## Ultimate Direction v2 (FAN-2944): the Wild Hunt reaches every live enemy on
@@ -76,6 +81,7 @@ func stampede() -> void:
 				"wild_hunt:stampede:%d:%d" % [beast, target.get_instance_id()],
 				{"ultimate_mechanic": "wild_hunt_stampede", "beast": beast},
 				splash_index, splash_radius, splash_neighbors)
+	_play_impacts(targets)
 	_activation.present(EXECUTOR_ID + ".stampede", {
 		"position": _activation.origin(), "radius": _activation.param_float("hunt_range", 560.0),
 		"shape": "ring_pulse",
@@ -97,6 +103,21 @@ func hunt(wave: int) -> void:
 				"wild_hunt:hunt:%d:%d:%d" % [wave, beast, target.get_instance_id()],
 				{"ultimate_mechanic": "wild_hunt_priority", "wave": wave, "beast": beast},
 				splash_index, splash_radius, splash_neighbors)
+	_play_impacts(targets)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 ## Every live enemy on the map, re-read on each wave so enemies that spawn or
@@ -182,4 +203,6 @@ func _deal(
 
 
 func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false
 	_activation = null

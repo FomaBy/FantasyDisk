@@ -1,121 +1,36 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_summon_amulet.png" id="1_beast"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
-blend_mode = 1
-light_mode = 1
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres" id="1_flipbook"]
 
 [sub_resource type="Animation" id="Animation_wild_hunt"]
 resource_name = "ultimate"
 length = 7.4
 tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("HowlWave:modulate:a")
+tracks/0/path = NodePath("WildHunt:frame")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.85, 1.5, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.85, 0.95, 0.0, 0.0]
+"times": PackedFloat32Array(0, 0.85, 1.6, 2.35, 3.1, 3.85, 4.6, 5.35, 6.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("HowlWave:scale")
+tracks/1/path = NodePath("WildHunt:scale")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.5, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.85, 1.15, 6.6, 7.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.18, 0.18), Vector2(1, 1), Vector2(1.45, 1.45), Vector2(1.45, 1.45)]
+"values": [Vector2(0.18, 0.18), Vector2(0.58, 0.58), Vector2(1.35, 1.35), Vector2(1.15, 1.15), Vector2(0.08, 0.08)]
 }
 tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AmuletSigil:modulate:a")
+tracks/2/path = NodePath("WildHunt:modulate:a")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 1.15, 6.6, 7.0, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.25, 0.85, 6.6, 7.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.45, 0.7, 0.72, 1.0, 0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AmuletSigil:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 1.15, 6.6, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.12, 0.9, 1.05]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Pack:modulate:a")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.15, 6.6, 7.15, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 1.0, 1.0, 0.35, 0.0]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Pack:scale")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.85, 1.15, 1.45, 6.6, 7.15, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0.05, 0.05), Vector2(0.08, 0.08), Vector2(1, 1), Vector2(1.08, 1.08), Vector2(1.02, 1.02), Vector2(0.22, 0.22), Vector2(0.05, 0.05)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Pack:rotation")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0, 1.15, 3.2, 5.0, 6.6, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.1, 1.05, 1.85, 2.35, 2.5]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("HuntTrails:modulate:a")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 1.15, 1.7, 5.4, 6.6, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 0.8, 0.62, 0.3, 0.0]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("HuntTrails:rotation")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 1.7, 6.6, 7.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, -0.35, -2.1, -2.4]
+"values": [0.0, 0.78, 1.0, 0.92, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wild_hunt"]
@@ -123,125 +38,18 @@ _data = {"ultimate": SubResource("Animation_wild_hunt")}
 
 [node name="DruidSummonAmuletWildHunt" type="Node2D"]
 metadata/ultimate_id = "druid/summon_amulet"
-metadata/silhouette = "eight_spectral_beasts_on_an_amulet_hunt_sigil"
-metadata/motion_path = "radial_eight_direction_burst_then_curved_hunt_and_leap_back_into_the_sigil"
-metadata/impact_language = "staggered_pack_bites_on_priority_targets_ending_in_one_sigil_swallow"
+metadata/silhouette = "spectral_wild_hunt_wolf_crossing_eight_direction_sigil_arcs"
+metadata/motion_path = "eight_direction_hunt_marks_converge_into_a_forward_lunge_then_snap_back_to_the_amulet"
+metadata/impact_language = "per_victim_spectral_bite_burst_over_the_existing_white_hit_flash"
 metadata/max_visual_nodes = 11
 metadata/crowd_cap = 24
 
-[node name="HowlWave" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(-115.8, 59, -144, 2.8, -118.1, -54.4, -91.4, -111.3, -30.3, -126.4, 30.9, -140.7, 80.5, -102.1, 129.6, -62.8, 130, 0, 129.6, 62.8, 80.5, 102.1, 30.9, 140.7, -30.3, 126.4, -91.4, 111.3, -118.1, 54.4, -144, -2.8, -115.8, -59)
-width = 7.0
-default_color = Color(0.86, 1, 0.72, 0.75)
-antialiased = true
+[node name="WildHunt" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_flipbook")
+animation = &"druid_summon_amulet_ultimate"
 scale = Vector2(0.18, 0.18)
 modulate = Color(1, 1, 1, 0)
-
-[node name="AmuletSigil" type="Sprite2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-texture = ExtResource("1_beast")
-scale = Vector2(0.62, 0.62)
-modulate = Color(0.72, 1, 0.6, 0)
-
-[node name="HuntTrails" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(0, -62, 27.8, -62.5, 55.6, -50, 77.2, -25.1, 87, 9.1, 81.3, 47, 58.9, 81.1, 22.2, 104.3, -23.5, 110.6, -70.2, 96.6, -109, 62.9, -131.5, 13.8, -131.8, -42.8, -107.7, -97, -61.6, -138.2, 0, -157.7, 66.7, -149.9, 126.7, -114.1, 168.2, -54.7, 182.2, 19.2, 164.2, 94.8, 115.2, 158.6)
-width = 5.0
-default_color = Color(0.68, 0.95, 0.78, 0.55)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
-
-[node name="Pack" type="Node2D" parent="."]
-scale = Vector2(0.05, 0.05)
-modulate = Color(1, 1, 1, 0)
-
-[node name="BeastNorth" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.78, 1, 0.7, 0.95)
-closed = true
-antialiased = true
-position = Vector2(0, -168)
-rotation = -1.5708
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastNorthEast" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.72, 0.96, 0.68, 0.95)
-closed = true
-antialiased = true
-position = Vector2(118.8, -118.8)
-rotation = -0.7854
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastEast" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.82, 1, 0.74, 0.95)
-closed = true
-antialiased = true
-position = Vector2(168, 0)
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastSouthEast" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.7, 0.94, 0.66, 0.95)
-closed = true
-antialiased = true
-position = Vector2(118.8, 118.8)
-rotation = 0.7854
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastSouth" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.78, 1, 0.7, 0.95)
-closed = true
-antialiased = true
-position = Vector2(0, 168)
-rotation = 1.5708
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastSouthWest" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.72, 0.96, 0.68, 0.95)
-closed = true
-antialiased = true
-position = Vector2(-118.8, 118.8)
-rotation = 2.3562
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastWest" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.82, 1, 0.74, 0.95)
-closed = true
-antialiased = true
-position = Vector2(-168, 0)
-rotation = 3.1416
-scale = Vector2(1.35, 1.35)
-
-[node name="BeastNorthWest" type="Line2D" parent="Pack"]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(42, -2, 20, -13, 2, -9, -8, -24, -10, -7, -32, -4, -16, 3, -24, 22, -4, 8, 14, 12, 30, 6)
-width = 6.0
-default_color = Color(0.7, 0.94, 0.66, 0.95)
-closed = true
-antialiased = true
-position = Vector2(-118.8, -118.8)
-rotation = 3.927
-scale = Vector2(1.35, 1.35)
+z_index = 2
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_wild_hunt")}
