@@ -1316,6 +1316,7 @@ func _test_full_frame_animation_registry() -> void:
 		"iron_bastion": {"idle": 1, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shield_block": 7, "skill_slam_wave": 7},
 		"night_stalker": {"idle": 4, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shadow_strike": 7, "skill_phase_dash": 7},
 		"plague_prophet": {"idle": 1, "move": 8, "skill_poison_volley": 10, "hit": 5, "death": 7},
+		"shard_marshal": {"idle": 1, "move": 8, "attack": 7, "hit": 5, "death": 7, "skill_shard_fan": 7, "skill_command_pulse": 7},
 	}
 	for elite_id in elite_full_frame_scenes.keys():
 		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]
@@ -1449,6 +1450,30 @@ func _test_full_frame_animation_registry() -> void:
 			"skill_states": ["skill_shadow_blink", "skill_devour_bite"],
 			"phase_state": "mini_shadow_devourer:shadow_blink:windup",
 			"phase_resolved": "skill_shadow_blink",
+		},
+		"mini_siege_rammer": {
+			"path": "res://scenes/EliteArmored.tscn",
+			"skill_states": ["skill_shield_block", "skill_slam_wave"],
+			"phase_state": "mini_siege_rammer:slam_wave:windup",
+			"phase_resolved": "skill_slam_wave",
+		},
+		"mini_swarm_sniper": {
+			"path": "res://scenes/EliteCommander.tscn",
+			"skill_states": ["skill_shard_fan", "skill_command_pulse"],
+			"phase_state": "mini_swarm_sniper:shard_fan:windup",
+			"phase_resolved": "skill_shard_fan",
+		},
+		"mini_void_phantom": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_shadow_strike", "skill_phase_dash"],
+			"phase_state": "mini_void_phantom:shadow_strike:windup",
+			"phase_resolved": "skill_shadow_strike",
+		},
+		"mini_plague_berserker": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_poison_volley"],
+			"phase_state": "mini_plague_berserker:poison_volley:windup",
+			"phase_resolved": "skill_poison_volley",
 		},
 	}
 	for mini_id in mini_elite_full_frame_scenes.keys():
