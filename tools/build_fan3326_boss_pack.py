@@ -431,19 +431,19 @@ def write_spriteframes(actor_id: str, rows: dict[str, dict[str, list[Path]]]) ->
             paths = direction_rows[direction]
             blocks.append(frame_block([add_resource(path) for path in paths], speed, loop, "%s_%s" % (state, direction.replace("-", "_"))))
     text = '[gd_resource type="SpriteFrames" format=3]\n\n' + "\n".join(ext_lines) + '\n\n[resource]\nanimations = [\n' + ",\n".join(blocks) + "\n]\n"
-    destination = ROOT / "assets/sprites/bosses/full_frame/%s_spriteframes.tres" % actor_id
+    destination = ROOT / ("assets/sprites/bosses/full_frame/%s_spriteframes.tres" % actor_id)
     destination.write_text(text, encoding="utf-8")
 
 
 def source_path(actor_id: str, state: str, direction: str, index: int) -> Path:
-    directory = ROOT / "assets/sprites/bosses/%s_8dir/pixellab_source" % actor_id / state
+    directory = ROOT / ("assets/sprites/bosses/%s_8dir/pixellab_source" % actor_id) / state
     suffix = direction.replace("-", "_")
     filename = "%s_%s_%s_%02d.png" % (actor_id, state, suffix, index)
     return directory / filename
 
 
 def runtime_path(actor_id: str, state: str, direction: str, index: int) -> Path:
-    directory = ROOT / "assets/sprites/bosses/%s_8dir/runtime" % actor_id
+    directory = ROOT / ("assets/sprites/bosses/%s_8dir/runtime" % actor_id)
     suffix = direction.replace("-", "_")
     filename = "%s_%s_%s_%02d.png" % (actor_id, state, suffix, index)
     return directory / filename
@@ -478,8 +478,8 @@ def write_manifest(manifest: dict[str, Any], path: Path) -> None:
 
 
 def build_actor(actor_id: str, source_kind: str, asset_id: str, report: dict[str, Any], state_specs: dict[str, dict[str, Any]], aliases: dict[str, str], bearer: str, call_id: int, log=print) -> tuple[dict[str, Any], int]:
-    source_root = ROOT / "assets/sprites/bosses/%s_8dir/pixellab_source" % actor_id
-    runtime_root = ROOT / "assets/sprites/bosses/%s_8dir/runtime" % actor_id
+    source_root = ROOT / ("assets/sprites/bosses/%s_8dir/pixellab_source" % actor_id)
+    runtime_root = ROOT / ("assets/sprites/bosses/%s_8dir/runtime" % actor_id)
     source_root.mkdir(parents=True, exist_ok=True)
     runtime_root.mkdir(parents=True, exist_ok=True)
     source_rows: dict[str, dict[str, list[Path]]] = {}
@@ -610,7 +610,7 @@ def check_manifest(path: Path) -> bool:
 def rebuild_manifest(path: Path) -> bool:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     actor_id = path.parent.parent.name.removesuffix("_8dir")
-    runtime_root = ROOT / "assets/sprites/bosses/%s_8dir/runtime" % actor_id
+    runtime_root = ROOT / ("assets/sprites/bosses/%s_8dir/runtime" % actor_id)
     source_root = path.parent
     rows: dict[str, dict[str, list[Path]]] = {}
     for state, spec in manifest["states"].items():
