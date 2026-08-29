@@ -52,3 +52,8 @@ __pycache__/
 *.secret
 auth_header.txt
 pixellab_auth_header.txt
+
+# graphify: local generated knowledge graph, not committed (regenerate via
+# `python ".claude/skills/graphify/run.py" extract . --code-only`)
+graphify-out/
+.claude/skills/graphify/.venv/
