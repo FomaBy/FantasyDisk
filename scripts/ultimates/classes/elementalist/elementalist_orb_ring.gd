@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.elementalist.elementalist_orb_ring"
 const EXECUTOR_ID := "weapon_ultimate.executor.elementalist.elementalist_orb_ring"
@@ -15,6 +17,8 @@ var _activation = null
 var _resolved_beats := {}
 var _nova_done := false
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -169,6 +173,7 @@ func cast_beat(beat: int) -> void:
 				)
 				_deal(target, _activation.scaled_damage("gale_damage", 6.0),
 					"conclave:gale", "conclave_gale")
+	_play_impacts(targets)
 
 
 func combined_nova() -> void:
@@ -181,7 +186,8 @@ func combined_nova() -> void:
 	_activation.present(EXECUTOR_ID + ".supernova", {
 		"position": center, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.targets(center, radius):
+	var victims: Array = _activation.targets(center, radius)
+	for raw_target in victims:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -193,10 +199,12 @@ func combined_nova() -> void:
 			* _activation.param_float("nova_status_bonus", 0.10)
 		_deal(target, _activation.scaled_damage("nova_damage", 15.0) * multiplier,
 			"conclave:nova", "conclave_supernova")
+	_play_impacts(victims)
 
 
 func _shock_chain(targets: Array) -> void:
 	var limit := mini(targets.size(), _activation.param_int("shock_chain_count", 6))
+	var chained: Array = []
 	for hop in limit:
 		var target := targets[hop] as Node
 		if target == null or not is_instance_valid(target):
@@ -205,6 +213,22 @@ func _shock_chain(targets: Array) -> void:
 		var amount: float = _activation.scaled_damage("shock_damage", 7.5) \
 			* pow(_activation.param_float("shock_falloff", 0.86), hop)
 		_deal(target, amount, "conclave:shock:%d" % hop, "conclave_chain_shock")
+		chained.append(target)
+	_play_impacts(chained)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _apply_status(target: Node, element: String, config: Dictionary) -> void:
@@ -247,6 +271,8 @@ func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 

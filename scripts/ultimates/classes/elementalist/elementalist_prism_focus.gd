@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.elementalist.elementalist_prism_focus"
 const EXECUTOR_ID := "weapon_ultimate.executor.elementalist.elementalist_prism_focus"
@@ -15,6 +17,8 @@ var _focus := Vector2.ZERO
 var _resolved_sweeps := {}
 var _shattered := false
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -139,6 +143,7 @@ func fire_sweep(sweep: int) -> void:
 			seen[target.get_instance_id()] = true
 			targets.append(target)
 	var focus_points := _focus_points(angle)
+	var struck: Array = []
 	for raw_target in targets:
 		var target := raw_target as Node2D
 		var hits := int(_activation.target_value(target, "prism_lattice_hits", 0))
@@ -156,6 +161,8 @@ func fire_sweep(sweep: int) -> void:
 				break
 		_deal(target, _activation.scaled_damage("lattice_damage", 5.0) * multiplier,
 			"prism:lattice:%d" % sweep, "prism_lattice")
+		struck.append(target)
+	_play_impacts(struck)
 	for point in focus_points:
 		_activation.present(EXECUTOR_ID + ".focus", {
 			"position": point, "radius": _activation.param_float("focus_radius", 100.0),
@@ -172,7 +179,8 @@ func shatter() -> void:
 	_activation.present(EXECUTOR_ID + ".shatter", {
 		"position": _focus, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.select_targets(_focus, radius, 0, "nearest"):
+	var victims: Array = _activation.select_targets(_focus, radius, 0, "nearest")
+	for raw_target in victims:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -186,6 +194,7 @@ func shatter() -> void:
 		})
 		if bool(result.get("status_applied", false)):
 			_lease_status(target, status_id)
+	_play_impacts(victims)
 
 
 func hit_count_for(target: Node) -> int:
@@ -196,6 +205,20 @@ func _focus_points(angle: float) -> PackedVector2Array:
 	var offset: Vector2 = Vector2.RIGHT.rotated(angle + PI * 0.25) \
 		* _activation.param_float("focus_orbit_radius", 180.0)
 	return PackedVector2Array([_focus + offset, _focus - offset])
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _lease_status(target: Node, status_id: String) -> void:
@@ -220,6 +243,8 @@ func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1476",
+  "issue": "FAN-3715",
   "class_id": "elementalist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -16,23 +16,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "elementalist_orb_ring",
+      "elementalist_prism_focus",
+      "elementalist_meteor_core"
+    ],
+    "integrated_art_candidate": "1234c72b4787cc8a5632125b52071b1f997c38f0",
+    "art_integration_anchor": "dc3c5b6425eaf3bdf46374f543522b804b89f835",
     "reused_sources": {
       "elementalist_orb_ring": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png",
+        "spriteframes": "assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame Grand Conclave pack, integrated byte-identically."
       },
       "elementalist_prism_focus": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_prism_focus.png",
+        "spriteframes": "assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame prism lattice pack, integrated byte-identically."
       },
       "elementalist_meteor_core": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+        "spriteframes": "assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame starfall meteor pack, integrated byte-identically."
       }
     }
   },
@@ -44,6 +53,15 @@
       "silhouette": "four tinted elemental avatar orbs on a square orbit guide",
       "motion_path": "square orbit accelerates around the moving hero through four sequential element cast beats",
       "impact_language": "burn, freeze, gale, and shock beats merge into a white combined supernova",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
+          "animation": "elementalist_orb_ring_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.7,
@@ -72,6 +90,15 @@
       "silhouette": "single aimed prism with an arena-crossing beam lattice",
       "motion_path": "prism unfolds, refracted X-beams form a lattice that slowly rotates across the arena",
       "impact_language": "staggered triple focus hits end in a rainbow fracture shatter",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
+          "animation": "elementalist_prism_focus_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.55,
@@ -100,6 +127,15 @@
       "silhouette": "local sky veil, growing rune shadow, and one giant meteor",
       "motion_path": "long fair ground telegraph, then a vertical meteor drop onto the aim point",
       "impact_language": "one massive impact leaves a pulsing gravity-fire crater with cooling embers",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
+          "animation": "elementalist_meteor_core_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 2.45,

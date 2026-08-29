@@ -3,11 +3,37 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/elementalist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/elementalist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["elementalist_orb_ring", "elementalist_prism_focus", "elementalist_meteor_core"]
 const SCENES := {
 	"elementalist_orb_ring": preload("res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn"),
 	"elementalist_prism_focus": preload("res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn"),
 	"elementalist_meteor_core": preload("res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn"),
+}
+const EFFECT_SCENES := {
+	"elementalist_orb_ring": preload("res://scripts/ultimates/classes/elementalist/elementalist_orb_ring.tscn"),
+	"elementalist_prism_focus": preload("res://scripts/ultimates/classes/elementalist/elementalist_prism_focus.tscn"),
+	"elementalist_meteor_core": preload("res://scripts/ultimates/classes/elementalist/elementalist_meteor_core.tscn"),
+}
+const FLIPBOOKS := {
+	"elementalist_orb_ring": {
+		"node": "Conclave",
+		"path": "res://assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
+		"animation": &"elementalist_orb_ring_ultimate",
+		"times": [0.0, 0.7, 1.0, 2.2, 3.4, 4.6, 6.0, 6.8, 7.6],
+	},
+	"elementalist_prism_focus": {
+		"node": "PrismLattice",
+		"path": "res://assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
+		"animation": &"elementalist_prism_focus_ultimate",
+		"times": [0.0, 0.55, 0.85, 1.75, 2.65, 3.55, 4.45, 5.35, 6.4],
+	},
+	"elementalist_meteor_core": {
+		"node": "Starfall",
+		"path": "res://assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
+		"animation": &"elementalist_meteor_core_ultimate",
+		"times": [0.0, 2.45, 2.75, 3.6, 4.45, 5.3, 6.15, 7.0, 8.1],
+	},
 }
 const PACKS := [
 	{
@@ -17,7 +43,7 @@ const PACKS := [
 		"title": "ORB RING — GRAND CONCLAVE / square orbit",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.82, 0.45),
-		"required_nodes": ["Conclave/OrbFlame", "Conclave/OrbFrost", "Conclave/OrbGale", "Conclave/OrbStorm", "GaleBeat"],
+		"required_nodes": ["Conclave"],
 	},
 	{
 		"weapon_id": "elementalist_prism_focus",
@@ -26,7 +52,7 @@ const PACKS := [
 		"title": "PRISM FOCUS — PRISMATIC VERDICT / lattice",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.65, 0.9, 1.0),
-		"required_nodes": ["PrismCore", "Lattice/PrimaryBeams", "Lattice/RefractedBeams", "Lattice/FocusTwo"],
+		"required_nodes": ["PrismLattice"],
 	},
 	{
 		"weapon_id": "elementalist_meteor_core",
@@ -35,14 +61,14 @@ const PACKS := [
 		"title": "METEOR CORE — STARFALL / meteor impact",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.5, 0.25),
-		"required_nodes": ["SkyVeil", "RuneShadow", "Meteor", "CraterRing"],
+		"required_nodes": ["Starfall"],
 	},
 ]
 const CAPTURES := [
-	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"name": "2k", "path": "res://docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"name": "648p", "file": "elementalist_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "file": "elementalist_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "file": "elementalist_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2k", "file": "elementalist_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
@@ -66,6 +92,60 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var health := 100.0
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
+class ImpactActivationProbe extends RefCounted:
+	var targets_list: Array = []
+
+	func origin() -> Vector2:
+		return Vector2.ZERO
+
+	func is_finished() -> bool:
+		return false
+
+	func param_int(_key: String, fallback: int) -> int:
+		return fallback
+
+	func param_float(_key: String, fallback: float) -> float:
+		return fallback
+
+	func scaled_damage(_key: String, fallback: float) -> float:
+		return fallback
+
+	func select_targets(_origin: Vector2, _radius: float, _cap: int, _order: String) -> Array:
+		return targets_list
+
+	func targets(_origin: Vector2, _radius: float) -> Array:
+		return targets_list
+
+	func targets_in_corridor(_start: Vector2, _direction: Vector2, _length: float, _half_width: float, _cap: int) -> Array:
+		return targets_list
+
+	func apply_control(_target: Node, _impulse: Vector2, _status_id: String, _status: Dictionary) -> Dictionary:
+		return {"status_applied": true}
+
+	func record_target_value(_target: Node, _key: String, _value: Variant, _event_id: String) -> bool:
+		return true
+
+	func target_value(_target: Node, _key: String, fallback: Variant) -> Variant:
+		return fallback
+
+	func add_target_value(_target: Node, _key: String, _amount: float, _event_id: String) -> bool:
+		return true
+
+	func present(_phase_id: String, _payload: Dictionary) -> void:
+		pass
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -83,25 +163,28 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_weapon_local_impacts(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
-	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Elementalist ultimate timelines passed (three distinct scenes, frozen phases, lifecycle, evidence, and crowd budgets).")
+	print("Elementalist ultimate timelines passed (three exact flipbooks, frozen phases, victim impacts, lifecycle, and crowd budgets).")
 	quit(0)
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance route must explain why no new raster source was generated", errors)
-	_expect((provenance.get("new_pixellab_assets", null) is Array) and (provenance.get("new_pixellab_assets") as Array).is_empty(), "provenance must record that no new PixelLab assets were generated", errors)
+	_expect(str(provenance.get("route", "")) == "integrated_approved_pixellab_animation_frames", "provenance route must identify the admitted PixelLab animation packs", errors)
+	var assets := provenance.get("new_pixellab_assets", []) as Array
+	_expect(assets == WEAPON_IDS, "provenance must list exactly the three admitted Elementalist packs", errors)
+	_expect(str(provenance.get("integrated_art_candidate", "")) == "1234c72b4787cc8a5632125b52071b1f997c38f0", "provenance must pin the accepted art candidate", errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("runtime_scene", ""))), "%s runtime scene must be recorded and exist" % weapon_id, errors)
-		_expect(FileAccess.file_exists("res://%s" % str(source.get("source_path", ""))), "%s reused source asset must be recorded and exist" % weapon_id, errors)
+		_expect(FileAccess.file_exists("res://%s" % str(source.get("spriteframes", ""))), "%s SpriteFrames must be recorded and exist" % weapon_id, errors)
+		_expect(FileAccess.file_exists("res://%s" % str(source.get("provenance_manifest", ""))), "%s pack provenance must be recorded and exist" % weapon_id, errors)
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -142,7 +225,105 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(not str(instance.get_meta("impact_language", "")).is_empty(), "%s impact language declaration missing" % weapon_id, errors)
 	_expect(instance.get_child_count() <= int(instance.get_meta("crowd_cap", 0)), "%s visual-node count must stay within crowd cap" % weapon_id, errors)
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) <= int(instance.get_meta("crowd_cap", 0)), "%s declared visual budget must stay within crowd cap" % weapon_id, errors)
+	_check_scene_flipbook(weapon_id, package, instance, timeline, errors)
 	instance.queue_free()
+
+
+func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Node2D, timeline: AnimationPlayer, errors: Array[String]) -> void:
+	var expected := FLIPBOOKS[weapon_id] as Dictionary
+	var sprite := instance.get_node_or_null(str(expected["node"])) as AnimatedSprite2D
+	_expect(sprite != null, "%s must expose its exact flipbook node" % weapon_id, errors)
+	if sprite == null:
+		return
+	var frames := sprite.sprite_frames
+	var animation := expected["animation"] as StringName
+	_expect(frames != null and frames.resource_path == str(expected["path"]), "%s must bind its admitted SpriteFrames" % weapon_id, errors)
+	_expect(sprite.animation == animation, "%s must bind its admitted animation identity" % weapon_id, errors)
+	if frames != null:
+		_expect(frames.get_frame_count(animation) == 9, "%s flipbook must expose all nine frames" % weapon_id, errors)
+		_expect(not frames.get_animation_loop(animation), "%s flipbook must not loop through a seam" % weapon_id, errors)
+		var texture_paths := {}
+		for frame in 9:
+			var texture := frames.get_frame_texture(animation, frame)
+			_expect(texture != null and texture.get_size() == Vector2(256, 256), "%s frame %d must be a visible 256x256 texture" % [weapon_id, frame], errors)
+			if texture != null:
+				texture_paths[texture.resource_path] = true
+		_expect(texture_paths.size() == 9, "%s flipbook frames must be distinct and non-empty" % weapon_id, errors)
+	if timeline != null and timeline.has_animation(&"ultimate"):
+		timeline.stop()
+		timeline.play(&"ultimate")
+		for frame in 9:
+			timeline.seek(float((expected["times"] as Array)[frame]), true)
+			_expect(sprite.frame == frame, "%s timeline must reach frame %d at its authored beat" % [weapon_id, frame], errors)
+	var pending: Array[Node] = [instance]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		for child in node.get_children():
+			pending.append(child)
+			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
+	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+	_expect("res://%s" % str(flipbook.get("spriteframes", "")) == str(expected["path"]), "%s manifest must pin its SpriteFrames path" % weapon_id, errors)
+	_expect(StringName(str(flipbook.get("animation", ""))) == animation, "%s manifest must pin its animation identity" % weapon_id, errors)
+	var frame_size := flipbook.get("frame_size", []) as Array
+	_expect(int(flipbook.get("frame_count", 0)) == 9 and frame_size.size() == 2 \
+			and int(frame_size[0]) == 256 and int(frame_size[1]) == 256,
+		"%s manifest must pin nine 256x256 frames" % weapon_id, errors)
+
+
+func _check_weapon_local_impacts(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var effect := (EFFECT_SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(effect)
+		effect.set("ultimate_damage_sink", Callable(self, "_damage_sink"))
+		var activation := ImpactActivationProbe.new()
+		var victims: Array = []
+		for index in 39:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(40.0 + float(index) * 8.0, float(index % 3) * 18.0)
+			root.add_child(victim)
+			victims.append(victim)
+		activation.targets_list = victims
+		match weapon_id:
+			"elementalist_orb_ring":
+				effect.call("configure", activation)
+				effect.call("cast_beat", 0)
+				effect.call("combined_nova")
+			"elementalist_prism_focus":
+				effect.call("configure", activation, Vector2.ZERO)
+				effect.call("fire_sweep", 0)
+				effect.call("shatter")
+			"elementalist_meteor_core":
+				effect.call("configure", activation, Vector2.ZERO)
+				effect.call("impact")
+				effect.call("crater_pulse", 0)
+		var impacts := _impact_player(effect)
+		_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size() * 2, "%s must enqueue each affected enemy once per damaging beat" % weapon_id, errors)
+			_expect(bool(planned.get("degraded", false)), "%s must use the bounded crowd variant above 38 victims" % weapon_id, errors)
+			_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6, "%s victim impact must last 0.3-0.6 seconds" % weapon_id, errors)
+			_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES, "%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(int(played.get("flashes", 0)) == victims.size() * 2, "%s degradation must never drop the existing white victim flash" % weapon_id, errors)
+			var expected := FLIPBOOKS[weapon_id] as Dictionary
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == str(expected["path"]), "%s victim impact must use its own integrated flipbook" % weapon_id, errors)
+		effect.queue_free()
+		for victim in victims:
+			(victim as Node).queue_free()
+
+
+func _impact_player(effect: Node) -> Node:
+	for child in effect.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
+
+
+func _damage_sink(_target: Node, amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
+	return {"applied": amount, "killed": false}
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:
@@ -220,19 +401,6 @@ func _check_capture_text(errors: Array[String]) -> void:
 			var label_rect := panel_label_rect(size, pack)
 			var panel := panel_rect(size, pack)
 			_expect(panel.grow(0.5).encloses(label_rect), "%s panel label \"%s\" bounds %s must stay inside panel %s" % [str(capture.get("name", "")), str(pack["title"]), label_rect, panel], errors)
-
-
-func _check_capture_evidence(errors: Array[String]) -> void:
-	for raw_capture in CAPTURES:
-		var capture := raw_capture as Dictionary
-		var path := str(capture.get("path", ""))
-		_expect(FileAccess.file_exists(path), "contact evidence is missing: %s" % path, errors)
-		if not FileAccess.file_exists(path):
-			continue
-		var image := Image.load_from_file(path)
-		_expect(image != null and not image.is_empty(), "contact evidence must decode: %s" % path, errors)
-		if image != null:
-			_expect(image.get_size() == capture.get("size", Vector2i.ZERO), "contact evidence resolution mismatch: %s" % path, errors)
 
 
 static func panel_center(size: Vector2i, pack: Dictionary) -> Vector2:
