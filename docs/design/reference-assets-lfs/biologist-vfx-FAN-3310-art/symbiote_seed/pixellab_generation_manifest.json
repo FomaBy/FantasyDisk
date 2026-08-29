@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T19:07:48Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "893d14fb-0f98-4eb9-858c-fbbba65af299",
+    "pixel_lab_animation_group_id": "c1e32495-ae67-4ce7-a70a-89d42370a9ec",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered symbiotic seed pod with a jewel-like magenta shell, emerald veins, six radial tendrils and six tiny orbiting larval motes, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the symbiotic pod centered with six tendrils and stable proportions; the seed drops and cracks, the pod swells, six tendrils snap outward one by one, six larval motes orbit and launch on distinct per-victim impact beats, then the membrane ruptures into a magenta-green hatch burst and retracts; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "symbiote_seed_f00.png",
+      "bytes": 28817,
+      "url_kind": "template",
+      "encoded_sha256": "4f4efdfc1e08c0fafe96cbc4e35a1c2c8e33ccaafbfa9bcfd2b51df3828da986",
+      "pixel_sha256": "2817138e7f8a31416185e5acc829f518085387ccd41388beb77c734c713cd989"
+    },
+    {
+      "file": "symbiote_seed_f01.png",
+      "bytes": 30237,
+      "url_kind": "template",
+      "encoded_sha256": "a7ceef3efc31ba218bc1f7609d6eb57a6dbeb1154a340ecb647573e888419dcc",
+      "pixel_sha256": "16db7b7aacfd46df3772086ceabe8c751f6bae593d396adb11c67d7eeaba47a7"
+    },
+    {
+      "file": "symbiote_seed_f02.png",
+      "bytes": 29816,
+      "url_kind": "template",
+      "encoded_sha256": "6567e8090fc4f0782d3326e71dfe3bc4394fbb4ff1e5cb0c880eed723a5acb3c",
+      "pixel_sha256": "0476bce766a2969bcd2983b127965086ec9241408d909638e9b0066efb11037d"
+    },
+    {
+      "file": "symbiote_seed_f03.png",
+      "bytes": 30732,
+      "url_kind": "template",
+      "encoded_sha256": "212d80cd0e4c04735902cb861e86e0a86f60c58371dcb1a7bde42633c7ce0eca",
+      "pixel_sha256": "020d342f2bbb5939c27c7144e491809fabfc922a24703ffda9814e9163e71671"
+    },
+    {
+      "file": "symbiote_seed_f04.png",
+      "bytes": 28360,
+      "url_kind": "template",
+      "encoded_sha256": "96db04275481c875ae7849144e83a8b3a968fdfd57ae0d03ac9b3c345d25db8c",
+      "pixel_sha256": "6f51223fcdd5e6a9808f42bc3dec9f5880411808496868b5221855eac4be1cdf"
+    },
+    {
+      "file": "symbiote_seed_f05.png",
+      "bytes": 27312,
+      "url_kind": "template",
+      "encoded_sha256": "c6acc2d5daf70b84999d82e32bdfb01cd9200e1966f8402169e8a7816f5e778c",
+      "pixel_sha256": "ac70fd140a13cba40e8e44cd18c6a89bdba99db7e1f6abafefe9941d74d2ea31"
+    },
+    {
+      "file": "symbiote_seed_f06.png",
+      "bytes": 25254,
+      "url_kind": "template",
+      "encoded_sha256": "bf9e0532fbecc66fa4eb35602e9007ff72c12af0340cbb7ff58ec556dc163a3d",
+      "pixel_sha256": "48a6cd02882ea1a06873b6247f75b6161bbad315b49cd35baa71c7935bfe4b7b"
+    },
+    {
+      "file": "symbiote_seed_f07.png",
+      "bytes": 26122,
+      "url_kind": "template",
+      "encoded_sha256": "8e2f90707060294bbbfa23457f23ebad9c823ef86e68fc23be3eee7ec5e34c39",
+      "pixel_sha256": "a69c1c2edcdbe28d9e0066e0d2922c98d947caeb7399f60b83dcd6bee2c80351"
+    },
+    {
+      "file": "symbiote_seed_f08.png",
+      "bytes": 18950,
+      "url_kind": "template",
+      "encoded_sha256": "6c7876b15849fc8f2c8f793e6562bd7cccb2d2220825764f02b4acd94fe32c59",
+      "pixel_sha256": "5165accf7afdc569f47f410716738a5915d06f0d9550dc01113ed03c055f7689"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T18:59:03Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "828812ff-da4e-4fa5-b786-85be529019e6",
+    "pixel_lab_animation_group_id": "825d169a-f1b8-488d-8da3-6e081458636a",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered opened fungal spore lens projecting three branching luminous mycelium roots with capped mushroom blooms, emerald and chartreuse spores, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the spore lens and three branches centered with stable proportions; a translucent spore ring blooms, mycelial roots crawl along three paths one after another, mushroom caps open and pulse on distinct per-victim impact beats, spores flare, then the network retracts inward; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "spore_lens_f00.png",
+      "bytes": 34139,
+      "url_kind": "template",
+      "encoded_sha256": "3ff91f0e0e19530d79e9151c18a25ba9b840567ba6814c626a7dc43437aaf8da",
+      "pixel_sha256": "3acaadc82c0213a1f7e1196ba7754e61eadc1a33d88287ecf0885cc914e45963"
+    },
+    {
+      "file": "spore_lens_f01.png",
+      "bytes": 37837,
+      "url_kind": "template",
+      "encoded_sha256": "7fbf17d9e0ebae1885686a0c9f90fdd3b77e617712604fe2b21cff4db4b521f3",
+      "pixel_sha256": "0184430ce72140a75e8871813d46e97dca543ef836f2b8a6b9f032244e7fd85f"
+    },
+    {
+      "file": "spore_lens_f02.png",
+      "bytes": 38897,
+      "url_kind": "template",
+      "encoded_sha256": "8cd933e3a7554280abf0c1cb534f28ce823db295c15399070eddc3b08afdc97c",
+      "pixel_sha256": "3622e5ef0b240b1513cb017a4d0a0625b9116cc246010ee00da905c3b561ce75"
+    },
+    {
+      "file": "spore_lens_f03.png",
+      "bytes": 34982,
+      "url_kind": "template",
+      "encoded_sha256": "0d14f55c0acef62b485bcc46d10dfb78aafe59da2f58fc2141ceb27272646ae1",
+      "pixel_sha256": "86728f898b9c7318febd618881a93865fccf1b84fc96f3447466b99f0caf2401"
+    },
+    {
+      "file": "spore_lens_f04.png",
+      "bytes": 32184,
+      "url_kind": "template",
+      "encoded_sha256": "1e820df86e395bf634f11443d9b649328a43be771744b5ffa6045e6df2051e1b",
+      "pixel_sha256": "b78521ad93c0245ca0e65f19660700e71755b411f8478090c003e21131b4b2a1"
+    },
+    {
+      "file": "spore_lens_f05.png",
+      "bytes": 32437,
+      "url_kind": "template",
+      "encoded_sha256": "cb07657d4dcf898e56dcd8367a4386bc23c8822964c3bd7eae49d69081bc222e",
+      "pixel_sha256": "486906b3043240041cc1842351dd022c51a8867fb795bcd7858d37c89b652f0b"
+    },
+    {
+      "file": "spore_lens_f06.png",
+      "bytes": 32783,
+      "url_kind": "template",
+      "encoded_sha256": "5615a5b9c157b5e152aab81383fb62d9c692115353303d2b80ca83998eda55fe",
+      "pixel_sha256": "e0f743daa2d95f64c3accc9730d65f441585a4a8eddad07226858c2394d3ce8f"
+    },
+    {
+      "file": "spore_lens_f07.png",
+      "bytes": 33836,
+      "url_kind": "template",
+      "encoded_sha256": "11758656b4aa86ca023290d2c51774be9c30061f10d4791a97257507830d2122",
+      "pixel_sha256": "4ccc22cf385570c365ebd49c4d7ac850305caf52a2a87df5af1a8886a5c0b5a7"
+    },
+    {
+      "file": "spore_lens_f08.png",
+      "bytes": 36721,
+      "url_kind": "template",
+      "encoded_sha256": "869735f7799f03ae4cd6c98a26fa1fbb162a0de37ac74e5b44436680fe4b4f51",
+      "pixel_sha256": "fce09d722735033f9e16cb3ee0e808e6e5dca14943bd723df48c522749d38be3"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
