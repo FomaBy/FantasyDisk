@@ -1,0 +1,14 @@
+{
+	"provenance": "FAN-2646: dedicated 8-direction pack replacing the four static homunculus_tank_{south,north,east,west}.png directional stills.",
+	"frames": "res://assets/sprites/allies/homunculus_tank_spriteframes.tres",
+	"scale": {
+		"x": 0.34,
+		"y": 0.34
+	},
+	"position": {
+		"x": 0.0,
+		"y": -10.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

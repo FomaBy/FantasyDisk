@@ -19,325 +19,144 @@ const DIRECTION_SUFFIXES := ["east", "south_east", "south", "south_west", "west"
 const DEFAULT_FACING_DIRECTION := Vector2.LEFT
 const DIRECTION_SNAP_EPSILON := 0.001
 
-const FULL_FRAME_SPRITEFRAMES := {
-	"ally": {
-		"druid_beast": {
-			"frames": "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
-			"scale": Vector2(0.37, 0.37),
-			"position": Vector2(0.0, -37.0),
-			"source_faces_left": true,
-		},
-		"druid_pack_spirit": {
-			"frames": "res://assets/sprites/allies/ally_pack_spirit_spriteframes.tres",
-			"scale": Vector2(0.34, 0.34),
-			"position": Vector2(0.0, -10.0),
-			"source_faces_left": true,
-		},
-		"homunculus": {
-			"frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres",
-			"scale": Vector2(0.34, 0.34),
-			"position": Vector2(0.0, -10.0),
-			"source_faces_left": true,
-		},
-		# FAN-2646: dedicated 8-direction pack replacing the four static
-		# homunculus_tank_{south,north,east,west}.png directional stills.
-		"homunculus_tank": {
-			"frames": "res://assets/sprites/allies/homunculus_tank_spriteframes.tres",
-			"scale": Vector2(0.34, 0.34),
-			"position": Vector2(0.0, -10.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"leadership_echo": {
-			"frames": "res://assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
-			"scale": Vector2(0.34, 0.34),
-			"position": Vector2(0.0, -10.0),
-			"source_faces_left": true,
-		},
-		"druid_ghost_wolf": {
-			"frames": "res://assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres",
-			"scale": Vector2(0.42, 0.42),
-			"position": Vector2(0.0, -44.0),
-			"source_faces_left": true,
-			"explicit_horizontal_directions": true,
-		},
-		"druid_ghost_bear": {
-			"frames": "res://assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres",
-			"scale": Vector2(0.40, 0.40),
-			"position": Vector2(0.0, -42.0),
-			"source_faces_left": true,
-			"explicit_horizontal_directions": true,
-		},
-		"druid_ghost_panther": {
-			"frames": "res://assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres",
-			"scale": Vector2(0.43, 0.43),
-			"position": Vector2(0.0, -45.0),
-			"source_faces_left": true,
-			"explicit_horizontal_directions": true,
-		},
-		"druid_ghost_stag": {
-			"frames": "res://assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres",
-			"scale": Vector2(0.40, 0.40),
-			"position": Vector2(0.0, -42.0),
-			"source_faces_left": true,
-			"explicit_horizontal_directions": true,
-		},
-		"druid_ghost_lion": {
-			"frames": "res://assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres",
-			"scale": Vector2(0.41, 0.41),
-			"position": Vector2(0.0, -43.0),
-			"source_faces_left": true,
-			"explicit_horizontal_directions": true,
-		},
-	},
-	"enemy": {
-		"rift_cutter": {
-			"frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
-			"scale": Vector2(0.38, 0.38),
-			"position": Vector2(0.0, -44.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2610: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"ash_marksman": {
-			"frames": "res://assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres",
-			"scale": Vector2(0.36, 0.36),
-			"position": Vector2(0.0, -42.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2611: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"spark_runner": {
-			"frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
-			"scale": Vector2(0.34, 0.34),
-			"position": Vector2(0.0, -38.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2612: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"stone_bruiser": {
-			"frames": "res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres",
-			"scale": Vector2(0.42, 0.42),
-			"position": Vector2(0.0, -52.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"bone_caller": {
-			"frames": "res://assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres",
-			"scale": Vector2(0.36, 0.36),
-			"position": Vector2(0.0, -44.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2614: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"void_mage": {
-			"frames": "res://assets/sprites/enemies/full_frame/void_mage_spriteframes.tres",
-			"scale": Vector2(0.36, 0.36),
-			"position": Vector2(0.0, -44.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2615: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"venom_spitter": {
-			"frames": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres",
-			"scale": Vector2(0.36, 0.36),
-			"position": Vector2(0.0, -42.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2616: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"rift_shieldbearer": {
-			"frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
-			"scale": Vector2(0.42, 0.42),
-			"position": Vector2(0.0, -50.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2617: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip.
-		"small_biter": {
-			"frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
-			"scale": Vector2(0.30, 0.30),
-			"position": Vector2(0.0, -32.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"bone_shaman": {
-			"frames": "res://assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres",
-			"scale": Vector2(0.36, 0.36),
-			"position": Vector2(0.0, -44.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		# FAN-2619: dedicated 8-direction pack replacing the single authored
-		# horizontal view + flip. idle_<dir> carries the hover-flap loop (a
-		# flying actor has no separate "hover" state name in the resolver).
-		"winged_spark": {
-			"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
-			"scale": Vector2(0.32, 0.32),
-			"position": Vector2(0.0, -42.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-	},
-	"elite": {
-		# FAN-3093 (rework of FAN-2620): dedicated 8-direction pack replacing
-		# the single west-facing flip-mirrored pack. scale/position recomputed
-		# for the new 245px-visible-height/32px-bottom-padding normalization
-		# (old pack's own bbox pinned bottom at a different offset) so the feet
-		# land on the same footline as before: 0.70/-82.0 -> 0.59/-78.0, solving
-		# for the same ~54.5px feet-below-origin offset the old pack used.
-		"iron_bastion": {
-			"frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
-			"scale": Vector2(0.59, 0.59),
-			"position": Vector2(0.0, -78.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"night_stalker": {
-			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
-			# FAN-3118: restore the approved normalized 512x512 eight-direction
-			# snapshot; preserve its live footline and disable horizontal mirroring.
-			"scale": Vector2(0.62, 0.62),
-			"position": Vector2(0.0, -82.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"plague_prophet": {
-			"frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
-			"scale": Vector2(0.66, 0.66),
-			"position": Vector2(0.0, -78.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"shard_marshal": {
-			"frames": "res://assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres",
-			"scale": Vector2(0.66, 0.66),
-			"position": Vector2(0.0, -78.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_scavenger_reaper": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -58.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_plague_bellringer": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_plague_bellringer_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -60.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_bone_warden": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_bone_warden_spriteframes.tres",
-			"scale": Vector2(0.52, 0.52),
-			"position": Vector2(0.0, -62.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_spark_wight": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_spark_wight_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -58.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_rot_hound": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres",
-			"scale": Vector2(0.48, 0.48),
-			"position": Vector2(0.0, -54.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_shadow_devourer": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -58.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_siege_rammer": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_siege_rammer_spriteframes.tres",
-			"scale": Vector2(0.52, 0.52),
-			"position": Vector2(0.0, -62.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_swarm_sniper": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_swarm_sniper_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -58.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_void_phantom": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_void_phantom_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -58.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"mini_plague_berserker": {
-			"frames": "res://assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres",
-			"scale": Vector2(0.50, 0.50),
-			"position": Vector2(0.0, -60.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-	},
-	"boss": {
-		"rift_warden": {
-			"frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
-			"scale": Vector2(0.74, 0.74),
-			"position": Vector2(0.0, -86.0),
-			"source_faces_left": true,
-		},
-		# FAN-2635: dedicated 8-direction pack replacing the west-facing-plus-flip
-		# source rows with true north/northeast/east/southeast/south/southwest/
-		# west/northwest animation for idle/move/attack/hit/death/skills.
-		"disk_devourer": {
-			"frames": "res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres",
-			"scale": Vector2(0.78, 0.78),
-			"position": Vector2(0.0, -90.0),
-			"source_faces_left": true,
-			"explicit_eight_directions": true,
-		},
-		"bone_archon": {
-			"frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres",
-			"scale": Vector2(0.76, 0.76),
-			"position": Vector2(0.0, -88.0),
-			"source_faces_left": true,
-		},
-		"brood_mother": {
-			"frames": "res://assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres",
-			"scale": Vector2(0.78, 0.78),
-			"position": Vector2(0.0, -88.0),
-			"source_faces_left": true,
-		},
-		"ashen_colossus": {
-			"frames": "res://assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres",
-			"scale": Vector2(0.82, 0.82),
-			"position": Vector2(0.0, -94.0),
-			"source_faces_left": true,
-		},
-		"bloodthorn_lion": {
-			"frames": "res://assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres",
-			"scale": Vector2(0.78, 0.78),
-			"position": Vector2(0.0, -88.0),
-			"source_faces_left": true,
-		},
-	},
-	"hero": {},
-}
+# FAN-3638: per-actor configs live in data/animation/<kind>/<actor_id>.json so
+# parallel actor tasks write disjoint files; this facade scans the catalog once
+# at class load and rebuilds the same table the old inline const declared.
+# JSON schema per actor: frames (res:// path), scale/position ({"x","y"} numbers),
+# source_faces_left (bool), optional explicit_eight_directions /
+# explicit_horizontal_directions (bool), optional provenance (free-form history
+# note, dropped on load).
+#
+# FAN-3669 (rework of FAN-3638/FAN-3660, QA-rejected d3ddb939): a shard that
+# fails schema validation — malformed JSON, a missing/invalid required field,
+# or a canonical identity (case-insensitive filename stem) already used by
+# another shard in the same kind directory — is a fail-closed rejection: the
+# actor is EXCLUDED from the table (never admitted half-populated) and the
+# reason is logged via push_warning. An excluded actor falls through the
+# pre-existing safe-fallback contract (registry_config returns {}, callers
+# treat that as "no full-frame visual") exactly like an unregistered actor —
+# it never surfaces as a partially-valid entry.
+const DATA_ROOT := "res://data/animation"
+const ENTITY_KINDS := ["ally", "enemy", "elite", "boss", "hero"]
+const REQUIRED_NUMERIC_VECTOR_FIELDS := ["x", "y"]
+
+static var FULL_FRAME_SPRITEFRAMES: Dictionary = _load_registry()
+
+
+static func _load_registry() -> Dictionary:
+	var registry := {}
+	for kind in ENTITY_KINDS:
+		registry[kind] = _load_kind(str(kind))
+	return registry
+
+
+static func _load_kind(entity_kind: String, data_root := DATA_ROOT) -> Dictionary:
+	var directory_path := "%s/%s" % [data_root, entity_kind]
+	if DirAccess.open(directory_path) == null:
+		return {}
+	var file_names := DirAccess.get_files_at(directory_path)
+	file_names.sort()
+	return _load_shards(entity_kind, directory_path, file_names)
+
+
+# Split out from _load_kind so tests can drive the validation/dedup logic with
+# an explicit file-name list — a real duplicate-identity fixture (two files
+# whose names differ only by case) cannot exist on a case-preserving but
+# case-INsensitive filesystem such as default macOS/APFS, which silently
+# collapses both writes into one file. `document_reader`, when given, is
+# called with a file name and must return the same shape JSON.parse_string
+# would (a Dictionary, or a non-Dictionary for "malformed"); it lets tests
+# supply genuinely distinct content per case-variant name regardless of the
+# host filesystem's case sensitivity. Production callers (_load_kind) never
+# pass it, so on-disk behavior is unchanged.
+static func _load_shards(entity_kind: String, directory_path: String, file_names: Array, document_reader := Callable()) -> Dictionary:
+	var table := {}
+	var seen_canonical_ids := {}
+	for file_name_variant in file_names:
+		var file_name := str(file_name_variant)
+		if not file_name.ends_with(".json"):
+			continue
+		var actor_id := file_name.trim_suffix(".json")
+		var where := "%s/%s" % [entity_kind, file_name]
+		var canonical_id := actor_id.to_lower()
+		if seen_canonical_ids.has(canonical_id):
+			var prior_where: String = seen_canonical_ids[canonical_id]
+			push_warning("full_frame_animation_registry: duplicate actor identity '%s' — %s conflicts with already-loaded %s; both excluded (safe fallback)." % [canonical_id, where, prior_where])
+			for prior_actor_id in table.keys():
+				if str(prior_actor_id).to_lower() == canonical_id:
+					table.erase(prior_actor_id)
+					break
+			continue
+		# Registered before validation (not after) so an invalid shard that loses
+		# its own entry to schema rejection still claims the canonical identity —
+		# otherwise a later, valid duplicate of the same identity would see no
+		# prior claim and be silently admitted, defeating the dedup check whenever
+		# the invalid shard happened to sort first.
+		seen_canonical_ids[canonical_id] = where
+		var parsed = document_reader.call(file_name) if document_reader.is_valid() else JSON.parse_string(
+			FileAccess.get_file_as_string("%s/%s" % [directory_path, file_name])
+		)
+		if not parsed is Dictionary:
+			push_warning("full_frame_animation_registry: malformed JSON in %s — actor excluded (safe fallback)." % where)
+			continue
+		var entry := _entry_from_document(parsed as Dictionary, where)
+		if entry.is_empty():
+			continue
+		table[actor_id] = entry
+	return table
+
+
+# Returns {} when the document fails schema validation — callers must treat an
+# empty result as "reject this shard", never as "admit it with empty/default
+# values" (that was the FAN-3660 QA-rejected bug: _entry_from_document({})
+# silently produced a usable-looking entry).
+static func _entry_from_document(document: Dictionary, where: String) -> Dictionary:
+	var frames_path = document.get("frames")
+	if not (frames_path is String) or (frames_path as String).is_empty() or not (frames_path as String).begins_with("res://"):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid 'frames' path — actor excluded (safe fallback)." % where)
+		return {}
+	if not ResourceLoader.exists(frames_path):
+		push_warning("full_frame_animation_registry: %s references a nonexistent 'frames' resource — actor excluded (safe fallback)." % where)
+		return {}
+	if not (ResourceLoader.load(frames_path) is SpriteFrames):
+		push_warning("full_frame_animation_registry: %s references a 'frames' resource that is not SpriteFrames — actor excluded (safe fallback)." % where)
+		return {}
+	var scale: Variant = _vector2_from_document(document.get("scale"), where, "scale")
+	var position: Variant = _vector2_from_document(document.get("position"), where, "position")
+	if scale == null or position == null:
+		return {}
+	if not (document.get("source_faces_left") is bool):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid 'source_faces_left' flag — actor excluded (safe fallback)." % where)
+		return {}
+	for flag in ["explicit_eight_directions", "explicit_horizontal_directions"]:
+		if document.has(flag) and not (document.get(flag) is bool):
+			push_warning("full_frame_animation_registry: %s has a non-bool '%s' flag — actor excluded (safe fallback)." % [where, flag])
+			return {}
+	var entry := {
+		"frames": frames_path,
+		"scale": scale,
+		"position": position,
+		"source_faces_left": document.get("source_faces_left"),
+	}
+	for flag in ["explicit_eight_directions", "explicit_horizontal_directions"]:
+		if bool(document.get(flag, false)):
+			entry[flag] = true
+	return entry
+
+
+# Returns null (not Vector2.ZERO) on an invalid/missing document so callers can
+# tell "absent transform" apart from "malformed transform admitted as zero".
+static func _vector2_from_document(value, where: String, field_name: String):
+	if not (value is Dictionary):
+		push_warning("full_frame_animation_registry: %s has a missing/invalid '%s' transform — actor excluded (safe fallback)." % [where, field_name])
+		return null
+	for axis in REQUIRED_NUMERIC_VECTOR_FIELDS:
+		var axis_value = (value as Dictionary).get(axis)
+		if not (axis_value is float or axis_value is int):
+			push_warning("full_frame_animation_registry: %s has a non-numeric '%s.%s' — actor excluded (safe fallback)." % [where, field_name, axis])
+			return null
+	return Vector2(float((value as Dictionary).get("x")), float((value as Dictionary).get("y")))
+
 
 const STATE_ALIASES := {
 	"idle": ["idle", "move", "walk"],

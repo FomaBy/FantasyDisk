@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres",
+	"scale": {
+		"x": 0.5,
+		"y": 0.5
+	},
+	"position": {
+		"x": 0.0,
+		"y": -58.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

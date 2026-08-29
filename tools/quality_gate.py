@@ -127,6 +127,14 @@ CADENCE_STATUS_CONTRACT_TESTS = {
     "persistent_hazard_contract_test",
     "pool_dot_runaway_gate",
 }
+# FAN-3638: per-actor animation configs live in data/animation/<kind>/<id>.json;
+# the facade and every shard route to the registry contract suites.
+ANIMATION_REGISTRY_TESTS = {
+    "animation_smoke_test",
+    "full_frame_eight_direction_contract_test",
+    "full_frame_registry_integrity_test",
+    "full_frame_registry_shard_validation_test",
+}
 BALANCE_CONTRACT_TESTS = {
     "balance_harness_test",
     "class_damage_table_3variants_test",
@@ -149,6 +157,7 @@ PATH_TEST_RULES = {
     # runtime-множитель и ульта-эхо (player.gd), точку применения _rolled_damage
     # (berserk_weapon.gd). До этого тест исполнялся только full-профилем.
     "scripts/berserk_weapon.gd": {"berserk_rage_trait_test"},
+    "scripts/full_frame_animation_registry.gd": ANIMATION_REGISTRY_TESTS,
     "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
     "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
     "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
@@ -372,6 +381,8 @@ def select_godot_tests(
                 "scripts/ultimates/classes/",
             )):
                 selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
+            if changed_path.startswith("data/animation/"):
+                selected_names.update(ANIMATION_REGISTRY_TESTS)
             if changed_path.startswith("scripts/ultimates/presentation/"):
                 selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)
                 selected_names.update(
