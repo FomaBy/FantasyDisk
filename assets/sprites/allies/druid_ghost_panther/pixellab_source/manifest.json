@@ -1,0 +1,3393 @@
+{
+  "actor": "druid_ghost_panther",
+  "builder": {
+    "path": "tools/build_fan3327_actor_pack.py",
+    "version": "1.0.0"
+  },
+  "directions": [
+    "east",
+    "south_east",
+    "south",
+    "south_west",
+    "west",
+    "north_west",
+    "north",
+    "north_east"
+  ],
+  "no_mirroring": true,
+  "pixel_lab": {
+    "art_identity": "translucent cyan spectral ghost panther",
+    "legacy_pixel_lab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+    "pixel_lab_character_id": "97a1369c-cfd7-498b-b13f-478544015da1"
+  },
+  "runtime": {
+    "directory": "runtime",
+    "frames": [
+      {
+        "direction": "east",
+        "encoded_sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc",
+        "file": "druid_ghost_panther_idle_east_00.png",
+        "index": 0,
+        "pixel_sha256": "a5ba9500fd53c8308b3ce5da853a9d879ec7ae25892a430e44d60201a42fe04c",
+        "runtime_bbox": [
+          41,
+          98,
+          215,
+          232
+        ],
+        "source_bbox": [
+          14,
+          26,
+          145,
+          127
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1",
+        "file": "druid_ghost_panther_idle_south_east_00.png",
+        "index": 0,
+        "pixel_sha256": "c9eaaf83977dfe31be7e78119a9356c6b4efb301f61e026166d558bfce90d8a0",
+        "runtime_bbox": [
+          43,
+          102,
+          213,
+          232
+        ],
+        "source_bbox": [
+          15,
+          31,
+          143,
+          129
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698",
+        "file": "druid_ghost_panther_idle_south_00.png",
+        "index": 0,
+        "pixel_sha256": "b2d886310e73c69259bc1373f0f812616be9372b068e2377136e6306fd526204",
+        "runtime_bbox": [
+          40,
+          97,
+          216,
+          232
+        ],
+        "source_bbox": [
+          23,
+          27,
+          156,
+          129
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f",
+        "file": "druid_ghost_panther_idle_south_west_00.png",
+        "index": 0,
+        "pixel_sha256": "cd37eff1a4052f95e38f5cf26bf501625d615ab01a4e84e04948741baddc35b1",
+        "runtime_bbox": [
+          53,
+          103,
+          203,
+          232
+        ],
+        "source_bbox": [
+          38,
+          32,
+          151,
+          129
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94",
+        "file": "druid_ghost_panther_idle_west_00.png",
+        "index": 0,
+        "pixel_sha256": "6691fbef784f6b8e5e4eb85b3c69c92b74ae502721687ea97fd3acb46f39255b",
+        "runtime_bbox": [
+          41,
+          99,
+          215,
+          232
+        ],
+        "source_bbox": [
+          35,
+          26,
+          166,
+          126
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0",
+        "file": "druid_ghost_panther_idle_north_west_00.png",
+        "index": 0,
+        "pixel_sha256": "9b7362e19f2ed34ddcd9dd0329ac7d5eaa8c2b61a0d51c4cc88e02528a2f6696",
+        "runtime_bbox": [
+          43,
+          97,
+          213,
+          232
+        ],
+        "source_bbox": [
+          35,
+          31,
+          163,
+          133
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631",
+        "file": "druid_ghost_panther_idle_north_00.png",
+        "index": 0,
+        "pixel_sha256": "ab8b1c0e98f00f197376ca8b03272b2d09d033cfd38fb51664a510a564ac9807",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          32,
+          30,
+          159,
+          136
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3",
+        "file": "druid_ghost_panther_idle_north_east_00.png",
+        "index": 0,
+        "pixel_sha256": "17cad8672e54ffd82040fcbc43462f6ec3379bd97bdc572e35e99979c6149e96",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          16,
+          28,
+          143,
+          134
+        ],
+        "state": "idle"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc",
+        "file": "druid_ghost_panther_move_east_00.png",
+        "index": 0,
+        "pixel_sha256": "a5ba9500fd53c8308b3ce5da853a9d879ec7ae25892a430e44d60201a42fe04c",
+        "runtime_bbox": [
+          41,
+          98,
+          215,
+          232
+        ],
+        "source_bbox": [
+          32,
+          44,
+          163,
+          145
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "971a2001419c8219f44d119fe362c124a6eef6e274c5a988b233456f7cba7eef",
+        "file": "druid_ghost_panther_move_east_01.png",
+        "index": 1,
+        "pixel_sha256": "5a7aa95dd075573df5200b59915d9a90ea1c22970205b9cf1203392b47c54335",
+        "runtime_bbox": [
+          40,
+          97,
+          216,
+          232
+        ],
+        "source_bbox": [
+          30,
+          46,
+          163,
+          148
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "c5fa47c2477dcf6fcf6a9460283a413f6ed8ec372116e032b908e0db0480bd5b",
+        "file": "druid_ghost_panther_move_east_02.png",
+        "index": 2,
+        "pixel_sha256": "b36db988bea5f011b69975400deb1ca72e7b095731fb34ceb08d88d0d28ac795",
+        "runtime_bbox": [
+          37,
+          99,
+          219,
+          232
+        ],
+        "source_bbox": [
+          26,
+          49,
+          163,
+          149
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "8a58c0874fc29729a61d91e4bd9537d52f94b9848dfa423757d53050870328a8",
+        "file": "druid_ghost_panther_move_east_03.png",
+        "index": 3,
+        "pixel_sha256": "9dd9d80d698aa7f67ba29219323512d0375c0f29d691bcf381e729a509812f98",
+        "runtime_bbox": [
+          37,
+          101,
+          219,
+          232
+        ],
+        "source_bbox": [
+          26,
+          47,
+          163,
+          146
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "4ebc16e9c6c44f8421de9e2ce6476b8872c0ae7f8c89c168bb9f2035c0c6bbe6",
+        "file": "druid_ghost_panther_move_east_04.png",
+        "index": 4,
+        "pixel_sha256": "9c7d50a47d49ebe36f4de971bb74636128836ebe3ae80f187502d18251c7f96f",
+        "runtime_bbox": [
+          39,
+          102,
+          217,
+          232
+        ],
+        "source_bbox": [
+          29,
+          45,
+          163,
+          143
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "837b8a4706a57ef61fee4f688ad682e484dbaa3e03d952191d061f14ec2d358c",
+        "file": "druid_ghost_panther_move_east_05.png",
+        "index": 5,
+        "pixel_sha256": "a7a3276b94aa6a2c091dbe3ad5cf7b997517337d032b92e3f628925ffa3b190c",
+        "runtime_bbox": [
+          38,
+          101,
+          218,
+          232
+        ],
+        "source_bbox": [
+          28,
+          46,
+          164,
+          145
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1",
+        "file": "druid_ghost_panther_move_south_east_00.png",
+        "index": 0,
+        "pixel_sha256": "c9eaaf83977dfe31be7e78119a9356c6b4efb301f61e026166d558bfce90d8a0",
+        "runtime_bbox": [
+          43,
+          102,
+          213,
+          232
+        ],
+        "source_bbox": [
+          31,
+          47,
+          159,
+          145
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "d51577edbe703f65cbf750f7d0cd0b72c6f964b1712c4d7cc6d0e10f0287d9eb",
+        "file": "druid_ghost_panther_move_south_east_01.png",
+        "index": 1,
+        "pixel_sha256": "1b799bfd47a386afd8cb35ed23caf04032a387ce63cc8c9f41cbe044478303fc",
+        "runtime_bbox": [
+          41,
+          106,
+          215,
+          232
+        ],
+        "source_bbox": [
+          28,
+          49,
+          159,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "53542d16e1d40325c02afd4659145a2dcab15eeb86ed09cae1a24a7f96fafb6e",
+        "file": "druid_ghost_panther_move_south_east_02.png",
+        "index": 2,
+        "pixel_sha256": "37d6fafa16acd0c2e70f108be6b75836f455fa75d86255fe43f58143c147d94a",
+        "runtime_bbox": [
+          40,
+          115,
+          216,
+          232
+        ],
+        "source_bbox": [
+          26,
+          53,
+          159,
+          141
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "ef49cb062a95999a94c5cac43f771cdc676af4f267f20861ec4866bb562e6d21",
+        "file": "druid_ghost_panther_move_south_east_03.png",
+        "index": 3,
+        "pixel_sha256": "51bc8c7cf25ce1913cdf52de5bfac5246c69dea78e03d6ddf888a9f93d6df324",
+        "runtime_bbox": [
+          40,
+          114,
+          216,
+          232
+        ],
+        "source_bbox": [
+          26,
+          48,
+          159,
+          137
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "be1b1b78ac74243a0d1f98665439e372331d5fe591728767a34fcbea2250bd73",
+        "file": "druid_ghost_panther_move_south_east_04.png",
+        "index": 4,
+        "pixel_sha256": "9c711058f3adc765973caf7355ef548d49c3367c839fd1d59e95e0a73a3b5a75",
+        "runtime_bbox": [
+          40,
+          110,
+          215,
+          232
+        ],
+        "source_bbox": [
+          28,
+          45,
+          160,
+          137
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "540d5fc72cd41f2e227a7c333848fa008a80e5c80fa2d5e4b40454dfbf2db3ef",
+        "file": "druid_ghost_panther_move_south_east_05.png",
+        "index": 5,
+        "pixel_sha256": "64dc6d7417288151bf8043082b80845d370f46b128a21b1237c10d1843a16064",
+        "runtime_bbox": [
+          41,
+          107,
+          215,
+          232
+        ],
+        "source_bbox": [
+          31,
+          47,
+          162,
+          141
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698",
+        "file": "druid_ghost_panther_move_south_00.png",
+        "index": 0,
+        "pixel_sha256": "b2d886310e73c69259bc1373f0f812616be9372b068e2377136e6306fd526204",
+        "runtime_bbox": [
+          40,
+          97,
+          216,
+          232
+        ],
+        "source_bbox": [
+          27,
+          31,
+          160,
+          133
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "af23ab690d3687561b337ded55ed1ce0c65966645094731cff4bd8fb3017edc1",
+        "file": "druid_ghost_panther_move_south_01.png",
+        "index": 1,
+        "pixel_sha256": "62198b1fe8132b365d6fe6b43df87ec77b1386d68f5f543264847478bd9e6991",
+        "runtime_bbox": [
+          37,
+          106,
+          219,
+          232
+        ],
+        "source_bbox": [
+          23,
+          36,
+          160,
+          131
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "f7c250c17037b8ddda5dda6dc259b976c2c972a6a9d3cd70f457c235a311d42d",
+        "file": "druid_ghost_panther_move_south_02.png",
+        "index": 2,
+        "pixel_sha256": "4578ec6818d2ee05522d35db068a206ea57e976dfca57dc14493cb3c84a5fc07",
+        "runtime_bbox": [
+          37,
+          109,
+          219,
+          232
+        ],
+        "source_bbox": [
+          23,
+          40,
+          160,
+          133
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "7538a6019ee2ea3fde955ad4356f1fbd9e1da21e79a3cc08d6247912a64dadea",
+        "file": "druid_ghost_panther_move_south_03.png",
+        "index": 3,
+        "pixel_sha256": "55cdfd0cafe698c9e700aa76b1d7e920bcc6930710d4774950e78314914cb3dc",
+        "runtime_bbox": [
+          38,
+          103,
+          218,
+          232
+        ],
+        "source_bbox": [
+          24,
+          36,
+          160,
+          133
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "363b0d5ce5728d520a6e1d6543cff904d0d0812f502731c482d4e65fc1fb4693",
+        "file": "druid_ghost_panther_move_south_04.png",
+        "index": 4,
+        "pixel_sha256": "4b937b8d41f0652c35fc1131450690d377a5c21421ae3b0a5bf261490e53cbc6",
+        "runtime_bbox": [
+          37,
+          101,
+          219,
+          232
+        ],
+        "source_bbox": [
+          23,
+          32,
+          160,
+          131
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "387ce815d231431474621a0b847b5fd06ac185ac3ddb24c6e0f4e028917fd650",
+        "file": "druid_ghost_panther_move_south_05.png",
+        "index": 5,
+        "pixel_sha256": "1c9c126d9dbd77e4758834efcdea3fce66d19ec14a99dc8ee3feaeb9dc1ea701",
+        "runtime_bbox": [
+          36,
+          105,
+          220,
+          232
+        ],
+        "source_bbox": [
+          21,
+          35,
+          160,
+          131
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f",
+        "file": "druid_ghost_panther_move_south_west_00.png",
+        "index": 0,
+        "pixel_sha256": "cd37eff1a4052f95e38f5cf26bf501625d615ab01a4e84e04948741baddc35b1",
+        "runtime_bbox": [
+          53,
+          103,
+          203,
+          232
+        ],
+        "source_bbox": [
+          38,
+          32,
+          151,
+          129
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "eb19b7cd0df0933d8d285e39ba1cb591212753fa1cc00d0ddd806db354f671ef",
+        "file": "druid_ghost_panther_move_south_west_01.png",
+        "index": 1,
+        "pixel_sha256": "c4c0c65f747fcf3540dd40c745acadff6c6d00542bf7921181d06beaf52e37fc",
+        "runtime_bbox": [
+          51,
+          105,
+          205,
+          232
+        ],
+        "source_bbox": [
+          38,
+          32,
+          154,
+          128
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "b02b95f5249a34a228c0d2bd31850df1e163bf48224bdd042c6d367667c5cd11",
+        "file": "druid_ghost_panther_move_south_west_02.png",
+        "index": 2,
+        "pixel_sha256": "2ab95a924989a00f39898cf0a8f57564f97a336a18dbadcbd17bac0c49ac80ca",
+        "runtime_bbox": [
+          50,
+          111,
+          206,
+          232
+        ],
+        "source_bbox": [
+          38,
+          35,
+          156,
+          126
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "a60e512d41608ad04c5f658bd3f8d044f834844bc795451e54f7b8a4f82ee16a",
+        "file": "druid_ghost_panther_move_south_west_03.png",
+        "index": 3,
+        "pixel_sha256": "0b6c8d0e9510d3da3b31e125fe4307906875839f1f628f75d550770909930d3d",
+        "runtime_bbox": [
+          47,
+          115,
+          209,
+          232
+        ],
+        "source_bbox": [
+          37,
+          37,
+          159,
+          125
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "714e869de85693e2f47797d4f1dabdc652a8d99e92322e4cd1c353ddfa3b60e9",
+        "file": "druid_ghost_panther_move_south_west_04.png",
+        "index": 4,
+        "pixel_sha256": "a0b846ce8324636ca49de2fce9a5939f5972380fbc137dcb4d6b5d10138f6928",
+        "runtime_bbox": [
+          50,
+          118,
+          206,
+          232
+        ],
+        "source_bbox": [
+          37,
+          39,
+          155,
+          125
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "fa8a604be3b85628355cd56373302ab2ec0e42a340c51985a311a37dc434137d",
+        "file": "druid_ghost_panther_move_south_west_05.png",
+        "index": 5,
+        "pixel_sha256": "1fab8f5164d9fa0a383b9b71d0992dda0e87a4197496df85ec6e05fe62cc9aca",
+        "runtime_bbox": [
+          51,
+          110,
+          205,
+          232
+        ],
+        "source_bbox": [
+          37,
+          36,
+          153,
+          128
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94",
+        "file": "druid_ghost_panther_move_west_00.png",
+        "index": 0,
+        "pixel_sha256": "6691fbef784f6b8e5e4eb85b3c69c92b74ae502721687ea97fd3acb46f39255b",
+        "runtime_bbox": [
+          41,
+          99,
+          215,
+          232
+        ],
+        "source_bbox": [
+          53,
+          44,
+          184,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "f5ce0030532baf69e1599594a4a4ff92298d6997adf3527ae9faf23e5a866ed6",
+        "file": "druid_ghost_panther_move_west_01.png",
+        "index": 1,
+        "pixel_sha256": "bc1495a44e53ee1946a51a7c4039e9d3024d02e6f08d5addbd074221f7ce0610",
+        "runtime_bbox": [
+          39,
+          101,
+          217,
+          232
+        ],
+        "source_bbox": [
+          52,
+          45,
+          186,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "16483d4e8814c8542fdb3f76d70eea0347b0a9978132dfd81953467f09a248bb",
+        "file": "druid_ghost_panther_move_west_02.png",
+        "index": 2,
+        "pixel_sha256": "f9b2e168cfa78cc33c6c08dbc56d9dee0787f15d5cdade8837bc4e0f9182d048",
+        "runtime_bbox": [
+          36,
+          106,
+          219,
+          232
+        ],
+        "source_bbox": [
+          50,
+          49,
+          188,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "b602d61b2045b7a8d8f0134f24e3cc5adccdd7b299698da673845fdf35513c54",
+        "file": "druid_ghost_panther_move_west_03.png",
+        "index": 3,
+        "pixel_sha256": "489166eb4d670d5b09eab8fff54e42f4892c5e12906654a8da13df2f9ebef029",
+        "runtime_bbox": [
+          34,
+          110,
+          221,
+          232
+        ],
+        "source_bbox": [
+          49,
+          51,
+          190,
+          143
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "3c646433488f1585c7517480541c00f95964a27195326617f9c9b4f5b0f360ac",
+        "file": "druid_ghost_panther_move_west_04.png",
+        "index": 4,
+        "pixel_sha256": "6fdd209b734b163fc396b2ac450bd5f92415f266e4a410bff16d36d26c10efd2",
+        "runtime_bbox": [
+          35,
+          115,
+          221,
+          232
+        ],
+        "source_bbox": [
+          48,
+          51,
+          188,
+          139
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "03cef40d81c9e493ea9e2b9dedb22dd2dc44b5f4c5cc0deea6aa137111943d45",
+        "file": "druid_ghost_panther_move_west_05.png",
+        "index": 5,
+        "pixel_sha256": "a7306eb63621271d2495ed4dc825a507dae96bec3596d6c7399361bcb718943a",
+        "runtime_bbox": [
+          40,
+          118,
+          216,
+          232
+        ],
+        "source_bbox": [
+          51,
+          51,
+          184,
+          137
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0",
+        "file": "druid_ghost_panther_move_north_west_00.png",
+        "index": 0,
+        "pixel_sha256": "9b7362e19f2ed34ddcd9dd0329ac7d5eaa8c2b61a0d51c4cc88e02528a2f6696",
+        "runtime_bbox": [
+          43,
+          97,
+          213,
+          232
+        ],
+        "source_bbox": [
+          49,
+          45,
+          177,
+          147
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "37e91e465f176c46ba6b7801dff8439e72e7465f41b5f9fd957db99b5fdddc36",
+        "file": "druid_ghost_panther_move_north_west_01.png",
+        "index": 1,
+        "pixel_sha256": "07d9794149022b4dd443419508b9b6a1f903cee58b5bc6dd5cb3e54ecc731a2e",
+        "runtime_bbox": [
+          42,
+          102,
+          214,
+          232
+        ],
+        "source_bbox": [
+          50,
+          48,
+          180,
+          146
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "5d6f20732404db22a194fdcdc967d37072486bd53489439befd6717b2b17bdb1",
+        "file": "druid_ghost_panther_move_north_west_02.png",
+        "index": 2,
+        "pixel_sha256": "8a945315c305270da483e62b7045c17d7a32613f8d9c3bc25244760c4393b5d4",
+        "runtime_bbox": [
+          40,
+          103,
+          216,
+          232
+        ],
+        "source_bbox": [
+          44,
+          52,
+          177,
+          149
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "6c2ef6d9f615744fa2540449f475a22030fa293e7bb0be94a691aff8c10acdf6",
+        "file": "druid_ghost_panther_move_north_west_03.png",
+        "index": 3,
+        "pixel_sha256": "2926b1a2ecca87efef8ec34b888ed1fcb6d19a1a5944f0d322fe11fd42f4b1cf",
+        "runtime_bbox": [
+          41,
+          105,
+          215,
+          232
+        ],
+        "source_bbox": [
+          44,
+          52,
+          175,
+          148
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "e6ca5d53c4959dc4b5bc41f87ef2dc964b4c30888b10fd0d71ddf22d5c7638b0",
+        "file": "druid_ghost_panther_move_north_west_04.png",
+        "index": 4,
+        "pixel_sha256": "d9fdd1ff603f266a3229b1121cac84d69a4d9a99152ae6497c619506685f3c79",
+        "runtime_bbox": [
+          47,
+          103,
+          209,
+          232
+        ],
+        "source_bbox": [
+          46,
+          50,
+          168,
+          147
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "7d79edee41b1d70e26e27ee25809461ede12d0e8d2ee738d2466fbb4f338da3f",
+        "file": "druid_ghost_panther_move_north_west_05.png",
+        "index": 5,
+        "pixel_sha256": "aeb28c751f085e31294abf89d0a30df6cd2a65d1718b265436ef46cdbad7b7a4",
+        "runtime_bbox": [
+          41,
+          106,
+          215,
+          232
+        ],
+        "source_bbox": [
+          45,
+          51,
+          176,
+          146
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631",
+        "file": "druid_ghost_panther_move_north_00.png",
+        "index": 0,
+        "pixel_sha256": "ab8b1c0e98f00f197376ca8b03272b2d09d033cfd38fb51664a510a564ac9807",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          40,
+          38,
+          167,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "e57da74e92528fc33ebece0489ccc28becbce2500ff8e50a02ccf20b9b2d1a97",
+        "file": "druid_ghost_panther_move_north_01.png",
+        "index": 1,
+        "pixel_sha256": "3e7e410025874bbd9ba9a71c36a496ffb64aef37113d6af5849f0f1e37d6a8c3",
+        "runtime_bbox": [
+          41,
+          97,
+          215,
+          232
+        ],
+        "source_bbox": [
+          41,
+          39,
+          172,
+          141
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "8dc2e469cbb4a6eda28606511c58c9ca50724d02c33eae31f47253eea451dc3c",
+        "file": "druid_ghost_panther_move_north_02.png",
+        "index": 2,
+        "pixel_sha256": "fc2bdf8c509b48dc07ccc8229187b09bdb017600600f4991ee7c6e32480e8ff5",
+        "runtime_bbox": [
+          39,
+          106,
+          217,
+          232
+        ],
+        "source_bbox": [
+          39,
+          44,
+          173,
+          139
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "c4d3d1818c2be26f3085a5e201174e91107bb8502a453fbbe3aa1b3a9d7ee167",
+        "file": "druid_ghost_panther_move_north_03.png",
+        "index": 3,
+        "pixel_sha256": "cbe7a5ba293abffe6d72cbad4e81efa00888178bf590773be25b20883f85f7d2",
+        "runtime_bbox": [
+          37,
+          107,
+          219,
+          232
+        ],
+        "source_bbox": [
+          36,
+          44,
+          173,
+          138
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "08522a4bdcbb735a55e2ec9fe58968ef046e9223e5b98c005726ebc1684b9e22",
+        "file": "druid_ghost_panther_move_north_04.png",
+        "index": 4,
+        "pixel_sha256": "c62b1c42c5fbc999cac54a77f96b5abcfcc0778e45454e1ffafce31eb80aa983",
+        "runtime_bbox": [
+          37,
+          98,
+          219,
+          232
+        ],
+        "source_bbox": [
+          36,
+          39,
+          173,
+          140
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "710b8fefacd5272b23e6e3ac7b7f8bd01fbceae35125253aada2d973bf32d0f9",
+        "file": "druid_ghost_panther_move_north_05.png",
+        "index": 5,
+        "pixel_sha256": "91c6606cef15b7be4e56d3d9f4a65d2dac43f639beb40f9b91b79ccc9c934605",
+        "runtime_bbox": [
+          38,
+          97,
+          217,
+          232
+        ],
+        "source_bbox": [
+          36,
+          42,
+          171,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3",
+        "file": "druid_ghost_panther_move_north_east_00.png",
+        "index": 0,
+        "pixel_sha256": "17cad8672e54ffd82040fcbc43462f6ec3379bd97bdc572e35e99979c6149e96",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          30,
+          42,
+          157,
+          148
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "a152b21348c9b2fe7e4f2f5ee6c5acf060bf4159e399dcad21b70fe0e58e7c2c",
+        "file": "druid_ghost_panther_move_north_east_01.png",
+        "index": 1,
+        "pixel_sha256": "31fd94efe1811c98da895f110b73a0e5df47a064d57f11442518047c0317035e",
+        "runtime_bbox": [
+          42,
+          92,
+          213,
+          232
+        ],
+        "source_bbox": [
+          29,
+          42,
+          158,
+          148
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "902497df21a43d939df81872a7356b70623059dea47ca4a73181f0359e328756",
+        "file": "druid_ghost_panther_move_north_east_02.png",
+        "index": 2,
+        "pixel_sha256": "bf8c09b4656951456bf4ac36b2ac28edb1bf841037cb2e317dde89406371af4c",
+        "runtime_bbox": [
+          40,
+          98,
+          215,
+          232
+        ],
+        "source_bbox": [
+          27,
+          45,
+          159,
+          146
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "8eb1f5d6f7411e3e3550f9796ca01dbd1a2b582d6095376b76988245bd161c7a",
+        "file": "druid_ghost_panther_move_north_east_03.png",
+        "index": 3,
+        "pixel_sha256": "58a175de6b8d6ab00de5e0022ba856bc370f74e4e1d89656e2218b74de62912e",
+        "runtime_bbox": [
+          39,
+          103,
+          217,
+          232
+        ],
+        "source_bbox": [
+          26,
+          48,
+          160,
+          145
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "37da9881fda415211a9af3e3e4a571961381e478145db4aea03cbac7d94b4adf",
+        "file": "druid_ghost_panther_move_north_east_04.png",
+        "index": 4,
+        "pixel_sha256": "c2fa24baf183f4ab4c21aef602c69b457343108d28191f299279e5b162a28496",
+        "runtime_bbox": [
+          41,
+          105,
+          215,
+          232
+        ],
+        "source_bbox": [
+          26,
+          49,
+          157,
+          145
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "221a6a37dbb96a47959012a170109e9eed3b59f13988120e585bfe5be53818ce",
+        "file": "druid_ghost_panther_move_north_east_05.png",
+        "index": 5,
+        "pixel_sha256": "27dad769cd81c283945e25a38f7f72941988eae5226b8354481283785a2447b6",
+        "runtime_bbox": [
+          44,
+          103,
+          212,
+          232
+        ],
+        "source_bbox": [
+          29,
+          47,
+          156,
+          144
+        ],
+        "state": "move"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc",
+        "file": "druid_ghost_panther_attack_east_00.png",
+        "index": 0,
+        "pixel_sha256": "a5ba9500fd53c8308b3ce5da853a9d879ec7ae25892a430e44d60201a42fe04c",
+        "runtime_bbox": [
+          41,
+          98,
+          215,
+          232
+        ],
+        "source_bbox": [
+          32,
+          44,
+          163,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "3d1a94c698f7986fc13cfbb2650508f110d16409468629c283e2486d03555ef0",
+        "file": "druid_ghost_panther_attack_east_01.png",
+        "index": 1,
+        "pixel_sha256": "97cbf3848dc45ca5e28a25b1d9b94f93c2d02ddf7a00c186de4901c8a7315319",
+        "runtime_bbox": [
+          30,
+          90,
+          225,
+          232
+        ],
+        "source_bbox": [
+          32,
+          38,
+          179,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "cb2c6e6e617980809879decbbd571459d8c34b3cd8933106586e345334b002c4",
+        "file": "druid_ghost_panther_attack_east_02.png",
+        "index": 2,
+        "pixel_sha256": "a7503b53bc8fe4276318590bb5f3620ba4469c318b6830c49810b5620f389ab9",
+        "runtime_bbox": [
+          16,
+          64,
+          240,
+          232
+        ],
+        "source_bbox": [
+          21,
+          50,
+          190,
+          177
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "b4bf611ae48053b503e2ff4807cd1528eeafa702e85c203341af570b2c387041",
+        "file": "druid_ghost_panther_attack_east_03.png",
+        "index": 3,
+        "pixel_sha256": "eb4fe1e3b98e7ed42bef4319dccf6f907b8239299e912baf394812d4cfcd8916",
+        "runtime_bbox": [
+          20,
+          70,
+          236,
+          232
+        ],
+        "source_bbox": [
+          24,
+          55,
+          187,
+          177
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "9576546385d7ec70b37057a7bc06b870c8b443711a182cdafdb3fb7fe2283cd4",
+        "file": "druid_ghost_panther_attack_east_04.png",
+        "index": 4,
+        "pixel_sha256": "74b00d0dfb7dd6744b0234456dc5c9aab4cb6ffaddde54919238c29a417eb266",
+        "runtime_bbox": [
+          28,
+          82,
+          228,
+          232
+        ],
+        "source_bbox": [
+          29,
+          61,
+          180,
+          174
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "east",
+        "encoded_sha256": "2f649156d4a4835d9aa1a4120b3aef6200afce32974d158935c50f9a6da340ba",
+        "file": "druid_ghost_panther_attack_east_05.png",
+        "index": 5,
+        "pixel_sha256": "367b36c1d69bf39be236c20df9da70d5d95eb8d70a34f40ed937565c23203701",
+        "runtime_bbox": [
+          37,
+          113,
+          219,
+          232
+        ],
+        "source_bbox": [
+          28,
+          55,
+          165,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1",
+        "file": "druid_ghost_panther_attack_south_east_00.png",
+        "index": 0,
+        "pixel_sha256": "c9eaaf83977dfe31be7e78119a9356c6b4efb301f61e026166d558bfce90d8a0",
+        "runtime_bbox": [
+          43,
+          102,
+          213,
+          232
+        ],
+        "source_bbox": [
+          31,
+          47,
+          159,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "2bb2a3a1092c7771e44a98af8fc36ec75072a2108c8d03d7d909ea38a4b9e13a",
+        "file": "druid_ghost_panther_attack_south_east_01.png",
+        "index": 1,
+        "pixel_sha256": "0f7925e2557e4079d46705e20ebd02e0872cb440129bbadbc456b4a097c6e87d",
+        "runtime_bbox": [
+          45,
+          94,
+          211,
+          232
+        ],
+        "source_bbox": [
+          36,
+          41,
+          161,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "df53754a56b649b81487e47d39e0b80fc2f7033366f00bf0d957d6d90d59f762",
+        "file": "druid_ghost_panther_attack_south_east_02.png",
+        "index": 2,
+        "pixel_sha256": "106ae01accf4dcc39af06522464fb35efe2aca8e0f11c065ba9b580e579180ac",
+        "runtime_bbox": [
+          37,
+          58,
+          219,
+          232
+        ],
+        "source_bbox": [
+          35,
+          39,
+          172,
+          170
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "2c3ac58f3ce20eca9f9ad1ecfde0ba049c74c519cc163c9a90eb2610899ed746",
+        "file": "druid_ghost_panther_attack_south_east_03.png",
+        "index": 3,
+        "pixel_sha256": "b13ef510768416fccc99fab018b957329275965cf672857e3c23bad619009366",
+        "runtime_bbox": [
+          30,
+          58,
+          226,
+          232
+        ],
+        "source_bbox": [
+          33,
+          39,
+          181,
+          170
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "8e4a834289f449d618a7b68f2222095d3875582a70629d8797cc919cba17d529",
+        "file": "druid_ghost_panther_attack_south_east_04.png",
+        "index": 4,
+        "pixel_sha256": "494759a77e3401245dbfcb2bb2b6fc3fbdca1cdb7cc0ac1c44e870574aaaf055",
+        "runtime_bbox": [
+          33,
+          111,
+          223,
+          232
+        ],
+        "source_bbox": [
+          33,
+          57,
+          176,
+          148
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_east",
+        "encoded_sha256": "c14018e3a74a355d2f91ad79476992e90d0769d76f74b86914c81fabe8be4303",
+        "file": "druid_ghost_panther_attack_south_east_05.png",
+        "index": 5,
+        "pixel_sha256": "06239db81802b7d3c17bc534ac8cd2b19d6a6e0f583796006b829e0904e57f68",
+        "runtime_bbox": [
+          24,
+          139,
+          231,
+          232
+        ],
+        "source_bbox": [
+          32,
+          72,
+          188,
+          142
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698",
+        "file": "druid_ghost_panther_attack_south_00.png",
+        "index": 0,
+        "pixel_sha256": "b2d886310e73c69259bc1373f0f812616be9372b068e2377136e6306fd526204",
+        "runtime_bbox": [
+          40,
+          97,
+          216,
+          232
+        ],
+        "source_bbox": [
+          27,
+          31,
+          160,
+          133
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "84208fcf19134a0aaf92d01ab43f12a291fb78207178438fd4e9ad0b4697401d",
+        "file": "druid_ghost_panther_attack_south_01.png",
+        "index": 1,
+        "pixel_sha256": "8c5953c6e2aa7bedaa5ae73cd73a7122d6a15acbd7cc01b9b840441c5ba76da4",
+        "runtime_bbox": [
+          39,
+          93,
+          217,
+          232
+        ],
+        "source_bbox": [
+          29,
+          37,
+          163,
+          142
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "1e8b08ddc11cbddd5b3031b8a156590125fbd13cd5fc67f35a74420938d4b979",
+        "file": "druid_ghost_panther_attack_south_02.png",
+        "index": 2,
+        "pixel_sha256": "d5343d42baa92740d1d91be467165820b9fce0cb4ae462e317558418408d2ba4",
+        "runtime_bbox": [
+          41,
+          88,
+          215,
+          232
+        ],
+        "source_bbox": [
+          33,
+          46,
+          164,
+          155
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "4954fa772b760de168661351f8c8f6f4da5df17da7f25d988d71827996718823",
+        "file": "druid_ghost_panther_attack_south_03.png",
+        "index": 3,
+        "pixel_sha256": "f9b0e2300d6b85da30b17f9c9841847b647bf0d8f5962683c89905e08383137e",
+        "runtime_bbox": [
+          45,
+          123,
+          211,
+          232
+        ],
+        "source_bbox": [
+          38,
+          54,
+          163,
+          136
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "b8353fcb667a73ee1eed3d48f82f41d2e955cbbb9d1437df96104f31bb109d3d",
+        "file": "druid_ghost_panther_attack_south_04.png",
+        "index": 4,
+        "pixel_sha256": "ca9a54ad8292c20124ff127cbc80b4b6001b9f02f4939510860f0d13e3297aa7",
+        "runtime_bbox": [
+          43,
+          127,
+          213,
+          232
+        ],
+        "source_bbox": [
+          35,
+          57,
+          163,
+          136
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south",
+        "encoded_sha256": "e13250123a1f8cfa8d2da92555bff323a36353ca8cbe2d5390144ed3b59343fe",
+        "file": "druid_ghost_panther_attack_south_05.png",
+        "index": 5,
+        "pixel_sha256": "b417605e02d3eb99225d35a2fcf120aa984b246c0f6d479ebeebcd4aa0b42b0a",
+        "runtime_bbox": [
+          38,
+          114,
+          218,
+          232
+        ],
+        "source_bbox": [
+          26,
+          47,
+          162,
+          136
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f",
+        "file": "druid_ghost_panther_attack_south_west_00.png",
+        "index": 0,
+        "pixel_sha256": "cd37eff1a4052f95e38f5cf26bf501625d615ab01a4e84e04948741baddc35b1",
+        "runtime_bbox": [
+          53,
+          103,
+          203,
+          232
+        ],
+        "source_bbox": [
+          38,
+          32,
+          151,
+          129
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "a310da2cd19d07aa546e469d833028989b4d0e9325a5f131105b282be1dc3dd3",
+        "file": "druid_ghost_panther_attack_south_west_01.png",
+        "index": 1,
+        "pixel_sha256": "28e5be4de910f674ecedeb29d140f16cf069fca74dce3d97885086085a55ca3e",
+        "runtime_bbox": [
+          43,
+          107,
+          213,
+          232
+        ],
+        "source_bbox": [
+          26,
+          35,
+          154,
+          129
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "99312b6b7520e50187284cf382a0c3b37fc056b9855ce22c646e3002cf655015",
+        "file": "druid_ghost_panther_attack_south_west_02.png",
+        "index": 2,
+        "pixel_sha256": "48dc8666472512a4fd9a68f87be52972709d111b41f2f3556f5ae2633a411ed4",
+        "runtime_bbox": [
+          42,
+          107,
+          214,
+          232
+        ],
+        "source_bbox": [
+          24,
+          35,
+          154,
+          129
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "3e6b25ccf71a47ef33b63dfcfed0e95ad7ef46bc1681b284eef4f6c126bde268",
+        "file": "druid_ghost_panther_attack_south_west_03.png",
+        "index": 3,
+        "pixel_sha256": "1b79cec3f0d91380cb1dc0b9fd2aab21bd864e368ae3e8f93eb40205d0fb39e1",
+        "runtime_bbox": [
+          49,
+          117,
+          207,
+          232
+        ],
+        "source_bbox": [
+          36,
+          42,
+          155,
+          129
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "f1cceb2d7b78fdc28fdd7794743ae11352a654fe3326bcb32d51e37cf39a0809",
+        "file": "druid_ghost_panther_attack_south_west_04.png",
+        "index": 4,
+        "pixel_sha256": "97a583c77a851d2c7e8239bff6fb7de4db1def6c80cf164e10f0177bb0f18e2d",
+        "runtime_bbox": [
+          48,
+          89,
+          208,
+          232
+        ],
+        "source_bbox": [
+          34,
+          42,
+          155,
+          150
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "south_west",
+        "encoded_sha256": "c5bcff35c2ea6c40dfbd4942decfee6d74ee9d60c3357b07ed19b45015d526b4",
+        "file": "druid_ghost_panther_attack_south_west_05.png",
+        "index": 5,
+        "pixel_sha256": "562dfbe5eefc371b053ba4cabfad90f638895675137f7097a66e35ffd2ff0b00",
+        "runtime_bbox": [
+          48,
+          97,
+          207,
+          232
+        ],
+        "source_bbox": [
+          36,
+          42,
+          156,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94",
+        "file": "druid_ghost_panther_attack_west_00.png",
+        "index": 0,
+        "pixel_sha256": "6691fbef784f6b8e5e4eb85b3c69c92b74ae502721687ea97fd3acb46f39255b",
+        "runtime_bbox": [
+          41,
+          99,
+          215,
+          232
+        ],
+        "source_bbox": [
+          53,
+          44,
+          184,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "98897d7177ef5b15afd315127a4f1e82beff80f42c3cd738c29ac65b2dd1b41a",
+        "file": "druid_ghost_panther_attack_west_01.png",
+        "index": 1,
+        "pixel_sha256": "dfe47e5b62c4945b8b4b20307b13b85bedaf07cff704377b77d3d83c9920bcae",
+        "runtime_bbox": [
+          30,
+          107,
+          226,
+          232
+        ],
+        "source_bbox": [
+          40,
+          51,
+          188,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "f46c97dd61bfaebb0be80c5885b40200e26c43696a19c4b716eff35e5ed72c4b",
+        "file": "druid_ghost_panther_attack_west_02.png",
+        "index": 2,
+        "pixel_sha256": "4b20309269000c929b57e7a7c3cf55d8de60a6c160c525daa53eefa5614d2b70",
+        "runtime_bbox": [
+          25,
+          98,
+          230,
+          232
+        ],
+        "source_bbox": [
+          31,
+          51,
+          186,
+          152
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "2da9b7b7c37b552c83a5ccf8c2cb0af3e061ec86c9f71d77aa90a399ce379784",
+        "file": "druid_ghost_panther_attack_west_03.png",
+        "index": 3,
+        "pixel_sha256": "a566bcd78a91ebd4f0e7b0a7c813f77444cb8d2a949cafdbc5d5bacf5ed14d1c",
+        "runtime_bbox": [
+          46,
+          143,
+          210,
+          232
+        ],
+        "source_bbox": [
+          59,
+          78,
+          183,
+          145
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "e842ed34b5072d20867892b09f975202bcd7cc2996b02fefce52edbe92084bb5",
+        "file": "druid_ghost_panther_attack_west_04.png",
+        "index": 4,
+        "pixel_sha256": "a8bdac918d3fefc9d71f292f0c8a2b4336fc0966c285024b133387a46f1c7c35",
+        "runtime_bbox": [
+          47,
+          145,
+          209,
+          232
+        ],
+        "source_bbox": [
+          58,
+          78,
+          180,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "west",
+        "encoded_sha256": "9d34d88c54cb7e6b56d95d5ce3f27308a78195936105eb3bddc174fa0f92bb6d",
+        "file": "druid_ghost_panther_attack_west_05.png",
+        "index": 5,
+        "pixel_sha256": "4451eefeeff55743547eecabc7b1b30afb14b0ee2424f3428bf44590a6c415f0",
+        "runtime_bbox": [
+          43,
+          145,
+          213,
+          232
+        ],
+        "source_bbox": [
+          59,
+          78,
+          187,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0",
+        "file": "druid_ghost_panther_attack_north_west_00.png",
+        "index": 0,
+        "pixel_sha256": "9b7362e19f2ed34ddcd9dd0329ac7d5eaa8c2b61a0d51c4cc88e02528a2f6696",
+        "runtime_bbox": [
+          43,
+          97,
+          213,
+          232
+        ],
+        "source_bbox": [
+          49,
+          45,
+          177,
+          147
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "d4b814e01c33f138910eada807b0f83ca462358807a3d7d6573512128d9ca966",
+        "file": "druid_ghost_panther_attack_north_west_01.png",
+        "index": 1,
+        "pixel_sha256": "f022cdd2bbb9fec7b4314dbdfdd5570a26863cad145d7a5c8d7e54465d58260f",
+        "runtime_bbox": [
+          41,
+          95,
+          215,
+          232
+        ],
+        "source_bbox": [
+          49,
+          45,
+          180,
+          148
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "9f40e8ec3edd70ba060fd01ac411b782c637d684c4be7bcb54801e5e8f25e961",
+        "file": "druid_ghost_panther_attack_north_west_02.png",
+        "index": 2,
+        "pixel_sha256": "288032278446dd3ad7970b80adc9a9547efec3ca0a7a06dad7408a8b5fd4da60",
+        "runtime_bbox": [
+          29,
+          101,
+          226,
+          232
+        ],
+        "source_bbox": [
+          30,
+          50,
+          179,
+          149
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "2c7a25928c334d619a2f59aeba53974db98b790fa1671a611cc6b63e838a9a7d",
+        "file": "druid_ghost_panther_attack_north_west_03.png",
+        "index": 3,
+        "pixel_sha256": "819502a9ebc3dd58f3115b9bd973bbfb8a479b7805cdb597a9647f3df243efc2",
+        "runtime_bbox": [
+          32,
+          94,
+          224,
+          232
+        ],
+        "source_bbox": [
+          28,
+          55,
+          173,
+          159
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "19a9ab5e4dae4638ffc335c0c760ffa2024fdecff0b306e853caf1a0f9007595",
+        "file": "druid_ghost_panther_attack_north_west_04.png",
+        "index": 4,
+        "pixel_sha256": "581549b1e252cc8cdae464051312447f0540eddfea5d1e7b630c57403ce5f975",
+        "runtime_bbox": [
+          34,
+          92,
+          222,
+          232
+        ],
+        "source_bbox": [
+          27,
+          55,
+          169,
+          161
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_west",
+        "encoded_sha256": "89dd1e1e3c57a650800273c6cc43a5b882f4bb6686ffffe9540fade47ad0da9b",
+        "file": "druid_ghost_panther_attack_north_west_05.png",
+        "index": 5,
+        "pixel_sha256": "dc36d6d1c5d9130764527de009c5b584877b1e0c8c88411828df6f4447044905",
+        "runtime_bbox": [
+          33,
+          84,
+          223,
+          232
+        ],
+        "source_bbox": [
+          33,
+          49,
+          176,
+          161
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631",
+        "file": "druid_ghost_panther_attack_north_00.png",
+        "index": 0,
+        "pixel_sha256": "ab8b1c0e98f00f197376ca8b03272b2d09d033cfd38fb51664a510a564ac9807",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          40,
+          38,
+          167,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "fc775fcb4f77ceb1879c65892fd33b3af6b255adf29397661f3e9c01c94d8be4",
+        "file": "druid_ghost_panther_attack_north_01.png",
+        "index": 1,
+        "pixel_sha256": "dde64154fb696be9313c98f8f233e0f8164f3c58a25c26cd2505b878abd58e4f",
+        "runtime_bbox": [
+          31,
+          99,
+          225,
+          232
+        ],
+        "source_bbox": [
+          25,
+          44,
+          171,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "c3167a5836636177d5bf15dd1b95ba52c52fa26bfe32f2a35709d0f4ffd81b75",
+        "file": "druid_ghost_panther_attack_north_02.png",
+        "index": 2,
+        "pixel_sha256": "13d1dca7e1470bb50c7f3253947db41cefdccb5079d18a587bf1af816b7caeea",
+        "runtime_bbox": [
+          25,
+          101,
+          230,
+          232
+        ],
+        "source_bbox": [
+          18,
+          45,
+          173,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "fffde164975f51aeefd79e8af05584b3b8192a86d3838495d5f9c99ee4a4ecb0",
+        "file": "druid_ghost_panther_attack_north_03.png",
+        "index": 3,
+        "pixel_sha256": "7cef94f5eb69e4948208408bad617e22fd91de1dff1536dbca2cbff426d3ec9b",
+        "runtime_bbox": [
+          26,
+          131,
+          229,
+          232
+        ],
+        "source_bbox": [
+          20,
+          71,
+          173,
+          147
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "0cb52c79d33b100c1d579eb07b04b9205b2814ac54e6ce03fa3189968d5e42e5",
+        "file": "druid_ghost_panther_attack_north_04.png",
+        "index": 4,
+        "pixel_sha256": "7fc54553a633366921a516f8db260ad62da85208b9dbae5ca4fc08bff82a53a9",
+        "runtime_bbox": [
+          37,
+          125,
+          219,
+          232
+        ],
+        "source_bbox": [
+          28,
+          71,
+          165,
+          152
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north",
+        "encoded_sha256": "455dd86155b548840e73b3e90e479147bac85959c8894e0fed9a442b3c963a16",
+        "file": "druid_ghost_panther_attack_north_05.png",
+        "index": 5,
+        "pixel_sha256": "6017f43a024d5e9804c0857b1773c22aef0231d4b83df2b91dbe8d57602e1005",
+        "runtime_bbox": [
+          52,
+          135,
+          204,
+          232
+        ],
+        "source_bbox": [
+          53,
+          71,
+          168,
+          144
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3",
+        "file": "druid_ghost_panther_attack_north_east_00.png",
+        "index": 0,
+        "pixel_sha256": "17cad8672e54ffd82040fcbc43462f6ec3379bd97bdc572e35e99979c6149e96",
+        "runtime_bbox": [
+          44,
+          92,
+          212,
+          232
+        ],
+        "source_bbox": [
+          30,
+          42,
+          157,
+          148
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "09b1a9d0851ad420a75d6d25db641d836e9d7d69b8afaa516e5e930a2010aa2e",
+        "file": "druid_ghost_panther_attack_north_east_01.png",
+        "index": 1,
+        "pixel_sha256": "e537066f6171dac1163142d3e3553e4e9a372653660a318cf2942767e462b9de",
+        "runtime_bbox": [
+          28,
+          94,
+          227,
+          232
+        ],
+        "source_bbox": [
+          27,
+          44,
+          177,
+          148
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "87580268d006fe86396446c7afc7342435e0946eed181818c928bfad90a37fed",
+        "file": "druid_ghost_panther_attack_north_east_02.png",
+        "index": 2,
+        "pixel_sha256": "c6b7972b93fdcc2b0c723ecfb9667fc8a5ca6826bbcd6fada89d3a676de2305a",
+        "runtime_bbox": [
+          25,
+          97,
+          230,
+          232
+        ],
+        "source_bbox": [
+          26,
+          46,
+          181,
+          148
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "90452e67b6f1ef18cb45dc63068c2220a1158c93d03dcc5d7b3c7eb994d7d47f",
+        "file": "druid_ghost_panther_attack_north_east_03.png",
+        "index": 3,
+        "pixel_sha256": "ab67551aac340aec3dfeec7ae43a74b5dd20cec9f14ccc958e38d9780375c59b",
+        "runtime_bbox": [
+          33,
+          88,
+          223,
+          232
+        ],
+        "source_bbox": [
+          37,
+          50,
+          180,
+          159
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "70310961face50ccc6b35bc53c978db1741a25a81ceb0b88fdc29083d8ac0bb8",
+        "file": "druid_ghost_panther_attack_north_east_04.png",
+        "index": 4,
+        "pixel_sha256": "b8c2479f937a621605689da1c9ed14669ad06350a177607f235e06c304668979",
+        "runtime_bbox": [
+          40,
+          98,
+          216,
+          232
+        ],
+        "source_bbox": [
+          31,
+          62,
+          164,
+          163
+        ],
+        "state": "attack"
+      },
+      {
+        "direction": "north_east",
+        "encoded_sha256": "b1dd72963c8ebee6925a89ac5b6d1c210e31c9c424404451d4d8a4265098e303",
+        "file": "druid_ghost_panther_attack_north_east_05.png",
+        "index": 5,
+        "pixel_sha256": "86ccb5e802bfbffe114b7acf28c9218f6cb8879e2c376a8b192a35caa327292f",
+        "runtime_bbox": [
+          38,
+          92,
+          218,
+          232
+        ],
+        "source_bbox": [
+          25,
+          60,
+          161,
+          166
+        ],
+        "state": "attack"
+      }
+    ],
+    "geometry": {
+      "baseline_y": 232,
+      "canvas": [
+        256,
+        256
+      ],
+      "max_source_bbox": [
+        169,
+        131
+      ],
+      "max_visible": [
+        224,
+        208
+      ],
+      "scale": 1.32544379
+    }
+  },
+  "schema": "fantasydisk.fan3327.actor_pack.v1",
+  "source": [
+    {
+      "direction": "east",
+      "encoded_sha256": "1a2a88c7a079e6eee473603144e6be9f4625875ef6d583366de1aec365a87c29",
+      "file": "druid_ghost_panther_idle_east.png",
+      "index": 0,
+      "pixel_sha256": "5d17ed196e2bab4fae92ea7410d52413a3a46a59f9815f49dbf44f04fd5bf913",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "0af4a589a10929ad7c93360da28071b52230cb14ad27e50a51b73ea8129a863e",
+      "file": "druid_ghost_panther_idle_south_east.png",
+      "index": 0,
+      "pixel_sha256": "895f19b2a5aa22b3184fa8093e391afbe75ca8b25cdcdf8598b5ee5fef96f50d",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "a59cde1e48bd41dd90f7f68ac85ae8b865821f69e6293a9350edaab6f2425902",
+      "file": "druid_ghost_panther_idle_south.png",
+      "index": 0,
+      "pixel_sha256": "3300e0917e678e813563059186a6c48cdb517587ed9acb88edadabc82c82b88b",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "e2b5b872994f8c8d16c2f50366bbe5ad91d558beb467420cc9b717bf1ad775ea",
+      "file": "druid_ghost_panther_idle_south_west.png",
+      "index": 0,
+      "pixel_sha256": "435fb8a33524ee213a1d7da6fb0af9ca41c6eafb56b21ec04b4a432052a68445",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "b630eb0bd208a6e15948d4fca95e551e9446303ce2eb066c90593bf1e755b1d2",
+      "file": "druid_ghost_panther_idle_west.png",
+      "index": 0,
+      "pixel_sha256": "ce965146c91215017fec71ec8e71af388fccc374cfd94502a0d5def5760d3dc1",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "ed5c792fc2212ee7aab7faee4aec361ddd339b79d47fa67d976c479cf5c317eb",
+      "file": "druid_ghost_panther_idle_north_west.png",
+      "index": 0,
+      "pixel_sha256": "5c4716effa936e9b8b6fbd45c751a18d4115f466be5944cc669788c5ab699d1a",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "2db7d632613d4e98735a8107e33f8f1f3f4096ddd1a19417d2b423f6df3d873f",
+      "file": "druid_ghost_panther_idle_north.png",
+      "index": 0,
+      "pixel_sha256": "56858c5bea0e0945832172d68efffd2ddf8d550854d11026a819c276c94fb45e",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "a6474567ca626f0b06a99b1893f8290453a8f580533565a43d6ae350369a3794",
+      "file": "druid_ghost_panther_idle_north_east.png",
+      "index": 0,
+      "pixel_sha256": "7a43d8629933f903c6bbf2270e797bbf8ce9a60f50b10ba1a30ea31222e3dd13",
+      "size": [
+        180,
+        180
+      ],
+      "state": "idle"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "ace94a811fa23acb098c3864380f71a2e0b055323338f0f7af97400724fe7285",
+      "file": "druid_ghost_panther_move_east_00.png",
+      "index": 0,
+      "pixel_sha256": "b046f84c1ad60f1b6a7b0d6920163c5fac3e04e23dde59cc8e9fe033e6de3c8c",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "3cb00048a570468085db6173c07a658033e172abe0fc6717a7306ce813206850",
+      "file": "druid_ghost_panther_move_east_01.png",
+      "index": 1,
+      "pixel_sha256": "57b972bc7c90c6a44791969ead986de60bd34b275522c2e86ad7da42db54e658",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "2e05f31431e3bcff5cfe37bb859de5338a0db031e16a597deaf61273bc1af573",
+      "file": "druid_ghost_panther_move_east_02.png",
+      "index": 2,
+      "pixel_sha256": "28625e10c26f04d82400acf3f1e524afcaa9b08bfcd75bd36ce34d797c5cef6d",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "63fa8a64373f193c7ccb07bd264d53e88582964209fddc521421a0e1e6d03634",
+      "file": "druid_ghost_panther_move_east_03.png",
+      "index": 3,
+      "pixel_sha256": "a24a613976be1e240d418fdd5252f24d3ea0843354b7459b98ccc2b9e9a27757",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "4ae6a0509eebc7657490201e05bb84e247d7cd6f1b32dd292caac290ef1e967c",
+      "file": "druid_ghost_panther_move_east_04.png",
+      "index": 4,
+      "pixel_sha256": "e1acc772e8b618cd3bf9831f655b012854d0cb5e5ac8145412c2f0314e217343",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "e768d432c12202242bdd4c687a47d98d58d2bba953af1bbf3f4d2589e8fa08b0",
+      "file": "druid_ghost_panther_move_east_05.png",
+      "index": 5,
+      "pixel_sha256": "6af214e7dd6fa8d6fcefdbefe78dff991e809182c287da2aa6e5b190f016fe4c",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "3b48b96f4aef15c4ce835246f23a3ea4c04de5a400f2d5cfd7e9683e91c77570",
+      "file": "druid_ghost_panther_move_south_east_00.png",
+      "index": 0,
+      "pixel_sha256": "9e02436676e9c328aaca4bf4256bfcabfa7dfe4bb9d819d9f4065daddb70edfd",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "f5548c1a263c6b288678b8ba7f71ceb284f605fdca6cac4379db2633630293df",
+      "file": "druid_ghost_panther_move_south_east_01.png",
+      "index": 1,
+      "pixel_sha256": "b7a07244a1698c46e5ccf37661b2bee39c9675193464cdce95388e45ee351738",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "a964aa15d055cddbaf442263e6251f4f9295751a54e627120c94b0a57ddb2c98",
+      "file": "druid_ghost_panther_move_south_east_02.png",
+      "index": 2,
+      "pixel_sha256": "f09e8c99571b97d4de7f3a5f9e87cfe0af56edd00d98d5d4764ca678d5369981",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "a42d8c0b20ae55e79706534952ef8536965412ef1f2e4c6ae0bb1ac2081663e6",
+      "file": "druid_ghost_panther_move_south_east_03.png",
+      "index": 3,
+      "pixel_sha256": "1ec23a14258cf05bd93b9fb91eea02c4aa907ce409049baf239e424d9902b3d2",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "cead1b12fc4272d50a10e3d29872f06c4c1a79d5b1d265d9a7b5234e9a6fba29",
+      "file": "druid_ghost_panther_move_south_east_04.png",
+      "index": 4,
+      "pixel_sha256": "c4be1e8251ed2b5dc4aeb0c48b44a3d46f343d13b0aba155475ad59fbdf15d3d",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "b1bb240b05c0c5522e59faff606e87c52f491d17b247d2ffcfec6f272dfbcf39",
+      "file": "druid_ghost_panther_move_south_east_05.png",
+      "index": 5,
+      "pixel_sha256": "2712a895c8ad90f058ed99c239ff90d423a4b4906ce5e9d9495df89c08cfe8df",
+      "size": [
+        212,
+        212
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "ad8d28ba56a479453921a72de392fde5a119e56085e8bc59763403c6914f5148",
+      "file": "druid_ghost_panther_move_south_00.png",
+      "index": 0,
+      "pixel_sha256": "1e4d0771d24b288e5f10cae6b8ac3b110d484df80ae82bc181e43a7f80c5f03a",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "dbf8f0926f0d4e85498aaf5dfee1e9ed766bdcbaccaeaa5af92def64934b6120",
+      "file": "druid_ghost_panther_move_south_01.png",
+      "index": 1,
+      "pixel_sha256": "9c132159c1eb0a08e4c4f03b76609d88ab4e8a485cbe389027287bacdd9c6042",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "98cb9273144d97e41d5773d42a6ac455c325447b72e0c809abb95b48c7b7140c",
+      "file": "druid_ghost_panther_move_south_02.png",
+      "index": 2,
+      "pixel_sha256": "5ff8ea6869d319824c6e641195b727f7c2bdf5fb54aad9c37fe13c10fb58c480",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "86eed8641ac797e6258e945d2a995720194cf9e4ecf7783f1184e0d9f3484367",
+      "file": "druid_ghost_panther_move_south_03.png",
+      "index": 3,
+      "pixel_sha256": "f9392852a2d295021009def65658138688faf0944b69d108a441a1a1a7d86092",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "23a104ef78047d8ecfaedf10657c7e465933c1539e0623518c8f114042fd30cc",
+      "file": "druid_ghost_panther_move_south_04.png",
+      "index": 4,
+      "pixel_sha256": "a6fc27d98a731a48368e11f04576a83b4c0d3d45345c4ec03a1a905277145348",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "98c17696d84206796b33bd551243bea144d9a3d7c8bf66b758c86641ef1b8f37",
+      "file": "druid_ghost_panther_move_south_05.png",
+      "index": 5,
+      "pixel_sha256": "84508a5e585de0ea9a43382ec74dbe34a36a55eeb14990ab60cbb71b30d345d8",
+      "size": [
+        188,
+        188
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "e619b4d49740cc935e5dc865484cfa3c9959f8ac732f50d0ee5d97ca973207ea",
+      "file": "druid_ghost_panther_move_south_west_00.png",
+      "index": 0,
+      "pixel_sha256": "435fb8a33524ee213a1d7da6fb0af9ca41c6eafb56b21ec04b4a432052a68445",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "70f1bdf5f8834601cb918180fa829f9ea21baf0ddc100c7d90e546fbc4b600e5",
+      "file": "druid_ghost_panther_move_south_west_01.png",
+      "index": 1,
+      "pixel_sha256": "57641c2aa6b284e904be06da5d9d7f96b9018b5216f603bf35c7ad75b72e4549",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "416b4f6182e43a60b881171aad528d179455a8aca4619809dd029f557000af5a",
+      "file": "druid_ghost_panther_move_south_west_02.png",
+      "index": 2,
+      "pixel_sha256": "f2bc0da53271fd2fa0c13c442ad54078aeace00f37e0b1cafa3682b6ff71e26d",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "e759a48ccac68948830a5d0c898b188bed819b5cc72afe82f44458c61f40fecd",
+      "file": "druid_ghost_panther_move_south_west_03.png",
+      "index": 3,
+      "pixel_sha256": "0b2777f907c2212f05de126677242c1f5f11d683d02e9c81823b6905eb2edb11",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "1ada6ec887c95ed6d3efaf4d294fcb691b5e87fb7fa4e37c387d3900c0e54ad0",
+      "file": "druid_ghost_panther_move_south_west_04.png",
+      "index": 4,
+      "pixel_sha256": "9c667ca22888e91514608094e8ba6873ed47f62f3aca6425ad878335cf57944b",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "88a6b21b220ee0d80592409156d0f15b1de960af4b80f1edd9e12ec39adcf69d",
+      "file": "druid_ghost_panther_move_south_west_05.png",
+      "index": 5,
+      "pixel_sha256": "516c31aca0a253a4bad55bdf577db57feb4343be6dd5107bf8ff51107ea15485",
+      "size": [
+        180,
+        180
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "49c6fcc6260433b9996777275c8f522e63e6b5f01c0977f4cb26e23fdc756ddb",
+      "file": "druid_ghost_panther_move_west_00.png",
+      "index": 0,
+      "pixel_sha256": "e6819bb70085a7b4ef019e902a940b1ed72965e6b037350d8fa569eec6290929",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "ab575bd4cadfe71eb17cfb4bf2178c5b026ff045117132fdbc52216b28864693",
+      "file": "druid_ghost_panther_move_west_01.png",
+      "index": 1,
+      "pixel_sha256": "b4fae9cd4315d64265d8e84cc3300a6e43f2070a82e19beb2aef38bc1c04e6b6",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "892f9ab0b31900ab5b6ca9fbbc7afa3e0830a63f4d8290a7d6fae0b3de5f5b62",
+      "file": "druid_ghost_panther_move_west_02.png",
+      "index": 2,
+      "pixel_sha256": "44ed02ad652be953f7afed7eb80f3d30c11cab92f2fa81a3bf89d91f7ac64720",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "5129420187ae42e11c3e6a0f1e43804ed35044a362d6abf0e1c3eb5864ceca6a",
+      "file": "druid_ghost_panther_move_west_03.png",
+      "index": 3,
+      "pixel_sha256": "c183bcda89c7e5fc3447739885ef8fa9db4e8613340ec61dd7d4e93009ee8795",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "f5906f43a17f7c5f4d47c0197e64bef96f27879c05efcc84de4108691fac7bb1",
+      "file": "druid_ghost_panther_move_west_04.png",
+      "index": 4,
+      "pixel_sha256": "d6ff9441b6087f01bbc980bc3cc4cf8bd6f79bd0de735b80090b19d9e0c22538",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "36a135d917b8ae5cedf35748ce7b13159bbee5cc15665044b7642c87552cd5f6",
+      "file": "druid_ghost_panther_move_west_05.png",
+      "index": 5,
+      "pixel_sha256": "d23e7a6ac01798e2db138a345321d5f4e14e18a3e1be2ac98afa411beb2f4929",
+      "size": [
+        216,
+        216
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "cb21698f44fc6001bf4776cc03890411fc60af6fffde14b68a9009bbf3a934d5",
+      "file": "druid_ghost_panther_move_north_west_00.png",
+      "index": 0,
+      "pixel_sha256": "a3f7c15dc053eff03d407f58fe1affb6d6491573a0b6ec2ca5bfa7b0bc2207c9",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "8f12c15f4e395a128bd69c7fcb27711c2925c5ac00b57248b69fc378b5fb6f96",
+      "file": "druid_ghost_panther_move_north_west_01.png",
+      "index": 1,
+      "pixel_sha256": "cd25373fadc6987603ea384a58e0a4791ebce25b813ce67bd6e9926306fef831",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "764c71881bd479affcf41402f309abf24240b299c9a2924fb4e8ee711c7d770c",
+      "file": "druid_ghost_panther_move_north_west_02.png",
+      "index": 2,
+      "pixel_sha256": "45a54a8dc6b1100d3dae5562506065ea1058f339d79bf858606229f49bcda80c",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "70093707c6eec265e88785b3b01603fe017eaa4afcefce776f14f4dccf8b4cc0",
+      "file": "druid_ghost_panther_move_north_west_03.png",
+      "index": 3,
+      "pixel_sha256": "9b31c284d72aa82c3e1f848014084d9b8611e3a19f0f67cdb70bf63483d1589b",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "7baf80a3550d51ea0d99516f56bd199b3dee1de7d2d2568c161e1654f81da540",
+      "file": "druid_ghost_panther_move_north_west_04.png",
+      "index": 4,
+      "pixel_sha256": "3c85255246bf3ec4aa0bda118aab63fa19aa4928e81297115d76326f0c4c6f83",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "0dd5cea252835def5189fe8f66e4041f2d0b14d414a44fea40d0cde4dca9ac3f",
+      "file": "druid_ghost_panther_move_north_west_05.png",
+      "index": 5,
+      "pixel_sha256": "2263d5e4b304be379902530fbc5c2447db945ea4369a1ca42880bdd107da94ac",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "6095456f54c5a673b226aa38bbe75ae474922aeb37eff49b5fe35a3bc0d2d857",
+      "file": "druid_ghost_panther_move_north_00.png",
+      "index": 0,
+      "pixel_sha256": "2d2801c45fb24fa4b1f57da97d4043437270feb7e8d39c7c2e2895be05c34786",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "a81e7ebcbe7c96bf43259db81ebc1e9c7b650a1a41601e3c59d523adbb3879c9",
+      "file": "druid_ghost_panther_move_north_01.png",
+      "index": 1,
+      "pixel_sha256": "e6c68691de27e0436bcb271d13b1180fadede4d0fe768eb4d7df1a6a8bf05d2c",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "8d4a0a55dbe275e345bbdb928dafc650803dd8e69b201dfbd85cbc44a3fb86e8",
+      "file": "druid_ghost_panther_move_north_02.png",
+      "index": 2,
+      "pixel_sha256": "db88404dec70b9fdd93458776a4a163c8eb6a3b5abf8b412f5e24111c9e1e424",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "3d0fe59fa9c3d7ea1900eee4952816d6483abdbb0fe4e2833c3c130242598931",
+      "file": "druid_ghost_panther_move_north_03.png",
+      "index": 3,
+      "pixel_sha256": "db7758349f277ff3b5822c2d032e39a53d1a98c4ef1cab1bb91415039ab9139b",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "db691afb4665de34b0fbf79a0d614128f4099c3670efe9c1bd1440b5f2055116",
+      "file": "druid_ghost_panther_move_north_04.png",
+      "index": 4,
+      "pixel_sha256": "3c2ce62fe1f201601c059f9849dfedfb582ee6070ff49f697f932ef79e3acd0f",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "41b2f2941a03b081ec5d5755dacbaebd16fe7ff7306ea5898eff8c6a9a9ab4c4",
+      "file": "druid_ghost_panther_move_north_05.png",
+      "index": 5,
+      "pixel_sha256": "0edd96681030cdef67a27e0e8d6ed1ca75b01ce105848a9c3da39061d22b0a83",
+      "size": [
+        196,
+        196
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "d446308bc59fbda2eab3f7729daa4f8fada8442f388e6ca4892ed82c239703df",
+      "file": "druid_ghost_panther_move_north_east_00.png",
+      "index": 0,
+      "pixel_sha256": "3bbc10541a6d49bc4ec144c8373625f4217e97717430e6071a726a5c43d55114",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "c251af7702606371cfc3af026df03a1168b98e88502624b3ebf7901eaca98518",
+      "file": "druid_ghost_panther_move_north_east_01.png",
+      "index": 1,
+      "pixel_sha256": "2c044a5aa2c80bc602c07058499a02b70b91e7fd2013eeeb1284a39a65283472",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "4a64722789e09c0bcee46d0c5593b1b960b5fff4de3227cd4ca8555fc5ab72fd",
+      "file": "druid_ghost_panther_move_north_east_02.png",
+      "index": 2,
+      "pixel_sha256": "e27bcf61474a85e6617ec9d485d6c1ccb1cf85ed3cb9b5f18dd1eec12130db6a",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "28feb9b05aaf03b01c757ebe599421c0f8fabcd425719e4ce40531c9c1890e24",
+      "file": "druid_ghost_panther_move_north_east_03.png",
+      "index": 3,
+      "pixel_sha256": "c28f3dcfa1da13c95cbffd5391892fa35557aa757263ada315711e5e8c7e73dd",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "0961935493d9bc83fa4e8aaf6e4ad1c37657c8bd58cc71e01238de74ffa0fcf7",
+      "file": "druid_ghost_panther_move_north_east_04.png",
+      "index": 4,
+      "pixel_sha256": "0be95c49b5a2dde81f2da41df4bff71af9c8fc9d7aff0afd376fb0e32891bc1d",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "f29bcdb9876b06b5482fc020bce85103ca68766aad32ed3a22161765d829bfc0",
+      "file": "druid_ghost_panther_move_north_east_05.png",
+      "index": 5,
+      "pixel_sha256": "5b55cd5f270984354b8e5a9d0c36338b2b271e67c16a350b8e768c38dad3ea93",
+      "size": [
+        208,
+        208
+      ],
+      "state": "move"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "ace94a811fa23acb098c3864380f71a2e0b055323338f0f7af97400724fe7285",
+      "file": "druid_ghost_panther_attack_east_00.png",
+      "index": 0,
+      "pixel_sha256": "b046f84c1ad60f1b6a7b0d6920163c5fac3e04e23dde59cc8e9fe033e6de3c8c",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "5a652ce63263db797851ac459da6f4dfac5ab4e91d483cd8cd0c16e41843adfd",
+      "file": "druid_ghost_panther_attack_east_01.png",
+      "index": 1,
+      "pixel_sha256": "487909209504c9f7578984433410b76f5f0d120b454e5fc431340c30129ebc35",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "1e385c25221a38c86b4d282db749af49386d910c0b0c10e90f783908cbcf6c56",
+      "file": "druid_ghost_panther_attack_east_02.png",
+      "index": 2,
+      "pixel_sha256": "f8d32c70af884661b58cf20960438c4316500525fd4f173981955aa958c22687",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "759ce18b76fea57a3f9e901088d7921a037b05ebc3a2871db1f0715b809d090e",
+      "file": "druid_ghost_panther_attack_east_03.png",
+      "index": 3,
+      "pixel_sha256": "572096ce58c5bf087a5d9d88e5634f4ff508a3f7dc9ca0aef3397758d30b3c7b",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "df950c27550af4df93f5bb1139c57866e6f65a3ade9b99a198403acb3f5a20f3",
+      "file": "druid_ghost_panther_attack_east_04.png",
+      "index": 4,
+      "pixel_sha256": "eae3c14e609ec08474ef1763303d7318f4740b1a6b4fc9c0f15e3c6dfd299e5d",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "east",
+      "encoded_sha256": "e402200abc3c8b020bb49a9c153176b5bf48bfa2fa7864fc4216c74e43f97217",
+      "file": "druid_ghost_panther_attack_east_05.png",
+      "index": 5,
+      "pixel_sha256": "7af711ae1dc7a1568e4e0178903c376df78430b62981a68e5ee16511a1f7697b",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "3b48b96f4aef15c4ce835246f23a3ea4c04de5a400f2d5cfd7e9683e91c77570",
+      "file": "druid_ghost_panther_attack_south_east_00.png",
+      "index": 0,
+      "pixel_sha256": "9e02436676e9c328aaca4bf4256bfcabfa7dfe4bb9d819d9f4065daddb70edfd",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "aa77d2c2fc73b3dabf0f75268d7c7d1756a7df08531fc89d19ea181b1e9c4d91",
+      "file": "druid_ghost_panther_attack_south_east_01.png",
+      "index": 1,
+      "pixel_sha256": "f8fe46af4022470d5144a36b370ecde33cba2da6a8ea0e11f48a78cc819ca56b",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "e76ac52b2ae80e5061aee2923ca5f68566d2a055c15cc078a393f967d84ff701",
+      "file": "druid_ghost_panther_attack_south_east_02.png",
+      "index": 2,
+      "pixel_sha256": "011a6e23af8ae0cfb607293adcdf419b656c14f0b6568034a2fb7ce4296cc2d9",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "bc81c82905fc2600f2d3142d6805e0d5a72ce52db1ffc7c9437aff1a0ac2b0d5",
+      "file": "druid_ghost_panther_attack_south_east_03.png",
+      "index": 3,
+      "pixel_sha256": "0de807bb00b2e1962b296fbc16a2868577a4751191a1dce1449b445dc7249e5f",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "255355820fd159f74115b34bfb0ed708c30230b09dd529e2a2f5a0533c72077b",
+      "file": "druid_ghost_panther_attack_south_east_04.png",
+      "index": 4,
+      "pixel_sha256": "2fa698c0720bcdb5e808490438df51a4c24900111c80b6738e76114b550ed3e4",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_east",
+      "encoded_sha256": "38e9cbe1b09f76526429d76d10a4154036a22b1260d6143553be59a39584c47b",
+      "file": "druid_ghost_panther_attack_south_east_05.png",
+      "index": 5,
+      "pixel_sha256": "bc14c00fdc0fb87d315a3debeb196fa99c14e51bdb4e47745f5cf555425ed057",
+      "size": [
+        212,
+        212
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "ad8d28ba56a479453921a72de392fde5a119e56085e8bc59763403c6914f5148",
+      "file": "druid_ghost_panther_attack_south_00.png",
+      "index": 0,
+      "pixel_sha256": "1e4d0771d24b288e5f10cae6b8ac3b110d484df80ae82bc181e43a7f80c5f03a",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "9f8540eaa9f228972d9fb66bcb90ae6b1cc22b73acb4d505a10db644304fca78",
+      "file": "druid_ghost_panther_attack_south_01.png",
+      "index": 1,
+      "pixel_sha256": "a910548dd0c088ebfa46da8aa91a0b5e00b1955e11176b91db5a67e74fdffe34",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "61d93a84318c509ce8211ff6e1c9b7dc7015343878c6b29b6071dd1950a033e9",
+      "file": "druid_ghost_panther_attack_south_02.png",
+      "index": 2,
+      "pixel_sha256": "e53f51705ba9d4922b9d23faab26b13bfbe0458e6ae91b1fa0e6650837764b09",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "59c03c310aaeb2b3518af597463974b9111962c5009ffd2de60908ac50aad577",
+      "file": "druid_ghost_panther_attack_south_03.png",
+      "index": 3,
+      "pixel_sha256": "577ffd803daf6c6f672992e866251486babedcacb1ac24696b732b08f1a7244b",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "f77ec1d405a6aca77cf859df89b32f66a354a2c2c0d80f6800e0b5a2d9368cfa",
+      "file": "druid_ghost_panther_attack_south_04.png",
+      "index": 4,
+      "pixel_sha256": "2c79701b09d40b7a8d890212291fe8f72cced633316ea0ab6efcd08e6f34a483",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south",
+      "encoded_sha256": "8a9aae8672c3e85581157621713012b9bb4183926e709e1427c87779bacd0c30",
+      "file": "druid_ghost_panther_attack_south_05.png",
+      "index": 5,
+      "pixel_sha256": "cdfd7333b3ec185fa7c54910b62877396ec5c1525901a57a97800c35825826da",
+      "size": [
+        188,
+        188
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "e619b4d49740cc935e5dc865484cfa3c9959f8ac732f50d0ee5d97ca973207ea",
+      "file": "druid_ghost_panther_attack_south_west_00.png",
+      "index": 0,
+      "pixel_sha256": "435fb8a33524ee213a1d7da6fb0af9ca41c6eafb56b21ec04b4a432052a68445",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "0276d7e919749145bf99e6c5d7f0567a4b7587ae6454e22c777766752f98aa3e",
+      "file": "druid_ghost_panther_attack_south_west_01.png",
+      "index": 1,
+      "pixel_sha256": "1d2db38b006f13c58c7fcaaa7531ff59e333e9dd9d825fcf78d5e60f942922d5",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "5e4bab0b1fd7d167aff7147123c2aa77bd312444efb046646e99c4822384078d",
+      "file": "druid_ghost_panther_attack_south_west_02.png",
+      "index": 2,
+      "pixel_sha256": "5d74757b652a8ffce14e02e7c78d02905169bcb2c8ace740bdb6519fb7621d7c",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "a75a57bfe02d873105ca3f43921fce0575015ba1d238e48e66d37cbf84a669f5",
+      "file": "druid_ghost_panther_attack_south_west_03.png",
+      "index": 3,
+      "pixel_sha256": "0c9cde34eb0d1f221d2b2984b4e5f90d25ab7ca9a852edaf7d072b20253f31b2",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "b158701a109408449857d8b448bee3174f10235a06125fc88ff1aad07e59135d",
+      "file": "druid_ghost_panther_attack_south_west_04.png",
+      "index": 4,
+      "pixel_sha256": "2541a1047bc5f6f74475078833814c639ecce7a35a5cb20dc5ae8bcbab05fd46",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "south_west",
+      "encoded_sha256": "cf356135a2d051a12ba4b0240f1e5cbd93c847aba6f115f2f55d22bd51d0f669",
+      "file": "druid_ghost_panther_attack_south_west_05.png",
+      "index": 5,
+      "pixel_sha256": "7c33320be669f28baa57a126642be2faff161315898244982a30209453672669",
+      "size": [
+        180,
+        180
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "49c6fcc6260433b9996777275c8f522e63e6b5f01c0977f4cb26e23fdc756ddb",
+      "file": "druid_ghost_panther_attack_west_00.png",
+      "index": 0,
+      "pixel_sha256": "e6819bb70085a7b4ef019e902a940b1ed72965e6b037350d8fa569eec6290929",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "e1f3558b4fd6ca4df2727c76ff5388da4cf0269c7bb04f6511db21a6af12bcac",
+      "file": "druid_ghost_panther_attack_west_01.png",
+      "index": 1,
+      "pixel_sha256": "29912f52b733db170d42c2fc4eefb9c17d2bee0b8baff97a308e4847931ab084",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "2f6344876e1c6071784f754e192f4a8a33adc5252a3b8e61b056836dd49f4267",
+      "file": "druid_ghost_panther_attack_west_02.png",
+      "index": 2,
+      "pixel_sha256": "33193edfffb0f063f3010514b2fad335a1c32514d49a521115b3a71074d27afd",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "6b9a1b1fe724898a0684f9af930a06d30f395ea3d93de340e37ce8cf297d64d7",
+      "file": "druid_ghost_panther_attack_west_03.png",
+      "index": 3,
+      "pixel_sha256": "46484b5f5bb8acf38781f129c3486daf804fc464049cc04c4d3306a1c610c6bf",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "9be254d508f93db109c03d820705db40b713a819746e520d054bb16290b645ee",
+      "file": "druid_ghost_panther_attack_west_04.png",
+      "index": 4,
+      "pixel_sha256": "8fb1c3c348fba2243d91531591bd34e250a3c6418c2787b8462f94f7fad91db7",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "west",
+      "encoded_sha256": "4c2996e97454976a4c938263a8b872cfcda4a725c3705331ec8b103554966f2c",
+      "file": "druid_ghost_panther_attack_west_05.png",
+      "index": 5,
+      "pixel_sha256": "7fe3272462b05ef9750003bab7f49d0ea395a5ee7023d76fded8c0b0af86f972",
+      "size": [
+        216,
+        216
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "cb21698f44fc6001bf4776cc03890411fc60af6fffde14b68a9009bbf3a934d5",
+      "file": "druid_ghost_panther_attack_north_west_00.png",
+      "index": 0,
+      "pixel_sha256": "a3f7c15dc053eff03d407f58fe1affb6d6491573a0b6ec2ca5bfa7b0bc2207c9",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "240ce4e0f85b4d32e5d16bdf44a022b076a0bf3d09d6d10ab0e722a1d732f360",
+      "file": "druid_ghost_panther_attack_north_west_01.png",
+      "index": 1,
+      "pixel_sha256": "5d23ea4a94292a34fa22ef806823f5295b360cd08780a944d013c70f459213a7",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "f30515ac9b1f3b35f3a8151496980d0bbaf49060dfcd242d79c5d631a0e5eff7",
+      "file": "druid_ghost_panther_attack_north_west_02.png",
+      "index": 2,
+      "pixel_sha256": "94a09dbd06d07a1bcfa1448d2a903acdb128ad26157968f9e9feda4ad7d1eebc",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "eee9c76f7338077c9f70eb225fdb483a7b69b69d80dc972a76ed419dcf4e4276",
+      "file": "druid_ghost_panther_attack_north_west_03.png",
+      "index": 3,
+      "pixel_sha256": "bf52eca9cbae09d77f3443900809e0cd93c079b2ea11cf338ee8e311b7a00332",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "e1ae6e1d38cd5ff86fb607e31b915d89c8d86f8aeb2f92f98692bfa0470eb911",
+      "file": "druid_ghost_panther_attack_north_west_04.png",
+      "index": 4,
+      "pixel_sha256": "098cc02e8ffab31e6bd90397662397f53999f21b37b106c45a3aecba98dcd165",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_west",
+      "encoded_sha256": "7174e53fe3c8a288d0e28f46eb5e283116d95a698b537e3bf3da2a41f7028ee5",
+      "file": "druid_ghost_panther_attack_north_west_05.png",
+      "index": 5,
+      "pixel_sha256": "ae4d536a6ad68995ee6a32f1d139e2fe0fba15bdc827de47dfe5449fd30b9fe2",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "6095456f54c5a673b226aa38bbe75ae474922aeb37eff49b5fe35a3bc0d2d857",
+      "file": "druid_ghost_panther_attack_north_00.png",
+      "index": 0,
+      "pixel_sha256": "2d2801c45fb24fa4b1f57da97d4043437270feb7e8d39c7c2e2895be05c34786",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "71e82e039dbf1fe150dc09e974fce776a44b6c46ecdd5b6a78ee2dbd4c267c08",
+      "file": "druid_ghost_panther_attack_north_01.png",
+      "index": 1,
+      "pixel_sha256": "4f3722eea3bd4625bb0bbdac81206c5f35d184acfced8a6111e5437bdf700322",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "c16984d48134156549583313158cdc4eda12e6e6535b67a9e941c8d7f6f7abb0",
+      "file": "druid_ghost_panther_attack_north_02.png",
+      "index": 2,
+      "pixel_sha256": "73fad9af3d0ea07e51a3052ce5a1b56122429ca706f3c8b81a4616c1df06c9c7",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "bc8b9c7aa640e77e6daac1a4e24835b1ab4c72b48b04b246a256d4e6fbf67842",
+      "file": "druid_ghost_panther_attack_north_03.png",
+      "index": 3,
+      "pixel_sha256": "0196b5bf79d148d9711ce0a885ac68558980b77019397f2fdec8c15bbb100d75",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "5bb5f095070c633d31a78c83685bde68b7e9d723339d903ac79e19e3f42bb616",
+      "file": "druid_ghost_panther_attack_north_04.png",
+      "index": 4,
+      "pixel_sha256": "5549d1a282661e9504b84dba86ff6631bb6e8e1cf7f87687fb4b4b50d21f4fe2",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north",
+      "encoded_sha256": "6514d0344f053ea6b9e93fa2be8cffabdc11032dd53a8c5aa245ca2fe39d59fc",
+      "file": "druid_ghost_panther_attack_north_05.png",
+      "index": 5,
+      "pixel_sha256": "07f44fa7a1b2be40217bd8345e526dd0594d59440a7205ea5955688d0f3f2258",
+      "size": [
+        196,
+        196
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "d446308bc59fbda2eab3f7729daa4f8fada8442f388e6ca4892ed82c239703df",
+      "file": "druid_ghost_panther_attack_north_east_00.png",
+      "index": 0,
+      "pixel_sha256": "3bbc10541a6d49bc4ec144c8373625f4217e97717430e6071a726a5c43d55114",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "62e654fd3d41bcb2640df65e9217a44b686fd5e44f70a3e788973044827b0a71",
+      "file": "druid_ghost_panther_attack_north_east_01.png",
+      "index": 1,
+      "pixel_sha256": "3fa7732510f5ab66cdc6235b9da566443333815cbe7b12cc42c2d42339fa3bc1",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "ef44c4702f5f451fb52cb40177372794e200dba5b5e8312fa6f497403c082f16",
+      "file": "druid_ghost_panther_attack_north_east_02.png",
+      "index": 2,
+      "pixel_sha256": "cc0396624e24371980c8686ae6bb1983f9d33bfd6be771a65399fb8a6d5122dc",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "93a785c80807e475d197c5b5ea001ebfd9b77351ec72f4bf29977d966c64aac8",
+      "file": "druid_ghost_panther_attack_north_east_03.png",
+      "index": 3,
+      "pixel_sha256": "dbdce780a210b342f11a7881b7516ff409b5bb3389813687721b71bc80ecb60c",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "78063926973022e0420c1d9ce8e449f4e20b1ad5a18e346b9d15c7fb448ec412",
+      "file": "druid_ghost_panther_attack_north_east_04.png",
+      "index": 4,
+      "pixel_sha256": "1c33944d212ce4f7e2f136f82191f86668aacb5c2fd4c00b139bf42a34439f4c",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    },
+    {
+      "direction": "north_east",
+      "encoded_sha256": "f4ca88de781a6be3b04998d591036ed4af50515e7ecc525a377f4c5e9ac5d064",
+      "file": "druid_ghost_panther_attack_north_east_05.png",
+      "index": 5,
+      "pixel_sha256": "f81e0bfe2dc2fd2f6db454ae7415526a8c04fe96e56fbc6c4f85066f631713b2",
+      "size": [
+        208,
+        208
+      ],
+      "state": "attack"
+    }
+  ],
+  "source_manifests": {
+    "attack_manifest.json": {
+      "frame_count": 48,
+      "pixel_lab_character_id": "97a1369c-cfd7-498b-b13f-478544015da1",
+      "sha256": "0fae58e97119e551ef5fcd8c50df67a69002ed641d15b8e8c9551c5ab03eb90a"
+    },
+    "move_manifest.json": {
+      "frame_count": 48,
+      "pixel_lab_character_id": "97a1369c-cfd7-498b-b13f-478544015da1",
+      "sha256": "51b8ecba46e55f8620118a608981b1ddfa9b67bb15c8cc2ac81171fbd52dc83a"
+    }
+  },
+  "spriteframes": "ally_druid_ghost_panther_spriteframes.tres",
+  "states": {
+    "attack": 6,
+    "idle": 1,
+    "move": 6
+  }
+}
