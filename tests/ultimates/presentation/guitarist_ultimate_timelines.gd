@@ -3,22 +3,55 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/guitarist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/guitarist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["electric_guitar", "bass_guitar", "sound_amp"]
 const SCENES := {
 	"electric_guitar": preload("res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn"),
 	"bass_guitar": preload("res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn"),
 	"sound_amp": preload("res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn"),
 }
+const FLIPBOOKS := {
+	"electric_guitar": {
+		"node": "LastChord",
+		"path": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
+		"animation": &"electric_guitar_last_chord",
+		"times": [0.0, 0.52, 0.68, 0.84, 1.0, 1.16, 1.4, 2.6, 4.7],
+		"beats": [
+			"weapon_ultimate.executor.guitarist.electric_guitar.riff:0",
+			"weapon_ultimate.executor.guitarist.electric_guitar.final",
+		],
+	},
+	"bass_guitar": {
+		"node": "Subwoofer",
+		"path": "res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
+		"animation": &"bass_guitar_hell_subwoofer",
+		"times": [0.0, 0.35, 0.7, 1.23, 1.76, 2.29, 3.3, 4.2, 5.0],
+		"beats": [
+			"weapon_ultimate.executor.guitarist.bass_guitar.pull",
+			"weapon_ultimate.executor.guitarist.bass_guitar.shock",
+		],
+	},
+	"sound_amp": {
+		"node": "WallOfSound",
+		"path": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
+		"animation": &"guitarist_sound_amp_wall_of_sound",
+		"times": [0.0, 0.68, 0.95, 1.22, 1.49, 1.94, 3.1, 4.3, 5.25],
+		"beats": [
+			"weapon_ultimate.executor.guitarist.sound_amp.feedback:0",
+			"weapon_ultimate.executor.guitarist.sound_amp.overload",
+		],
+	},
+}
 const PACKS := [
-	{"weapon_id": "electric_guitar", "scene": SCENES["electric_guitar"], "time": 1.72, "position": Vector2(0.18, 0.55), "title": "ELECTRIC GUITAR — LAST CHORD", "color": Color(0.36, 0.86, 1.0), "required_nodes": ["RiffStrips/RiffOne", "RiffStrips/RiffFive", "FinalChord", "IntersectionStuns"]},
-	{"weapon_id": "bass_guitar", "scene": SCENES["bass_guitar"], "time": 2.85, "position": Vector2(0.50, 0.55), "title": "BASS GUITAR — HELL SUBWOOFER", "color": Color(0.84, 0.44, 1.0), "required_nodes": ["PullRing", "WeightRing", "LaunchRing", "SubwooferShock"]},
-	{"weapon_id": "sound_amp", "scene": SCENES["sound_amp"], "time": 3.64, "position": Vector2(0.82, 0.55), "title": "SOUND AMP — WALL OF SOUND", "color": Color(1.0, 0.76, 0.34), "required_nodes": ["AmpStage/NorthAmp", "AmpStage/SouthAmp", "CableSquare", "FeedbackExplosion"]},
+	{"weapon_id": "electric_guitar", "scene": SCENES["electric_guitar"], "time": 1.72, "position": Vector2(0.18, 0.55), "title": "ELECTRIC GUITAR — LAST CHORD", "color": Color(0.36, 0.86, 1.0), "required_nodes": ["LastChord"]},
+	{"weapon_id": "bass_guitar", "scene": SCENES["bass_guitar"], "time": 2.85, "position": Vector2(0.50, 0.55), "title": "BASS GUITAR — HELL SUBWOOFER", "color": Color(0.84, 0.44, 1.0), "required_nodes": ["Subwoofer"]},
+	{"weapon_id": "sound_amp", "scene": SCENES["sound_amp"], "time": 3.64, "position": Vector2(0.82, 0.55), "title": "SOUND AMP — WALL OF SOUND", "color": Color(1.0, 0.76, 0.34), "required_nodes": ["WallOfSound"]},
 ]
 const CAPTURES := [
-	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"name": "2K", "path": "res://docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"name": "648p", "file": "guitarist_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "file": "guitarist_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "file": "guitarist_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2K", "file": "guitarist_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const PHASE_BINDINGS := {"windup": "windup", "release": "execute", "active": "active", "recovery": "recover", "cancel": "cleanup"}
@@ -30,6 +63,7 @@ const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
 const PANEL_LABEL_Y_RATIO := 0.245
 const PANEL_LABEL_FONT_RATIO := 0.021
+const IMPACT_CROWD := 39
 
 
 class HandleProbe extends RefCounted:
@@ -37,6 +71,17 @@ class HandleProbe extends RefCounted:
 
 	func release() -> void:
 		released += 1
+
+
+class VictimProbe extends Node2D:
+	var health := 100.0
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
 
 
 func _initialize() -> void:
@@ -57,26 +102,27 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_weapon_local_impacts(errors)
 	_check_capture_text(errors)
-	_check_contact_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Guitarist ultimate timelines passed (three distinct timelines, frozen phases, cleanup, measured typography, and evidence).")
+	print("Guitarist ultimate timelines passed (three exact flipbooks, frozen phases, per-victim beat impacts, lifecycle, and crowd budgets).")
 	quit(0)
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must explain the no-new-raster route", errors)
-	var created = provenance.get("new_pixellab_assets", [])
-	_expect(created is Array and (created as Array).is_empty(), "no PixelLab asset may be declared when no raster was generated", errors)
+	_expect(str(provenance.get("route", "")) == "integrated_approved_pixellab_animation_frames", "provenance route must identify the admitted PixelLab animation packs", errors)
+	var assets := provenance.get("new_pixellab_assets", []) as Array
+	_expect(assets == WEAPON_IDS, "provenance must list exactly the three admitted Guitarist packs", errors)
+	_expect(str(provenance.get("integrated_art_candidate", "")) == "616662417a595fbf91d536f2fe02a151714c12b9", "provenance must pin the accepted art candidate", errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
-		for field in ["source_path", "runtime_path", "runtime_scene"]:
-			var path := str(source.get(field, ""))
-			_expect(not path.is_empty() and FileAccess.file_exists("res://%s" % path), "%s %s must exist" % [weapon_id, field], errors)
+		_expect(FileAccess.file_exists("res://%s" % str(source.get("runtime_scene", ""))), "%s runtime scene must be recorded and exist" % weapon_id, errors)
+		_expect(FileAccess.file_exists("res://%s" % str(source.get("spriteframes", ""))), "%s SpriteFrames must be recorded and exist" % weapon_id, errors)
+		_expect(FileAccess.file_exists("res://%s" % str(source.get("provenance_manifest", ""))), "%s pack provenance must be recorded and exist" % weapon_id, errors)
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -123,7 +169,97 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) == int(performance.get("max_visual_nodes", -1)), "%s visual-node budget must match manifest" % weapon_id, errors)
 	_expect(int(instance.get_meta("crowd_cap", 0)) == int(performance.get("crowd_cap", -1)), "%s crowd cap must match manifest" % weapon_id, errors)
 	_expect(_visual_node_count(instance) <= int(instance.get_meta("max_visual_nodes", 0)), "%s scene must stay within its visual-node budget" % weapon_id, errors)
+	_check_scene_flipbook(weapon_id, package, instance, timeline, errors)
 	instance.queue_free()
+
+
+func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Node2D, timeline: AnimationPlayer, errors: Array[String]) -> void:
+	var expected := FLIPBOOKS[weapon_id] as Dictionary
+	var sprite := instance.get_node_or_null(str(expected["node"])) as AnimatedSprite2D
+	_expect(sprite != null, "%s must expose its exact flipbook node" % weapon_id, errors)
+	if sprite == null:
+		return
+	var frames := sprite.sprite_frames
+	var animation := expected["animation"] as StringName
+	_expect(frames != null and frames.resource_path == str(expected["path"]), "%s must bind its admitted SpriteFrames" % weapon_id, errors)
+	_expect(sprite.animation == animation, "%s must bind its admitted animation identity" % weapon_id, errors)
+	if frames != null:
+		_expect(frames.get_frame_count(animation) == 9, "%s flipbook must expose all nine frames" % weapon_id, errors)
+		_expect(not frames.get_animation_loop(animation), "%s flipbook must not loop through a seam" % weapon_id, errors)
+		var texture_paths := {}
+		for frame in 9:
+			var texture := frames.get_frame_texture(animation, frame)
+			_expect(texture != null and texture.get_size() == Vector2(256, 256), "%s frame %d must be a visible 256x256 texture" % [weapon_id, frame], errors)
+			if texture != null:
+				texture_paths[texture.resource_path] = true
+		_expect(texture_paths.size() == 9, "%s flipbook frames must be distinct and non-empty" % weapon_id, errors)
+	if timeline != null and timeline.has_animation(&"ultimate"):
+		timeline.stop()
+		timeline.play(&"ultimate")
+		for frame in 9:
+			timeline.seek(float((expected["times"] as Array)[frame]), true)
+			_expect(sprite.frame == frame, "%s timeline must reach frame %d at its authored beat" % [weapon_id, frame], errors)
+	var pending: Array[Node] = [instance]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		for child in node.get_children():
+			pending.append(child)
+			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
+	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+	_expect("res://%s" % str(flipbook.get("spriteframes", "")) == str(expected["path"]), "%s manifest must pin its SpriteFrames path" % weapon_id, errors)
+	_expect(StringName(str(flipbook.get("animation", ""))) == animation, "%s manifest must pin its animation identity" % weapon_id, errors)
+	var frame_size := flipbook.get("frame_size", []) as Array
+	_expect(int(flipbook.get("frame_count", 0)) == 9 and frame_size.size() == 2 \
+			and int(frame_size[0]) == 256 and int(frame_size[1]) == 256,
+		"%s manifest must pin nine 256x256 frames" % weapon_id, errors)
+
+
+## The authored scene is the guitarist trio's only live effect channel
+## (beat_routing_gate_test PRESENTATION_ONLY_PAIRS): every damaging beat routes
+## its actually affected victims through present(), and the scene plays the
+## shared bounded per-victim impact for exactly those enemies.
+func _check_weapon_local_impacts(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var expected := FLIPBOOKS[weapon_id] as Dictionary
+		var scene := (SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(scene)
+		scene.call("present", "%s.probe" % weapon_id, {"shape": "ring_pulse", "radius": 240.0})
+		_expect(_impact_player(scene) == null, "%s victimless beat must not start a victim impact" % weapon_id, errors)
+		var victims: Array = []
+		for index in IMPACT_CROWD:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(40.0 + float(index) * 8.0, float(index % 3) * 18.0)
+			root.add_child(victim)
+			victims.append(victim)
+		for beat in expected["beats"] as Array:
+			scene.call("present", str(beat), {"shape": "ring_pulse", "radius": 240.0, "victims": victims})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size() * 2, "%s must enqueue each affected enemy once per damaging beat" % weapon_id, errors)
+			_expect(bool(planned.get("degraded", false)), "%s must use the bounded crowd variant above 38 victims" % weapon_id, errors)
+			_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6, "%s victim impact must last 0.3-0.6 seconds" % weapon_id, errors)
+			_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES, "%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(int(played.get("flashes", 0)) == victims.size() * 2, "%s degradation must never drop the existing white victim flash" % weapon_id, errors)
+			_expect(int(played.get("created_nodes", 0)) <= ImpactPlayer.POOL_CAP, "%s burst node creation must stay inside the pool cap" % weapon_id, errors)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == str(expected["path"]), "%s victim impact must use its own integrated flipbook" % weapon_id, errors)
+			scene.call("finish", "cancel")
+			var cleaned := impacts.call("snapshot") as Dictionary
+			_expect(int(cleaned.get("active", 0)) == 0 and int(cleaned.get("pending", 0)) == 0 and int(cleaned.get("pooled", 0)) == 0, "%s cancel must release every burst deterministically" % weapon_id, errors)
+		scene.queue_free()
+		for victim in victims:
+			(victim as Node).queue_free()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phase_ids: Dictionary, errors: Array[String]) -> void:
@@ -159,6 +295,14 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		for weapon_id in WEAPON_IDS:
 			values[str((packages.get(weapon_id, {}) as Dictionary).get(field, ""))] = true
 		_expect(values.size() == WEAPON_IDS.size() and not values.has(""), "all Guitarist weapons must have unique %s" % field, errors)
+	var flipbook_paths := {}
+	var flipbook_animations := {}
+	for weapon_id in WEAPON_IDS:
+		var expected := FLIPBOOKS[weapon_id] as Dictionary
+		flipbook_paths[str(expected["path"])] = true
+		flipbook_animations[expected["animation"]] = true
+	_expect(flipbook_paths.size() == WEAPON_IDS.size(), "all Guitarist weapons must bind distinct flipbook packs", errors)
+	_expect(flipbook_animations.size() == WEAPON_IDS.size(), "all Guitarist weapons must bind distinct flipbook animations", errors)
 
 
 func _check_capture_text(errors: Array[String]) -> void:
@@ -171,19 +315,6 @@ func _check_capture_text(errors: Array[String]) -> void:
 		for raw_pack in PACKS:
 			var pack := raw_pack as Dictionary
 			_expect(panel_rect(size, pack).grow(-4.0).encloses(panel_label_rect(size, pack)), "%s label must stay inside its panel" % str(pack.get("weapon_id", "")), errors)
-
-
-func _check_contact_evidence(errors: Array[String]) -> void:
-	for raw_capture in CAPTURES:
-		var capture := raw_capture as Dictionary
-		var path := str(capture.get("path", ""))
-		_expect(FileAccess.file_exists(path), "contact evidence missing: %s" % path, errors)
-		if not FileAccess.file_exists(path):
-			continue
-		var image := Image.load_from_file(path)
-		_expect(image != null and not image.is_empty(), "contact evidence must decode: %s" % path, errors)
-		if image != null:
-			_expect(image.get_size() == capture.get("size", Vector2i.ZERO), "contact evidence resolution mismatch: %s" % path, errors)
 
 
 static func sheet_title_font_size(size: Vector2i) -> int:

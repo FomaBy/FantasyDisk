@@ -1,4 +1,13 @@
-extends RefCounted
+extends Node2D
+
+## Doubles as the root script of the authored presentation scene
+## (GuitaristBassGuitarHellSubwoofer.tscn): the static half executes the
+## mechanics, the instance half receives beat payloads while the scene is the
+## live channel and plays the shared per-victim impact for the enemies each
+## wave actually struck.
+
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.bass_guitar"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.bass_guitar"
@@ -9,6 +18,9 @@ const CONTROL_POLICY := {
 	"epic": {"displacement_multiplier": 0.35, "duration_multiplier": 0.5, "allow_movement_lock": false, "allow_execute": true},
 	"boss": {"displacement_multiplier": 0.0, "duration_multiplier": 0.25, "allow_movement_lock": false, "allow_execute": false},
 }
+
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -67,6 +79,7 @@ static func fire_wave(activation, state: Dictionary, stage: String) -> void:
 	var radius: float = activation.param_float("%s_radius" % stage, 0.0)
 	var damage: float = activation.scaled_damage("%s_damage" % stage, 0.0)
 	var duration: float = activation.param_float("%s_duration" % stage, 0.0)
+	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), radius):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -84,7 +97,37 @@ static func fire_wave(activation, state: Dictionary, stage: String) -> void:
 			"speed_multiplier": activation.param_float("weight_slow", 0.42) if stage == "weight" else 0.78,
 			"bass_wave": stage,
 		})
+		victims.append(target)
 	(state["waves"] as Array).append(stage)
 	activation.present(EXECUTOR_ID + "." + stage, {
 		"shape": "ring_pulse", "position": activation.origin(), "radius": radius,
+		"victims": victims,
 	})
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false
