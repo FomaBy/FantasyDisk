@@ -809,7 +809,7 @@
       "visible_height": 245,
       "alpha_bbox_bottom": 480
     },
-    "contact_sheet": "build/qa/scrum434_soldier_pixellab/soldier_pixellab_contact.png",
+    "contact_sheet": "docs/design/reference-assets-lfs/FAN-2607-soldier/soldier_pixellab_contact.png",
     "contact_sheet_sha256": "13fe9279a0afea871f50108014d38f205aa55641856b2e53eb726f7d37d59177"
   }
 }
