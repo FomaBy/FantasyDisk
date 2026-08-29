@@ -43,7 +43,8 @@
       "silhouette": "silver crescent mark, focused bolt, and four split bolts",
       "motion_path": "mark bloom, aimed bolt, then four diagonal split bolts",
       "impact_language": "moon-mark flash followed by a four-way silver split",
-      "timing_seconds": {"windup": 0.0, "release": 0.6, "active": 1.15, "recovery": 4.15, "cancel": 4.8},
+      "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 1.05, "recovery": 2.6, "cancel": 3.1},
+      "timing_rhythm": "0.70 s mark ceremony under a swelling night veil, the aimed bolt lands at 1.05 s with a 95 ms hitstop, four split bolts hold the arena to 2.60 s, then the veil lifts",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.moon_crossbow.windup",
         "release": "weapon_ultimate.phase.ranger.moon_crossbow.execute",
@@ -51,7 +52,26 @@
         "recovery": "weapon_ultimate.phase.ranger.moon_crossbow.recover",
         "cancel": "weapon_ultimate.phase.ranger.moon_crossbow.cleanup"
       },
-      "performance": {"max_visual_nodes": 5, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 7,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: five split-bolt elements plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 95,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_moon_crossbow.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      }
     },
     {
       "weapon_id": "storm_longbow",
@@ -60,7 +80,8 @@
       "silhouette": "one long storm arrow corridor with tail-to-tip lightning beats",
       "motion_path": "charged arrow corridor followed by seven sequential lightning beats",
       "impact_language": "sequential electric corridor strikes that push away from the axis",
-      "timing_seconds": {"windup": 0.0, "release": 0.38, "active": 0.72, "recovery": 3.9, "cancel": 4.45},
+      "timing_seconds": {"windup": 0.0, "release": 0.6, "active": 0.95, "recovery": 2.85, "cancel": 3.45},
+      "timing_rhythm": "0.60 s draw, one arena-wide storm flash on the release beat, the corridor walks tail to tip with a 120 ms hitstop at 0.95 s and holds to 2.85 s before the sky settles",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.storm_longbow.windup",
         "release": "weapon_ultimate.phase.ranger.storm_longbow.execute",
@@ -68,7 +89,26 @@
         "recovery": "weapon_ultimate.phase.ranger.storm_longbow.recover",
         "cancel": "weapon_ultimate.phase.ranger.storm_longbow.cleanup"
       },
-      "performance": {"max_visual_nodes": 7, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: seven corridor beats plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_storm_longbow.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      }
     },
     {
       "weapon_id": "hunter_trap",
@@ -77,7 +117,8 @@
       "silhouette": "three heavy spectral trap rings with inward-facing jaws",
       "motion_path": "three edge sigils close toward the center in staggered jaw-lock rings",
       "impact_language": "green-blue jaw snap, chain net closure, and a fading bleed rune",
-      "timing_seconds": {"windup": 0.0, "release": 0.92, "active": 1.45, "recovery": 4.85, "cancel": 5.35},
+      "timing_seconds": {"windup": 0.0, "release": 0.95, "active": 1.4, "recovery": 2.7, "cancel": 3.8},
+      "timing_rhythm": "0.95 s sigil ceremony under a thickening forest veil, the jaws snap at 1.40 s with a 145 ms hitstop, the chain net holds to 2.70 s and the longest recovery lets the rune bleed out",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.hunter_trap.windup",
         "release": "weapon_ultimate.phase.ranger.hunter_trap.execute",
@@ -85,7 +126,26 @@
         "recovery": "weapon_ultimate.phase.ranger.hunter_trap.recover",
         "cancel": "weapon_ultimate.phase.ranger.hunter_trap.cleanup"
       },
-      "performance": {"max_visual_nodes": 3, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: three jaw rings plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 145,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_hunter_trap.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      }
     }
   ],
   "evidence": {
