@@ -366,6 +366,8 @@ def run_character(args, bearer, started, call_fn=call, download_fn=download,
         raise SystemExit("--directions is required with --character-id")
 
     character_id = args.character_id
+    custom_start_frame_url = getattr(args, "custom_start_frame_url", None)
+    starting_frame_name = getattr(args, "starting_frame_name", None)
     log("character_id: %s" % character_id)
     animate_params = {
         "character_id": character_id,
@@ -375,6 +377,8 @@ def run_character(args, bearer, started, call_fn=call, download_fn=download,
         "directions": directions,
         "frame_count": args.frame_count,
     }
+    if custom_start_frame_url:
+        animate_params["custom_start_frame_url"] = custom_start_frame_url
     try:
         anim = call_fn("animate_character", animate_params, bearer, 1)
         log("animate job: %s" % json.dumps(anim)[:300])
@@ -395,7 +399,20 @@ def run_character(args, bearer, started, call_fn=call, download_fn=download,
     rows = extract_character_frame_urls(info, args.animation_name, directions)
     prefix = args.frame_prefix or (args.animation_name + "_")
     frames = []
+    starting_frame = None
     try:
+        if custom_start_frame_url and starting_frame_name:
+            idle_path = os.path.join(args.source_dir, starting_frame_name)
+            size = download_fn(custom_start_frame_url, idle_path)
+            encoded_sha256, pixel_sha256 = frame_hashes(idle_path)
+            starting_frame = {
+                "file": starting_frame_name,
+                "direction": directions[0],
+                "bytes": size,
+                "url_kind": "custom_start_frame",
+                "encoded_sha256": encoded_sha256,
+                "pixel_sha256": pixel_sha256,
+            }
         for direction in directions:
             direction_prefix = "%s%s" % (prefix, direction.replace("-", "_"))
             urls = rows.get(direction, [])
@@ -441,6 +458,8 @@ def run_character(args, bearer, started, call_fn=call, download_fn=download,
         "frame_count": len(frames),
         "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
     }
+    if starting_frame:
+        manifest["starting_frame"] = starting_frame
     with open(args.manifest_out, "w") as fh:
         json.dump(manifest, fh, indent=2, ensure_ascii=False)
         fh.write("\n")
@@ -457,12 +476,12 @@ def run(args, call_fn=call, download_fn=download, sleep_fn=time.sleep,
     os.makedirs(args.source_dir, exist_ok=True)
     started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-    if args.character_id:
+    if getattr(args, "character_id", None):
         return run_character(args, bearer, started, call_fn=call_fn,
                              download_fn=download_fn, sleep_fn=sleep_fn,
                              clock=clock, log=log)
 
-    if args.object_id:
+    if getattr(args, "object_id", None):
         object_id = args.object_id
     else:
         create_params = {
@@ -609,6 +628,10 @@ def main(argv=None):
                         help="animate an existing PixelLab character id")
     parser.add_argument("--animation-name", default=None,
                         help="named animation group for --character-id")
+    parser.add_argument("--custom-start-frame-url", default=None,
+                        help="PixelLab URL for the exact starting pose of a v3 character animation")
+    parser.add_argument("--starting-frame-name", default=None,
+                        help="source filename for saving --custom-start-frame-url")
     parser.add_argument("--directions", nargs="+", default=None,
                         help="directions for --character-id")
     parser.add_argument("--frame-prefix", default=None,

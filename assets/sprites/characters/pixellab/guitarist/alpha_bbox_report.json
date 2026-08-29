@@ -647,23 +647,23 @@
       "source_alpha_bbox": [
         70,
         61,
-        153,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        83,
+        104,
         116
       ],
       "alpha_threshold": 0,
       "scale": 2.1120689655172415,
       "resized_visible_size": [
-        175,
+        220,
         245
       ],
       "runtime_alpha_bbox": [
-        168,
+        146,
         155,
-        343,
+        366,
         400
       ]
     },
@@ -675,25 +675,25 @@
         240
       ],
       "source_alpha_bbox": [
-        66,
-        62,
-        153,
+        70,
+        61,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        87,
-        115
+        104,
+        116
       ],
       "alpha_threshold": 0,
-      "scale": 2.130434782608696,
+      "scale": 2.1120689655172415,
       "resized_visible_size": [
-        185,
+        220,
         245
       ],
       "runtime_alpha_bbox": [
-        164,
+        146,
         155,
-        349,
+        366,
         400
       ]
     },
@@ -705,25 +705,25 @@
         240
       ],
       "source_alpha_bbox": [
-        64,
-        65,
-        153,
+        68,
+        60,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        89,
-        112
+        106,
+        117
       ],
       "alpha_threshold": 0,
-      "scale": 2.1875,
+      "scale": 2.094017094017094,
       "resized_visible_size": [
-        195,
+        222,
         245
       ],
       "runtime_alpha_bbox": [
-        158,
+        145,
         155,
-        353,
+        367,
         400
       ]
     },
@@ -735,25 +735,25 @@
         240
       ],
       "source_alpha_bbox": [
-        68,
-        61,
-        153,
+        67,
+        59,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        85,
-        116
+        107,
+        118
       ],
       "alpha_threshold": 0,
-      "scale": 2.1120689655172415,
+      "scale": 2.0762711864406778,
       "resized_visible_size": [
-        180,
+        222,
         245
       ],
       "runtime_alpha_bbox": [
-        166,
+        145,
         155,
-        346,
+        367,
         400
       ]
     },
@@ -765,25 +765,25 @@
         240
       ],
       "source_alpha_bbox": [
-        72,
-        61,
-        153,
+        65,
+        60,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        81,
-        116
+        109,
+        117
       ],
       "alpha_threshold": 0,
-      "scale": 2.1120689655172415,
+      "scale": 2.094017094017094,
       "resized_visible_size": [
-        171,
+        228,
         245
       ],
       "runtime_alpha_bbox": [
-        170,
+        142,
         155,
-        341,
+        370,
         400
       ]
     },
@@ -795,25 +795,25 @@
         240
       ],
       "source_alpha_bbox": [
-        74,
-        62,
-        152,
+        65,
+        61,
+        174,
         177
       ],
       "source_alpha_bbox_size": [
-        78,
-        115
+        109,
+        116
       ],
       "alpha_threshold": 0,
-      "scale": 2.130434782608696,
+      "scale": 2.1120689655172415,
       "resized_visible_size": [
-        166,
+        230,
         245
       ],
       "runtime_alpha_bbox": [
-        173,
+        141,
         155,
-        339,
+        371,
         400
       ]
     },
@@ -825,25 +825,25 @@
         240
       ],
       "source_alpha_bbox": [
-        75,
-        63,
-        152,
-        176
+        65,
+        60,
+        174,
+        177
       ],
       "source_alpha_bbox_size": [
-        77,
-        113
+        109,
+        117
       ],
       "alpha_threshold": 0,
-      "scale": 2.168141592920354,
+      "scale": 2.094017094017094,
       "resized_visible_size": [
-        167,
+        228,
         245
       ],
       "runtime_alpha_bbox": [
-        172,
+        142,
         155,
-        339,
+        370,
         400
       ]
     },

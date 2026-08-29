@@ -873,5 +873,94 @@
       "alpha": "RGBA transparent",
       "naming": "actor_move_direction_00..05"
     }
+  },
+  "fan3720_north_east_regeneration": {
+    "task": "FAN-3720",
+    "generated_at": "2026-08-29T04:16:06Z",
+    "source": "PixelLab MCP edit_image + tools/pixellab_generate_pack.py",
+    "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
+    "edit": {
+      "tool": "edit_image",
+      "job_id": "b56e17f8-6c36-40c4-b9ef-ca7c4593be65",
+      "mode": "reference",
+      "reference": "same character south-east rotation",
+      "output_size": [
+        240,
+        240
+      ],
+      "seed": 3720,
+      "cost_generations": "~20"
+    },
+    "animation": {
+      "tool": "animate_character",
+      "animation_name": "FAN-3720-guitarist-north-east",
+      "group_id": "6e1e9f9a-c093-41b7-93e3-31a0705f3620",
+      "animation_id": "fd830446-6fb2-4997-b977-e9bc9c214369",
+      "mode": "v3",
+      "directions": [
+        "north-east"
+      ],
+      "frame_count": 6,
+      "custom_start_frame_job_id": "b56e17f8-6c36-40c4-b9ef-ca7c4593be65",
+      "custom_start_frame_file": "guitarist_idle_north-east.png"
+    },
+    "source_frames": [
+      {
+        "file": "guitarist_move_north-east_00.png",
+        "direction": "north-east",
+        "index": 0,
+        "bytes": 6912,
+        "encoded_sha256": "cff40f2c8fabbeb4034aa8bb095ef5b5c4af4f409b6a64dc75b477cec9fe8c59",
+        "pixel_sha256": "89c5236db27a9c594af9fd838d0169d7620f193e73c26675061d9883e9001456"
+      },
+      {
+        "file": "guitarist_move_north-east_01.png",
+        "direction": "north-east",
+        "index": 1,
+        "bytes": 10204,
+        "encoded_sha256": "25bf35157f708ec887600fb3a2ccb08a92067d878869502f954434cac5406b4e",
+        "pixel_sha256": "31c0d3ee2dc39dd3f2a71d7688b31d4c81c219c2b4f5647102323b6528e9f435"
+      },
+      {
+        "file": "guitarist_move_north-east_02.png",
+        "direction": "north-east",
+        "index": 2,
+        "bytes": 9924,
+        "encoded_sha256": "35ab95be67c716149fc273960e4618d31b99919c857131aec30e67e78b6cf7a6",
+        "pixel_sha256": "f584917d1edcde6c9c831cd8db7fc0674eed64c9e7d94caf998186a55ef19412"
+      },
+      {
+        "file": "guitarist_move_north-east_03.png",
+        "direction": "north-east",
+        "index": 3,
+        "bytes": 10133,
+        "encoded_sha256": "8d3b41773ab0bbebb7fe4d0f62915144d6f4ddfdb46709f881980bc458bc5a01",
+        "pixel_sha256": "c53e61af7f599305a9c3ad86cee48f88e93bc850d910a3072c8fa12988ab734a"
+      },
+      {
+        "file": "guitarist_move_north-east_04.png",
+        "direction": "north-east",
+        "index": 4,
+        "bytes": 9258,
+        "encoded_sha256": "2d8f9de938971516e6f357b4b2ca3163174f94e4ee2c3a2d8e93be0c7785a9df",
+        "pixel_sha256": "8353449085e61f07bcc96f5d30bcff392b675217602c87ea2e7b233f06ced73e"
+      },
+      {
+        "file": "guitarist_move_north-east_05.png",
+        "direction": "north-east",
+        "index": 5,
+        "bytes": 9129,
+        "encoded_sha256": "db5cb26a5d0c5aa0651fff8aee903ab6e56c382342634cb0fbe8e08400ec2d06",
+        "pixel_sha256": "6bf18ba947eac271a48cd9d2d078f2372e4e0b143e6e7ccb225aef159fd8a1ab"
+      }
+    ],
+    "starting_frame": {
+      "file": "guitarist_idle_north-east.png",
+      "bytes": 6912,
+      "encoded_sha256": "cff40f2c8fabbeb4034aa8bb095ef5b5c4af4f409b6a64dc75b477cec9fe8c59",
+      "pixel_sha256": "89c5236db27a9c594af9fd838d0169d7620f193e73c26675061d9883e9001456"
+    },
+    "scope": "north-east idle plus six move source frames only; all other directions untouched",
+    "legacy_or_manual_fallback_used": false
   }
 }
