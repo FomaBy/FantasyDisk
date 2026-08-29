@@ -3,7 +3,8 @@
 
 The audit is read-only. It checks the PixelLab source pack, normalized runtime
 frames, SpriteFrames wiring, and the canonical portrait path before writing a
-machine-readable report and review sheets.
+machine-readable report and review sheets. Review PNGs are written to the
+LFS-backed reference pack by default; the text report remains in previews.
 """
 from __future__ import annotations
 
@@ -45,6 +46,8 @@ RUNTIME_REL = Path("assets/sprites/characters/full_frame/chemist_pixellab")
 SPRITEFRAMES_REL = Path("assets/sprites/characters/chemist_spriteframes.tres")
 PROGRESSION_REL = Path("scripts/progression_data_characters.gd")
 ALPHA_REPORT_REL = SOURCE_REL / "alpha_bbox_report.json"
+EVIDENCE_OUTPUT_REL = Path("docs/design/reference-assets-lfs/FAN-2595-chemist")
+AUDIT_REPORT_REL = Path("docs/design/previews/fan2595_chemist_animation_audit.json")
 
 
 def _source_names(direction: str) -> list[str]:
@@ -500,8 +503,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     root = args.root.resolve()
-    output_dir = (args.output_dir or root / "docs/design/previews").resolve()
-    report_path = (args.report or output_dir / "fan2595_chemist_animation_audit.json").resolve()
+    output_dir = (args.output_dir or root / EVIDENCE_OUTPUT_REL).resolve()
+    report_path = (
+        args.report
+        or (output_dir / "fan2595_chemist_animation_audit.json" if args.output_dir else root / AUDIT_REPORT_REL)
+    ).resolve()
     report = audit_pack(root)
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

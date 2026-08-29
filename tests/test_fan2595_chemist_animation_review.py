@@ -16,6 +16,26 @@ TOOL = ROOT / "tools" / "build_fan2595_chemist_animation_review.py"
 
 
 class ChemistAnimationReviewTests(unittest.TestCase):
+    def test_committed_review_sheets_live_in_the_lfs_reference_pack(self) -> None:
+        evidence_dir = ROOT / "docs" / "design" / "reference-assets-lfs" / "FAN-2595-chemist"
+        legacy_dir = ROOT / "docs" / "design" / "previews"
+        names = [
+            "fan2595_chemist_8dir_contact.png",
+            *[f"fan2595_chemist_row_{direction}.png" for direction in (
+                "south",
+                "south_east",
+                "east",
+                "north_east",
+                "north",
+                "north_west",
+                "west",
+                "south_west",
+            )],
+        ]
+
+        self.assertTrue(all((evidence_dir / name).is_file() for name in names))
+        self.assertTrue(all(not (legacy_dir / name).exists() for name in names))
+
     def _run_tool(self, root: Path, output_dir: Path) -> subprocess.CompletedProcess[str]:
         report = output_dir / "audit.json"
         return subprocess.run(
