@@ -82,6 +82,43 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
   view than a three-quarter one; consistent and artifact-free, but the weakest
   row if the pack is ever revisited.
+- FAN-2593 (2026-08-17) rejected the live Berserk pack (SCRUM-703 240 px
+  redraw, PixelLab character `8486ce45-f749-4c63-9a6d-f0477d619c2d`): `east`,
+  `north-west` and `south-west` were clean, but `south`, `south-east`,
+  `north-east`, `north` and `west` baked an axe/sword/dagger into the hands and
+  swapped costume mid-loop — `north-east` ran a dark harness with a fur pauldron
+  on `00`–`02` and a bare torso in blue denim on `03`–`05`, `north` carried three
+  outfits. The break was in the PixelLab source rows, not in normalization.
+- FAN-2593 accepted the Berserk pack after FAN-3324 (integrated as FAN-3684,
+  `5fa9c441`) regenerated those five rows. Unlike the sniper case, FAN-3684 wrote
+  **both** source and runtime frames, so no `normalize_pixellab_rows.py` pass was
+  owed: re-normalizing all 8 directions from source reproduced the committed
+  runtime PNGs byte-for-byte across all 56 frames, which is the check that the
+  runtime is a faithful render of the accepted art. The three accepted source
+  rows stayed byte-identical; FAN-3684 additionally re-normalized four runtime
+  frames (`move_east_02/04`, `move_south-west_01/04`, `idle_south`) whose source
+  never changed — those were stale runtime output, and the byte-for-byte
+  re-normalization is what proves the correction rather than a substitution.
+  Identity band after regeneration (area max/min, largest non-wrap single-frame
+  jump): `south` `1.024`/`1.4%`, `south-east` `1.110`/`4.1%`, `north-east`
+  `1.071`/`4.8%`, `north` `1.061`/`4.3%`, `west` `1.131`/`7.7%` — all five
+  collapsed from `1.309`/`26.0%`, `1.655`/`48.2%`, `1.201`/`18.7%` etc. into the
+  stable band. The two untouched rows `east` (`1.156`/`15.2%`) and `south-west`
+  (`1.186`/`10.9%`) still sit marginally outside the FAN-2606 sniper band while
+  reading as one character throughout, which reconfirms those numbers are review
+  aids and not a gate. `animation_roster_audit.py` reports four berserk findings,
+  all loop discontinuity on `south_east` / `south_west` (and their `walk`
+  aliases) — a wrap-step-length note, not an identity defect; zero stray alpha
+  and zero pivot drift. Evidence:
+  `tools/build_fan2593_berserk_animation_review.py`, sheets under
+  `docs/design/reference-assets-lfs/FAN-2593-berserk/fan2593_berserk_*` (regenerated per revision; they always
+  describe the pack at the commit that contains them), and
+  `tests/berserk_pixellab_pack_test.gd`, which locks the machine-checkable half
+  of the contract: 8 explicit directions, 1-frame idle / 6-frame move rows with
+  `walk` aliasing `move`, no texture shared across two directional rows, no
+  `attack` row in the body pack, and `512x512` canvas / `245` px visible height /
+  footline `y=480` / pivot `x≈256` on every frame. Identity and empty hands stay
+  a visual verdict — the gate deliberately does not pretend to measure them.
 - FAN-2596 (2026-08-17) audited the live Dark Mage pack (SCRUM-704 240–250 px
   redraw, PixelLab character `9bb0eca8-5afe-49d4-8e56-7115a45efdcc`,
   `walking-6-frames`) and **accepted it unchanged** — no regeneration pass was
