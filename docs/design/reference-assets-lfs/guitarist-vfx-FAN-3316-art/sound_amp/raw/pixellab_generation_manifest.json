@@ -1,0 +1,94 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T23:05:24Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1687ef1f-47a2-42cf-99ff-150fc036bf65",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered wall of four dark iron guitar amplifiers arranged at the north east south and west cardinal points, cyan violet ember-orange speaker cones joined by a square cable wall, arcane music feedback, dark fantasy D&D pixel art, top-down isolated ultimate VFX prop, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same four cardinal amplifier silhouettes and square cable wall centered with stable proportions and palette; animate north east south and west speaker cones firing in a readable cardinal sequence, rectangular sound-wave bands expanding from each speaker, cable corners locking with electric feedback arcs, then a symmetric four-way overload and clean recoil; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "17f9139c-5ea7-4411-a51e-936e1dfdadc5",
+    "canonical_tag": "guitarist_sound_amp_wall_of_sound"
+  },
+  "frames": [
+    {
+      "file": "sound_amp_f00.png",
+      "bytes": 35495,
+      "url_kind": "template",
+      "encoded_sha256": "171f23d33eec48bd127677e2e34126787e5abd5960f563f9cf8da5bce1bae86c",
+      "pixel_sha256": "79f7e35f739d3057cdfd870e87d1a7b3ca4cb52c970ecf5e6ded9a2d3863c212"
+    },
+    {
+      "file": "sound_amp_f01.png",
+      "bytes": 42792,
+      "url_kind": "template",
+      "encoded_sha256": "00ff3759c5af745ac885b0ffce9af566cb078d026ac31ddab51ee72b800eb27b",
+      "pixel_sha256": "4909df68c3fafe4ed6947d81eefcbe426a3aac401853a0ef3de4922668646b3d"
+    },
+    {
+      "file": "sound_amp_f02.png",
+      "bytes": 40492,
+      "url_kind": "template",
+      "encoded_sha256": "e152082f8f1b7236ed408536140244ee86e857a50d7a9096b59c6e5c91ffb6f8",
+      "pixel_sha256": "9956353bbc9688ab0cbf76a6ebed465e073137ccb056e3b6502488a68ac42bee"
+    },
+    {
+      "file": "sound_amp_f03.png",
+      "bytes": 36566,
+      "url_kind": "template",
+      "encoded_sha256": "a5a13c2e3367e889a98f42c1622cbab3dbb75956f3a4c8afe8e46bdb5222f033",
+      "pixel_sha256": "0afb9e81d5644e45df4bc1712f984b0f55065caf300d964376b7856f161ee5c3"
+    },
+    {
+      "file": "sound_amp_f04.png",
+      "bytes": 37035,
+      "url_kind": "template",
+      "encoded_sha256": "4fe6b83fb0983db87daef20d5ad2576ff44050bbf03cfa5697a8cfa222c19408",
+      "pixel_sha256": "6d25416188415b2385b8df5203d08f1f15f36da04e547cdb7595c148ed5bab58"
+    },
+    {
+      "file": "sound_amp_f05.png",
+      "bytes": 39660,
+      "url_kind": "template",
+      "encoded_sha256": "6b0090109792c457ffc97132a50bdc81cb0134a9ead4c4d9721c7dffc0e3e337",
+      "pixel_sha256": "947c85c8d7f2f914f1c03a79d42040b0502e15add32ad96dbf089e3227c50820"
+    },
+    {
+      "file": "sound_amp_f06.png",
+      "bytes": 45069,
+      "url_kind": "template",
+      "encoded_sha256": "2e34ca2c142f63e15de1112059c701112fe18a218a7ffa1f5a025ed20080c371",
+      "pixel_sha256": "40d6c9700f5cfe5a1b001eb90fde63aebc8051660a10d865c874e4ea8d268dd6"
+    },
+    {
+      "file": "sound_amp_f07.png",
+      "bytes": 43356,
+      "url_kind": "template",
+      "encoded_sha256": "ed935f7ccbd9e8ed618d6e706b2e1f598ba4452eb5fb8554f2047bda49fbd2f6",
+      "pixel_sha256": "00c01fd11c11b1980b252905168dc9ab07f4d1c8f61327528ffe9abad04f2d31"
+    },
+    {
+      "file": "sound_amp_f08.png",
+      "bytes": 42870,
+      "url_kind": "template",
+      "encoded_sha256": "1f762771872fddddcb545484cbe3ae0cc892ec58e36e23e3768deb3e910738d0",
+      "pixel_sha256": "eadd4cc4c76afc9125f7ff3e4db26aab5260cc3e69f6a92a3c3db0cafb70c47b"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

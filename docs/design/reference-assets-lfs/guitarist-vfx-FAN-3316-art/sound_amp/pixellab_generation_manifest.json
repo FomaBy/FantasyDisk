@@ -1,0 +1,126 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T23:05:24Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1687ef1f-47a2-42cf-99ff-150fc036bf65",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered wall of four dark iron guitar amplifiers arranged at the north east south and west cardinal points, cyan violet ember-orange speaker cones joined by a square cable wall, arcane music feedback, dark fantasy D&D pixel art, top-down isolated ultimate VFX prop, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same four cardinal amplifier silhouettes and square cable wall centered with stable proportions and palette; animate north east south and west speaker cones firing in a readable cardinal sequence, rectangular sound-wave bands expanding from each speaker, cable corners locking with electric feedback arcs, then a symmetric four-way overload and clean recoil; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "17f9139c-5ea7-4411-a51e-936e1dfdadc5",
+    "canonical_tag": "guitarist_sound_amp_wall_of_sound"
+  },
+  "frames": [
+    {
+      "file": "sound_amp_f00.png",
+      "bytes": 25167,
+      "url_kind": "template",
+      "encoded_sha256": "d3053211852ab66dacbf9e289ad80d0ca3cb424f2dc56bbab74d97dbad19553c",
+      "pixel_sha256": "4b60115195bc4115811b82814b2cd8874ad2b17ac2024f084d09f01ceadaf112",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f00.png",
+      "raw_encoded_sha256": "171f23d33eec48bd127677e2e34126787e5abd5960f563f9cf8da5bce1bae86c",
+      "raw_pixel_sha256": "79f7e35f739d3057cdfd870e87d1a7b3ca4cb52c970ecf5e6ded9a2d3863c212"
+    },
+    {
+      "file": "sound_amp_f01.png",
+      "bytes": 30250,
+      "url_kind": "template",
+      "encoded_sha256": "b99d5d5c6f746633a741b28e65de3b2d9d857fa8af62c501be77ea064d4b2f25",
+      "pixel_sha256": "4ec8b6dfba3197630cf1d93ba979b6a21854a6e6525ee59f92c57cd2cdd43ab7",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f01.png",
+      "raw_encoded_sha256": "00ff3759c5af745ac885b0ffce9af566cb078d026ac31ddab51ee72b800eb27b",
+      "raw_pixel_sha256": "4909df68c3fafe4ed6947d81eefcbe426a3aac401853a0ef3de4922668646b3d"
+    },
+    {
+      "file": "sound_amp_f02.png",
+      "bytes": 28932,
+      "url_kind": "template",
+      "encoded_sha256": "36ea02ca81c7f5b5a8b1f252680937ec05cb1bab57f8389a743098f2b5234a28",
+      "pixel_sha256": "d507e919eb14035ca78603f4a992f7fe895e0e49462baa9e5b25b524bec8db88",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f02.png",
+      "raw_encoded_sha256": "e152082f8f1b7236ed408536140244ee86e857a50d7a9096b59c6e5c91ffb6f8",
+      "raw_pixel_sha256": "9956353bbc9688ab0cbf76a6ebed465e073137ccb056e3b6502488a68ac42bee"
+    },
+    {
+      "file": "sound_amp_f03.png",
+      "bytes": 25891,
+      "url_kind": "template",
+      "encoded_sha256": "e2efc268f712f63754c4b100e96d58b1bb9f03fb091ff5f9bb6896e00211cef1",
+      "pixel_sha256": "fbc230fc14ddeaa3e0f72492c955cce9e879f0f33762b86a391bfc351a7c2769",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f03.png",
+      "raw_encoded_sha256": "a5a13c2e3367e889a98f42c1622cbab3dbb75956f3a4c8afe8e46bdb5222f033",
+      "raw_pixel_sha256": "0afb9e81d5644e45df4bc1712f984b0f55065caf300d964376b7856f161ee5c3"
+    },
+    {
+      "file": "sound_amp_f04.png",
+      "bytes": 26157,
+      "url_kind": "template",
+      "encoded_sha256": "974402fa29d609d1358305991d1fd7b814d82efde1ecbd8836a6f0468bc00867",
+      "pixel_sha256": "fdd64130b16984f4a2ca64b8cf71eddabf332a6e992365bcd43bc9d2e9a86661",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f04.png",
+      "raw_encoded_sha256": "4fe6b83fb0983db87daef20d5ad2576ff44050bbf03cfa5697a8cfa222c19408",
+      "raw_pixel_sha256": "6d25416188415b2385b8df5203d08f1f15f36da04e547cdb7595c148ed5bab58"
+    },
+    {
+      "file": "sound_amp_f05.png",
+      "bytes": 27928,
+      "url_kind": "template",
+      "encoded_sha256": "26481ea5272161578fbf88837e2a05c76055f5c59b9b605e40355ec46b2b12f2",
+      "pixel_sha256": "1fb94273a665c48d31e9b0a3c1d5f999352ac63fa568a8361c321b3ff25ced67",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f05.png",
+      "raw_encoded_sha256": "6b0090109792c457ffc97132a50bdc81cb0134a9ead4c4d9721c7dffc0e3e337",
+      "raw_pixel_sha256": "947c85c8d7f2f914f1c03a79d42040b0502e15add32ad96dbf089e3227c50820"
+    },
+    {
+      "file": "sound_amp_f06.png",
+      "bytes": 31952,
+      "url_kind": "template",
+      "encoded_sha256": "6e5aad7190ed8e9a1e892598772d7c90deedd44d7bb03e6229bae0cfd564adc8",
+      "pixel_sha256": "b9692b8855e3b442549d1503361dec21a4b16669c8d69ec464c24b3183075e05",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f06.png",
+      "raw_encoded_sha256": "2e34ca2c142f63e15de1112059c701112fe18a218a7ffa1f5a025ed20080c371",
+      "raw_pixel_sha256": "40d6c9700f5cfe5a1b001eb90fde63aebc8051660a10d865c874e4ea8d268dd6"
+    },
+    {
+      "file": "sound_amp_f07.png",
+      "bytes": 31025,
+      "url_kind": "template",
+      "encoded_sha256": "7426036dd6a1880878c6523712079c1d3a69d4c7b13128f2ae1a36030b59b2e6",
+      "pixel_sha256": "78f845c4004b3ac18918d098229d015e6ddedc0887f0ae713a060cf7d7007042",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f07.png",
+      "raw_encoded_sha256": "ed935f7ccbd9e8ed618d6e706b2e1f598ba4452eb5fb8554f2047bda49fbd2f6",
+      "raw_pixel_sha256": "00c01fd11c11b1980b252905168dc9ab07f4d1c8f61327528ffe9abad04f2d31"
+    },
+    {
+      "file": "sound_amp_f08.png",
+      "bytes": 30287,
+      "url_kind": "template",
+      "encoded_sha256": "6c95594064b7e5c1a25df577d6bc0d36e13ca30cc5eeed30f74c954add32b164",
+      "pixel_sha256": "36cd5179c05c6841d8ee227ba79d1d16f9804aab71ef71b9ac4a79e888c50520",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw/sound_amp_f08.png",
+      "raw_encoded_sha256": "1f762771872fddddcb545484cbe3ae0cc892ec58e36e23e3768deb3e910738d0",
+      "raw_pixel_sha256": "eadd4cc4c76afc9125f7ff3e4db26aab5260cc3e69f6a92a3c3db0cafb70c47b"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "postprocess": {
+    "raw_source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw",
+    "accepted_source_normalization": "uniform 224x224 nearest-neighbor scale centered in transparent 256x256 canvas with 16px nominal outer pad",
+    "runtime_copy": "accepted source frames copied byte-for-byte"
+  }
+}
