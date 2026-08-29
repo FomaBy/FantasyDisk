@@ -66,12 +66,10 @@ jobs:
             docs/design/reference-assets-lfs
       - name: Fetch pinned legacy commits for shallow candidates
         if: github.event_name != 'push'
-        env:
-          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
         run: |
           set -euo pipefail
           git fetch --no-tags --depth=2 origin \
-            "+$BASE_SHA:refs/remotes/origin/dev"
+            "+refs/heads/dev:refs/remotes/origin/dev"
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
             5d23555117c11620ee0f0834e6c30877fd1dafb8
@@ -103,6 +101,7 @@ jobs:
           PY
           )
           test "${#evidence_paths[@]}" -gt 0
+          git lfs install --local --skip-smudge
           for path in "${evidence_paths[@]}"; do
             mkdir -p "$(dirname "$path")"
             git show "HEAD:$path" |
@@ -183,6 +182,14 @@ jobs:
         if: github.event_name != 'push'
         run: |
           echo "godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}"
+      - name: Warm Godot import cache without tracked sidecar changes
+        if: github.event_name != 'push' && steps.godot-import-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          python3 tools/godot_gate.py --headless --path . --ensure-import-cache
+          while IFS= read -r -d '' path; do
+            git restore --worktree --source=HEAD -- "$path"
+          done < <(git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import')
       - name: Repository and Python gates (push range)
         if: github.event_name == 'push'
         run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
