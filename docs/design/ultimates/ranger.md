@@ -15,9 +15,12 @@ and animation assets remain untouched.
 
 The runtime scenes embed the accepted `RangerMoonCrossbowMoonHunt`,
 `RangerStormLongbowStormEye`, and `RangerHunterTrapGrandTrap` presentations from
-FAN-1474, and each mechanic lifetime matches its accepted timeline (4.80 s /
-4.45 s / 5.35 s). The immutable Cast phase IDs remain the seam with FAN-1494;
-shared live presentation forwarding remains owned by FAN-1541.
+FAN-1474. Each executor keeps its own `lifetime` (4.80 s / 4.45 s / 5.35 s);
+since FAN-3736 the presentation runs on the shorter Ultimate Direction v2
+envelope below. The two clocks are independent by contract — the gameplay
+window may outlast the show and neither may be asserted against the other. The
+immutable Cast phase IDs remain the seam with FAN-1494; shared live
+presentation forwarding remains owned by FAN-1541.
 
 ## Safety and lifecycle
 
@@ -66,9 +69,52 @@ contains a runaway-corridor negative control.
 The class-trio composite is `solo 0.993 / AoE 1.017 / crowd 1.000 /
 defense 1.000 / total 1.003`, inside the `0.90…1.10` corridor.
 
+## Presentation: Ultimate Direction v2 (FAN-3736)
+
+All three visuals show arena-wide reach without hiding the Ranger identity: Moon
+Hunt keeps the archer/mark silhouette central while distant targets receive
+moon-split impacts; Storm Eye keeps the advancing arrow corridor central while
+the full arena flashes once at its floor; Grand Trap keeps the aimed jaw as the
+focal impact while spectral chains visibly span the arena. The mechanic phases,
+Cast IDs, charge economy and the frozen 9% boss cap are untouched by this work.
+
+| Weapon | Total | Cast ceremony | Active window | Backdrop | Hitstop | Palette role |
+| --- | ---: | ---: | ---: | --- | ---: | --- |
+| `moon_crossbow` | 3.10 s | 0.70 s | 1.90 s | `darken` | 95 ms | moonlight |
+| `storm_longbow` | 3.45 s | 0.60 s | 2.25 s | `flash` | 120 ms | storm |
+| `hunter_trap` | 3.80 s | 0.95 s | 1.75 s | `darken` | 145 ms | thicket |
+
+Every timeline sits inside the `2.5–4.0 s` v2 envelope with a `0.6–1.0 s` cast
+ceremony, at least `1.2 s` of active presentation and a visible recovery. The
+trio stays pairwise distinct on both enforced axes (`cancel` 3.10 / 3.45 / 3.80;
+`recovery − active` 1.55 / 1.90 / 1.30).
+
+Each scene authors two presence nodes on top of its formation — a
+viewport-fitted `BackdropVeil` (`Sprite2D` + `GradientTexture2D`, tagged
+`fullscreen_layer`) and a `HeroPose` reusing the accepted
+`ranger_idle_south` frame — and `ranger_ultimate_timeline_scene.gd` drives the
+node-free weight devices: camera shake behind the player's `screen_shake`
+setting, the first-impact hitstop (which freezes the drawn pose, never the
+envelope clock) and SFX ducking across the release window. Identity is declared
+once per pair: `cast_pose.ranger.hunter_draw` for the whole trio, each weapon's
+own accepted runtime frame as its silhouette, and `palette.ranger.moonlit_hunt`
+as the color source. No raster asset was regenerated.
+
+`docs/design/references/weapon_ultimates/ranger/manifest.json` is the source the
+shared bridge reads; `ranger_ultimate_presentation_pack.gd` is the second
+authoritative timing source the parity gate cross-checks field by field. The
+trio left `PRESENTATION_V2_MIGRATION_ALLOWLIST` in the same change, because a
+v2-complete pair that stays on the ratchet fails as a stale entry.
+
+Still pending for this class, tracked by the shared adoption ratchet: the
+`capture` gate (one 4680x594 strip instead of four live-capture viewports) and
+the `quality` gate (readability/accessibility declaration). Both remain listed
+in `UltimateVisualDirectionContract.ADOPTION_GAPS`.
+
 ## Verification
 
 ```bash
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/ranger_ultimate_presentation_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/ranger_package_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/ranger_live_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/ranger_balance_test.gd

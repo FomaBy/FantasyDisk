@@ -1,7 +1,32 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/ranger/ranger_ultimate_timeline_scene.gd" id="1_timeline"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png" id="2_hero_pose"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.85, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="RangerStormLongbowStormEye" type="Node2D"]
 script = ExtResource("1_timeline")
 weapon_id = "storm_longbow"
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+metadata/fullscreen_layer = true
+
+[node name="HeroPose" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(-24, -18)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_hero_pose")
