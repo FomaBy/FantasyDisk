@@ -1,0 +1,12 @@
+{
+	"frames": "res://assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres",
+	"scale": {
+		"x": 0.78,
+		"y": 0.78
+	},
+	"position": {
+		"x": 0.0,
+		"y": -88.0
+	},
+	"source_faces_left": true
+}

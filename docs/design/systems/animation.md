@@ -262,6 +262,14 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   SpriteFrames, frame counts, states, timings and gameplay behavior were not
   changed.
 
+### Per-actor registry data (FAN-3638)
+
+`FULL_FRAME_SPRITEFRAMES` is assembled at class load from
+`data/animation/<kind>/<actor_id>.json` (one file per actor; schema documented
+in `scripts/full_frame_animation_registry.gd`). A new or reworked actor adds or
+edits only its own JSON — the registry script itself is owned by `core` and is
+not touched by actor tasks (`docs/process/ownership_map.md`).
+
 ### Runtime registry/loader audit (SCRUM-721)
 
 Audit of the animation **runtime** loaders only (no art/motion/clip changes):

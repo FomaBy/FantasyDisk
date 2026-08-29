@@ -1,0 +1,12 @@
+{
+	"frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+	"scale": {
+		"x": 0.74,
+		"y": 0.74
+	},
+	"position": {
+		"x": 0.0,
+		"y": -86.0
+	},
+	"source_faces_left": true
+}
