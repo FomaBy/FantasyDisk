@@ -57,7 +57,6 @@ const SCENE_ALLOWLIST := {
 	"res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn": 5,
 }
 const SCRIPT_ALLOWLIST := {
-	"res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd": 1,
 	"res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd": 2,
 	"res://scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd": 2,
 	"res://scripts/combat_director.gd": 1,

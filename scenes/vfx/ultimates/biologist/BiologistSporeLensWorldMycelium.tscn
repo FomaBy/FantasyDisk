@@ -1,7 +1,60 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://scripts/ultimates/classes/biologist/biologist_spore_lens.gd" id="1_executor"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/biologist/spore_lens/spore_lens_spriteframes.tres" id="2_flipbook"]
+
+[sub_resource type="Animation" id="Animation_world_mycelium"]
+resource_name = "ultimate"
+length = 3.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Mycelium:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.1, 1.5, 1.95, 2.4, 2.8, 3.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Mycelium:scale")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.1, 2.8, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.42, 0.42), Vector2(0.68, 0.68), Vector2(1.05, 1.05), Vector2(1.22, 1.22), Vector2(1.3, 1.3), Vector2(0.6, 0.6)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Mycelium:modulate:a")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 2.8, 3.1, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.55, 1.0, 1.0, 0.72, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_world_mycelium"]
+_data = {"ultimate": SubResource("Animation_world_mycelium")}
 
 [node name="BiologistSporeLensWorldMycelium" type="Node2D"]
-script = ExtResource("1_scene")
-duration = 3.4
+script = ExtResource("1_executor")
+metadata/ultimate_id = "biologist/biologist_spore_lens"
+metadata/silhouette = "opened spore lens feeding a branching ground mycelium with three mushroom blooms"
+metadata/motion_path = "fungal veins crawl from the lens toward three separated clusters before the network dries inward"
+metadata/impact_language = "root flashes travel along veins, infected deaths become three capped non-recursive secondary blooms"
+metadata/max_visual_nodes = 10
+metadata/crowd_cap = 18
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+
+[node name="Mycelium" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_flipbook")
+animation = &"biologist_spore_lens_ultimate"
+scale = Vector2(0.42, 0.42)
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_world_mycelium")}
+autoplay = "ultimate"

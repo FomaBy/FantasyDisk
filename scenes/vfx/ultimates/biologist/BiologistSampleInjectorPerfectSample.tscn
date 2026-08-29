@@ -1,8 +1,60 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/biologist/biologist_ultimate_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://scripts/ultimates/classes/biologist/biologist_sample_injector.gd" id="1_executor"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/biologist/sample_injector/sample_injector_spriteframes.tres" id="2_flipbook"]
+
+[sub_resource type="Animation" id="Animation_perfect_sample"]
+resource_name = "ultimate"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("PerfectSample:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.0, 1.3, 1.65, 2.05, 2.5, 2.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PerfectSample:scale")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.0, 2.5, 3.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.72, 0.72), Vector2(1.18, 1.18), Vector2(1.05, 1.05), Vector2(1.12, 1.12), Vector2(0.55, 0.55)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PerfectSample:modulate:a")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 2.5, 2.75, 3.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.6, 1.0, 1.0, 0.78, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_perfect_sample"]
+_data = {"ultimate": SubResource("Animation_perfect_sample")}
 
 [node name="BiologistSampleInjectorPerfectSample" type="Node2D"]
-script = ExtResource("1_scene")
-variant = 1
-duration = 3.0
+script = ExtResource("1_executor")
+metadata/ultimate_id = "biologist/biologist_sample_injector"
+metadata/silhouette = "long needle rail and extraction beam ending in a rotating double DNA helix"
+metadata/motion_path = "needle charges on a straight priority-target rail, then scan pulses revisit the sampled endpoint"
+metadata/impact_language = "green-white extraction flash records a helix mark followed by three capped analysis pulses"
+metadata/max_visual_nodes = 11
+metadata/crowd_cap = 16
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+
+[node name="PerfectSample" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_flipbook")
+animation = &"biologist_sample_injector_ultimate"
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_perfect_sample")}
+autoplay = "ultimate"

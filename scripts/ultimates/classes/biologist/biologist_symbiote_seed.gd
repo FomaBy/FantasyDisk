@@ -1,7 +1,16 @@
 extends Node2D
 
+## Doubles as the root script of the authored presentation scene
+## (BiologistSymbioteSeedMatriarch.tscn): the static half executes the
+## mechanics, the effect half runs the pod, larvae and hatch, and the
+## presentation instance receives beat payloads while the scene is the live
+## channel and plays the shared per-victim impact for the enemies each
+## damaging or control beat actually struck.
+
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.biologist.biologist_symbiote_seed"
 const EXECUTOR_ID := "weapon_ultimate.executor.biologist.biologist_symbiote_seed"
@@ -16,6 +25,8 @@ var terminal_burst_for_tests := false
 var _activation = null
 var _leased_statuses: Array[Dictionary] = []
 var _targets: Array = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -120,6 +131,7 @@ func pull_and_root() -> void:
 	_targets = _activation.select_targets(
 		global_position, INF, 0, "nearest"
 	)
+	var victims: Array = []
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
@@ -150,6 +162,11 @@ func pull_and_root() -> void:
 			false,
 			{"ultimate_mechanic": "symbiote_impact"}
 		)
+		victims.append(target)
+	_activation.present(EXECUTOR_ID + ".pull", {
+		"shape": "ring_pulse", "position": global_position, "radius": 240.0,
+		"victims": victims,
+	})
 
 
 func launch_larva(index: int) -> void:
@@ -178,12 +195,17 @@ func launch_larva(index: int) -> void:
 		false,
 		{"ultimate_mechanic": "larval_projectile", "larva": index}
 	)
+	_activation.present(EXECUTOR_ID + ".larva:%d" % index, {
+		"shape": "orb_burst", "position": global_position, "radius": 120.0,
+		"victims": [target],
+	})
 
 
 func hatch() -> void:
 	terminal_burst_for_tests = true
 	if _activation == null or _activation.is_finished():
 		return
+	var victims: Array = []
 	for raw_target in _activation.select_targets(
 		global_position, INF, 0, "nearest"
 	):
@@ -199,6 +221,11 @@ func hatch() -> void:
 			false,
 			{"ultimate_mechanic": "terminal_hatch"}
 		)
+		victims.append(target)
+	_activation.present(EXECUTOR_ID + ".hatch", {
+		"shape": "ring_pulse", "position": global_position, "radius": 240.0,
+		"victims": victims,
+	})
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
@@ -207,11 +234,36 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
 
 
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_activation = null
+	_impacts = null
+	_impacts_started = false
 
 
 func _remove_leased_status(lease: Dictionary) -> void:

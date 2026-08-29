@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-2526",
+  "issue": "FAN-3747",
   "class_id": "biologist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -16,29 +16,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "biologist_spore_lens",
+      "biologist_sample_injector",
+      "biologist_symbiote_seed"
+    ],
+    "integrated_art_candidate": "9fe188e08990c81b527630dd374f64dd8106115c",
+    "art_integration_anchor": "d54bd1192194d22985d47e6f4c98ff30bad3c560",
     "reused_sources": {
       "biologist_spore_lens": {
-        "source_path": "docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source.png",
-        "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+        "spriteframes": "assets/sprites/effects/biologist/spore_lens/spore_lens_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
-        "preexisting_pixellab_id": "3e336a3b-d5cf-4bf6-b0f5-ab8ee64392ea",
-        "note": "Reuses the accepted SCRUM-731 PixelLab source and runtime texture; FAN-1480 generated no raster asset."
+        "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame world-mycelium spread pack, integrated byte-identically."
       },
       "biologist_sample_injector": {
-        "source_path": "docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source_alpha_clean.png",
-        "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_sample_injector.png",
+        "spriteframes": "assets/sprites/effects/biologist/sample_injector/sample_injector_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
-        "preexisting_generator": "gpt-image-2 / SCRUM-730",
-        "note": "Reuses the accepted alpha-clean source and runtime texture; FAN-1480 generated no raster asset."
+        "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame perfect-sample extraction pack, integrated byte-identically."
       },
       "biologist_symbiote_seed": {
-        "source_path": "assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
-        "runtime_texture": "assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
+        "spriteframes": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
-        "preexisting_generator": "approved legacy runtime asset; no isolated source ID recorded",
-        "note": "Reuses the accepted runtime texture as the reviewed source identity; FAN-1480 generated no raster asset."
+        "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame symbiote-matriarch hatch pack, integrated byte-identically."
       }
     }
   },
@@ -50,6 +53,15 @@
       "silhouette": "opened spore lens feeding a branching ground mycelium with three mushroom blooms",
       "motion_path": "fungal veins crawl from the lens toward three separated clusters before the network dries inward",
       "impact_language": "root flashes travel along veins, infected deaths become three capped non-recursive secondary blooms",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/biologist/spore_lens/spore_lens_spriteframes.tres",
+          "animation": "biologist_spore_lens_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json"
+        }
+      },
       "pivot": {
         "x": 0.28,
         "y": 0.56
@@ -77,7 +89,7 @@
         "secondary_bloom_recursion": false,
         "runtime_enforcement_owner": "FAN-1541",
         "mechanics_owner": "FAN-2526: map-wide infection waves; three local non-recursive blooms remain a bonus",
-        "v2_budget_note": "10 drawn nodes: arena veil, hero pose, lens, spore gate, three veins and three blooms; one declared material slot and one fullscreen slot"
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -109,6 +121,15 @@
       "silhouette": "long needle rail and extraction beam ending in a rotating double DNA helix",
       "motion_path": "needle charges on a straight priority-target rail, then scan pulses revisit the sampled endpoint",
       "impact_language": "green-white extraction flash records a helix mark followed by three capped analysis pulses",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/biologist/sample_injector/sample_injector_spriteframes.tres",
+          "animation": "biologist_sample_injector_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json"
+        }
+      },
       "pivot": {
         "x": 0.18,
         "y": 0.52
@@ -136,7 +157,7 @@
         "sample_window_seconds": 10.0,
         "runtime_enforcement_owner": "FAN-1541",
         "mechanics_owner": "FAN-2526: aimed priority extraction plus three map-wide analysis pulses",
-        "v2_budget_note": "11 drawn nodes: arena veil, hero pose, injector rail, two beams, sample target, two helix strands and three pulses; one declared material slot and one fullscreen slot"
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -168,6 +189,15 @@
       "silhouette": "falling seed becomes one giant pod with six radial tendrils and orbiting larvae",
       "motion_path": "seed drops vertically, pod swells in place, tendrils snap outward, larvae orbit, membrane ruptures",
       "impact_language": "six pull-root lashes frame a larval barrage and one terminal hatch burst",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_spriteframes.tres",
+          "animation": "biologist_symbiote_seed_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/provenance_manifest.json"
+        }
+      },
       "pivot": {
         "x": 0.5,
         "y": 0.5
@@ -195,7 +225,7 @@
         "larva_cap": 6,
         "runtime_enforcement_owner": "FAN-1541",
         "mechanics_owner": "FAN-2526: map-wide pod control and hatch; six larvae remain focused bonus shots",
-        "v2_budget_note": "17 drawn nodes: arena veil, hero pose, falling seed, pod, six tendrils, six larvae and hatch ring; one declared material slot and one fullscreen slot"
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
       },
       "presence": {
         "fullscreen_footprint": true,
