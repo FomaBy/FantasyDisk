@@ -297,6 +297,18 @@ class QualityWorkflowContractTests(unittest.TestCase):
             "done < <(git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import')",
             warmup,
         )
+        materialization_start = self.source.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        materialization_end = self.source.index(
+            "- name: Assert exact candidate SHA",
+            materialization_start,
+        )
+        materialization = self.source[materialization_start:materialization_end]
+        self.assertIn(
+            'git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true',
+            materialization,
+        )
         self.assertIn(
             'git restore --worktree --source=HEAD -- "$path"',
             warmup,

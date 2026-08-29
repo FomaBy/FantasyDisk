@@ -107,6 +107,11 @@ jobs:
             git show "HEAD:$path" |
               GIT_LFS_SKIP_SMUDGE=0 git lfs smudge -- "$path" > "$path"
           done
+          # A pointer was checked out before the direct smudge, so refresh only
+          # Git's stat cache after the real payload replaces that pointer. The
+          # LFS clean filter still verifies content; this avoids a false dirty
+          # status caused solely by the pointer/payload size change.
+          git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true
           python3 - <<'PY'
           import json
           from pathlib import Path
