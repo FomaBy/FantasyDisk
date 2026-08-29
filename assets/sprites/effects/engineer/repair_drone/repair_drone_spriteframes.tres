@@ -1,0 +1,46 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f00.png" id="01_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f01.png" id="02_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f02.png" id="03_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f03.png" id="04_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f04.png" id="05_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f05.png" id="06_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f06.png" id="07_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f07.png" id="08_repair_drone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_f08.png" id="09_repair_drone"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("01_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("02_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("03_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("04_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("05_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("06_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("07_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("08_repair_drone")
+}, {
+"duration": 1.0,
+"texture": ExtResource("09_repair_drone")
+}],
+"loop": false,
+"name": &"ultimate_flipbook",
+"speed": 3.0
+}]
