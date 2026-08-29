@@ -1,7 +1,15 @@
 extends Node2D
 
+## Doubles as the root script of the authored presentation scene
+## (BiologistSporeLensWorldMycelium.tscn): the static half executes the
+## mechanics, the effect half runs infection waves, and the presentation
+## instance receives beat payloads while the scene is the live channel and
+## plays the shared per-victim impact for the enemies each wave actually hit.
+
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/biologist/spore_lens/spore_lens_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.biologist.biologist_spore_lens"
 const EXECUTOR_ID := "weapon_ultimate.executor.biologist.biologist_spore_lens"
@@ -15,6 +23,8 @@ var _activation = null
 var _leased_statuses: Array[Dictionary] = []
 var _targets: Array = []
 var _origin := Vector2.ZERO
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -101,6 +111,7 @@ func propagate(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	propagation_count_for_tests += 1
+	var victims: Array = []
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
@@ -115,8 +126,13 @@ func propagate(wave: int) -> void:
 			false,
 			{"ultimate_mechanic": "spore_infection", "propagation_wave": wave}
 		)
+		victims.append(target)
 		if result != null and bool(result.killed) and bool(result.creditable):
-			_secondary_bloom(target, wave)
+			_secondary_bloom(target, wave, victims)
+	_activation.present(EXECUTOR_ID + ".propagate:%d" % wave, {
+		"shape": "ring_pulse", "position": _origin, "radius": 240.0,
+		"victims": victims,
+	})
 
 
 func _ensure_infected(target: Node2D) -> void:
@@ -139,7 +155,7 @@ func _ensure_infected(target: Node2D) -> void:
 		_leased_statuses.append({"target": target, "status_id": status_id})
 
 
-func _secondary_bloom(source: Node2D, wave: int) -> void:
+func _secondary_bloom(source: Node2D, wave: int, victims: Array) -> void:
 	if bloom_count_for_tests >= _activation.param_int("secondary_bloom_cap", 3):
 		return
 	bloom_count_for_tests += 1
@@ -163,6 +179,7 @@ func _secondary_bloom(source: Node2D, wave: int) -> void:
 			true,
 			{"ultimate_mechanic": "secondary_bloom", "bloom": bloom_count_for_tests}
 		)
+		victims.append(neighbor)
 		hit_count += 1
 		if hit_count >= _activation.param_int("secondary_bloom_targets", 3):
 			break
@@ -174,11 +191,36 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
 
 
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_activation = null
+	_impacts = null
+	_impacts_started = false
 
 
 func _remove_leased_status(lease: Dictionary) -> void:

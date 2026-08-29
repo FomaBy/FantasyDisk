@@ -1,35 +1,46 @@
 extends SceneTree
 
-const CAPTURE_SPEC := preload("res://tests/ultimates/presentation/biologist_ultimate_timelines.gd")
+const SPEC := preload("res://tests/ultimates/presentation/biologist_ultimate_timelines.gd")
 
 
 func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
-		print("FAN-1480 Biologist ultimate contact capture skipped (headless); run windowed for PNGs.")
+		print("FAN-3747 Biologist ultimate contact capture skipped (headless); run windowed for PNGs.")
 		quit(0)
 		return
-	for capture in CAPTURE_SPEC.CAPTURES:
-		var spec := capture as Dictionary
+	var output_dir := _capture_output_dir()
+	var mkdir_error := DirAccess.make_dir_recursive_absolute(output_dir)
+	if mkdir_error != OK:
+		push_error("Biologist ultimate contact capture could not create %s: %s" % [output_dir, error_string(mkdir_error)])
+		quit(1)
+		return
+	for raw_capture in SPEC.CAPTURES:
+		var capture := raw_capture as Dictionary
 		var viewport := SubViewport.new()
-		viewport.size = spec["size"]
+		viewport.size = capture.get("size", Vector2i.ZERO) as Vector2i
 		viewport.transparent_bg = false
 		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		root.add_child(viewport)
+		viewport.add_child(_make_sheet(viewport.size))
 		await process_frame
-		var host := _make_sheet(spec["size"])
-		viewport.add_child(host)
 		await process_frame
 		await RenderingServer.frame_post_draw
-		var output := str(spec["path"])
-		var error := viewport.get_texture().get_image().save_png(ProjectSettings.globalize_path(output))
+		var output := output_dir.path_join(str(capture.get("path", "")).get_file())
+		var error := viewport.get_texture().get_image().save_png(output)
 		viewport.queue_free()
-		await process_frame
 		if error != OK:
 			push_error("Biologist ultimate contact capture failed: %s" % error_string(error))
 			quit(1)
 			return
 		print("Biologist ultimate contact capture saved: %s" % output)
 	quit(0)
+
+
+func _capture_output_dir() -> String:
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--output-dir="):
+			return ProjectSettings.globalize_path(argument.trim_prefix("--output-dir="))
+	return ProjectSettings.globalize_path("user://fan_3747_biologist_evidence")
 
 
 func _make_sheet(size: Vector2i) -> Node2D:
@@ -39,15 +50,15 @@ func _make_sheet(size: Vector2i) -> Node2D:
 	background.color = Color(0.018, 0.034, 0.028, 1.0)
 	background.z_index = -20
 	host.add_child(background)
-	var title := Label.new()
-	title.text = CAPTURE_SPEC.SHEET_TITLE
-	title.position = CAPTURE_SPEC.sheet_title_rect(size).position
-	title.add_theme_font_size_override("font_size", CAPTURE_SPEC.sheet_title_font_size(size))
-	title.add_theme_color_override("font_color", Color(0.84, 1.0, 0.72))
-	host.add_child(title)
-	for raw_pack in CAPTURE_SPEC.PACKS:
+	var heading := Label.new()
+	heading.text = SPEC.SHEET_TITLE
+	heading.position = SPEC.sheet_title_rect(size).position
+	heading.add_theme_font_size_override("font_size", SPEC.sheet_title_font_size(size))
+	heading.add_theme_color_override("font_color", Color(0.84, 1.0, 0.72))
+	host.add_child(heading)
+	for raw_pack in SPEC.PACKS:
 		var pack := raw_pack as Dictionary
-		var panel_rect := CAPTURE_SPEC.panel_rect(size, pack)
+		var panel_rect := SPEC.panel_rect(size, pack)
 		var panel := Polygon2D.new()
 		panel.polygon = PackedVector2Array([
 			panel_rect.position,
@@ -59,13 +70,17 @@ func _make_sheet(size: Vector2i) -> Node2D:
 		panel.z_index = -10
 		host.add_child(panel)
 		var label := Label.new()
-		label.text = str(pack["title"])
-		label.position = CAPTURE_SPEC.panel_label_rect(size, pack).position
-		label.add_theme_font_size_override("font_size", CAPTURE_SPEC.panel_label_font_size(size))
-		label.add_theme_color_override("font_color", pack["color"] as Color)
+		label.text = str(pack.get("title", ""))
+		label.position = SPEC.panel_label_rect(size, pack).position
+		label.add_theme_font_size_override("font_size", SPEC.panel_label_font_size(size))
+		label.add_theme_color_override("font_color", pack.get("color", Color.WHITE) as Color)
 		host.add_child(label)
-		var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
+		var scene := (pack.get("scene") as PackedScene).instantiate() as Node2D
+		var timeline := scene.get_node("Timeline") as AnimationPlayer
+		timeline.stop()
+		timeline.play(&"ultimate")
+		timeline.seek(float(pack.get("time", 0.0)), true)
+		scene.scale = Vector2.ONE * minf(float(size.y) / 1440.0, 1.0)
+		scene.position = SPEC.panel_center(size, pack) + Vector2(0, -float(size.y) * 0.035)
 		host.add_child(scene)
-		CAPTURE_SPEC.seek_capture_frame(scene, pack)
-		CAPTURE_SPEC.layout_capture_scene(scene, size, pack)
 	return host
