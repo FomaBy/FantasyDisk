@@ -1,0 +1,46 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f00.png" id="01_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f01.png" id="02_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f02.png" id="03_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f03.png" id="04_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f04.png" id="05_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f05.png" id="06_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f06.png" id="07_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f07.png" id="08_pressure_mines"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_f08.png" id="09_pressure_mines"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("01_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("02_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("03_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("04_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("05_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("06_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("07_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("08_pressure_mines")
+}, {
+"duration": 1.0,
+"texture": ExtResource("09_pressure_mines")
+}],
+"loop": false,
+"name": &"ultimate_flipbook",
+"speed": 3.0
+}]
