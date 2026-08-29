@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ylhc97f457jtj"
-path="res://.godot/imported/druid_ghost_stag_attack_north_east_04.png-00fb7a1bb1416dbccdb29f72093ff338.ctex"
+path="res://.godot/imported/druid_ghost_stag_attack_north_east_04.png-51d4b453cbafa9bc5b3ab116c0239d67.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_04.png"
-dest_files=["res://.godot/imported/druid_ghost_stag_attack_north_east_04.png-00fb7a1bb1416dbccdb29f72093ff338.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_stag_attack_north_east_04.png-51d4b453cbafa9bc5b3ab116c0239d67.ctex"]
 
 [params]
 compress/mode=0

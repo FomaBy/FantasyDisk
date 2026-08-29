@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fy89gxvu8csyg"
-path="res://.godot/imported/druid_ghost_stag_move_north_west_02.png-e18a171d27df3c76b6d8ee0da4d3d3f5.ctex"
+path="res://.godot/imported/druid_ghost_stag_move_north_west_02.png-d8fde514eac354ed05831371ff7ff806.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_02.png"
-dest_files=["res://.godot/imported/druid_ghost_stag_move_north_west_02.png-e18a171d27df3c76b6d8ee0da4d3d3f5.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_stag_move_north_west_02.png-d8fde514eac354ed05831371ff7ff806.ctex"]
 
 [params]
 compress/mode=0

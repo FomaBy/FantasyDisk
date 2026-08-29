@@ -99,9 +99,9 @@ def sha256_bytes(data: bytes) -> str:
 
 def ensure_import_sidecar(path: Path) -> None:
     """Write the deterministic tracked texture import record for a runtime PNG."""
-    digest = sha256_bytes(path.read_bytes())
+    source = f"res://{path.relative_to(ROOT).as_posix()}"
     uid_seed = int(
-        hashlib.sha256(f"{path.relative_to(ROOT).as_posix()}:{digest}".encode("utf-8")).hexdigest()[:16],
+        hashlib.sha256(f"{path.relative_to(ROOT).as_posix()}:{sha256_bytes(path.read_bytes())}".encode("utf-8")).hexdigest()[:16],
         16,
     ) or 1
     uid_chars = []
@@ -109,7 +109,11 @@ def ensure_import_sidecar(path: Path) -> None:
         uid_chars.append(GODOT_UID_ALPHABET[uid_seed & 31])
         uid_seed >>= 5
     uid = "".join(reversed(uid_chars))
-    imported = f"res://.godot/imported/{path.name}-{digest[:32]}.ctex"
+    # Godot derives the imported artifact name from the MD5 of the res:// source
+    # path (repository-wide convention). A different name makes the engine rewrite
+    # the sidecar on first import; CI then restores the tracked bytes and the
+    # texture resolves to a .ctex that was never written (FAN-3740).
+    imported = f"res://.godot/imported/{path.name}-{hashlib.md5(source.encode('utf-8')).hexdigest()}.ctex"
     Path(f"{path}.import").write_text(
         "[remap]\n"
         "importer=\"texture\"\n"
@@ -118,7 +122,7 @@ def ensure_import_sidecar(path: Path) -> None:
         f"path=\"{imported}\"\n"
         "metadata={\n\"vram_texture\": false\n}\n\n"
         "[deps]\n"
-        f"source_file=\"res://{path.relative_to(ROOT).as_posix()}\"\n"
+        f"source_file=\"{source}\"\n"
         f"dest_files=[\"{imported}\"]\n\n"
         "[params]\n"
         "compress/mode=0\n"
@@ -364,6 +368,10 @@ def write_contact_sheet(actor: str, runtime_dir: Path, output_path: Path) -> Non
             with Image.open(frame) as image:
                 sheet.alpha_composite(image.convert("RGBA"), (col * CANVAS_SIZE, row * CANVAS_SIZE))
     sheet.save(output_path, format="PNG", optimize=False)
+    # The contact sheet is a tracked PNG, so it needs its tracked sidecar too;
+    # otherwise Godot writes an untracked one and the quality gate stops on a
+    # dirty worktree (FAN-3740).
+    ensure_import_sidecar(output_path)
 
 
 def build_actor(actor: str, fetch: bool) -> None:

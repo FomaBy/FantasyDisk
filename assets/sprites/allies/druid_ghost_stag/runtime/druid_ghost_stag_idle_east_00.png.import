@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://rs8njwezlqd3j"
-path="res://.godot/imported/druid_ghost_stag_idle_east_00.png-29b1a5369331e58fdaea8cfd32bb94e5.ctex"
+path="res://.godot/imported/druid_ghost_stag_idle_east_00.png-24c357b399964423f73186ad6cf23da1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_east_00.png"
-dest_files=["res://.godot/imported/druid_ghost_stag_idle_east_00.png-29b1a5369331e58fdaea8cfd32bb94e5.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_stag_idle_east_00.png-24c357b399964423f73186ad6cf23da1.ctex"]
 
 [params]
 compress/mode=0

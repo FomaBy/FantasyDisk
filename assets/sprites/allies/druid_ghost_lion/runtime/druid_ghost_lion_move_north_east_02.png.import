@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://qkuj7at6gf94f"
-path="res://.godot/imported/druid_ghost_lion_move_north_east_02.png-8a4f75247a931aff58de0b6524ed5eec.ctex"
+path="res://.godot/imported/druid_ghost_lion_move_north_east_02.png-c7a7cf1970e0e286006e38ea133ced6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_lion/runtime/druid_ghost_lion_move_north_east_02.png"
-dest_files=["res://.godot/imported/druid_ghost_lion_move_north_east_02.png-8a4f75247a931aff58de0b6524ed5eec.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_lion_move_north_east_02.png-c7a7cf1970e0e286006e38ea133ced6b.ctex"]
 
 [params]
 compress/mode=0

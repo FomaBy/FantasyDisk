@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://vcywc9yal4hvm"
-path="res://.godot/imported/druid_ghost_panther_move_north_east_03.png-8eb1f5d6f7411e3e3550f9796ca01dbd.ctex"
+path="res://.godot/imported/druid_ghost_panther_move_north_east_03.png-ce478327ff4db3f2cfaf79ac8f520fc8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_03.png"
-dest_files=["res://.godot/imported/druid_ghost_panther_move_north_east_03.png-8eb1f5d6f7411e3e3550f9796ca01dbd.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_panther_move_north_east_03.png-ce478327ff4db3f2cfaf79ac8f520fc8.ctex"]
 
 [params]
 compress/mode=0

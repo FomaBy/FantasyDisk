@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fellghk5pchpm"
-path="res://.godot/imported/druid_ghost_bear_move_north_east_04.png-3c5ae29fff7becc9ccfb4331a0e2fe1a.ctex"
+path="res://.godot/imported/druid_ghost_bear_move_north_east_04.png-e858fb03c3067dbcc3d523b6656424d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_04.png"
-dest_files=["res://.godot/imported/druid_ghost_bear_move_north_east_04.png-3c5ae29fff7becc9ccfb4331a0e2fe1a.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_bear_move_north_east_04.png-e858fb03c3067dbcc3d523b6656424d1.ctex"]
 
 [params]
 compress/mode=0

@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://gjgn2wz63yxrh"
-path="res://.godot/imported/druid_ghost_lion_idle_south_west_00.png-f811d613e6ace515ae6900229c7f411a.ctex"
+path="res://.godot/imported/druid_ghost_lion_idle_south_west_00.png-ffc63d78b90340ecfc11c7e2ea16f8d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_lion/runtime/druid_ghost_lion_idle_south_west_00.png"
-dest_files=["res://.godot/imported/druid_ghost_lion_idle_south_west_00.png-f811d613e6ace515ae6900229c7f411a.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_lion_idle_south_west_00.png-ffc63d78b90340ecfc11c7e2ea16f8d8.ctex"]
 
 [params]
 compress/mode=0

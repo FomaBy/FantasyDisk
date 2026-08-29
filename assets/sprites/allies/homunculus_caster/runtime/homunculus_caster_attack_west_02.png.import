@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8ghuzfepg6ya0"
-path="res://.godot/imported/homunculus_caster_attack_west_02.png-231c937236673616cdbeafaf6bd46829.ctex"
+path="res://.godot/imported/homunculus_caster_attack_west_02.png-da14d5bf1ea3e5a361a3cfdd10eddef7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_02.png"
-dest_files=["res://.godot/imported/homunculus_caster_attack_west_02.png-231c937236673616cdbeafaf6bd46829.ctex"]
+dest_files=["res://.godot/imported/homunculus_caster_attack_west_02.png-da14d5bf1ea3e5a361a3cfdd10eddef7.ctex"]
 
 [params]
 compress/mode=0

@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://09yk8ch9uurm5"
-path="res://.godot/imported/druid_ghost_wolf_move_north_west_04.png-69014c40e219a2ae38ba767ed93cd252.ctex"
+path="res://.godot/imported/druid_ghost_wolf_move_north_west_04.png-b7349c3de31e1702135402ddd2de63d6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_wolf/runtime/druid_ghost_wolf_move_north_west_04.png"
-dest_files=["res://.godot/imported/druid_ghost_wolf_move_north_west_04.png-69014c40e219a2ae38ba767ed93cd252.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_wolf_move_north_west_04.png-b7349c3de31e1702135402ddd2de63d6.ctex"]
 
 [params]
 compress/mode=0

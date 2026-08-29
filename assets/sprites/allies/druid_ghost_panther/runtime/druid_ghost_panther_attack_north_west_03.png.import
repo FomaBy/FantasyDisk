@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://yaua0yuaawh0f"
-path="res://.godot/imported/druid_ghost_panther_attack_north_west_03.png-2c7a25928c334d619a2f59aeba53974d.ctex"
+path="res://.godot/imported/druid_ghost_panther_attack_north_west_03.png-2748b5922ac7ce639ffe0ce85d44ffc7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_03.png"
-dest_files=["res://.godot/imported/druid_ghost_panther_attack_north_west_03.png-2c7a25928c334d619a2f59aeba53974d.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_panther_attack_north_west_03.png-2748b5922ac7ce639ffe0ce85d44ffc7.ctex"]
 
 [params]
 compress/mode=0

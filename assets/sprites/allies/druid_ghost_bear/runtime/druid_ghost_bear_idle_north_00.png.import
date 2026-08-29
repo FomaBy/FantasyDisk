@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://9lmhnnhhrfgg9"
-path="res://.godot/imported/druid_ghost_bear_idle_north_00.png-d68131e0e21aa6e24f286e8f0120e6aa.ctex"
+path="res://.godot/imported/druid_ghost_bear_idle_north_00.png-58ea0c9d28e1930222868b031a4ed7e5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_00.png"
-dest_files=["res://.godot/imported/druid_ghost_bear_idle_north_00.png-d68131e0e21aa6e24f286e8f0120e6aa.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_bear_idle_north_00.png-58ea0c9d28e1930222868b031a4ed7e5.ctex"]
 
 [params]
 compress/mode=0

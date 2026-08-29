@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xjh3ufktd8xuh"
-path="res://.godot/imported/druid_ghost_lion_attack_north_00.png-61a8c4297f60ecd6b9ef9786d938cdb4.ctex"
+path="res://.godot/imported/druid_ghost_lion_attack_north_00.png-1417e860a9ce269b3c36ea069e3ae7de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_lion/runtime/druid_ghost_lion_attack_north_00.png"
-dest_files=["res://.godot/imported/druid_ghost_lion_attack_north_00.png-61a8c4297f60ecd6b9ef9786d938cdb4.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_lion_attack_north_00.png-1417e860a9ce269b3c36ea069e3ae7de.ctex"]
 
 [params]
 compress/mode=0

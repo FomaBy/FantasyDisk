@@ -96,6 +96,20 @@ def check_actor(actor: str) -> None:
     assert '"name": &"move_left"' in spriteframes and '"name": &"move_right"' in spriteframes, actor
     assert '"name": &"attack_left"' in spriteframes and '"name": &"attack_right"' in spriteframes, actor
 
+    # Every tracked PNG needs a tracked sidecar naming the artifact Godot actually
+    # writes: `<name>-<md5(res:// source path)>.ctex`. Any other name is rewritten
+    # by the engine on first import, and CI restores the tracked bytes over it, so
+    # the texture resolves to a .ctex that never existed (FAN-3740).
+    for path in runtime_pngs + [actor_dir / "fan3327_contact_sheet.png"]:
+        sidecar = Path(f"{path}.import")
+        assert sidecar.is_file(), sidecar
+        source = f"res://{path.relative_to(ROOT).as_posix()}"
+        artifact = f"res://.godot/imported/{path.name}-{hashlib.md5(source.encode('utf-8')).hexdigest()}.ctex"
+        text = sidecar.read_text(encoding="utf-8")
+        assert f'source_file="{source}"\n' in text, sidecar
+        assert f'path="{artifact}"\n' in text, sidecar
+        assert f'dest_files=["{artifact}"]\n' in text, sidecar
+
 
 def main() -> int:
     for actor in ACTORS:

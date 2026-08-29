@@ -2,14 +2,14 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://f8plgra54afxe"
-path="res://.godot/imported/druid_ghost_bear_attack_north_west_01.png-638d2bae45b07b26c29e5201e5f9a700.ctex"
+path="res://.godot/imported/druid_ghost_bear_attack_north_west_01.png-e845e9ef90a5d9108fd8b426f7a1695a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 source_file="res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_01.png"
-dest_files=["res://.godot/imported/druid_ghost_bear_attack_north_west_01.png-638d2bae45b07b26c29e5201e5f9a700.ctex"]
+dest_files=["res://.godot/imported/druid_ghost_bear_attack_north_west_01.png-e845e9ef90a5d9108fd8b426f7a1695a.ctex"]
 
 [params]
 compress/mode=0
