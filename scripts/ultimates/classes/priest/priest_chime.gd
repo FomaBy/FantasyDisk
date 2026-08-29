@@ -5,6 +5,10 @@ const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_chime"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_chime.tscn"
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
+## Ultimate Direction v2 (FAN-2535): bell one interrupts every live enemy and
+## bell two chains through the same full set. Chain rank still shapes damage,
+## clamped by the corridor-derived floor instead of limiting reach.
+
 var ultimate_damage_sink: Callable = Callable()
 var chain_removed_for_tests := 0.0
 var toll_count_for_tests := 0
@@ -19,14 +23,11 @@ static func parameter_contract() -> Dictionary:
 		"first_toll_at": {"type": "number", "minimum": 0.0},
 		"second_toll_at": {"type": "number", "minimum": 0.0},
 		"third_toll_at": {"type": "number", "minimum": 0.0},
-		"interrupt_radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"interrupt_duration": {"type": "number", "minimum": 0.1},
 		"interrupt_damage": {"type": "number", "minimum": 0.0},
-		"chain_radius": {"type": "number", "minimum": 0.0},
-		"chain_targets": {"type": "integer", "minimum": 1},
 		"chain_damage": {"type": "number", "minimum": 0.0},
 		"chain_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"chain_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"heal_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"heal_cap": {"type": "number", "minimum": 0.0},
 	}
@@ -96,8 +97,8 @@ func first_toll() -> void:
 	toll_count_for_tests += 1
 	var targets: Array = _activation.select_targets(
 		_activation.origin(),
-		_activation.param_float("interrupt_radius", 400.0),
-		_activation.param_int("crowd_cap", 18),
+		INF,
+		0,
 		"nearest"
 	)
 	for raw_target in targets:
@@ -134,8 +135,8 @@ func second_toll() -> void:
 	toll_count_for_tests += 1
 	var targets: Array = _activation.select_targets(
 		_activation.origin(),
-		_activation.param_float("chain_radius", 600.0),
-		_activation.param_int("chain_targets", 6),
+		INF,
+		0,
 		"nearest"
 	)
 	for index in targets.size():
@@ -143,7 +144,10 @@ func second_toll() -> void:
 		if target == null or not is_instance_valid(target):
 			continue
 		var amount: float = _activation.scaled_damage("chain_damage", 0.0) \
-			* pow(_activation.param_float("chain_falloff", 0.75), float(index))
+			* maxf(
+				pow(_activation.param_float("chain_falloff", 0.75), float(index)),
+				_activation.param_float("chain_floor", 0.0)
+			)
 		_deal(
 			target,
 			amount,

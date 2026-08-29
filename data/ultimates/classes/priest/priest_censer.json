@@ -16,9 +16,8 @@
       "stored_cap": 56.0,
       "counter_at": 6.3,
       "counter_damage_cap": 75.6,
-      "counter_radius": 360.0,
-      "counter_target_cap": 12,
-      "counter_falloff": 0.75
+      "counter_falloff": 0.75,
+      "counter_floor": 0.41
     }
   },
   "total_boss_cap": 0.08,

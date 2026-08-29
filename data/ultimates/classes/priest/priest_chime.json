@@ -14,14 +14,11 @@
       "first_toll_at": 0.5,
       "second_toll_at": 2.3,
       "third_toll_at": 4.1,
-      "interrupt_radius": 400.0,
-      "crowd_cap": 18,
       "interrupt_duration": 1.2,
       "interrupt_damage": 10.8,
-      "chain_radius": 600.0,
-      "chain_targets": 6,
       "chain_damage": 45.9,
       "chain_falloff": 0.75,
+      "chain_floor": 0.27,
       "heal_ratio": 0.45,
       "heal_cap": 50.0
     }

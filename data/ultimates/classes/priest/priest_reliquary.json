@@ -11,9 +11,8 @@
     "strategy_id": "weapon_ultimate.executor.priest.priest_reliquary",
     "params": {
       "lifetime": 8.6,
-      "radius": 470.0,
-      "crowd_cap": 22,
       "crowd_falloff": 0.8,
+      "crowd_floor": 0.4,
       "first_ring_at": 1.25,
       "sanctify_ring_at": 2.6,
       "pillar_at": 5.3,
