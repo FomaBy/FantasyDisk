@@ -62,6 +62,33 @@ class QualityWorkflowContractTests(unittest.TestCase):
         ):
             self.assertIn(f"          {required_path}\n", checkout)
 
+    def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn("          docs/design/reference-assets-lfs\n", checkout)
+
+        start = self.candidate_job.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        end = self.candidate_job.index("- name:", start + 1)
+        materialization = self.candidate_job[start:end]
+
+        self.assertIn("if: github.event_name != 'push'", materialization)
+        self.assertIn('lfs_prefix = "docs/design/reference-assets-lfs/"', materialization)
+        self.assertIn("path.startswith(lfs_prefix)", materialization)
+        self.assertIn(
+            'git lfs fetch --include="$lfs_include"',
+            materialization,
+        )
+        self.assertIn(
+            'GIT_ATTR_SOURCE=HEAD git lfs checkout -- "${evidence_paths[@]}"',
+            materialization,
+        )
+        self.assertIn("with Image.open(path) as image:", materialization)
+        self.assertIn("image.verify()", materialization)
+        self.assertNotIn("git lfs fetch --all", materialization)
+        self.assertNotIn("git lfs pull", materialization)
+
     def test_shallow_candidate_events_fetch_pinned_legacy_commits(self) -> None:
         start = self.candidate_job.index(
             "- name: Fetch pinned legacy commits for shallow candidates"

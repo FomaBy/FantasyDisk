@@ -63,6 +63,7 @@ jobs:
             docs/design/mockups/scrum1061_semantic_typography
             docs/design/references/weapon_attack_animations
             docs/design/references/weapon_ultimates
+            docs/design/reference-assets-lfs
       - name: Fetch pinned legacy commits for shallow candidates
         if: github.event_name != 'push'
         env:
@@ -79,6 +80,56 @@ jobs:
           python-version: "3.12"
       - name: Install CI Python dependencies
         run: python -m pip install --requirement requirements-ci.txt
+      - name: Materialize manifest-declared LFS evidence
+        if: github.event_name != 'push'
+        run: |
+          set -euo pipefail
+          evidence_paths=()
+          while IFS= read -r path; do
+            evidence_paths+=("$path")
+          done < <(python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          lfs_prefix = "docs/design/reference-assets-lfs/"
+          paths = set()
+          for manifest_path in Path("docs/design/references/weapon_ultimates").glob("*/manifest.json"):
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              for path in manifest.get("evidence", {}).get("contact_sheets", []):
+                  if path.startswith(lfs_prefix):
+                      paths.add(path)
+          for path in sorted(paths):
+              print(path)
+          PY
+          )
+          test "${#evidence_paths[@]}" -gt 0
+          lfs_include=$(IFS=,; printf '%s' "${evidence_paths[*]}")
+          git lfs fetch --include="$lfs_include"
+          GIT_ATTR_SOURCE=HEAD git lfs checkout -- "${evidence_paths[@]}"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          from PIL import Image
+
+          contact_sheets = []
+          for manifest_path in Path("docs/design/references/weapon_ultimates").glob("*/manifest.json"):
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):
+                  path = Path(raw_path)
+                  if not path.is_file():
+                      raise SystemExit(f"missing manifest contact sheet: {raw_path}")
+                  try:
+                      with Image.open(path) as image:
+                          size = image.size
+                          image.verify()
+                  except Exception as error:
+                      raise SystemExit(f"invalid manifest contact sheet: {raw_path}: {error}") from error
+                  if size[0] <= 0 or size[1] <= 0:
+                      raise SystemExit(f"invalid manifest contact sheet dimensions: {raw_path}")
+                  contact_sheets.append(raw_path)
+          print(f"validated {len(contact_sheets)} manifest contact sheets as images")
+          PY
       - name: Assert exact candidate SHA
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
