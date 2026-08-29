@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1492",
+  "issue": "FAN-3733",
   "class_id": "guitarist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -10,27 +10,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "electric_guitar",
+      "bass_guitar",
+      "sound_amp"
+    ],
+    "integrated_art_candidate": "616662417a595fbf91d536f2fe02a151714c12b9",
+    "art_integration_anchor": "7f26497aff9928e474b94b4068de1e895626c3a8",
     "reused_sources": {
       "electric_guitar": {
-        "source_path": "docs/design/references/weapon_attack_animations/electric_guitar/vfx_weapon_electric_guitar_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_electric_guitar.png",
+        "spriteframes": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
-        "note": "Accepted guitar VFX is composed into five colored strips and a final chord; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame last-chord lightning riff pack, integrated byte-identically."
       },
       "bass_guitar": {
-        "source_path": "docs/design/references/weapon_attack_animations/bass_guitar/vfx_weapon_bass_guitar_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_bass_guitar.png",
+        "spriteframes": "assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
-        "note": "Accepted bass VFX is composed with vector compression rings; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame hell-subwoofer compression pack, integrated byte-identically."
       },
       "sound_amp": {
-        "source_path": "docs/design/references/weapon_attack_animations/sound_amp/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_sound_amp.png",
+        "spriteframes": "assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
-        "note": "Accepted amplifier VFX is composed into a cardinal stage wall; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame wall-of-sound overload pack, integrated byte-identically."
       }
     }
   },
@@ -42,6 +47,15 @@
       "silhouette": "five neon angled riff strips crossed by a single lightning chord",
       "motion_path": "five alternating diagonal strips sweep the arena before a perpendicular chord crosses them",
       "impact_language": "bright chord intersections mark normal-enemy stun beats without changing gameplay",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
+          "animation": "electric_guitar_last_chord",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {"windup": 0.0, "release": 0.52, "active": 1.3, "recovery": 4.7, "cancel": 5.4},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.electric_guitar.windup",
@@ -60,6 +74,15 @@
       "silhouette": "a dark central bass core driving four concentric compression waves",
       "motion_path": "blue pull ring tightens, purple weight compresses, red lift expands, then black-gold shock ejects",
       "impact_language": "sequential pull, heavy compression, launch ripple, and broad subwoofer knockback shock",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
+          "animation": "bass_guitar_hell_subwoofer",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 2.3, "recovery": 5.0, "cancel": 5.8},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.bass_guitar.windup",
@@ -78,6 +101,15 @@
       "silhouette": "four cardinal speaker pylons joined by a glowing square cable wall",
       "motion_path": "amps rise at cardinal points, cables lock a square, cones pulse inward, then feedback explodes four ways",
       "impact_language": "contained feedback field resolves as a symmetric four-direction overload",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
+          "animation": "guitarist_sound_amp_wall_of_sound",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.6, "recovery": 5.25, "cancel": 6.0},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.sound_amp.windup",

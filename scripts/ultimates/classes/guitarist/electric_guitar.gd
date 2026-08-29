@@ -1,4 +1,13 @@
-extends RefCounted
+extends Node2D
+
+## Doubles as the root script of the authored presentation scene
+## (GuitaristElectricGuitarLastChord.tscn): the static half executes the
+## mechanics, the instance half receives beat payloads while the scene is the
+## live channel and plays the shared per-victim impact for the enemies each
+## damaging beat actually struck.
+
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.electric_guitar"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.electric_guitar"
@@ -25,6 +34,9 @@ const CONTROL_POLICY := {
 		"allow_execute": false,
 	},
 }
+
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -94,15 +106,18 @@ static func fire_riff_strip(
 	var length: float = activation.param_float("strip_length", 1400.0)
 	var start := center - axis * length * 0.5
 	var damage: float = activation.scaled_damage("strip_damage", 10.0)
+	var victims: Array = []
 	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.record_target_value(target, RIFF_LEDGER_KEY, 1.0, "riff:%d" % strip_index)
 		activation.deal_damage(target, damage, {"ultimate_mechanic": "riff_strip"}, "riff:%d" % strip_index)
+		victims.append(target)
 	state["strips_fired"] = int(state.get("strips_fired", 0)) + 1
 	activation.present(EXECUTOR_ID + ".riff:%d" % strip_index, {
 		"shape": "beam", "from": start, "to": start + axis * length,
+		"victims": victims,
 	})
 
 
@@ -112,6 +127,7 @@ static func fire_final_chord(activation, state: Dictionary, center: Vector2, dir
 	var axis := direction.rotated(PI * 0.5)
 	var length: float = activation.param_float("strip_length", 1400.0)
 	var start := center - axis * length * 0.5
+	var victims: Array = []
 	for raw_target in activation.targets_in_corridor(
 		start,
 		axis,
@@ -128,6 +144,7 @@ static func fire_final_chord(activation, state: Dictionary, center: Vector2, dir
 			{"ultimate_mechanic": "final_chord"},
 			"final_chord"
 		)
+		victims.append(target)
 		if activation.target_value(target, RIFF_LEDGER_KEY) == null:
 			continue
 		activation.apply_control(target, Vector2.ZERO, "last_chord:%d" % target.get_instance_id(), {
@@ -138,4 +155,33 @@ static func fire_final_chord(activation, state: Dictionary, center: Vector2, dir
 		state["intersections"] = int(state.get("intersections", 0)) + 1
 	activation.present(EXECUTOR_ID + ".final", {
 		"shape": "beam", "from": start, "to": start + axis * length,
+		"victims": victims,
 	})
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false
