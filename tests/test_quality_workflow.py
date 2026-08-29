@@ -21,7 +21,6 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("push:", self.source)
         self.assertIn("pull_request:", self.source)
         self.assertIn("merge_group:", self.source)
-        self.assertIn("github.event.merge_group.base_sha", self.source)
 
     def test_checkout_is_asserted_to_be_exact_github_sha(self) -> None:
         self.assertIn('test "$(git rev-parse HEAD)" = "$GITHUB_SHA"', self.source)
@@ -62,7 +61,41 @@ class QualityWorkflowContractTests(unittest.TestCase):
         ):
             self.assertIn(f"          {required_path}\n", checkout)
 
-    def test_shallow_candidate_events_fetch_pinned_legacy_commits(self) -> None:
+    def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn("          docs/design/reference-assets-lfs\n", checkout)
+
+        start = self.candidate_job.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        end = self.candidate_job.index("- name:", start + 1)
+        materialization = self.candidate_job[start:end]
+
+        self.assertIn("if: github.event_name != 'push'", materialization)
+        self.assertIn('lfs_prefix = "docs/design/reference-assets-lfs/"', materialization)
+        self.assertIn("path.startswith(lfs_prefix)", materialization)
+        self.assertIn("git lfs install --local --skip-smudge", materialization)
+        self.assertIn(
+            'for path in "${evidence_paths[@]}"; do',
+            materialization,
+        )
+        self.assertIn(
+            'git show "HEAD:$path"',
+            materialization,
+        )
+        self.assertIn(
+            'GIT_LFS_SKIP_SMUDGE=0 git lfs smudge -- "$path" > "$path"',
+            materialization,
+        )
+        self.assertIn("with Image.open(path) as image:", materialization)
+        self.assertIn("image.verify()", materialization)
+        self.assertNotIn("git lfs fetch", materialization)
+        self.assertNotIn("git lfs checkout", materialization)
+        self.assertNotIn("git lfs fetch --all", materialization)
+        self.assertNotIn("git lfs pull", materialization)
+
+    def test_shallow_candidate_events_fetch_integration_branch_and_legacy_commits(self) -> None:
         start = self.candidate_job.index(
             "- name: Fetch pinned legacy commits for shallow candidates"
         )
@@ -70,15 +103,9 @@ class QualityWorkflowContractTests(unittest.TestCase):
         history_step = self.candidate_job[start:end]
 
         self.assertIn("if: github.event_name != 'push'", history_step)
-        self.assertIn(
-            "BASE_SHA: ${{ github.event_name == 'pull_request'"
-            " && github.event.pull_request.base.sha"
-            " || github.event.merge_group.base_sha }}",
-            history_step,
-        )
         self.assertIn("git fetch --no-tags --depth=2 origin", history_step)
         self.assertIn(
-            '"+$BASE_SHA:refs/remotes/origin/dev"',
+            '"+refs/heads/dev:refs/remotes/origin/dev"',
             history_step,
         )
         self.assertIn("git fetch --no-tags --depth=1 origin", history_step)
@@ -230,6 +257,61 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn(
             'godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}',
             self.source,
+        )
+
+    def test_cold_godot_cache_restores_tracked_import_sidecars(self) -> None:
+        start = self.source.index(
+            "- name: Warm Godot import cache without tracked sidecar changes"
+        )
+        end = self.source.index(
+            "- name: Repository and Python gates (push range)",
+            start,
+        )
+        warmup = self.source[start:end]
+
+        self.assertIn(
+            "if: github.event_name != 'push' && steps.godot-import-cache.outputs.cache-hit != 'true'",
+            warmup,
+        )
+        self.assertIn(
+            "python3 tools/godot_gate.py --headless --path . --ensure-import-cache",
+            warmup,
+        )
+        self.assertIn(
+            "git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import'",
+            warmup,
+        )
+        self.assertIn(
+            'changed_imports_file="$RUNNER_TEMP/changed-import-sidecars"',
+            warmup,
+        )
+        self.assertIn(
+            ' > "$changed_imports_file"',
+            warmup,
+        )
+        self.assertIn(
+            'done < "$changed_imports_file"',
+            warmup,
+        )
+        self.assertNotIn(
+            "done < <(git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import')",
+            warmup,
+        )
+        materialization_start = self.source.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        materialization_end = self.source.index(
+            "- name: Assert exact candidate SHA",
+            materialization_start,
+        )
+        materialization = self.source[materialization_start:materialization_end]
+        self.assertIn(
+            'git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true',
+            materialization,
+        )
+        self.assertIn(
+            'git restore --worktree --source=HEAD -- "$path"',
+            warmup,
         )
 
     def test_candidate_evidence_must_show_executed_godot_suites(self) -> None:
