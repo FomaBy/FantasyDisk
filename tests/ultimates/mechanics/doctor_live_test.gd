@@ -24,6 +24,9 @@ class FixtureHost extends Node2D:
 	var max_health := 100.0
 	var targets: Array[FixtureTarget] = []
 	var events: Array[String] = []
+	## Enemies named by a beat's `victims` payload — the per-victim impact set
+	## the authored presentation bursts on (FAN-3008).
+	var beat_victims: Dictionary = {}
 	var modifiers: Dictionary = {}
 	var active := false
 	var aim := Vector2(250.0, 0.0)
@@ -69,8 +72,11 @@ class FixtureHost extends Node2D:
 	func ultimate_host_effect_parent() -> Node:
 		return self
 
-	func ultimate_host_present(event_id: String, _payload: Dictionary) -> Node:
+	func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
 		events.append(event_id)
+		for victim in payload.get("victims", []) as Array:
+			if victim is Node:
+				beat_victims[victim] = true
 		return null
 
 	func ultimate_host_set_active(value: bool) -> void:
@@ -113,6 +119,7 @@ func _test_restore_potion() -> void:
 		"Life and Death must emit its accepted flask, poison-ring, and healing-spiral events")
 	_check(boss.max_health - boss.health <= boss.max_health * 0.08,
 		"Life and Death must apply one shared boss cap")
+	_check_victim_beats(host, "Life and Death")
 	controller.cancel()
 	_check(is_zero_approx(float(host.modifiers.get("absorb_flat", 0.0))) and not host.active,
 		"Life and Death cancel must clean temporary absorb and active state")
@@ -137,6 +144,7 @@ func _test_restore_potion_reaches_every_enemy() -> void:
 			reached += 1
 	_check(reached == 20,
 		"Life and Death must damage every live enemy, got %d of 20" % reached)
+	_check_victim_beats(host, "Life and Death map-wide")
 	controller.cancel()
 	await _drop(host)
 
@@ -157,6 +165,7 @@ func _test_plague_syringe() -> void:
 		"Black Epidemic must cap all patient-zero boss damage across waves")
 	_check(_has_event(host, ".inject") and _has_event(host, ".veins") and _has_event(host, ".wave") and _has_event(host, ".mask"),
 		"Black Epidemic must emit syringe, veins, waves, and mask finale events")
+	_check_victim_beats(host, "Black Epidemic")
 	controller.cancel()
 	_check(not host.active, "Black Epidemic cancel must end the active window")
 	await _drop(host)
@@ -181,6 +190,7 @@ func _test_plague_syringe_reaches_every_enemy() -> void:
 			reached += 1
 	_check(reached == host.targets.size(),
 		"Black Epidemic must wave every live enemy, including crowds above the former cap and off-screen targets")
+	_check_victim_beats(host, "Black Epidemic map-wide")
 	await _drop(host)
 
 
@@ -189,6 +199,9 @@ func _test_bone_saw() -> void:
 	var boss := _target(host, Vector2(120.0, 0.0), 2000.0)
 	boss.add_to_group(Activation.BOSS_GROUP)
 	_target(host, Vector2(170.0, 0.0), 1000.0)
+	# Outside the close orbit: it must stay undamaged, so it also proves the
+	# per-victim impact never bursts on an enemy the cast did not touch.
+	var outside := _target(host, Vector2(900.0, 0.0), 1000.0)
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "bone_saw"), "Emergency Surgery must activate")
 	var activation: Activation = controller.active_activation()
@@ -201,6 +214,9 @@ func _test_bone_saw() -> void:
 		"Emergency Surgery must cap the full saw orbit against a boss")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.targets)),
 		"ultimate attribution must equal HP actually removed, not attempted overkill")
+	_check(is_equal_approx(outside.health, outside.max_health),
+		"Emergency Surgery must leave an enemy outside the close orbit untouched")
+	_check_victim_beats(host, "Emergency Surgery")
 	controller.cancel()
 	_check(is_zero_approx(float(host.modifiers.get("absorb_flat", 0.0))) and not host.active,
 		"Emergency Surgery cancel must clean its shield and active state")
@@ -232,6 +248,26 @@ func _advance(activation: Activation, seconds: float) -> void:
 			if tween != null and tween.is_valid():
 				tween.custom_step(STEP)
 		elapsed += STEP
+
+
+## The per-victim impact contract (FAN-3008): the beats name exactly the enemies
+## that actually lost HP. An enemy the cast never damaged must never appear, and
+## a damaged one must never be missing — the scene bursts on this set alone.
+func _check_victim_beats(host: FixtureHost, weapon_id: String) -> void:
+	var damaged := {}
+	for target in host.targets:
+		if target.health < target.max_health:
+			damaged[target] = true
+	_check(not damaged.is_empty(), "%s fixture must damage at least one enemy" % weapon_id)
+	for target in host.targets:
+		var hit: bool = damaged.has(target)
+		var named: bool = host.beat_victims.has(target)
+		if hit and not named:
+			_check(false, "%s must name every damaged enemy in a beat's victims" % weapon_id)
+			return
+		if named and not hit:
+			_check(false, "%s must never name an undamaged enemy in a beat's victims" % weapon_id)
+			return
 
 
 func _has_event(host: FixtureHost, suffix: String) -> bool:
