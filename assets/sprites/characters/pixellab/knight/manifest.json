@@ -693,7 +693,7 @@
     "evidence": {
       "pack_gate": "tests/knight_pixellab_pack_test.gd",
       "review_builder": "tools/build_fan2602_knight_animation_review.py",
-      "contact_sheet": "docs/design/previews/fan2602_knight_8dir_contact.png"
+      "contact_sheet": "docs/design/reference-assets-lfs/FAN-2602-knight/fan2602_knight_8dir_contact.png"
     }
   }
 }

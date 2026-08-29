@@ -21,7 +21,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "assets/sprites/characters/full_frame/knight_pixellab"
-OUT_DIR = ROOT / "docs/design/previews"
+OUT_DIR = ROOT / "docs/design/reference-assets-lfs/FAN-2602-knight"
 
 # Clockwise runtime order used by the manifest and Hero Select.
 DIRECTIONS = [
