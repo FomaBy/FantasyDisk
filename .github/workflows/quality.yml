@@ -199,7 +199,7 @@ jobs:
           done < "$changed_imports_file"
       - name: Repository and Python gates (push range)
         if: github.event_name == 'push'
-        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
+        run: python3 tools/quality_gate.py --static-only --changed-ref origin/dev
       - name: Repository, Python and Godot gates (pull request range)
         if: github.event_name == 'pull_request'
         run: python3 tools/quality_gate.py --profile changed --changed-ref origin/dev

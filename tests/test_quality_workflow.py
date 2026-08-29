@@ -196,12 +196,14 @@ class QualityWorkflowContractTests(unittest.TestCase):
 
     def test_push_keeps_the_cheaper_static_profile(self) -> None:
         # Push to dev revalidates an already-gated candidate, so it stays on the
-        # static profile and skips the engine entirely.
+        # static profile and skips the engine entirely. The changed-ref must be
+        # the literal configured integration ref: quality_gate.py rejects any
+        # other ref (including github.event.before) as QUALITY NON-CERTIFYING.
         self.assertIn(
-            'python3 tools/quality_gate.py --static-only'
-            ' --changed-ref "${{ github.event.before }}"',
+            'python3 tools/quality_gate.py --static-only --changed-ref origin/dev',
             self.source,
         )
+        self.assertNotIn("github.event.before", self.source)
         self.assertIn("if: github.event_name != 'push'", self.source)
 
     def test_godot_toolchain_is_pinned_verified_and_cached(self) -> None:
