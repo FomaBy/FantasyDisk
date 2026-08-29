@@ -77,15 +77,21 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn('lfs_prefix = "docs/design/reference-assets-lfs/"', materialization)
         self.assertIn("path.startswith(lfs_prefix)", materialization)
         self.assertIn(
-            'git lfs fetch --include="$lfs_include"',
+            'for path in "${evidence_paths[@]}"; do',
             materialization,
         )
         self.assertIn(
-            'GIT_ATTR_SOURCE=HEAD git lfs checkout -- "${evidence_paths[@]}"',
+            'git show "HEAD:$path"',
+            materialization,
+        )
+        self.assertIn(
+            'GIT_LFS_SKIP_SMUDGE=0 git lfs smudge -- "$path" > "$path"',
             materialization,
         )
         self.assertIn("with Image.open(path) as image:", materialization)
         self.assertIn("image.verify()", materialization)
+        self.assertNotIn("git lfs fetch", materialization)
+        self.assertNotIn("git lfs checkout", materialization)
         self.assertNotIn("git lfs fetch --all", materialization)
         self.assertNotIn("git lfs pull", materialization)
 

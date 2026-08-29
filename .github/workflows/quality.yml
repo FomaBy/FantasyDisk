@@ -103,9 +103,11 @@ jobs:
           PY
           )
           test "${#evidence_paths[@]}" -gt 0
-          lfs_include=$(IFS=,; printf '%s' "${evidence_paths[*]}")
-          git lfs fetch --include="$lfs_include"
-          GIT_ATTR_SOURCE=HEAD git lfs checkout -- "${evidence_paths[@]}"
+          for path in "${evidence_paths[@]}"; do
+            mkdir -p "$(dirname "$path")"
+            git show "HEAD:$path" |
+              GIT_LFS_SKIP_SMUDGE=0 git lfs smudge -- "$path" > "$path"
+          done
           python3 - <<'PY'
           import json
           from pathlib import Path
