@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.elementalist.elementalist_meteor_core"
 const EXECUTOR_ID := "weapon_ultimate.executor.elementalist.elementalist_meteor_core"
@@ -16,6 +18,8 @@ var _impact_point := Vector2.ZERO
 var _impact_done := false
 var _resolved_pulses := {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -132,9 +136,10 @@ func impact() -> void:
 	_activation.present(EXECUTOR_ID + ".impact", {
 		"position": _impact_point, "radius": radius, "shape": "orb_burst",
 	})
-	for raw_target in _activation.select_targets(
+	var victims: Array = _activation.select_targets(
 		_impact_point, radius, 0, "nearest"
-	):
+	)
+	for raw_target in victims:
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -151,6 +156,7 @@ func impact() -> void:
 			if remaining != null and float(remaining) > 0.0:
 				_deal(target, float(remaining), "meteor:execute", "meteor_normal_execute")
 				execute_count_for_tests += 1
+	_play_impacts(victims)
 
 
 func crater_pulse(pulse: int) -> void:
@@ -165,12 +171,13 @@ func crater_pulse(pulse: int) -> void:
 		"radius": _activation.param_float("impact_radius", 360.0),
 		"shape": "ring_pulse",
 	})
-	for raw_target in _activation.select_targets(
+	var victims: Array = _activation.select_targets(
 		_impact_point,
 		_activation.param_float("impact_radius", 360.0),
 		0,
 		"nearest"
-	):
+	)
+	for raw_target in victims:
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -183,6 +190,7 @@ func crater_pulse(pulse: int) -> void:
 		)
 		_deal(target, _activation.scaled_damage("crater_damage", 1.0),
 			"meteor:crater:%d" % pulse, "meteor_crater")
+	_play_impacts(victims)
 
 
 func cooling() -> void:
@@ -213,6 +221,20 @@ func _is_weak_normal(target: Node) -> bool:
 	)
 
 
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
+
+
 func _lease_status(target: Node, status_id: String) -> void:
 	for lease in _leased_statuses:
 		if lease.get("target") == target and str(lease.get("status_id", "")) == status_id:
@@ -235,6 +257,8 @@ func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 
