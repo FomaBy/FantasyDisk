@@ -1,0 +1,467 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-29T03:06:15Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "character": {
+    "pixel_lab_character_id": "559591a8-a113-40f0-b534-e0a3bdc9cc57",
+    "animate_tool": "animate_character",
+    "animate_params": {
+      "character_id": "559591a8-a113-40f0-b534-e0a3bdc9cc57",
+      "mode": "v3",
+      "action_description": "six-frame spirit-lance cast in place; preserve stag identity and stable antlers across all eight directions; restrained cyan magic only",
+      "animation_name": "attack",
+      "directions": [
+        "south",
+        "south-west",
+        "west",
+        "north-west",
+        "north",
+        "north-east",
+        "east",
+        "south-east"
+      ],
+      "frame_count": 6
+    }
+  },
+  "frames": [
+    {
+      "file": "druid_ghost_stag_attack_south_00.png",
+      "direction": "south",
+      "index": 0,
+      "bytes": 7725,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7a1fa421f16fcc0007a211793699ff374037378a92c09e15f0c2db7959ea72d0",
+      "pixel_sha256": "68537c97e57367127273daef95f24a6188bcbff380d3413317adfcbea4595f3c"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_01.png",
+      "direction": "south",
+      "index": 1,
+      "bytes": 6751,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1ebebc5fc7034244bd5fab51f9dee8cf58039047ed3cd583bec94758ab237584",
+      "pixel_sha256": "c801dadb7ea6212ed945846f340037c30c36ad816144770b7f40d932c919ca2a"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_02.png",
+      "direction": "south",
+      "index": 2,
+      "bytes": 4670,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0c4dda19e0edcdd7e05de2bb0ef6a8f189d236fa70a3906284fef5b6488a0480",
+      "pixel_sha256": "225d54dfd04cbca34acdb1c68fa5e7da444ad4a7e799317983deda697e79a660"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_03.png",
+      "direction": "south",
+      "index": 3,
+      "bytes": 4325,
+      "url_kind": "character_direct",
+      "encoded_sha256": "690dead2593bb74f98edd45e50a932988362525af72e693e56087e495a1c8d09",
+      "pixel_sha256": "f39671cfc70908b5c730e048d6a2f699adee0a241e8d3ea0c1a62fd0e17d980c"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_04.png",
+      "direction": "south",
+      "index": 4,
+      "bytes": 3361,
+      "url_kind": "character_direct",
+      "encoded_sha256": "9b0c01efdf333cb5f750fbe062ed6b4f1a508a89cfd76b7b20ef127f5cc43815",
+      "pixel_sha256": "92958e7d91af55f5110db2418c9a64c5a4285aa088b07f7bba0a95e9764761de"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_05.png",
+      "direction": "south",
+      "index": 5,
+      "bytes": 3008,
+      "url_kind": "character_direct",
+      "encoded_sha256": "bbe8031ee2bd7f5e57b2c9ffe4f31e6ff474d9ed6ff929963d47c427dae477b5",
+      "pixel_sha256": "2891d004b8002f8802d23efe85b02b84444413d2450a3f0664613c3c776e47b9"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_00.png",
+      "direction": "south-west",
+      "index": 0,
+      "bytes": 7842,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0ffdd110e47d7a4dfecd41e0dd5494761c73345e4e6aecba1ebcd24714fc86c9",
+      "pixel_sha256": "df0a1d471c2fac8cff4e8a5b3df9857f28cc3c57801ce4ae9b5f8213f05f1a0f"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_01.png",
+      "direction": "south-west",
+      "index": 1,
+      "bytes": 7106,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ce0be97048d6c1b42a7dcf88bb5fe7f494cf4219a335662c326e10c4a93afbbd",
+      "pixel_sha256": "629fdf9d85090c64dcc748d3e966d58feb4928291701e5fd0b175d48c81e50c6"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_02.png",
+      "direction": "south-west",
+      "index": 2,
+      "bytes": 6535,
+      "url_kind": "character_direct",
+      "encoded_sha256": "606f2a537d9f41e0d707c9b876395dbec6a4504edc353f0407bb8e7d4fe6f133",
+      "pixel_sha256": "26a66a37046a150e23e81ff79c396745d1896882755899d81b8e50dba8c9b4ae"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_03.png",
+      "direction": "south-west",
+      "index": 3,
+      "bytes": 6904,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f15d446087b0b9915ccaeefb1915bb0337e8a05599db8fd69acf0b8e067d64e9",
+      "pixel_sha256": "0b6e3f352c06cf7f3abfd8d0efe8d3b6777156eab49cad40cf440aff5d412b1e"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_04.png",
+      "direction": "south-west",
+      "index": 4,
+      "bytes": 6927,
+      "url_kind": "character_direct",
+      "encoded_sha256": "bae93e95f61448190f01dafb62ba70d055362f4e26a04317588eac6991248fec",
+      "pixel_sha256": "a0b344159e4dd2faa844a9937421f0adbd94d66a13c96abf3da54074631fd174"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_west_05.png",
+      "direction": "south-west",
+      "index": 5,
+      "bytes": 7413,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6e13c3f8030c6f854ab404867f21bb21131ebcc06d23c5509f28953de77c9a75",
+      "pixel_sha256": "11f014ae22768ec16fe3e2afb2ac848c64df249039017efa5eeae63031a0de06"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_00.png",
+      "direction": "west",
+      "index": 0,
+      "bytes": 7734,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c9db73efb1e97092d4f164ac08104113086e5a58eb6da0d44744108c89c675e5",
+      "pixel_sha256": "a8b3223b42b00ccc11833f5b8cf41ae0833668fa96258969ca2cd07b2d4198aa"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_01.png",
+      "direction": "west",
+      "index": 1,
+      "bytes": 7908,
+      "url_kind": "character_direct",
+      "encoded_sha256": "600389bc5cae2da96043b959efbc04e9de0b345420e737b15ec014fe18366980",
+      "pixel_sha256": "fa37173161f1df24cb6e09b6703e7bc745900b8edf623f19aadec2c77e1a73e2"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_02.png",
+      "direction": "west",
+      "index": 2,
+      "bytes": 6929,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b9594e7116288c46e887ec7987997aeed1c0ac81d58c0f8b4914c95488391e3b",
+      "pixel_sha256": "92dee45cf964476981bdeda80dda2998cddea365cbf382cdd74f03af198f9a91"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_03.png",
+      "direction": "west",
+      "index": 3,
+      "bytes": 7631,
+      "url_kind": "character_direct",
+      "encoded_sha256": "58ca8b7dfcf3c1083a893bc8bdbe2156a79011f7f848d5456624ffd4c18d24a9",
+      "pixel_sha256": "372b81ede07562d9121c89ab8991c174c63a1921886a73de00237b925c623d2f"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_04.png",
+      "direction": "west",
+      "index": 4,
+      "bytes": 7513,
+      "url_kind": "character_direct",
+      "encoded_sha256": "facfd1c4f6e5212c5ff182d1f0a519ab52dcd1199d2caa29053d41e84cdd3b66",
+      "pixel_sha256": "2ce93622ce615434cf939b3bc5bab0d4a92da7668f2726dc519f19705c2a0d9d"
+    },
+    {
+      "file": "druid_ghost_stag_attack_west_05.png",
+      "direction": "west",
+      "index": 5,
+      "bytes": 7529,
+      "url_kind": "character_direct",
+      "encoded_sha256": "76d965283346ae4212fc50e17660ca4ff297a41d72733ec3163697363edec89f",
+      "pixel_sha256": "e8188e4a4fd17306b0f955a04190a41eaf3ef3cc8f6248d27a6c0cb87b6c476e"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_00.png",
+      "direction": "north-west",
+      "index": 0,
+      "bytes": 7865,
+      "url_kind": "character_direct",
+      "encoded_sha256": "26f04be146ae346fdba96ac1669476b809a514a7460b55cfade757ad67b82af4",
+      "pixel_sha256": "e09c7f601c91c112eaa3951fc28cd4a58d61507491abaa21e33eb01bb08f6728"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_01.png",
+      "direction": "north-west",
+      "index": 1,
+      "bytes": 7448,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1ed319f3218768df7fbd026fdab109ac65bd4e7638e469d502c539ee51eb23f4",
+      "pixel_sha256": "ae825a79bf2c573bc8b0f1e0d2adf1d5bd010b2495ab04fbcc62c0fb4400897d"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_02.png",
+      "direction": "north-west",
+      "index": 2,
+      "bytes": 7081,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7d006fdd8d217c3c0648e8e18d5dff1acdace86926b6be38aa75c8e35a0105d9",
+      "pixel_sha256": "5855c86a4b42305f215439131b95cd9020a306fcd684be47cd5a4f465d04809b"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_03.png",
+      "direction": "north-west",
+      "index": 3,
+      "bytes": 7041,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e188080d0ecd83eaabe3b076e8024b90518e3e899af2496c0660102c74829674",
+      "pixel_sha256": "dced2ae57e0c3ecb2bd6e7a61fa6147d593837e2921ac608396b56b3165fae3b"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_04.png",
+      "direction": "north-west",
+      "index": 4,
+      "bytes": 7696,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2f96fb1f50e1b79e21b1eab3cbed0a5185fdb393d68d1de82723eee6f2e09494",
+      "pixel_sha256": "33b88aff235f588f4836d33aafa571ef6087c194ad11888751b0b8db2abd12dc"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_west_05.png",
+      "direction": "north-west",
+      "index": 5,
+      "bytes": 7718,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2d6118951828a892f4a47f13a7c5f9510896d48ffd0a166cd10535aec5eb9dea",
+      "pixel_sha256": "7861ca8b37f63858120a9ee2d5df812bde7a2686600819e711e53d62493ea14e"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_00.png",
+      "direction": "north",
+      "index": 0,
+      "bytes": 7796,
+      "url_kind": "character_direct",
+      "encoded_sha256": "54362a61fe4e6d3fe4ba3fb1481c409d5412a354c2ad3a561771871bc0fd3507",
+      "pixel_sha256": "a4c67efaba327b15aa1b455598cbeb6156abaa2fa27adced369705afa21e60a9"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_01.png",
+      "direction": "north",
+      "index": 1,
+      "bytes": 7562,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3a81dab7780b4142be1a7359fbba6e17216bb829eb5405e335b5bb5c70295c69",
+      "pixel_sha256": "abc45b97b7d22ee5a6fc65fe494c974efb93ad6d12f7803b588d6d38c75fb6f2"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_02.png",
+      "direction": "north",
+      "index": 2,
+      "bytes": 6529,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fbc28996b02dc51341944ea799bf79e36ce3dc5491b8ff367d5e56ba401dfa89",
+      "pixel_sha256": "dba620339f2ddac1309a9f458ff3f9a72365a0a61d061e06cdebaaf052d1a6d4"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_03.png",
+      "direction": "north",
+      "index": 3,
+      "bytes": 7181,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fbe463f383b2d043d3c1dec93308bad46daa89876d3a57e9b974d1cc5853af5e",
+      "pixel_sha256": "5be8fbd55588f077daef8a512e86dce78f8904a13edee8edc653f034e089d45d"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_04.png",
+      "direction": "north",
+      "index": 4,
+      "bytes": 6891,
+      "url_kind": "character_direct",
+      "encoded_sha256": "025968ff24d497311a8d681c639b2113cd18afa441f48b592637aa7a652451f5",
+      "pixel_sha256": "4f0ce0ab19eeaa3e6a9eafbe00aa124892f2393e44821581734da4aadf83c73b"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_05.png",
+      "direction": "north",
+      "index": 5,
+      "bytes": 8134,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6c085d8244f6a62b5fbb7f33fb7f4210494c0b23c23572acd7e46f5c0b2017da",
+      "pixel_sha256": "6dc366c447ad5e598579e18747fd51a29a4622a5e1a367b135c7b1f6f0a7d297"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_00.png",
+      "direction": "north-east",
+      "index": 0,
+      "bytes": 7602,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e7983f7b6697eb492bf07800be3acf5958d0d0878144c5517d74fa46b847596d",
+      "pixel_sha256": "09316df79fdc1df826819daf7243f15fd6b98bca337baebec171c174273b433b"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_01.png",
+      "direction": "north-east",
+      "index": 1,
+      "bytes": 5495,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ddb03e64dfff03bee4d97a3eca426a70ad3a484867a689b1800693986577880f",
+      "pixel_sha256": "7c4fc9e217314c97d1ad04e50182d112ea928dee9c12fefa9dcb61e3472ffc1c"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_02.png",
+      "direction": "north-east",
+      "index": 2,
+      "bytes": 5499,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b46dd8dc39657ea6266b09954cf5bac5bb15a7b95e1d169cf07f43e5feac27dd",
+      "pixel_sha256": "ba65c3ae7c3b2baf54b52d969655ece4cf58284b7b1ba70f6b08520d4afa6d43"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_03.png",
+      "direction": "north-east",
+      "index": 3,
+      "bytes": 6709,
+      "url_kind": "character_direct",
+      "encoded_sha256": "9c71ae0bcf331efaaa4f49158a887dba5560ef23d0a594edd3b3946d69197252",
+      "pixel_sha256": "f04cb85bd5da97aa43a515413555e2da944afbd6bd665236f5287588b55f9fbf"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_04.png",
+      "direction": "north-east",
+      "index": 4,
+      "bytes": 7302,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e4ea9f3cb1ff0b65335139f32c41e5923a754baf03f73d57654a763422383e8e",
+      "pixel_sha256": "3e7e462c37fc2eb2a666230b090738f9cbc5565fbe0acfe5079852fe1ce55345"
+    },
+    {
+      "file": "druid_ghost_stag_attack_north_east_05.png",
+      "direction": "north-east",
+      "index": 5,
+      "bytes": 6087,
+      "url_kind": "character_direct",
+      "encoded_sha256": "dcb1bfb99cd41f5e218dc901642203955cd60fe7c8b4070beb065aaa6b7d0e49",
+      "pixel_sha256": "509ce33d3b8464e935ea0aae2ac6986f51026bc2fdb097483b0ff61093f2b4a3"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_00.png",
+      "direction": "east",
+      "index": 0,
+      "bytes": 7740,
+      "url_kind": "character_direct",
+      "encoded_sha256": "d46030d0771eef3ae4162d795086d29e884f22b1654f5537786a16089aa00b79",
+      "pixel_sha256": "5569aff7c36594552fff711223b8a93a16202da08038d06916d0d790768886a7"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_01.png",
+      "direction": "east",
+      "index": 1,
+      "bytes": 6724,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c02d838503b88906d3569cac809ec45b8a2e40259658bd91d69327c42988db57",
+      "pixel_sha256": "11ed8002483b5ed130c4d4cb5b3648348d416a609041786e353c6364c8d5847c"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_02.png",
+      "direction": "east",
+      "index": 2,
+      "bytes": 7626,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7520f413f2f9f11759787e545dab59a0e9c0a85ec756aefa18f75162a1b7999d",
+      "pixel_sha256": "4160994bc7f2fe4cbd831c1f54b3a03a7c2754a7d886a9b32b7a6f13d8ff9776"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_03.png",
+      "direction": "east",
+      "index": 3,
+      "bytes": 11500,
+      "url_kind": "character_direct",
+      "encoded_sha256": "71f2fc855182e01afe6526fdbd38bef7a1246e310966399199414606c0be5e87",
+      "pixel_sha256": "cee2ccf2e34450bdf907b222d1d315af4a83588ba780d95897c5ae30b6cd908d"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_04.png",
+      "direction": "east",
+      "index": 4,
+      "bytes": 8931,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8d17d98456512396f39b4c0759c33766a9eb2de3bb4819657d1a6d43a3f9ff17",
+      "pixel_sha256": "96e834af48bfb4dfbe05365ae51f435e287e86d075b933e65834ef8edac9cff6"
+    },
+    {
+      "file": "druid_ghost_stag_attack_east_05.png",
+      "direction": "east",
+      "index": 5,
+      "bytes": 8536,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e7770b591e682b55c182856605db7aa35aab86cd2a80de3a81ae8162b303f379",
+      "pixel_sha256": "0b6df22b21d2a64f7021c32f1054e1be4505844b24a7f20e9f2963ce713ff093"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_00.png",
+      "direction": "south-east",
+      "index": 0,
+      "bytes": 7558,
+      "url_kind": "character_direct",
+      "encoded_sha256": "153cb4043e865e63bdc416212d7ecd67b04ccd3b52bebe9e7c7b430ba92a0006",
+      "pixel_sha256": "d965821cd9d4b2e3d30d8b90b3bb211db9c73699299f14b36799fec1c4e470f9"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_01.png",
+      "direction": "south-east",
+      "index": 1,
+      "bytes": 7565,
+      "url_kind": "character_direct",
+      "encoded_sha256": "960e07edcb666a600401d9014cb7459a5f0d7c4e8982568b0834de56afebd844",
+      "pixel_sha256": "bb766033f634875bcc4578820418f141c12589c2205199826ec53de4e01ff805"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_02.png",
+      "direction": "south-east",
+      "index": 2,
+      "bytes": 7105,
+      "url_kind": "character_direct",
+      "encoded_sha256": "bd94ab225dd61e29f1cb81f2f07a3ead9d2a9fc2534f9d872d63643b793d894d",
+      "pixel_sha256": "d5a91e94db7789dbb1faa9374ee2cfdb5e8003916a1b145c53e95743232def0a"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_03.png",
+      "direction": "south-east",
+      "index": 3,
+      "bytes": 7937,
+      "url_kind": "character_direct",
+      "encoded_sha256": "cb7d9d5f65f348f0c54aab80c220a8849a9c8adc3da1bb29efeeecd18c500b75",
+      "pixel_sha256": "099b562973b5ba6be047f10c27683214613e23de66df1299860dc2036e3ce1af"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_04.png",
+      "direction": "south-east",
+      "index": 4,
+      "bytes": 8429,
+      "url_kind": "character_direct",
+      "encoded_sha256": "71593550c725478716bf7094f017766fee3a98f0e48afa1074746e3592f707e1",
+      "pixel_sha256": "44c7e9d22cb411d9f6070a81f2f5918e04f2d94082a3aa421a21c8a80bdd9a88"
+    },
+    {
+      "file": "druid_ghost_stag_attack_south_east_05.png",
+      "direction": "south-east",
+      "index": 5,
+      "bytes": 7600,
+      "url_kind": "character_direct",
+      "encoded_sha256": "466651e2d449f053c316de8481d5a521bfff352ddade1e8cc221793c3556dae7",
+      "pixel_sha256": "79a53d0f364ea4ff30b0e5d5fcd11bd7d3c4314bf0cf3cc46a583d827fa6aca1"
+    }
+  ],
+  "frame_count": 48,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

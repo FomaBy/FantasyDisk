@@ -13,7 +13,7 @@ func _initialize() -> void:
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
 	_test_druid_wolf_ally_animation()
-	_test_druid_ghost_horizontal_ally_animations()
+	_test_druid_ghost_directional_ally_animations()
 	_test_character_full_frame_alpha_matte()
 	_test_full_frame_animation_registry()
 	_test_enemy_animation()
@@ -973,7 +973,7 @@ func _test_druid_wolf_ally_animation() -> void:
 	ally.queue_free()
 
 
-func _test_druid_ghost_horizontal_ally_animations() -> void:
+func _test_druid_ghost_directional_ally_animations() -> void:
 	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
 	var expected_ids := [
 		"druid_ghost_wolf",
@@ -982,14 +982,17 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 		"druid_ghost_stag",
 		"druid_ghost_lion",
 	]
-	var allowed_animations := [
-		"attack",
-		"attack_left",
-		"attack_right",
-		"move",
-		"move_left",
-		"move_right",
-	]
+	var allowed_animations := ["attack", "attack_primary", "attack_left", "attack_right", "idle", "move", "move_left", "move_right", "walk"]
+	var expected_directional_animations := {}
+	for state in ["idle", "move", "attack"]:
+		for direction in ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]:
+			var animation_name := "%s_%s" % [state, direction]
+			allowed_animations.append(animation_name)
+			expected_directional_animations[animation_name] = {
+				"state": state,
+				"direction": direction,
+			}
+	allowed_animations.sort()
 	for ghost_id in expected_ids:
 		var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", ghost_id)
 		if frames == null:
@@ -1000,13 +1003,15 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 			animation_names.append(str(animation_name))
 		animation_names.sort()
 		if animation_names != allowed_animations:
-			_fail("Expected %s to expose only horizontal move/attack rows, got %s." % [ghost_id, str(animation_names)])
+			_fail("Expected %s to expose the complete 8-direction move/attack package, got %s." % [ghost_id, str(animation_names)])
 			return
 		for animation_name in allowed_animations:
-			if frames.get_frame_count(animation_name) != 6:
-				_fail("Expected %s %s to expose exactly 6 PixelLab frames." % [ghost_id, animation_name])
+			var row_state := "attack" if animation_name.begins_with("attack") else ("idle" if animation_name.begins_with("idle") else "move")
+			var expected_count := 1 if row_state == "idle" else 6
+			if frames.get_frame_count(animation_name) != expected_count:
+				_fail("Expected %s %s to expose exactly %d PixelLab frames." % [ghost_id, animation_name, expected_count])
 				return
-			var should_loop: bool = str(animation_name).begins_with("move")
+			var should_loop: bool = row_state in ["idle", "move"]
 			if frames.get_animation_loop(animation_name) != should_loop:
 				_fail("Expected %s %s loop=%s." % [ghost_id, animation_name, str(should_loop)])
 				return
@@ -1015,8 +1020,16 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 				if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
 					_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
 					return
-				var expected_direction := "right" if animation_name.ends_with("_right") else "left"
-				var expected_kind := "attack" if animation_name.begins_with("attack") else "move"
+				var expected_direction := "south"
+				if expected_directional_animations.has(animation_name):
+					expected_direction = str(expected_directional_animations[animation_name]["direction"])
+				elif animation_name.ends_with("_right"):
+					expected_direction = "east"
+				elif animation_name.ends_with("_left"):
+					expected_direction = "west"
+				var expected_kind := row_state if row_state != "idle" else "idle"
+				if animation_name == "walk":
+					expected_kind = "move"
 				var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
 				if not texture.resource_path.begins_with(expected_prefix):
 					_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
@@ -1025,14 +1038,13 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 		for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):
 			if file_name.ends_with(".png"):
 				runtime_files.append(file_name)
-		if runtime_files.size() != 24:
-			_fail("Expected %s runtime folder to contain exactly 24 west/east PNGs, got %d." % [ghost_id, runtime_files.size()])
+		if runtime_files.size() != 104:
+			_fail("Expected %s runtime folder to contain exactly 104 authored PNGs (8 idle + 48 move + 48 attack), got %d." % [ghost_id, runtime_files.size()])
 			return
 		for file_name in runtime_files:
-			for forbidden_direction in ["north", "south", "up", "down"]:
-				if str(file_name).contains(forbidden_direction):
-					_fail("Expected %s runtime folder to omit %s direction assets: %s." % [ghost_id, forbidden_direction, file_name])
-					return
+			if str(file_name).contains("_left_") or str(file_name).contains("_right_"):
+				_fail("Expected %s runtime folder to contain authored octant names only: %s." % [ghost_id, file_name])
+				return
 		if ghost_id == "druid_ghost_bear":
 			var smallest_alpha_area := 1 << 30
 			var largest_alpha_area := 0

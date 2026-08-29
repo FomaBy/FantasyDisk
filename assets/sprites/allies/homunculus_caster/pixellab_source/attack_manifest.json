@@ -1,0 +1,467 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-29T03:11:50Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "character": {
+    "pixel_lab_character_id": "141b0023-8e08-4814-8a98-c270fd22d1c0",
+    "animate_tool": "animate_character",
+    "animate_params": {
+      "character_id": "141b0023-8e08-4814-8a98-c270fd22d1c0",
+      "mode": "v3",
+      "action_description": "six-frame alchemical spell cast in place; raise both hands and release restrained emerald magic; preserve one coherent small humanoid homunculus identity and robe across all eight directions",
+      "animation_name": "attack",
+      "directions": [
+        "south",
+        "south-west",
+        "west",
+        "north-west",
+        "north",
+        "north-east",
+        "east",
+        "south-east"
+      ],
+      "frame_count": 6
+    }
+  },
+  "frames": [
+    {
+      "file": "homunculus_caster_attack_south_00.png",
+      "direction": "south",
+      "index": 0,
+      "bytes": 4238,
+      "url_kind": "character_direct",
+      "encoded_sha256": "debef21673f939d38f7e90df38279690394b025f29cc88698385a974c839acca",
+      "pixel_sha256": "2b2e3cf4933ee318a48fe29efef21e90a078a27dc941abd57317bcf0ebc1e9e9"
+    },
+    {
+      "file": "homunculus_caster_attack_south_01.png",
+      "direction": "south",
+      "index": 1,
+      "bytes": 4149,
+      "url_kind": "character_direct",
+      "encoded_sha256": "d226fac35a985c4f218e131d269134e328fd3619a28a2a29b564f924f0954b80",
+      "pixel_sha256": "73ababe442c4f7a00fb4fb93cfd4d323fe65291048faaff9a36e9c5e6b944154"
+    },
+    {
+      "file": "homunculus_caster_attack_south_02.png",
+      "direction": "south",
+      "index": 2,
+      "bytes": 3915,
+      "url_kind": "character_direct",
+      "encoded_sha256": "68f94729c08ab711c0a99e5d77a14b178640b8df84ffe49fb4dd39b61a40b0ec",
+      "pixel_sha256": "4262499ce832d75c92aabb068ca0932afcc6ad3fb66b9508db59e0f8a5296b02"
+    },
+    {
+      "file": "homunculus_caster_attack_south_03.png",
+      "direction": "south",
+      "index": 3,
+      "bytes": 3068,
+      "url_kind": "character_direct",
+      "encoded_sha256": "26e5d56683ac23b5882c3349777e22791490546118a76a72d0992382099ebe4d",
+      "pixel_sha256": "de5807b0403e4696b7fd20322989325c63706edf7924642e03e132ac7085614b"
+    },
+    {
+      "file": "homunculus_caster_attack_south_04.png",
+      "direction": "south",
+      "index": 4,
+      "bytes": 5255,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b0674a9c52ff6e344ba94da610e78d32556fc04c5097450ba6a97d10844467b7",
+      "pixel_sha256": "467765ee52936e8a9ad323d68caea26417611c8292447f8611e80f8659742dea"
+    },
+    {
+      "file": "homunculus_caster_attack_south_05.png",
+      "direction": "south",
+      "index": 5,
+      "bytes": 4549,
+      "url_kind": "character_direct",
+      "encoded_sha256": "dec36e417fdb350d1d30bb4a7e6fbb10babffa7560f93366741340ed5675d914",
+      "pixel_sha256": "d86622923d73603215ac1044ba72471c51c8c59fc3b7d22756d784b9c08cc090"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_00.png",
+      "direction": "south-west",
+      "index": 0,
+      "bytes": 4269,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fc98e48228f802f0d9ad9067aaa4b991dc541d768a148c6a745d486a43d5a01f",
+      "pixel_sha256": "a99ff516e44ec4b23f618ab7e6a35f456385607e0a7ea0d33f78c88cfc22906a"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_01.png",
+      "direction": "south-west",
+      "index": 1,
+      "bytes": 4119,
+      "url_kind": "character_direct",
+      "encoded_sha256": "108f2790d769691be1429cf726471b6bb1af549088f2044d6e8b5e80abfb07c6",
+      "pixel_sha256": "3fdc38b12ae519733668185f8fe4fd3ff074293b48a609089174e9665fe83a57"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_02.png",
+      "direction": "south-west",
+      "index": 2,
+      "bytes": 3977,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5e72ba3a1a5a7bc8c13e2210480e27bc7d5d3edfeadf74047adca843e97e04ab",
+      "pixel_sha256": "e660e6c51c63fdb0a78c920aff8358da185b37f50f752d40b7699da3b1a5e0df"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_03.png",
+      "direction": "south-west",
+      "index": 3,
+      "bytes": 4092,
+      "url_kind": "character_direct",
+      "encoded_sha256": "12fdf7dd8e24e6f0b8d520a8b699eec31e19511e17c1a4df37ee8baf83f2bfd7",
+      "pixel_sha256": "ec554ab6d2f3e890d4bc21af1ddb36595216b4ddc0e6cd6373451b514512aa0d"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_04.png",
+      "direction": "south-west",
+      "index": 4,
+      "bytes": 4430,
+      "url_kind": "character_direct",
+      "encoded_sha256": "62a576477fdc08fb0ca209e6176593ba6b0ddf8c0f8e86dc36abc543e628181e",
+      "pixel_sha256": "c607c09d0baf94205e7edadc57cb17d14956e8ad657ec946fd17d135cbbcb3bb"
+    },
+    {
+      "file": "homunculus_caster_attack_south_west_05.png",
+      "direction": "south-west",
+      "index": 5,
+      "bytes": 4209,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a8c0d7145d0520fe43f872910d0ca7a13e5f542707d8eeb3aec4646248c5f5d0",
+      "pixel_sha256": "9342fffe3c9a45390ba6f4f31d4a116f334888283d3514e5b954cdbd3f2fc54f"
+    },
+    {
+      "file": "homunculus_caster_attack_west_00.png",
+      "direction": "west",
+      "index": 0,
+      "bytes": 3142,
+      "url_kind": "character_direct",
+      "encoded_sha256": "73234f9449aac252b8eb8332383b7091868f6ab5e6a7704b0a8a02909641fc13",
+      "pixel_sha256": "92272a6c64bc3cf90e00bf22db5ebfc240bc68f780ecaf5952a4185a1ee385d7"
+    },
+    {
+      "file": "homunculus_caster_attack_west_01.png",
+      "direction": "west",
+      "index": 1,
+      "bytes": 3501,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0757880bae646cfb26ab2ec2bb3d2c3adce1d144bf0cafb1c7cfc3dd578dfd0e",
+      "pixel_sha256": "8a4dc0312394e2c559bb1bd84658153489f61787c866a885d8c111017f844412"
+    },
+    {
+      "file": "homunculus_caster_attack_west_02.png",
+      "direction": "west",
+      "index": 2,
+      "bytes": 3331,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ce3f19a51ca2fe1fcee5fbe044a2051e1005ba6b3cb6bed7646f169aa2b7b94d",
+      "pixel_sha256": "6d6a1b0bfb6411e852907e9b44127aa50a0ac600c606ff3902eec853648c9d89"
+    },
+    {
+      "file": "homunculus_caster_attack_west_03.png",
+      "direction": "west",
+      "index": 3,
+      "bytes": 3341,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8f640f9afd5eb965a84473310251bff7df5f7ce31f89df14f6bc9e1bba2a10c8",
+      "pixel_sha256": "16e621fbe1c310f2b63e219b5d3c586f326cfc93926b5c614107c7402d164b66"
+    },
+    {
+      "file": "homunculus_caster_attack_west_04.png",
+      "direction": "west",
+      "index": 4,
+      "bytes": 3664,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c48478b37bd59c21e135b87ad5eb70709a3d798f26727e4d0884e570a46fae82",
+      "pixel_sha256": "c882a9e2c70a68e3e4f9525fb242e25dbc6396363dc4e91ea8b7c37439f40cc4"
+    },
+    {
+      "file": "homunculus_caster_attack_west_05.png",
+      "direction": "west",
+      "index": 5,
+      "bytes": 3664,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3faf08bb1acc00ffaaecc7e4d43ee7242677b868730ebd8772ae374bd7f332f3",
+      "pixel_sha256": "06781fd72a2dec028031934a5f16f119d66ddd97699b0e8d64931cda77709990"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_00.png",
+      "direction": "north-west",
+      "index": 0,
+      "bytes": 3679,
+      "url_kind": "character_direct",
+      "encoded_sha256": "00fa4a16532d310c84f453b3ccb1801a0342561c9754dea59974e741ed7eabff",
+      "pixel_sha256": "126ef3b42db8d5d1b1ff80843aa0afa23794ad15fd39dc60bb73a0e225f4e2de"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_01.png",
+      "direction": "north-west",
+      "index": 1,
+      "bytes": 3755,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0c263ed7e84f9809e3f7ce725bd6265a54e9d3bd833dc7775d2fd4824067eeda",
+      "pixel_sha256": "aca9a1427212bcb076798588cd03e2aad70072c1a38e15b3c1c4eebef7066606"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_02.png",
+      "direction": "north-west",
+      "index": 2,
+      "bytes": 3633,
+      "url_kind": "character_direct",
+      "encoded_sha256": "082e661207686b6d4a9304ee5e784fa436db7bd80a2768b619c1af6c39da3c12",
+      "pixel_sha256": "53c75da36857ae2d924b663074e1c0a3da6ddd4a90201e452a0ffdc9fcb6e9d8"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_03.png",
+      "direction": "north-west",
+      "index": 3,
+      "bytes": 4914,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b36830c61a6bb15947163d5e16cbc2ce3ba879de9eec1d57102421ec791c5826",
+      "pixel_sha256": "ca208381d65bc635c93a6b6be5c14547d9443c4246ab9bdf1a17bae7f70a3920"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_04.png",
+      "direction": "north-west",
+      "index": 4,
+      "bytes": 3987,
+      "url_kind": "character_direct",
+      "encoded_sha256": "90cb43c5f9ba4778206d5264c88f5c46369ef8efa4bd7449d23b2db4f40ec193",
+      "pixel_sha256": "6150749d7776a4fa9e213a2e40853a4ec7fa56855c7297794bc708aee546ef48"
+    },
+    {
+      "file": "homunculus_caster_attack_north_west_05.png",
+      "direction": "north-west",
+      "index": 5,
+      "bytes": 3684,
+      "url_kind": "character_direct",
+      "encoded_sha256": "627dbfedbe9eb2aeceaecb8a858032801f8dcb8271c82becd830f2eb0b2f6a21",
+      "pixel_sha256": "1e2fa5ff61d881835d101479f7e8c14040bc2bdeed5d46f4c0c69534574d9496"
+    },
+    {
+      "file": "homunculus_caster_attack_north_00.png",
+      "direction": "north",
+      "index": 0,
+      "bytes": 3899,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2233eaae2a445c4423e5aa005291086d5c4baa01533d1c3f13aff7195f4b0386",
+      "pixel_sha256": "dd9b5065f66ef090eb4bb4d841ae08e1b31dc14a851d63bd4fbf65ede1f50ec8"
+    },
+    {
+      "file": "homunculus_caster_attack_north_01.png",
+      "direction": "north",
+      "index": 1,
+      "bytes": 4181,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4e1cc8f68b71b48d0277f03034249fd3e07549b6644a5279e847ec0730d2bb30",
+      "pixel_sha256": "591a95a4066b41bcccea439d3ca0761bb4723d92a07fca5781342422dafdda66"
+    },
+    {
+      "file": "homunculus_caster_attack_north_02.png",
+      "direction": "north",
+      "index": 2,
+      "bytes": 3691,
+      "url_kind": "character_direct",
+      "encoded_sha256": "97e1d9d9fff5b703589b46e4c2ee6ec0f23cbc8c0fcb0927e2cf45863c565927",
+      "pixel_sha256": "9001f97291e508c2e64d06c8219ead33fb7b75cdf69f53afcfa8b7f9f4a7cfcf"
+    },
+    {
+      "file": "homunculus_caster_attack_north_03.png",
+      "direction": "north",
+      "index": 3,
+      "bytes": 3883,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e7c856d5f2c5ce49ba911872c4f89c6a793b2722cd2d3b183c62a238a4999a85",
+      "pixel_sha256": "e0719186635843b314778e194901d674535099321c6a39f0c40187b1c317f8a7"
+    },
+    {
+      "file": "homunculus_caster_attack_north_04.png",
+      "direction": "north",
+      "index": 4,
+      "bytes": 3645,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8f61023ad755a05f8cd04357efa486ffea2fb581fc08a6758f1f59459875c195",
+      "pixel_sha256": "57b7ffeb6547359d32a54449c4547ae39c2cdd49203a0611b7305e6119c49efe"
+    },
+    {
+      "file": "homunculus_caster_attack_north_05.png",
+      "direction": "north",
+      "index": 5,
+      "bytes": 3729,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6b3ff000decaa77248ff3053622cebd13ebadf8d188df7de19fed1e6a67b398a",
+      "pixel_sha256": "fbfd4c715cf95c31a7fd2c88e9153416c176d55b9b7e15fb74efeb943c8f501e"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_00.png",
+      "direction": "north-east",
+      "index": 0,
+      "bytes": 4067,
+      "url_kind": "character_direct",
+      "encoded_sha256": "483d0afeab56f2534a3d10dd28cd05bb28c9728ca8649f574d10f1957c0b1cc0",
+      "pixel_sha256": "dcf28f6e3ed3e1ca0034baeb2307ad764a555928a286f1a7341bd375687e9c14"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_01.png",
+      "direction": "north-east",
+      "index": 1,
+      "bytes": 4158,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a612938a706470c7d225ad0fa8165b549e60cbe780fe5277e7b6d1b85661ebb0",
+      "pixel_sha256": "cc057fc3de1e6cdb8c3bf5f35527a0ef4a57109e3e16e9443fd5da9aeabdceb3"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_02.png",
+      "direction": "north-east",
+      "index": 2,
+      "bytes": 4062,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c5d2bd9e0663b4776a3bffc809c453cffd95560dcb6d5c87e988fc37e4892a55",
+      "pixel_sha256": "24b0c28d8420b3d6528efd735b58f6ef5a43efb5f2daf10e3a685e499417bb7c"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_03.png",
+      "direction": "north-east",
+      "index": 3,
+      "bytes": 4253,
+      "url_kind": "character_direct",
+      "encoded_sha256": "43e7e47e3437fa94905886c663de811c73e169194689674a2d377dd1b79e2bbe",
+      "pixel_sha256": "2ecbbaaa87f9df3d6d724b4c795682ee1fe3a6054c542fe25ef288b85ff85a43"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_04.png",
+      "direction": "north-east",
+      "index": 4,
+      "bytes": 4131,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3bb13d39759f9ebb483ad5d5c7076f5f2fc0289048158b7002332a7a6836b376",
+      "pixel_sha256": "7bb97ab8c29de680aa3b6cc7176258d819b45860bd0e4af1e2f3860c0e0a752c"
+    },
+    {
+      "file": "homunculus_caster_attack_north_east_05.png",
+      "direction": "north-east",
+      "index": 5,
+      "bytes": 3777,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e1c875f326ca65efd03e3e7aa010fc997f29ed03de1b1ebb3bed2491aabbd81b",
+      "pixel_sha256": "86747505527463ba65a941b91247273da4db026766d1a87277f3c94bd187aa5b"
+    },
+    {
+      "file": "homunculus_caster_attack_east_00.png",
+      "direction": "east",
+      "index": 0,
+      "bytes": 3065,
+      "url_kind": "character_direct",
+      "encoded_sha256": "942ed6afff35d0f11cb59754eb284f02428d4733170e0b5ae5dbb35ffa4046a9",
+      "pixel_sha256": "dbedc25fe8003dcafb0d5eb50da191cd652a6ea6abf1a52d1b83bebf2d5081bb"
+    },
+    {
+      "file": "homunculus_caster_attack_east_01.png",
+      "direction": "east",
+      "index": 1,
+      "bytes": 3228,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8893ca7e1c696569238ad6bcc7f1c7b2464eb25812a9e3bb77ae966fbbea527b",
+      "pixel_sha256": "2300f43504edd5948fc19e65933a543b092b485b8784f275fd021f6c63a80b40"
+    },
+    {
+      "file": "homunculus_caster_attack_east_02.png",
+      "direction": "east",
+      "index": 2,
+      "bytes": 2779,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8e45e5462383ea50150da34648d56841510621e3751ccbe9aec8b9d69066952e",
+      "pixel_sha256": "be9d1167be88f1d69377d72c9ac6af7a9e282e73af6c22c236fb51bb0039b543"
+    },
+    {
+      "file": "homunculus_caster_attack_east_03.png",
+      "direction": "east",
+      "index": 3,
+      "bytes": 3931,
+      "url_kind": "character_direct",
+      "encoded_sha256": "cc65a872efe9de40f03395273fcbdb0d13442ee914046df0e05f28fb2e4cf189",
+      "pixel_sha256": "6e46a1401b42d517282529639934a928a4c033ba7c26598cc6c185fc49d4d9b3"
+    },
+    {
+      "file": "homunculus_caster_attack_east_04.png",
+      "direction": "east",
+      "index": 4,
+      "bytes": 4663,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b1aa962eebc93acc1c69e047c401630c1aa3e60a7aa050bc0aed9b394706d9e4",
+      "pixel_sha256": "95d1bf854cf183d86da2e18de9883fcd6bd615a15eb6cdbf7a5422dd772f8598"
+    },
+    {
+      "file": "homunculus_caster_attack_east_05.png",
+      "direction": "east",
+      "index": 5,
+      "bytes": 4368,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4de28dbbcc30c8a53fd44cf063aa60bdedb4d5df8f6261d7bc364719b54f9f0b",
+      "pixel_sha256": "f5299a504ac88d4313efbc97baae99d2cdc126247e87343cdd884ce590ea55b4"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_00.png",
+      "direction": "south-east",
+      "index": 0,
+      "bytes": 3932,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f83418ce1087f0ad4ce08f66b013ae422375b85a725748c47ff46b643e86883b",
+      "pixel_sha256": "1a10b8dda08565c4582979e002323cb6865648502fc6a8db526c20d33f7ad8bc"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_01.png",
+      "direction": "south-east",
+      "index": 1,
+      "bytes": 4037,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fb7d649f9bff2bc787c7c7cb7fbb4b2fa7accfce3937f8d1977341e0b1cc5b4b",
+      "pixel_sha256": "eeda407766b1b2d91d207ef790dc78243d3d05e1f5d8202c8c932ea550c037f3"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_02.png",
+      "direction": "south-east",
+      "index": 2,
+      "bytes": 3900,
+      "url_kind": "character_direct",
+      "encoded_sha256": "66d26c86afeb69ea956343d2242ef0edbab1b05e399794995d6da46d3f6798fe",
+      "pixel_sha256": "f9b58e0f25bec125c99afb4400ad72b660c0cdb5ac0b98de75796f978b5b5b42"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_03.png",
+      "direction": "south-east",
+      "index": 3,
+      "bytes": 3933,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0ca764ad3b1f01ddbcd55fed0aa5bab1a6d401c29c07addb878859a4cb11883d",
+      "pixel_sha256": "4d1da599ab95dc128e87011fdf5ddf636cc8ac13229676658fd1bc268017c1ea"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_04.png",
+      "direction": "south-east",
+      "index": 4,
+      "bytes": 4508,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a937f7da37cd91f8ad0e913c29167c8ea3b06e150c378ebf57ac3721eaa68c97",
+      "pixel_sha256": "4d4422025d6d4d49628f7ad7e5d4d0b3970a3ddd9f4c7f7bf5ceaafb9bb63cec"
+    },
+    {
+      "file": "homunculus_caster_attack_south_east_05.png",
+      "direction": "south-east",
+      "index": 5,
+      "bytes": 4640,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0b0af9f57ec87d45cf10e423c569b2ab5b577f2b087884e4e4720a9f8cdaa7e5",
+      "pixel_sha256": "54af5d8e8fe3c12cf993a5caf5ffd7fe55ea92123566b8600f4774806d3147b9"
+    }
+  ],
+  "frame_count": 48,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
