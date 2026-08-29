@@ -282,6 +282,22 @@ class QualityWorkflowContractTests(unittest.TestCase):
             warmup,
         )
         self.assertIn(
+            'changed_imports_file="$RUNNER_TEMP/changed-import-sidecars"',
+            warmup,
+        )
+        self.assertIn(
+            ' > "$changed_imports_file"',
+            warmup,
+        )
+        self.assertIn(
+            'done < "$changed_imports_file"',
+            warmup,
+        )
+        self.assertNotIn(
+            "done < <(git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import')",
+            warmup,
+        )
+        self.assertIn(
             'git restore --worktree --source=HEAD -- "$path"',
             warmup,
         )
