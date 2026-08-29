@@ -64,7 +64,11 @@ def main() -> int:
         return 2
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-    cell_size = int(str(manifest.get("runtime_canvas", [512, 512])[0]))
+    runtime_canvas = manifest.get("runtime_canvas", [512, 512])
+    if isinstance(runtime_canvas, str):
+        cell_size = int(runtime_canvas.split("x", 1)[0])
+    else:
+        cell_size = int(runtime_canvas[0])
     target_height = importer.visible_height_target(manifest, 245)
     bottom_pad = importer.bottom_padding(manifest, 32)
     threshold = importer.alpha_threshold(manifest)
