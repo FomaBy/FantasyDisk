@@ -148,7 +148,7 @@
   "spriteframes": "assets/sprites/characters/berserk_spriteframes.tres",
   "pixellab_metadata": "assets/sprites/characters/pixellab/berserk/pixellab_metadata.json",
   "qa_report": "assets/sprites/characters/pixellab/berserk/alpha_bbox_report.json",
-  "preview_contact_sheet": "docs/design/previews/fan2593_berserk_8dir_contact.png",
+  "preview_contact_sheet": "docs/design/reference-assets-lfs/FAN-2593-berserk/fan2593_berserk_8dir_contact.png",
   "fan3324_regeneration": {
     "task": "FAN-3324",
     "generated_at": "2026-08-27T13:55:40+00:00",

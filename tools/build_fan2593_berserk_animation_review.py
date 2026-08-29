@@ -10,7 +10,7 @@ PNGs the game plays (assets/sprites/characters/full_frame/berserk_pixellab):
 Deterministic and read-only; nothing is auto-fixed.
 
 Usage: python3 tools/build_fan2593_berserk_animation_review.py
-Output: docs/design/previews/
+Output: docs/design/reference-assets-lfs/FAN-2593-berserk/
 """
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "assets/sprites/characters/full_frame/berserk_pixellab"
-OUT_DIR = ROOT / "docs/design/previews"
+OUT_DIR = ROOT / "docs/design/reference-assets-lfs/FAN-2593-berserk"
 
 # Clockwise runtime order (manifest "directions"); rows read top to bottom.
 DIRECTIONS = ["south", "south-east", "east", "north-east",

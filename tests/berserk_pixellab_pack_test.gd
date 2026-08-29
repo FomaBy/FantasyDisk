@@ -6,6 +6,7 @@ extends SceneTree
 # about the pack lives here.
 
 const PACK_PATH := "res://assets/sprites/characters/berserk_spriteframes.tres"
+const PREVIEW_CONTACT_PATH := "res://docs/design/reference-assets-lfs/FAN-2593-berserk/fan2593_berserk_8dir_contact.png"
 const DIRECTIONS := [
 	"south", "south_east", "east", "north_east",
 	"north", "north_west", "west", "south_west",
@@ -17,6 +18,10 @@ const PIVOT_TOLERANCE := 1.0
 
 
 func _initialize() -> void:
+	if not FileAccess.file_exists(PREVIEW_CONTACT_PATH):
+		_fail("Expected Berserk review contact sheet at %s." % PREVIEW_CONTACT_PATH)
+		return
+
 	var frames := load(PACK_PATH) as SpriteFrames
 	if frames == null:
 		_fail("Expected Berserk PixelLab SpriteFrames to load.")

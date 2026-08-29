@@ -111,7 +111,7 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   aliases) — a wrap-step-length note, not an identity defect; zero stray alpha
   and zero pivot drift. Evidence:
   `tools/build_fan2593_berserk_animation_review.py`, sheets under
-  `docs/design/previews/fan2593_berserk_*` (regenerated per revision; they always
+  `docs/design/reference-assets-lfs/FAN-2593-berserk/fan2593_berserk_*` (regenerated per revision; they always
   describe the pack at the commit that contains them), and
   `tests/berserk_pixellab_pack_test.gd`, which locks the machine-checkable half
   of the contract: 8 explicit directions, 1-frame idle / 6-frame move rows with
