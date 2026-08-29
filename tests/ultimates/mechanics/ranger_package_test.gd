@@ -9,9 +9,9 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "ranger"
 const WEAPONS := ["moon_crossbow", "storm_longbow", "hunter_trap"]
 const EXPECTED := {
-	"moon_crossbow": {"wave_count": 5, "split_count": 4, "split_ratio": 0.1},
-	"storm_longbow": {"beat_count": 6, "crowd_cap": 8, "beat_falloff": 0.46},
-	"hunter_trap": {"ring_count": 3, "crowd_cap": 10, "net_ratio": 0.11},
+	"moon_crossbow": {"wave_count": 5, "split_ratio": 0.1},
+	"storm_longbow": {"beat_count": 6, "beat_falloff": 0.46, "beat_floor": 0.12},
+	"hunter_trap": {"ring_count": 3, "net_ratio": 0.11},
 }
 
 var _errors: Array[String] = []
@@ -58,6 +58,9 @@ func _test_pair(registry: Registry, weapon_id: String) -> void:
 	for key in (EXPECTED[weapon_id] as Dictionary):
 		_check(params.get(key) == (EXPECTED[weapon_id] as Dictionary)[key],
 			"%s must freeze %s=%s" % [weapon_id, key, (EXPECTED[weapon_id] as Dictionary)[key]])
+	for forbidden in ["split_count", "crowd_cap"]:
+		_check(not params.has(forbidden),
+			"%s must not retain the count-shaped %s rail" % [weapon_id, forbidden])
 
 
 func _test_fail_closed_mutation(registry: Registry) -> void:

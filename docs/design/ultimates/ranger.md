@@ -9,9 +9,9 @@ and animation assets remain untouched.
 
 | Weapon | Ultimate | Mechanical role |
 | --- | --- | --- |
-| `moon_crossbow` | Лунная Охота | The aim samples the field and the heaviest silhouette inside it takes the moon mark. Five bolt waves land on the mark, each one splitting a fixed share into four distinct neighbours. A wave that kills the mark hands it to the closest surviving neighbour, so the hunt keeps its remaining waves instead of ending early. |
-| `storm_longbow` | Око Бури | One aimed corridor is walked tail to tip by six lightning beats. The body nearest the advancing front takes the full strike, everything else on the rail keeps only `beat_falloff` of what the body ahead of it took, and every struck body is pushed off the axis and slowed. |
-| `hunter_trap` | Великий Капкан | Three spectral rings close inward on the aimed point, then one chain net spans the whole trap. Each snap bites the body nearest the centre at full strength and shares the declared `net_ratio` with everything else it holds; normals stay locked in the jaws, resistant tiers keep only the shortened pull and slow. |
+| `moon_crossbow` | Лунная Охота | The heaviest silhouette in the aim sample takes the moon mark and the full bolt. Each of five waves also gives every other live enemy a fixed split floor; a killed mark transfers to the closest survivor. |
+| `storm_longbow` | Око Бури | Six lightning beats keep their aimed moving front as the full-hit priority, while every live enemy receives the `beat_floor`; every struck body is pushed off the axis and slowed. |
+| `hunter_trap` | Великий Капкан | Three spectral rings and the closing chain net catch every live enemy. Each snap keeps the nearest body as the full jaw bite and gives all other bodies the declared `net_ratio`; normals stay locked, resistant tiers keep shortened pull and slow. |
 
 The runtime scenes embed the accepted `RangerMoonCrossbowMoonHunt`,
 `RangerStormLongbowStormEye`, and `RangerHunterTrapGrandTrap` presentations from
@@ -42,29 +42,40 @@ shared live presentation forwarding remains owned by FAN-1541.
 
 ## Caps and balance
 
-| Weapon | Lifetime | Crowd | Additional hard caps |
+| Weapon | Lifetime | Map coverage | Per-target shaping |
 | --- | ---: | ---: | --- |
-| Лунная Охота | 4.80 s | 1 mark + 4 splits | 5 bolt waves, 10% split share, 200 px split radius |
-| Око Бури | 4.45 s | 8 corridor bodies | 6 beats, 0.46 rank falloff, 120 px half width |
-| Великий Капкан | 5.35 s | 10 caught bodies | 3 rings, 1 closure, 11% chain share |
+| Лунная Охота | 4.80 s | every live enemy on every wave | 5 waves, 10% split floor; mark takes full bolt |
+| Око Бури | 4.45 s | every live enemy on every beat | 6 beats, 0.46 focus falloff, 12% floor |
+| Великий Капкан | 5.35 s | every live enemy on every ring/closure | 3 rings, 1 closure, 11% chain floor |
 
 Ranger prices its ultimates as a burst archetype: the class ultimate declares no
 duration, so the trio's defensive contribution is measured against its own
 2.0 s class reference instead of the shared control-save bar.
 
 The focused balance proof derives base Ranger damage and the selected weapon's
-`ultimate_multiplier`, measures every declared coefficient against its 20–35
-second frozen budget row, checks the trio's solo/crowd/control corridor, and
-contains a runaway-corridor negative control.
+`ultimate_multiplier`, keeps solo output inside each frozen budget row, checks
+the all-map per-enemy floor and control role, and contains a runaway-damage
+negative control. Charge cadence and the 9% whole-activation boss cap remain
+unchanged.
 
-| Weapon | Solo / budget midpoint | Crowd ceiling / AoE midpoint | Crowd | Defense role |
-| --- | ---: | ---: | ---: | --- |
-| Лунная Охота | 1.147 | 0.955 | 5 | none — pure mark pressure |
-| Око Бури | 0.953 | 1.052 | 8 | 2.6 s push and slow |
-| Великий Капкан | 0.880 | 1.045 | 10 | 3.4 s jaw lock |
+| Weapon | Solo / budget midpoint | Guaranteed floor | Defense role |
+| --- | ---: | ---: | --- |
+| Лунная Охота | 1.052 | 10% bolt split | none — pure mark pressure |
+| Око Бури | 0.874 | 12% beat floor | 2.6 s push and slow |
+| Великий Капкан | 0.806 | 11% chain floor | 3.4 s jaw lock |
 
-The class-trio composite is `solo 0.993 / AoE 1.017 / crowd 1.000 /
-defense 1.000 / total 1.003`, inside the `0.90…1.10` corridor.
+The class-trio composite remains inside the `0.90…1.10` solo/control corridor;
+map coverage is now a binary runtime assertion rather than a target-count score.
+
+## Downstream presentation handoff
+
+All three visuals must show arena-wide reach without hiding the Ranger identity:
+Moon Hunt keeps the archer/mark silhouette central while distant targets receive
+moon-split impacts; Storm Eye keeps the advancing arrow corridor central while
+the full arena flashes at its floor; Grand Trap keeps the aimed jaw as the focal
+impact while spectral chains visibly span the arena. The mechanic phases and
+Cast IDs are unchanged; presentation work must not alter charge economy or the
+frozen 9% boss cap.
 
 ## Verification
 

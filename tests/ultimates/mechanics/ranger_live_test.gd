@@ -110,7 +110,8 @@ func _initialize() -> void:
 
 
 ## The prey is the heaviest silhouette inside the aimed circle, not the nearest
-## body; the four split bolts must reach four distinct neighbours and no fifth.
+## body; every live body receives the moon split floor, while the marked prey
+## remains the full-damage priority target.
 func _test_moon_hunt() -> void:
 	var host := _host()
 	var prey := _target(host, Vector2(AIM_RANGE, 0.0))
@@ -126,14 +127,14 @@ func _test_moon_hunt() -> void:
 	_check(effect != null and effect.get("marked_target_for_tests") == prey,
 		"the moon mark must land on the aimed highest-HP prey, not on the nearest body")
 	_advance(activation, 0.71)
-	_check(int(effect.get("wave_count_for_tests")) == 1 and int(effect.get("split_count_for_tests")) == 4,
-		"the first wave must split into exactly four neighbours")
+	_check(int(effect.get("wave_count_for_tests")) == 1 and int(effect.get("split_count_for_tests")) == 6,
+		"the first wave must give every other live body its moon split floor")
 	var struck := 0
 	for neighbour in neighbours:
 		if neighbour.received.size() > 0:
 			struck += 1
-	_check(struck == 4, "the split must reach four distinct neighbours, got %d" % struck)
-	_check(decoy.received.is_empty(), "the split must stay inside its declared radius")
+	_check(struck == 5, "the split must reach every neighbour, got %d" % struck)
+	_check(not decoy.received.is_empty(), "the split must reach the off-mark decoy across the map")
 	_advance(activation, 3.25)
 	_check(int(effect.get("wave_count_for_tests")) == 5,
 		"the hunt must resolve its five declared bolt waves")
@@ -251,14 +252,14 @@ func _test_storm_corridor() -> void:
 	_check(controller.activate(CLASS_ID, "storm_longbow"), "Storm Eye must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_check(effect != null and int(effect.get("rail_size_for_tests")) == 4,
-		"only the four bodies inside the corridor may enter the rail")
+	_check(effect != null and int(effect.get("rail_size_for_tests")) == 5,
+		"the storm rail must include every live body, including off-corridor targets")
 	_advance(activation, 0.56)
 	_check(int(effect.get("beat_count_for_tests")) == 1, "the first beat must resolve after the windup")
 	_check(near.total_received() > middle.total_received()
 		and middle.total_received() > epic.total_received(),
 		"the beat must decay away from its own front")
-	_check(outside.received.is_empty(), "the corridor must stay inside its declared half width")
+	_check(not outside.received.is_empty(), "the storm must apply its per-enemy floor outside the aimed corridor")
 	_check(near.knockback.length() > 0.0 and absf(near.knockback.x) < 0.001,
 		"the storm must push its targets off the axis, never along it")
 	_check(near.knockback.y > 0.0 and middle.knockback.y < 0.0,
@@ -298,6 +299,7 @@ func _test_grand_trap() -> void:
 	var epic := _target(host, Vector2(620.0, 0.0))
 	epic.add_to_group("elite_enemies")
 	var foreign := _target(host, Vector2(600.0, 0.0))
+	var distant := _target(host, Vector2(1600.0, 400.0))
 	StatusEffects.apply_status(foreign, "foreign_status", {"duration": 9.0})
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "hunter_trap"), "Grand Trap must activate")
@@ -309,6 +311,8 @@ func _test_grand_trap() -> void:
 		"the first ring must bite the body nearest the trap centre")
 	_check(is_equal_approx(normal.total_received(), BASE_DAMAGE * 67.5 * 0.11),
 		"everything the jaws did not bite must keep only the declared chain share")
+	_check(is_equal_approx(distant.total_received(), BASE_DAMAGE * 67.5 * 0.11),
+		"the trap chain must give an off-map enemy its guaranteed floor")
 	_check(normal.knockback.length() > 0.0
 		and (normal.global_position + normal.knockback).x < normal.global_position.x,
 		"the trap must pull what it catches toward its centre")

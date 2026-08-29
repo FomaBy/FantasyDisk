@@ -28,9 +28,9 @@ static func parameter_contract() -> Dictionary:
 		"beat_count": {"type": "integer", "minimum": 1},
 		"max_range": {"type": "number", "minimum": 1.0},
 		"half_width": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"beat_damage": {"type": "number", "minimum": 0.0},
 		"beat_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"beat_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"push_force": {"type": "number", "minimum": 0.0},
 		"slow_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -44,14 +44,6 @@ static func execute(activation) -> float:
 	if not Library.execute_primitive("aim_context", activation, {
 		"max_range": length,
 		"target_mode": "host_aim",
-	}):
-		return 0.0
-	if not Library.execute_primitive("line_pierce_geometry", activation, {
-		"start": "source",
-		"direction": "aim",
-		"length": length,
-		"half_width": activation.param_float("half_width", 120.0),
-		"limit": activation.param_int("crowd_cap", 8),
 	}):
 		return 0.0
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -102,8 +94,7 @@ func configure(activation) -> void:
 	if direction is Vector2 and (direction as Vector2).length_squared() > 0.001:
 		_axis = (direction as Vector2).normalized()
 	_perpendicular = Vector2(-_axis.y, _axis.x)
-	var rail = activation.primitive_value("targets", [])
-	_rail = (rail as Array).duplicate() if rail is Array else []
+	_rail = activation.select_targets(_start, INF, 0, "nearest")
 	rail_size_for_tests = _rail.size()
 
 
@@ -125,7 +116,7 @@ func strike(index: int) -> void:
 		var target := ranked[rank] as Node2D
 		_deal(
 			target,
-			strike_damage * pow(falloff, float(rank)),
+			strike_damage * maxf(pow(falloff, float(rank)), _activation.param_float("beat_floor", 0.12)),
 			"storm_eye:beat:%d" % index,
 			rank > 0,
 			{"ultimate_mechanic": "storm_beat", "beat": index, "rank": rank}

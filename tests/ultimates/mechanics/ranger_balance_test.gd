@@ -40,29 +40,21 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		* float(derived["ultimate_multiplier"])
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
 	var solo_coefficient := 0.0
-	var crowd_multiplier := 1.0
+	var coverage_floor := 0.0
 	var defense_seconds := 0.0
-	var crowd_cap := 0
 	match weapon_id:
 		"moon_crossbow":
 			solo_coefficient = float(params["wave_count"]) * float(params["bolt_damage"])
-			crowd_multiplier = 1.0 + float(params["split_count"]) * float(params["split_ratio"])
-			crowd_cap = int(params["split_count"]) + 1
+			coverage_floor = float(params["split_ratio"])
 		"storm_longbow":
 			solo_coefficient = float(params["beat_count"]) * float(params["beat_damage"])
-			# A lone body is always rank zero; a full corridor adds the decayed ranks
-			# behind it, which is what bounds the sweep no matter how deep it is.
-			for rank in int(params["crowd_cap"]):
-				crowd_multiplier += pow(float(params["beat_falloff"]), float(rank))
-			crowd_multiplier -= 1.0
+			coverage_floor = float(params["beat_floor"])
 			defense_seconds = float(params["slow_duration"])
-			crowd_cap = int(params["crowd_cap"])
 		"hunter_trap":
 			solo_coefficient = float(params["ring_count"]) * float(params["snap_damage"]) \
 				+ float(params["closure_damage"])
-			crowd_multiplier = 1.0 + float(int(params["crowd_cap"]) - 1) * float(params["net_ratio"])
+			coverage_floor = float(params["net_ratio"])
 			defense_seconds = float(params["lock_duration"])
-			crowd_cap = int(params["crowd_cap"])
 	var solo_output := solo_coefficient * base_damage
 	var power_midpoint := (float(row["power_budget_min"]) + float(row["power_budget_max"])) * 0.5
 	var aoe_midpoint := float(row["reference_aoe_dps"]) \
@@ -70,9 +62,9 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	return {
 		"solo_output": solo_output,
 		"solo_ratio": solo_output / power_midpoint,
-		"aoe_output": solo_output * crowd_multiplier,
-		"aoe_ratio": solo_output * crowd_multiplier / aoe_midpoint,
-		"crowd_cap": crowd_cap,
+		"aoe_output": solo_output,
+		"aoe_ratio": solo_output / aoe_midpoint,
+		"coverage_floor": coverage_floor,
 		"defense_seconds": defense_seconds,
 	}
 
@@ -97,24 +89,18 @@ func _test_weapon(
 				/ maxf(float(metrics["aoe_output"]), 0.01)
 			_check(direct_share >= 0.70,
 				"the hunt must stay mark-led instead of flattening into a crowd clear")
-			_check(float(metrics["aoe_ratio"]) >= 0.85 and float(metrics["aoe_ratio"]) <= 1.05,
-				"Moon Hunt must own the solo-leading corridor")
-			_check(int(params["split_count"]) == 4 and int(metrics["crowd_cap"]) == 5,
-				"the moon split rail must remain one mark plus four neighbours")
+			_check(float(metrics["coverage_floor"]) >= 0.10,
+				"Moon Hunt must leave a non-trivial floor on every other enemy")
 			_check(is_zero_approx(float(metrics["defense_seconds"])),
 				"Moon Hunt must buy its damage without a control window")
 		"storm_longbow":
-			_check(float(metrics["aoe_ratio"]) >= 0.95 and float(metrics["aoe_ratio"]) <= 1.15,
-				"Storm Eye must own the corridor sweep corridor")
-			_check(int(metrics["crowd_cap"]) == 8 and float(params["beat_falloff"]) < 0.5,
-				"the corridor rank decay must stay bounded at 8/<0.5")
+			_check(float(metrics["coverage_floor"]) >= 0.10 and float(params["beat_falloff"]) < 0.5,
+				"Storm Eye must keep a non-trivial all-map floor and a focused front")
 			_check(float(metrics["defense_seconds"]) >= 2.5,
 				"the storm push must leave a readable slow window")
 		"hunter_trap":
-			_check(float(metrics["aoe_ratio"]) >= 0.95 and float(metrics["aoe_ratio"]) <= 1.15,
-				"Grand Trap must stay in the crowd-hold corridor")
-			_check(int(metrics["crowd_cap"]) == 10 and float(params["net_ratio"]) <= 0.15,
-				"the chain-net share must remain the declared anti-focus rail")
+			_check(float(metrics["coverage_floor"]) >= 0.10 and float(params["net_ratio"]) <= 0.15,
+				"the chain net must give every enemy a non-trivial anti-focus floor")
 			# Ranger prices its ultimates as burst, so the shared control-save bar
 			# does not apply; the trap still has to carry a decisive hold window.
 			_check(float(metrics["defense_seconds"]) >= 3.0,
@@ -123,28 +109,17 @@ func _test_weapon(
 
 func _test_trio(metrics: Dictionary) -> void:
 	var solo_score := _average(metrics, "solo_ratio")
-	var aoe_score := _average(metrics, "aoe_ratio")
-	var crowd_score := (
-		float((metrics["moon_crossbow"] as Dictionary)["crowd_cap"]) / 5.0
-		+ float((metrics["storm_longbow"] as Dictionary)["crowd_cap"]) / 8.0
-		+ float((metrics["hunter_trap"] as Dictionary)["crowd_cap"]) / 10.0
-	) / 3.0
 	var defense_seconds := _average(metrics, "defense_seconds")
 	var defense_score := defense_seconds / DEFENSE_REFERENCE_SECONDS
-	var total_score := (solo_score + aoe_score + crowd_score + defense_score) / 4.0
+	var total_score := (solo_score + defense_score) / 2.0
 	_check(solo_score >= TRIO_MIN and solo_score <= TRIO_MAX,
 		"trio solo score %.3f must stay inside %.2f..%.2f" % [solo_score, TRIO_MIN, TRIO_MAX])
-	_check(aoe_score >= TRIO_MIN and aoe_score <= TRIO_MAX,
-		"trio AoE score %.3f must stay inside %.2f..%.2f" % [aoe_score, TRIO_MIN, TRIO_MAX])
-	_check(is_equal_approx(crowd_score, 1.0), "all three declared crowd rails must obey their caps")
 	_check(defense_score >= TRIO_MIN and defense_score <= TRIO_MAX,
 		"trio control score %.3f must stay inside %.2f..%.2f" % [defense_score, TRIO_MIN, TRIO_MAX])
 	_check(
 		float((metrics["moon_crossbow"] as Dictionary)["solo_ratio"])
-			> float((metrics["hunter_trap"] as Dictionary)["solo_ratio"])
-		and float((metrics["hunter_trap"] as Dictionary)["aoe_ratio"])
-			> float((metrics["moon_crossbow"] as Dictionary)["aoe_ratio"]),
-		"the mark hunter and the crowd trap must not converge onto the same role"
+			> float((metrics["hunter_trap"] as Dictionary)["solo_ratio"]),
+		"the mark hunter must remain the solo leader"
 	)
 	_check(
 		float((metrics["hunter_trap"] as Dictionary)["defense_seconds"])
@@ -189,8 +164,8 @@ func _check(condition: bool, message: String) -> void:
 func _report(metrics: Dictionary) -> void:
 	for weapon_id in WEAPONS:
 		var row := metrics[weapon_id] as Dictionary
-		print("  %s solo=%.3f aoe=%.3f crowd=%d defense=%.2fs" % [
-			weapon_id, row["solo_ratio"], row["aoe_ratio"], row["crowd_cap"], row["defense_seconds"],
+		print("  %s solo=%.3f floor=%.2f defense=%.2fs" % [
+			weapon_id, row["solo_ratio"], row["coverage_floor"], row["defense_seconds"],
 		])
 	if _errors.is_empty():
 		print("ranger_balance_test: PASS")

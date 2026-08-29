@@ -18,7 +18,6 @@
       "max_range": 520.0,
       "outer_radius": 320.0,
       "ring_shrink": 0.72,
-      "crowd_cap": 10,
       "snap_damage": 67.5,
       "net_ratio": 0.11,
       "closure_damage": 33.75,

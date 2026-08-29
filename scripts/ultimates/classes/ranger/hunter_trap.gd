@@ -26,7 +26,6 @@ static func parameter_contract() -> Dictionary:
 		"max_range": {"type": "number", "minimum": 1.0},
 		"outer_radius": {"type": "number", "minimum": 1.0},
 		"ring_shrink": {"type": "number", "minimum": 0.01, "maximum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"snap_damage": {"type": "number", "minimum": 0.0},
 		"net_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"closure_damage": {"type": "number", "minimum": 0.0},
@@ -137,7 +136,7 @@ func close_net() -> void:
 
 func _caught(radius: float) -> Array:
 	return _activation.select_targets(
-		global_position, radius, _activation.param_int("crowd_cap", 10), "nearest"
+		global_position, INF, 0, "nearest"
 	)
 
 

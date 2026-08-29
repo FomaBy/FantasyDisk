@@ -16,9 +16,9 @@
       "beat_count": 6,
       "max_range": 780.0,
       "half_width": 120.0,
-      "crowd_cap": 8,
       "beat_damage": 14.0,
       "beat_falloff": 0.46,
+      "beat_floor": 0.12,
       "push_force": 260.0,
       "slow_duration": 2.6,
       "slow_multiplier": 0.55

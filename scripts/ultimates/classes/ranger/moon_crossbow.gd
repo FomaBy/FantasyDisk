@@ -25,7 +25,6 @@ static func parameter_contract() -> Dictionary:
 		"max_range": {"type": "number", "minimum": 1.0},
 		"prey_radius": {"type": "number", "minimum": 1.0},
 		"split_radius": {"type": "number", "minimum": 1.0},
-		"split_count": {"type": "integer", "minimum": 1},
 		"split_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"bolt_damage": {"type": "number", "minimum": 0.0},
 	}
@@ -86,8 +85,8 @@ func configure(activation, prey) -> void:
 	})
 
 
-## One wave: the marked prey takes the bolt, and the split bolts spend a fixed
-## share of it on up to `split_count` distinct neighbours. A wave that kills the
+## One wave: the marked prey takes the bolt, and every other live enemy takes a
+## fixed split share. A wave that kills the
 ## prey hands the mark to the closest surviving neighbour, so the next wave has
 ## somewhere to land instead of dropping the rest of the hunt.
 func fire(wave: int) -> void:
@@ -115,23 +114,20 @@ func fire(wave: int) -> void:
 		_transfer_mark(prey, neighbours, wave)
 
 
-## Neighbours are the split rail, so the prey itself never counts as one of the
-## four and the same silhouette cannot be listed twice.
+## Every live enemy is in the split field; the prey itself remains the sole
+## direct-bolt target, so no count-shaped rail can hide off-map enemies.
 func _neighbours(prey: Node2D) -> Array:
-	var wanted: int = _activation.param_int("split_count", 4)
 	var neighbours: Array = []
 	for raw_target in _activation.select_targets(
-		prey.global_position,
-		_activation.param_float("split_radius", 200.0),
-		wanted + 1,
+		_activation.origin(),
+		INF,
+		0,
 		"nearest"
 	):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target) or target == prey:
 			continue
 		neighbours.append(target)
-		if neighbours.size() >= wanted:
-			break
 	return neighbours
 
 
