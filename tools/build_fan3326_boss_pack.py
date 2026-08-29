@@ -43,6 +43,7 @@ DIRECTIONS = [
 SUFFIXES = [direction.replace("-", "_") for direction in DIRECTIONS]
 TOOL_VERSION = "1.0.0"
 API_TIMEOUT = 180
+MAX_MISSING_GROUPS = 37
 
 OBJECT_IDS = {
     "rift_warden": "ab1c7701-3ee7-4c7c-8842-22a7def87f08",
@@ -211,7 +212,11 @@ def parse_report(raw: str) -> dict[str, Any]:
             name, blob = direction.groups()
             if name not in DIRECTIONS:
                 continue
-            current["directions"][name] = re.findall(r"https?://[^,\s]+", blob)
+            urls = re.findall(r"https?://[^,\s]+", blob)
+            range_match = re.search(r"\(i=0\.\.(\d+)\)", blob)
+            if range_match and len(urls) == 1 and "{i}" in urls[0]:
+                urls = [urls[0].replace("{i}", str(index)) for index in range(int(range_match.group(1)) + 1)]
+            current["directions"][name] = urls
     return result
 
 
@@ -250,8 +255,27 @@ def expand_urls(urls: list[str], frame_count: int) -> list[str]:
     return urls[:frame_count]
 
 
+def effective_frame_count(group: dict[str, Any] | None, spec: dict[str, Any]) -> int:
+    """Preserve an existing group's frame count; use the spec for new groups."""
+    frame_count = group.get("frame_count") if group else None
+    return int(frame_count) if frame_count else int(spec["frames"])
+
+
+def missing_directions(group: dict[str, Any] | None, spec: dict[str, Any]) -> tuple[int, list[str]]:
+    frame_count = effective_frame_count(group, spec)
+    if not group:
+        return frame_count, list(DIRECTIONS)
+    directions = group.get("directions", {})
+    missing = [
+        direction for direction in DIRECTIONS
+        if len(expand_urls(directions.get(direction, []), frame_count)) != frame_count
+    ]
+    return frame_count, missing
+
+
 def queue_missing(bearer: str, log=print) -> None:
     call_id = 100
+    queued_groups = 0
     for boss_id, object_id in OBJECT_IDS.items():
         report = get_report("get_object", object_id, bearer, call_id)
         call_id += 1
@@ -263,21 +287,23 @@ def queue_missing(bearer: str, log=print) -> None:
                 continue
             server_state = spec["server_state"]
             group = report["animations"].get(server_state)
-            have = set(group["directions"].keys()) if group else set()
-            missing = [direction for direction in DIRECTIONS if direction not in have]
-            if group and group.get("frame_count") not in (None, spec["frames"]):
-                raise BuildError("%s/%s has %s frames, expected %s" % (boss_id, server_state, group["frame_count"], spec["frames"]))
+            frame_count, missing = missing_directions(group, spec)
             if not missing:
                 continue
+            queued_groups += 1
+            if queued_groups > MAX_MISSING_GROUPS:
+                raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, MAX_MISSING_GROUPS))
             params: dict[str, Any] = {
                 "object_id": object_id,
                 "mode": "v3",
                 "directions": missing,
-                "frame_count": spec["frames"],
+                "frame_count": frame_count,
                 "animation_description": OBJECT_PROMPTS[boss_id][state],
             }
             if group:
                 params["animation_group_id"] = group["group_id"]
+                if any(direction in group["directions"] for direction in missing):
+                    params["replace_existing"] = True
             else:
                 params["display_name"] = server_state
             response = call("animate_object", params, bearer, call_id)
@@ -289,25 +315,28 @@ def queue_missing(bearer: str, log=print) -> None:
     for canonical, spec in SECRET_STATES.items():
         server_state = spec["server_state"]
         group = report["animations"].get(server_state)
-        have = set(group["directions"].keys()) if group else set()
-        missing = [direction for direction in DIRECTIONS if direction not in have]
-        if group and group.get("frame_count") not in (None, spec["frames"]):
-            raise BuildError("secret/%s has %s frames, expected %s" % (server_state, group["frame_count"], spec["frames"]))
+        frame_count, missing = missing_directions(group, spec)
         if not missing:
             continue
+        queued_groups += 1
+        if queued_groups > MAX_MISSING_GROUPS:
+            raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, MAX_MISSING_GROUPS))
         params = {
             "character_id": SECRET_CHARACTER_ID,
             "mode": "v3",
             "directions": missing,
-            "frame_count": spec["frames"],
+            "frame_count": frame_count,
             "animation_name": server_state,
             "action_description": SECRET_PROMPTS[server_state],
         }
         if group:
             params["animation_group_id"] = group["group_id"]
+            if any(direction in group["directions"] for direction in missing):
+                params["replace_existing"] = True
         response = call("animate_character", params, bearer, call_id)
         call_id += 1
         log("queued secret %s: %s %s" % (canonical, ",".join(missing), job_ids(response)))
+    log("queued missing groups: %d/%d" % (queued_groups, MAX_MISSING_GROUPS))
 
 
 def job_ids(response: Any) -> str:
@@ -337,8 +366,9 @@ def wait_for_pack(bearer: str, timeout: float, interval: float, log=print) -> tu
                 if state == "idle":
                     continue
                 group = report["animations"].get(spec["server_state"])
-                if not group or group.get("frame_count") != spec["frames"] or any(
-                    len(expand_urls(group["directions"].get(direction, []), spec["frames"])) != spec["frames"]
+                frame_count = effective_frame_count(group, spec)
+                if not group or any(
+                    len(expand_urls(group["directions"].get(direction, []), frame_count)) != frame_count
                     for direction in DIRECTIONS
                 ):
                     complete = False
@@ -350,8 +380,9 @@ def wait_for_pack(bearer: str, timeout: float, interval: float, log=print) -> tu
             raise BuildError("PixelLab character failed: secret_ascension_boss")
         for canonical, spec in SECRET_STATES.items():
             group = secret["animations"].get(spec["server_state"])
-            if not group or group.get("frame_count") != spec["frames"] or any(
-                len(group["directions"].get(direction, [])) != spec["frames"] for direction in DIRECTIONS
+            frame_count = effective_frame_count(group, spec)
+            if not group or any(
+                len(group["directions"].get(direction, [])) != frame_count for direction in DIRECTIONS
             ):
                 complete = False
                 missing_report.append("secret_ascension_boss/%s" % canonical)
@@ -491,12 +522,13 @@ def build_actor(actor_id: str, source_kind: str, asset_id: str, report: dict[str
             group = report["animations"].get(spec["server_state"])
             if not group:
                 raise BuildError("%s missing PixelLab state %s" % (actor_id, spec["server_state"]))
-        rows, call_id = download_source(actor_id, canonical, group, spec["frames"], source_kind, bearer, call_id, log)
+        target_frames = effective_frame_count(group, spec)
+        rows, call_id = download_source(actor_id, canonical, group, target_frames, source_kind, bearer, call_id, log)
         source_rows[canonical] = rows
         state_records[canonical] = {
             "pixel_lab_state": spec["server_state"],
             "pixel_lab_group_id": group["group_id"],
-            "frame_count": spec["frames"],
+            "frame_count": target_frames,
             "directions": DIRECTIONS,
         }
 
