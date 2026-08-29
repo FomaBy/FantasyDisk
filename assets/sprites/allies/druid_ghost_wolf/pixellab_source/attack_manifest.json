@@ -1,0 +1,467 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-29T02:58:48Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "character": {
+    "pixel_lab_character_id": "8d09581d-4107-4aa2-b2d5-1d660fc378fa",
+    "animate_tool": "animate_character",
+    "animate_params": {
+      "character_id": "8d09581d-4107-4aa2-b2d5-1d660fc378fa",
+      "mode": "v3",
+      "action_description": "six-frame wide claw and body sweep attack in place; preserve one coherent translucent cyan spectral ghost wolf identity across all eight directions; no extra effects",
+      "animation_name": "attack",
+      "directions": [
+        "south",
+        "south-west",
+        "west",
+        "north-west",
+        "north",
+        "north-east",
+        "east",
+        "south-east"
+      ],
+      "frame_count": 6
+    }
+  },
+  "frames": [
+    {
+      "file": "druid_ghost_wolf_attack_south_00.png",
+      "direction": "south",
+      "index": 0,
+      "bytes": 10962,
+      "url_kind": "character_direct",
+      "encoded_sha256": "cdc5902742d9bf2951d1f5a7b2afdb3f730377e55f7649d7692a8fb1b7257c59",
+      "pixel_sha256": "0bc88a49c7d2e771429ce68438196630da67b780649fb4621a6e86ef0b6c31b5"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_01.png",
+      "direction": "south",
+      "index": 1,
+      "bytes": 11076,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6c1a6e0e8124f07a071bb778ff0803d8423015a6f9c4139a811b73f3ac519819",
+      "pixel_sha256": "4844fa6714b0d642b503566def44d8c66ceaaaffa2866b15299b9902fbff528e"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_02.png",
+      "direction": "south",
+      "index": 2,
+      "bytes": 10566,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6b19b5fb6368de86e080661c5f4c9a890f86c46fca745780265a142984c6caaf",
+      "pixel_sha256": "6b0149355d086a670e2210aab4b434daee88410ae0fb5292170712b6f59e4367"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_03.png",
+      "direction": "south",
+      "index": 3,
+      "bytes": 10508,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6a142b075570fd0a1a19efe47842bd795bb90e1886a1d0846ebee3d5427a47d8",
+      "pixel_sha256": "a5b30586e5ff27d2ecde180b563645696ff57c9ad60aafe9117ba2ba068df643"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_04.png",
+      "direction": "south",
+      "index": 4,
+      "bytes": 11548,
+      "url_kind": "character_direct",
+      "encoded_sha256": "279effe42e4fb8cae0a22835b71aa7caaa24ee84b73a8bbe7c2fec1b4eeb6646",
+      "pixel_sha256": "b5dbb25e5f16bcfc30092d8cb8b0ba55362c3a476525c654d9e1667a94394a2f"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_05.png",
+      "direction": "south",
+      "index": 5,
+      "bytes": 12060,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ebe3fae1d46f7140a20b024d043da6a0b9037b43a5abd2fe58ccd459a76fba1e",
+      "pixel_sha256": "65dfb7f772c2f92d56a70868a7383611b9b0f6065ef4c5e57f63f63f5a74ca2b"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_00.png",
+      "direction": "south-west",
+      "index": 0,
+      "bytes": 11209,
+      "url_kind": "character_direct",
+      "encoded_sha256": "22fabb47b207f6b712a489e63992f8a510e25751720fa8c216aad1ff82708aad",
+      "pixel_sha256": "bb6616457311916da21a8180ecd26f51a8fac44eeb8435c050d882dc27cfe217"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_01.png",
+      "direction": "south-west",
+      "index": 1,
+      "bytes": 10385,
+      "url_kind": "character_direct",
+      "encoded_sha256": "801727747d73e3866626317b319d102631f0333665129c593db6276b92321309",
+      "pixel_sha256": "ec15f11086c063d540e442d8e2d0628e4a2b40d888c6c0c6bbf501d320c0accb"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_02.png",
+      "direction": "south-west",
+      "index": 2,
+      "bytes": 11222,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a606eb0c9fa97f48104e1a883b2c001728de054bed9fc65ea6f4e0dd0df541b4",
+      "pixel_sha256": "43069854c26d47bffeb2aba5c06c26af5f4b5803b7c88f746cac0d380de5028a"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_03.png",
+      "direction": "south-west",
+      "index": 3,
+      "bytes": 11226,
+      "url_kind": "character_direct",
+      "encoded_sha256": "94bc61554879c10fe424ad3c0427c72c6aa234a694587c632341a2c9939650bb",
+      "pixel_sha256": "8ac3f3f5b69d1e8fdbbd1fe6b4b0c1aa8051e003c3f4c54f69f6eb17096acc50"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_04.png",
+      "direction": "south-west",
+      "index": 4,
+      "bytes": 11484,
+      "url_kind": "character_direct",
+      "encoded_sha256": "cc34ab40d00e25e282ecce32616b2e16887d6e7e6f50b7f001aa3548caecc229",
+      "pixel_sha256": "83b235afc3e2717dfb72c5e365c48d34ac0ee1affc1db3334021a96ce583604c"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_west_05.png",
+      "direction": "south-west",
+      "index": 5,
+      "bytes": 11858,
+      "url_kind": "character_direct",
+      "encoded_sha256": "290dea9551522bf55b4e2c6d7e26db89e3aed772d0c246dbad165a83aa0ef8f5",
+      "pixel_sha256": "eae0267c7e9c2d2bb50659aed9c03db35ee88d020bb1f41dc2699892cc0362d6"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_00.png",
+      "direction": "west",
+      "index": 0,
+      "bytes": 11514,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4fa11e01759043fec477deb79e86042dc0581783bd9fd185bf712e2d7c4482cc",
+      "pixel_sha256": "997ee13f118178ab4e2fed34004017e01f80315f95c33bc7f8dfb2888958f184"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_01.png",
+      "direction": "west",
+      "index": 1,
+      "bytes": 10693,
+      "url_kind": "character_direct",
+      "encoded_sha256": "9b8b05217ca8aea3504f61f090b077ab309e36c2e2a6172488647ce6c18c20e0",
+      "pixel_sha256": "e82d0ae87675957b39b07c11083f92b9baec8d56e3824f54d79d1d4d403baaf4"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_02.png",
+      "direction": "west",
+      "index": 2,
+      "bytes": 10452,
+      "url_kind": "character_direct",
+      "encoded_sha256": "65df5b78ae41ecc8bf3ece0467c052a4ed454ee34396b0f257fbe19feef1d731",
+      "pixel_sha256": "d4d04b4bf49fec5a64fe85280cc26757095d93b38496ab429c52bbe7aeadcbd6"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_03.png",
+      "direction": "west",
+      "index": 3,
+      "bytes": 9665,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7c5913ed1ccb5ac4ef0d5e13b3cd723322e0343448dca776576b043b78418f7c",
+      "pixel_sha256": "0704d387dedc88fd285ae5046b8ba4b67f75abadd915095c56b7afc100bae12f"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_04.png",
+      "direction": "west",
+      "index": 4,
+      "bytes": 10799,
+      "url_kind": "character_direct",
+      "encoded_sha256": "40ad105003af0bba462a6ae2ee76d5dbc349a5d2af07231619512f1383822e31",
+      "pixel_sha256": "701881825d33ea277953a9dc9c9decf0716319279ae7521ef9ec94c7939e7c5c"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_west_05.png",
+      "direction": "west",
+      "index": 5,
+      "bytes": 10743,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7aeeadcd30a60ec0d1644707fdac0555ce9aa624a0e9bd6fc34b4a92c24cffda",
+      "pixel_sha256": "88fffaf921ad898fe6865c1fe73cbdc222e50a173185549127a095570e8cb27f"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_00.png",
+      "direction": "north-west",
+      "index": 0,
+      "bytes": 11321,
+      "url_kind": "character_direct",
+      "encoded_sha256": "96700ae7f46cdc2775a360cb383d38cecbf7c20718f8289156c4e3d11f6ccf26",
+      "pixel_sha256": "3c63a4a7de7bd0ccf4b823265c019687464d77d3f10df1b76b29f89be1cba698"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_01.png",
+      "direction": "north-west",
+      "index": 1,
+      "bytes": 10536,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8126c1516efe4a55f840437718024001464b305a4fca423002bf9c46b4ca10b6",
+      "pixel_sha256": "798cbaadb99145230a57d4e54e48ea750747f26de1e25c2bc95cf6015d2617c9"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_02.png",
+      "direction": "north-west",
+      "index": 2,
+      "bytes": 10902,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8d3a1c1ae148619cc06ea87dd7611800f2cc5424090e2e9d2baa2abaf7553297",
+      "pixel_sha256": "fb873ba7a4292fc98405836f71ccae38cc45ae0f2f19fe0140fc47d16ddc6500"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_03.png",
+      "direction": "north-west",
+      "index": 3,
+      "bytes": 12075,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7b39ef19d10c421ace13f13d40a4d72dd4f248767335c25e480087cf3b6ef96c",
+      "pixel_sha256": "cf4838f1fcdbb3c2034641a5bee96c739522884637b7bb57edddc1dd5e4cd4a8"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_04.png",
+      "direction": "north-west",
+      "index": 4,
+      "bytes": 11736,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6a2bbf9a126463785912c3892fd2d9179063e85e15f7341524a94bfa4fa1f379",
+      "pixel_sha256": "d41539b6d32c7789297820e953df1064e5797357ef1cccb4a9757975a2e932ed"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_west_05.png",
+      "direction": "north-west",
+      "index": 5,
+      "bytes": 11682,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f3605a38f819f468a1f5fab7ef5ae440634b73e28a932cec7244fc8f7cba3283",
+      "pixel_sha256": "98a1d3f0e0df989f91dedb810ab57053c36ea9595691bfe57fd6f774f61c78b0"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_00.png",
+      "direction": "north",
+      "index": 0,
+      "bytes": 11080,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4c8021b1d4170f2557b3b6d114e297915b83326932bcc49d64e67e67f48c50f2",
+      "pixel_sha256": "bce58a37edc529faf5755b25100487a5243196c7c9f0d2eda09047567ff1477b"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_01.png",
+      "direction": "north",
+      "index": 1,
+      "bytes": 11320,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fec917001ab3ca854609cd2b8e2eefc807fdb91345eea614824b1bb002822dbb",
+      "pixel_sha256": "ad1ddb1662b62041fd8b7f0773143db19084c3015e9a37ceb9d8b3402a27257e"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_02.png",
+      "direction": "north",
+      "index": 2,
+      "bytes": 10429,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0ccbd8fd7608e65c58b2924610751b5a5c99299a78ae38f5570a0bd01b1e5c9b",
+      "pixel_sha256": "0036f0a155002f7e3931f0eddc10c3732a938cd90cff877560fd7a0f4ef5a4fd"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_03.png",
+      "direction": "north",
+      "index": 3,
+      "bytes": 10722,
+      "url_kind": "character_direct",
+      "encoded_sha256": "271414ee95dfc0b4182e7483e8b7f761f51daf09db6a7cacefd39a708ca58802",
+      "pixel_sha256": "e7242ba27433b3418d657da1bb1f3a349a67f4fda91e1e164d37923d49b75085"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_04.png",
+      "direction": "north",
+      "index": 4,
+      "bytes": 10302,
+      "url_kind": "character_direct",
+      "encoded_sha256": "40c92666f0bc3a7c27945fcaa96cb7282f8e353de62d26b536b8fba13a1db846",
+      "pixel_sha256": "0b213852cc5074b481b40c4705c1ffcbb4bc7c4b515037682cc1c0978615bc2b"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_05.png",
+      "direction": "north",
+      "index": 5,
+      "bytes": 10942,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3740926563fbb5396caa6027935722283a512ec46396efae681ba0bce4e9fce4",
+      "pixel_sha256": "96a8502115ca7156720f8481f492768653ae79def10d9fe6ee65338b0c908409"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_00.png",
+      "direction": "north-east",
+      "index": 0,
+      "bytes": 11040,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e2540988d1e414e577e9097682cdd78c4c87afa8a4280cbab54d5cb32edb021a",
+      "pixel_sha256": "60a649d9b57cd291d7c3a291a3bf0e3f55f08b503fde98163e818aec21b1a5fa"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_01.png",
+      "direction": "north-east",
+      "index": 1,
+      "bytes": 11118,
+      "url_kind": "character_direct",
+      "encoded_sha256": "71ea7f4a37d21058d5d25841d7a614a3773acd5fe06e01503a61aaf698cb8231",
+      "pixel_sha256": "207f9386e47477b3c6ca9e5cb35c3fa2688cc8f8ddcc8810eaaae45cf9d19199"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_02.png",
+      "direction": "north-east",
+      "index": 2,
+      "bytes": 10925,
+      "url_kind": "character_direct",
+      "encoded_sha256": "238dff495c8e921e2c8774eb4ef9415b6006d1e59090bb060c1ee8670dd5003f",
+      "pixel_sha256": "8c428eb7812a4b050f37544464837d0dd3b3d5ff74829d314c25b879d7eb0b48"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_03.png",
+      "direction": "north-east",
+      "index": 3,
+      "bytes": 11761,
+      "url_kind": "character_direct",
+      "encoded_sha256": "dde8b9b2703a7e54f14566deeb271ef5240e6a99e733389f7e49f4af62071295",
+      "pixel_sha256": "54598c7d8f8f78db3b29820beac28ce3c445af2cbd08453f283adaeb651525a7"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_04.png",
+      "direction": "north-east",
+      "index": 4,
+      "bytes": 12218,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4371d316180419fc96a89beaf40f399ac1cf6e6446f7e07fcb064e4f41f4dd1c",
+      "pixel_sha256": "3ad3f85080a8fb61633d1e37c8f5a7b0adb5591e85d0754cfa827e636eca86c8"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_north_east_05.png",
+      "direction": "north-east",
+      "index": 5,
+      "bytes": 10736,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a650242d344e6d5c193f09e0250cd24bf39f06ed1d125eb5cb81b61277927908",
+      "pixel_sha256": "9f139564e3a4b9587dd84ebc6115e4a32be189972b31f10462d00fc59ead59fd"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_00.png",
+      "direction": "east",
+      "index": 0,
+      "bytes": 11087,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f99491d00b3d90ec44ae19f2a164e49102a02ea40985397525296addc8604025",
+      "pixel_sha256": "bb5e7866363068a4186eb9dbb77e2b1c34bab16f6568a813fbe88b9f5eba9134"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_01.png",
+      "direction": "east",
+      "index": 1,
+      "bytes": 11659,
+      "url_kind": "character_direct",
+      "encoded_sha256": "faeaa2fb4fcc12c7ea1e15ece8607f03391a6b4564a76289785070ce7c9becde",
+      "pixel_sha256": "9775d727f2379e6bd904e6ddda5c9f94cc30c3f95780456b71ffb361aecee03b"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_02.png",
+      "direction": "east",
+      "index": 2,
+      "bytes": 11452,
+      "url_kind": "character_direct",
+      "encoded_sha256": "d3d16fb1a487257443309b4117f01f432307839a8daaf29f93841725e6483e96",
+      "pixel_sha256": "dc370384ea590639866e4404e36959fa7f589b5481856bde8b8a0e2d35a96f0b"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_03.png",
+      "direction": "east",
+      "index": 3,
+      "bytes": 11839,
+      "url_kind": "character_direct",
+      "encoded_sha256": "d2b3d7d8fbdd22ea77a4f669a885271fa1e0f49f2808cddd0b8c829e279ee167",
+      "pixel_sha256": "09e5a18c0ec6ba39502ec070c64e7f431c2cd1e3311e64a62a3f78fc678a59b9"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_04.png",
+      "direction": "east",
+      "index": 4,
+      "bytes": 12134,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f4e1e59266d90971227d1a21e1b4571df21d4fe74452e935b1f31c7e5174de43",
+      "pixel_sha256": "806360410797f1da04c02f3edaff22c99adecaffa38f0a2e4dfae7409b811b99"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_east_05.png",
+      "direction": "east",
+      "index": 5,
+      "bytes": 11577,
+      "url_kind": "character_direct",
+      "encoded_sha256": "651347ca203279a6366516fced4dfeb0baa5c7c5f76ccd26fcfa4e072b0ae023",
+      "pixel_sha256": "4ec66cedf02a75ab53ef946ad095710af30a3f8c6dddf57eeee07ebf640588a6"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_00.png",
+      "direction": "south-east",
+      "index": 0,
+      "bytes": 11182,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1dbbacee4fa0f55cd983f78ac9f1451a05e0c9ee3253f6b5acd1ff9dbc458e63",
+      "pixel_sha256": "a6eeac3efe36d890bca370d43fd763e6d473dac59c81b7eecec305644c0af6eb"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_01.png",
+      "direction": "south-east",
+      "index": 1,
+      "bytes": 11078,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3fff076bd1cae2da997490cd965db493292870af6f4cbe5b05afc1e05fc42fdf",
+      "pixel_sha256": "12a0c960c2c5b1964715a08e875a9065355bec5fd78f5d3086775b0b36ee610c"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_02.png",
+      "direction": "south-east",
+      "index": 2,
+      "bytes": 10909,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c0bf6acb81f1c0bf92bc30bcb82a9d565943e8ed7d81e062920cc5c8b2a7369b",
+      "pixel_sha256": "75014ae576ace8de2cc93e4bf7c5e28451102d4b495c0753182a5ec242137b7f"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_03.png",
+      "direction": "south-east",
+      "index": 3,
+      "bytes": 12606,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2d94b33d3bc617e0b2c207725b6a79d17bec1f2305e3133417beddef5030239b",
+      "pixel_sha256": "79130c348b448bd18a4e1ff737d4ffc8ade4f4c147a4f4b7842651bb234d3f42"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_04.png",
+      "direction": "south-east",
+      "index": 4,
+      "bytes": 12422,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8f654f0438631746a45808f3a37f6aba78a241169ad5e9ca958f930f84304e6e",
+      "pixel_sha256": "4258bc56aea780ef5e435076140754c4262a0e89fc91940426260889d034fcf8"
+    },
+    {
+      "file": "druid_ghost_wolf_attack_south_east_05.png",
+      "direction": "south-east",
+      "index": 5,
+      "bytes": 11341,
+      "url_kind": "character_direct",
+      "encoded_sha256": "98c6f01b3938ae57f18382899bbab0c469264d19c63a91b6fb7358adc3978707",
+      "pixel_sha256": "68aff474f3a70c34b01607628846eb882427c32e2ce1271a5fc7172be1fbe184"
+    }
+  ],
+  "frame_count": 48,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

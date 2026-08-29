@@ -1,0 +1,467 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-29T03:34:33Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "character": {
+    "pixel_lab_character_id": "8096ecfe-74bb-4427-83fe-8e8e9e03d508",
+    "animate_tool": "animate_character",
+    "animate_params": {
+      "character_id": "8096ecfe-74bb-4427-83fe-8e8e9e03d508",
+      "mode": "v3",
+      "action_description": "six-frame walking in place with a heavy grounded four-legged bear gait; preserve a clearly recognizable large spectral ghost bear with broad shoulders, rounded bear ears and visible muzzle across all eight directions; no attack or extra effects",
+      "animation_name": "move",
+      "directions": [
+        "south",
+        "south-west",
+        "west",
+        "north-west",
+        "north",
+        "north-east",
+        "east",
+        "south-east"
+      ],
+      "frame_count": 6
+    }
+  },
+  "frames": [
+    {
+      "file": "druid_ghost_bear_move_south_00.png",
+      "direction": "south",
+      "index": 0,
+      "bytes": 5415,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2a40525f0d1eb829c4b0eae815394583cbc56aa4656ded855d65c799bd758921",
+      "pixel_sha256": "5dc33f64b8a15b3c109fc5a4f15899ccdb577af7880424e43b0f49efe314aa53"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_01.png",
+      "direction": "south",
+      "index": 1,
+      "bytes": 7045,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e4452a1a21644e02154b5f38a670f5e2fdb2ef91db4ac762cf368300ed36dd3d",
+      "pixel_sha256": "75e7db73b3c0d46400fba456af35eea1f71d3b3078fc6f689b2204ef5fdd768d"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_02.png",
+      "direction": "south",
+      "index": 2,
+      "bytes": 5143,
+      "url_kind": "character_direct",
+      "encoded_sha256": "24b68e5abf2ead6930cfd70b4316dabb4a6832008ed0f0e7f7512f21263b6c93",
+      "pixel_sha256": "d263c980123779fb050e63c4e856244b4ea9cd4521d3f552474de1ed04c8e4b5"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_03.png",
+      "direction": "south",
+      "index": 3,
+      "bytes": 4868,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ead46841d921fa168c61eb92a60b1642d22378e359077bf86b76973df22ab708",
+      "pixel_sha256": "7f76d7a927c4a4f6d0fb2fe5bffbb3816be6db422173ae2b233d946f7aab8f05"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_04.png",
+      "direction": "south",
+      "index": 4,
+      "bytes": 4819,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e5759e4eab83bbd6e866a41ddbd0cb2597ae85cbaf7dca580f2baee15bcf8f0c",
+      "pixel_sha256": "79e3bd86c3d5a0db655b8c11cf74d71f5660a1099ab21306cb4954f548c93493"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_05.png",
+      "direction": "south",
+      "index": 5,
+      "bytes": 4153,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4c5c83b8cb2bbb2a95308653e611fdab974ea74d864af4739d71faaf1092399a",
+      "pixel_sha256": "cc83074ce3deeeb8e375a8d4b5d8c3c205b0e50c92e79d698d926ed52785b013"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_00.png",
+      "direction": "south-west",
+      "index": 0,
+      "bytes": 5480,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5b00ef4f584156005362e6e0d1f488e4f7f8ed699d7b23b4501627c979d2c9ce",
+      "pixel_sha256": "81a5be0ef50ffcd9a9dde27326f608cfc1b5777698966caf3b157ba0333c6288"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_01.png",
+      "direction": "south-west",
+      "index": 1,
+      "bytes": 7150,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f107737f670d0aa751bcc73e1fa589c308cf0c0f85cd89736536eb1245d6d7cb",
+      "pixel_sha256": "a4f15d13220c2daaf169e076c47936eb6c3de61e3f959c669e718d9cc01ccd97"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_02.png",
+      "direction": "south-west",
+      "index": 2,
+      "bytes": 5732,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6c45fba2aff8e1fddca0f63a54855f2756e9e3e239e851851f31b6361491efd8",
+      "pixel_sha256": "4cd8ce95b0004f6387190e7d9f32bdc824fb097a4d48effd4d39a34035d55814"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_03.png",
+      "direction": "south-west",
+      "index": 3,
+      "bytes": 6234,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e565da2ab6b06cc02445c108bab24147671393921181abcdbd1c368533e97fa1",
+      "pixel_sha256": "9e10e332aed6369a79cd0701a1c6d96b09d0bb77b05a63b159f841ac8f2d5eab"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_04.png",
+      "direction": "south-west",
+      "index": 4,
+      "bytes": 6183,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ad330baf7c3d46e2d38549347b6329a8d639b84711cf129d3263d2ec22401dc0",
+      "pixel_sha256": "d81b13b10f8e9b04f6efe91226e9ae08584c55f2c1a20b8cbbdc905f136ddce2"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_west_05.png",
+      "direction": "south-west",
+      "index": 5,
+      "bytes": 5974,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1440f91a21aabef71fea73776de64ab9021accd2b240bd01c72e3fc5615acd0b",
+      "pixel_sha256": "509a569e3a4f7864ef8f0fd5c25c0afe9012bfa27c76f9d53648cc4baa201d64"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_00.png",
+      "direction": "west",
+      "index": 0,
+      "bytes": 5862,
+      "url_kind": "character_direct",
+      "encoded_sha256": "93d9e5b39afd15d301c606800f60fa19f37f448cc4bda7ad61e60324391b80c0",
+      "pixel_sha256": "61875377546361fb7e34e83d6b5bab83272ae9e8b6e862957fd3b1028ff268a1"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_01.png",
+      "direction": "west",
+      "index": 1,
+      "bytes": 7696,
+      "url_kind": "character_direct",
+      "encoded_sha256": "dbb4a98d4f70f644e892e5317535748fcfa00989e3ff34c95d88cf99c8e64dc2",
+      "pixel_sha256": "ce7d2298da917b6137853289e725adeda5e68bb8827fcc21852bfcf873c85b25"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_02.png",
+      "direction": "west",
+      "index": 2,
+      "bytes": 6677,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c7427e774065531d992ed9d3533b5df45418832d8d879c80117a1f537f78eef1",
+      "pixel_sha256": "bbf0c2e2e5b96ec949ca8e52c2fa05d0c829909808c2cdbcf0c5e586909966be"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_03.png",
+      "direction": "west",
+      "index": 3,
+      "bytes": 7843,
+      "url_kind": "character_direct",
+      "encoded_sha256": "360497d8fef09e6edd82383cc7ced66eb73a6227e74b00135ebc38638be120b6",
+      "pixel_sha256": "4445f844284e281931cf4461e1ae664404434be121d41729e4ff17780b75a096"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_04.png",
+      "direction": "west",
+      "index": 4,
+      "bytes": 7340,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c0eb940092b04e4ad1ba62af390ec5d23df332de8bf65119894f6d499123ee5a",
+      "pixel_sha256": "ee540c9e02d86d0d724c3efb146200dd4fd3d45c16007aed5135d55d39c501c2"
+    },
+    {
+      "file": "druid_ghost_bear_move_west_05.png",
+      "direction": "west",
+      "index": 5,
+      "bytes": 6345,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c0b454622c5c9b853af2497d1c1c374d39b34cc25931ad7b0b1e891ca153d7f6",
+      "pixel_sha256": "b09e7cc56af196b82f8d049e26faf59cfd6c0b120b37dd7b8403144ff8006226"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_00.png",
+      "direction": "north-west",
+      "index": 0,
+      "bytes": 5572,
+      "url_kind": "character_direct",
+      "encoded_sha256": "56674f31be630b487dbaa188448a8a44c79c995a13d0d11826cc889d996c9273",
+      "pixel_sha256": "98d6bb952aaf7504ae9a0dd0e240cd923a42bbfb403997a727f816e4fc3ffcbe"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_01.png",
+      "direction": "north-west",
+      "index": 1,
+      "bytes": 6845,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7d070ec7e13940effc5d9d666509a65eb89e0bac696f1393477b6ce9edbdc0de",
+      "pixel_sha256": "6f7645910e69f6dd99757af0ebe00cc74e3caf34bb6b3a20776ee8e995dbd9f5"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_02.png",
+      "direction": "north-west",
+      "index": 2,
+      "bytes": 5296,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4fe16b1804242b186ca1f73a31b7a3267b9811d79cdacea68eb16d1a19281557",
+      "pixel_sha256": "a7f4d7d1fa951c169f4fcadef3f2cee86f3c1b37498e46ef92971130a37df942"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_03.png",
+      "direction": "north-west",
+      "index": 3,
+      "bytes": 5265,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1b3b5572985995e07d3d0ac506a2b5055e369389ad744858fa8a694c4e64d8ed",
+      "pixel_sha256": "7d3303e68333fd09380249d7b27dbe8d4d7dc8df09402da16743730c26430c0d"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_04.png",
+      "direction": "north-west",
+      "index": 4,
+      "bytes": 2007,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8e34f82f81a6b67f8c5c9d891157e9d792bfafffeb0da8404732d620980e6626",
+      "pixel_sha256": "02f9bdb4e5ae7d16201d80d0151ec4319aff712db5f87ad61e05e3a68fef5045"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_west_05.png",
+      "direction": "north-west",
+      "index": 5,
+      "bytes": 2279,
+      "url_kind": "character_direct",
+      "encoded_sha256": "93961f7bb6dd5dfbf7153be8bd449afce065134691446613565ab89276347dbe",
+      "pixel_sha256": "7d0806db39fb0d4d76559786648e8c5ea408cfd387025b65b79bbad7a07c6154"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_00.png",
+      "direction": "north",
+      "index": 0,
+      "bytes": 5374,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5f6c495395fe5891a4201b9362576d73d595146e1ac595906ef536afd7d35203",
+      "pixel_sha256": "bd4578938012531f2870986cfa2b59e4005c5340e21db469471dc3128f145d8c"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_01.png",
+      "direction": "north",
+      "index": 1,
+      "bytes": 6300,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5ce0c57c526537ac569447065596cdc5933786cc59197f117e21a301afbc6613",
+      "pixel_sha256": "257bcdfc9ec3a0bc6263da0232d1aeebd3f924ddcd7acb7fe06df994933e5038"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_02.png",
+      "direction": "north",
+      "index": 2,
+      "bytes": 6125,
+      "url_kind": "character_direct",
+      "encoded_sha256": "819c6c18e82abd6daf11b051dd5112dbae35d3ce8eebbaab692b91ed39547a7b",
+      "pixel_sha256": "56fb5b408d08cd8ceb8efea056dcb1706120ab53ddfb3309b9b980a55db85874"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_03.png",
+      "direction": "north",
+      "index": 3,
+      "bytes": 6143,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fd582f77ba31416d0750a44aee1008576246d8aff21c97f4d54edf39f7b0511f",
+      "pixel_sha256": "3fb6aa1fa5444c61e9f911b4e3f78f50286570560f2ea73c7b10769bf5f34474"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_04.png",
+      "direction": "north",
+      "index": 4,
+      "bytes": 5727,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5da80d055373a337329099fddf9f43072918855559f5b12aea84e2236c1761e8",
+      "pixel_sha256": "455a189488559dec160bca81d65e7aad9e41a54806171a69372d40bfe5ef270f"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_05.png",
+      "direction": "north",
+      "index": 5,
+      "bytes": 5252,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2c2f92903e98429d2afb88f073f5032a46ef5f8f02a15afba5ce2397e4c6ebbc",
+      "pixel_sha256": "8138bc9373970875bba0b744157bfa88ac63edb2ed8f262cbb9a410d879b204c"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_00.png",
+      "direction": "north-east",
+      "index": 0,
+      "bytes": 5323,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b177958694a40a0891e2eae9321b6be03c98019c3613e164837d30c951c2be24",
+      "pixel_sha256": "dbc2c9a914e710c95227341b8e4f9a2d3af50f2042e256589f12f63bbdd80105"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_01.png",
+      "direction": "north-east",
+      "index": 1,
+      "bytes": 6009,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1fa4e30418f052886b973b008227811e1cd2b0a44bf743cd275cda5d22134149",
+      "pixel_sha256": "3f3f9fb7c7e820ba9473470e28ee75dc1be04ad8dd928494a6cfcf20f8b93531"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_02.png",
+      "direction": "north-east",
+      "index": 2,
+      "bytes": 5400,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e6ec98bbcb1a93ce1adbf4c198b74b56b72a4df50ea61e8362647b6f0375edd4",
+      "pixel_sha256": "1005775ceb7a1f2a350aa5f6e02d1b4dc67c28d051606e931e831e48637d1857"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_03.png",
+      "direction": "north-east",
+      "index": 3,
+      "bytes": 4646,
+      "url_kind": "character_direct",
+      "encoded_sha256": "7c2264517bc731c517d8253566fa59edf72bcdccd731e2e7cbbb560b8c629c69",
+      "pixel_sha256": "276105f047abb01229f21917997abbb10937f0966df575a09f66a6f8bd6a22f7"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_04.png",
+      "direction": "north-east",
+      "index": 4,
+      "bytes": 4478,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e23cf148f655dfd69cdc64a362a7a8a814340498f0d7f28b6e6efba4cc387e55",
+      "pixel_sha256": "96a80024c20e90923ee8054734b80670120f13d2db9d75cc1fbcfc126c976334"
+    },
+    {
+      "file": "druid_ghost_bear_move_north_east_05.png",
+      "direction": "north-east",
+      "index": 5,
+      "bytes": 4005,
+      "url_kind": "character_direct",
+      "encoded_sha256": "bfe591255df40b6c55b7477972f052caead443320725f73d0e1eb4599fa6c7a6",
+      "pixel_sha256": "8ab131f2bd39f3167fac881480da447425b8d14e92dce1b4e2be96b3bb55bf96"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_00.png",
+      "direction": "east",
+      "index": 0,
+      "bytes": 5842,
+      "url_kind": "character_direct",
+      "encoded_sha256": "826aa91bd8d003fc89aab11f144432506e450872172e103d3fc0430372f7e565",
+      "pixel_sha256": "2221d2e2f7326f6ae455f2ecce00f9b9f8761f612ee689e28ad53753c37dbbaf"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_01.png",
+      "direction": "east",
+      "index": 1,
+      "bytes": 6645,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0d4ddfaad18a82be3bc6cb8ca62fa098467e53a9834a4a8fd87c4ce1fda0be5f",
+      "pixel_sha256": "9dbb71d48bc75b74c1e44ab1d957a4eedcd45f5899525283e5bd83f0caf7e42c"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_02.png",
+      "direction": "east",
+      "index": 2,
+      "bytes": 6035,
+      "url_kind": "character_direct",
+      "encoded_sha256": "79e2b789d4c09a8ff8c4f62b7db09fe6610c45fcbd50040b7b0ffb60ae7f05c3",
+      "pixel_sha256": "29cf30762267cfb1a17f17faaab51247f6ce04e189a163773100bd5a032df183"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_03.png",
+      "direction": "east",
+      "index": 3,
+      "bytes": 4755,
+      "url_kind": "character_direct",
+      "encoded_sha256": "461730b2d505043a60fa1f17dd13c16882898be2dcc5857098a99eb18dfa3e43",
+      "pixel_sha256": "c27cf66a0144e4120002100860f62f2782f92f5d2522905f1b7be0cbb06ca22f"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_04.png",
+      "direction": "east",
+      "index": 4,
+      "bytes": 5999,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4af32d1cda2a2e6d020ac55496cdf5744e46964806b5377cb1819547f4bbacdb",
+      "pixel_sha256": "16c3f9b0d6a14c1ac378097ce0b4bf4fecde91ae84c9ae482ed1ff545095939f"
+    },
+    {
+      "file": "druid_ghost_bear_move_east_05.png",
+      "direction": "east",
+      "index": 5,
+      "bytes": 4437,
+      "url_kind": "character_direct",
+      "encoded_sha256": "4448e9655a51a69d616bd3e82bcd33b33d6723171b9542002e2a43bfe6e6c689",
+      "pixel_sha256": "42ef078e3d530315a29b8c8038806c4c6a311cfed7f8e7ddc67e6363de2901bb"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_00.png",
+      "direction": "south-east",
+      "index": 0,
+      "bytes": 5828,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ecb37fdac1d8d00de4079fa5c4eb282539c68342982db0c792502daec2175b83",
+      "pixel_sha256": "164164d79c550b160500d8a987a1948bb7b86f88546f28bb93c6a570aad29c72"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_01.png",
+      "direction": "south-east",
+      "index": 1,
+      "bytes": 6886,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c8aea9f2088a0f07cb1d17553d762abfa82c20b9780505e94fb0905b3dac1244",
+      "pixel_sha256": "e8943a4b8be70d53b2c9e912c6b6848a5161db020763d0028de17201573d7d98"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_02.png",
+      "direction": "south-east",
+      "index": 2,
+      "bytes": 4188,
+      "url_kind": "character_direct",
+      "encoded_sha256": "bbb5c482f77f94b1bc1284da5481e56a2155effc4b6eecdd3891af1c26362538",
+      "pixel_sha256": "280a4353db938530b5e1e8de95794652a55a5d5393ea721dc6c4a1b81c4722c5"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_03.png",
+      "direction": "south-east",
+      "index": 3,
+      "bytes": 4244,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b772b2a0a9d4f158b68d07a9090c815d0efd14b3afdc45552891614245693a3b",
+      "pixel_sha256": "6ab5b0bdb2c0e84b42c74581eed6099227ec0300413a3364f8da399878a9b80e"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_04.png",
+      "direction": "south-east",
+      "index": 4,
+      "bytes": 4728,
+      "url_kind": "character_direct",
+      "encoded_sha256": "6a35aa3b88cd70ddfe4c3f2452f33ad6eb9c1bb7082319a80b8235c4084cf651",
+      "pixel_sha256": "d056e07f5a747595a2e5b9cd51385798969c40591409e82afcff9e371a6f4f68"
+    },
+    {
+      "file": "druid_ghost_bear_move_south_east_05.png",
+      "direction": "south-east",
+      "index": 5,
+      "bytes": 3981,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1b2378b72801cb66cf1c0c958fb4b0bba17d73e7ddfc974ee7cea8992e54141b",
+      "pixel_sha256": "194510713592910ed2d8cf8772ea9000204adcd8990d58f5046a32aab42f80d4"
+    }
+  ],
+  "frame_count": 48,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
