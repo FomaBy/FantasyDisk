@@ -52,13 +52,24 @@
 
 ### ui/<screen> — один экран/оверлей UI
 
-Сейчас:
-- свой участок `scripts/ui_screens.gd` (общий файл!)
+Сейчас (Фаза 3 UI — FAN-3824: монолит `ui_screens.gd` разрезан):
+- свой экранный модуль `scripts/ui/screens/<screen>.gd` — код экрана живёт
+  только в нём; новый экран = новый модуль (+ одна строка `extends` в фасаде)
 - `scripts/ui/<свои файлы>.gd`, `scenes/ui/**<screen>*`
 - `tests/*<screen>*_test.gd`
 
-После миграции (Фаза 3):
-- `scripts/ui/screens/<screen>.gd` (+ сцена), `tests/ui/<screen>_*_test.gd`
+Ограниченная общая поверхность UI (бюджетные общие файлы — не более одного
+на задачу, как и остальной бюджет ниже):
+- `scripts/ui_screens.gd` — фасад-сборка (замыкает extends-цепочку модулей,
+  потолок 500 строк в `tools/quality_static_guard.py`)
+- `scripts/ui/screens/ui_screens_state.gd` — разделяемое состояние/константы
+- `scripts/ui/screens/ui_screens_shared_api.gd` — forward-объявления
+  кросс-модульных методов
+- `scripts/ui/screens/{ui_style_kit,shared_shell_kit,menu_shell_kit}.gd` —
+  общие киты стилей и каркаса экранов
+
+Позже:
+- `tests/ui/<screen>_*_test.gd` (шардирование UI-тестов — отдельная работа)
 
 ### core — общие ядра, один агент за раз (не параллелится ни с кем, кто их пишет)
 

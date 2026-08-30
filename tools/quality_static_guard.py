@@ -30,7 +30,9 @@ PLAYER_IMPORT_PROBE_CONTRACT = (
     "player.free()",
 )
 LEGACY_LINE_CEILINGS = {
-    "scripts/ui_screens.gd": 17000,
+    # FAN-3824: монолит разрезан на scripts/ui/screens/**; фасад — не более 500
+    # строк. Потолки только ужимаются (tests/test_quality_static_guard.py).
+    "scripts/ui_screens.gd": 500,
     "scripts/class_weapon.gd": 6000,
     "scripts/player.gd": 4300,
     "scripts/progression_data.gd": 2500,

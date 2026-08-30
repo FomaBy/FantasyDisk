@@ -651,5 +651,58 @@ class QualityStaticGuardTest(unittest.TestCase):
             )
 
 
+# FAN-3824: снимок-максимум потолков строк. Ratchet двусторонний: значение в
+# LEGACY_LINE_CEILINGS можно только УМЕНЬШАТЬ, а новые legacy-записи запрещены —
+# новый скрипт обязан жить в NEW_SCRIPT_LINE_LIMIT, а не получать свой потолок.
+# Ужал потолок в tools/quality_static_guard.py → ужми и этот снимок.
+LINE_CEILING_MAXIMA = {
+    "scripts/ui_screens.gd": 500,
+    "scripts/class_weapon.gd": 6000,
+    "scripts/player.gd": 4300,
+    "scripts/progression_data.gd": 2500,
+    "scripts/pause_stats_menu.gd": 2250,
+    "scripts/enemy.gd": 1950,
+    "scripts/cutout_rig_2d.gd": 1950,
+    "scripts/main.gd": 1850,
+    "scripts/route_map_screen.gd": 1600,
+    "scripts/combat_director.gd": 1500,
+    "scripts/meta_progression.gd": 1500,
+    "scripts/progression_data_weapons.gd": 1280,
+    "scripts/progression_data_characters.gd": 1250,
+}
+
+
+class LineCeilingRatchetTest(unittest.TestCase):
+    def setUp(self):
+        self.module = load_module()
+
+    def test_legacy_ceilings_only_tighten(self):
+        for path, ceiling in self.module.LEGACY_LINE_CEILINGS.items():
+            self.assertIn(
+                path,
+                LINE_CEILING_MAXIMA,
+                f"{path}: new legacy line-ceiling entries are forbidden; "
+                "new scripts obey NEW_SCRIPT_LINE_LIMIT",
+            )
+            self.assertLessEqual(
+                ceiling,
+                LINE_CEILING_MAXIMA[path],
+                f"{path}: raising a line ceiling is forbidden (ratchet only tightens)",
+            )
+
+    def test_new_script_limit_only_tightens(self):
+        self.assertLessEqual(self.module.NEW_SCRIPT_LINE_LIMIT, 1200)
+
+    def test_ui_screens_facade_stays_a_facade(self):
+        # FAN-3824: возврат монолита — это рост фасада; ловим его и в живом
+        # чекауте, не только через потолок гарда.
+        lines = (ROOT / "scripts/ui_screens.gd").read_text(encoding="utf-8").splitlines()
+        self.assertLessEqual(
+            len(lines),
+            500,
+            "scripts/ui_screens.gd must stay a facade; screen code belongs in scripts/ui/screens/**",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
