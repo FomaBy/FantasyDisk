@@ -75,11 +75,9 @@ const DIRECTION_FIELDS: Array[String] = ["silhouette", "motion_path", "impact_la
 ## belongs to the per-class animation cards, not to this contract.
 const ADOPTION_GAPS := {
 	"phases": {
-		"engineer": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
 	},
 	"direction": {
-		"engineer": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 	},
 	"capture": {
@@ -93,7 +91,6 @@ const ADOPTION_GAPS := {
 		"assassin": "awaiting the readability/accessibility declaration",
 		"druid": "awaiting the readability/accessibility declaration",
 		"elementalist": "awaiting the readability/accessibility declaration",
-		"engineer": "awaiting the readability/accessibility declaration",
 		"guitarist": "awaiting the readability/accessibility declaration",
 		"knight": "awaiting the readability/accessibility declaration",
 		"priest": "awaiting the readability/accessibility declaration",
@@ -101,6 +98,17 @@ const ADOPTION_GAPS := {
 		"robot": "awaiting the readability/accessibility declaration",
 		"soldier": "awaiting the readability/accessibility declaration",
 		"thief": "awaiting the readability/accessibility declaration",
+	},
+	"victim_impact": {
+		"assassin": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"chemist": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"knight": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"priest": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"ranger": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"robot": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"sniper": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"soldier": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"thief": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 	},
 }
 
@@ -114,7 +122,7 @@ const TELEGRAPH_GROUP := "ultimate_area_telegraph"
 const TELEGRAPH_BLINK_PROPERTIES: Array[String] = ["visible", "modulate", "self_modulate"]
 
 const GATES: Array[String] = [
-	"phases", "cleanup", "budget", "direction", "capture", "provenance", "quality", "telegraph",
+	"phases", "cleanup", "budget", "direction", "capture", "provenance", "quality", "victim_impact", "telegraph",
 ]
 
 
@@ -156,6 +164,7 @@ static func violations(
 	_check_direction(weapons, class_id, errors)
 	_check_capture(manifest, class_id, errors)
 	_check_provenance(manifest, weapons, class_id, errors)
+	errors.append_array(victim_impact_violations_from_sources(class_id, weapons))
 	return errors
 
 
@@ -672,6 +681,72 @@ static func _check_quality(weapon: Dictionary, key: String, errors: Array[String
 			"quality.flash_repeat: %s repeats a %.2f-coverage flash at %.2f Hz"
 			% [key, float(flash_coverage), float(flash_hz)]
 		)
+
+
+## Each weapon must either instantiate the shared service in its executor or in
+## a script attached by its own activation scene. The scene is parsed only for
+## its declared script resources: an unrelated file in the class directory
+## cannot clear another weapon's evidence.
+static func victim_impact_violations_from_sources(
+	class_id: String,
+	weapons: Array[Dictionary],
+	project_root: String = "res://"
+) -> Array[String]:
+	var errors: Array[String] = []
+	for weapon in weapons:
+		var weapon_id := str(weapon.get("weapon_id", ""))
+		var sources := [_source_path(project_root, "scripts/ultimates/classes/%s/%s.gd" % [class_id, weapon_id])]
+		var scene_path := str(weapon.get("scene_path", ""))
+		if not scene_path.is_empty():
+			sources.append_array(_scene_script_paths(_source_path(project_root, scene_path)))
+		var wired := false
+		for source in sources:
+			if _script_instantiates_victim_impact(str(source)):
+				wired = true
+				break
+		if not wired:
+			errors.append("victim_impact.unwired: %s/%s routes no victim through UltimateVictimImpactPlayer" % [class_id, weapon_id])
+	return errors
+
+
+static func _source_path(project_root: String, path: String) -> String:
+	if path.contains("://") or path.begins_with("/"):
+		return path
+	return project_root.path_join(path)
+
+
+static func _scene_script_paths(scene_path: String) -> Array[String]:
+	var paths: Array[String] = []
+	if not FileAccess.file_exists(scene_path):
+		return paths
+	for raw_line in FileAccess.get_file_as_string(scene_path).split("\n"):
+		var line := str(raw_line).strip_edges()
+		if not line.begins_with("[ext_resource") or not line.contains(".gd\""):
+			continue
+		var marker := "path=\""
+		var start := line.find(marker)
+		if start < 0:
+			continue
+		var path := line.substr(start + marker.length()).get_slice("\"", 0)
+		if not path.is_empty():
+			paths.append(path)
+	return paths
+
+
+static func _script_instantiates_victim_impact(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return false
+	var service_names: Array[String] = ["UltimateVictimImpactPlayer"]
+	for raw_line in FileAccess.get_file_as_string(path).split("\n"):
+		var line := str(raw_line).get_slice("#", 0).strip_edges()
+		if line.contains("preload(") and line.contains("victim_impact_player.gd") and line.begins_with("const "):
+			var binding := line.trim_prefix("const ").get_slice(":", 0).strip_edges().get_slice(" ", 0)
+			if not binding.is_empty():
+				service_names.append(binding)
+		for service_name in service_names:
+			if line.contains("%s.new(" % service_name):
+				return true
+	return false
 
 
 ## Width/height straight from the PNG IHDR header, or ZERO when the file is

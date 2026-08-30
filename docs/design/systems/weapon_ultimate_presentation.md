@@ -479,6 +479,14 @@ every run (60 fps steps, victims placed farthest-first):
 Only the scheduling half is machine-measured; GPU fill-rate of the shipped
 impact packs stays review-gated, like the rest of the rendered result.
 
+**Wiring the service is a gate (FAN-2944).** `victim_impact` checks every
+weapon separately. It accepts only a `victim_impact_player.gd` preload followed
+by construction of `UltimateVictimImpactPlayer` in that weapon's executor or a
+script attached to its declared activation scene. Comments, inert strings and
+unrelated scripts do not count; a missing route reports
+`victim_impact.unwired: <class>/<weapon>`. The class ratchet only lists weapons
+that genuinely lack the route and fails stale entries closed.
+
 **Area telegraphs are flavour, not the read.** Because the hit now reads on the
 victim, a blinking area rectangle may no longer be how an ultimate shows its
 reach. `UltimateVisualDirectionContract.scene_telegraph_violations()` walks an

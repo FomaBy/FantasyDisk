@@ -11,6 +11,7 @@ const Contract := preload("res://scripts/ultimates/presentation/ultimate_visual_
 const REFERENCE_CLASS := "doctor"
 const EXPECTED_CLASS_COUNT := 17
 const EXPECTED_WEAPON_COUNT := 51
+const SOURCE_FIXTURE_ROOT := "user://fan3820_victim_impact_fixtures"
 
 
 func _initialize() -> void:
@@ -211,6 +212,46 @@ func _check_gates_go_red(errors: Array[String]) -> void:
 	var undeclared_quality := _fixture(baseline)
 	_weapon(undeclared_quality, 0).erase("quality")
 	_expect_violation(undeclared_quality, "quality.missing", errors)
+
+	_check_victim_impact_source_controls(errors)
+
+
+func _check_victim_impact_source_controls(errors: Array[String]) -> void:
+	var root := ProjectSettings.globalize_path(SOURCE_FIXTURE_ROOT)
+	DirAccess.make_dir_recursive_absolute(root.path_join("scripts/ultimates/classes/test"))
+	DirAccess.make_dir_recursive_absolute(root.path_join("scenes/vfx/ultimates/test"))
+	var weapon := {"weapon_id": "test_weapon", "scene_path": "scenes/vfx/ultimates/test/Test.tscn"}
+	var executor := root.path_join("scripts/ultimates/classes/test/test_weapon.gd")
+	var scene := root.path_join("scenes/vfx/ultimates/test/Test.tscn")
+	var activation := root.path_join("scenes/vfx/ultimates/test/test_activation.gd")
+
+	_write_source_fixture(executor, "# ImpactPlayer := preload(\"res://scripts/ultimates/presentation/victim_impact_player.gd\")\n")
+	_write_source_fixture(scene, "")
+	_expect_unwired(Contract.victim_impact_violations_from_sources("test", [weapon], root), "comment-only", errors)
+
+	_write_source_fixture(executor, "const NOTE := \"victim_impact_player.gd\"\n")
+	_expect_unwired(Contract.victim_impact_violations_from_sources("test", [weapon], root), "dead-string", errors)
+
+	_write_source_fixture(executor, "")
+	_write_source_fixture(activation, "const ImpactPlayer := preload(\"res://scripts/ultimates/presentation/victim_impact_player.gd\")\nfunc unused() -> void:\n\tvar impact := ImpactPlayer.new()\n")
+	_write_source_fixture(scene, "[ext_resource type=\"Script\" path=\"res://unrelated.gd\" id=\"1\"]\n")
+	_expect_unwired(Contract.victim_impact_violations_from_sources("test", [weapon], root), "unrelated-script", errors)
+
+	_write_source_fixture(scene, "[ext_resource type=\"Script\" path=\"%s\" id=\"1\"]\n" % activation)
+	var wired := Contract.victim_impact_violations_from_sources("test", [weapon], root)
+	if not wired.is_empty():
+		errors.append("expected nested activation wiring, got: %s" % str(wired))
+
+
+func _write_source_fixture(path: String, source: String) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(source)
+	file.close()
+
+
+func _expect_unwired(reported: Array[String], control: String, errors: Array[String]) -> void:
+	if reported.size() != 1 or not reported[0].begins_with("victim_impact.unwired:"):
+		errors.append("%s source control must be unwired, got: %s" % [control, str(reported)])
 
 
 func _fixture(baseline: Dictionary) -> Dictionary:
