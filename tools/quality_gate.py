@@ -44,6 +44,9 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
+# FAN-3814 (ADR Фаза 2): пер-актёрные анимационные шарды; новая актёрная задача
+# добавляет свой файл, и рекурсивное discovery подбирает его без правок гейта.
+ACTOR_TEST_DIR = TEST_DIR / "actors"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
@@ -383,6 +386,25 @@ def select_godot_tests(
                 selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
             if changed_path.startswith("data/animation/"):
                 selected_names.update(ANIMATION_REGISTRY_TESTS)
+                # FAN-3814: an actor's data shard re-proves its own smoke shard;
+                # a shard without a matching actor suite re-proves them all.
+                actor_stem = f"{Path(changed_path).stem}_smoke_test"
+                if actor_stem in by_name:
+                    selected_names.add(actor_stem)
+                else:
+                    selected_names.update(
+                        name
+                        for name, path in by_name.items()
+                        if ACTOR_TEST_DIR in path.parents
+                    )
+            if changed_path == "scripts/full_frame_animation_registry.gd":
+                # FAN-3814: the facade serves every actor shard, so a facade
+                # change re-proves the whole per-actor smoke fleet.
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if ACTOR_TEST_DIR in path.parents
+                )
             if changed_path.startswith("scripts/ultimates/presentation/"):
                 selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)
                 selected_names.update(

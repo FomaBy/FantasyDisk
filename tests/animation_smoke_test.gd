@@ -7,18 +7,16 @@ const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.64, 0.64)  # SCRUM-823: l
 
 var _failed := false
 
+# FAN-3814 (ADR Фаза 2): пер-актёрные проверки живут в tests/actors/<actor_id>_smoke_test.gd
+# (каждый шард наследует этот сьют и вызывает параметризованные ассерты ниже).
+# Здесь остаются только кросс-актёрные и core-проверки (player, фасад реестра,
+# hit/death, death ghost) и общая библиотека ассертов.
 
 func _initialize() -> void:
 	_test_player_animation()
 	_test_enemy_projectile_sprite()
-	_test_enemy_sprite_paths()
-	_test_druid_wolf_ally_animation()
-	_test_druid_ghost_directional_ally_animations()
 	_test_character_full_frame_alpha_matte()
-	_test_full_frame_animation_registry()
-	_test_enemy_animation()
-	_test_flying_elite_boss_rigs()
-	_test_elite_attack_phase_animation()
+	_test_registry_facade()
 	_test_hit_death_states()
 	_test_death_ghost()
 	if _failed:
@@ -874,251 +872,6 @@ func _test_enemy_projectile_sprite() -> void:
 	projectile.queue_free()
 
 
-func _test_enemy_sprite_paths() -> void:
-	var expected_paths := {
-		"res://scenes/Enemy.tscn": "res://assets/sprites/enemies/enemy_melee.png",
-		"res://scenes/EnemyShooter.tscn": "res://assets/sprites/enemies/enemy_ranged.png",
-		"res://scenes/EnemySummoner.tscn": "res://assets/sprites/enemies/enemy_summoner.png",
-		"res://scenes/EnemyRunner.tscn": "res://assets/sprites/enemies/enemy_suicide_runner.png",
-		"res://scenes/EnemyBruiser.tscn": "res://assets/sprites/enemies/enemy_bruiser_slow.png",
-		"res://scenes/EnemyMage.tscn": "res://assets/sprites/enemies/enemy_void_mage.png",
-		"res://scenes/EnemySpitter.tscn": "res://assets/sprites/enemies/enemy_venom_spitter.png",
-		"res://scenes/EnemyShield.tscn": "res://assets/sprites/enemies/enemy_rift_shieldbearer.png",
-		"res://scenes/EnemyBiter.tscn": "res://assets/sprites/enemies/enemy_small_biter.png",
-		"res://scenes/EnemyBoneShaman.tscn": "res://assets/sprites/enemies/enemy_bone_shaman.png",
-		"res://scenes/EnemyFlyingRunner.tscn": "res://assets/sprites/enemies/enemy_winged_spark.png",
-		"res://scenes/EliteArmored.tscn": "res://assets/sprites/elites/iron_bastion.png",
-		"res://scenes/EliteStalker.tscn": "res://assets/sprites/elites/night_stalker.png",
-		"res://scenes/ElitePoisoned.tscn": "res://assets/sprites/elites/plague_prophet.png",
-		"res://scenes/EliteCommander.tscn": "res://assets/sprites/elites/shard_marshal.png",
-	}
-
-	for scene_path in expected_paths.keys():
-		var scene := load(scene_path) as PackedScene
-		var enemy := scene.instantiate()
-		root.add_child(enemy)
-		var body := enemy.get_node("Body") as Sprite2D
-		if body.texture == null or body.texture.resource_path != expected_paths[scene_path]:
-			_fail("Expected %s to use %s." % [scene_path, expected_paths[scene_path]])
-		enemy.queue_free()
-
-	var expected_boss_paths := {
-		"res://scenes/BossWarden.tscn": "res://assets/sprites/bosses/boss_rift_warden.png",
-		"res://scenes/BossDiskDevourer.tscn": "res://assets/sprites/bosses/boss_disk_devourer.png",
-		"res://scenes/BossBoneArchon.tscn": "res://assets/sprites/bosses/boss_bone_archon.png",
-		"res://scenes/BossBroodMother.tscn": "res://assets/sprites/bosses/boss_brood_mother.png",
-		"res://scenes/BossAshenColossus.tscn": "res://assets/sprites/bosses/boss_ashen_colossus.png",
-		"res://scenes/BossBloodthornLion.tscn": "res://assets/sprites/bosses/boss_bloodthorn_lion.png",
-	}
-	for boss_scene_path in expected_boss_paths.keys():
-		var boss_scene := load(boss_scene_path) as PackedScene
-		var boss := boss_scene.instantiate()
-		root.add_child(boss)
-		var boss_body := boss.get_node("Sprite2D") as Sprite2D
-		if boss_body.texture == null or boss_body.texture.resource_path != expected_boss_paths[boss_scene_path]:
-			_fail("Expected %s to use %s." % [boss_scene_path, expected_boss_paths[boss_scene_path]])
-		boss.queue_free()
-
-
-func _test_druid_wolf_ally_animation() -> void:
-	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
-	var ally := ally_scene.instantiate()
-	root.add_child(ally)
-	ally.call("set_visual_id", "druid_beast")
-
-	var body := ally.get_node("Body") as Sprite2D
-	var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
-	if body.visible:
-		_fail("Expected druid_beast to hide the static ally fallback body.")
-	if not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
-		_fail("Expected druid_beast to use AnimatedSprite2D.")
-	if animated_body.sprite_frames == null:
-		_fail("Expected druid_beast AnimatedSprite2D to have SpriteFrames.")
-	for animation_name in ["move", "attack", "attack_primary", "death"]:
-		if not animated_body.sprite_frames.has_animation(animation_name):
-			_fail("Expected druid_beast SpriteFrames to expose %s animation." % animation_name)
-	if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
-			or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
-		_fail("Expected druid_beast move/attack/death frame counts to match the Design handoff.")
-	if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
-			or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
-		_fail("Expected druid_beast move to loop and attack/death to be one-shot.")
-	if animated_body.animation != "move" or not animated_body.is_playing():
-		_fail("Expected druid_beast to start in playing move animation.")
-
-	ally.set("velocity", Vector2(120, 0))
-	ally.call("_update_visual_animation")
-	if not animated_body.flip_h:
-		_fail("Expected druid_beast to flip horizontally when moving right.")
-	ally.call("_play_attack_animation", Vector2.LEFT)
-	if animated_body.animation != "attack" or animated_body.flip_h:
-		_fail("Expected druid_beast attack animation to face the attack direction.")
-
-	# SCRUM-336: all summon creatures are now animated like the wolf (move+attack).
-	for summon_visual in ["druid_pack_spirit", "homunculus", "leadership_echo"]:
-		ally.call("set_visual_id", summon_visual)
-		if not animated_body.visible or body.visible or not ally.call("is_using_animated_ally_visual"):
-			_fail("Expected summon '%s' to use the animated AnimatedSprite2D visual." % summon_visual)
-		if animated_body.sprite_frames == null:
-			_fail("Expected summon '%s' AnimatedSprite2D to have SpriteFrames." % summon_visual)
-		for animation_name in ["move", "attack", "attack_primary", "death"]:
-			if not animated_body.sprite_frames.has_animation(animation_name):
-				_fail("Expected summon '%s' SpriteFrames to expose %s animation." % [summon_visual, animation_name])
-		if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
-				or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
-			_fail("Expected summon '%s' move/attack/death frame counts to match the wolf system (8/6/6)." % summon_visual)
-		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
-				or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
-			_fail("Expected summon '%s' move to loop and attack/death to be one-shot." % summon_visual)
-	ally.queue_free()
-
-
-func _test_druid_ghost_directional_ally_animations() -> void:
-	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
-	var expected_ids := [
-		"druid_ghost_wolf",
-		"druid_ghost_bear",
-		"druid_ghost_panther",
-		"druid_ghost_stag",
-		"druid_ghost_lion",
-	]
-	var allowed_animations := ["attack", "attack_primary", "attack_left", "attack_right", "idle", "move", "move_left", "move_right", "walk"]
-	var expected_directional_animations := {}
-	for state in ["idle", "move", "attack"]:
-		for direction in ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]:
-			var animation_name := "%s_%s" % [state, direction]
-			allowed_animations.append(animation_name)
-			expected_directional_animations[animation_name] = {
-				"state": state,
-				"direction": direction,
-			}
-	allowed_animations.sort()
-	for ghost_id in expected_ids:
-		var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", ghost_id)
-		if frames == null:
-			_fail("Expected %s to resolve through FullFrameAnimationRegistry." % ghost_id)
-			return
-		var animation_names := []
-		for animation_name in frames.get_animation_names():
-			animation_names.append(str(animation_name))
-		animation_names.sort()
-		if animation_names != allowed_animations:
-			_fail("Expected %s to expose the complete 8-direction move/attack package, got %s." % [ghost_id, str(animation_names)])
-			return
-		for animation_name in allowed_animations:
-			var row_state := "attack" if animation_name.begins_with("attack") else ("idle" if animation_name.begins_with("idle") else "move")
-			var expected_count := 1 if row_state == "idle" else 6
-			if frames.get_frame_count(animation_name) != expected_count:
-				_fail("Expected %s %s to expose exactly %d PixelLab frames." % [ghost_id, animation_name, expected_count])
-				return
-			var should_loop: bool = row_state in ["idle", "move"]
-			if frames.get_animation_loop(animation_name) != should_loop:
-				_fail("Expected %s %s loop=%s." % [ghost_id, animation_name, str(should_loop)])
-				return
-			for frame_index in range(frames.get_frame_count(animation_name)):
-				var texture := frames.get_frame_texture(animation_name, frame_index)
-				if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
-					_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
-					return
-				var expected_direction := "south"
-				if expected_directional_animations.has(animation_name):
-					expected_direction = str(expected_directional_animations[animation_name]["direction"])
-				elif animation_name.ends_with("_right"):
-					expected_direction = "east"
-				elif animation_name.ends_with("_left"):
-					expected_direction = "west"
-				var expected_kind := row_state if row_state != "idle" else "idle"
-				if animation_name == "walk":
-					expected_kind = "move"
-				var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
-				if not texture.resource_path.begins_with(expected_prefix):
-					_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
-					return
-		var runtime_files := []
-		for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):
-			if file_name.ends_with(".png"):
-				runtime_files.append(file_name)
-		if runtime_files.size() != 104:
-			_fail("Expected %s runtime folder to contain exactly 104 authored PNGs (8 idle + 48 move + 48 attack), got %d." % [ghost_id, runtime_files.size()])
-			return
-		for file_name in runtime_files:
-			if str(file_name).contains("_left_") or str(file_name).contains("_right_"):
-				_fail("Expected %s runtime folder to contain authored octant names only: %s." % [ghost_id, file_name])
-				return
-		if ghost_id == "druid_ghost_bear":
-			var smallest_alpha_area := 1 << 30
-			var largest_alpha_area := 0
-			for frame_index in range(frames.get_frame_count(&"move_right")):
-				var texture := frames.get_frame_texture(&"move_right", frame_index)
-				var image := texture.get_image() if texture != null else null
-				var meaningful_alpha_area := _meaningful_alpha_pixel_count(image, 4.0 / 255.0)
-				if meaningful_alpha_area <= 0:
-					_fail("Expected druid_ghost_bear move_right frame %d to contain meaningful alpha." % frame_index)
-					return
-				smallest_alpha_area = mini(smallest_alpha_area, meaningful_alpha_area)
-				largest_alpha_area = maxi(largest_alpha_area, meaningful_alpha_area)
-			var alpha_area_ratio := float(largest_alpha_area) / float(maxi(smallest_alpha_area, 1))
-			if alpha_area_ratio > 1.65:
-				_fail("Expected druid_ghost_bear move_right silhouette continuity <=1.65x, got %.3fx." % alpha_area_ratio)
-				return
-
-		var ally := ally_scene.instantiate()
-		root.add_child(ally)
-		ally.call("set_visual_id", ghost_id)
-		var body := ally.get_node("Body") as Sprite2D
-		var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
-		if body.visible or not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
-			_fail("Expected %s to use its directional AnimatedSprite2D visual." % ghost_id)
-			ally.queue_free()
-			return
-		if not FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
-			_fail("Expected %s to declare explicit horizontal direction rows." % ghost_id)
-			ally.queue_free()
-			return
-
-		ally.set("velocity", Vector2.LEFT * 120.0)
-		ally.call("_update_visual_animation")
-		if animated_body.animation != &"move_left" or animated_body.flip_h:
-			_fail("Expected %s left movement to play move_left without horizontal flip." % ghost_id)
-			ally.queue_free()
-			return
-		ally.set("velocity", Vector2.RIGHT * 120.0)
-		ally.call("_update_visual_animation")
-		if animated_body.animation != &"move_right" or animated_body.flip_h:
-			_fail("Expected %s right movement to play move_right without horizontal flip." % ghost_id)
-			ally.queue_free()
-			return
-		ally.call("_play_attack_animation", Vector2.LEFT)
-		if animated_body.animation != &"attack_left" or animated_body.flip_h:
-			_fail("Expected %s left action to play attack_left without horizontal flip." % ghost_id)
-			ally.queue_free()
-			return
-		ally.call("_play_attack_animation", Vector2.RIGHT)
-		if animated_body.animation != &"attack_right" or animated_body.flip_h:
-			_fail("Expected %s right action to play attack_right without horizontal flip." % ghost_id)
-			ally.queue_free()
-			return
-		if float(ally.get("_attack_anim_time")) < 0.5:
-			_fail("Expected %s action visual window to cover all 6 frames at 12fps." % ghost_id)
-			ally.queue_free()
-			return
-		if ghost_id in ["druid_ghost_stag", "druid_ghost_lion"]:
-			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.LEFT) or animated_body.animation != &"attack_left" or animated_body.flip_h:
-				_fail("Expected %s cast alias to resolve to attack_left without flip." % ghost_id)
-				ally.queue_free()
-				return
-			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.RIGHT) or animated_body.animation != &"attack_right" or animated_body.flip_h:
-				_fail("Expected %s cast alias to resolve to attack_right without flip." % ghost_id)
-				ally.queue_free()
-				return
-		ally.call("_play_attack_animation", Vector2.UP)
-		if animated_body.animation != &"attack_right" or animated_body.flip_h:
-			_fail("Expected %s vertical target action to preserve the last horizontal facing without flip." % ghost_id)
-			ally.queue_free()
-			return
-		ally.queue_free()
-
-
 func _meaningful_alpha_pixel_count(image: Image, threshold: float) -> int:
 	if image == null or image.is_empty():
 		return 0
@@ -1128,699 +881,6 @@ func _meaningful_alpha_pixel_count(image: Image, threshold: float) -> int:
 			if image.get_pixel(x, y).a > threshold:
 				count += 1
 	return count
-
-
-func _test_full_frame_animation_registry() -> void:
-	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", "druid_beast")
-	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack") \
-			or not frames.has_animation("attack_primary") or not frames.has_animation("death"):
-		_fail("Expected full-frame registry to resolve druid_beast move/attack/death SpriteFrames.")
-	var standard_enemy_scenes := {
-		"rift_cutter": "res://scenes/Enemy.tscn",
-		"ash_marksman": "res://scenes/EnemyShooter.tscn",
-		"spark_runner": "res://scenes/EnemyRunner.tscn",
-		"stone_bruiser": "res://scenes/EnemyBruiser.tscn",
-		"bone_caller": "res://scenes/EnemySummoner.tscn",
-		"void_mage": "res://scenes/EnemyMage.tscn",
-		"venom_spitter": "res://scenes/EnemySpitter.tscn",
-		"rift_shieldbearer": "res://scenes/EnemyShield.tscn",
-		"small_biter": "res://scenes/EnemyBiter.tscn",
-		"bone_shaman": "res://scenes/EnemyBoneShaman.tscn",
-		"winged_spark": "res://scenes/EnemyFlyingRunner.tscn",
-	}
-	# FAN-3040: octant row lengths are pack-authored art, not a shared contract —
-	# the single hardcoded shape below expected 1/6/6/4/6 for every directional
-	# enemy, which only ever matched bone_caller (FAN-2613). Declare the length
-	# each pack actually ships so the per-octant assertion stays exact.
-	var directional_enemy_row_frames := {
-		"rift_cutter": {"idle": 4, "move": 6, "attack": 6, "hit": 6, "death": 6},
-		"spark_runner": {"idle": 1, "move": 6, "attack": 7, "hit": 5, "death": 7},
-		# FAN-3090: was declared 7/5/7 — the shipped length, but only because
-		# frame 0 of each v3 row was a duplicate of the idle pose. The pack now
-		# ships the animated frames alone, so the declaration follows the art back.
-		"ash_marksman": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		"bone_caller": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		"bone_shaman": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		"small_biter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		"rift_shieldbearer": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		"void_mage": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		# FAN-3102: PixelLab v3 rows are reference-stripped, so the new
-		# candidate has 6/6/8 animated frames instead of idle duplicates.
-		"stone_bruiser": {"idle": 1, "move": 6, "attack": 6, "hit": 6, "death": 8},
-		"venom_spitter": {"idle": 1, "move": 6, "attack": 6, "hit": 4, "death": 6},
-		# FAN-2619: a flying actor's idle row is the six-frame hover-flap loop.
-		"winged_spark": {"idle": 6, "move": 6, "attack": 6, "hit": 4, "death": 6},
-	}
-	for enemy_id in standard_enemy_scenes.keys():
-		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
-		if enemy_frames == null:
-			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
-			continue
-		# FAN-2613: branch on the registry's own explicit_eight_directions flag,
-		# not a hardcoded ID list, so the next converted standard_monster falls
-		# into the directional contract automatically instead of re-breaking
-		# this test (mirrors the FAN-2901 mini-elite pattern below).
-		var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
-		if enemy_is_directional:
-			var enemy_row_frames: Dictionary = directional_enemy_row_frames.get(enemy_id, {})
-			if enemy_row_frames.is_empty():
-				_fail("Expected %s to declare its directional row lengths in directional_enemy_row_frames." % enemy_id)
-			for state_name in ["idle", "move", "attack", "hit", "death"]:
-				var enemy_state_should_loop: bool = state_name in ["idle", "move"]
-				var enemy_expected_frames := int(enemy_row_frames.get(state_name, 0))
-				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-					var enemy_directional_row := "%s_%s" % [state_name, dir_suffix]
-					if not enemy_frames.has_animation(enemy_directional_row):
-						_fail("Expected %s SpriteFrames to expose %s." % [enemy_id, enemy_directional_row])
-					else:
-						if enemy_frames.get_animation_loop(enemy_directional_row) != enemy_state_should_loop:
-							_fail("Expected %s %s loop to be %s." % [enemy_id, enemy_directional_row, str(enemy_state_should_loop)])
-						if enemy_frames.get_frame_count(enemy_directional_row) != enemy_expected_frames:
-							_fail("Expected %s %s to have %d frames." % [enemy_id, enemy_directional_row, enemy_expected_frames])
-		else:
-			for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
-				if not enemy_frames.has_animation(animation_name):
-					_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
-				elif enemy_frames.get_frame_count(animation_name) != 6:
-					_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
-			if not enemy_frames.get_animation_loop("move"):
-				_fail("Expected %s move to loop." % enemy_id)
-			for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
-				if enemy_frames.get_animation_loop(one_shot_name):
-					_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
-		if enemy_id == "rift_cutter":
-			# FAN-2609: explicit 8-direction runtime contract — every state must
-			# expose all eight `<state>_<suffix>` rows, never a mirrored fallback.
-			for state_name in ["idle", "move", "attack_primary", "hit", "death"]:
-				if not FullFrameAnimationRegistry.has_full_directional_rows(enemy_frames, state_name):
-					_fail("Expected rift_cutter %s to expose all eight directional rows." % state_name)
-			for suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-				if enemy_frames.get_frame_count("idle_%s" % suffix) != 4:
-					_fail("Expected rift_cutter idle_%s to have 4 frames." % suffix)
-				for state_name in ["move", "attack_primary", "hit", "death"]:
-					if enemy_frames.get_frame_count("%s_%s" % [state_name, suffix]) != 6:
-						_fail("Expected rift_cutter %s_%s to have 6 frames." % [state_name, suffix])
-	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
-		_fail("Expected missing full-frame registry entries to return null.")
-
-	var owner := Node2D.new()
-	root.add_child(owner)
-	owner.set_meta("full_frame_spriteframes_path", "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres")
-	owner.set_meta("full_frame_scale", Vector2(0.34, 0.34))
-	owner.set_meta("full_frame_position", Vector2(0.0, -31.0))
-	owner.set_meta("full_frame_source_faces_left", true)
-	var static_body := Sprite2D.new()
-	static_body.name = "Body"
-	static_body.visible = true
-	owner.add_child(static_body)
-	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(owner, "enemy", "runtime_dummy")
-	if animated_body == null or not animated_body.visible or static_body.visible:
-		_fail("Expected registry to create visible FullFrameBody and hide static Body.")
-	if str(animated_body.get_meta("entity_kind", "")) != "enemy" or str(animated_body.get_meta("entity_id", "")) != "runtime_dummy":
-		_fail("Expected registry to tag entity kind/id on FullFrameBody.")
-	if not FullFrameAnimationRegistry.play_state(animated_body, "attack_slam_wave", Vector2.RIGHT):
-		_fail("Expected registry to accept boss/elite-style skill state names.")
-	if animated_body.animation != "attack":
-		_fail("Expected attack_slam_wave to resolve to existing attack animation.")
-	if not animated_body.flip_h:
-		_fail("Expected source-left full-frame art to flip when facing right.")
-	if str(animated_body.get_meta("last_requested_state", "")) != "attack_slam_wave" or str(animated_body.get_meta("last_resolved_state", "")) != "attack":
-		_fail("Expected FullFrameBody metadata to expose requested/resolved state.")
-	owner.queue_free()
-
-	for enemy_id in standard_enemy_scenes.keys():
-		var enemy_scene := load(str(standard_enemy_scenes[enemy_id])) as PackedScene
-		var enemy := enemy_scene.instantiate()
-		root.add_child(enemy)
-		if enemy.get_node_or_null("FullFrameBody") == null:
-			enemy.call("_configure_full_frame_animation")
-		enemy.call("_update_movement_animation", 0.1)
-		var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
-			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
-		if enemy_full_frame_body != null:
-			var enemy_scene_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
-			if enemy_scene_is_directional:
-				for state_name in ["idle", "move", "hit", "death"]:
-					if not enemy_full_frame_body.sprite_frames.has_animation("%s_west" % state_name):
-						_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
-				if enemy_full_frame_body.animation != "idle_west":
-					_fail("Expected %s enemy FullFrameBody to start in idle_west (last-facing default)." % enemy_id)
-				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack", Vector2.RIGHT):
-					_fail("Expected %s FullFrameBody to play attack." % enemy_id)
-				if enemy_full_frame_body.animation != "attack_east":
-					_fail("Expected %s attack to resolve to attack_east, got %s." % [enemy_id, enemy_full_frame_body.animation])
-				if enemy_full_frame_body.flip_h:
-					_fail("Expected %s eight-direction full-frame art to never mirror via flip_h." % enemy_id)
-				# FAN-2609/FAN-2889: a pack that also ships the attack_primary alias per
-				# octant must resolve that alias through its own east row, never through
-				# a mirrored surrogate of another facing.
-				if enemy_full_frame_body.sprite_frames.has_animation("attack_primary_east"):
-					if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
-						_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
-					if enemy_full_frame_body.animation != "attack_primary_east" or enemy_full_frame_body.flip_h:
-						_fail("Expected %s attack_primary to resolve to attack_primary_east without flip." % enemy_id)
-			else:
-				for animation_name in ["move", "attack_primary", "hit", "death"]:
-					if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
-						_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
-				if enemy_full_frame_body.animation != "move":
-					_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
-				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
-					_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
-				if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
-					_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
-		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
-		if enemy_static_body != null and enemy_static_body.visible:
-			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
-		enemy.queue_free()
-
-	var elite_full_frame_scenes := {
-		"iron_bastion": {
-			"path": "res://scenes/EliteArmored.tscn",
-			"skill_states": ["skill_shield_block", "skill_slam_wave"],
-			"phase_state": "iron_bastion:slam_wave:windup",
-			"phase_resolved": "skill_slam_wave",
-		},
-		"night_stalker": {
-			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_shadow_strike", "skill_phase_dash"],
-			"phase_state": "night_stalker:shadow_strike:windup",
-			"phase_resolved": "skill_shadow_strike",
-		},
-		"plague_prophet": {
-			"path": "res://scenes/ElitePoisoned.tscn",
-			"skill_states": ["skill_poison_volley"],
-			"phase_state": "plague_prophet:poison_volley:windup",
-			"phase_resolved": "skill_poison_volley",
-		},
-		"shard_marshal": {
-			"path": "res://scenes/EliteCommander.tscn",
-			"skill_states": ["skill_shard_fan", "skill_command_pulse"],
-			"phase_state": "shard_marshal:shard_fan:windup",
-			"phase_resolved": "skill_shard_fan",
-		},
-	}
-	# FAN-3093: per-state directional row frame counts for route elites that
-	# ship the FAN-2519 explicit-eight-direction contract (mirrors
-	# directional_enemy_row_frames above / FAN-2901 mini-elite pattern below).
-	var directional_elite_row_frames := {
-		"iron_bastion": {"idle": 1, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shield_block": 7, "skill_slam_wave": 7},
-		"night_stalker": {"idle": 4, "move": 8, "attack": 7, "hit": 6, "death": 7, "skill_shadow_strike": 7, "skill_phase_dash": 7},
-		"plague_prophet": {"idle": 1, "move": 8, "skill_poison_volley": 10, "hit": 5, "death": 7},
-		"shard_marshal": {"idle": 1, "move": 8, "attack": 7, "hit": 5, "death": 7, "skill_shard_fan": 7, "skill_command_pulse": 7},
-	}
-	for elite_id in elite_full_frame_scenes.keys():
-		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]
-		var elite_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", elite_id)
-		if elite_frames == null:
-			_fail("Expected full-frame registry to resolve %s elite SpriteFrames." % elite_id)
-			continue
-		# FAN-3093: branch on the registry's own explicit_eight_directions flag,
-		# not a hardcoded ID list, matching the FAN-2613/FAN-2901 pattern.
-		var elite_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", elite_id).get("explicit_eight_directions", false))
-		if elite_is_directional:
-			var elite_row_frames: Dictionary = directional_elite_row_frames.get(elite_id, {})
-			if elite_row_frames.is_empty():
-				_fail("Expected %s to declare its directional row lengths in directional_elite_row_frames." % elite_id)
-			var elite_state_names := ["idle", "move", "hit", "death"]
-			if elite_id == "night_stalker":
-				elite_state_names.append("attack")
-			for skill_state in elite_info["skill_states"]:
-				elite_state_names.append(str(skill_state))
-			for state_name in elite_state_names:
-				var elite_state_should_loop: bool = state_name in ["idle", "move"]
-				var elite_expected_frames := int(elite_row_frames.get(state_name, 0))
-				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-					var elite_directional_row := "%s_%s" % [state_name, dir_suffix]
-					if not elite_frames.has_animation(elite_directional_row):
-						_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, elite_directional_row])
-					else:
-						if elite_frames.get_animation_loop(elite_directional_row) != elite_state_should_loop:
-							_fail("Expected %s %s loop to be %s." % [elite_id, elite_directional_row, str(elite_state_should_loop)])
-						if elite_frames.get_frame_count(elite_directional_row) != elite_expected_frames:
-							_fail("Expected %s %s to have %d frames." % [elite_id, elite_directional_row, elite_expected_frames])
-			if elite_id == "plague_prophet":
-				for stale_row in ["skill_plague_aura_east", "attack_poison_volley_east"]:
-					if elite_frames.has_animation(stale_row):
-						_fail("Expected plague_prophet not to expose stale %s." % stale_row)
-		else:
-			for animation_name in ["move", "attack", "attack_primary"]:
-				if not elite_frames.has_animation(animation_name):
-					_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
-				elif elite_frames.get_frame_count(animation_name) != 6:
-					_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
-			if not elite_frames.get_animation_loop("move"):
-				_fail("Expected %s elite move to loop." % elite_id)
-			if elite_id in ["night_stalker", "plague_prophet", "shard_marshal"]:
-				if not elite_frames.has_animation("death"):
-					_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
-				elif elite_frames.get_frame_count("death") != 6:
-					_fail("Expected %s elite death to have 6 frames." % elite_id)
-			for one_shot_name in ["attack", "attack_primary", "death"]:
-				if not elite_frames.has_animation(one_shot_name):
-					continue
-				if elite_frames.get_animation_loop(one_shot_name):
-					_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
-			for skill_state in elite_info["skill_states"]:
-				var skill_name := str(skill_state)
-				var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
-				if not elite_frames.has_animation(skill_name):
-					_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
-				elif elite_frames.get_frame_count(skill_name) != 6:
-					_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
-				if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
-					_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
-				if not elite_frames.has_animation(attack_alias):
-					_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
-				elif elite_frames.get_frame_count(attack_alias) != 6:
-					_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
-				if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
-					_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
-
-		var elite_scene := load(str(elite_info["path"])) as PackedScene
-		var elite := elite_scene.instantiate()
-		root.add_child(elite)
-		if elite.get_node_or_null("FullFrameBody") == null:
-			elite.call("_configure_full_frame_animation")
-		elite.call("_update_movement_animation", 0.1)
-		var elite_full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-		if elite_full_frame_body == null or not elite_full_frame_body.visible:
-			_fail("Expected %s elite scene to create a visible FullFrameBody." % elite_id)
-		if elite_full_frame_body != null:
-			if not FullFrameAnimationRegistry.play_state(elite_full_frame_body, str(elite_info["phase_state"]), Vector2.RIGHT):
-				_fail("Expected %s elite phase state to resolve through the full-frame registry." % elite_id)
-			if elite_is_directional:
-				var elite_expected_directional_animation := "%s_east" % str(elite_info["phase_resolved"])
-				if elite_full_frame_body.animation != elite_expected_directional_animation:
-					_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, elite_expected_directional_animation, elite_full_frame_body.animation])
-				if elite_full_frame_body.flip_h:
-					_fail("Expected %s elite eight-direction full-frame art to never mirror via flip_h." % elite_id)
-			else:
-				if elite_full_frame_body.animation != str(elite_info["phase_resolved"]):
-					_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, str(elite_info["phase_resolved"]), elite_full_frame_body.animation])
-				if not elite_full_frame_body.flip_h:
-					_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
-		var elite_static_body := elite.get_node_or_null("Body") as CanvasItem
-		if elite_static_body != null and elite_static_body.visible:
-			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
-		elite.queue_free()
-
-	var mini_elite_full_frame_scenes := {
-		"mini_scavenger_reaper": {
-			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_reaping_dash", "skill_bleed_finish"],
-			"phase_state": "mini_scavenger_reaper:reaping_dash:windup",
-			"phase_resolved": "skill_reaping_dash",
-		},
-		"mini_plague_bellringer": {
-			"path": "res://scenes/ElitePoisoned.tscn",
-			"skill_states": ["skill_bell_toll", "skill_poison_pool"],
-			"phase_state": "mini_plague_bellringer:bell_toll:windup",
-			"phase_resolved": "skill_bell_toll",
-		},
-		"mini_bone_warden": {
-			"path": "res://scenes/EliteArmored.tscn",
-			"skill_states": ["skill_bone_guard", "skill_slam_wave"],
-			"phase_state": "mini_bone_warden:slam_wave:windup",
-			"phase_resolved": "skill_slam_wave",
-		},
-		"mini_spark_wight": {
-			"path": "res://scenes/EliteCommander.tscn",
-			"skill_states": ["skill_spark_fan", "skill_static_field"],
-			"phase_state": "mini_spark_wight:spark_fan:windup",
-			"phase_resolved": "skill_spark_fan",
-		},
-		"mini_rot_hound": {
-			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_shadow_strike"],
-			"phase_state": "mini_rot_hound:shadow_strike:windup",
-			"phase_resolved": "skill_shadow_strike",
-		},
-		"mini_shadow_devourer": {
-			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_shadow_blink", "skill_devour_bite"],
-			"phase_state": "mini_shadow_devourer:shadow_blink:windup",
-			"phase_resolved": "skill_shadow_blink",
-		},
-		"mini_siege_rammer": {
-			"path": "res://scenes/EliteArmored.tscn",
-			"skill_states": ["skill_shield_block", "skill_slam_wave"],
-			"phase_state": "mini_siege_rammer:slam_wave:windup",
-			"phase_resolved": "skill_slam_wave",
-		},
-		"mini_swarm_sniper": {
-			"path": "res://scenes/EliteCommander.tscn",
-			"skill_states": ["skill_shard_fan", "skill_command_pulse"],
-			"phase_state": "mini_swarm_sniper:shard_fan:windup",
-			"phase_resolved": "skill_shard_fan",
-		},
-		"mini_void_phantom": {
-			"path": "res://scenes/EliteStalker.tscn",
-			"skill_states": ["skill_shadow_strike", "skill_phase_dash"],
-			"phase_state": "mini_void_phantom:shadow_strike:windup",
-			"phase_resolved": "skill_shadow_strike",
-		},
-		"mini_plague_berserker": {
-			"path": "res://scenes/ElitePoisoned.tscn",
-			"skill_states": ["skill_poison_volley"],
-			"phase_state": "mini_plague_berserker:poison_volley:windup",
-			"phase_resolved": "skill_poison_volley",
-		},
-	}
-	for mini_id in mini_elite_full_frame_scenes.keys():
-		var mini_info: Dictionary = mini_elite_full_frame_scenes[mini_id]
-		var mini_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", mini_id)
-		if mini_frames == null:
-			_fail("Expected full-frame registry to resolve %s mini-elite SpriteFrames." % mini_id)
-			continue
-		# FAN-2901: branch on the registry's own explicit_eight_directions flag,
-		# not a hardcoded ID list, so the next converted mini-elite falls into
-		# the directional contract automatically instead of re-breaking this test.
-		var mini_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", mini_id).get("explicit_eight_directions", false))
-		if mini_is_directional:
-			for state_name in ["idle", "move", "attack", "hit", "death"]:
-				var state_should_loop: bool = state_name in ["idle", "move"]
-				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-					var directional_row := "%s_%s" % [state_name, dir_suffix]
-					if not mini_frames.has_animation(directional_row):
-						_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, directional_row])
-					elif mini_frames.get_animation_loop(directional_row) != state_should_loop:
-						_fail("Expected %s mini-elite %s loop to be %s." % [mini_id, directional_row, str(state_should_loop)])
-			for skill_state in mini_info["skill_states"]:
-				var mini_skill_base := str(skill_state)
-				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-					var mini_skill_row := "%s_%s" % [mini_skill_base, dir_suffix]
-					if not mini_frames.has_animation(mini_skill_row):
-						_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_row])
-					elif mini_frames.get_animation_loop(mini_skill_row):
-						_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_row])
-		else:
-			for animation_name in ["move", "attack", "attack_primary"]:
-				if not mini_frames.has_animation(animation_name):
-					_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
-				elif mini_frames.get_frame_count(animation_name) != 6:
-					_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
-			if not mini_frames.get_animation_loop("move"):
-				_fail("Expected %s mini-elite move to loop." % mini_id)
-			if not mini_frames.has_animation("death"):
-				_fail("Expected %s mini-elite SpriteFrames to expose death after SCRUM-370 death integration." % mini_id)
-			elif mini_frames.get_frame_count("death") != 6:
-				_fail("Expected %s mini-elite death to have 6 frames." % mini_id)
-			for one_shot_name in ["attack", "attack_primary", "death"]:
-				if not mini_frames.has_animation(one_shot_name):
-					continue
-				if mini_frames.get_animation_loop(one_shot_name):
-					_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
-			for skill_state in mini_info["skill_states"]:
-				var mini_skill_name := str(skill_state)
-				var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
-				if not mini_frames.has_animation(mini_skill_name):
-					_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
-				elif mini_frames.get_frame_count(mini_skill_name) != 6:
-					_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
-				if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
-					_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
-				if not mini_frames.has_animation(mini_attack_alias):
-					_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
-				elif mini_frames.get_frame_count(mini_attack_alias) != 6:
-					_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
-				if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
-					_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
-
-		var mini_scene := load(str(mini_info["path"])) as PackedScene
-		var mini := mini_scene.instantiate()
-		root.add_child(mini)
-		mini.set_meta("mini_elite_kind", mini_id)
-		mini.call("refresh_full_frame_visual")
-		mini.call("_update_movement_animation", 0.1)
-		var mini_body := mini.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-		if mini_body == null or not mini_body.visible:
-			_fail("Expected %s mini-elite scene to create a visible FullFrameBody." % mini_id)
-		if mini_body != null:
-			if str(mini_body.get_meta("entity_id", "")) != mini_id:
-				_fail("Expected %s mini_elite_kind to select mini-specific SpriteFrames, got %s." % [mini_id, str(mini_body.get_meta("entity_id", ""))])
-			if not FullFrameAnimationRegistry.play_state(mini_body, str(mini_info["phase_state"]), Vector2.RIGHT):
-				_fail("Expected %s mini-elite phase state to resolve through the full-frame registry." % mini_id)
-			if mini_is_directional:
-				var mini_expected_directional_animation := "%s_east" % str(mini_info["phase_resolved"])
-				if mini_body.animation != mini_expected_directional_animation:
-					_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, mini_expected_directional_animation, mini_body.animation])
-				if mini_body.flip_h:
-					_fail("Expected %s mini-elite eight-direction full-frame art to never mirror via flip_h." % mini_id)
-			else:
-				if mini_body.animation != str(mini_info["phase_resolved"]):
-					_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, str(mini_info["phase_resolved"]), mini_body.animation])
-				if not mini_body.flip_h:
-					_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
-		var mini_static_body := mini.get_node_or_null("Body") as CanvasItem
-		if mini_static_body != null and mini_static_body.visible:
-			_fail("Expected %s mini-elite full-frame visual to hide the static body fallback." % mini_id)
-		mini.queue_free()
-
-	var mini_visual_scene := load("res://scenes/EliteStalker.tscn") as PackedScene
-	var mini_visual_elite := mini_visual_scene.instantiate()
-	root.add_child(mini_visual_elite)
-	mini_visual_elite.set_meta("mini_elite_kind", "mini_scavenger_reaper")
-	mini_visual_elite.call("refresh_full_frame_visual")
-	var mini_visual_body := mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-	if mini_visual_body == null:
-		_fail("Expected mini-elite metadata refresh to preserve a FullFrameBody.")
-	elif str(mini_visual_body.get_meta("entity_id", "")) != "mini_scavenger_reaper":
-		_fail("Expected mini_elite_kind with registered SpriteFrames to override the base elite visual id.")
-	mini_visual_elite.set_meta("mini_elite_kind", "missing_mini_visual_test")
-	mini_visual_elite.call("refresh_full_frame_visual")
-	mini_visual_body = mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-	if mini_visual_body == null:
-		_fail("Expected missing mini-elite visual id to keep the route elite fallback FullFrameBody.")
-	elif str(mini_visual_body.get_meta("entity_id", "")) != "night_stalker":
-		_fail("Expected missing mini_elite_kind SpriteFrames to fall back to elite_behavior visual id.")
-	mini_visual_elite.queue_free()
-
-	var boss_full_frame_scenes := {
-		"rift_warden": {
-			"path": "res://scenes/BossWarden.tscn",
-			"skill_states": ["skill_gravity_well", "skill_rift_zone"],
-			"phase_state": "rift_warden:gravity_well:windup",
-			"phase_resolved": "skill_gravity_well",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_gravity_well", "cast", Vector2.RIGHT],
-			"hook_expected": "skill_gravity_well",
-		},
-		"disk_devourer": {
-			"path": "res://scenes/BossDiskDevourer.tscn",
-			"skill_states": ["skill_vampiric_bite", "skill_rift_zone"],
-			"phase_state": "disk_devourer:vampiric_bite:windup",
-			"phase_resolved": "skill_vampiric_bite",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_rift_zone", "cast", Vector2.RIGHT],
-			"hook_expected": "skill_rift_zone",
-		},
-		"bone_archon": {
-			"path": "res://scenes/BossBoneArchon.tscn",
-			"skill_states": ["skill_skull_volley", "skill_bone_prison"],
-			"phase_state": "bone_archon:skull_volley:windup",
-			"phase_resolved": "skill_skull_volley",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_bone_prison", "cast", Vector2.RIGHT],
-			"hook_expected": "skill_bone_prison",
-		},
-		"brood_mother": {
-			"path": "res://scenes/BossBroodMother.tscn",
-			"skill_states": ["skill_brood_spawn", "skill_web_zone"],
-			"phase_state": "brood_mother:brood_spawn:windup",
-			"phase_resolved": "skill_brood_spawn",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_web_zone", "cast", Vector2.RIGHT],
-			"hook_expected": "skill_web_zone",
-		},
-		"ashen_colossus": {
-			"path": "res://scenes/BossAshenColossus.tscn",
-			"skill_states": ["skill_molten_slam", "skill_armor_pulse"],
-			"phase_state": "ashen_colossus:molten_slam:windup",
-			"phase_resolved": "skill_molten_slam",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_molten_slam", "attack", Vector2.RIGHT],
-			"hook_expected": "skill_molten_slam",
-		},
-		"bloodthorn_lion": {
-			"path": "res://scenes/BossBloodthornLion.tscn",
-			"skill_states": ["skill_spike_ring", "skill_rift_zone"],
-			"phase_state": "bloodthorn_lion:spike_ring:windup",
-			"phase_resolved": "skill_spike_ring",
-			"hook_method": "_play_boss_skill_visual",
-			"hook_args": ["skill_spike_ring", "cast", Vector2.RIGHT],
-			"hook_expected": "skill_spike_ring",
-		},
-	}
-	# FAN-2635: same explicit_eight_directions branch as the enemy/mini-elite
-	# loops above — declare the directional boss's per-state row length so the
-	# next converted boss falls into the directional contract automatically.
-	var directional_boss_row_frames := {
-		"disk_devourer": {"idle": 1, "move": 7, "attack": 7, "hit": 5, "death": 7, "skill_vampiric_bite": 7, "skill_rift_zone": 7},
-	}
-	for boss_id in boss_full_frame_scenes.keys():
-		var boss_info: Dictionary = boss_full_frame_scenes[boss_id]
-		var boss_frames := FullFrameAnimationRegistry.sprite_frames_for("boss", boss_id)
-		if boss_frames == null:
-			_fail("Expected full-frame registry to resolve %s boss SpriteFrames." % boss_id)
-			continue
-		var boss_is_directional := bool(FullFrameAnimationRegistry.registry_config("boss", boss_id).get("explicit_eight_directions", false))
-		if boss_is_directional:
-			var boss_row_frames: Dictionary = directional_boss_row_frames.get(boss_id, {})
-			if boss_row_frames.is_empty():
-				_fail("Expected %s to declare its directional row lengths in directional_boss_row_frames." % boss_id)
-			var boss_state_names: Array = ["idle", "move", "attack", "hit", "death"]
-			for skill_state in boss_info["skill_states"]:
-				boss_state_names.append(str(skill_state))
-			for state_name in boss_state_names:
-				var boss_state_should_loop: bool = state_name in ["idle", "move"]
-				var boss_expected_frames := int(boss_row_frames.get(state_name, 0))
-				for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
-					var boss_directional_row := "%s_%s" % [state_name, dir_suffix]
-					if not boss_frames.has_animation(boss_directional_row):
-						_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_directional_row])
-					else:
-						if boss_frames.get_animation_loop(boss_directional_row) != boss_state_should_loop:
-							_fail("Expected %s boss %s loop to be %s." % [boss_id, boss_directional_row, str(boss_state_should_loop)])
-						if boss_frames.get_frame_count(boss_directional_row) != boss_expected_frames:
-							_fail("Expected %s boss %s to have %d frames." % [boss_id, boss_directional_row, boss_expected_frames])
-		else:
-			for animation_name in ["move", "attack", "attack_primary"]:
-				if not boss_frames.has_animation(animation_name):
-					_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
-				elif boss_frames.get_frame_count(animation_name) != 6:
-					_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
-			if not boss_frames.get_animation_loop("move"):
-				_fail("Expected %s boss move to loop." % boss_id)
-			if not boss_frames.has_animation("death"):
-				_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
-			elif boss_frames.get_frame_count("death") != 6:
-				_fail("Expected %s boss death to have 6 frames." % boss_id)
-			for one_shot_name in ["attack", "attack_primary", "death"]:
-				if not boss_frames.has_animation(one_shot_name):
-					continue
-				if boss_frames.get_animation_loop(one_shot_name):
-					_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
-			for skill_state in boss_info["skill_states"]:
-				var boss_skill_name := str(skill_state)
-				var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
-				if not boss_frames.has_animation(boss_skill_name):
-					_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
-				elif boss_frames.get_frame_count(boss_skill_name) != 6:
-					_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
-				if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
-					_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
-				if not boss_frames.has_animation(boss_attack_alias):
-					_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
-				elif boss_frames.get_frame_count(boss_attack_alias) != 6:
-					_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
-				if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
-					_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
-
-		var boss_scene := load(str(boss_info["path"])) as PackedScene
-		var boss := boss_scene.instantiate()
-		root.add_child(boss)
-		if boss.get_node_or_null("FullFrameBody") == null:
-			boss.call("_configure_full_frame_animation")
-		boss.call("_update_movement_animation", 0.1)
-		var boss_body := boss.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-		if boss_body == null or not boss_body.visible:
-			_fail("Expected %s boss scene to create a visible FullFrameBody." % boss_id)
-		if boss_body != null:
-			if str(boss_body.get_meta("entity_id", "")) != boss_id:
-				_fail("Expected %s boss scene to select boss-specific SpriteFrames, got %s." % [boss_id, str(boss_body.get_meta("entity_id", ""))])
-			if not FullFrameAnimationRegistry.play_state(boss_body, str(boss_info["phase_state"]), Vector2.RIGHT):
-				_fail("Expected %s boss phase state to resolve through the full-frame registry." % boss_id)
-			# FAN-2635: directional bosses resolve to the `_east` row for
-			# Vector2.RIGHT and never flip (the whole point of the contract).
-			var boss_expected_phase_resolved: String = "%s_east" % str(boss_info["phase_resolved"]) if boss_is_directional else str(boss_info["phase_resolved"])
-			if boss_body.animation != boss_expected_phase_resolved:
-				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, boss_expected_phase_resolved, boss_body.animation])
-			if boss_is_directional:
-				if boss_body.flip_h:
-					_fail("Expected %s boss directional full-frame art to never flip." % boss_id)
-			elif not boss_body.flip_h:
-				_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
-			boss.global_position = Vector2(420.0, 420.0)
-			boss.callv(str(boss_info["hook_method"]), boss_info["hook_args"] as Array)
-			var boss_expected_hook_state := str(boss_info["hook_expected"])
-			if str(boss_body.get_meta("last_requested_state", "")) != boss_expected_hook_state:
-				_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, boss_expected_hook_state, str(boss_body.get_meta("last_requested_state", ""))])
-			var boss_expected_hook_resolved: String = "%s_east" % boss_expected_hook_state if boss_is_directional else boss_expected_hook_state
-			if boss_body.animation != boss_expected_hook_resolved:
-				_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, boss_expected_hook_resolved, boss_body.animation])
-		var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
-		if boss_static_body != null and boss_static_body.visible:
-			_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)
-		boss.queue_free()
-		for hazard in get_nodes_in_group("enemy_hazards"):
-			var hazard_node := hazard as Node
-			if hazard_node != null and is_instance_valid(hazard_node):
-				hazard_node.queue_free()
-
-
-func _test_enemy_animation() -> void:
-	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
-	var enemy := enemy_scene.instantiate()
-	root.add_child(enemy)
-	enemy.set("velocity", Vector2(100, 0))
-	enemy.call("_update_movement_animation", 0.2)
-	var body := enemy.get_node("Body") as Sprite2D
-	if body.visible:
-		_fail("Expected enemy source Body to be hidden behind RigRoot.")
-	_assert_sliced_rig(enemy, "RigRoot", "enemies/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "rift cutter")
-
-	var rig := enemy.get_node("RigRoot") as Node2D
-	var pelvis := rig.get_node("Pelvis") as Node2D
-	var leg_l := rig.get_node("Pelvis/Figure/LegL") as Node2D
-	var leg_r := rig.get_node("Pelvis/Figure/LegR") as Node2D
-	if abs(pelvis.position.y) <= 0.01 and abs(pelvis.rotation) <= 0.01:
-		_fail("Expected enemy movement animation to affect rig pelvis transform.")
-	if abs(leg_l.rotation - leg_r.rotation) <= 0.05:
-		_fail("Expected enemy walk to animate opposing legs.")
-	if abs(leg_l.position.y - leg_r.position.y) <= 0.02:
-		_fail("Expected enemy walk to lift feet on alternating phases.")
-	if pelvis.scale.x >= 0.0:
-		_fail("Expected left-facing enemy art to mirror when moving right (negative pelvis scale.x).")
-	enemy.set("velocity", Vector2(-100, 0))
-	enemy.call("_update_movement_animation", 0.2)
-	if pelvis.scale.x <= 0.0:
-		_fail("Expected left-facing enemy art to stay unmirrored when moving left.")
-	enemy.set("velocity", Vector2(100, 0))
-	enemy.call("_update_movement_animation", 0.2)
-
-	enemy.call("_play_rig_action", "attack", Vector2.RIGHT)
-	enemy.call("_update_movement_animation", 0.15)
-	var arm_r := rig.get_node("Pelvis/Figure/Torso/ArmR") as Node2D
-	if abs(arm_r.rotation) <= 0.08:
-		_fail("Expected enemy attack to swing the claw arm.")
-	enemy.queue_free()
-
-	var shooter_scene := load("res://scenes/EnemyShooter.tscn") as PackedScene
-	var shooter := shooter_scene.instantiate()
-	root.add_child(shooter)
-	shooter.call("_update_movement_animation", 0.1)
-	var weapon := shooter.get_node_or_null("RigRoot/Pelvis/Figure/Torso/Weapon") as Node2D
-	if weapon == null:
-		_fail("Expected marksman rig to carry the crossbow as a separate part.")
-	shooter.call("_play_rig_action", "shoot", Vector2.RIGHT)
-	shooter.call("_update_movement_animation", 0.13)
-	var shooter_pelvis := shooter.get_node("RigRoot/Pelvis") as Node2D
-	if shooter_pelvis.position.x >= -0.01:
-		_fail("Expected shoot action to recoil the marksman.")
-	shooter.queue_free()
-
-	_test_enemy_archetype_pose("res://scenes/EnemyRunner.tscn", "attack", "spark runner", "RigRoot/Pelvis/Figure/Torso/Tail")
-	_test_enemy_archetype_pose("res://scenes/EnemyBruiser.tscn", "attack", "stone bruiser", "RigRoot/Pelvis/Figure/Torso/ArmR")
-	_test_enemy_archetype_pose("res://scenes/EnemySummoner.tscn", "cast", "bone caller", "RigRoot/Pelvis/Figure/Torso/ArmR")
-	_test_enemy_archetype_pose("res://scenes/EnemyMage.tscn", "cast", "void mage", "RigRoot/Pelvis/Figure/Torso/ArmR")
-	_test_enemy_archetype_pose("res://scenes/EnemySpitter.tscn", "shoot", "venom spitter", "")
-	_test_enemy_archetype_pose("res://scenes/EnemyShield.tscn", "attack", "rift shieldbearer", "RigRoot/Pelvis/Figure/Torso/Shield")
-	_test_enemy_archetype_pose("res://scenes/EnemyBiter.tscn", "attack", "small biter", "RigRoot/Pelvis/Figure/Torso/ArmR")
-	_test_enemy_archetype_pose("res://scenes/EnemyBoneShaman.tscn", "cast", "bone shaman", "RigRoot/Pelvis/Figure/Torso/ArmR")
-	_test_enemy_archetype_pose("res://scenes/EnemyFlyingRunner.tscn", "attack", "winged spark", "RigRoot/Pelvis/Figure/Torso/WingL")
-	_test_enemy_archetype_pose("res://scenes/BossDiskDevourer.tscn", "attack", "disk devourer", "")
 
 
 func _test_enemy_archetype_pose(scene_path: String, action_id: String, label: String, part_path: String) -> void:
@@ -1848,115 +908,6 @@ func _test_enemy_archetype_pose(scene_path: String, action_id: String, label: St
 	if pelvis_delta + part_delta <= 1.0:
 		_fail("Expected %s %s pose to produce a readable action silhouette." % [label, action_id])
 	enemy.queue_free()
-
-
-func _test_flying_elite_boss_rigs() -> void:
-	var flying_scene := load("res://scenes/EnemyFlyingRunner.tscn") as PackedScene
-	var flying := flying_scene.instantiate()
-	root.add_child(flying)
-	flying.set("velocity", Vector2(100, 0))
-	flying.call("_update_movement_animation", 0.2)
-	var wing_l := flying.get_node_or_null("RigRoot/Pelvis/Figure/Torso/WingL") as Node2D
-	var wing_r := flying.get_node_or_null("RigRoot/Pelvis/Figure/Torso/WingR") as Node2D
-	if wing_l == null or wing_r == null:
-		_fail("Expected flying enemy rig to use sliced wing parts.")
-	if maxf(abs(wing_l.rotation), abs(wing_r.rotation)) <= 0.04:
-		_fail("Expected flying enemy wings to flap.")
-	flying.queue_free()
-
-	var elite_scene := load("res://scenes/EliteArmored.tscn") as PackedScene
-	var elite := elite_scene.instantiate()
-	root.add_child(elite)
-	elite.call("_update_movement_animation", 0.2)
-	if elite.get_node_or_null("RigRoot/Pelvis/Figure/Torso/Shield") == null:
-		_fail("Expected Iron Bastion rig to carry its shield as a separate part.")
-	if elite.get_node_or_null("RigRoot/Pelvis/Figure/Torso/WeaponSocketMount") == null:
-		_fail("Expected elite enemy to use the shared rig architecture.")
-	elite.queue_free()
-
-	var boss_scene := load("res://scenes/BossWarden.tscn") as PackedScene
-	var boss := boss_scene.instantiate()
-	root.add_child(boss)
-	boss.call("_update_movement_animation", 0.2)
-	if boss.get_node_or_null("RigRoot/Pelvis/Figure/Torso/Vortex") == null:
-		_fail("Expected Rift Warden rig to animate its vortex as a separate part.")
-	boss.call("_play_rig_action", "cast", Vector2.UP)
-	boss.call("_update_movement_animation", 0.2)
-	var boss_arm_l := boss.get_node("RigRoot/Pelvis/Figure/Torso/ArmL") as Node2D
-	var boss_arm_r := boss.get_node("RigRoot/Pelvis/Figure/Torso/ArmR") as Node2D
-	if abs(boss_arm_l.rotation - boss_arm_r.rotation) <= 0.2:
-		_fail("Expected boss cast to raise both fists.")
-	boss.queue_free()
-
-
-func _test_elite_attack_phase_animation() -> void:
-	var elite_scenes := {
-		"iron_bastion": {"path": "res://scenes/EliteArmored.tscn", "attack": "slam_wave"},
-		"night_stalker": {"path": "res://scenes/EliteStalker.tscn", "attack": "shadow_strike"},
-		"plague_prophet": {"path": "res://scenes/ElitePoisoned.tscn", "attack": "poison_volley"},
-		"shard_marshal": {"path": "res://scenes/EliteCommander.tscn", "attack": "shard_fan"},
-	}
-
-	for behavior_id in elite_scenes.keys():
-		var info: Dictionary = elite_scenes[behavior_id]
-		var elite := (load(str(info["path"])) as PackedScene).instantiate()
-		root.add_child(elite)
-		elite.call("_set_elite_attack_phase", "windup", 0.6)
-		elite.call("_update_movement_animation", 0.3)
-		var full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-		if full_frame_body != null and full_frame_body.visible:
-			var expected_full_frame_state := "skill_%s" % str(info["attack"])
-			# FAN-3093: explicit-eight-direction packs resolve to a directional
-			# row -- _elite_attack_direction defaults to Vector2.RIGHT (east)
-			# when no player is present to drive _begin_elite_attack_windup.
-			if bool(FullFrameAnimationRegistry.registry_config("elite", behavior_id).get("explicit_eight_directions", false)):
-				expected_full_frame_state = "%s_east" % expected_full_frame_state
-			if full_frame_body.animation != expected_full_frame_state:
-				_fail("Expected %s windup to resolve to full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
-			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.6) > 0.01:
-				_fail("Expected %s windup to store full-frame phase duration." % behavior_id)
-			elite.call("_set_elite_attack_phase", "strike", 0.25)
-			elite.call("_update_movement_animation", 0.125)
-			if full_frame_body.animation != expected_full_frame_state:
-				_fail("Expected %s strike to keep full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
-			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.25) > 0.01:
-				_fail("Expected %s strike to update full-frame phase duration." % behavior_id)
-			elite.queue_free()
-			continue
-		var rig := elite.get_node("RigRoot") as Node2D
-		var expected_variant := "%s:%s:windup" % [behavior_id, str(info["attack"])]
-		if str(rig.get("action_variant")) != expected_variant:
-			_fail("Expected %s windup to drive rig variant %s, got %s." % [behavior_id, expected_variant, str(rig.get("action_variant"))])
-		var windup_pelvis := rig.get_node("Pelvis") as Node2D
-		var windup_arm_r := rig.get_node_or_null("Pelvis/Figure/Torso/ArmR") as Node2D
-		var windup_arm_l := rig.get_node_or_null("Pelvis/Figure/Torso/ArmL") as Node2D
-
-		match behavior_id:
-			"iron_bastion":
-				if windup_pelvis.position.y >= -1.0 or windup_arm_r == null or windup_arm_r.position.y >= -2.0:
-					_fail("Expected Iron Bastion windup to lift into a slam pose.")
-			"night_stalker":
-				if windup_pelvis.position.y <= 2.0 or windup_pelvis.scale.y >= 0.94:
-					_fail("Expected Night Stalker windup to crouch before shadow strike.")
-			"plague_prophet":
-				if windup_arm_l == null or windup_arm_r == null or abs(windup_arm_l.rotation - windup_arm_r.rotation) <= 0.6:
-					_fail("Expected Plague Prophet windup to read as a ritual arm raise.")
-			"shard_marshal":
-				if windup_arm_l == null or windup_arm_r == null or abs(windup_arm_l.position.x - windup_arm_r.position.x) <= 6.0:
-					_fail("Expected Shard Marshal windup to spread both arms.")
-
-		elite.call("_set_elite_attack_phase", "strike", 0.25)
-		elite.call("_update_movement_animation", 0.125)
-		var strike_variant := "%s:%s:strike" % [behavior_id, str(info["attack"])]
-		if str(rig.get("action_variant")) != strike_variant:
-			_fail("Expected %s strike to drive rig variant %s, got %s." % [behavior_id, strike_variant, str(rig.get("action_variant"))])
-		var strike_pelvis := rig.get_node("Pelvis") as Node2D
-		if behavior_id == "iron_bastion":
-			if strike_pelvis.position.y <= 2.0:
-				_fail("Expected Iron Bastion strike to drop into the slam.")
-		elif behavior_id != "plague_prophet" and strike_pelvis.position.x <= 1.0:
-			_fail("Expected %s strike to lunge/gesture forward." % behavior_id)
-		elite.queue_free()
 
 
 func _test_hit_death_states() -> void:
@@ -2032,3 +983,646 @@ func _test_death_ghost() -> void:
 		_fail("Expected the death ghost to play the death animation.")
 	holder.queue_free()
 	current_scene = null
+
+
+
+# --- FAN-3814 (ADR Фаза 2): пер-актёрные шарды -------------------------------
+# tests/actors/<actor_id>_smoke_test.gd наследует этот сьют, переопределяет
+# _run_actor_checks() своими ожиданиями (таблицы кадров, сцена, скиллы) и
+# стартует через _run_actor_suite(). Тела ассертов ниже — прежние inline-циклы
+# _test_full_frame_animation_registry / _test_enemy_animation и др.,
+# параметризованные актёром; поведение 1:1.
+
+
+func _run_actor_suite(actor_label: String) -> void:
+	_run_actor_checks()
+	if _failed:
+		quit(1)
+		return
+	print("Actor animation smoke passed: %s." % actor_label)
+	quit(0)
+
+
+func _run_actor_checks() -> void:
+	_fail("Actor smoke shard must override _run_actor_checks().")
+
+
+func _assert_static_sprite_path(scene_path: String, sprite_node: String, texture_path: String) -> void:
+	var scene := load(scene_path) as PackedScene
+	var actor := scene.instantiate()
+	root.add_child(actor)
+	var body := actor.get_node(sprite_node) as Sprite2D
+	if body.texture == null or body.texture.resource_path != texture_path:
+		_fail("Expected %s to use %s." % [scene_path, texture_path])
+	actor.queue_free()
+
+
+func _assert_enemy_pack(enemy_id: String, directional_row_frames: Dictionary) -> void:
+	var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
+	if enemy_frames == null:
+		_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
+		return
+	# FAN-2613: branch on the registry's own explicit_eight_directions flag,
+	# not a hardcoded ID list, so a converted standard_monster falls into the
+	# directional contract automatically.
+	var enemy_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+	if enemy_is_directional:
+		if directional_row_frames.is_empty():
+			_fail("Expected %s to declare its directional row lengths in its actor shard." % enemy_id)
+		for state_name in ["idle", "move", "attack", "hit", "death"]:
+			var enemy_state_should_loop: bool = state_name in ["idle", "move"]
+			var enemy_expected_frames := int(directional_row_frames.get(state_name, 0))
+			for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				var enemy_directional_row := "%s_%s" % [state_name, dir_suffix]
+				if not enemy_frames.has_animation(enemy_directional_row):
+					_fail("Expected %s SpriteFrames to expose %s." % [enemy_id, enemy_directional_row])
+				else:
+					if enemy_frames.get_animation_loop(enemy_directional_row) != enemy_state_should_loop:
+						_fail("Expected %s %s loop to be %s." % [enemy_id, enemy_directional_row, str(enemy_state_should_loop)])
+					if enemy_frames.get_frame_count(enemy_directional_row) != enemy_expected_frames:
+						_fail("Expected %s %s to have %d frames." % [enemy_id, enemy_directional_row, enemy_expected_frames])
+	else:
+		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
+			if not enemy_frames.has_animation(animation_name):
+				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
+			elif enemy_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
+		if not enemy_frames.get_animation_loop("move"):
+			_fail("Expected %s move to loop." % enemy_id)
+		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
+			if enemy_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
+
+
+func _assert_enemy_scene_full_frame(enemy_id: String, scene_path: String) -> void:
+	var enemy_scene := load(scene_path) as PackedScene
+	var enemy := enemy_scene.instantiate()
+	root.add_child(enemy)
+	if enemy.get_node_or_null("FullFrameBody") == null:
+		enemy.call("_configure_full_frame_animation")
+	enemy.call("_update_movement_animation", 0.1)
+	var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
+		_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
+	if enemy_full_frame_body != null:
+		var enemy_scene_is_directional := bool(FullFrameAnimationRegistry.registry_config("enemy", enemy_id).get("explicit_eight_directions", false))
+		if enemy_scene_is_directional:
+			for state_name in ["idle", "move", "hit", "death"]:
+				if not enemy_full_frame_body.sprite_frames.has_animation("%s_west" % state_name):
+					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+			if enemy_full_frame_body.animation != "idle_west":
+				_fail("Expected %s enemy FullFrameBody to start in idle_west (last-facing default)." % enemy_id)
+			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack", Vector2.RIGHT):
+				_fail("Expected %s FullFrameBody to play attack." % enemy_id)
+			if enemy_full_frame_body.animation != "attack_east":
+				_fail("Expected %s attack to resolve to attack_east, got %s." % [enemy_id, enemy_full_frame_body.animation])
+			if enemy_full_frame_body.flip_h:
+				_fail("Expected %s eight-direction full-frame art to never mirror via flip_h." % enemy_id)
+			# FAN-2609/FAN-2889: a pack that also ships the attack_primary alias per
+			# octant must resolve that alias through its own east row, never through
+			# a mirrored surrogate of another facing.
+			if enemy_full_frame_body.sprite_frames.has_animation("attack_primary_east"):
+				if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+					_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+				if enemy_full_frame_body.animation != "attack_primary_east" or enemy_full_frame_body.flip_h:
+					_fail("Expected %s attack_primary to resolve to attack_primary_east without flip." % enemy_id)
+		else:
+			for animation_name in ["move", "attack_primary", "hit", "death"]:
+				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
+					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+			if enemy_full_frame_body.animation != "move":
+				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
+			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
+	var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
+	if enemy_static_body != null and enemy_static_body.visible:
+		_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
+	enemy.queue_free()
+
+
+func _assert_elite_pack(elite_id: String, skill_states: Array, directional_row_frames: Dictionary, extra_directional_states: Array, death_required: bool) -> void:
+	var elite_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", elite_id)
+	if elite_frames == null:
+		_fail("Expected full-frame registry to resolve %s elite SpriteFrames." % elite_id)
+		return
+	# FAN-3093: branch on the registry's own explicit_eight_directions flag,
+	# not a hardcoded ID list, matching the FAN-2613/FAN-2901 pattern.
+	var elite_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", elite_id).get("explicit_eight_directions", false))
+	if elite_is_directional:
+		if directional_row_frames.is_empty():
+			_fail("Expected %s to declare its directional row lengths in its actor shard." % elite_id)
+		var elite_state_names := ["idle", "move", "hit", "death"]
+		for extra_state in extra_directional_states:
+			elite_state_names.append(str(extra_state))
+		for skill_state in skill_states:
+			elite_state_names.append(str(skill_state))
+		for state_name in elite_state_names:
+			var elite_state_should_loop: bool = state_name in ["idle", "move"]
+			var elite_expected_frames := int(directional_row_frames.get(state_name, 0))
+			for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				var elite_directional_row := "%s_%s" % [state_name, dir_suffix]
+				if not elite_frames.has_animation(elite_directional_row):
+					_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, elite_directional_row])
+				else:
+					if elite_frames.get_animation_loop(elite_directional_row) != elite_state_should_loop:
+						_fail("Expected %s %s loop to be %s." % [elite_id, elite_directional_row, str(elite_state_should_loop)])
+					if elite_frames.get_frame_count(elite_directional_row) != elite_expected_frames:
+						_fail("Expected %s %s to have %d frames." % [elite_id, elite_directional_row, elite_expected_frames])
+	else:
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not elite_frames.has_animation(animation_name):
+				_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
+			elif elite_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
+		if not elite_frames.get_animation_loop("move"):
+			_fail("Expected %s elite move to loop." % elite_id)
+		if death_required:
+			if not elite_frames.has_animation("death"):
+				_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
+			elif elite_frames.get_frame_count("death") != 6:
+				_fail("Expected %s elite death to have 6 frames." % elite_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not elite_frames.has_animation(one_shot_name):
+				continue
+			if elite_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
+		for skill_state in skill_states:
+			var skill_name := str(skill_state)
+			var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
+			if not elite_frames.has_animation(skill_name):
+				_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
+			elif elite_frames.get_frame_count(skill_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
+			if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
+			if not elite_frames.has_animation(attack_alias):
+				_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
+			elif elite_frames.get_frame_count(attack_alias) != 6:
+				_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
+			if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
+				_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
+
+
+func _assert_elite_scene_full_frame(elite_id: String, scene_path: String, phase_state: String, phase_resolved: String) -> void:
+	var elite_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", elite_id).get("explicit_eight_directions", false))
+	var elite_scene := load(scene_path) as PackedScene
+	var elite := elite_scene.instantiate()
+	root.add_child(elite)
+	if elite.get_node_or_null("FullFrameBody") == null:
+		elite.call("_configure_full_frame_animation")
+	elite.call("_update_movement_animation", 0.1)
+	var elite_full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if elite_full_frame_body == null or not elite_full_frame_body.visible:
+		_fail("Expected %s elite scene to create a visible FullFrameBody." % elite_id)
+	if elite_full_frame_body != null:
+		if not FullFrameAnimationRegistry.play_state(elite_full_frame_body, phase_state, Vector2.RIGHT):
+			_fail("Expected %s elite phase state to resolve through the full-frame registry." % elite_id)
+		if elite_is_directional:
+			var elite_expected_directional_animation := "%s_east" % phase_resolved
+			if elite_full_frame_body.animation != elite_expected_directional_animation:
+				_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, elite_expected_directional_animation, elite_full_frame_body.animation])
+			if elite_full_frame_body.flip_h:
+				_fail("Expected %s elite eight-direction full-frame art to never mirror via flip_h." % elite_id)
+		else:
+			if elite_full_frame_body.animation != phase_resolved:
+				_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, phase_resolved, elite_full_frame_body.animation])
+			if not elite_full_frame_body.flip_h:
+				_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
+	var elite_static_body := elite.get_node_or_null("Body") as CanvasItem
+	if elite_static_body != null and elite_static_body.visible:
+		_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
+	elite.queue_free()
+
+
+func _assert_mini_pack(mini_id: String, skill_states: Array) -> void:
+	var mini_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", mini_id)
+	if mini_frames == null:
+		_fail("Expected full-frame registry to resolve %s mini-elite SpriteFrames." % mini_id)
+		return
+	# FAN-2901: branch on the registry's own explicit_eight_directions flag,
+	# not a hardcoded ID list, so the next converted mini-elite falls into
+	# the directional contract automatically instead of re-breaking this test.
+	var mini_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", mini_id).get("explicit_eight_directions", false))
+	if mini_is_directional:
+		for state_name in ["idle", "move", "attack", "hit", "death"]:
+			var state_should_loop: bool = state_name in ["idle", "move"]
+			for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				var directional_row := "%s_%s" % [state_name, dir_suffix]
+				if not mini_frames.has_animation(directional_row):
+					_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, directional_row])
+				elif mini_frames.get_animation_loop(directional_row) != state_should_loop:
+					_fail("Expected %s mini-elite %s loop to be %s." % [mini_id, directional_row, str(state_should_loop)])
+		for skill_state in skill_states:
+			var mini_skill_base := str(skill_state)
+			for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				var mini_skill_row := "%s_%s" % [mini_skill_base, dir_suffix]
+				if not mini_frames.has_animation(mini_skill_row):
+					_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_row])
+				elif mini_frames.get_animation_loop(mini_skill_row):
+					_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_row])
+	else:
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not mini_frames.has_animation(animation_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
+			elif mini_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
+		if not mini_frames.get_animation_loop("move"):
+			_fail("Expected %s mini-elite move to loop." % mini_id)
+		if not mini_frames.has_animation("death"):
+			_fail("Expected %s mini-elite SpriteFrames to expose death after SCRUM-370 death integration." % mini_id)
+		elif mini_frames.get_frame_count("death") != 6:
+			_fail("Expected %s mini-elite death to have 6 frames." % mini_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not mini_frames.has_animation(one_shot_name):
+				continue
+			if mini_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
+		for skill_state in skill_states:
+			var mini_skill_name := str(skill_state)
+			var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
+			if not mini_frames.has_animation(mini_skill_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
+			elif mini_frames.get_frame_count(mini_skill_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
+			if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
+			if not mini_frames.has_animation(mini_attack_alias):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
+			elif mini_frames.get_frame_count(mini_attack_alias) != 6:
+				_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
+			if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
+				_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
+
+
+func _assert_mini_scene_full_frame(mini_id: String, scene_path: String, phase_state: String, phase_resolved: String) -> void:
+	var mini_is_directional := bool(FullFrameAnimationRegistry.registry_config("elite", mini_id).get("explicit_eight_directions", false))
+	var mini_scene := load(scene_path) as PackedScene
+	var mini := mini_scene.instantiate()
+	root.add_child(mini)
+	mini.set_meta("mini_elite_kind", mini_id)
+	mini.call("refresh_full_frame_visual")
+	mini.call("_update_movement_animation", 0.1)
+	var mini_body := mini.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_body == null or not mini_body.visible:
+		_fail("Expected %s mini-elite scene to create a visible FullFrameBody." % mini_id)
+	if mini_body != null:
+		if str(mini_body.get_meta("entity_id", "")) != mini_id:
+			_fail("Expected %s mini_elite_kind to select mini-specific SpriteFrames, got %s." % [mini_id, str(mini_body.get_meta("entity_id", ""))])
+		if not FullFrameAnimationRegistry.play_state(mini_body, phase_state, Vector2.RIGHT):
+			_fail("Expected %s mini-elite phase state to resolve through the full-frame registry." % mini_id)
+		if mini_is_directional:
+			var mini_expected_directional_animation := "%s_east" % phase_resolved
+			if mini_body.animation != mini_expected_directional_animation:
+				_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, mini_expected_directional_animation, mini_body.animation])
+			if mini_body.flip_h:
+				_fail("Expected %s mini-elite eight-direction full-frame art to never mirror via flip_h." % mini_id)
+		else:
+			if mini_body.animation != phase_resolved:
+				_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, phase_resolved, mini_body.animation])
+			if not mini_body.flip_h:
+				_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
+	var mini_static_body := mini.get_node_or_null("Body") as CanvasItem
+	if mini_static_body != null and mini_static_body.visible:
+		_fail("Expected %s mini-elite full-frame visual to hide the static body fallback." % mini_id)
+	mini.queue_free()
+
+
+func _assert_boss_pack(boss_id: String, skill_states: Array, directional_row_frames: Dictionary) -> void:
+	var boss_frames := FullFrameAnimationRegistry.sprite_frames_for("boss", boss_id)
+	if boss_frames == null:
+		_fail("Expected full-frame registry to resolve %s boss SpriteFrames." % boss_id)
+		return
+	# FAN-2635: same explicit_eight_directions branch as the enemy/mini-elite
+	# assertions above — the shard declares the directional boss's per-state
+	# row length so the next converted boss falls into the directional
+	# contract automatically.
+	var boss_is_directional := bool(FullFrameAnimationRegistry.registry_config("boss", boss_id).get("explicit_eight_directions", false))
+	if boss_is_directional:
+		if directional_row_frames.is_empty():
+			_fail("Expected %s to declare its directional row lengths in its actor shard." % boss_id)
+		var boss_state_names: Array = ["idle", "move", "attack", "hit", "death"]
+		for skill_state in skill_states:
+			boss_state_names.append(str(skill_state))
+		for state_name in boss_state_names:
+			var boss_state_should_loop: bool = state_name in ["idle", "move"]
+			var boss_expected_frames := int(directional_row_frames.get(state_name, 0))
+			for dir_suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+				var boss_directional_row := "%s_%s" % [state_name, dir_suffix]
+				if not boss_frames.has_animation(boss_directional_row):
+					_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_directional_row])
+				else:
+					if boss_frames.get_animation_loop(boss_directional_row) != boss_state_should_loop:
+						_fail("Expected %s boss %s loop to be %s." % [boss_id, boss_directional_row, str(boss_state_should_loop)])
+					if boss_frames.get_frame_count(boss_directional_row) != boss_expected_frames:
+						_fail("Expected %s boss %s to have %d frames." % [boss_id, boss_directional_row, boss_expected_frames])
+	else:
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not boss_frames.has_animation(animation_name):
+				_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
+			elif boss_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
+		if not boss_frames.get_animation_loop("move"):
+			_fail("Expected %s boss move to loop." % boss_id)
+		if not boss_frames.has_animation("death"):
+			_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
+		elif boss_frames.get_frame_count("death") != 6:
+			_fail("Expected %s boss death to have 6 frames." % boss_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not boss_frames.has_animation(one_shot_name):
+				continue
+			if boss_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
+		for skill_state in skill_states:
+			var boss_skill_name := str(skill_state)
+			var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
+			if not boss_frames.has_animation(boss_skill_name):
+				_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
+			elif boss_frames.get_frame_count(boss_skill_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
+			if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
+			if not boss_frames.has_animation(boss_attack_alias):
+				_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
+			elif boss_frames.get_frame_count(boss_attack_alias) != 6:
+				_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
+			if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
+				_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
+
+
+func _assert_boss_scene_full_frame(boss_id: String, scene_path: String, phase_state: String, phase_resolved: String, hook_method: String, hook_args: Array, hook_expected: String) -> void:
+	var boss_is_directional := bool(FullFrameAnimationRegistry.registry_config("boss", boss_id).get("explicit_eight_directions", false))
+	var boss_scene := load(scene_path) as PackedScene
+	var boss := boss_scene.instantiate()
+	root.add_child(boss)
+	if boss.get_node_or_null("FullFrameBody") == null:
+		boss.call("_configure_full_frame_animation")
+	boss.call("_update_movement_animation", 0.1)
+	var boss_body := boss.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if boss_body == null or not boss_body.visible:
+		_fail("Expected %s boss scene to create a visible FullFrameBody." % boss_id)
+	if boss_body != null:
+		if str(boss_body.get_meta("entity_id", "")) != boss_id:
+			_fail("Expected %s boss scene to select boss-specific SpriteFrames, got %s." % [boss_id, str(boss_body.get_meta("entity_id", ""))])
+		if not FullFrameAnimationRegistry.play_state(boss_body, phase_state, Vector2.RIGHT):
+			_fail("Expected %s boss phase state to resolve through the full-frame registry." % boss_id)
+		# FAN-2635: directional bosses resolve to the `_east` row for
+		# Vector2.RIGHT and never flip (the whole point of the contract).
+		var boss_expected_phase_resolved: String = "%s_east" % phase_resolved if boss_is_directional else phase_resolved
+		if boss_body.animation != boss_expected_phase_resolved:
+			_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, boss_expected_phase_resolved, boss_body.animation])
+		if boss_is_directional:
+			if boss_body.flip_h:
+				_fail("Expected %s boss directional full-frame art to never flip." % boss_id)
+		elif not boss_body.flip_h:
+			_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
+		boss.global_position = Vector2(420.0, 420.0)
+		boss.callv(hook_method, hook_args)
+		if str(boss_body.get_meta("last_requested_state", "")) != hook_expected:
+			_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, hook_expected, str(boss_body.get_meta("last_requested_state", ""))])
+		var boss_expected_hook_resolved: String = "%s_east" % hook_expected if boss_is_directional else hook_expected
+		if boss_body.animation != boss_expected_hook_resolved:
+			_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, boss_expected_hook_resolved, boss_body.animation])
+	var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
+	if boss_static_body != null and boss_static_body.visible:
+		_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)
+	boss.queue_free()
+	for hazard in get_nodes_in_group("enemy_hazards"):
+		var hazard_node := hazard as Node
+		if hazard_node != null and is_instance_valid(hazard_node):
+			hazard_node.queue_free()
+
+
+func _assert_elite_attack_phase(behavior_id: String, scene_path: String, attack_id: String) -> void:
+	var elite := (load(scene_path) as PackedScene).instantiate()
+	root.add_child(elite)
+	elite.call("_set_elite_attack_phase", "windup", 0.6)
+	elite.call("_update_movement_animation", 0.3)
+	var full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if full_frame_body != null and full_frame_body.visible:
+		var expected_full_frame_state := "skill_%s" % attack_id
+		# FAN-3093: explicit-eight-direction packs resolve to a directional
+		# row -- _elite_attack_direction defaults to Vector2.RIGHT (east)
+		# when no player is present to drive _begin_elite_attack_windup.
+		if bool(FullFrameAnimationRegistry.registry_config("elite", behavior_id).get("explicit_eight_directions", false)):
+			expected_full_frame_state = "%s_east" % expected_full_frame_state
+		if full_frame_body.animation != expected_full_frame_state:
+			_fail("Expected %s windup to resolve to full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+		if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.6) > 0.01:
+			_fail("Expected %s windup to store full-frame phase duration." % behavior_id)
+		elite.call("_set_elite_attack_phase", "strike", 0.25)
+		elite.call("_update_movement_animation", 0.125)
+		if full_frame_body.animation != expected_full_frame_state:
+			_fail("Expected %s strike to keep full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+		if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.25) > 0.01:
+			_fail("Expected %s strike to update full-frame phase duration." % behavior_id)
+		elite.queue_free()
+		return
+	var rig := elite.get_node("RigRoot") as Node2D
+	var expected_variant := "%s:%s:windup" % [behavior_id, attack_id]
+	if str(rig.get("action_variant")) != expected_variant:
+		_fail("Expected %s windup to drive rig variant %s, got %s." % [behavior_id, expected_variant, str(rig.get("action_variant"))])
+	_check_elite_windup_pose(rig)
+	elite.call("_set_elite_attack_phase", "strike", 0.25)
+	elite.call("_update_movement_animation", 0.125)
+	var strike_variant := "%s:%s:strike" % [behavior_id, attack_id]
+	if str(rig.get("action_variant")) != strike_variant:
+		_fail("Expected %s strike to drive rig variant %s, got %s." % [behavior_id, strike_variant, str(rig.get("action_variant"))])
+	_check_elite_strike_pose(rig)
+	elite.queue_free()
+
+
+func _check_elite_windup_pose(_rig: Node2D) -> void:
+	pass
+
+
+func _check_elite_strike_pose(_rig: Node2D) -> void:
+	pass
+
+
+func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_silhouette_continuity: bool) -> void:
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var allowed_animations := ["attack", "attack_primary", "attack_left", "attack_right", "idle", "move", "move_left", "move_right", "walk"]
+	var expected_directional_animations := {}
+	for state in ["idle", "move", "attack"]:
+		for direction in ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]:
+			var animation_name := "%s_%s" % [state, direction]
+			allowed_animations.append(animation_name)
+			expected_directional_animations[animation_name] = {
+				"state": state,
+				"direction": direction,
+			}
+	allowed_animations.sort()
+	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", ghost_id)
+	if frames == null:
+		_fail("Expected %s to resolve through FullFrameAnimationRegistry." % ghost_id)
+		return
+	var animation_names := []
+	for animation_name in frames.get_animation_names():
+		animation_names.append(str(animation_name))
+	animation_names.sort()
+	if animation_names != allowed_animations:
+		_fail("Expected %s to expose the complete 8-direction move/attack package, got %s." % [ghost_id, str(animation_names)])
+		return
+	for animation_name in allowed_animations:
+		var row_state := "attack" if animation_name.begins_with("attack") else ("idle" if animation_name.begins_with("idle") else "move")
+		var expected_count := 1 if row_state == "idle" else 6
+		if frames.get_frame_count(animation_name) != expected_count:
+			_fail("Expected %s %s to expose exactly %d PixelLab frames." % [ghost_id, animation_name, expected_count])
+			return
+		var should_loop: bool = row_state in ["idle", "move"]
+		if frames.get_animation_loop(animation_name) != should_loop:
+			_fail("Expected %s %s loop=%s." % [ghost_id, animation_name, str(should_loop)])
+			return
+		for frame_index in range(frames.get_frame_count(animation_name)):
+			var texture := frames.get_frame_texture(animation_name, frame_index)
+			if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
+				_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
+				return
+			var expected_direction := "south"
+			if expected_directional_animations.has(animation_name):
+				expected_direction = str(expected_directional_animations[animation_name]["direction"])
+			elif animation_name.ends_with("_right"):
+				expected_direction = "east"
+			elif animation_name.ends_with("_left"):
+				expected_direction = "west"
+			var expected_kind := row_state if row_state != "idle" else "idle"
+			if animation_name == "walk":
+				expected_kind = "move"
+			var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
+			if not texture.resource_path.begins_with(expected_prefix):
+				_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
+				return
+	var runtime_files := []
+	for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):
+		if file_name.ends_with(".png"):
+			runtime_files.append(file_name)
+	if runtime_files.size() != 104:
+		_fail("Expected %s runtime folder to contain exactly 104 authored PNGs (8 idle + 48 move + 48 attack), got %d." % [ghost_id, runtime_files.size()])
+		return
+	for file_name in runtime_files:
+		if str(file_name).contains("_left_") or str(file_name).contains("_right_"):
+			_fail("Expected %s runtime folder to contain authored octant names only: %s." % [ghost_id, file_name])
+			return
+	if check_silhouette_continuity:
+		var smallest_alpha_area := 1 << 30
+		var largest_alpha_area := 0
+		for frame_index in range(frames.get_frame_count(&"move_right")):
+			var texture := frames.get_frame_texture(&"move_right", frame_index)
+			var image := texture.get_image() if texture != null else null
+			var meaningful_alpha_area := _meaningful_alpha_pixel_count(image, 4.0 / 255.0)
+			if meaningful_alpha_area <= 0:
+				_fail("Expected %s move_right frame %d to contain meaningful alpha." % [ghost_id, frame_index])
+				return
+			smallest_alpha_area = mini(smallest_alpha_area, meaningful_alpha_area)
+			largest_alpha_area = maxi(largest_alpha_area, meaningful_alpha_area)
+		var alpha_area_ratio := float(largest_alpha_area) / float(maxi(smallest_alpha_area, 1))
+		if alpha_area_ratio > 1.65:
+			_fail("Expected %s move_right silhouette continuity <=1.65x, got %.3fx." % [ghost_id, alpha_area_ratio])
+			return
+
+	var ally := ally_scene.instantiate()
+	root.add_child(ally)
+	ally.call("set_visual_id", ghost_id)
+	var body := ally.get_node("Body") as Sprite2D
+	var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
+	if body.visible or not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
+		_fail("Expected %s to use its directional AnimatedSprite2D visual." % ghost_id)
+		ally.queue_free()
+		return
+	if not FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
+		_fail("Expected %s to declare explicit horizontal direction rows." % ghost_id)
+		ally.queue_free()
+		return
+
+	ally.set("velocity", Vector2.LEFT * 120.0)
+	ally.call("_update_visual_animation")
+	if animated_body.animation != &"move_left" or animated_body.flip_h:
+		_fail("Expected %s left movement to play move_left without horizontal flip." % ghost_id)
+		ally.queue_free()
+		return
+	ally.set("velocity", Vector2.RIGHT * 120.0)
+	ally.call("_update_visual_animation")
+	if animated_body.animation != &"move_right" or animated_body.flip_h:
+		_fail("Expected %s right movement to play move_right without horizontal flip." % ghost_id)
+		ally.queue_free()
+		return
+	ally.call("_play_attack_animation", Vector2.LEFT)
+	if animated_body.animation != &"attack_left" or animated_body.flip_h:
+		_fail("Expected %s left action to play attack_left without horizontal flip." % ghost_id)
+		ally.queue_free()
+		return
+	ally.call("_play_attack_animation", Vector2.RIGHT)
+	if animated_body.animation != &"attack_right" or animated_body.flip_h:
+		_fail("Expected %s right action to play attack_right without horizontal flip." % ghost_id)
+		ally.queue_free()
+		return
+	if float(ally.get("_attack_anim_time")) < 0.5:
+		_fail("Expected %s action visual window to cover all 6 frames at 12fps." % ghost_id)
+		ally.queue_free()
+		return
+	if check_cast_alias:
+		if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.LEFT) or animated_body.animation != &"attack_left" or animated_body.flip_h:
+			_fail("Expected %s cast alias to resolve to attack_left without flip." % ghost_id)
+			ally.queue_free()
+			return
+		if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.RIGHT) or animated_body.animation != &"attack_right" or animated_body.flip_h:
+			_fail("Expected %s cast alias to resolve to attack_right without flip." % ghost_id)
+			ally.queue_free()
+			return
+	ally.call("_play_attack_animation", Vector2.UP)
+	if animated_body.animation != &"attack_right" or animated_body.flip_h:
+		_fail("Expected %s vertical target action to preserve the last horizontal facing without flip." % ghost_id)
+		ally.queue_free()
+		return
+	ally.queue_free()
+
+
+func _test_registry_facade() -> void:
+	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
+		_fail("Expected missing full-frame registry entries to return null.")
+
+	var owner := Node2D.new()
+	root.add_child(owner)
+	owner.set_meta("full_frame_spriteframes_path", "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres")
+	owner.set_meta("full_frame_scale", Vector2(0.34, 0.34))
+	owner.set_meta("full_frame_position", Vector2(0.0, -31.0))
+	owner.set_meta("full_frame_source_faces_left", true)
+	var static_body := Sprite2D.new()
+	static_body.name = "Body"
+	static_body.visible = true
+	owner.add_child(static_body)
+	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(owner, "enemy", "runtime_dummy")
+	if animated_body == null or not animated_body.visible or static_body.visible:
+		_fail("Expected registry to create visible FullFrameBody and hide static Body.")
+	if str(animated_body.get_meta("entity_kind", "")) != "enemy" or str(animated_body.get_meta("entity_id", "")) != "runtime_dummy":
+		_fail("Expected registry to tag entity kind/id on FullFrameBody.")
+	if not FullFrameAnimationRegistry.play_state(animated_body, "attack_slam_wave", Vector2.RIGHT):
+		_fail("Expected registry to accept boss/elite-style skill state names.")
+	if animated_body.animation != "attack":
+		_fail("Expected attack_slam_wave to resolve to existing attack animation.")
+	if not animated_body.flip_h:
+		_fail("Expected source-left full-frame art to flip when facing right.")
+	if str(animated_body.get_meta("last_requested_state", "")) != "attack_slam_wave" or str(animated_body.get_meta("last_resolved_state", "")) != "attack":
+		_fail("Expected FullFrameBody metadata to expose requested/resolved state.")
+	owner.queue_free()
+
+	var mini_visual_scene := load("res://scenes/EliteStalker.tscn") as PackedScene
+	var mini_visual_elite := mini_visual_scene.instantiate()
+	root.add_child(mini_visual_elite)
+	mini_visual_elite.set_meta("mini_elite_kind", "mini_scavenger_reaper")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	var mini_visual_body := mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected mini-elite metadata refresh to preserve a FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "mini_scavenger_reaper":
+		_fail("Expected mini_elite_kind with registered SpriteFrames to override the base elite visual id.")
+	mini_visual_elite.set_meta("mini_elite_kind", "missing_mini_visual_test")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	mini_visual_body = mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected missing mini-elite visual id to keep the route elite fallback FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "night_stalker":
+		_fail("Expected missing mini_elite_kind SpriteFrames to fall back to elite_behavior visual id.")
+	mini_visual_elite.queue_free()
