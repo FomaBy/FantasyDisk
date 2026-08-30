@@ -111,19 +111,19 @@ ID.
 
 ## Lifecycle
 
-`engineer_ultimate_timeline_scene.gd` delegates the whole lifecycle to
-`WeaponUltimatePresentationTimeline`:
+The authored presentation scenes are the three existing class scenes:
+`EngineerSentryWrenchUltimate.tscn`, `EngineerRepairDroneUltimate.tscn`, and
+`EngineerPressureMinesUltimate.tscn`. Each scene has one class executor root,
+one `AnimatedSprite2D` flipbook, and an `AnimationPlayer` named `Timeline`
+whose `ultimate` animation drives the committed nine-frame SpriteFrames pack.
 
-- `begin()` takes the caller's animation/VFX/SFX handles and owns only the
-  sprites it creates itself; it never touches shared VFX pools.
-- `set_paused(true)` freezes elapsed time, event emission, and the formation.
-- `finish("cancel")`, `finish("death")`, and `finish("node_end")` release every
-  supplied handle and free every sprite.
-- Teardown releases handles on both `_exit_tree` and `NOTIFICATION_PREDELETE`,
-  because a scene freed before it ever entered the tree never receives
-  `_exit_tree` and would otherwise orphan its handles.
-- In a headless run the timeline returns the deterministic `headless_no_op`
-  result and attaches no handle.
+The executor root receives each live `present()` beat and starts the shared
+bounded per-victim impact only for the affected enemies. `finish()` stops that
+impact channel, while the scene's `Timeline` remains the source of its visual
+phase and pause behavior. The current contract test is
+`tests/ultimates/presentation/engineer_ultimate_timelines.gd`; the legacy
+`engineer_ultimate_presentation_test.gd` path is retained as its full-profile
+entry point.
 
 ## Runtime boundary
 
@@ -139,6 +139,14 @@ follow-up work; FAN-1541 owns the shared runtime adapter.
 ```bash
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/engineer_ultimate_presentation_test.gd
+```
+
+This entry point runs the current Engineer scene contract above. The direct
+implementation test is also runnable when debugging the presentation pack:
+
+```bash
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/engineer_ultimate_timelines.gd
 ```
 
 Regenerate the element frames and the class contact sheet:
