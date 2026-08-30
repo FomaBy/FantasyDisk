@@ -120,10 +120,10 @@ const WEAPONS := {
 		"pivot": {"x": 0.5, "y": 0.5},
 		"timing": {
 			"windup": 0.0,
-			"release": 0.55,
-			"active": 1.05,
-			"recovery": 5.40,
-			"cancel": 6.10,
+			"release": 0.70,
+			"active": 1.20,
+			"recovery": 3.35,
+			"cancel": 4.00,
 		},
 		"formation": {
 			"kind": "double_helix",
