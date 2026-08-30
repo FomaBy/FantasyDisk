@@ -43,6 +43,32 @@ worktree. Директива пользователя 2026-07-03: все зад�
 | `main` | Стабильная выпущенная линия | Не вести обычную разработку напрямую |
 | `dev` | Интеграционная ветка текущей линии (`0.3.1`) | Работать по Multica; task branches разводить через owner/locked paths, интегрировать только после exact-SHA QA |
 
+## GitHub Branch Protection (`dev`, FAN-3133)
+
+`dev` защищён GitHub ruleset `dev-protection` (repo `FomaBy/FantasyDisk`,
+`target: branch`, `enforcement: active`, `conditions.ref_name.include:
+refs/heads/dev`):
+
+- обязателен pull request (прямой push в обход PR запрещён);
+- required status checks — job id из `.github/workflows/quality.yml`,
+  workflow `Quality`, событие `push`/`pull_request`/`merge_group`:
+  `static-quality`, `visual-regression`. (`dev-runtime-health*` — отдельные
+  job'ы только для `schedule`/`workflow_dispatch`, required-гейтом не
+  являются: на push/PR они не запускаются.)
+- обязательное разрешение review-тредов (`required_review_thread_resolution: true`);
+- запрещены force-push (`non_fast_forward`) и удаление ветки (`deletion`).
+
+Emergency bypass ограничен ролью `admin` (`bypass_actors: [{actor_type:
+RepositoryRole, actor_id: 5, bypass_mode: always}]`) — в этом репозитории её
+имеет только владелец. Каждое обход-событие фиксируется GitHub автоматически
+в `GET /repos/FomaBy/FantasyDisk/rulesets/rule-suites` (audit trail самого
+ruleset, ничего дополнительно настраивать не нужно).
+
+Переименование job id `static-quality`/`visual-regression` в
+`quality.yml` без синхронного обновления required status checks в ruleset
+молча отвязывает обязательный гейт — при переименовании job'а обновляй
+ruleset в том же коммите/задаче.
+
 ## Правила Для Агентов
 
 Перед началом любой задачи агент должен проверить текущую ветку:
