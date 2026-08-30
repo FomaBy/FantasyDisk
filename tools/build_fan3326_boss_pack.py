@@ -44,6 +44,7 @@ SUFFIXES = [direction.replace("-", "_") for direction in DIRECTIONS]
 TOOL_VERSION = "1.0.0"
 API_TIMEOUT = 180
 MAX_MISSING_GROUPS = 37
+MAX_BATCH_GROUPS = 8
 
 OBJECT_IDS = {
     "rift_warden": "ab1c7701-3ee7-4c7c-8842-22a7def87f08",
@@ -273,10 +274,13 @@ def missing_directions(group: dict[str, Any] | None, spec: dict[str, Any]) -> tu
     return frame_count, missing
 
 
-def queue_missing(bearer: str, log=print) -> None:
+def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None:
     call_id = 100
     queued_groups = 0
+    group_cap = MAX_BATCH_GROUPS if batch_boss else MAX_MISSING_GROUPS
     for boss_id, object_id in OBJECT_IDS.items():
+        if batch_boss and batch_boss != boss_id:
+            continue
         report = get_report("get_object", object_id, bearer, call_id)
         call_id += 1
         missing_states = dict(OBJECT_STATES)
@@ -291,8 +295,8 @@ def queue_missing(bearer: str, log=print) -> None:
             if not missing:
                 continue
             queued_groups += 1
-            if queued_groups > MAX_MISSING_GROUPS:
-                raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, MAX_MISSING_GROUPS))
+            if queued_groups > group_cap:
+                raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, group_cap))
             params: dict[str, Any] = {
                 "object_id": object_id,
                 "mode": "v3",
@@ -310,33 +314,36 @@ def queue_missing(bearer: str, log=print) -> None:
             call_id += 1
             log("queued %s %s: %s %s" % (boss_id, state, ",".join(missing), job_ids(response)))
 
-    report = get_report("get_character", SECRET_CHARACTER_ID, bearer, call_id)
-    call_id += 1
-    for canonical, spec in SECRET_STATES.items():
-        server_state = spec["server_state"]
-        group = report["animations"].get(server_state)
-        frame_count, missing = missing_directions(group, spec)
-        if not missing:
-            continue
-        queued_groups += 1
-        if queued_groups > MAX_MISSING_GROUPS:
-            raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, MAX_MISSING_GROUPS))
-        params = {
-            "character_id": SECRET_CHARACTER_ID,
-            "mode": "v3",
-            "directions": missing,
-            "frame_count": frame_count,
-            "animation_name": server_state,
-            "action_description": SECRET_PROMPTS[server_state],
-        }
-        if group:
-            params["animation_group_id"] = group["group_id"]
-            if any(direction in group["directions"] for direction in missing):
-                params["replace_existing"] = True
-        response = call("animate_character", params, bearer, call_id)
+    if not batch_boss or batch_boss == "secret_ascension_boss":
+        report = get_report("get_character", SECRET_CHARACTER_ID, bearer, call_id)
         call_id += 1
-        log("queued secret %s: %s %s" % (canonical, ",".join(missing), job_ids(response)))
-    log("queued missing groups: %d/%d" % (queued_groups, MAX_MISSING_GROUPS))
+        for canonical, spec in SECRET_STATES.items():
+            server_state = spec["server_state"]
+            group = report["animations"].get(server_state)
+            frame_count, missing = missing_directions(group, spec)
+            if not missing:
+                continue
+            queued_groups += 1
+            if queued_groups > group_cap:
+                raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, group_cap))
+            params = {
+                "character_id": SECRET_CHARACTER_ID,
+                "mode": "v3",
+                "directions": missing,
+                "frame_count": frame_count,
+                "animation_name": server_state,
+                "action_description": SECRET_PROMPTS[server_state],
+            }
+            if group:
+                params["animation_group_id"] = group["group_id"]
+                if any(direction in group["directions"] for direction in missing):
+                    params["replace_existing"] = True
+            response = call("animate_character", params, bearer, call_id)
+            call_id += 1
+            log("queued secret %s: %s %s" % (canonical, ",".join(missing), job_ids(response)))
+    if batch_boss and queued_groups == 0:
+        raise BuildError("no pending groups remain for batch boss %s" % batch_boss)
+    log("queued missing groups: %d/%d" % (queued_groups, group_cap))
 
 
 def job_ids(response: Any) -> str:
@@ -346,7 +353,7 @@ def job_ids(response: Any) -> str:
     return "jobs=" + (",".join(ids) if ids else "unreported")
 
 
-def wait_for_pack(bearer: str, timeout: float, interval: float, log=print) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+def wait_for_pack(bearer: str, timeout: float, interval: float, batch_boss: str | None = None, log=print) -> tuple[dict[str, dict[str, Any]], dict[str, Any] | None]:
     deadline = time.time() + timeout
     call_id = 1000
     while True:
@@ -354,6 +361,8 @@ def wait_for_pack(bearer: str, timeout: float, interval: float, log=print) -> tu
         complete = True
         missing_report: list[str] = []
         for boss_id, object_id in OBJECT_IDS.items():
+            if batch_boss and batch_boss != boss_id:
+                continue
             report = get_report("get_object", object_id, bearer, call_id)
             call_id += 1
             objects[boss_id] = report
@@ -374,18 +383,20 @@ def wait_for_pack(bearer: str, timeout: float, interval: float, log=print) -> tu
                     complete = False
                     missing_report.append("%s/%s" % (boss_id, state))
 
-        secret = get_report("get_character", SECRET_CHARACTER_ID, bearer, call_id)
-        call_id += 1
-        if secret["status"] == "failed":
-            raise BuildError("PixelLab character failed: secret_ascension_boss")
-        for canonical, spec in SECRET_STATES.items():
-            group = secret["animations"].get(spec["server_state"])
-            frame_count = effective_frame_count(group, spec)
-            if not group or any(
-                len(group["directions"].get(direction, [])) != frame_count for direction in DIRECTIONS
-            ):
-                complete = False
-                missing_report.append("secret_ascension_boss/%s" % canonical)
+        secret = None
+        if not batch_boss or batch_boss == "secret_ascension_boss":
+            secret = get_report("get_character", SECRET_CHARACTER_ID, bearer, call_id)
+            call_id += 1
+            if secret["status"] == "failed":
+                raise BuildError("PixelLab character failed: secret_ascension_boss")
+            for canonical, spec in SECRET_STATES.items():
+                group = secret["animations"].get(spec["server_state"])
+                frame_count = effective_frame_count(group, spec)
+                if not group or any(
+                    len(group["directions"].get(direction, [])) != frame_count for direction in DIRECTIONS
+                ):
+                    complete = False
+                    missing_report.append("secret_ascension_boss/%s" % canonical)
 
         elapsed = int(timeout - max(0.0, deadline - time.time()))
         log("poll t=%ss pending=%s" % (elapsed, ", ".join(missing_report[:12]) or "none"))
@@ -663,6 +674,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--timeout", type=float, default=900.0)
     parser.add_argument("--poll-interval", type=float, default=30.0)
     parser.add_argument("--resume", action="store_true", help="poll already queued PixelLab jobs without submitting duplicates")
+    parser.add_argument("--batch-boss", choices=[*OBJECT_IDS, "secret_ascension_boss"], help="queue and harvest only one boss (max 8 pending groups)")
     parser.add_argument("--check", action="store_true", help="verify all six manifests and runtime bytes offline")
     parser.add_argument("--rebuild", action="store_true", help="rebuild SpriteFrames from tracked source/runtime manifests offline")
     args = parser.parse_args(argv)
@@ -675,14 +687,20 @@ def main(argv: list[str] | None = None) -> int:
     try:
         bearer = read_auth()
         if not args.resume:
-            queue_missing(bearer)
-        object_reports, secret_report = wait_for_pack(bearer, args.timeout, args.poll_interval)
+            queue_missing(bearer, args.batch_boss)
+        object_reports, secret_report = wait_for_pack(bearer, args.timeout, args.poll_interval, args.batch_boss)
         call_id = 5000
-        for actor_id, source_kind, asset_id, states, aliases in actor_specs():
+        actors = actor_specs()
+        if args.batch_boss:
+            actors = [actor for actor in actors if actor[0] == args.batch_boss]
+        for actor_id, source_kind, asset_id, states, aliases in actors:
             report = secret_report if source_kind == "character" else object_reports[actor_id]
             build_actor(actor_id, source_kind, asset_id, report, states, aliases, bearer, call_id)
             print("built %s" % actor_id)
-        print("FAN-3326 PixelLab boss pack PASS: six actors, eight directions, deterministic runtime emitted")
+        if args.batch_boss:
+            print("FAN-3326 PixelLab boss batch PASS: %s, eight directions, deterministic runtime emitted" % args.batch_boss)
+        else:
+            print("FAN-3326 PixelLab boss pack PASS: six actors, eight directions, deterministic runtime emitted")
         return 0
     except TimeoutError as exc:
         print("TIMEOUT: %s" % exc, file=sys.stderr)
