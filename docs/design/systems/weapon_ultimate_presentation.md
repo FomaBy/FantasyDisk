@@ -479,6 +479,21 @@ every run (60 fps steps, victims placed farthest-first):
 Only the scheduling half is machine-measured; GPU fill-rate of the shipped
 impact packs stays review-gated, like the rest of the rendered result.
 
+**Wiring the service is a gate, not a convention (FAN-2944).** The budget test
+above proves the service behaves; the `victim_impact` gate in
+`UltimateVisualDirectionContract` proves each package actually uses it. It reads
+package source rather than instantiating 51 activations — the same evidence
+level as `tests/combat_primitive_ratchet_test.gd` — and reports
+`victim_impact.unwired: <class>/<weapon>` when neither
+`scripts/ultimates/classes/<class>/<weapon>.gd` nor any script under
+`scenes/vfx/ultimates/<class>/` names the service. One wired activation script
+clears the whole trio, because a package that spawns nothing drives its ripple
+from the authored scene (the doctor pattern above). Classes still drawing
+caster-side only sit in `ADOPTION_GAPS["victim_impact"]`, a ratchet with the
+usual rules — it only shrinks, its target state is empty, and an entry for a
+class that already wires the service fails as stale. Each FAN-3002 retrofit
+removes its own entry.
+
 **Area telegraphs are flavour, not the read.** Because the hit now reads on the
 victim, a blinking area rectangle may no longer be how an ultimate shows its
 reach. `UltimateVisualDirectionContract.scene_telegraph_violations()` walks an
@@ -524,6 +539,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/visual_direction_contract_test.gd
 ```
 
 The budget test additionally owns the per-victim impact contract: it prints the

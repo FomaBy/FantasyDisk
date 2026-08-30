@@ -102,7 +102,28 @@ const ADOPTION_GAPS := {
 		"soldier": "awaiting the readability/accessibility declaration",
 		"thief": "awaiting the readability/accessibility declaration",
 	},
+	"victim_impact": {
+		"assassin": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"chemist": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"knight": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"priest": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"ranger": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"robot": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"sniper": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"soldier": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"thief": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+	},
 }
+
+## Per-victim impact (Ultimate Direction v2, FAN-2944 §4; service in FAN-3008).
+## The activation scene owns the caster-side spectacle, but the hit itself reads
+## on every enemy it touches, so a ready package must route its victims through
+## the one shared UltimateVictimImpactPlayer service. Checked on the package
+## source like the combat primitive ratchet: this contract does not instantiate
+## activations, and 51 of them is not where that should start.
+const VICTIM_IMPACT_SERVICE := "victim_impact_player"
+const EXECUTOR_ROOT := "res://scripts/ultimates/classes"
+const ACTIVATION_SCENE_ROOT := "res://scenes/vfx/ultimates"
 
 ## Area telegraphs are flavour, never the read (FAN-3008). A blinking area
 ## rectangle used to be how an ultimate showed its reach; the read now belongs
@@ -114,7 +135,8 @@ const TELEGRAPH_GROUP := "ultimate_area_telegraph"
 const TELEGRAPH_BLINK_PROPERTIES: Array[String] = ["visible", "modulate", "self_modulate"]
 
 const GATES: Array[String] = [
-	"phases", "cleanup", "budget", "direction", "capture", "provenance", "quality", "telegraph",
+	"phases", "cleanup", "budget", "direction", "capture", "provenance", "quality",
+	"victim_impact", "telegraph",
 ]
 
 
@@ -156,6 +178,7 @@ static func violations(
 	_check_direction(weapons, class_id, errors)
 	_check_capture(manifest, class_id, errors)
 	_check_provenance(manifest, weapons, class_id, errors)
+	errors.append_array(victim_impact_violations(class_id, weapons))
 	return errors
 
 
@@ -672,6 +695,49 @@ static func _check_quality(weapon: Dictionary, key: String, errors: Array[String
 			"quality.flash_repeat: %s repeats a %.2f-coverage flash at %.2f Hz"
 			% [key, float(flash_coverage), float(flash_hz)]
 		)
+
+
+## Every weapon of the trio must route the enemies it damages through the shared
+## per-victim impact service. The roots are parameters so the gate has a red path
+## that does not depend on a package the ratchet still allows to be behind.
+##
+## A class whose authored activation scripts drive the impacts — the doctor
+## pattern, where the ready package spawns nothing and the scene owns the whole
+## cast — covers its trio there, so one wired activation script clears the class.
+static func victim_impact_violations(
+	class_id: String,
+	weapons: Array[Dictionary],
+	executor_root: String = EXECUTOR_ROOT,
+	scene_root: String = ACTIVATION_SCENE_ROOT
+) -> Array[String]:
+	var errors: Array[String] = []
+	if _directory_wires_impacts("%s/%s" % [scene_root, class_id]):
+		return errors
+	for weapon in weapons:
+		var weapon_id := str(weapon.get("weapon_id", ""))
+		if _script_wires_impacts("%s/%s/%s.gd" % [executor_root, class_id, weapon_id]):
+			continue
+		errors.append(
+			"victim_impact.unwired: %s/%s routes no victim through %s"
+			% [class_id, weapon_id, VICTIM_IMPACT_SERVICE]
+		)
+	return errors
+
+
+static func _directory_wires_impacts(directory: String) -> bool:
+	if not DirAccess.dir_exists_absolute(directory):
+		return false
+	for file_name in DirAccess.get_files_at(directory):
+		if str(file_name).ends_with(".gd") \
+				and _script_wires_impacts("%s/%s" % [directory, str(file_name)]):
+			return true
+	return false
+
+
+static func _script_wires_impacts(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return false
+	return FileAccess.get_file_as_string(path).contains(VICTIM_IMPACT_SERVICE)
 
 
 ## Width/height straight from the PNG IHDR header, or ZERO when the file is

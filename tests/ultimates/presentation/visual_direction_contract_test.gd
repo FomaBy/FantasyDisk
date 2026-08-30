@@ -12,6 +12,10 @@ const REFERENCE_CLASS := "doctor"
 const EXPECTED_CLASS_COUNT := 17
 const EXPECTED_WEAPON_COUNT := 51
 
+## A tree with no ultimate package source in it, used as the victim-impact
+## gate's red path.
+const UNWIRED_ROOT := "res://docs/design/references/weapon_ultimates"
+
 
 func _initialize() -> void:
 	var errors: Array[String] = []
@@ -211,6 +215,15 @@ func _check_gates_go_red(errors: Array[String]) -> void:
 	var undeclared_quality := _fixture(baseline)
 	_weapon(undeclared_quality, 0).erase("quality")
 	_expect_violation(undeclared_quality, "quality.missing", errors)
+
+	# The per-victim gate reads package source, not the manifest, so its red path
+	# points the roots at a tree that wires nothing instead of mutating a weapon.
+	var unwired: Array[Dictionary] = [{"weapon_id": "restore_potion"}]
+	var unwired_reported := Contract.victim_impact_violations(
+		REFERENCE_CLASS, unwired, UNWIRED_ROOT, UNWIRED_ROOT
+	)
+	if unwired_reported.is_empty() or not str(unwired_reported[0]).begins_with("victim_impact.unwired:"):
+		errors.append("expected victim_impact.unwired, got: %s" % str(unwired_reported))
 
 
 func _fixture(baseline: Dictionary) -> Dictionary:
