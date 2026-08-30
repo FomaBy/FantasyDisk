@@ -1,4 +1,5 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk5dnw4kfvgs2"
@@ -8,10 +9,12 @@ metadata={
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_wolf/runtime/druid_ghost_wolf_attack_north_west_05.png"
 dest_files=["res://.godot/imported/druid_ghost_wolf_attack_north_west_05.png-394513d5646ab006d63cc7a1cdb11e8d.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

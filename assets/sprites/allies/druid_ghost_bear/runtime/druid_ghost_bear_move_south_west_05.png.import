@@ -1,4 +1,5 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dlupwlcjv4qtd"
@@ -8,10 +9,12 @@ metadata={
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_05.png"
 dest_files=["res://.godot/imported/druid_ghost_bear_move_south_west_05.png-ecfedc2704b93579b3179b38c3ece121.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

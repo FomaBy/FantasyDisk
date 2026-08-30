@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://puudg84zvld6r"
+uid="uid://e7u31g0mru5p"
 path="res://.godot/imported/sound_amp_f03.png-b70aad34b8b5919143160aa3d39607f5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f03.png"
 dest_files=["res://.godot/imported/sound_amp_f03.png-b70aad34b8b5919143160aa3d39607f5.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

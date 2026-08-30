@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ryhjtmv4phkrs"
+uid="uid://cit2he74gn2qq"
 path="res://.godot/imported/electric_guitar_f08.png-676d3dd8665aaf0b177f8c51e23a690f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f08.png"
 dest_files=["res://.godot/imported/electric_guitar_f08.png-676d3dd8665aaf0b177f8c51e23a690f.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

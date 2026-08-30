@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pe0arj9dsyerw"
+uid="uid://dsrn0eil4drim"
 path="res://.godot/imported/homunculus_caster_idle_south_00.png-7fea8e8fd8b1eb5175102e0924859d2c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_south_00.png"
 dest_files=["res://.godot/imported/homunculus_caster_idle_south_00.png-7fea8e8fd8b1eb5175102e0924859d2c.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

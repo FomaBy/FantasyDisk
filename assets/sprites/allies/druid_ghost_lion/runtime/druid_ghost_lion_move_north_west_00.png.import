@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g0z5ruhjdwnxj"
+uid="uid://c5ma6skaspr6r"
 path="res://.godot/imported/druid_ghost_lion_move_north_west_00.png-d5cc2b01b1068ac6e165867abfc8f117.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_lion/runtime/druid_ghost_lion_move_north_west_00.png"
 dest_files=["res://.godot/imported/druid_ghost_lion_move_north_west_00.png-d5cc2b01b1068ac6e165867abfc8f117.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

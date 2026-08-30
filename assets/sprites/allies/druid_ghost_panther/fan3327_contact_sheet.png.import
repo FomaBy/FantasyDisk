@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vjx9ztqv8acwh"
+uid="uid://b7ww2j5ne8x4n"
 path="res://.godot/imported/fan3327_contact_sheet.png-03fe47655590551c13c6c7d2a432ccdf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_panther/fan3327_contact_sheet.png"
 dest_files=["res://.godot/imported/fan3327_contact_sheet.png-03fe47655590551c13c6c7d2a432ccdf.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

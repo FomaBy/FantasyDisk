@@ -101,6 +101,16 @@ class GodotGateTest(unittest.TestCase):
         self.assertEqual(self.module._project_path(["--path=/other"]), "/other")
         self.assertEqual(self.module._project_path([]), ".")
 
+    def test_requested_build_pin_rejects_a_different_engine_before_import(self):
+        with mock.patch.object(
+            self.module.subprocess,
+            "check_output",
+            return_value="4.7.stable.official.other\n",
+        ):
+            with mock.patch.dict(os.environ, {"GODOT_BUILD_ID": "4.7.stable.official.5b4e0cb0f"}):
+                with self.assertRaisesRegex(RuntimeError, "expected.*GODOT_BUILD_ID"):
+                    self.module._assert_requested_build("/mock/Godot")
+
     def test_lock_exclusion_and_release_on_current_platform(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "slot.lock"

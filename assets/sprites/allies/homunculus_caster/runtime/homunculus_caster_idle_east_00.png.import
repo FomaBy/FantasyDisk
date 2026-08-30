@@ -1,4 +1,5 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcs7g73sh76km"
@@ -8,10 +9,12 @@ metadata={
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_east_00.png"
 dest_files=["res://.godot/imported/homunculus_caster_idle_east_00.png-c888d6b8b2218abd1cfc70e9ec15f5aa.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

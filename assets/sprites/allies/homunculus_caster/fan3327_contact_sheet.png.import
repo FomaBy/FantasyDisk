@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0u5nfpq4ew5x6"
+uid="uid://copfvd8l0pwfl"
 path="res://.godot/imported/fan3327_contact_sheet.png-af34af3c069f789b680596e10a3d5a35.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/homunculus_caster/fan3327_contact_sheet.png"
 dest_files=["res://.godot/imported/fan3327_contact_sheet.png-af34af3c069f789b680596e10a3d5a35.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

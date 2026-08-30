@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://y09aas0sn27l3"
+uid="uid://bts1qhibaux2i"
 path="res://.godot/imported/bass_guitar_f04.png-ec54ae3ac9555308cf2ce19ee03ee838.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_f04.png"
 dest_files=["res://.godot/imported/bass_guitar_f04.png-ec54ae3ac9555308cf2ce19ee03ee838.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

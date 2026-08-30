@@ -93,6 +93,22 @@ def _resolve_godot() -> str:
     return ""
 
 
+def _assert_requested_build(godot: str) -> None:
+    """Reject an explicitly pinned engine before it can rewrite sidecars."""
+    expected = os.getenv("GODOT_BUILD_ID", "").strip()
+    if not expected:
+        return
+    try:
+        actual = subprocess.check_output([godot, "--version"], text=True).strip().splitlines()[-1]
+    except (OSError, subprocess.CalledProcessError, IndexError) as exc:
+        raise RuntimeError(f"cannot verify GODOT_BUILD_ID={expected!r}: {exc}") from exc
+    if actual != expected:
+        raise RuntimeError(
+            f"Godot build mismatch: expected GODOT_BUILD_ID={expected!r}, got {actual!r}; "
+            "install the pinned build or unset GODOT_BUILD_ID for an unpinned local run"
+        )
+
+
 def _project_path(args: Sequence[str]) -> str:
     for index, arg in enumerate(args):
         if arg == "--path" and index + 1 < len(args):
@@ -369,6 +385,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "to an executable path\n"
         )
         return 127
+    try:
+        _assert_requested_build(godot)
+    except RuntimeError as exc:
+        sys.stderr.write(f"godot_gate: {exc}\n")
+        return 2
 
     deadline = time.monotonic() + max_wait
     exclusive = os.getenv("FSD_GODOT_EXCLUSIVE", "") == "1"

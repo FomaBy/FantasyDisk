@@ -1,4 +1,5 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d38gfm2ct2yp5"
@@ -8,10 +9,12 @@ metadata={
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_lion/fan3327_contact_sheet.png"
 dest_files=["res://.godot/imported/fan3327_contact_sheet.png-5fa2b87b6b78b8190b277ebb74c57e9a.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

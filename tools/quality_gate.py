@@ -609,7 +609,14 @@ def _cleanup_generated_import_sidecars() -> list[str]:
     removed: list[str] = []
     for relative in GENERATED_IMPORT_SIDECARS:
         path = ROOT / relative
-        if not path.is_file():
+        tracked = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", "--", relative],
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        if tracked or not path.is_file():
             continue
         try:
             path.unlink()

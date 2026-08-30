@@ -1,4 +1,5 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcn0jhl508dn0"
@@ -8,10 +9,12 @@ metadata={
 }
 
 [deps]
+
 source_file="res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f00.png"
 dest_files=["res://.godot/imported/electric_guitar_f00.png-30fe5c77f8febbb8c972e32ab27cc2eb.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

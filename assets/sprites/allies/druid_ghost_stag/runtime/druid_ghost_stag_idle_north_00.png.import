@@ -1,17 +1,20 @@
 [remap]
+
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://03upgeke7j3w6"
+uid="uid://cwfhv11vtcuel"
 path="res://.godot/imported/druid_ghost_stag_idle_north_00.png-2f54131e4e174119e3faa191057c593b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
+
 source_file="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_00.png"
 dest_files=["res://.godot/imported/druid_ghost_stag_idle_north_00.png-2f54131e4e174119e3faa191057c593b.ctex"]
 
 [params]
+
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7

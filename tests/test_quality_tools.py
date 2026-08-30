@@ -164,13 +164,31 @@ class QualityGateTests(unittest.TestCase):
             (root / "unrelated.png.import").write_text("keep\n", encoding="utf-8")
             (root / "nested").mkdir()
             (root / "nested" / "asset.png.import").write_text("keep\n", encoding="utf-8")
-            with mock.patch.object(self.quality, "ROOT", root):
+            with mock.patch.object(self.quality, "ROOT", root), mock.patch.object(
+                self.quality.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 1),
+            ):
                 removed = self.quality._cleanup_generated_import_sidecars()
             self.assertEqual(set(removed), set(self.quality.GENERATED_IMPORT_SIDECARS))
             for name in self.quality.GENERATED_IMPORT_SIDECARS:
                 self.assertFalse((root / name).exists())
             self.assertTrue((root / "unrelated.png.import").exists())
             self.assertTrue((root / "nested" / "asset.png.import").exists())
+
+    def test_known_tracked_import_sidecars_are_never_removed(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-sidecars-") as scratch:
+            root = Path(scratch)
+            sidecar = root / self.quality.GENERATED_IMPORT_SIDECARS[0]
+            sidecar.write_text("tracked\n", encoding="utf-8")
+            with mock.patch.object(self.quality, "ROOT", root), mock.patch.object(
+                self.quality.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 0),
+            ):
+                removed = self.quality._cleanup_generated_import_sidecars()
+            self.assertEqual(removed, [])
+            self.assertTrue(sidecar.exists())
 
     def test_quality_gate_runs_known_import_sidecar_cleanup_before_status_reads(self) -> None:
         source = (ROOT / "tools" / "quality_gate.py").read_text(encoding="utf-8")
