@@ -44,10 +44,25 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
+# FAN-3814 (ADR Фаза 2): пер-актёрные анимационные шарды; новая актёрная задача
+# добавляет свой файл, и рекурсивное discovery подбирает его без правок гейта.
+ACTOR_TEST_DIR = TEST_DIR / "actors"
+# FAN-3814 (ADR Фаза 2): пер-классовые балансовые сьюты. Раньше их проверки жили
+# внутри runtime_smoke_test.gd и исполнялись умбреллой на любом изменении
+# scripts/**; после выноса классовый флот пере-доказывается адресно — на путях,
+# которые определяют оружие/данные классов.
+BALANCE_TEST_DIR = TEST_DIR / "balance"
+BALANCE_SENSITIVE_PATHS = frozenset({
+    "scripts/class_weapon.gd",
+    "scripts/player.gd",
+    "scripts/progression_data.gd",
+    "scripts/progression_data_balance.gd",
+    "scripts/progression_data_weapons.gd",
+})
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
-    "res://tests/berserk_dps_runaway_gate.gd",
+    "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
     "res://tests/live_balance_simulation_test.gd",
     "res://tests/pool_dot_runaway_gate.gd",
 })
@@ -146,6 +161,35 @@ DEFENSIVE_CONTRACT_TESTS = {
     "robot_kit_test",
     "thief_kit_test",
 }
+# FAN-3818: attribute_consumability_fan1887_test читает сьюты из своего списка
+# DEFENSIVE_FIXTURES сырым FileAccess по литеральному res://-пути, поэтому
+# перенос/удаление такой фикстуры ломает только его — и до этого правила дыра
+# была видна лишь full-профилю (ровно так FAN-3817 провалил кандидата Фазы 2).
+# Список парсится из самого сьюта: единственный источник правды, зеркала нет.
+CONSUMABILITY_GATE_TEST = "attribute_consumability_fan1887_test"
+CONSUMABILITY_GATE_SOURCE = TEST_DIR / "attribute_consumability_fan1887_test.gd"
+_DEFENSIVE_FIXTURES_BLOCK_RE = re.compile(
+    r"^const DEFENSIVE_FIXTURES := \[(?P<body>[^\]]*)\]", re.MULTILINE
+)
+
+
+def defensive_fixture_paths() -> frozenset[str]:
+    """Repo-relative paths listed in the consumability gate's DEFENSIVE_FIXTURES."""
+    source = CONSUMABILITY_GATE_SOURCE.read_text(encoding="utf-8")
+    match = _DEFENSIVE_FIXTURES_BLOCK_RE.search(source)
+    if match is None:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES block not found in {CONSUMABILITY_GATE_SOURCE.name}"
+        )
+    paths = frozenset(
+        literal[len("res://"):]
+        for literal in re.findall(r'"(res://tests/[^"]+\.gd)"', match.group("body"))
+    )
+    if not paths:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES in {CONSUMABILITY_GATE_SOURCE.name} parsed empty"
+        )
+    return paths
 PATH_TEST_RULES = {
     "scripts/ultimates/classes/thief/thief_coin_pouch.gd": {
         "thief_live_test",
@@ -374,8 +418,14 @@ def select_godot_tests(
         selected_names = set(by_name)
     else:
         selected_names = set(CORE_CHANGED_TESTS)
+        fixture_paths = defensive_fixture_paths()
         for changed_path in _git_changed_paths(changed_ref):
             selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
+            if changed_path in fixture_paths:
+                # FAN-3818: любое касание raw-фикстуры (включая удаление старого
+                # пути при переносе) пере-доказывает consumability-гейт, который
+                # её читает — full-профиля для этого больше ждать не нужно.
+                selected_names.add(CONSUMABILITY_GATE_TEST)
             if changed_path.startswith((
                 "data/ultimates/classes/",
                 "scripts/ultimates/classes/",
@@ -383,6 +433,36 @@ def select_godot_tests(
                 selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
             if changed_path.startswith("data/animation/"):
                 selected_names.update(ANIMATION_REGISTRY_TESTS)
+                # FAN-3814: an actor's data shard re-proves its own smoke shard;
+                # a shard without a matching actor suite re-proves them all.
+                actor_stem = f"{Path(changed_path).stem}_smoke_test"
+                if actor_stem in by_name:
+                    selected_names.add(actor_stem)
+                else:
+                    selected_names.update(
+                        name
+                        for name, path in by_name.items()
+                        if ACTOR_TEST_DIR in path.parents
+                    )
+            if changed_path == "scripts/full_frame_animation_registry.gd":
+                # FAN-3814: the facade serves every actor shard, so a facade
+                # change re-proves the whole per-actor smoke fleet.
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if ACTOR_TEST_DIR in path.parents
+                )
+            if changed_path in BALANCE_SENSITIVE_PATHS or changed_path.startswith(
+                "scripts/classes/"
+            ):
+                # FAN-3814: class weapon/data changes re-prove every per-class
+                # balance suite (the coverage the umbrella carried before the
+                # Phase 2 extraction).
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if BALANCE_TEST_DIR in path.parents
+                )
             if changed_path.startswith("scripts/ultimates/presentation/"):
                 selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)
                 selected_names.update(
