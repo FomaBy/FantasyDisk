@@ -10,6 +10,25 @@ TESTS_DIR = ROOT / "tests"
 RUNTIME_SMOKE_SUITE = "runtime_smoke_test.gd"
 EXPECTED_RUNTIME_SMOKE_DESCENDANTS = frozenset(
     {
+        # FAN-3814 (ADR Фаза 2): пер-классовые балансовые сьюты, вынесенные из
+        # runtime_smoke_test.gd; наследуют его хелперы и _finish-контракт.
+        "balance/assassin/assassin_identity_test.gd",
+        "balance/berserk/berserk_weapon_configs_test.gd",
+        "balance/biologist/biologist_weapon_mechanics_test.gd",
+        "balance/chemist/chemist_identity_test.gd",
+        "balance/dark_mage/dark_mage_weapon_rework_test.gd",
+        "balance/doctor/doctor_identity_test.gd",
+        "balance/druid/druid_identity_test.gd",
+        "balance/elementalist/elementalist_weapon_mechanics_test.gd",
+        "balance/engineer/engineer_weapon_mechanics_test.gd",
+        "balance/guitarist/guitarist_weapon_rework_test.gd",
+        "balance/knight/knight_identity_test.gd",
+        "balance/priest/priest_weapon_mechanics_test.gd",
+        "balance/ranger/ranger_identity_test.gd",
+        "balance/robot/robot_weapon_mechanics_test.gd",
+        "balance/sniper/sniper_weapon_mechanics_test.gd",
+        "balance/soldier/soldier_weapon_mechanics_test.gd",
+        "balance/thief/thief_weapon_mechanics_test.gd",
         "dev_console_smoke_test.gd",
         "dev_console_win_flow_test.gd",
         "gamepad_combat_actions_test.gd",

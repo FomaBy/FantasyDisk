@@ -47,10 +47,22 @@ PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
 # FAN-3814 (ADR Фаза 2): пер-актёрные анимационные шарды; новая актёрная задача
 # добавляет свой файл, и рекурсивное discovery подбирает его без правок гейта.
 ACTOR_TEST_DIR = TEST_DIR / "actors"
+# FAN-3814 (ADR Фаза 2): пер-классовые балансовые сьюты. Раньше их проверки жили
+# внутри runtime_smoke_test.gd и исполнялись умбреллой на любом изменении
+# scripts/**; после выноса классовый флот пере-доказывается адресно — на путях,
+# которые определяют оружие/данные классов.
+BALANCE_TEST_DIR = TEST_DIR / "balance"
+BALANCE_SENSITIVE_PATHS = frozenset({
+    "scripts/class_weapon.gd",
+    "scripts/player.gd",
+    "scripts/progression_data.gd",
+    "scripts/progression_data_balance.gd",
+    "scripts/progression_data_weapons.gd",
+})
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
-    "res://tests/berserk_dps_runaway_gate.gd",
+    "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
     "res://tests/live_balance_simulation_test.gd",
     "res://tests/pool_dot_runaway_gate.gd",
 })
@@ -404,6 +416,17 @@ def select_godot_tests(
                     name
                     for name, path in by_name.items()
                     if ACTOR_TEST_DIR in path.parents
+                )
+            if changed_path in BALANCE_SENSITIVE_PATHS or changed_path.startswith(
+                "scripts/classes/"
+            ):
+                # FAN-3814: class weapon/data changes re-prove every per-class
+                # balance suite (the coverage the umbrella carried before the
+                # Phase 2 extraction).
+                selected_names.update(
+                    name
+                    for name, path in by_name.items()
+                    if BALANCE_TEST_DIR in path.parents
                 )
             if changed_path.startswith("scripts/ultimates/presentation/"):
                 selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)

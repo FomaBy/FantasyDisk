@@ -30,7 +30,7 @@ extends SceneTree
 #   стал тождественным, и когда его перестали вызывать. Не зависит ни от уровня
 #   DPS, ни от дрейфа контента: пробы фиксированные, функция чистая, шума нет.
 #
-# Запуск: Godot --headless --path . --script res://tests/berserk_dps_runaway_gate.gd
+# Запуск: Godot --headless --path . --script res://tests/balance/berserk/berserk_dps_runaway_gate.gd
 # Отдельный изолированный файл (анти-коллизия с занятыми runtime_smoke/harness).
 
 const ProgressionData := preload("res://scripts/progression_data.gd")

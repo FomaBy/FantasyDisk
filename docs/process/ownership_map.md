@@ -12,21 +12,18 @@
 
 ### actor/<actor_id> — анимация и ассеты одного актёра
 
-Сейчас (до Фаз 1–2):
-- `assets/sprites/{enemies,allies,elites,bosses}/**/<actor_id>*`
-- строки своего актёра в `scripts/full_frame_animation_registry.gd` (общий файл!)
-- секции своего актёра в `tests/animation_smoke_test.gd` (общий файл!)
+Сейчас (Фаза 1 — FAN-3660, Фаза 2 — FAN-3814: данные и smoke-тесты пошардированы):
+- `data/animation/<kind>/<actor_id>.json`
+- `tests/actors/<actor_id>_smoke_test.gd`
+- `assets/sprites/**/<actor_id>*`
 - свой блок в `docs/design/systems/animation.md` (общий файл!)
 
-После миграции:
-- `data/animation/<kind>/<actor_id>.json` (Фаза 1)
-- `tests/actors/<actor_id>_smoke_test.gd` (Фаза 2)
-- `assets/sprites/**/<actor_id>*`
-- `changelog.d/<FAN-id>.md` (Фаза 1)
+После оставшейся миграции:
+- `changelog.d/<FAN-id>.md` (Фаза 1, шардирование CHANGELOG — отдельная работа)
 
-Эталонный planned_write_set (после Фаз 1–2), пример actor/void_mage:
+Эталонный planned_write_set, пример actor/void_mage:
 `data/animation/enemy/void_mage.json`, `assets/sprites/enemies/full_frame/void_mage_8dir/**`,
-`tests/actors/void_mage_smoke_test.gd`, `changelog.d/FAN-XXXX.md`.
+`tests/actors/void_mage_smoke_test.gd`.
 
 ### class/<class_id> — оружие, ультимейты, баланс, VFX одного из 17 классов
 
@@ -36,7 +33,7 @@
 Сейчас:
 - `scripts/ultimates/classes/<class_id>/**`
 - `data/ultimates/classes/<class_id>/**`
-- `tests/ultimates/**/<class_id>_*`, `tests/<class_id>_kit_test.gd`
+- `tests/balance/<class_id>/**` (Фаза 2 — FAN-3814), `tests/ultimates/**/<class_id>_*`
 - строки своего класса в `build/ultimate_effectiveness_baseline.json` (общий файл!)
 - строки своего класса в `scripts/class_weapon.gd` (общий файл!)
 - `assets/**/ultimates/<class_id>/**`, `scenes/ultimates/<class_id>*`
@@ -45,7 +42,6 @@
 После миграции:
 - `build/effectiveness/<class_id>.json` (Фаза 1)
 - `scripts/classes/<class_id>_weapon.gd` (Фаза 3)
-- `tests/balance/<class_id>/**` (Фаза 2)
 - остальное как сейчас
 
 Эталонный planned_write_set (после Фаз 1–3), пример class/druid:
@@ -88,7 +84,6 @@
 - `docs/design/content_registry.md` — до Фазы 1; после — свой доменный файл `docs/design/content/*.md`
 - `docs/design/systems/animation.md`
 - `scripts/progression_data_*.gd` (данные классов/врагов — до выноса)
-- `tests/runtime_smoke_test.gd`, `tests/animation_smoke_test.gd` — до Фазы 2
 
 Кросс-доменная задача (меняет ядро + несколько доменов) — это отдельная
 пометка `cross-domain` в описании карточки; она не параллелится с задачами

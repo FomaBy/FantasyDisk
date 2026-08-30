@@ -137,7 +137,7 @@ run_gate survivability_smoke res://tests/global_survivability_balance_smoke_test
 run_gate survivability_harness res://tools/survivability_harness.gd
 run_gate survivability_scenario res://tests/survivability_scenario_test.gd
 run_gate --timing-sensitive live_balance_simulation res://tests/live_balance_simulation_test.gd
-run_gate --timing-sensitive berserk_runaway res://tests/berserk_dps_runaway_gate.gd
+run_gate --timing-sensitive berserk_runaway res://tests/balance/berserk/berserk_dps_runaway_gate.gd
 run_gate --timing-sensitive pool_dot_runaway res://tests/pool_dot_runaway_gate.gd
 run_gate damage_isolation res://tests/damage_type_isolation_test.gd
 run_gate ascension_curve res://tests/ascension_curve_balance_test.gd
