@@ -344,7 +344,7 @@ class QualityGateTests(unittest.TestCase):
 
     def test_only_timing_sensitive_suites_request_machine_exclusive(self) -> None:
         expected_exclusive = {
-            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
             "res://tests/live_balance_simulation_test.gd",
             "res://tests/pool_dot_runaway_gate.gd",
         }
@@ -395,7 +395,7 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(len(timing_calls), 4)
         required_scripts = {
             "res://tests/live_balance_simulation_test.gd",
-            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
             "res://tests/pool_dot_runaway_gate.gd",
             "res://tools/character_balance_csv.gd",
         }
