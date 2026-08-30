@@ -8,6 +8,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -1209,6 +1210,69 @@ class QualityGateTests(unittest.TestCase):
         self.assertFalse(descendant_survived)
         self.assertFalse(descendant_alive)
         self.assertFalse(reader_alive)
+
+    @unittest.skipIf(os.name == "nt", "POSIX session semantics; Windows uses a job object")
+    def test_watchdog_kills_descendant_that_left_the_process_group(self) -> None:
+        """FAN-3831: a nested gate call starts its own session, so killpg misses it.
+
+        The live-engine probes above run tools/godot_gate.py through a nested
+        ``_run_captured``, which means the real Godot process is neither in the
+        watchdog's process group nor reachable from it.  Before the descendant
+        sweep, killpg left that engine running, it kept the inherited stdout
+        open, and the capture reader blocked for as long as the orphan lived —
+        the certifying run then looked hung instead of failing closed.
+        """
+        with tempfile.TemporaryDirectory(prefix="quality-session-orphan-") as scratch:
+            marker = Path(scratch) / "orphan-survived"
+            env = os.environ.copy()
+            env["QUALITY_ORPHAN_MARKER"] = str(marker)
+            env["QUALITY_ORPHAN_CODE"] = (
+                "import os,time; time.sleep(20.0); "
+                "open(os.environ['QUALITY_ORPHAN_MARKER'], 'w').write('alive')"
+            )
+            parent = (
+                "import os,subprocess,sys,time; "
+                "child=subprocess.Popen([sys.executable, '-c', "
+                "os.environ['QUALITY_ORPHAN_CODE']], start_new_session=True); "
+                "print(f'parent-done child={child.pid}', flush=True); "
+                "time.sleep(20.0)"
+            )
+            started = time.monotonic()
+            code, output, timed_out = self.quality._run_captured(
+                [sys.executable, "-u", "-c", parent],
+                env,
+                20.0,
+                idle_timeout=1.0,
+            )
+            elapsed = time.monotonic() - started
+            child_match = re.search(r"child=(\d+)", output)
+            self.assertIsNotNone(child_match, output)
+            child_pid = int(child_match.group(1))
+
+            def child_is_alive() -> bool:
+                try:
+                    os.kill(child_pid, 0)
+                except ProcessLookupError:
+                    return False
+                except PermissionError:
+                    return True
+                return True
+
+            deadline = time.monotonic() + 1.0
+            while child_is_alive() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            descendant_alive = child_is_alive()
+            if descendant_alive:
+                os.kill(child_pid, signal.SIGKILL)
+            descendant_survived = marker.exists()
+
+        self.assertEqual(code, 124)
+        self.assertTrue(timed_out)
+        # The watchdog fired at 1s: returning near the descendant's own 20s
+        # lifetime is the hang this guards, not a slow machine.
+        self.assertLess(elapsed, 10.0, f"capture blocked on the orphan for {elapsed:.1f}s")
+        self.assertFalse(descendant_alive)
+        self.assertFalse(descendant_survived)
 
     def test_watchdog_accepts_parent_exit_after_descendant_closes_stdout(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-descendant-control-") as scratch:

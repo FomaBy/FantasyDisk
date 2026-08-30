@@ -88,6 +88,12 @@ PYTHON_TEST_PATTERN = "test_*.py"
 _WINDOWS_JOB_RUNNER_ARG = "--_quality-gate-windows-job-runner"
 _WINDOWS_JOB_HANDLE_ENV = "_QUALITY_GATE_WINDOWS_JOB_HANDLE"
 _WINDOWS_CLEANUP_TIMEOUT = 5.0
+# A timed-out step is already failing; cleanup may never become the new hang.
+_CLEANUP_TIMEOUT = 30.0
+_UNREADABLE_OUTPUT_NOTICE = (
+    "quality_gate: captured output unavailable: a task-owned descendant still holds "
+    "the pipe after the timeout kill\n"
+)
 
 CORE_CHANGED_TESTS = {
     "combat_target_query_cache_test",
@@ -507,6 +513,20 @@ def _run_command(
         )
     if output:
         print(output, end="" if output.endswith("\n") else "\n", flush=True)
+    if timed_out:
+        # Without this the step is indistinguishable from an ordinary failure,
+        # and a silent watchdog kill reads as "the gate hung" (FAN-3829).
+        limit = (
+            f"no output for {idle_timeout:.0f}s"
+            if idle_timeout is not None and time.monotonic() - started < timeout
+            else f"exceeded the {timeout:.0f}s step limit"
+        )
+        print(
+            f"TIMEOUT {name}: {limit} after {time.monotonic() - started:.0f}s; "
+            "task-owned processes terminated, step failed closed",
+            file=sys.stderr,
+            flush=True,
+        )
     result = {
         "name": name,
         "status": "passed" if exit_code == 0 and not timed_out else "failed",
@@ -862,9 +882,39 @@ def _run_in_windows_job(command: Sequence[str]) -> int:
         return 125
 
 
+def _descendant_pids(pid: int) -> list[int]:
+    """Every live descendant of *pid*, read before the kill reparents them."""
+    listing = subprocess.run(
+        ["ps", "-Ao", "pid=,ppid="],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    children: dict[int, list[int]] = {}
+    for line in listing.stdout.splitlines():
+        fields = line.split()
+        if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
+            children.setdefault(int(fields[1]), []).append(int(fields[0]))
+    found: list[int] = []
+    pending = [pid]
+    while pending:
+        for child in children.get(pending.pop(), ()):
+            if child not in found and child != pid:
+                found.append(child)
+                pending.append(child)
+    return found
+
+
 def _terminate_process(
     process: subprocess.Popen[str], windows_job: int | None = None
 ) -> None:
+    # A nested `_run_captured` (the live-engine probes in
+    # tests/test_quality_tools.py run tools/godot_gate.py that way) starts its
+    # own session, so killpg alone leaves the real engine running: it keeps the
+    # inherited stdout open and the capture reader below then blocks for as long
+    # as that orphan lives.  The tree is read first — the kill reparents it.
+    descendants = [] if os.name == "nt" else _descendant_pids(process.pid)
     try:
         if os.name == "nt":
             # Popen.kill uses the retained process handle, not a recyclable PID.
@@ -885,6 +935,21 @@ def _terminate_process(
         # The direct process may have exited while its inherited stdout is
         # still draining.  The reader lifecycle below remains authoritative.
         pass
+    survivors: list[int] = []
+    for pid in descendants:
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except ProcessLookupError:
+            continue
+        except OSError:
+            survivors.append(pid)
+    if survivors:
+        print(
+            "quality_gate: task-owned processes survived the timeout kill: "
+            f"{', '.join(str(pid) for pid in survivors)}; terminate them before rerunning",
+            file=sys.stderr,
+            flush=True,
+        )
 
 
 def _run_captured(
@@ -947,7 +1012,10 @@ def _run_captured(
             return process.returncode, output, False
         except subprocess.TimeoutExpired:
             _terminate_process(process)
-            output, _ = process.communicate()
+            try:
+                output, _ = process.communicate(timeout=_CLEANUP_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                output = _UNREADABLE_OUTPUT_NOTICE
             return 124, output, True
 
     try:
@@ -986,21 +1054,24 @@ def _run_captured(
 
         if timed_out:
             _terminate_process(process, windows_job)
+        cleanup_timeout = _WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else _CLEANUP_TIMEOUT
         try:
-            process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+            process.wait(timeout=cleanup_timeout)
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT)
         # Never close a buffered stream while another thread may be in readline().
-        # A timed-out process group is killed above; its inherited descriptors then
-        # reach EOF and let the reader finish cleanly.
-        reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+        # A timed-out process tree is killed above; its inherited descriptors then
+        # reach EOF and let the reader finish cleanly.  The wait stays bounded so a
+        # descendant that outlives the kill fails the step closed instead of
+        # turning cleanup into a second, unbounded hang.
+        reader.join(timeout=cleanup_timeout)
         if reader.is_alive():
             if process.stdout is not None:
                 process.stdout.close()
             reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT)
             if reader.is_alive():
-                raise RuntimeError("Windows job cleanup did not close the capture reader")
+                raise RuntimeError("timeout cleanup did not close the capture reader")
         if process.stdout is not None:
             process.stdout.close()
         return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
