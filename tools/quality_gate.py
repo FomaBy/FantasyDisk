@@ -161,6 +161,35 @@ DEFENSIVE_CONTRACT_TESTS = {
     "robot_kit_test",
     "thief_kit_test",
 }
+# FAN-3818: attribute_consumability_fan1887_test читает сьюты из своего списка
+# DEFENSIVE_FIXTURES сырым FileAccess по литеральному res://-пути, поэтому
+# перенос/удаление такой фикстуры ломает только его — и до этого правила дыра
+# была видна лишь full-профилю (ровно так FAN-3817 провалил кандидата Фазы 2).
+# Список парсится из самого сьюта: единственный источник правды, зеркала нет.
+CONSUMABILITY_GATE_TEST = "attribute_consumability_fan1887_test"
+CONSUMABILITY_GATE_SOURCE = TEST_DIR / "attribute_consumability_fan1887_test.gd"
+_DEFENSIVE_FIXTURES_BLOCK_RE = re.compile(
+    r"^const DEFENSIVE_FIXTURES := \[(?P<body>[^\]]*)\]", re.MULTILINE
+)
+
+
+def defensive_fixture_paths() -> frozenset[str]:
+    """Repo-relative paths listed in the consumability gate's DEFENSIVE_FIXTURES."""
+    source = CONSUMABILITY_GATE_SOURCE.read_text(encoding="utf-8")
+    match = _DEFENSIVE_FIXTURES_BLOCK_RE.search(source)
+    if match is None:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES block not found in {CONSUMABILITY_GATE_SOURCE.name}"
+        )
+    paths = frozenset(
+        literal[len("res://"):]
+        for literal in re.findall(r'"(res://tests/[^"]+\.gd)"', match.group("body"))
+    )
+    if not paths:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES in {CONSUMABILITY_GATE_SOURCE.name} parsed empty"
+        )
+    return paths
 PATH_TEST_RULES = {
     "scripts/ultimates/classes/thief/thief_coin_pouch.gd": {
         "thief_live_test",
@@ -389,8 +418,14 @@ def select_godot_tests(
         selected_names = set(by_name)
     else:
         selected_names = set(CORE_CHANGED_TESTS)
+        fixture_paths = defensive_fixture_paths()
         for changed_path in _git_changed_paths(changed_ref):
             selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
+            if changed_path in fixture_paths:
+                # FAN-3818: любое касание raw-фикстуры (включая удаление старого
+                # пути при переносе) пере-доказывает consumability-гейт, который
+                # её читает — full-профиля для этого больше ждать не нужно.
+                selected_names.add(CONSUMABILITY_GATE_TEST)
             if changed_path.startswith((
                 "data/ultimates/classes/",
                 "scripts/ultimates/classes/",

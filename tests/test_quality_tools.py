@@ -946,6 +946,50 @@ class QualityGateTests(unittest.TestCase):
             self.assertEqual(selected_names, sorted(expected))
             self.assertEqual(len(selected_names), len(set(selected_names)))
 
+    def test_defensive_fixture_paths_resolve_to_files(self) -> None:
+        # FAN-3818: consumability-гейт читает DEFENSIVE_FIXTURES сырым FileAccess
+        # по литеральному пути, а сам гейт не входит в changed-профиль — перенос
+        # фикстуры (FAN-3814 Фаза 2) был виден только full-профилю. Этот контракт
+        # исполняется python-unit'ом в КАЖДОМ профиле и воспроизводимо падает на
+        # первом же устаревшем пути с его именем.
+        paths = self.quality.defensive_fixture_paths()
+        self.assertLessEqual(
+            {
+                "tests/balance/knight/knight_kit_test.gd",
+                "tests/balance/priest/priest_kit_test.gd",
+                "tests/balance/priest/priest_sustain_softcap_test.gd",
+                "tests/balance/robot/robot_kit_test.gd",
+                "tests/balance/thief/thief_kit_test.gd",
+            },
+            paths,
+        )
+        missing = sorted(path for path in paths if not (ROOT / path).is_file())
+        self.assertEqual(missing, [])
+
+    def test_defensive_fixture_changes_select_consumability_gate(self) -> None:
+        # FAN-3818: касание любого пути из DEFENSIVE_FIXTURES (в т.ч. удаление
+        # старого пути при переносе — он остаётся в списке и попадает в diff)
+        # обязано выбирать consumability-гейт в changed-профиле.
+        fixture_paths = sorted(self.quality.defensive_fixture_paths())
+        self.assertTrue(fixture_paths)
+        for changed_path in fixture_paths:
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertIn(self.quality.CONSUMABILITY_GATE_TEST, names)
+        with mock.patch.object(
+            self.quality, "_git_changed_paths", return_value={"docs/process/qa_protocol.md"}
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertNotIn(self.quality.CONSUMABILITY_GATE_TEST, names)
+
     def test_class_package_paths_select_player_integration_regression(self) -> None:
         # A ready-package rollout under the class data/executor trees changes
         # Player-visible routing, so the certifying changed profile must select
