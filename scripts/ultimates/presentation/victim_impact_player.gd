@@ -82,6 +82,14 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
+## Freeze or resume the whole ripple. Disabling the subtree is what actually
+## holds it: the queue rides this node's `_process`, but every live burst is a
+## child flipbook playing on its own clock, so stopping only `_process` leaves
+## the drawn frames running through the pause.
+func set_paused(value: bool) -> void:
+	process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+
+
 ## Start a fresh ripple: one impact per victim, as a wave running outward from
 ## the cast point. Returns the same Dictionary as `snapshot()`, so a caller can
 ## log the plan (wave stagger, degradation) without reading this file.
@@ -202,11 +210,16 @@ static func stagger_frames(victim_count: int) -> int:
 	)
 
 
-## Victims nearest the cast point first: the wave reads as leaving the hero.
+## Victims nearest the cast point first: the wave reads as leaving the hero. An
+## enemy named twice in one beat's payload is still one hit, so it takes exactly
+## one burst — the multiplicity a beat draws is its distinct victim set.
 func _ordered_victims(victims: Array, cast_position: Vector2) -> Array[Node2D]:
 	var targets: Array[Node2D] = []
+	var seen := {}
 	for victim in victims:
-		if victim is Node2D and is_instance_valid(victim):
+		if victim is Node2D and is_instance_valid(victim) \
+				and not seen.has((victim as Node2D).get_instance_id()):
+			seen[(victim as Node2D).get_instance_id()] = true
 			targets.append(victim as Node2D)
 	targets.sort_custom(func(a: Node2D, b: Node2D) -> bool:
 		return a.global_position.distance_squared_to(cast_position) \

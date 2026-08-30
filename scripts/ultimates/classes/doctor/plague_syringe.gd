@@ -61,7 +61,14 @@ static func direct_hit(activation, state: Dictionary) -> void:
 		"plague_direct"
 	)
 	_repair(activation, float(result.applied), "plague_direct_repair")
-	activation.present(EXECUTOR_ID + ".veins", {"position": (patient as Node2D).global_position, "radius": 90.0, "shape": "ring_pulse"})
+	# Only patient zero is pierced here, and only when the pierce landed, so the
+	# authored scene bursts on that one enemy and on nothing else.
+	activation.present(EXECUTOR_ID + ".veins", {
+		"position": (patient as Node2D).global_position,
+		"radius": 90.0,
+		"shape": "ring_pulse",
+		"victims": [patient] if float(result.applied) > 0.0 else [],
+	})
 
 
 static func wave(activation, state: Dictionary, wave_index: int) -> void:
@@ -69,6 +76,7 @@ static func wave(activation, state: Dictionary, wave_index: int) -> void:
 		return
 	var infected: Array = state.get("infected", [])
 	var removed := 0.0
+	var struck: Array = []
 	for raw_target in infected:
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -81,11 +89,16 @@ static func wave(activation, state: Dictionary, wave_index: int) -> void:
 			true
 		)
 		removed += float(result.applied)
+		if float(result.applied) > 0.0:
+			struck.append(target)
 	_repair(activation, removed, "plague_wave_repair:%d" % wave_index)
+	# `victims` names the enemies this wave actually infected, so the authored
+	# scene bursts on them and never on an enemy the wave left untouched.
 	activation.present(EXECUTOR_ID + ".wave", {
 		"position": activation.origin(),
 		"radius": activation.param_float("wave_visual_radius", 240.0),
 		"shape": "ring_pulse",
+		"victims": struck,
 	})
 
 

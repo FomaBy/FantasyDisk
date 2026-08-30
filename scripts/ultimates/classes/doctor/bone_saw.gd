@@ -47,6 +47,7 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var removed := 0.0
+	var struck: Array = []
 	for raw_target in activation.targets(
 		activation.origin(),
 		activation.param_float("orbit_radius", 240.0)
@@ -66,6 +67,8 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 			tick_index > 0
 		)
 		removed += float(result.applied)
+		if float(result.applied) > 0.0:
+			struck.append(target)
 	state["vitality"] = float(state.get("vitality", 0.0)) + removed \
 		* activation.param_float("vitality_ratio", 0.4)
 	var host := activation.get("host") as Node
@@ -76,7 +79,14 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 			removed * activation.param_float("drain_ratio", 0.4),
 			"saw_repair:%d" % tick_index
 		)
-	activation.present(EXECUTOR_ID + ".orbit", {"position": activation.origin(), "radius": activation.param_float("orbit_radius", 240.0), "shape": "ring_pulse"})
+	# `victims` names the enemies this tick actually cut, so the authored scene
+	# plays one impact burst per hit enemy and none on anything the orbit missed.
+	activation.present(EXECUTOR_ID + ".orbit", {
+		"position": activation.origin(),
+		"radius": activation.param_float("orbit_radius", 240.0),
+		"shape": "ring_pulse",
+		"victims": struck,
+	})
 
 
 static func shield(activation, state: Dictionary) -> void:
