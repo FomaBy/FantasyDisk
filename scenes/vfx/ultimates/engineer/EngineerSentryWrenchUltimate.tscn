@@ -1,7 +1,60 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd" id="1_executor"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres" id="2_flipbook"]
+
+[sub_resource type="Animation" id="Animation_sentry_nest"]
+resource_name = "ultimate"
+length = 3.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("SentryNest:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.8, 1.15, 1.6, 2.05, 2.55, 3.1, 3.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SentryNest:scale")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.8, 0.95, 3.1, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.55, 0.55), Vector2(0.8, 0.8), Vector2(1.22, 1.22), Vector2(1.08, 1.08), Vector2(1.1, 1.1), Vector2(0.6, 0.6)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("SentryNest:modulate:a")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.8, 3.1, 3.45, 3.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.65, 1.0, 1.0, 0.8, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sentry_nest"]
+_data = {"ultimate": SubResource("Animation_sentry_nest")}
 
 [node name="EngineerSentryWrenchUltimate" type="Node2D"]
-script = ExtResource("1_script")
-weapon_id = "engineer_sentry_wrench"
+script = ExtResource("1_executor")
+metadata/ultimate_id = "engineer/engineer_sentry_wrench"
+metadata/silhouette = "colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon"
+metadata/motion_path = "wrench sigil rises over the hero while pylon ghosts sweep out to arena seats, slams at release, crossfire holds the frame, then the ring folds inward"
+metadata/impact_language = "hitstop slam of the wrench sigil, synchronized muzzle volleys along arena-wide hex chords, then a shutdown vent"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 16
+metadata/max_unique_materials = 4
+metadata/max_fullscreen_materials = 1
+
+[node name="SentryNest" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_flipbook")
+animation = &"ultimate_flipbook"
+scale = Vector2(0.55, 0.55)
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_sentry_nest")}
+autoplay = "ultimate"

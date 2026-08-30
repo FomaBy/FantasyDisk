@@ -1,4 +1,4 @@
-extends RefCounted
+extends Node2D
 
 ## Инженер / Ремонтный дрон — «Рой микродронов».
 ##
@@ -6,6 +6,12 @@ extends RefCounted
 ## on the map, on screen and off — the orbit radius is the swarm's presentation,
 ## never its reach. The declared control-resistance policy is what still shapes
 ## a single target: an epic keeps 35% of the launch, a boss 10%.
+##
+## Doubles as the root script of the authored presentation scene
+## (EngineerRepairDroneUltimate.tscn): the static half executes the mechanics,
+## and the presentation instance receives beat payloads while the scene is the
+## live channel and plays the shared per-victim impact for the enemies each
+## ram wave actually intercepted.
 
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_repair_drone"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_repair_drone"
@@ -16,6 +22,13 @@ const DEVICE_SCENE := preload(
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone.png"
 )
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload(
+	"res://assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres"
+)
+
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -85,6 +98,7 @@ static func ram_wave(activation, devices: Array[Node], wave: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var center: Vector2 = activation.origin()
+	var victims: Array = []
 	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -104,6 +118,13 @@ static func ram_wave(activation, devices: Array[Node], wave: int) -> void:
 			{"source": "engineer_microdrone_ram"},
 			"drone_ram:%d" % wave
 		)
+		victims.append(target)
+	activation.present(EXECUTOR_ID + ".ram:%d" % wave, {
+		"shape": "ring_pulse",
+		"position": center,
+		"radius": activation.param_float("formation_radius", 150.0),
+		"victims": victims,
+	})
 	var repair_amount: float = activation.scaled_damage("repair_pulse", 1.0)
 	for target in repair_targets(activation):
 		activation.repair(target, repair_amount, "drone_repair:%d" % wave)
@@ -178,3 +199,31 @@ static func repair_targets(activation) -> Array[Node]:
 			if device != null and is_instance_valid(device) and not targets.has(device):
 				targets.append(device)
 	return targets
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false

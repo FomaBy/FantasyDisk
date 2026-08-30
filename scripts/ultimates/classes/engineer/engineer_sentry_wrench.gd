@@ -1,4 +1,4 @@
-extends RefCounted
+extends Node2D
 
 ## Инженер / Разводной ключ — «Гексагональный перекрёстный огонь».
 ##
@@ -7,6 +7,12 @@ extends RefCounted
 ## wherever it stands, on screen and off. The three shipped chords are
 ## attribution: a silhouette the beams actually cross takes one hit per
 ## crossing, which the hex's own geometry bounds at three.
+##
+## Doubles as the root script of the authored presentation scene
+## (EngineerSentryWrenchUltimate.tscn): the static half executes the mechanics,
+## and the presentation instance receives beat payloads while the scene is the
+## live channel and plays the shared per-victim impact for the enemies each
+## volley actually struck.
 
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_sentry_wrench"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_sentry_wrench"
@@ -17,6 +23,13 @@ const DEVICE_SCENE := preload(
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon.png"
 )
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload(
+	"res://assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres"
+)
+
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -96,6 +109,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 	# One volley is one damage event per enemy: the map-wide floor is a single
 	# chord's worth, and the beams a silhouette actually stands in raise it.
 	var damage: float = activation.scaled_damage("damage", 0.55)
+	var victims: Array = []
 	for target_id in crossings:
 		var crossed := crossings[target_id] as Dictionary
 		var target := crossed["target"] as Node
@@ -107,6 +121,13 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 			{"source": "engineer_hex_crossfire"},
 			"sentry:%d" % volley
 		)
+		victims.append(target)
+	activation.present(EXECUTOR_ID + ".volley_hits:%d" % volley, {
+		"shape": "ring_pulse",
+		"position": activation.origin(),
+		"radius": activation.param_float("formation_radius", 210.0),
+		"victims": victims,
+	})
 
 
 static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:
@@ -122,3 +143,31 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.34
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false

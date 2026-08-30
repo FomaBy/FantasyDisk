@@ -1,7 +1,60 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scenes/vfx/ultimates/engineer/engineer_ultimate_timeline_scene.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ultimates/classes/engineer/engineer_repair_drone.gd" id="1_executor"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres" id="2_flipbook"]
+
+[sub_resource type="Animation" id="Animation_drone_swarm"]
+resource_name = "ultimate"
+length = 4.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("DroneSwarm:frame")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 1.2, 1.75, 2.3, 2.85, 3.35, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("DroneSwarm:scale")
+tracks/1/interp = 1
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7, 1.2, 2.3, 3.35, 4.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.74, 0.74), Vector2(0.98, 0.98), Vector2(1.12, 1.12), Vector2(1.06, 1.06), Vector2(0.62, 0.62)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("DroneSwarm:modulate:a")
+tracks/2/interp = 1
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.7, 3.35, 3.75, 4.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.55, 1.0, 1.0, 0.75, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_drone_swarm"]
+_data = {"ultimate": SubResource("Animation_drone_swarm")}
 
 [node name="EngineerRepairDroneUltimate" type="Node2D"]
-script = ExtResource("1_script")
-weapon_id = "engineer_repair_drone"
+script = ExtResource("1_executor")
+metadata/ultimate_id = "engineer/engineer_repair_drone"
+metadata/silhouette = "brass repair canister unwinding into a twin-helix swarm of rotor microdrones"
+metadata/motion_path = "the canister column unwinds into two counter-phased helix strands that sweep the arena before folding into a dome"
+metadata/impact_language = "alternating intercept and ram streaks knock the crowd back, then a protective dome pulse seals the swarm"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 16
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+
+[node name="DroneSwarm" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_flipbook")
+animation = &"ultimate_flipbook"
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_drone_swarm")}
+autoplay = "ultimate"

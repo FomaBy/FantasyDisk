@@ -1,4 +1,4 @@
-extends RefCounted
+extends Node2D
 
 ## Инженер / Прессующие мины — «Умное минное поле».
 ##
@@ -9,6 +9,12 @@ extends RefCounted
 ## like, never how far it reaches. The field's one bound is per TARGET, not per
 ## count: `target_cap_fraction` keeps a single enemy from being finished by one
 ## activation, which is the field's anti-one-shot identity.
+##
+## Doubles as the root script of the authored presentation scene
+## (EngineerPressureMinesUltimate.tscn): the static half executes the
+## mechanics, and the presentation instance receives beat payloads while the
+## scene is the live channel and plays the shared per-victim impact for the
+## enemies each detonation actually pressed.
 
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_pressure_mines"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_pressure_mines"
@@ -19,6 +25,13 @@ const DEVICE_SCENE := preload(
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_smart_mine.png"
 )
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload(
+	"res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres"
+)
+
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -170,6 +183,7 @@ static func detonate_mine(
 		return
 	detonated[index] = true
 	(state.get("trace", []) as Array).append({"phase": phase, "index": index, "position": points[index]})
+	var victims: Array = []
 	for raw_target in activation.select_targets(points[index], INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
@@ -180,8 +194,10 @@ static func detonate_mine(
 				"mine:%d" % index,
 				secondary
 			)
+			victims.append(target)
 	activation.present(EXECUTOR_ID + "." + phase, {
 		"position": points[index], "radius": blast_radius, "shape": "orb_burst",
+		"victims": victims,
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():
@@ -216,3 +232,31 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.34
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false

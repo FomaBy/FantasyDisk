@@ -1,65 +1,48 @@
 {
-  "issue": "FAN-1465",
-  "name": "Engineer weapon ultimate presentation pack",
-  "class_id": "engineer",
   "schema_version": 1,
-  "consumed_contract": {
-    "presentation_schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
-    "frozen_profiles": "data/ultimates/schema/v1/classes/engineer.json",
-    "bridge_document": "docs/design/systems/weapon_ultimate_presentation.md",
-    "timeline_lifecycle": "scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd"
-  },
-  "source_pipeline": {
-    "tool": "res://scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd",
-    "kind": "deterministic in-repo geometry forge",
-    "pixel_lab": "not used; no PixelLab asset was created for this pack, so there are no PixelLab object IDs to record",
-    "rationale": "The three formation elements exist to be told apart at a glance, and their silhouettes are the acceptance criterion. Generating them from committed geometry makes every frame reproducible byte-for-byte by re-running the forge, which a reviewer can verify directly. The accepted 256x256 weapon bursts stay the VFX channel and were not modified.",
-    "reproduce": "python3 tools/godot_gate.py --headless --path . --script res://scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd"
-  },
-  "godot_import": {
-    "type": "CompressedTexture2D",
-    "compression": "lossless",
-    "mipmaps": false,
-    "filtering": "nearest; the scene driver sets TEXTURE_FILTER_NEAREST so the forged pixel edges stay crisp"
-  },
-  "source_runtime_separation": {
-    "source": "128x128 padded frame, the lossless master the forge writes",
-    "runtime": "alpha-trimmed crop of the same frame with 2px padding, no rescale, so no source pixel is lost"
+  "issue": "FAN-3749",
+  "class_id": "engineer",
+  "name": "Engineer weapon ultimate presentation pack",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "fan2960_presentation_rework": "the v2 rebuild (FAN-2960) reuses the FAN-2565 9-frame PixelLab deploy pack unchanged: frame selection is phase-relative, so the longer v2 envelope replays the same source frames; the identity sigil layer reuses the accepted SCRUM-746 weapon-silhouette asset vfx_weapon_engineer_sentry_wrench.png; no new PixelLab asset was generated",
-    "route": "pixellab_new_isolated_animation_frames_plus_forged_elements",
-    "pixellab_usage": "engineer_sentry_wrench ships a new 9-frame transparent animation source generated through PixelLab MCP (create_1_direction_object + animate_object, FAN-2565); engineer_repair_drone and engineer_pressure_mines still use the deterministic in-repo geometry forge and generated no PixelLab asset",
+    "route": "integrated_approved_pixellab_animation_frames",
     "new_pixellab_assets": [
-      {
-        "weapon_id": "engineer_sentry_wrench",
-        "pixel_lab_object_id": "7a713b53-f9bb-477c-b478-b4096bc17c33",
-        "pixel_lab_animation_group_id": "1fda802e-eb3c-4d18-b304-09de5d50b521",
-        "create_tool": "create_1_direction_object",
-        "animate_tool": "animate_object",
-        "mode": "v3",
-        "view": "sidescroller",
-        "source_canvas": [256, 256],
-        "frame_count": 9,
-        "source_dir": "docs/design/references/weapon_ultimates/engineer/source/pixellab_sentry_wrench",
-        "runtime_dir": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy",
-        "runtime_canvas": [76, 118],
-        "runtime_scene": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-        "generation_script": "tools/fan2565_sentry_wrench_pixellab.py",
-        "runtime_pack_script": "tools/fan2565_sentry_wrench_runtime_pack.py",
-        "provenance_manifest": "docs/design/references/weapon_ultimates/engineer/provenance_manifest_sentry_wrench.json"
-      }
+      "engineer_sentry_wrench",
+      "engineer_repair_drone",
+      "engineer_pressure_mines"
     ],
+    "integrated_art_candidate": "8a763a5d469d5944744ab4964a889e44adc8e971",
+    "art_integration_anchor": "e4524f267a411f7824ec6599de0df6d97694d9ea",
     "reused_sources": {
+      "engineer_sentry_wrench": {
+        "spriteframes": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres",
+        "runtime_scene": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+        "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/manifest.json",
+        "note": "Accepted PixelLab nine-frame sentry-nest crossfire pack (FAN-3702), integrated byte-identically."
+      },
       "engineer_repair_drone": {
-        "source_path": "assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone_source.png",
+        "spriteframes": "assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
-        "note": "Forged element frame, unmodified by FAN-2565."
+        "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/manifest.json",
+        "note": "Accepted PixelLab nine-frame twin-helix swarm pack (FAN-3702), integrated byte-identically."
       },
       "engineer_pressure_mines": {
-        "source_path": "assets/sprites/effects/ultimates/engineer/engineer_smart_mine_source.png",
+        "spriteframes": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
-        "note": "Forged element frame, unmodified by FAN-2565."
+        "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/manifest.json",
+        "note": "Accepted PixelLab nine-frame lattice mine-field pack (FAN-3702), integrated byte-identically."
       }
     }
   },
@@ -68,12 +51,34 @@
       "weapon_id": "engineer_sentry_wrench",
       "title": "Гнездо Часовых",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-      "presentation_direction_version": "v2 (FAN-2944 §1/§3.1, reworked by FAN-2960)",
+      "presentation_direction_version": "v2 (FAN-2944 §1/§3.1, reworked by FAN-2960, flipbook assembly by FAN-3749)",
       "silhouette": "colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon",
       "motion_path": "wrench sigil rises over the hero while pylon ghosts sweep out to arena seats, slams at release, crossfire holds the frame, then the ring folds inward",
-      "timing_rhythm": "0.8s cast ceremony, hitstop slam, then the longest held crossfire of the class inside a 3.8s envelope",
       "impact_language": "hitstop slam of the wrench sigil, synchronized muzzle volleys along arena-wide hex chords, then a shutdown vent",
-      "timing_seconds": {"windup": 0.0, "release": 0.8, "active": 1.15, "recovery": 3.1, "cancel": 3.8},
+      "timing_rhythm": "0.8s cast ceremony, hitstop slam, then the longest held crossfire of the class inside a 3.8s envelope",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres",
+          "animation": "ultimate_flipbook",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/manifest.json"
+        }
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.85
+      },
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.15,
+        "recovery": 3.1,
+        "cancel": 3.8
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.windup",
         "release": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.execute",
@@ -81,13 +86,12 @@
         "recovery": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.recover",
         "cancel": "weapon_ultimate.phase.engineer.engineer_sentry_wrench.cleanup"
       },
-      "pivot": [0.5, 0.85],
       "performance": {
         "max_visual_nodes": 12,
         "crowd_cap": 16,
         "max_unique_materials": 4,
         "max_fullscreen_materials": 1,
-        "v2_budget_note": "declared proactively per FAN-2972: every node uses the default CanvasItem material; the translucent BackdropDim polygon is the only viewport-scale layer (v2 caps: 16 unique / 2 fullscreen)"
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -114,15 +118,135 @@
       "weapon_id": "engineer_repair_drone",
       "title": "Рой Ремонтников",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.55, "active": 1.05, "recovery": 5.40, "cancel": 6.10},
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 16}
+      "presentation_direction_version": "v2 (FAN-2944 §1/§3.1, flipbook assembly by FAN-3749)",
+      "silhouette": "brass repair canister unwinding into a twin-helix swarm of rotor microdrones",
+      "motion_path": "the canister column unwinds into two counter-phased helix strands that sweep the arena before folding into a dome",
+      "impact_language": "alternating intercept and ram streaks knock the crowd back, then a protective dome pulse seals the swarm",
+      "timing_rhythm": "0.7s unwind, the longest helix hold of the class, then a 0.65s dome fold-out inside a 4.0s envelope",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres",
+          "animation": "ultimate_flipbook",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/repair_drone/manifest.json"
+        }
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.2,
+        "recovery": 3.35,
+        "cancel": 4.0
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.engineer.engineer_repair_drone.windup",
+        "release": "weapon_ultimate.phase.engineer.engineer_repair_drone.execute",
+        "active": "weapon_ultimate.phase.engineer.engineer_repair_drone.active",
+        "recovery": "weapon_ultimate.phase.engineer.engineer_repair_drone.recover",
+        "cancel": "weapon_ultimate.phase.engineer.engineer_repair_drone.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.canister_release_crouch",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_repair_drone.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the swarm flipbook holds its deployed frame with a steady rotor glow while the backdrop keeps one constant dim instead of the helix sweep, camera shake and hitstop",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
     },
     {
       "weapon_id": "engineer_pressure_mines",
       "title": "Минное Поле",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.90, "active": 1.70, "recovery": 3.10, "cancel": 3.60},
-      "performance": {"max_visual_nodes": 16, "crowd_cap": 16}
+      "presentation_direction_version": "v2 (FAN-2944 §1/§3.1, flipbook assembly by FAN-3749)",
+      "silhouette": "copper smart-mine lattice: sixteen prong-topped domes seeded on a blueprint annulus",
+      "motion_path": "blueprint lattice flashes, mines burrow up in place, proximity links latch, then the field detonates outer-to-inner",
+      "impact_language": "one pressure-plate trigger, a short local chain, and an ordered outer-to-inner finale of capped blasts",
+      "timing_rhythm": "0.9s blueprint telegraph, the longest arm ceremony of the class, then a compact detonation window inside a 3.6s envelope",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres",
+          "animation": "ultimate_flipbook",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/manifest.json"
+        }
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.75
+      },
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.7,
+        "recovery": 3.1,
+        "cancel": 3.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.engineer.engineer_pressure_mines.windup",
+        "release": "weapon_ultimate.phase.engineer.engineer_pressure_mines.execute",
+        "active": "weapon_ultimate.phase.engineer.engineer_pressure_mines.active",
+        "recovery": "weapon_ultimate.phase.engineer.engineer_pressure_mines.recover",
+        "cancel": "weapon_ultimate.phase.engineer.engineer_pressure_mines.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 16,
+        "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.detonator_kneel",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the lattice flipbook holds its armed frame with steady proximity lenses while the backdrop keeps one constant dim instead of the detonation cycle, camera shake and hitstop",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
     }
   ],
   "assets": [
@@ -133,10 +257,16 @@
       "role": "superseded formation element for the hex crossfire; tall narrow pylon with a hexagonal turret head",
       "palette": "pale mint and teal, matched to the accepted sentry wrench burst",
       "source_path": "assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon_source.png",
-      "source_canvas": [128, 128],
+      "source_canvas": [
+        128,
+        128
+      ],
       "source_sha256": "f70e97a193a9387599d49cac7386a9ba67943bde98004991ed371491d92c3045",
       "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon.png",
-      "runtime_canvas": [49, 112],
+      "runtime_canvas": [
+        49,
+        112
+      ],
       "runtime_sha256": "700aee6ea5c3249a778b37caeea233f1a0a1bb32dcf8356cfacce85e6ae54e55"
     },
     {
@@ -145,10 +275,16 @@
       "role": "formation element for the double helix swarm; wide flat rotor bar over a small orb body",
       "palette": "brass and gold with a magenta core, matched to the accepted repair drone burst",
       "source_path": "assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone_source.png",
-      "source_canvas": [128, 128],
+      "source_canvas": [
+        128,
+        128
+      ],
       "source_sha256": "a45417aae9c894d79cd89b271f95ad95b412a7cb6ce20330c66d3ab5a6c321c8",
       "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone.png",
-      "runtime_canvas": [113, 58],
+      "runtime_canvas": [
+        113,
+        58
+      ],
       "runtime_sha256": "0e5081d6ac812003f2e2bc4f0c442d3bc409e0277fd907f603685068d28b5f39"
     },
     {
@@ -157,10 +293,16 @@
       "role": "formation element for the lattice mine field; squat prong-topped dome on a wide base plate",
       "palette": "copper with a cyan proximity lens, matched to the accepted pressure mines burst",
       "source_path": "assets/sprites/effects/ultimates/engineer/engineer_smart_mine_source.png",
-      "source_canvas": [128, 128],
+      "source_canvas": [
+        128,
+        128
+      ],
       "source_sha256": "b457ef45e7577a59efd32c3e6d95e23a7e6a3c124d5923a144cb93c353f3c76e",
       "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_smart_mine.png",
-      "runtime_canvas": [80, 61],
+      "runtime_canvas": [
+        80,
+        61
+      ],
       "runtime_sha256": "5abbfed61cc7fba00617b5ec1b69d5e112c945ea311e034a4c29680acf82e82f"
     }
   ],
@@ -204,22 +346,12 @@
   ],
   "evidence": {
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/engineer/engineer_sentry_wrench_timeline_648p.png",
-      "docs/design/references/weapon_ultimates/engineer/engineer_sentry_wrench_timeline_720p.png",
-      "docs/design/references/weapon_ultimates/engineer/engineer_sentry_wrench_timeline_1080p.png",
-      "docs/design/references/weapon_ultimates/engineer/engineer_sentry_wrench_timeline_2k.png"
+      "docs/design/reference-assets-lfs/engineer-ultimate-timelines-fan3749/engineer_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/engineer-ultimate-timelines-fan3749/engineer_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/engineer-ultimate-timelines-fan3749/engineer_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/engineer-ultimate-timelines-fan3749/engineer_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/engineer_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/engineer_ultimate_presentation_test.gd",
-    "class_contact_sheet": {
-      "path": "docs/design/references/weapon_ultimates/engineer/contact_sheet_engineer_ultimates.png",
-      "layout": "15 columns x 3 rows. Columns are windup, release, active, recovery, cancel with 3 progress samples each; rows are engineer_sentry_wrench, engineer_repair_drone, engineer_pressure_mines.",
-      "rendered_by": "res://scenes/vfx/ultimates/engineer/engineer_ultimate_contact_sheet.gd",
-      "note": "Composited from the same formation_points() and frame_index() the shipped scene driver calls, so the sheet is the motion and the frames the scene plays."
-    }
-  },
-  "runtime_boundary": {
-    "shared_manifest_untouched": "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
-    "statement": "The shared bridge still hardcodes VFX_SOURCE_PREFIX=res://assets/sprites/effects/vfx_weapon_ for both source_path and runtime_path, and this pack is forbidden to edit it. The class-local paths above are therefore declared and validated but not yet wired into live combat. Redirecting the shared runtime paths is unowned follow-up work recorded on FAN-1465; FAN-1541 owns the shared runtime adapter."
+    "focused_test": "tests/ultimates/presentation/engineer_ultimate_timelines.gd"
   }
 }
