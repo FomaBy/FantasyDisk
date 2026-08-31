@@ -77,14 +77,39 @@ def _inventory(root: Path) -> dict[str, tuple[str, ...]]:
     return entries
 
 
+# `git archive` here is a read of already-local history: it must never wait on
+# unrelated repository maintenance. `-c gc.auto=0` keeps it from triggering a
+# background `git gc --auto`, which git detaches into its own session (outside
+# any process group a caller could kill) and which can hold this call's
+# inherited stdout pipe open for as long as the detached gc runs. A bounded
+# `timeout` is the backstop: any stall here now fails fast with a diagnostic
+# instead of silently consuming the suite's shared idle-output budget.
+_GIT_ARCHIVE_TIMEOUT_SECONDS = 20.0
+
+
 def _extract_legacy_skill(destination: Path) -> None:
     """Materialize the exact repo-owned pre-fix tree from git history."""
-    archive = subprocess.run(
-        ["git", "archive", "--format=tar", LEGACY_SKILL_COMMIT, LEGACY_SKILL_PATH],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
+    try:
+        archive = subprocess.run(
+            [
+                "git",
+                "-c",
+                "gc.auto=0",
+                "archive",
+                "--format=tar",
+                LEGACY_SKILL_COMMIT,
+                LEGACY_SKILL_PATH,
+            ],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            timeout=_GIT_ARCHIVE_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as timeout_error:
+        raise AssertionError(
+            "git archive for the legacy release-skill fixture timed out after "
+            f"{_GIT_ARCHIVE_TIMEOUT_SECONDS:.0f}s; repository access is stalled"
+        ) from timeout_error
     with tarfile.open(fileobj=io.BytesIO(archive.stdout), mode="r:") as tar:
         for member in tar.getmembers():
             if member.name == LEGACY_SKILL_PATH:
@@ -178,7 +203,37 @@ def _run_onboard(
             f"terminated and reaped process group root pid={process.pid}; "
             f"task home={home}; captured output:\n{captured or '<no output captured>'}"
         ) from timeout_error
+    _assert_process_group_exited(process.pid)
     return subprocess.CompletedProcess(command, process.returncode, stdout=stdout)
+
+
+def _assert_process_group_exited(pgid: int) -> None:
+    """Fail loudly if a descendant outlived the onboarding child it came from.
+
+    `communicate()` returning already proves nothing still holds this call's
+    stdout pipe open, but a descendant that closed its inherited fds while
+    continuing to run (for example a detached `git gc --auto`) would keep
+    the process group alive without deadlocking this run. Left unchecked,
+    that survivor is exactly the kind of leak that stalls a *later* run.
+    """
+    if os.name == "nt":
+        return
+    # A child that exits cleanly may leave a grandchild as a momentary zombie
+    # awaiting reaping; give that ordinary teardown a brief, bounded window
+    # before treating a still-visible group as a genuine leak.
+    deadline = time.monotonic() + 1.0
+    while True:
+        try:
+            os.killpg(pgid, 0)
+        except (ProcessLookupError, PermissionError):
+            return
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(0.05)
+    raise AssertionError(
+        f"onboarding process group root pid={pgid} still has live members "
+        "after the run completed; a descendant leaked"
+    )
 
 
 def _run_release_only(
@@ -1080,6 +1135,32 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertIn("BLOCK", result.stdout)
             self.assertEqual(_inventory(target), before)
             self.assertTrue(fifo.exists())
+
+    def test_fifo_is_preserved_and_blocks_repeatedly_without_leaking(self) -> None:
+        """FAN-3837 regression: CI saw this scenario stall past the idle watchdog.
+
+        `_run_onboard` now asserts its process group is fully gone on every
+        return (see `_assert_process_group_exited`), and the legacy fixture's
+        git call can no longer stall unboundedly (see `_extract_legacy_skill`).
+        Five consecutive runs give that invariant real odds of catching a
+        reintroduced leak instead of passing by luck on a single attempt.
+        """
+        for attempt in range(5):
+            with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fifo-") as raw:
+                home = Path(raw)
+                target = home / ".codex" / "skills" / "fantasydisk-release-director"
+                target.mkdir(parents=True)
+                _extract_legacy_skill(target)
+                fifo = target / "operator-pipe"
+                os.mkfifo(fifo)
+                before = _inventory(target)
+
+                result = _run_onboard(ONBOARD, home)
+
+                self.assertNotEqual(result.returncode, 0, f"attempt {attempt}: {result.stdout}")
+                self.assertIn("BLOCK", result.stdout, f"attempt {attempt}")
+                self.assertEqual(_inventory(target), before, f"attempt {attempt}")
+                self.assertTrue(fifo.exists(), f"attempt {attempt}")
 
     def test_watchdog_terminates_process_group_and_reports_captured_output(self) -> None:
         temp_root: Path | None = None
