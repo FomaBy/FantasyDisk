@@ -30,18 +30,35 @@
 (balance/<class> и vfx/<class> — под-срезы этого же домена; отдельные задачи
 одного класса НЕ параллелятся между собой, только между классами.)
 
-Сейчас:
+Сейчас (Фаза 3 оружия — FAN-3840: монолит `class_weapon.gd` разрезан):
+- `scripts/classes/<class_id>_weapon.gd` — класс-локальные исполнители режимов
+  и приватные хелперы живут только в нём; классы berserk и knight вместо него
+  владеют своими семействами `scripts/berserk_weapon.gd` (+ наследники
+  `holy_flail_weapon.gd`, `two_handed_axe_weapon.gd`,
+  `two_handed_hammer_weapon.gd`); robot дополнительно владеет
+  `scripts/robot_hydraulic_press_weapon.gd`, druid — `scripts/summoner_weapon.gd`
 - `scripts/ultimates/classes/<class_id>/**`
 - `data/ultimates/classes/<class_id>/**`
 - `tests/balance/<class_id>/**` (Фаза 2 — FAN-3814), `tests/ultimates/**/<class_id>_*`
 - строки своего класса в `build/ultimate_effectiveness_baseline.json` (общий файл!)
-- строки своего класса в `scripts/class_weapon.gd` (общий файл!)
 - `assets/**/ultimates/<class_id>/**`, `scenes/ultimates/<class_id>*`
 - `docs/design/ultimates/<class_id>.md`
 
+Ограниченная общая поверхность боевого класса ClassWeapon (бюджетные общие
+файлы — не более одного на задачу; порядок extends-цепочки закреплён в фасаде
+`scripts/class_weapon.gd` и в `tests/test_quality_static_guard.py`):
+- `scripts/class_weapon.gd` — фасад-сборка (замыкает extends-цепочку модулей,
+  потолок 500 строк в `tools/quality_static_guard.py`)
+- `scripts/classes/class_weapon_state.gd` — разделяемое состояние: preload- и
+  балансовые константы, `@export`-конфиг, реестр `ATTACK_MODE_EXECUTORS`
+- `scripts/classes/class_weapon_shared_api.gd` — forward-объявления
+  кросс-модульных методов (виртуальная диспетчеризация)
+- `scripts/classes/class_weapon_core.gd` — жизненный цикл и конвейер атаки
+- `scripts/classes/class_weapon_combat.gd` — общий боевой слой: цели, урон,
+  статусы, лужи, капы ширины, диспетчеризация событий созвездий
+
 После миграции:
 - `build/effectiveness/<class_id>.json` (Фаза 1)
-- `scripts/classes/<class_id>_weapon.gd` (Фаза 3)
 - остальное как сейчас
 
 Эталонный planned_write_set (после Фаз 1–3), пример class/druid:

@@ -33,7 +33,8 @@ LEGACY_LINE_CEILINGS = {
     # FAN-3824: монолит разрезан на scripts/ui/screens/**; фасад — не более 500
     # строк. Потолки только ужимаются (tests/test_quality_static_guard.py).
     "scripts/ui_screens.gd": 500,
-    "scripts/class_weapon.gd": 6000,
+    # FAN-3840: монолит разрезан на scripts/classes/**; фасад — не более 500 строк.
+    "scripts/class_weapon.gd": 500,
     "scripts/player.gd": 4300,
     "scripts/progression_data.gd": 2500,
     "scripts/pause_stats_menu.gd": 2250,

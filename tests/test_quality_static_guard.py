@@ -657,7 +657,7 @@ class QualityStaticGuardTest(unittest.TestCase):
 # Ужал потолок в tools/quality_static_guard.py → ужми и этот снимок.
 LINE_CEILING_MAXIMA = {
     "scripts/ui_screens.gd": 500,
-    "scripts/class_weapon.gd": 6000,
+    "scripts/class_weapon.gd": 500,
     "scripts/player.gd": 4300,
     "scripts/progression_data.gd": 2500,
     "scripts/pause_stats_menu.gd": 2250,
@@ -702,6 +702,63 @@ class LineCeilingRatchetTest(unittest.TestCase):
             500,
             "scripts/ui_screens.gd must stay a facade; screen code belongs in scripts/ui/screens/**",
         )
+
+
+# FAN-3840: линейная extends-цепочка распределённого боевого класса ClassWeapon.
+# Каждый модуль обязан существовать и оставаться в пределах NEW_SCRIPT_LINE_LIMIT;
+# фасад scripts/class_weapon.gd — не более 500 строк. Классы berserk и knight
+# живут в отдельных семействах (berserk_weapon.gd и наследники) и модулей тут
+# не имеют.
+CLASS_WEAPON_CHAIN_MODULES = [
+    "scripts/classes/class_weapon_state.gd",
+    "scripts/classes/class_weapon_shared_api.gd",
+    "scripts/classes/class_weapon_core.gd",
+    "scripts/classes/class_weapon_combat.gd",
+    "scripts/classes/assassin_weapon.gd",
+    "scripts/classes/biologist_weapon.gd",
+    "scripts/classes/chemist_weapon.gd",
+    "scripts/classes/dark_mage_weapon.gd",
+    "scripts/classes/doctor_weapon.gd",
+    "scripts/classes/druid_weapon.gd",
+    "scripts/classes/elementalist_weapon.gd",
+    "scripts/classes/engineer_weapon.gd",
+    "scripts/classes/guitarist_weapon.gd",
+    "scripts/classes/priest_weapon.gd",
+    "scripts/classes/ranger_weapon.gd",
+    "scripts/classes/robot_weapon.gd",
+    "scripts/classes/sniper_weapon.gd",
+    "scripts/classes/soldier_weapon.gd",
+    "scripts/classes/thief_weapon.gd",
+]
+
+
+class ClassWeaponArchitectureTest(unittest.TestCase):
+    def setUp(self):
+        self.module = load_module()
+
+    def test_class_weapon_facade_stays_a_facade(self):
+        # FAN-3840: возврат монолита — это рост фасада; ловим его в живом
+        # чекауте, не только через потолок гарда.
+        lines = (ROOT / "scripts/class_weapon.gd").read_text(encoding="utf-8").splitlines()
+        self.assertLessEqual(
+            len(lines),
+            500,
+            "scripts/class_weapon.gd must stay a facade; weapon code belongs in scripts/classes/**",
+        )
+
+    def test_class_weapon_chain_modules_present_and_bounded(self):
+        for relative in CLASS_WEAPON_CHAIN_MODULES:
+            path = ROOT / relative
+            self.assertTrue(
+                path.is_file(),
+                f"{relative}: ClassWeapon chain module is missing",
+            )
+            self.assertLessEqual(
+                len(path.read_text(encoding="utf-8").splitlines()),
+                self.module.NEW_SCRIPT_LINE_LIMIT,
+                f"{relative}: ClassWeapon module exceeds NEW_SCRIPT_LINE_LIMIT; "
+                "extract a focused module instead of growing this one",
+            )
 
 
 if __name__ == "__main__":
