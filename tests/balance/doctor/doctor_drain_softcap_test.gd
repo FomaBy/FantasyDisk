@@ -233,12 +233,13 @@ func _contains_reward_id(rewards: Array, reward_id: String) -> bool:
 
 func _assert_boss_completion_reward_path_filters_doctor(errors: Array) -> void:
 	# SCRUM-873: артефакт-путь босса переехал из _grant_boss_completion_rewards
-	# (combat_director) в экран выбора _show_boss_artifact_reward (ui_screens),
-	# который обязан использовать character-filtered boss_completion_artifact_choices.
-	var source := FileAccess.get_file_as_string("res://scripts/ui_screens.gd")
+	# (combat_director) в экран выбора _show_boss_artifact_reward; после сплита
+	# FAN-3824 экран живёт в scripts/ui/screens/level_up_screen.gd. Экран обязан
+	# использовать character-filtered boss_completion_artifact_choices.
+	var source := FileAccess.get_file_as_string("res://scripts/ui/screens/level_up_screen.gd")
 	var start := source.find("func _show_boss_artifact_reward(")
 	if start < 0:
-		errors.append("ui_screens missing _show_boss_artifact_reward.")
+		errors.append("level_up_screen missing _show_boss_artifact_reward.")
 		return
 	var next_func := source.find("\nfunc ", start + 1)
 	var body := source.substr(start, next_func - start if next_func > start else source.length() - start)
