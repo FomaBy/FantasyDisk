@@ -63,7 +63,9 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="scrum1068-route-validator-") as temp_dir:
         temp_root = Path(temp_dir)
         shutil.copytree(validator.ROOT / "scripts", temp_root / "scripts")
-        weapon_path = temp_root / "scripts/class_weapon.gd"
+        # FAN-3840: соло-удаление маршрута выполняется в модуле Солдата —
+        # class_weapon.gd теперь фасад extends-цепочки scripts/classes/**.
+        weapon_path = temp_root / "scripts/classes/soldier_weapon.gd"
         weapon_source = weapon_path.read_text(encoding="utf-8")
         route_line = 'var counter_result := _constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})'
         if route_line not in weapon_source:
