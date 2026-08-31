@@ -65,7 +65,7 @@ OBJECT_STATES = {
     "idle": {"server_state": "__rotations__", "frames": 1, "loop": True},
     "move": {"server_state": "move", "frames": 7, "loop": True},
     "attack": {"server_state": "attack_primary", "frames": 6, "loop": False},
-    "hit": {"server_state": "hit", "frames": 5, "loop": False},
+    "hit": {"server_state": "hit", "frames": 6, "loop": False},
     "death": {"server_state": "death", "frames": 6, "loop": False},
 }
 
