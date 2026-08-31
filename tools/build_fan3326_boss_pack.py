@@ -55,6 +55,10 @@ OBJECT_IDS = {
 }
 SECRET_CHARACTER_ID = "ce24c21f-c2d8-4801-b635-77be0edbcb6c"
 
+CANONICAL_PROVIDER_GROUP_ALIASES = {
+    (OBJECT_IDS["ashen_colossus"], "46160bb5-e182-4810-b980-b88e27a090d6"): "hit",
+}
+
 # Keep existing object frame counts; idle is the object's completed rotation
 # and hit is the one new short reaction group.
 OBJECT_STATES = {
@@ -169,11 +173,15 @@ class BuildError(RuntimeError):
     pass
 
 
-def parse_report(raw: str) -> dict[str, Any]:
+def parse_report(raw: str, asset_id: str | None = None) -> dict[str, Any]:
     """Parse the stable text report emitted by get_object/get_character."""
     result: dict[str, Any] = {"status": None, "animations": {}, "rotations": {}}
     current: dict[str, Any] | None = None
-    header = re.compile(r"^  ([A-Za-z0-9_-]+)(?: — .+)? \[group: ([0-9a-f-]+)\]$")
+    header = re.compile(
+        r"^  (?P<label>.+?)\s+\[group: "
+        r"(?P<group_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\]$",
+        re.IGNORECASE,
+    )
     for line in raw.splitlines():
         stripped = line.strip()
         if stripped.startswith("status:"):
@@ -185,7 +193,11 @@ def parse_report(raw: str) -> dict[str, Any]:
         if line.startswith("  ") and not line.startswith("    "):
             match = header.match(line)
             if match:
-                name, group_id = match.groups()
+                display_label = match.group("label").strip()
+                group_id = match.group("group_id").lower()
+                name = CANONICAL_PROVIDER_GROUP_ALIASES.get(
+                    (asset_id, group_id), display_label.split(" — ", 1)[0]
+                )
                 inline_frames = re.search(r"(\d+)f\b", line)
                 current = {
                     "group_id": group_id,
@@ -247,7 +259,7 @@ def get_report(tool: str, asset_id: str, bearer: str, call_id: int) -> dict[str,
     raw = response.get("_raw") if isinstance(response, dict) else None
     if not raw:
         raise BuildError("%s returned no text report" % tool)
-    return parse_report(raw)
+    return parse_report(raw, asset_id=asset_id)
 
 
 def expand_urls(urls: list[str], frame_count: int) -> list[str]:
