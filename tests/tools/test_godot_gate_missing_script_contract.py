@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,6 +31,9 @@ def _run_gate(sem_dir: Path, godot_stub: str) -> subprocess.CompletedProcess[byt
             "FSD_GODOT_RUN_TIMEOUT": "10",
         }
     )
+    # sys.executable stands in for godot here; an inherited CI GODOT_BUILD_ID
+    # would reject it before the stub ever runs (FAN-3834).
+    env.pop("GODOT_BUILD_ID", None)
     # The stand-in "godot" is `sys.executable -c godot_stub`; the gate forwards
     # every argv it does not itself consume onto that command line.
     return subprocess.run(
@@ -57,6 +61,17 @@ class GodotGateMissingScriptContractTests(unittest.TestCase):
         stub = "import sys; sys.stdout.write('ok\\n')"
         with tempfile.TemporaryDirectory() as sem_dir:
             result = _run_gate(Path(sem_dir), stub)
+        self.assertEqual(result.returncode, 0, result.stdout.decode())
+
+    def test_clean_run_passes_under_a_globally_pinned_build_id(self) -> None:
+        """A CI-wide GODOT_BUILD_ID must not stop this stand-in godot from
+        reaching its own assertion (FAN-3834)."""
+        stub = "import sys; sys.stdout.write('ok\\n')"
+        with mock.patch.dict(
+            os.environ, {"GODOT_BUILD_ID": "4.7.stable.official.5b4e0cb0f"}, clear=False
+        ):
+            with tempfile.TemporaryDirectory() as sem_dir:
+                result = _run_gate(Path(sem_dir), stub)
         self.assertEqual(result.returncode, 0, result.stdout.decode())
 
 

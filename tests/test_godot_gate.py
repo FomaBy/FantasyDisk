@@ -67,6 +67,10 @@ class GodotGateTest(unittest.TestCase):
         env.pop("FSD_GODOT_EXCLUSIVE", None)
         env.pop("FSD_GODOT_BYPASS_ON_TIMEOUT", None)
         env.pop("FSD_GODOT_RUN_TIMEOUT", None)
+        # This fixture spawns sys.executable as a stand-in "godot" process; it
+        # never runs the pinned engine, so an inherited CI GODOT_BUILD_ID must
+        # not reach it (FAN-3834).
+        env.pop("GODOT_BUILD_ID", None)
         env.update(
             {
                 "TMPDIR": str(tmpdir),
@@ -110,6 +114,25 @@ class GodotGateTest(unittest.TestCase):
             with mock.patch.dict(os.environ, {"GODOT_BUILD_ID": "4.7.stable.official.5b4e0cb0f"}):
                 with self.assertRaisesRegex(RuntimeError, "expected.*GODOT_BUILD_ID"):
                     self.module._assert_requested_build("/mock/Godot")
+
+    def test_gate_environment_reaches_fixture_under_a_globally_pinned_build_id(self):
+        """A CI-wide GODOT_BUILD_ID must not stop the fixture's fake godot from
+        reaching its own assertions (FAN-3834); the real engine pin check
+        (test_requested_build_pin_rejects_a_different_engine_before_import)
+        stays intact and unweakened."""
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.dict(
+                os.environ, {"GODOT_BUILD_ID": "4.7.stable.official.5b4e0cb0f"}, clear=False
+            ):
+                env = self._gate_environment(Path(tmp) / "task", Path(tmp) / "semaphore")
+                self.assertNotIn("GODOT_BUILD_ID", env)
+                completed = subprocess.run(
+                    [sys.executable, str(MODULE_PATH), "-c", "pass"],
+                    env=env,
+                    capture_output=True,
+                    timeout=15,
+                )
+            self.assertEqual(completed.returncode, 0, completed.stderr.decode())
 
     def test_lock_exclusion_and_release_on_current_platform(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -477,6 +500,9 @@ class GodotGateTest(unittest.TestCase):
                 "FSD_GODOT_SEM_DIR": tmp,
                 "FSD_GODOT_SLOTS": "1",
                 "FSD_GODOT_MAXWAIT": "0",
+                # sys.executable stands in for godot here too; clear an inherited
+                # CI build pin so it doesn't reject the fixture before it runs.
+                "GODOT_BUILD_ID": "",
             }
             with mock.patch.dict(os.environ, env, clear=False):
                 with mock.patch.object(
@@ -507,6 +533,9 @@ class GodotGateTest(unittest.TestCase):
                 "FSD_GODOT_SLOTS": "1",
                 "FSD_GODOT_MAXWAIT": "0",
                 "FSD_GODOT_BYPASS_ON_TIMEOUT": "",
+                # sys.executable stands in for godot here too; clear an inherited
+                # CI build pin so it doesn't reject the fixture before it runs.
+                "GODOT_BUILD_ID": "",
             }
             with mock.patch.dict(os.environ, common_env, clear=False):
                 with mock.patch.object(
