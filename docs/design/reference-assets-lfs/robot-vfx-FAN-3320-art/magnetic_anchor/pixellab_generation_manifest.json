@@ -1,0 +1,98 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T23:19:50Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "8bcd4f97-b6a7-4c45-b1e9-d2d5c5d4cad7",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Robot ultimate magnetic anchor: a heavy dark steel anchor with three articulated copper electromagnet coils, a bright cyan core, and a compact circular control plate, dark fantasy D&D pixel art seen straight from above, isolated VFX prop on a transparent background, crisp readable silhouette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single magnetic anchor centered with stable outline, proportions, palette and position in every frame; animate measurable ultimate motion: the cyan core charges, three magnetic coils rotate inward, a circular cyan attraction field expands in concentric rings, short sparks arc between the coils, then the field contracts into a sharp implosion pulse; preserve the anchor silhouette and all details, every frame distinct and readable, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "raw/magnetic_anchor_f00.png",
+      "bytes": 20132,
+      "url_kind": "template",
+      "encoded_sha256": "b5216436ba04594c4bb7637d72cd78018e2ecd1f1ad6af9eee284c488df11846",
+      "pixel_sha256": "3d9ca4bc02f6ca7ce68adaa1d42eab314539ecfc0a0ae968c8d00ad366d70df3"
+    },
+    {
+      "file": "raw/magnetic_anchor_f01.png",
+      "bytes": 21894,
+      "url_kind": "template",
+      "encoded_sha256": "b04d94901b84a8d6a8522ff4e893794c7deab9de00ae0a26305677c989e6e048",
+      "pixel_sha256": "936b3e0bc018ec9831bf2e8bb27bf29a0ea8bd3ff9ba1cd28055884a14bc59a6"
+    },
+    {
+      "file": "raw/magnetic_anchor_f02.png",
+      "bytes": 23260,
+      "url_kind": "template",
+      "encoded_sha256": "cee23dbca7100200e016c51c73f8b3276e89f7630357be2fb602ab5a69c83f02",
+      "pixel_sha256": "66aaba99ec091b3d722a95478764db0c7663e094a3eb9c5e0b2e6514800c4e04"
+    },
+    {
+      "file": "raw/magnetic_anchor_f03.png",
+      "bytes": 29579,
+      "url_kind": "template",
+      "encoded_sha256": "3a8963827f575cc0d22dd9ec40bff67d0f67dd9b2072bacec84fe735f6b74f70",
+      "pixel_sha256": "2288408e86b28575e8a20db79c669a4397cb1ca2e819343a568ed8bd552f7da9"
+    },
+    {
+      "file": "raw/magnetic_anchor_f04.png",
+      "bytes": 28033,
+      "url_kind": "template",
+      "encoded_sha256": "56d6573a762f794ece88c307a2118b83b0b18f547ddcbc98117996bcc20c33e8",
+      "pixel_sha256": "f8ac3987d31627b7ef8823445afdb9bfbb4994ce93a7d32f57a24c666ec0cf94"
+    },
+    {
+      "file": "raw/magnetic_anchor_f05.png",
+      "bytes": 27592,
+      "url_kind": "template",
+      "encoded_sha256": "2e6f578be0b455ee1b6d3f2b69d397d12e139e070f65e68d1e14f0d7f5409618",
+      "pixel_sha256": "8bad4db81ac17a40f9a4b505844901474f814a7878189073a1c18f4add3502e0"
+    },
+    {
+      "file": "raw/magnetic_anchor_f06.png",
+      "bytes": 27047,
+      "url_kind": "template",
+      "encoded_sha256": "3a89c928a0058e96b80d058876009eddeba3a388fa42168d50a7ddeea1f5ae8f",
+      "pixel_sha256": "787d469c65b3d558f7fb8283b4f9b4c75813cc438550c83ee50e2bd560e5ec6d"
+    },
+    {
+      "file": "raw/magnetic_anchor_f07.png",
+      "bytes": 27189,
+      "url_kind": "template",
+      "encoded_sha256": "2ce4e6d2eae2092efe1998546fcb608617261b935698df4b4603e26b78288393",
+      "pixel_sha256": "b1ed43c09e049790d9de8b8c9c64ee10f6dbbc88a9b496212f7cb75064a9bd64"
+    },
+    {
+      "file": "raw/magnetic_anchor_f08.png",
+      "bytes": 25858,
+      "url_kind": "template",
+      "encoded_sha256": "fe9e8aedf501284af6ab32791f83fef4ceba84bc4737dc4ba2278d12a884a60f",
+      "pixel_sha256": "7948a0b0e87080cf9074241ebbeb0e4b00eed4d91c48846aecd0d8d4bd672e47"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor",
+  "postprocess": {
+    "method": "raw PixelLab frame preserved under raw/; accepted frame is 224x224 nearest-neighbor inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true
+  }
+}

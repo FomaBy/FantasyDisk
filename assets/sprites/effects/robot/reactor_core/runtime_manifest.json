@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3863",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "class_id": "robot",
+  "weapon_id": "robot_reactor_core",
+  "effect_id": "vent_wave",
+  "pixel_lab": {
+    "object_id": "35a4cfcd-3eaa-4fc8-aea4-3b191ef2a5da",
+    "animation_group_id": "cdd8c2ac-41a4-4a91-a3e0-55c97c7eb226",
+    "canonical_asset_key": "robot/reactor_core",
+    "canonical_tag": null,
+    "tag_or_name_note": "The blocking CLI does not expose PixelLab tag/name assignment; object and animation IDs are recorded exactly.",
+    "export_ids": [],
+    "generator_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "raw 256x256 PixelLab frame -> nearest-neighbor 224x224 inset at (16,16) on transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core",
+    "raw_source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw",
+    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/robot/reactor_core",
+    "spriteframes": "assets/sprites/effects/robot/reactor_core/reactor_core_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/robot/reactor_core/runtime_manifest.json",
+    "quality_evidence": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_contact_sheet.png"
+  },
+  "animation": {
+    "name": "robot_reactor_core_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f00.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f01.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f02.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f03.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f04.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f05.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f06.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f07.png",
+      "assets/sprites/effects/robot/reactor_core/reactor_core_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "plasma heat-up, quarter-turn vent rotation, four radial blades, pulsing heat rings, vent closure and glow contraction"
+  },
+  "import_policy": {
+    "importer": "texture",
+    "type": "CompressedTexture2D",
+    "compress_mode": 0,
+    "mipmaps_generate": false,
+    "premult_alpha": false,
+    "filtering": "nearest at runtime consumer; no generated mipmaps"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f00.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f00.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f00.png.import",
+      "raw_encoded_sha256": "cd95ec18a1d9769ccb1bccbddccc5d0e4c02408deebf296979acdb51ba0f6708",
+      "raw_pixel_sha256": "8f7b080fbb00977d34d12f0b6599631cbf96fe4732fa6e6ec909ca8e1701a3af",
+      "source_encoded_sha256": "061dcf8326274f1a0f534d50bb93767b52a03461e4ab07ccdc89b983b7f631b8",
+      "runtime_encoded_sha256": "061dcf8326274f1a0f534d50bb93767b52a03461e4ab07ccdc89b983b7f631b8",
+      "source_pixel_sha256": "74bb72e99d2d1d2c1ba308ff05b3cafd472987896cfc238bef3fcc829e636770",
+      "runtime_pixel_sha256": "74bb72e99d2d1d2c1ba308ff05b3cafd472987896cfc238bef3fcc829e636770",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        53,
+        207,
+        200
+      ],
+      "gutters_px": [
+        49,
+        53,
+        49,
+        56
+      ],
+      "minimum_gutter_px": 49,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15614,
+      "visible_ratio_alpha_gt_8": 0.238251,
+      "opaque_pixels": 15614,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://cbwvlewly84v1",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f00.png-ccb21d6164183d599df815f6d752d3d2.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f00.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f01.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f01.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f01.png.import",
+      "raw_encoded_sha256": "e848f4339a72bbf6b50d4630cf466b470d72ca741924fe4a4a975a02153f9298",
+      "raw_pixel_sha256": "e5c2d185e809e9c15a7c4d9c66b4e8e1fc3ea426e9d9e302137075ffc4883afb",
+      "source_encoded_sha256": "c2375ac1aa09de7784b532c4d230d4e967db25e67faca2cbb354851ac020ed19",
+      "runtime_encoded_sha256": "c2375ac1aa09de7784b532c4d230d4e967db25e67faca2cbb354851ac020ed19",
+      "source_pixel_sha256": "952f4bb77d0f2aba61c90d1c411a9d149437d55dc79afa6692542c8099fa38bc",
+      "runtime_pixel_sha256": "952f4bb77d0f2aba61c90d1c411a9d149437d55dc79afa6692542c8099fa38bc",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        53,
+        50,
+        204,
+        203
+      ],
+      "gutters_px": [
+        53,
+        50,
+        52,
+        53
+      ],
+      "minimum_gutter_px": 50,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15299,
+      "visible_ratio_alpha_gt_8": 0.233444,
+      "opaque_pixels": 15299,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://c0bhhfftybsv6",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f01.png-086aa3b8060f37a72fdfd14c7b2b6ad4.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f01.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f02.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f02.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f02.png.import",
+      "raw_encoded_sha256": "a49055b4baafa3030f10be2bb752449b588dd9a90d4108b59c7c72206d0a449a",
+      "raw_pixel_sha256": "82fee761dafad3153061e6cb9bb8a38e7a3c62f264c6d27d356673e3da8e978e",
+      "source_encoded_sha256": "1ed657a719ff4060e880a7b5f996b70a2bc0a4192ea5741261c1d20a84a3e3bb",
+      "runtime_encoded_sha256": "1ed657a719ff4060e880a7b5f996b70a2bc0a4192ea5741261c1d20a84a3e3bb",
+      "source_pixel_sha256": "ad7df8e160104cd2d6bd9d73e97a6e4d440772c92de99392b5c69ff4ac1b19dc",
+      "runtime_pixel_sha256": "ad7df8e160104cd2d6bd9d73e97a6e4d440772c92de99392b5c69ff4ac1b19dc",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        59,
+        57,
+        197,
+        198
+      ],
+      "gutters_px": [
+        59,
+        57,
+        59,
+        58
+      ],
+      "minimum_gutter_px": 57,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12944,
+      "visible_ratio_alpha_gt_8": 0.19751,
+      "opaque_pixels": 12944,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://buw45yjovodf",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f02.png-6b6d6786f2449669c7b62117823f590c.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f02.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f03.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f03.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f03.png.import",
+      "raw_encoded_sha256": "a1277f7fddba4132dfa719b00ae5a108b7137df71c71cdaa525c26cfdb379ee8",
+      "raw_pixel_sha256": "2224e65f0fc1dbe406e9cc3e4b6a8f7f7ad1e7f189e3d83d5bb99aea402a6193",
+      "source_encoded_sha256": "8e7e4e24d4c5a834c5f1b40fc1da60dc82fbdaf777f68367473aa0b5d2fdde9f",
+      "runtime_encoded_sha256": "8e7e4e24d4c5a834c5f1b40fc1da60dc82fbdaf777f68367473aa0b5d2fdde9f",
+      "source_pixel_sha256": "aa0ea1b1e2ee086d8aad4c3e6536c7b1a4d300a5656ea100cdb105b8bdd6b245",
+      "runtime_pixel_sha256": "aa0ea1b1e2ee086d8aad4c3e6536c7b1a4d300a5656ea100cdb105b8bdd6b245",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        46,
+        50,
+        209,
+        214
+      ],
+      "gutters_px": [
+        46,
+        50,
+        47,
+        42
+      ],
+      "minimum_gutter_px": 42,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13222,
+      "visible_ratio_alpha_gt_8": 0.201752,
+      "opaque_pixels": 13222,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://dny34tj5a456v",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f03.png-34715d56a6c43273a343332374d2fbbe.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f03.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f04.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f04.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f04.png.import",
+      "raw_encoded_sha256": "7b4a743269466eac07f9deea041ddfa011972b3229ab6efd75a6872d5e7d17a4",
+      "raw_pixel_sha256": "8cdaaea56a7a13a20b1dc0e56ffdc4e405dc4dcd62ea546cb4e2bd7d28efa180",
+      "source_encoded_sha256": "f356fd80508cc638aad1254889fb5ef7d9f129db2dbdf865d0d95db509f2392c",
+      "runtime_encoded_sha256": "f356fd80508cc638aad1254889fb5ef7d9f129db2dbdf865d0d95db509f2392c",
+      "source_pixel_sha256": "d021702d95bd4315ff5b40caf36c65f17ff8a40bd35b90aebad3b8b683372738",
+      "runtime_pixel_sha256": "d021702d95bd4315ff5b40caf36c65f17ff8a40bd35b90aebad3b8b683372738",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "gutters_px": [
+        40,
+        42,
+        40,
+        42
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14207,
+      "visible_ratio_alpha_gt_8": 0.216782,
+      "opaque_pixels": 14207,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://crw2tx5pnse3f",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f04.png-5a86b12a722e7db46e384f7a768eb6d9.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f04.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f05.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f05.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f05.png.import",
+      "raw_encoded_sha256": "4610f73ae4e470d4b01580b5e8ab238331dfaefff003d3616ebcabce71d0f78a",
+      "raw_pixel_sha256": "98ce7bd4e8da490ec760e8e2c9f09ad3f4367a660bc1c4749042e32683ee39a5",
+      "source_encoded_sha256": "bb5391586f2f4732c603046ee6f1b04d7f2b95eff8a9f3991447ee6983a3434e",
+      "runtime_encoded_sha256": "bb5391586f2f4732c603046ee6f1b04d7f2b95eff8a9f3991447ee6983a3434e",
+      "source_pixel_sha256": "15a46247b32e6564208670390f3f8e3020a8988274bba200d089a36a9bd2c03d",
+      "runtime_pixel_sha256": "15a46247b32e6564208670390f3f8e3020a8988274bba200d089a36a9bd2c03d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "gutters_px": [
+        40,
+        42,
+        40,
+        42
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16855,
+      "visible_ratio_alpha_gt_8": 0.257187,
+      "opaque_pixels": 16855,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://dmjtr3mtwjetm",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f05.png-0d746945a85d577954eafb41cc4ea1b9.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f05.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f06.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f06.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f06.png.import",
+      "raw_encoded_sha256": "c2cd3eaea4dca83366c88ede91f2d6158f568be1e284b0382103f68026891a70",
+      "raw_pixel_sha256": "2c9358beba51d180e0e0d62fa372c08a105b3a7168cb72092dd6e0d1e1c82159",
+      "source_encoded_sha256": "b11f9f41018f431d83b9ecb6a9c66ab4ef92e0951ad6d05024d4152410abd0a2",
+      "runtime_encoded_sha256": "b11f9f41018f431d83b9ecb6a9c66ab4ef92e0951ad6d05024d4152410abd0a2",
+      "source_pixel_sha256": "f7a323d41fe6518c681ad97dc2a9ce9fff01a8dc89abd620caaf5d636349ffaf",
+      "runtime_pixel_sha256": "f7a323d41fe6518c681ad97dc2a9ce9fff01a8dc89abd620caaf5d636349ffaf",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "gutters_px": [
+        40,
+        42,
+        40,
+        42
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15732,
+      "visible_ratio_alpha_gt_8": 0.240051,
+      "opaque_pixels": 15732,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://billwdrvf1b02",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f06.png-83cd08b9df2667c37eeaa459f2dcb980.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f06.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f07.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f07.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f07.png.import",
+      "raw_encoded_sha256": "02c650af7edc90c7e77e20960eadec2e0db0d398683940c6378515f26b597668",
+      "raw_pixel_sha256": "53dc3e875edcd10739097982c14e7e15f518b7065ee16c42d6faf6018b659032",
+      "source_encoded_sha256": "f49a554cf50ea9c71fabb9690f47d4886a1a50f3dba8c17accc35c0dd1682218",
+      "runtime_encoded_sha256": "f49a554cf50ea9c71fabb9690f47d4886a1a50f3dba8c17accc35c0dd1682218",
+      "source_pixel_sha256": "e809bea862ba749a7d3bfd844a31a87b3415f1ffc83ade48aeacb6d09fd84b0f",
+      "runtime_pixel_sha256": "e809bea862ba749a7d3bfd844a31a87b3415f1ffc83ade48aeacb6d09fd84b0f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "gutters_px": [
+        40,
+        42,
+        40,
+        42
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14991,
+      "visible_ratio_alpha_gt_8": 0.228745,
+      "opaque_pixels": 14991,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://ckg5pfr46nked",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f07.png-f0846bb2bbeef5abbeea03427fda8a6b.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f07.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f08.png",
+      "runtime_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f08.png",
+      "import_file": "assets/sprites/effects/robot/reactor_core/reactor_core_f08.png.import",
+      "raw_encoded_sha256": "a28936e17df46bc6f4ff98c6df9bbf48e9a5c6a2cf374044259ac500de9e04ee",
+      "raw_pixel_sha256": "064aaec599209678275a1eceb48dcfa33c28a0fdffdf4a910cf19d0e877588fc",
+      "source_encoded_sha256": "153bad523e734692d5b8e434fce675dddf9eb643977b04ec35b5ff1a23101413",
+      "runtime_encoded_sha256": "153bad523e734692d5b8e434fce675dddf9eb643977b04ec35b5ff1a23101413",
+      "source_pixel_sha256": "83f8b0b937fba0a16b1b061b0f805dfb46d572fef3049c15704f3491be52d45a",
+      "runtime_pixel_sha256": "83f8b0b937fba0a16b1b061b0f805dfb46d572fef3049c15704f3491be52d45a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "gutters_px": [
+        40,
+        42,
+        40,
+        42
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14993,
+      "visible_ratio_alpha_gt_8": 0.228775,
+      "opaque_pixels": 14993,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://80kcjla30r4g",
+      "import_dest_files": [
+        "res://.godot/imported/reactor_core_f08.png-30f6e4f65d292c10ac105084d85627b8.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/reactor_core/reactor_core_f08.png",
+      "import_matches_runtime": true
+    }
+  ],
+  "source_runtime_parity": true
+}
