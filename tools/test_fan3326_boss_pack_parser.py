@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from build_fan3326_boss_pack import (  # noqa: E402
     DIRECTIONS,
     effective_frame_count,
+    expand_urls,
     missing_directions,
     parse_report,
 )
@@ -60,6 +61,7 @@ def main() -> int:
     assert missing_directions(surplus_group, canonical_spec) == (6, [])
     assert len(surplus_group["directions"]["east"]) == 7
     assert len(surplus_group["directions"]["west"]) == 6
+    assert expand_urls(surplus_group["directions"]["east"], 6)[-1].endswith("/5.png")
 
     short = parse_report(
         report(real_label, GROUP_ID, [7, 7, 7, 7, 5, 7, 7, 7]),
