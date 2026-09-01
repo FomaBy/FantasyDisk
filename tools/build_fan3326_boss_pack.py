@@ -269,9 +269,8 @@ def expand_urls(urls: list[str], frame_count: int) -> list[str]:
 
 
 def effective_frame_count(group: dict[str, Any] | None, spec: dict[str, Any]) -> int:
-    """Preserve an existing group's frame count; use the spec for new groups."""
-    frame_count = group.get("frame_count") if group else None
-    return int(frame_count) if frame_count else int(spec["frames"])
+    """Use the canonical state frame count; provider rows may contain surplus frames."""
+    return int(spec["frames"])
 
 
 def missing_directions(group: dict[str, Any] | None, spec: dict[str, Any]) -> tuple[int, list[str]]:
