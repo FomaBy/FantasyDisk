@@ -19,6 +19,26 @@ static func accepts_feedback(target: Object) -> bool:
 	return result
 
 
+# Арность take_damage (≥2 аргументов) — тот же кэш по скрипту для оружия,
+# статусов и призывов: get_method_list() на каждом попадании исключён.
+static var _two_args_by_script := {}
+
+
+static func accepts_two_arguments(target: Object) -> bool:
+	var script = target.get_script()
+	var key: int = script.get_instance_id() if script is Object else 0
+	if key != 0 and _two_args_by_script.has(key):
+		return _two_args_by_script[key]
+	var result := false
+	for method in target.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			result = (method.get("args", []) as Array).size() >= 2
+			break
+	if key != 0:
+		_two_args_by_script[key] = result
+	return result
+
+
 static func _scan_accepts_feedback(target: Object) -> bool:
 	for method in target.get_method_list():
 		if str(method.get("name", "")) != "take_damage":

@@ -7,6 +7,9 @@ extends "res://scripts/classes/class_weapon_core.gd"
 # в class_weapon_shared_api.gd.
 
 
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
+
+
 # SCRUM-533: тик ЛУЖИ (DoT-облако) с диминишингом по числу целей. Раньше каждый
 const POOL_FULL_TARGETS := 1
 
@@ -267,10 +270,6 @@ func _line_back_allowance(origin: Vector2) -> float:
 
 func _find_nearest_enemy_from(origin: Vector2, range_limit: float, excluded_ids: Dictionary) -> Node2D:
 	return TARGET_QUERY.nearest(self, origin, range_limit, excluded_ids)
-
-
-func _enemies_in_circle_sorted(origin: Vector2, radius: float, count: int) -> Array:
-	return _nearest_enemies_from(origin, radius, count)
 
 
 func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: Vector2) -> bool:
@@ -657,16 +656,14 @@ func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 
 
 func _take_damage_accepts_feedback(enemy: Node) -> bool:
-	for method in enemy.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			var args: Array = method.get("args", [])
-			if args.size() < 2:
-				return false
-			var script: Script = enemy.get_script()
-			if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
-				return true
-			return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
-	return false
+	# FAN-3061: арность take_damage кэшируется по скрипту — без get_method_list()
+	# (~2.7 мс) на каждом попадании; групповая ветка остаётся пер-инстансной.
+	if not TAKE_DAMAGE_CONTRACT.accepts_two_arguments(enemy):
+		return false
+	var script: Script = enemy.get_script()
+	if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
+		return true
+	return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:

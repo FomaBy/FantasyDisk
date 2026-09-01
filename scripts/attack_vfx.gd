@@ -101,10 +101,17 @@ static func owner_class_id(owner_node: Node) -> String:
 	return str(raw) if raw != null else ""
 
 
-static func _additive_material() -> CanvasItemMaterial:
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	return material
+# Один аддитивный материал на все вспышки/искры/трейлы: он неизменяем (только
+# blend_mode), поэтому безопасно делится между спрайтами вместо
+# CanvasItemMaterial.new() на каждое попадание (аудит 2026-07, FAN-1042 п.3).
+static var _additive: CanvasItemMaterial = null
+
+
+static func additive_material() -> CanvasItemMaterial:
+	if _additive == null:
+		_additive = CanvasItemMaterial.new()
+		_additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	return _additive
 
 
 # FAN-3010: одна фигура на обе ветки. Без пака это в точности прежний Sprite2D.
@@ -118,7 +125,7 @@ static func _figure(texture: Texture2D, color: Color, additive: bool, pack: Spri
 		sprite.texture = texture
 		sprite.modulate = tint
 		if additive:
-			sprite.material = _additive_material()
+			sprite.material = additive_material()
 		return sprite
 
 	var animation := _pack_animation(pack)
@@ -126,7 +133,7 @@ static func _figure(texture: Texture2D, color: Color, additive: bool, pack: Spri
 	flipbook.sprite_frames = pack
 	flipbook.scale = _pack_fit_scale(pack, texture)
 	if additive:
-		flipbook.material = _additive_material()
+		flipbook.material = additive_material()
 	flipbook.play(animation)
 	flipbook.frame = start_frame
 	var holder := Node2D.new()

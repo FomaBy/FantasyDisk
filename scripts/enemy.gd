@@ -715,9 +715,7 @@ func _show_hit_flash() -> void:
 	tick.name = "CombatHitTick"
 	tick.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
 	tick.texture = HIT_FLASH_TEXTURE
-	var tick_material := CanvasItemMaterial.new()
-	tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	tick.material = tick_material
+	tick.material = AttackVfx.additive_material()
 	tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
 	# impact_flash 128px; масштабируем под видимый размер цели (мягкое покрытие).
 	var tick_reach := maxf(maxf(sprite_size.x, sprite_size.y) * 0.95, 48.0)
@@ -748,7 +746,7 @@ func _combat_feedback_enabled() -> bool:
 func _feedback_group_count(group_name: String) -> int:
 	if not is_inside_tree():
 		return 0
-	return get_tree().get_nodes_in_group(group_name).size()
+	return get_tree().get_node_count_in_group(group_name)
 
 
 func _feedback_parent() -> Node:
@@ -963,7 +961,7 @@ func _spawn_elite_hazard(target_position: Vector2) -> void:
 	hazard_tween.tween_interval(windup)
 	hazard_tween.tween_callback(func() -> void:
 		HazardVfx.detonate(hazard, ELITE_HAZARD_RADIUS, hazard_color, "poison")
-		var player := get_tree().get_first_node_in_group("player") as Node2D
+		var player := hazard.get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(hazard.global_position) <= ELITE_HAZARD_RADIUS and player.has_method("take_damage"):
 			player.take_damage(hazard_damage, "poison_zone")
 	)
@@ -1403,10 +1401,12 @@ func _spawn_poison_lob(target_position: Vector2, travel_time: float, damage: flo
 	# Имитация дуги: спрайт поднимается и опускается во время полета.
 	tween.tween_property(sprite, "position", Vector2(0.0, -64.0), travel_time * 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.chain().tween_property(sprite, "position", Vector2.ZERO, travel_time * 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	var caster: WeakRef = weakref(self)  # кастер может умереть в полёте — лоб живёт сам
 	tween.chain().tween_callback(func() -> void:
-		_spawn_poison_puddle(target_position, damage, config)
-		lob.queue_free()
+		if caster.get_ref() != null:
+			caster.get_ref()._spawn_poison_puddle(target_position, damage, config)
 	)
+	tween.chain().tween_callback(lob.queue_free)
 
 
 func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: Dictionary) -> void:
@@ -1445,7 +1445,7 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	for tick_index in range(tick_count):
 		tween.tween_interval(tick_interval)
 		tween.tween_callback(func() -> void:
-			var player := get_tree().get_first_node_in_group("player") as Node2D
+			var player := puddle.get_tree().get_first_node_in_group("player") as Node2D
 			if player != null and player.global_position.distance_to(puddle.global_position) <= radius and player.has_method("take_damage"):
 				player.take_damage(tick_damage, "elite_poison_puddle")
 		)

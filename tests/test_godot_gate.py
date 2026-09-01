@@ -360,7 +360,7 @@ class GodotGateTest(unittest.TestCase):
                         0,
                     )
         self.assertEqual(run.call_args_list[0], mock.call(
-            ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
+            ["/godot", "--headless", "--path", "/repo", "--import"]
         ))
         self.assertIn(
             "godot_gate: import cache missing, running headless import first",
@@ -448,7 +448,7 @@ class GodotGateTest(unittest.TestCase):
             self.assertEqual(
                 run.call_args_list,
                 [
-                    mock.call(["/godot", "--headless", "--path", str(project), "--import", "--quit"]),
+                    mock.call(["/godot", "--headless", "--path", str(project), "--import"]),
                     mock.call(
                         [
                             "/godot", "--headless", "--path", str(project), "--script",
@@ -491,7 +491,7 @@ class GodotGateTest(unittest.TestCase):
                         0,
                     )
             run.assert_called_once_with(
-                ["/godot", "--headless", "--path", str(project), "--import", "--quit"]
+                ["/godot", "--headless", "--path", str(project), "--import"]
             )
 
     def test_ensure_import_cache_only_skips_the_requested_godot_command(self):

@@ -21,7 +21,6 @@ const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
-const KNIGHT_SKELETON_RIG_SCENE := preload("res://scenes/characters/KnightSkeletonRig.tscn")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -2552,8 +2551,15 @@ func _effective_drain_heal_cap() -> float:
 	return clampf(raw_cap, 0.0, ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_HARD)
 
 
+# Читается на каждом нанесённом/полученном уроне: глубокая копия из
+# ProgressionData делается один раз на класс, потребители только читают.
+var _ultimate_configs := {}
+
+
 func _ultimate_config() -> Dictionary:
-	return PROGRESSION_DATA.ultimate_config(character_id)
+	if not _ultimate_configs.has(character_id):
+		_ultimate_configs[character_id] = PROGRESSION_DATA.ultimate_config(character_id)
+	return _ultimate_configs[character_id]
 
 
 func _gain_ultimate_charge(amount: float) -> void:
@@ -2938,7 +2944,7 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
 	if amount <= 0.0 or not _combat_feedback_enabled() or not is_inside_tree():
 		return
-	if get_tree().get_nodes_in_group(COMBAT_FEEDBACK_LABEL_GROUP).size() >= COMBAT_FEEDBACK_MAX_LABELS:
+	if get_tree().get_node_count_in_group(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
 		return
 	var parent := _vfx_parent()
 	if parent == null:
@@ -3115,7 +3121,6 @@ func _update_class_status_auras() -> void:
 #   - сам Друид всегда в центре собственной ауры → его хиты усиливаются
 #     безусловно в meta_damage_multiplier (wild_aura_damage_multiplier).
 const WILD_AURA_RING_NAME := "WildForceAuraRing"
-const WILD_AURA_COLOR := Color(0.46, 0.84, 0.34, 1.0)
 
 
 class WildForceAuraRing extends Node2D:
@@ -3544,9 +3549,7 @@ func _show_heal_vfx() -> void:
 	for index in range(3):
 		var spark := Sprite2D.new()
 		spark.texture = AttackVfx.FLASH_TEXTURE
-		var material := CanvasItemMaterial.new()
-		material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-		spark.material = material
+		spark.material = AttackVfx.additive_material()
 		spark.modulate = Color(0.5, 1.0, 0.6, 0.9)
 		spark.scale = Vector2.ONE * rng.randf_range(0.18, 0.28)
 		spark.z_index = 14

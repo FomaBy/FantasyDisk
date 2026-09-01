@@ -1448,7 +1448,7 @@ func _process(delta: float) -> void:
 		if combat.is_boss_victory_pending():
 			ui._update_hud()
 			return
-		if get_tree().get_nodes_in_group("bosses").is_empty():
+		if get_tree().get_node_count_in_group("bosses") == 0:
 			combat.request_boss_victory_after_death()
 		elif timer_expired:
 			combat._end_combat(false)

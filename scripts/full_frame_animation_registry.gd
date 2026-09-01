@@ -375,7 +375,15 @@ static func _resolve_animation_name(frames: SpriteFrames, requested_state: Strin
 	return ""
 
 
+# Кандидаты зависят только от строки запроса — считаются один раз на имя:
+# play_state зовётся каждый физический кадр на каждого анимированного актёра.
+# ponytail: кэш без границы — имена состояний конечны (код/данные паков).
+static var _state_candidates_cache := {}
+
+
 static func _state_candidates(requested_state: String) -> Array:
+	if _state_candidates_cache.has(requested_state):
+		return _state_candidates_cache[requested_state]
 	var normalized := requested_state.strip_edges().to_lower()
 	var candidates := []
 	if normalized != "":
@@ -402,4 +410,5 @@ static func _state_candidates(requested_state: String) -> Array:
 	for candidate in candidates:
 		if candidate != "" and not deduped.has(candidate):
 			deduped.append(candidate)
+	_state_candidates_cache[requested_state] = deduped
 	return deduped

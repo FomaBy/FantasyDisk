@@ -3,6 +3,7 @@ extends RefCounted
 
 const META_KEY := "status_effects"
 const MARKER_META_KEY := "status_marker_color"
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 
 
 static func apply_status(target: Node, status_id: String, config: Dictionary) -> void:
@@ -78,12 +79,12 @@ static func tick(target: Node, delta: float) -> void:
 	if target == null or not is_instance_valid(target) or not target.has_meta(META_KEY):
 		return
 	var statuses := _statuses(target)
-	var changed := false
+	var can_damage := target.has_method("take_damage")
 	var expired: Array[String] = []
 	for status_id in statuses.keys():
 		var status: Dictionary = statuses[status_id]
 		status["remaining"] = float(status.get("remaining", 0.0)) - delta
-		if float(status.get("dot_damage", 0.0)) > 0.0 and target.has_method("take_damage"):
+		if can_damage and float(status.get("dot_damage", 0.0)) > 0.0:
 			var interval := maxf(float(status.get("dot_interval", 1.0)), 0.1)
 			status["tick_left"] = float(status.get("tick_left", interval)) - delta
 			# Introspection allocates the complete method list. Keep it outside the
@@ -110,36 +111,20 @@ static func tick(target: Node, delta: float) -> void:
 				tick_due = float(status["tick_left"]) <= 0.0 and float(status.get("remaining", 0.0)) > 0.0
 		if float(status.get("remaining", 0.0)) <= 0.0:
 			expired.append(str(status_id))
-		else:
-			statuses[status_id] = status
-		changed = true
+	# `statuses` — живой словарь из меты: перезапись нужна лишь когда он мог
+	# опустеть (снятие меты), а не на каждом кадре у каждого актёра.
 	for status_id in expired:
 		statuses.erase(status_id)
-	if changed or not expired.is_empty():
+	if not expired.is_empty():
 		_set_statuses(target, statuses)
 
 
 # SCRUM-523: принимает ли take_damage второй аргумент (feedback-словарь).
-# Та же проверка арности, что в class_weapon._take_damage_accepts_feedback.
 # FAN-3061: get_method_list() стоит ~2.7мс на enemy.gd, а DoT-тики карт-широких
 # ультимейтов (FAN-2952/FAN-2953) синхронно созревают у сотен врагов в одном
-# кадре — арность метода принадлежит скрипту, поэтому ответ кэшируется по нему.
-static var _accepts_feedback_by_script := {}
-
-
+# кадре — арность принадлежит скрипту и кэшируется в TakeDamageContract.
 static func _take_damage_accepts_feedback(target: Node) -> bool:
-	var script = target.get_script()
-	var key: int = script.get_instance_id() if script is Object else 0
-	if key != 0 and _accepts_feedback_by_script.has(key):
-		return _accepts_feedback_by_script[key]
-	var result := false
-	for method in target.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			result = int((method.get("args", []) as Array).size()) >= 2
-			break
-	if key != 0:
-		_accepts_feedback_by_script[key] = result
-	return result
+	return TAKE_DAMAGE_CONTRACT.accepts_two_arguments(target)
 
 
 static func has_status(target: Node, status_id: String) -> bool:

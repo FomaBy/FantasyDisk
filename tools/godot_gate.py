@@ -152,7 +152,10 @@ def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False
         # The import pre-pass is intentionally diagnostic-tolerant: existing green
         # suites can emit unrelated import/resource warnings while warming the
         # cache. The Player probe below is the certifying call site.
-        code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+        # FAN-2648: `--import --quit` crashes Godot 4.7 inside its import threads
+        # (reproducible on native Windows, observed on a cold macOS cache too);
+        # `--import` alone imports and exits on its own on every host.
+        code = _run_godot([godot, "--headless", "--path", project_path, "--import"])
         if code != 0 or _needs_import_cache(args, require_script=False):
             return code or 1
     probe_path = os.path.join(project_path, PLAYER_IMPORT_PROBE.removeprefix("res://"))

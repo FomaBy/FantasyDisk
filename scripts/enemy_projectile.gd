@@ -77,9 +77,7 @@ func _configure_trail() -> void:
 	trail.scale = Vector2(0.30, 0.26)
 	trail.z_index = -1
 	trail.modulate = Color(0.72, 0.34, 1.0, 0.46)
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	trail.material = material
+	trail.material = AttackVfx.additive_material()
 	add_child(trail)
 
 	var tween := trail.create_tween()
@@ -124,7 +122,5 @@ func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	sprite.modulate = color
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sprite.material = material
+	sprite.material = AttackVfx.additive_material()
 	return sprite

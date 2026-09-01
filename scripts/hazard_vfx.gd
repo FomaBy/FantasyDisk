@@ -94,9 +94,7 @@ static func _aura_texture(parent: Node2D) -> Texture2D:
 static func _additive(texture: Texture2D, color: Color) -> Sprite2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sprite.material = material
+	sprite.material = AttackVfx.additive_material()
 	sprite.modulate = color
 	return sprite
 

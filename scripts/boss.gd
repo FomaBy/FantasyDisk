@@ -868,7 +868,7 @@ func _summon_riftlings() -> void:
 		scene = summoned_enemy_scene
 	if scene == null:
 		return
-	var active_summons := get_tree().get_nodes_in_group("summoned_enemies").size()
+	var active_summons := get_tree().get_node_count_in_group("summoned_enemies")
 	# SCRUM-596: только дозаполняем до потолка (учитывая уже живых призывов), иначе
 	# на поздних фазах при почти полном поле спавнилось >8 (3+phase-1 безусловно).
 	var summon_count := riftling_summon_count(boss_phase, active_summons)
