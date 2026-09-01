@@ -32,11 +32,14 @@
 
 Сейчас (Фаза 3 оружия — FAN-3840: монолит `class_weapon.gd` разрезан):
 - `scripts/classes/<class_id>_weapon.gd` — класс-локальные исполнители режимов
-  и приватные хелперы живут только в нём; классы berserk и knight вместо него
-  владеют своими семействами `scripts/berserk_weapon.gd` (+ наследники
+  и приватные хелперы живут только в нём; berserk и knight вместо него совместно
+  владеют общим legacy-семейством `scripts/berserk_weapon.gd` (+ наследники
   `holy_flail_weapon.gd`, `two_handed_axe_weapon.gd`,
-  `two_handed_hammer_weapon.gd`); robot дополнительно владеет
-  `scripts/robot_hydraulic_press_weapon.gd`, druid — `scripts/summoner_weapon.gd`
+  `two_handed_hammer_weapon.gd`) — путь общий для обоих классов, ни один из них
+  не может закрепить его как эксклюзивный; robot дополнительно владеет
+  `scripts/robot_hydraulic_press_weapon.gd`, druid и chemist совместно владеют
+  общим legacy `scripts/summoner_weapon.gd` — путь общий для обоих классов, а не
+  эксклюзивная собственность druid
 - `scripts/ultimates/classes/<class_id>/**`
 - `data/ultimates/classes/<class_id>/**`
 - `tests/balance/<class_id>/**` (Фаза 2 — FAN-3814), `tests/ultimates/**/<class_id>_*`
