@@ -105,6 +105,95 @@ CLASS_DIRECTORY_PREFIXES = (
 CROSS_DOMAIN_MARKER_RE = re.compile(r"(?mi)^[ \t]*cross-domain[ \t]*:.*$")
 CROSS_DOMAIN_RE = re.compile(r"(?m)^cross-domain: (FAN-\d+) (\S.{11,})$")
 
+# FAN-3856: поверхности, где id владельца встроен в имя файла или папки, а не
+# лежит отдельным сегментом пути. Реестры канонических id — единственный
+# источник совпадений: произвольный поиск подстроки запрещён.
+CANONICAL_ID_RE = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)*")
+ID_BOUNDARY_RE = re.compile(r"[A-Za-z0-9]")
+
+
+class AmbiguousOwnershipError(RuntimeError):
+    """Two equally valid canonical ids claim one path; the guard never guesses."""
+
+
+def _id_registry(kind: str, ids: tuple[str, ...]) -> frozenset[str]:
+    """Validate a canonical id registry; a broken registry fails closed at import."""
+    registry: set[str] = set()
+    for identifier in ids:
+        if not CANONICAL_ID_RE.fullmatch(identifier):
+            raise ValueError(f"{kind} id registry: invalid id {identifier!r}")
+        if identifier in registry:
+            raise ValueError(f"{kind} id registry: duplicate id {identifier!r}")
+        registry.add(identifier)
+    return frozenset(registry)
+
+
+# Канонические актёры: `data/animation/<kind>/<actor_id>.json` плюс
+# `tests/actors/<actor_id>_smoke_test.gd` (соответствие проверяет тест гарда).
+ACTOR_IDS = _id_registry("actor", (
+    "ash_marksman",
+    "ashen_colossus",
+    "bloodthorn_lion",
+    "bone_archon",
+    "bone_caller",
+    "bone_shaman",
+    "brood_mother",
+    "disk_devourer",
+    "druid_beast",
+    "druid_ghost_bear",
+    "druid_ghost_lion",
+    "druid_ghost_panther",
+    "druid_ghost_stag",
+    "druid_ghost_wolf",
+    "druid_pack_spirit",
+    "homunculus",
+    "homunculus_tank",
+    "iron_bastion",
+    "leadership_echo",
+    "mini_bone_warden",
+    "mini_plague_bellringer",
+    "mini_plague_berserker",
+    "mini_rot_hound",
+    "mini_scavenger_reaper",
+    "mini_shadow_devourer",
+    "mini_siege_rammer",
+    "mini_spark_wight",
+    "mini_swarm_sniper",
+    "mini_void_phantom",
+    "night_stalker",
+    "plague_prophet",
+    "rift_cutter",
+    "rift_shieldbearer",
+    "rift_warden",
+    "shard_marshal",
+    "small_biter",
+    "spark_runner",
+    "stone_bruiser",
+    "venom_spitter",
+    "void_mage",
+    "winged_spark",
+))
+# Канонические классы: `data/ultimates/classes/<class_id>/` (проверяет тест гарда).
+CLASS_IDS = _id_registry("class", (
+    "assassin",
+    "berserk",
+    "biologist",
+    "chemist",
+    "dark_mage",
+    "doctor",
+    "druid",
+    "elementalist",
+    "engineer",
+    "guitarist",
+    "knight",
+    "priest",
+    "ranger",
+    "robot",
+    "sniper",
+    "soldier",
+    "thief",
+))
+
 
 def _budgeted_shared(relative: str) -> bool:
     return relative in BUDGETED_SHARED_FILES or (
@@ -112,13 +201,52 @@ def _budgeted_shared(relative: str) -> bool:
     )
 
 
+def _embedded_surface(relative: str) -> tuple[str, str, frozenset[str]] | None:
+    """(domain kind, searched region, registry) for id-in-name ownership surfaces."""
+    if relative.startswith("assets/sprites/"):
+        return "actor", relative.removeprefix("assets/sprites/"), ACTOR_IDS
+    if relative.startswith("tests/ultimates/"):
+        return "class", relative.removeprefix("tests/ultimates/"), CLASS_IDS
+    if relative.startswith("scenes/") and "/ultimates/" in relative:
+        return "class", relative.split("/ultimates/", 1)[1], CLASS_IDS
+    return None
+
+
+def _embedded_id(kind: str, region: str, registry: frozenset[str]) -> str | None:
+    """Registered id embedded in `region` on identifier boundaries, or None."""
+    spans: list[tuple[int, int, str]] = []
+    for identifier in registry:
+        start = 0
+        while (at := region.find(identifier, start)) >= 0:
+            end = at + len(identifier)
+            before = region[at - 1] if at else ""
+            after = region[end:end + 1]
+            if not ID_BOUNDARY_RE.match(before) and not ID_BOUNDARY_RE.match(after):
+                spans.append((at, end, identifier))
+            start = at + 1
+    # Внутри одного вхождения побеждает самый длинный зарегистрированный id
+    # (`homunculus_tank` над `homunculus`). Два непересекающихся разных id — это
+    # не выбор, а неоднозначность, и она обязана падать, а не угадываться.
+    owners = {
+        identifier
+        for at, end, identifier in spans
+        if not any(
+            other_at <= at and end <= other_end and (other_at, other_end) != (at, end)
+            for other_at, other_end, _ in spans
+        )
+    }
+    if len(owners) > 1:
+        raise AmbiguousOwnershipError(
+            f"ambiguous {kind} ids " + ", ".join(sorted(owners)) + "; name exactly one owner"
+        )
+    return next(iter(owners), None)
+
+
 def ownership_domain(relative: str) -> str | None:
     """Domain that owns a changed path, or None for shared/unowned surfaces.
 
-    ponytail: только детерминированные (директорийные и точечные) правила карты.
-    Префиксные глобы вида `scenes/ultimates/<class_id>*` и
-    `assets/sprites/**/<actor_id>*` не дают однозначного id из пути и остаются
-    неклассифицированными — добавить, когда id станет отдельным сегментом пути.
+    Raises AmbiguousOwnershipError when an id-in-name surface matches two
+    equally valid canonical ids.
     """
     relative = relative.removesuffix(".uid")
     if _budgeted_shared(relative):
@@ -140,6 +268,11 @@ def ownership_domain(relative: str) -> str | None:
         return f"actor/{name.removesuffix('_smoke_test.gd')}"
     if relative.startswith("scripts/ui/screens/") and name.endswith(".gd") and len(parts) == 4:
         return f"ui/{name.removesuffix('.gd')}"
+    surface = _embedded_surface(relative)
+    if surface is not None:
+        kind, region, registry = surface
+        identifier = _embedded_id(kind, region, registry)
+        return f"{kind}/{identifier}" if identifier else None
     if relative in CORE_FILES or relative.startswith(CORE_PREFIXES):
         return "core"
     if relative.startswith(("docs/process/", "docs/design/")):
@@ -218,7 +351,15 @@ def ownership_domain_errors(root: Path, changed_ref: str) -> list[str]:
         return errors
 
     paths = _candidate_paths(root, base_sha)
-    domains = {domain for domain in map(ownership_domain, paths) if domain}
+    domains: set[str] = set()
+    for path in paths:
+        try:
+            domain = ownership_domain(path)
+        except AmbiguousOwnershipError as error:
+            errors.append(f"ownership guard: {path}: {error}")
+            continue
+        if domain:
+            domains.add(domain)
     shared = sorted({path for path in paths if _budgeted_shared(path.removesuffix(".uid"))})
     if len(domains) > 1:
         errors.append(
