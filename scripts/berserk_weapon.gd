@@ -2,6 +2,7 @@ class_name BerserkWeapon
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 const CONTACT_STUCK_HIT_RADIUS := 40.0
 # SCRUM-1043: Berserk's full-frame body extends farther below its origin than
 # above it, so the hammer ground impact centers 16 px toward the footline; the
@@ -792,16 +793,14 @@ func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 
 
 func _take_damage_accepts_feedback(enemy: Node) -> bool:
-	for method in enemy.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			var args: Array = method.get("args", [])
-			if args.size() < 2:
-				return false
-			var script: Script = enemy.get_script()
-			if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
-				return true
-			return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
-	return false
+	# FAN-3061: арность take_damage кэшируется по скрипту — без get_method_list()
+	# (~2.7 мс) на каждом попадании берсерка/рыцаря; групповая ветка пер-инстансная.
+	if not TAKE_DAMAGE_CONTRACT.accepts_two_arguments(enemy):
+		return false
+	var script: Script = enemy.get_script()
+	if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
+		return true
+	return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
 
 
 func _rolled_damage(owner_node: Node2D) -> float:
