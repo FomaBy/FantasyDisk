@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3859",
+  "weapon_id": "moon_crossbow",
+  "animation": {
+    "name": "ranger_moon_crossbow_ultimate",
+    "fps": 3.0,
+    "loop": false,
+    "frame_count": 9
+  },
+  "runtime_directory": "assets/sprites/effects/ranger/moon_crossbow",
+  "spriteframes": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_spriteframes.tres",
+  "frame_order": [
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png",
+    "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png"
+  ],
+  "source_runtime_byte_parity": true,
+  "source_runtime_pixel_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png",
+      "sha256": "b565a49e7024e588f96dab1cb37674920d7aee9d6254ea4f1a9a82f84dcae47c",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png.import",
+        "uid": "uid://b22avge3ht3a7",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f00.png-1486bdb52f053e3f43fe39dec42f8b09.ctex"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png",
+      "sha256": "1157b369562f29c8c9eff6c5e60468e290e53a759c9d04d2a0de12d4265d809f",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png.import",
+        "uid": "uid://dcpyrde1vqngc",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f01.png-55884efd77206f32e7e83f15ae58462e.ctex"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png",
+      "sha256": "4399db6e0d79efbec864b90756bf18da0399dbbb7b1e36d673faba48ed0509bc",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png.import",
+        "uid": "uid://dvnrlqjixgy00",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f02.png-d3aeb7e9a31a28cb85e5afb2d3b15742.ctex"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png",
+      "sha256": "f8a61637601f4f36bab52fb39962e5d80bd8dfc6671c724f7b195f3715981f17",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png.import",
+        "uid": "uid://uiobtrskolga",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f03.png-3bb9229b0347721ded30654d59817903.ctex"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png",
+      "sha256": "0a07031dc4b46332137c1983ed131e2828bb6b1dd080ff54eea3618e250faaa3",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png.import",
+        "uid": "uid://os2e43ph0whf",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f04.png-d1e8a8abfae046efdc269a02bff2e244.ctex"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png",
+      "sha256": "4e87281ce9f9aa30596c4065b5b7e55ce43bf05dfc070e3228be4ee4c76433f4",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png.import",
+        "uid": "uid://dnr2e1e5hxceo",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f05.png-e80fe106658d15c916e8a81da585759b.ctex"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png",
+      "sha256": "87ca0031a8ca1a6f94006c1ed6cdc32048a5be6ee4d6a873172cf8b6a6e197d1",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png.import",
+        "uid": "uid://sfo6hggjk2t0",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f06.png-6e4ddf97f0150eaa8ee0efb4a69a8cbf.ctex"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png",
+      "sha256": "f026f825b6e56cd85cb00d4ef026e900d4702d5ac07c569eff182964c860bb79",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png.import",
+        "uid": "uid://cgyaemm2edwmd",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f07.png-d0661bffd41a209d21319653595ccac5.ctex"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png",
+      "sha256": "20cb88bb66e44e19eaada3fec0b0656b344521c73c6047e9cdda7e7cbdbc15e3",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png.import",
+        "uid": "uid://cqglilsgxx62b",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f08.png-855eef839bd557b39561b1c6ad721edf.ctex"
+        ]
+      }
+    }
+  ]
+}

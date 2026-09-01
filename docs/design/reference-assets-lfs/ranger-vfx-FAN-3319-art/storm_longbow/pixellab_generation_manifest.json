@@ -1,0 +1,97 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T22:39:03Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "4857b9c8-adbe-4288-8201-822e5e4a480d",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered oversized storm longbow ultimate VFX prop with a dark carved bow, silver crescent limbs, blue-gold grip, five crackling cyan lightning arrows fanned forward through a circular storm eye, dark fantasy D&D pixel art seen from above, isolated clean readable silhouette, transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the storm longbow, blue-gold grip, five-arrow fan and circular storm eye centered with stable proportions; the drawstring pulls taut, cyan lightning crawls along the limbs and arrowheads, arrows launch in a readable five-arrow fan, the storm eye rotates and expands, then thunder arcs recoil back into the bow; make every frame a distinct measurable motion beat with string tension, arrow travel, eye rotation or lightning reach changing, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "storm_longbow_f00.png",
+      "bytes": 22765,
+      "url_kind": "template",
+      "encoded_sha256": "bd72cd2ab2d97500a8e8fc650aa5f1174a2b0b6033f61ea66b13ac03f7590041",
+      "pixel_sha256": "6dba7e5716130ed3f2933e1cbddbda50d98e8ef67d735db18f24215b26ae770c"
+    },
+    {
+      "file": "storm_longbow_f01.png",
+      "bytes": 31671,
+      "url_kind": "template",
+      "encoded_sha256": "50c8ac9370cd47aa8ff68c3cebb462ca8c6dd11f19052967172463ac743519e5",
+      "pixel_sha256": "df856855f05138cec3f2234f771aade4135c6112e1d71196a97d6e8190591546"
+    },
+    {
+      "file": "storm_longbow_f02.png",
+      "bytes": 30023,
+      "url_kind": "template",
+      "encoded_sha256": "54829765a1a2fcdda60273f7f794f9c53d05b7971d248221ebff7833c1623996",
+      "pixel_sha256": "242739ea3b1fe956347f8e1e5f31f2f4614564252eea607b17db8f59d9acbebd"
+    },
+    {
+      "file": "storm_longbow_f03.png",
+      "bytes": 24753,
+      "url_kind": "template",
+      "encoded_sha256": "13fa9bedeef3baf9227c4d5413b20f709f495eda09b2053173323096318c0dfe",
+      "pixel_sha256": "8848756a4d1058060afaea8a24f68fb272d5637ed7aa0565373773fa195464e0"
+    },
+    {
+      "file": "storm_longbow_f04.png",
+      "bytes": 19997,
+      "url_kind": "template",
+      "encoded_sha256": "a622fce0944c7b8c38819f3a5b6c73239eed90548c40d1c4af4018fe0b7d83c0",
+      "pixel_sha256": "e8aad981f4db3f94b8c0e5683f136d01ed9386c4a75050073070ebf584fa46c3"
+    },
+    {
+      "file": "storm_longbow_f05.png",
+      "bytes": 18737,
+      "url_kind": "template",
+      "encoded_sha256": "1ec8153e595842dcefa8a8305dfb62b6599e5ae6ddc1446fac1804ace420a804",
+      "pixel_sha256": "6bd35f7898f15f05dacbb46afbd3fbf17fdf9aebd5362067e1c325dce8735756"
+    },
+    {
+      "file": "storm_longbow_f06.png",
+      "bytes": 20527,
+      "url_kind": "template",
+      "encoded_sha256": "dd5e68f5ba9397064f626bf3328ca863ac0f75b8a144e63c6c265e9c2b205f99",
+      "pixel_sha256": "6d3766336cae402dee402bb6f89ffc4441b09afc9e085cc2e6bb22d87125319d"
+    },
+    {
+      "file": "storm_longbow_f07.png",
+      "bytes": 19902,
+      "url_kind": "template",
+      "encoded_sha256": "a4f7c7a325768814b363d27bd133864478239240e14e004b1a19e1e7cd477b6b",
+      "pixel_sha256": "8107c4de2bb1775c6c6efe11a9c44a094388e9a533f719c71c4c822e5189601b"
+    },
+    {
+      "file": "storm_longbow_f08.png",
+      "bytes": 18244,
+      "url_kind": "template",
+      "encoded_sha256": "33fa80b092b74923a17d8a0c7b75137ad9c4ab641f27c49ecfe05b360b26dce9",
+      "pixel_sha256": "abfe626e44814b24aa108f705e98e8dc8070d7d351bc440a79bdc7aaa368b986"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "pixel_lab": {
+    "object_id": "4857b9c8-adbe-4288-8201-822e5e4a480d",
+    "animation_group_id": "27c139d0-a25f-4383-9e70-f7e30866367d",
+    "canonical_tag": "ranger_storm_longbow_ultimate"
+  }
+}
