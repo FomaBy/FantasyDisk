@@ -1,0 +1,98 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T23:27:11Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "ba690552-379e-4103-8733-d10c8168f242",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Robot ultimate hydraulic press: a massive dark iron vertical piston with two angular bronze press plates, teal hydraulic hoses, and a hot amber pressure core, dark fantasy D&D pixel art seen straight from above, isolated VFX prop on a transparent background, crisp readable industrial silhouette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single hydraulic press centered with stable outline, proportions, palette and position in every frame; animate measurable ultimate motion: the bronze plates open, teal hydraulic pistons extend from both sides into a compressed lane, amber pressure lines charge, the top piston slams down through a strong squash with a bright impact ring and dust motes, then rebounds and vents; preserve the press identity and all details, every frame distinct and readable, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "raw/hydraulic_press_f00.png",
+      "bytes": 23185,
+      "url_kind": "template",
+      "encoded_sha256": "40ccb1496caf3a413f1f13023abbe68ca81690ef7999bdc3297aa92f5dcfbbd9",
+      "pixel_sha256": "a582e421d7cd5e5911a31f8bc763c68cc65baaefe16962267d6f998dcea05eb2"
+    },
+    {
+      "file": "raw/hydraulic_press_f01.png",
+      "bytes": 28733,
+      "url_kind": "template",
+      "encoded_sha256": "9264e596502dc288cb5cd9a5724110049c22a93bbd1049b192ad6e7d0ebe51f6",
+      "pixel_sha256": "a2f5b023ebcf4db8cc533d442c9cef073cf7815a753807a038c638284c4360c3"
+    },
+    {
+      "file": "raw/hydraulic_press_f02.png",
+      "bytes": 27332,
+      "url_kind": "template",
+      "encoded_sha256": "c1eec83e6a59467ad5e763be044bf0870e3b105524e32b6cdbcf827072c42766",
+      "pixel_sha256": "580df27062246186dbccba7a3997df3fa3329bee996705b20306a13867cbb776"
+    },
+    {
+      "file": "raw/hydraulic_press_f03.png",
+      "bytes": 26985,
+      "url_kind": "template",
+      "encoded_sha256": "500ec332ceaab0f7ae0f7d9ff52c982f708f9d5a1d35eb1d6da7af127e65d7a2",
+      "pixel_sha256": "e44418d58d0ab03a15fe1d63bf62659fe22697a3af22ff991d9bc1c401715151"
+    },
+    {
+      "file": "raw/hydraulic_press_f04.png",
+      "bytes": 25144,
+      "url_kind": "template",
+      "encoded_sha256": "858b1209cb5e4b539b4e6ab9bd071796b5ab5e73cbc268ea14393331241688cd",
+      "pixel_sha256": "5a5bb1b771900b9ec0c39ffd19cabca9d080f9e0f5f8ffc22f3006bd3a28c2dd"
+    },
+    {
+      "file": "raw/hydraulic_press_f05.png",
+      "bytes": 28118,
+      "url_kind": "template",
+      "encoded_sha256": "3b2258cb1384cbd3e6d8d3f64081423f715a91293953aac819a02b1322228bde",
+      "pixel_sha256": "449d2ad9f1ae1d4cf66d7c380c98ca98050c1719e401edbdcf095e15f631697a"
+    },
+    {
+      "file": "raw/hydraulic_press_f06.png",
+      "bytes": 29309,
+      "url_kind": "template",
+      "encoded_sha256": "42b6c3ac98fc601235e098d3d0126dec527cab967f6e97bb13c4be1d72c9ea71",
+      "pixel_sha256": "20cf4e04d40420da9fbdad48bc24d8970432d1a3e9706d236835cc633e16f8d3"
+    },
+    {
+      "file": "raw/hydraulic_press_f07.png",
+      "bytes": 28464,
+      "url_kind": "template",
+      "encoded_sha256": "aa23406eeb275f8528a4d556ab5ddd6adeaabf54613ccb051bd05d5ed869075c",
+      "pixel_sha256": "8aa3260065472b4adc2dbc194279744cc288ee37e462c0ed6b52bc8d78be9987"
+    },
+    {
+      "file": "raw/hydraulic_press_f08.png",
+      "bytes": 26838,
+      "url_kind": "template",
+      "encoded_sha256": "0caa7b2ad6b3e65d7ed59dda28df7fec4dc3d779ce030640ae112adc9e934ce2",
+      "pixel_sha256": "f709ae94e276996c45bf01f21b5d6c99f130cf065eb1e18d41983fe1780d099c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press",
+  "postprocess": {
+    "method": "raw PixelLab frame preserved under raw/; accepted frame is 224x224 nearest-neighbor inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true
+  }
+}
