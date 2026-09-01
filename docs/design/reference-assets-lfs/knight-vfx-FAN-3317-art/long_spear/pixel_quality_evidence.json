@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "long_spear",
+  "visual_identity": "royal knight long spear with crimson pennant, cobalt runes, silver spearhead and three-thrust echoes",
+  "motion_contract": "three thrusts sweep left-center-right, pennant snaps, spearhead streaks brighten, then the weapon recoils to a clean pose",
+  "palette_contract": "silver steel, cobalt blue, crimson red, warm gold sparks, charcoal outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.079605,
+    "max": 0.135468,
+    "mean": 0.107084
+  },
+  "all_pair_changed_pixel_ratio_min": 0.076126,
+  "alpha_bbox_gt_8": [
+    [
+      57,
+      24,
+      182,
+      228
+    ],
+    [
+      56,
+      26,
+      183,
+      228
+    ],
+    [
+      60,
+      27,
+      187,
+      229
+    ],
+    [
+      70,
+      31,
+      191,
+      223
+    ],
+    [
+      69,
+      37,
+      193,
+      220
+    ],
+    [
+      68,
+      43,
+      195,
+      221
+    ],
+    [
+      70,
+      42,
+      192,
+      221
+    ],
+    [
+      74,
+      32,
+      187,
+      220
+    ],
+    [
+      63,
+      26,
+      182,
+      225
+    ]
+  ],
+  "minimum_gutter_px": 24,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.894913,
+    "max": 0.927628
+  },
+  "main_component_count": [
+    3,
+    7,
+    12,
+    11,
+    7,
+    2,
+    1,
+    9,
+    4
+  ],
+  "tiny_component_px_after_threshold": [
+    7,
+    10,
+    4,
+    0,
+    11,
+    0,
+    0,
+    0,
+    1
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "ec9b1355028c643b3b8b09bd8af9db95d826aacacd91ada28ef6547b39c2ffb6",
+    "d9acdf48a410c1a406ca1e0f526c7d407293134bc50f697ca1c1a5140d1f153c",
+    "2970c5b2e8e5d9c4e9fffb316f049b8bb0260fe6ed6616d7389761f1844e3f7e",
+    "531161489d01cd5269affe353d56805a2f232612c5964b60963029b3aae61457",
+    "07e18f4dfe313b15c25051ac2bfeb254dc79aa77f4cd6ef28a4ec40f97ab5ac2",
+    "f247b181bebcfecddf9444d1ddf0d9d9df51c4254fcdf7c2d85d835e77449a7d",
+    "ed67623b5d019eae8f9922a84452f5e6da21ce9b1037b83c8f1984815f803ca9",
+    "3d4e15c496e36958d769cd2f0f26aaf6ba27932c865679e84e6d16eaa133cf57",
+    "c0bdc5c802c1d4aeecc278601e76a48e4d275f7f8d326d04eb87eef51b26aece"
+  ]
+}

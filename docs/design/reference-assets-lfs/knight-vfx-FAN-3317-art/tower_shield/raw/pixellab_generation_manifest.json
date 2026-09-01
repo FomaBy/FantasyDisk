@@ -1,0 +1,95 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T18:24:36Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "d522269f-d979-4a61-b58a-8ffcb4469227",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered royal knight tower shield ultimate VFX prop, broad dark steel tower shield with a gold rim, cobalt blue enamel field, a raised heraldic lion crest and three blue-gold guard sigil arcs, dark fantasy D&D pixel art, top-down isolated weapon effect, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered royal knight tower shield, gold rim, cobalt field and raised heraldic lion crest with stable proportions and palette; animate a heavy frontal guard cycle: sigil arcs lock into a barrier, gold rim flares, shield braces forward with measured recoil, bright contact sparks strike the face, then the barrier releases into a controlled counter pulse and returns to the clean centered guard pose; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "c25fe1a5-72ad-4575-a652-429c28327042",
+    "canonical_tag": "knight_tower_shield_frontal_guard_counter"
+  },
+  "frames": [
+    {
+      "file": "tower_shield_f00.png",
+      "bytes": 36082,
+      "url_kind": "template",
+      "encoded_sha256": "4214cc0203e65c9bc6b6ba09cb2a4c76c91520a123947bc17fd1b0cccba95b92",
+      "pixel_sha256": "455a160f3135e0d5eca9873556be0ba4414e2cf112bf295fbb0cafe187cf32ec"
+    },
+    {
+      "file": "tower_shield_f01.png",
+      "bytes": 38430,
+      "url_kind": "template",
+      "encoded_sha256": "1fa481e283941413c755799dd096046a508002334007b0f259a0062e752af41e",
+      "pixel_sha256": "217e50e414d9ea4a236f69fa68f2e8bf7fa35118d67de97297265af7ff238911"
+    },
+    {
+      "file": "tower_shield_f02.png",
+      "bytes": 45334,
+      "url_kind": "template",
+      "encoded_sha256": "87b9d4193f9fafb57d6699876d90bda74ea73de2e7020229ce202630c6223258",
+      "pixel_sha256": "3df78dbdf4cb541055358dca92f929c2ee68613670e08dab679371627d4a9195"
+    },
+    {
+      "file": "tower_shield_f03.png",
+      "bytes": 43874,
+      "url_kind": "template",
+      "encoded_sha256": "21f89756525d05a148216774d2bf3771133dd2dbb5b443f2a2aef1e5ce797821",
+      "pixel_sha256": "073567178c06b2fa017c8d9d92d00f663ffead5c372a6e6907f36fcd9f349eac"
+    },
+    {
+      "file": "tower_shield_f04.png",
+      "bytes": 42320,
+      "url_kind": "template",
+      "encoded_sha256": "21935d87c1fdb5d37c7c717d37c65e8d586a5e42fdea14bf8a49c58a678bf4a4",
+      "pixel_sha256": "fa71151a1c613fb8f91b4841db49206a0a8cd6062cabd03d016c4039c7c1541e"
+    },
+    {
+      "file": "tower_shield_f05.png",
+      "bytes": 43767,
+      "url_kind": "template",
+      "encoded_sha256": "e87cce9fdaa3b64ebc93168392413258f945680e2a3d541652b71a10d30ed6aa",
+      "pixel_sha256": "54964149475362f4fc381a41bbfb8547cc0e8d02adc3bbb496dfe5de60c16755"
+    },
+    {
+      "file": "tower_shield_f06.png",
+      "bytes": 48183,
+      "url_kind": "template",
+      "encoded_sha256": "dcc1c5b5e5ec9977173cb2d3a62a818b4da0d991ad29425c3bf0bb0fd1f0e38b",
+      "pixel_sha256": "9f71e111ce7a9f7a39674f2b477d612cf64266d8ff2c05752abc11c0dad9a127"
+    },
+    {
+      "file": "tower_shield_f07.png",
+      "bytes": 45765,
+      "url_kind": "template",
+      "encoded_sha256": "3490c42c8cb4c40a56a5330fd7033c6ffea6df08e70d5f21ca455ca34300f253",
+      "pixel_sha256": "260a64412a6cbb82afb7c62cab06fe6935d20be1dbccf9d8acbc3dd1dab8e573"
+    },
+    {
+      "file": "tower_shield_f08.png",
+      "bytes": 45222,
+      "url_kind": "template",
+      "encoded_sha256": "1f91f0681d9ec79d15913292d9368abd1f3672bb89358755270fc5bbba230fc3",
+      "pixel_sha256": "f7496dd06b3f4af8085c3857881e483d873b95edf31cdca6d105ab21c95b2e98"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "canonical_ultimate_key": "knight/tower_shield"
+}

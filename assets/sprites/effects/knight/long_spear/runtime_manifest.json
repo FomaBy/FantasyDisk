@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "long_spear",
+  "effect_id": "phalanx_thrust",
+  "pixel_lab": {
+    "object_id": "1bd5249a-902b-4b31-a538-424a2a9b8d05",
+    "animation_group_id": "6ce36ead-d214-4bed-8387-0e88a674cbcb",
+    "canonical_tag": "knight_long_spear_phalanx_thrust",
+    "generator_manifest": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "royal knight long spear with crimson pennant, cobalt runes, silver spearhead and three-thrust echoes",
+  "motion_contract": "three thrusts sweep left-center-right, pennant snaps, spearhead streaks brighten, then the weapon recoils to a clean pose",
+  "palette_contract": "silver steel, cobalt blue, crimson red, warm gold sparks, charcoal outlines",
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 12.0,
+    "duration_seconds": 0.75,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "224x224 nearest-neighbor art centered in 256x256 canvas",
+    "flipbook_duration_seconds": 0.75
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear",
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/raw",
+    "runtime_dir": "assets/sprites/effects/knight/long_spear",
+    "spriteframes": "assets/sprites/effects/knight/long_spear/long_spear_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/knight/long_spear/runtime_manifest.json",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/contact_sheet.png"
+  },
+  "source_runtime_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f00.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f00.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f00.png.import",
+      "source_encoded_sha256": "ea6d38916b990d5f22f678704a4bab0f434ad6f1a94e12f65bcd5d533066a461",
+      "runtime_encoded_sha256": "ea6d38916b990d5f22f678704a4bab0f434ad6f1a94e12f65bcd5d533066a461",
+      "source_pixel_sha256": "ec9b1355028c643b3b8b09bd8af9db95d826aacacd91ada28ef6547b39c2ffb6",
+      "runtime_pixel_sha256": "ec9b1355028c643b3b8b09bd8af9db95d826aacacd91ada28ef6547b39c2ffb6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://djr6xwig3w064",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f00.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f00.png-677a1bca51590dfe221a6d58a92678f8.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f00.png-677a1bca51590dfe221a6d58a92678f8.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f01.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f01.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f01.png.import",
+      "source_encoded_sha256": "b8113841e993761c098f1b737a69b5d9588fc9c92ee8b0530b416a8dcee24566",
+      "runtime_encoded_sha256": "b8113841e993761c098f1b737a69b5d9588fc9c92ee8b0530b416a8dcee24566",
+      "source_pixel_sha256": "d9acdf48a410c1a406ca1e0f526c7d407293134bc50f697ca1c1a5140d1f153c",
+      "runtime_pixel_sha256": "d9acdf48a410c1a406ca1e0f526c7d407293134bc50f697ca1c1a5140d1f153c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://cgx7j4rfh5i82",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f01.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f01.png-b45b1ef9d8b947379783ec44e38e46cc.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f01.png-b45b1ef9d8b947379783ec44e38e46cc.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f02.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f02.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f02.png.import",
+      "source_encoded_sha256": "86a2c3e1f80c03ec7b9ab885729b8f1e66a76365343eda70e1a923e5fde26ab6",
+      "runtime_encoded_sha256": "86a2c3e1f80c03ec7b9ab885729b8f1e66a76365343eda70e1a923e5fde26ab6",
+      "source_pixel_sha256": "2970c5b2e8e5d9c4e9fffb316f049b8bb0260fe6ed6616d7389761f1844e3f7e",
+      "runtime_pixel_sha256": "2970c5b2e8e5d9c4e9fffb316f049b8bb0260fe6ed6616d7389761f1844e3f7e",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://ryibkt3kjngw",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f02.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f02.png-d7c462a561dd66017b6bc554c18a2e74.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f02.png-d7c462a561dd66017b6bc554c18a2e74.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f03.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f03.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f03.png.import",
+      "source_encoded_sha256": "4be196a81533e9134a783d3d25f8e9f666db9579ddf70327cc23d6e539d1f816",
+      "runtime_encoded_sha256": "4be196a81533e9134a783d3d25f8e9f666db9579ddf70327cc23d6e539d1f816",
+      "source_pixel_sha256": "531161489d01cd5269affe353d56805a2f232612c5964b60963029b3aae61457",
+      "runtime_pixel_sha256": "531161489d01cd5269affe353d56805a2f232612c5964b60963029b3aae61457",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://7shkx87524k4",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f03.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f03.png-d82b99a529150c86e7397dced1ea4e18.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f03.png-d82b99a529150c86e7397dced1ea4e18.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f04.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f04.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f04.png.import",
+      "source_encoded_sha256": "87ec20ec3ee55170244d9ca0ef07634c90805453d2d5223f778ce0a428b268f4",
+      "runtime_encoded_sha256": "87ec20ec3ee55170244d9ca0ef07634c90805453d2d5223f778ce0a428b268f4",
+      "source_pixel_sha256": "07e18f4dfe313b15c25051ac2bfeb254dc79aa77f4cd6ef28a4ec40f97ab5ac2",
+      "runtime_pixel_sha256": "07e18f4dfe313b15c25051ac2bfeb254dc79aa77f4cd6ef28a4ec40f97ab5ac2",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://b2cwa72pf02ns",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f04.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f04.png-4db0163dfd97f6dda4b6559aec981947.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f04.png-4db0163dfd97f6dda4b6559aec981947.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f05.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f05.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f05.png.import",
+      "source_encoded_sha256": "acd29b7cb4af301ecf1170fb5d652c60ed9427808b4c674c84a0d246cb7d69e4",
+      "runtime_encoded_sha256": "acd29b7cb4af301ecf1170fb5d652c60ed9427808b4c674c84a0d246cb7d69e4",
+      "source_pixel_sha256": "f247b181bebcfecddf9444d1ddf0d9d9df51c4254fcdf7c2d85d835e77449a7d",
+      "runtime_pixel_sha256": "f247b181bebcfecddf9444d1ddf0d9d9df51c4254fcdf7c2d85d835e77449a7d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bpxhhbhsequpt",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f05.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f05.png-c6b7baa683db638b131757ecdca8ac89.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f05.png-c6b7baa683db638b131757ecdca8ac89.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f06.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f06.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f06.png.import",
+      "source_encoded_sha256": "4427cdd5ec48aea574a4532d353d735571f713d25bb8ba40d1d92f01b8ff3637",
+      "runtime_encoded_sha256": "4427cdd5ec48aea574a4532d353d735571f713d25bb8ba40d1d92f01b8ff3637",
+      "source_pixel_sha256": "ed67623b5d019eae8f9922a84452f5e6da21ce9b1037b83c8f1984815f803ca9",
+      "runtime_pixel_sha256": "ed67623b5d019eae8f9922a84452f5e6da21ce9b1037b83c8f1984815f803ca9",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://dm77fio6m41o4",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f06.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f06.png-d5abec2c45ee6d59349c641da96ea520.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f06.png-d5abec2c45ee6d59349c641da96ea520.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f07.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f07.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f07.png.import",
+      "source_encoded_sha256": "ad1b82da93f8a841a624fb303ceb56ed402d9f70757e99afb73041c28b51c691",
+      "runtime_encoded_sha256": "ad1b82da93f8a841a624fb303ceb56ed402d9f70757e99afb73041c28b51c691",
+      "source_pixel_sha256": "3d4e15c496e36958d769cd2f0f26aaf6ba27932c865679e84e6d16eaa133cf57",
+      "runtime_pixel_sha256": "3d4e15c496e36958d769cd2f0f26aaf6ba27932c865679e84e6d16eaa133cf57",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bvpr3fdincohl",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f07.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f07.png-2c803173174f04e080cd47e9207ea727.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f07.png-2c803173174f04e080cd47e9207ea727.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/long_spear/long_spear_f08.png",
+      "runtime_file": "assets/sprites/effects/knight/long_spear/long_spear_f08.png",
+      "import_file": "assets/sprites/effects/knight/long_spear/long_spear_f08.png.import",
+      "source_encoded_sha256": "72d7636fdb7f2d7460ee2eb50f389be8404f0f794ee9d688a869eca872b5fdab",
+      "runtime_encoded_sha256": "72d7636fdb7f2d7460ee2eb50f389be8404f0f794ee9d688a869eca872b5fdab",
+      "source_pixel_sha256": "c0bdc5c802c1d4aeecc278601e76a48e4d275f7f8d326d04eb87eef51b26aece",
+      "runtime_pixel_sha256": "c0bdc5c802c1d4aeecc278601e76a48e4d275f7f8d326d04eb87eef51b26aece",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bqh0fvr0p3kfu",
+      "import_source_file": "res://assets/sprites/effects/knight/long_spear/long_spear_f08.png",
+      "import_dest_files": [
+        "res://.godot/imported/long_spear_f08.png-b9790c69d70884d16b9044cae9a8657b.ctex"
+      ],
+      "import_path": "res://.godot/imported/long_spear_f08.png-b9790c69d70884d16b9044cae9a8657b.ctex",
+      "import_matches_runtime": true
+    }
+  ],
+  "spriteframes_contract": {
+    "animation_name": "long_spear_phalanx",
+    "fps": 12.0,
+    "loop": false,
+    "frame_order": [
+      "long_spear_f00.png",
+      "long_spear_f01.png",
+      "long_spear_f02.png",
+      "long_spear_f03.png",
+      "long_spear_f04.png",
+      "long_spear_f05.png",
+      "long_spear_f06.png",
+      "long_spear_f07.png",
+      "long_spear_f08.png"
+    ],
+    "imports_match_runtime": true
+  },
+  "godot_import": {
+    "engine": "Godot 4.7.stable.official.5b4e0cb0f",
+    "fresh_headless_import": true,
+    "imports_match_runtime": true
+  },
+  "canonical_ultimate_key": "knight/long_spear"
+}

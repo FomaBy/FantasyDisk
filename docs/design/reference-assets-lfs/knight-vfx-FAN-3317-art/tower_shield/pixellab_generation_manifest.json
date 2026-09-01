@@ -1,0 +1,145 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T18:24:36Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "d522269f-d979-4a61-b58a-8ffcb4469227",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered royal knight tower shield ultimate VFX prop, broad dark steel tower shield with a gold rim, cobalt blue enamel field, a raised heraldic lion crest and three blue-gold guard sigil arcs, dark fantasy D&D pixel art, top-down isolated weapon effect, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered royal knight tower shield, gold rim, cobalt field and raised heraldic lion crest with stable proportions and palette; animate a heavy frontal guard cycle: sigil arcs lock into a barrier, gold rim flares, shield braces forward with measured recoil, bright contact sparks strike the face, then the barrier releases into a controlled counter pulse and returns to the clean centered guard pose; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "c25fe1a5-72ad-4575-a652-429c28327042",
+    "canonical_tag": "knight_tower_shield_frontal_guard_counter"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "file": "tower_shield_f00.png",
+      "bytes": 26257,
+      "encoded_sha256": "cb8dacfad12e9148d5e806439da6c620a399e31c9236b4663ba56d6a75594a69",
+      "pixel_sha256": "f913ce3e18b2a5d62a912d5b4557e44c22bc6fabaddd7314134c7d6061029340",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f00.png",
+      "raw_encoded_sha256": "4214cc0203e65c9bc6b6ba09cb2a4c76c91520a123947bc17fd1b0cccba95b92",
+      "raw_pixel_sha256": "455a160f3135e0d5eca9873556be0ba4414e2cf112bf295fbb0cafe187cf32ec",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 1,
+      "file": "tower_shield_f01.png",
+      "bytes": 27587,
+      "encoded_sha256": "cdaa35a62b5ab0ca2a49296f7031b2a33fa0048b6b93b8f812b93aece9838e77",
+      "pixel_sha256": "bc9148054c1e335f2a21d991c6338f587b4059eacfb225ba3ebf89f79751b0ef",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f01.png",
+      "raw_encoded_sha256": "1fa481e283941413c755799dd096046a508002334007b0f259a0062e752af41e",
+      "raw_pixel_sha256": "217e50e414d9ea4a236f69fa68f2e8bf7fa35118d67de97297265af7ff238911",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 2,
+      "file": "tower_shield_f02.png",
+      "bytes": 32416,
+      "encoded_sha256": "8486e13c4a42cc0fa0b6505d038a4a4eb48ede7a69ffec72830669e6b5e2c9e4",
+      "pixel_sha256": "6b9a9b414ba5eaa48d1e87b13e8adc3501d9d0a521e3730c9ca34994dd7f3862",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f02.png",
+      "raw_encoded_sha256": "87b9d4193f9fafb57d6699876d90bda74ea73de2e7020229ce202630c6223258",
+      "raw_pixel_sha256": "3df78dbdf4cb541055358dca92f929c2ee68613670e08dab679371627d4a9195",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 3,
+      "file": "tower_shield_f03.png",
+      "bytes": 32351,
+      "encoded_sha256": "25e568412c1020cac1fce04613f46c901a9cbcddb6e6036ce9d86f123ac1b6cc",
+      "pixel_sha256": "c61bba1bf1a2417f2bed7f5e76def6ffaf7b280f3298a0adce86f25a9f8772cb",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f03.png",
+      "raw_encoded_sha256": "21f89756525d05a148216774d2bf3771133dd2dbb5b443f2a2aef1e5ce797821",
+      "raw_pixel_sha256": "073567178c06b2fa017c8d9d92d00f663ffead5c372a6e6907f36fcd9f349eac",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 4,
+      "file": "tower_shield_f04.png",
+      "bytes": 30622,
+      "encoded_sha256": "dcda51f7b2fd424739f8c42b651da8a2c1eb0b2449c31bd43944058fa6c3906d",
+      "pixel_sha256": "a00ee063cf93d1b1741e1dd06fe18599fb710cff74b8eec5093558f46c323c84",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f04.png",
+      "raw_encoded_sha256": "21935d87c1fdb5d37c7c717d37c65e8d586a5e42fdea14bf8a49c58a678bf4a4",
+      "raw_pixel_sha256": "fa71151a1c613fb8f91b4841db49206a0a8cd6062cabd03d016c4039c7c1541e",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 5,
+      "file": "tower_shield_f05.png",
+      "bytes": 32110,
+      "encoded_sha256": "72ef8b9bb23e40e43dc69553682bd2ae409fc3d49b40fc6909c579e332eff279",
+      "pixel_sha256": "e0143e2981af41b3fe4c513d7a547dcb605680cecbae8dbb6ae0999670ea2fc0",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f05.png",
+      "raw_encoded_sha256": "e87cce9fdaa3b64ebc93168392413258f945680e2a3d541652b71a10d30ed6aa",
+      "raw_pixel_sha256": "54964149475362f4fc381a41bbfb8547cc0e8d02adc3bbb496dfe5de60c16755",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 6,
+      "file": "tower_shield_f06.png",
+      "bytes": 34756,
+      "encoded_sha256": "739c1924f6632dff359b42fb3ec0f9947dad4e424f13871fd4ef218042e05544",
+      "pixel_sha256": "7fa361304876940f46c59f0f02d647123bd3456cd921d329b8f8711229cabe3c",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f06.png",
+      "raw_encoded_sha256": "dcc1c5b5e5ec9977173cb2d3a62a818b4da0d991ad29425c3bf0bb0fd1f0e38b",
+      "raw_pixel_sha256": "9f71e111ce7a9f7a39674f2b477d612cf64266d8ff2c05752abc11c0dad9a127",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 7,
+      "file": "tower_shield_f07.png",
+      "bytes": 33082,
+      "encoded_sha256": "ea4f203b0fb143159ac2e5c9460f77264b1eeee63596b247130d1a7e6cdab606",
+      "pixel_sha256": "1ae13cf52a9633791e36ca0734648e36a24e855db3f5815f70d6d8f02dda064f",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f07.png",
+      "raw_encoded_sha256": "3490c42c8cb4c40a56a5330fd7033c6ffea6df08e70d5f21ca455ca34300f253",
+      "raw_pixel_sha256": "260a64412a6cbb82afb7c62cab06fe6935d20be1dbccf9d8acbc3dd1dab8e573",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 8,
+      "file": "tower_shield_f08.png",
+      "bytes": 32475,
+      "encoded_sha256": "88d56d2f559da87be2f2a31b93831f25cfb06f9ddede38877bfea58185036864",
+      "pixel_sha256": "a49a2d659a8ef34552440fd379f7469ba4f192d79b36034446c22ea7183ffd0c",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw/tower_shield_f08.png",
+      "raw_encoded_sha256": "1f91f0681d9ec79d15913292d9368abd1f3672bb89358755270fc5bbba230fc3",
+      "raw_pixel_sha256": "f7496dd06b3f4af8085c3857881e483d873b95edf31cdca6d105ab21c95b2e98",
+      "pixel_lab_url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "canonical_tag": "knight_tower_shield_frontal_guard_counter",
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield",
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw",
+    "runtime_dir": "assets/sprites/effects/knight/tower_shield",
+    "spriteframes": "assets/sprites/effects/knight/tower_shield/tower_shield_spriteframes.tres",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/contact_sheet.png"
+  },
+  "postprocess": {
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw",
+    "accepted_source_normalization": "uniform 224x224 nearest-neighbor scale centered in transparent 256x256 canvas with 16px nominal outer pad",
+    "runtime_copy": "accepted source frames copied byte-for-byte"
+  },
+  "canonical_ultimate_key": "knight/tower_shield"
+}
