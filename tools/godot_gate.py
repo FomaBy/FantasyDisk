@@ -147,11 +147,17 @@ def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> 
 def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False) -> int:
     project_path = _project_path(args)
     needs_import = _needs_import_cache(args, require_script=not force)
-    if needs_import:
-        sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
+    if needs_import or force:
+        if needs_import:
+            sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
         # The import pre-pass is intentionally diagnostic-tolerant: existing green
         # suites can emit unrelated import/resource warnings while warming the
         # cache. The Player probe below is the certifying call site.
+        # A forced pre-pass rescans even a warm cache: a restored/stale
+        # global_script_class_cache.cfg lacks any class_name added since, and
+        # every suite referencing it fails with "Identifier not declared"
+        # (verified on 4.7). A warm rescan costs seconds; per-suite calls keep
+        # the cheap existence check.
         # FAN-2648: `--import --quit` crashes Godot 4.7 inside its import threads
         # (reproducible on native Windows, observed on a cold macOS cache too);
         # `--import` alone imports and exits on its own on every host.

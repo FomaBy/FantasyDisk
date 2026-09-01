@@ -508,6 +508,9 @@ def _run_command(
     with tempfile.TemporaryDirectory(prefix="fsd-python-cache-") as python_cache:
         env = os.environ.copy()
         env["PYTHONPYCACHEPREFIX"] = python_cache
+        # Child unittest/compileall output is decoded as UTF-8 below; on a
+        # cp1251 Windows host the default codec would hand back mojibake.
+        env["PYTHONUTF8"] = "1"
         exit_code, output, timed_out = _run_captured(
             command, env, timeout, idle_timeout=idle_timeout
         )
@@ -647,6 +650,39 @@ def _cleanup_generated_import_sidecars() -> list[str]:
     return removed
 
 
+def _shell_syntax_commands(
+    shell_scripts: Sequence[Path], host_os: str | None = None
+) -> list[tuple[str, list[str]]]:
+    """One ``<shell> -n <script>`` step per script.
+
+    ``bash -n a.sh b.sh`` parses only ``a.sh`` (the rest become positional
+    parameters), so the former single multi-file call was green for every
+    script but the first.  The interpreter follows the shebang: zsh-only
+    syntax is not a bash error.  Windows runs none of these scripts and its
+    first ``bash`` on PATH is usually WSL's, which cannot open ``C:\`` paths,
+    so the step is skipped there instead of failing for the wrong reason.
+    """
+    if (os.name if host_os is None else host_os) == "nt":
+        return []
+    commands: list[tuple[str, list[str]]] = []
+    for path in shell_scripts:
+        try:
+            with path.open(encoding="utf-8", errors="replace") as handle:
+                shebang = handle.readline()
+        except OSError:
+            shebang = ""
+        shell = "zsh" if shebang.startswith("#!") and "zsh" in shebang else "bash"
+        if shutil.which(shell) is None:
+            print(
+                f"quality_gate: shell-syntax skipped for {path.name}: no {shell} on PATH",
+                file=sys.stderr,
+                flush=True,
+            )
+            continue
+        commands.append((f"shell-syntax:{path.name}", [shell, "-n", str(path)]))
+    return commands
+
+
 def _is_certifying(
     args: argparse.Namespace,
     worktree_status: Sequence[str],
@@ -702,8 +738,7 @@ def run_static_checks(
         ("git-range-check", _range_check_command(changed_ref)),
     ]
     shell_scripts = sorted((ROOT / "tools").glob("*.sh")) + sorted((ROOT / "scripts").glob("*.sh"))
-    if shell_scripts:
-        commands.append(("shell-syntax", ["bash", "-n", *[str(path) for path in shell_scripts]]))
+    commands.extend(_shell_syntax_commands(shell_scripts))
 
     # An empty Python set is fail-closed in `main()`, never here.  `main()`
     # discovers the same files (`python_tests = discover_python_tests()`),
@@ -1122,7 +1157,7 @@ def _import_prepass_commands(host_os: str | None = None) -> list[list[str]]:
     # flag pair reproducibly crashes Godot 4.7 with 0xc0000005 on the native
     # Windows runtime, while `--import` alone completes the import and exits
     # cleanly.  Import through the gate passthrough first; the trailing ensure
-    # call then only proves the cache is complete without relaunching Godot.
+    # call then rescans the warm cache (seconds) and proves it is complete.
     # The ensure step must not carry `--import` itself, or godot_gate would
     # skip its cache check and rubber-stamp an incomplete import.
     return [
@@ -1465,6 +1500,13 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    # Captured Godot/unittest output carries Cyrillic and symbols; a cp1251
+    # stdout redirected to a file (how Windows evidence is collected) would
+    # raise UnicodeEncodeError after the suites already ran.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
     args = _parse_args(argv)
     if args.combine_reports:
         if args.expected_shard_count is not None and args.expected_shard_count < 1:

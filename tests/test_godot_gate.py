@@ -459,26 +459,40 @@ class GodotGateTest(unittest.TestCase):
                 ],
             )
 
-    def test_forced_import_check_still_loads_player_when_cache_is_complete(self):
+    def test_forced_import_check_rescans_a_complete_cache_then_loads_player(self):
+        """A warm cache may still miss a class_name added since it was built."""
+        captured_stderr = io.StringIO()
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp)
             (project / "tests").mkdir()
             (project / "tests" / "import_cache_player_load_test.gd").touch()
             with mock.patch.object(self.module, "_needs_import_cache", return_value=False):
                 with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
-                    self.assertEqual(
-                        self.module._ensure_import_cache(
-                            ["--path", str(project)], "/godot", force=True
-                        ),
-                        0,
-                    )
-            run.assert_called_once_with(
+                    with contextlib.redirect_stderr(captured_stderr):
+                        self.assertEqual(
+                            self.module._ensure_import_cache(
+                                ["--path", str(project)], "/godot", force=True
+                            ),
+                            0,
+                        )
+            self.assertEqual(
+                run.call_args_list,
                 [
-                    "/godot", "--headless", "--path", str(project), "--script",
-                    "res://tests/import_cache_player_load_test.gd",
+                    mock.call(["/godot", "--headless", "--path", str(project), "--import"]),
+                    mock.call(
+                        [
+                            "/godot", "--headless", "--path", str(project), "--script",
+                            "res://tests/import_cache_player_load_test.gd",
+                        ],
+                        fail_on_fatal_output=True,
+                    ),
                 ],
-                fail_on_fatal_output=True,
             )
+        # The "cache missing" line is a counted cold-run contract: a warm rescan
+        # must not emit it.
+        self.assertNotIn(
+            "godot_gate: import cache missing", captured_stderr.getvalue()
+        )
 
     def test_ensure_import_cache_skips_player_probe_undeclared_by_a_minimal_project(self):
         """A fixture project without the Player probe script must not fail on it."""
