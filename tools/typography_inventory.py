@@ -4,6 +4,9 @@
 Fingerprints intentionally exclude line numbers. They combine repository path,
 enclosing function, normalized source and same-source ordinal, so harmless line
 movement stays stable while a changed typography assignment requires review.
+``--check`` follows the same contract: entry line numbers are informational,
+so line movement alone never reports the committed inventory as stale (it is
+refreshed whenever a real typography change is regenerated and reviewed).
 """
 from __future__ import annotations
 
@@ -434,6 +437,28 @@ def validate(document_data: dict) -> list[str]:
     return errors
 
 
+def _comparable(inventory: dict) -> dict:
+    """The document without entry line numbers (see the module docstring)."""
+    comparable = dict(inventory)
+    comparable["entries"] = [
+        {key: value for key, value in entry.items() if key != "line"}
+        for entry in inventory.get("entries", [])
+        if isinstance(entry, dict)
+    ]
+    return comparable
+
+
+def is_current(committed_text: str | None, generated: dict) -> bool:
+    """True when the committed inventory matches ``generated`` up to line numbers."""
+    if committed_text is None:
+        return False
+    try:
+        committed = json.loads(committed_text)
+    except json.JSONDecodeError:
+        return False
+    return isinstance(committed, dict) and _comparable(committed) == _comparable(generated)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
@@ -445,7 +470,8 @@ def main() -> int:
         return 1
     rendered = json.dumps(generated, ensure_ascii=False, indent=2) + "\n"
     if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != rendered:
+        committed = OUTPUT.read_text(encoding="utf-8") if OUTPUT.exists() else None
+        if not is_current(committed, generated):
             print(f"STALE: {OUTPUT.relative_to(ROOT)}")
             return 1
         print("PASS: semantic typography inventory is current")
