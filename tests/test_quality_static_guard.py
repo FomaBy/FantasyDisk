@@ -1099,5 +1099,249 @@ class OwnershipDomainGuardTest(unittest.TestCase):
         self.assertIn('"tools/quality_static_guard.py",\n                "--changed-ref"', gate)
 
 
+# FAN-3856: поверхности, где id владельца встроен в имя файла или папки.
+class EmbeddedOwnershipIdTest(unittest.TestCase):
+    BASE_FILES = {
+        "README.md": "fixture\n",
+        "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "png\n",
+        "assets/sprites/enemies/full_frame/bone_caller_8dir/idle_0.png": "png\n",
+        "assets/sprites/allies/ally_homunculus_tank.png": "png\n",
+        "assets/sprites/ui/frame_border.png": "png\n",
+        "tests/ultimates/assassin_balance_test.gd": "extends SceneTree\n",
+        "tests/ultimates/berserk_balance_test.gd": "extends SceneTree\n",
+        "tests/ultimates/registry_contract_test.gd": "extends SceneTree\n",
+        "scenes/vfx/ultimates/druid/DruidBriarStaff.tscn": "[gd_scene]\n",
+        "scenes/vfx/ultimates/sniper/sniper_ultimate_v2_driver.gd": "extends Node2D\n",
+        "CHANGELOG.md": "fixture\n",
+    }
+
+    def setUp(self):
+        self.module = load_module()
+
+    repo = OwnershipDomainGuardTest.repo
+    commit = OwnershipDomainGuardTest.commit
+    errors = OwnershipDomainGuardTest.errors
+
+    def test_registry_matches_the_canonical_checkout_sources(self):
+        actors = {path.stem for path in (ROOT / "data/animation").glob("*/*.json")}
+        actors |= {
+            path.name.removesuffix("_smoke_test.gd")
+            for path in (ROOT / "tests/actors").glob("*_smoke_test.gd")
+        }
+        classes = {path.name for path in (ROOT / "data/ultimates/classes").iterdir()}
+        self.assertEqual(self.module.ACTOR_IDS, actors)
+        self.assertEqual(self.module.CLASS_IDS, classes)
+
+    def test_broken_registry_fails_closed(self):
+        for name, ids, expected in (
+            ("duplicate", ("void_mage", "void_mage"), "duplicate id 'void_mage'"),
+            ("upper case", ("Void_Mage",), "invalid id 'Void_Mage'"),
+            ("separator", ("void-mage",), "invalid id 'void-mage'"),
+            ("empty", ("",), "invalid id ''"),
+            ("trailing underscore", ("void_mage_",), "invalid id 'void_mage_'"),
+        ):
+            with self.subTest(name=name):
+                with self.assertRaises(ValueError) as raised:
+                    self.module._id_registry("actor", ids)
+                self.assertIn(expected, str(raised.exception))
+
+    def test_embedded_ids_classify_their_owning_domain(self):
+        cases = {
+            # actor id как префикс сегмента, как суффикс имени и в sidecar-файлах
+            "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "actor/void_mage",
+            "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png.import": "actor/void_mage",
+            "assets/sprites/bosses/boss_ashen_colossus.png": "actor/ashen_colossus",
+            "assets/sprites/allies/ally_leadership_echo_spriteframes.tres": "actor/leadership_echo",
+            # длинный зарегистрированный id побеждает более короткий вложенный
+            "assets/sprites/allies/ally_homunculus_tank.png": "actor/homunculus_tank",
+            "assets/sprites/allies/ally_homunculus.png": "actor/homunculus",
+            # class id в тестах ультимейтов и в class-owned сценах
+            "tests/ultimates/assassin_balance_test.gd": "class/assassin",
+            "tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd": "class/dark_mage",
+            "tests/ultimates/presentation/sniper_visual_distinction.gd.uid": "class/sniper",
+            "scenes/vfx/ultimates/druid/DruidBriarStaff.tscn": "class/druid",
+            "scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd": "class/berserk",
+            "scenes/ultimates/knight_ultimate_stage.tscn": "class/knight",
+            # неизвестный id и совпадение внутри более длинного постороннего токена
+            "assets/sprites/enemies/full_frame/dragon_king_8dir/idle_0.png": None,
+            "assets/sprites/ui/frame_border.png": None,
+            "assets/sprites/enemies/avoid_mage.png": None,
+            "assets/sprites/enemies/voidmage.png": None,
+            "assets/sprites/enemies/void_mage2.png": None,
+            "tests/ultimates/registry_contract_test.gd": None,
+            "tests/ultimates/mechanics/xdruid_test.gd": None,
+            "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn": None,
+            # реестры не протекают на чужую поверхность
+            "assets/sprites/characters/druid_idle.png": None,
+            "tests/ultimates/void_mage_probe_test.gd": None,
+        }
+        for relative, expected in cases.items():
+            with self.subTest(path=relative):
+                self.assertEqual(self.module.ownership_domain(relative), expected)
+
+    def test_equal_priority_matches_fail_closed(self):
+        with self.assertRaises(self.module.AmbiguousOwnershipError) as raised:
+            self.module.ownership_domain(
+                "assets/sprites/effects/void_mage_vs_bone_caller.png"
+            )
+        self.assertIn("ambiguous actor ids bone_caller, void_mage", str(raised.exception))
+
+        with self.assertRaises(self.module.AmbiguousOwnershipError):
+            self.module.ownership_domain("tests/ultimates/druid_sniper_duel_test.gd")
+
+    def test_candidate_ambiguity_is_reported_instead_of_guessed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {"assets/sprites/effects/void_mage_vs_bone_caller.png": "png\n"},
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("ambiguous actor ids bone_caller, void_mage", errors[0])
+
+    def test_one_actor_or_class_zone_passes(self):
+        for name, changes in (
+            (
+                "actor sprites",
+                {
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "png\n# t\n",
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/walk_0.png": "png\n",
+                },
+            ),
+            (
+                "class ultimate tests and scene",
+                {
+                    "tests/ultimates/assassin_balance_test.gd": "extends SceneTree\n# t\n",
+                    "scenes/vfx/ultimates/assassin/AssassinChakrams.tscn": "[gd_scene]\n",
+                },
+            ),
+        ):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root = self.repo(tmp)
+                self.commit(root, changes)
+                self.assertEqual(self.errors(root), [])
+
+    def test_two_actor_zones_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "png\n# t\n",
+                    "assets/sprites/enemies/full_frame/bone_caller_8dir/idle_0.png": "png\n# t\n",
+                },
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("actor/bone_caller, actor/void_mage", errors[0])
+
+    def test_two_class_zones_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "tests/ultimates/assassin_balance_test.gd": "extends SceneTree\n# t\n",
+                    "tests/ultimates/berserk_balance_test.gd": "extends SceneTree\n# t\n",
+                },
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("class/assassin, class/berserk", errors[0])
+
+    def test_class_scene_and_foreign_class_test_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scenes/vfx/ultimates/druid/DruidBriarStaff.tscn": "[gd_scene]\n# t\n",
+                    "tests/ultimates/berserk_balance_test.gd": "extends SceneTree\n# t\n",
+                },
+            )
+            self.assertIn("class/berserk, class/druid", self.errors(root)[0])
+
+    def test_cross_domain_declaration_covers_the_new_surfaces(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "png\n# t\n",
+                    "assets/sprites/enemies/full_frame/bone_caller_8dir/idle_0.png": "png\n# t\n",
+                },
+                message="candidate\n\ncross-domain: FAN-3856 shared skeleton re-export",
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_unowned_sprite_and_shared_ultimate_test_do_not_invent_a_domain(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "assets/sprites/ui/frame_border.png": "png\n# t\n",
+                    "tests/ultimates/registry_contract_test.gd": "extends SceneTree\n# t\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_rename_delete_and_untracked_count_on_the_new_surfaces(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            (root / "assets/sprites/enemies/full_frame/bone_caller_8dir").mkdir(
+                parents=True, exist_ok=True
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "mv",
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png",
+                    "assets/sprites/enemies/full_frame/bone_caller_8dir/idle_1.png",
+                ],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(["git", "commit", "-qm", "move"], cwd=root, check=True)
+            self.assertIn("actor/bone_caller, actor/void_mage", self.errors(root)[0])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "tests/ultimates/assassin_balance_test.gd": None,
+                    "tests/ultimates/berserk_balance_test.gd": None,
+                },
+            )
+            self.assertIn("class/assassin, class/berserk", self.errors(root)[0])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            (root / "scenes/vfx/ultimates/thief").mkdir(parents=True, exist_ok=True)
+            (root / "scenes/vfx/ultimates/thief/ThiefCloak.tscn").write_text(
+                "[gd_scene]\n", encoding="utf-8"
+            )
+            self.commit(
+                root,
+                {"tests/ultimates/assassin_balance_test.gd": "extends SceneTree\n# t\n"},
+            )
+            self.assertIn("class/assassin, class/thief", self.errors(root)[0])
+
+    def test_previously_accepted_rules_still_hold_alongside_the_new_surfaces(self):
+        # Один actor-домен плюс один бюджетный общий файл остаётся валидным.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "assets/sprites/enemies/full_frame/void_mage_8dir/idle_0.png": "png\n# t\n",
+                    "CHANGELOG.md": "fixture\n- void_mage\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+
 if __name__ == "__main__":
     unittest.main()
