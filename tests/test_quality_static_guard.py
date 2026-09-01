@@ -761,5 +761,343 @@ class ClassWeaponArchitectureTest(unittest.TestCase):
             )
 
 
+# FAN-3845: домены владения и бюджет общих файлов (docs/process/ownership_map.md).
+class OwnershipDomainGuardTest(unittest.TestCase):
+    BASE_FILES = {
+        "README.md": "fixture\n",
+        "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n",
+        "scripts/classes/sniper_weapon.gd": "extends ClassWeapon\n",
+        "scripts/classes/class_weapon_core.gd": "extends ClassWeaponSharedApi\n",
+        "scripts/summoner_weapon.gd": "extends Node2D\n",
+        "scripts/berserk_weapon.gd": "extends Node2D\n",
+        "scripts/ui/screens/route_map.gd": "extends UiScreensState\n",
+        "CHANGELOG.md": "fixture\n",
+        "docs/design/systems/animation.md": "fixture\n",
+        "tests/balance/druid/dps_test.gd": "extends SceneTree\n",
+    }
+
+    def setUp(self):
+        self.module = load_module()
+
+    def repo(self, tmp: str) -> Path:
+        root = Path(tmp)
+        subprocess.run(["git", "init", "-q", "-b", "candidate"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.name", "Ownership Test"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "config", "user.email", "ownership@example.invalid"], cwd=root, check=True
+        )
+        for relative, text in self.BASE_FILES.items():
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+        subprocess.run(["git", "add", "--", "."], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", "base"], cwd=root, check=True)
+        subprocess.run(["git", "branch", "integration"], cwd=root, check=True)
+        return root
+
+    def commit(self, root: Path, changes: dict, message: str = "candidate"):
+        for relative, text in changes.items():
+            path = root / relative
+            if text is None:
+                path.unlink()
+                continue
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+        subprocess.run(["git", "add", "--all", "--", "."], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-qm", message], cwd=root, check=True)
+
+    def errors(self, root: Path, ref: str = "integration") -> list[str]:
+        return self.module.ownership_domain_errors(root, ref)
+
+    def test_domain_inference_follows_the_ownership_map(self):
+        cases = {
+            "scripts/classes/druid_weapon.gd": "class/druid",
+            "scripts/classes/druid_weapon.gd.uid": "class/druid",
+            "scripts/robot_hydraulic_press_weapon.gd": "class/robot",
+            "scripts/ultimates/classes/priest/beam.gd": "class/priest",
+            "data/ultimates/classes/priest/beam.json": "class/priest",
+            "tests/balance/knight/dps_test.gd": "class/knight",
+            "docs/design/ultimates/thief.md": "class/thief",
+            "data/animation/enemy/void_mage.json": "actor/void_mage",
+            "tests/actors/void_mage_smoke_test.gd": "actor/void_mage",
+            "scripts/ui/screens/route_map.gd": "ui/route_map",
+            "scripts/player.gd": "core",
+            "tools/quality_static_guard.py": "core",
+            "scripts/ultimates/registry/registry.gd": "core",
+            "docs/process/ownership_map.md": "process/docs",
+            # Общие поверхности и бюджетные файлы доменом не владеют.
+            "scripts/class_weapon.gd": None,
+            "scripts/classes/class_weapon_combat.gd": None,
+            "scripts/summoner_weapon.gd": None,
+            "scripts/berserk_weapon.gd": None,
+            "scripts/two_handed_axe_weapon.gd": None,
+            "scripts/ui_screens.gd": None,
+            "scripts/ui/screens/ui_style_kit.gd": None,
+            "scripts/progression_data_weapons.gd": None,
+            "CHANGELOG.md": None,
+            "docs/design/systems/animation.md": None,
+        }
+        for relative, expected in cases.items():
+            with self.subTest(path=relative):
+                self.assertEqual(self.module.ownership_domain(relative), expected)
+
+    def test_single_domain_candidate_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "tests/balance/druid/dps_test.gd": "extends SceneTree\n# tuned\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_no_change_candidate_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(self.errors(self.repo(tmp)), [])
+
+    def test_one_budgeted_shared_file_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "CHANGELOG.md": "fixture\n- druid\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_two_budgeted_shared_files_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "CHANGELOG.md": "fixture\n- entry\n",
+                    "docs/design/systems/animation.md": "fixture\n- entry\n",
+                },
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("2 budgeted shared files", errors[0])
+
+    def test_shared_legacy_weapon_families_stay_shared_not_class_local(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            # summoner (druid+chemist) вместе с классом druid — один домен и
+            # один бюджетный общий файл.
+            self.commit(
+                root,
+                {
+                    "scripts/summoner_weapon.gd": "extends Node2D\n# tuned\n",
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_two_shared_weapon_families_exceed_the_budget(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/summoner_weapon.gd": "extends Node2D\n# tuned\n",
+                    "scripts/berserk_weapon.gd": "extends Node2D\n# tuned\n",
+                },
+            )
+            self.assertIn("budgeted shared files", self.errors(root)[0])
+
+    def test_mixed_classes_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "scripts/classes/sniper_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                },
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("class/druid, class/sniper", errors[0])
+
+    def test_class_and_ui_change_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "scripts/ui/screens/route_map.gd": "extends UiScreensState\n# tuned\n",
+                },
+            )
+            self.assertIn("class/druid, ui/route_map", self.errors(root)[0])
+
+    def test_explicit_cross_domain_declaration_allows_multi_domain_work(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "scripts/ui/screens/route_map.gd": "extends UiScreensState\n# tuned\n",
+                    "CHANGELOG.md": "fixture\n- entry\n",
+                    "docs/design/systems/animation.md": "fixture\n- entry\n",
+                },
+                message="candidate\n\ncross-domain: FAN-3845 core architecture refactor",
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_malformed_cross_domain_declarations_cannot_bypass_the_guard(self):
+        for name, trailer in (
+            ("no issue id", "cross-domain: core refactor"),
+            ("no rationale", "cross-domain: FAN-3845"),
+            ("short rationale", "cross-domain: FAN-3845 core"),
+            ("indented marker", "  cross-domain: FAN-3845 core architecture refactor"),
+            ("bare marker", "cross-domain:"),
+        ):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root = self.repo(tmp)
+                self.commit(
+                    root,
+                    {
+                        "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                        "scripts/classes/sniper_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    },
+                    message=f"candidate\n\n{trailer}",
+                )
+                errors = self.errors(root)
+                self.assertTrue(
+                    any("malformed cross-domain declaration" in error for error in errors),
+                    errors,
+                )
+
+    def test_rename_across_domains_is_rejected_and_within_a_domain_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            (root / "tests/balance/sniper").mkdir(parents=True, exist_ok=True)
+            subprocess.run(
+                [
+                    "git",
+                    "mv",
+                    "tests/balance/druid/dps_test.gd",
+                    "tests/balance/sniper/dps_test.gd",
+                ],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(["git", "commit", "-qm", "move"], cwd=root, check=True)
+            self.assertIn("class/druid, class/sniper", self.errors(root)[0])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            subprocess.run(
+                [
+                    "git",
+                    "mv",
+                    "tests/balance/druid/dps_test.gd",
+                    "tests/balance/druid/burst_test.gd",
+                ],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(["git", "commit", "-qm", "move"], cwd=root, check=True)
+            self.assertEqual(self.errors(root), [])
+
+    def test_deletions_count_toward_their_domains(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": None,
+                    "scripts/classes/sniper_weapon.gd": None,
+                },
+            )
+            self.assertIn("class/druid, class/sniper", self.errors(root)[0])
+
+    def test_untracked_candidate_files_count_toward_their_domains(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            (root / "scripts/ui/screens/inventory.gd").write_text(
+                "extends UiScreensState\n", encoding="utf-8"
+            )
+            (root / "scripts/classes/thief_weapon.gd").write_text(
+                "extends ClassWeapon\n", encoding="utf-8"
+            )
+            self.assertIn("class/thief, ui/inventory", self.errors(root)[0])
+
+    def test_absent_integration_base_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            for ref in ("", "   "):
+                with self.subTest(ref=ref):
+                    self.assertEqual(
+                        self.errors(root, ref),
+                        ["ownership guard: integration base is absent"],
+                    )
+
+    def test_unresolved_integration_base_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            errors = self.errors(root, "origin/does-not-exist")
+            self.assertEqual(len(errors), 1)
+            self.assertIn(
+                "integration base 'origin/does-not-exist' cannot be resolved", errors[0]
+            )
+
+    def test_unrelated_history_base_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            subprocess.run(
+                ["git", "checkout", "-q", "--orphan", "unrelated"], cwd=root, check=True
+            )
+            subprocess.run(["git", "rm", "-rq", "--cached", "."], cwd=root, check=True)
+            (root / "unrelated.md").write_text("fixture\n", encoding="utf-8")
+            subprocess.run(["git", "add", "--", "unrelated.md"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "unrelated"], cwd=root, check=True)
+
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("cannot be resolved", errors[0])
+
+    def test_guard_cli_reports_the_ownership_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # Release files keep the unrelated invariants readable; this test
+            # asserts only that the CLI surfaces the ownership verdict.
+            shutil.copy(ROOT / "project.godot", Path(tmp) / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", Path(tmp) / "export_presets.cfg")
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "scripts/classes/druid_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                    "scripts/classes/sniper_weapon.gd": "extends ClassWeapon\n# tuned\n",
+                },
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    MODULE_PATH,
+                    "--root",
+                    root,
+                    "--changed-ref",
+                    "integration",
+                ],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("candidate spans ownership domains", result.stderr)
+
+    def test_quality_gate_hands_the_integration_base_to_the_guard(self):
+        gate = (ROOT / "tools" / "quality_gate.py").read_text(encoding="utf-8")
+        self.assertIn('"tools/quality_static_guard.py",\n                "--changed-ref"', gate)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -671,7 +671,15 @@ def run_static_checks(
 ) -> list[dict]:
     python_commands = python_unit_commands()
     commands: list[tuple[str, list[str]]] = [
-        ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
+        (
+            "repository-invariants",
+            [
+                sys.executable,
+                "tools/quality_static_guard.py",
+                "--changed-ref",
+                changed_ref,
+            ],
+        ),
         (
             "repository-storage-policy",
             [

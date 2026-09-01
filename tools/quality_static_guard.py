@@ -49,6 +49,191 @@ LEGACY_LINE_CEILINGS = {
 }
 NEW_SCRIPT_LINE_LIMIT = 1200
 
+# FAN-3845: домены и бюджет общих файлов из docs/process/ownership_map.md.
+# Обычная задача — ровно один домен и не более одного бюджетного общего файла;
+# намеренная кросс-доменная работа объявляется трейлером в сообщении коммита.
+BUDGETED_SHARED_FILES = frozenset({
+    # ограниченная общая поверхность ClassWeapon
+    "scripts/class_weapon.gd",
+    "scripts/classes/class_weapon_state.gd",
+    "scripts/classes/class_weapon_shared_api.gd",
+    "scripts/classes/class_weapon_core.gd",
+    "scripts/classes/class_weapon_combat.gd",
+    # legacy-семейства, которыми классы владеют совместно и не эксклюзивно
+    "scripts/summoner_weapon.gd",  # druid + chemist
+    "scripts/berserk_weapon.gd",  # berserk + knight
+    "scripts/holy_flail_weapon.gd",
+    "scripts/two_handed_axe_weapon.gd",
+    "scripts/two_handed_hammer_weapon.gd",
+    # ограниченная общая поверхность UI
+    "scripts/ui_screens.gd",
+    "scripts/ui/screens/ui_screens_state.gd",
+    "scripts/ui/screens/ui_screens_shared_api.gd",
+    "scripts/ui/screens/ui_style_kit.gd",
+    "scripts/ui/screens/shared_shell_kit.gd",
+    "scripts/ui/screens/menu_shell_kit.gd",
+    # бюджет общих файлов вне доменов
+    "CHANGELOG.md",
+    "docs/design/content_registry.md",
+    "docs/design/systems/animation.md",
+})
+CORE_FILES = frozenset({
+    "scripts/player.gd",
+    "scripts/enemy.gd",
+    "scripts/main.gd",
+    "scripts/combat_director.gd",
+    "scripts/progression_data.gd",
+    "scripts/full_frame_animation_registry.gd",
+    "project.godot",
+    "export_presets.cfg",
+})
+CORE_PREFIXES = (
+    "tools/",
+    ".github/workflows/",
+    "scripts/ultimates/registry/",
+    "scripts/ultimates/schema/",
+    "scripts/ultimates/controller/",
+    "scripts/ultimates/executors/",
+    "scripts/ultimates/presentation/",
+)
+CLASS_LOCAL_FILES = {"scripts/robot_hydraulic_press_weapon.gd": "robot"}
+CLASS_DIRECTORY_PREFIXES = (
+    "scripts/ultimates/classes/",
+    "data/ultimates/classes/",
+    "tests/balance/",
+)
+CROSS_DOMAIN_MARKER_RE = re.compile(r"(?mi)^[ \t]*cross-domain[ \t]*:.*$")
+CROSS_DOMAIN_RE = re.compile(r"(?m)^cross-domain: (FAN-\d+) (\S.{11,})$")
+
+
+def _budgeted_shared(relative: str) -> bool:
+    return relative in BUDGETED_SHARED_FILES or (
+        relative.startswith("scripts/progression_data_") and relative.endswith(".gd")
+    )
+
+
+def ownership_domain(relative: str) -> str | None:
+    """Domain that owns a changed path, or None for shared/unowned surfaces.
+
+    ponytail: только детерминированные (директорийные и точечные) правила карты.
+    Префиксные глобы вида `scenes/ultimates/<class_id>*` и
+    `assets/sprites/**/<actor_id>*` не дают однозначного id из пути и остаются
+    неклассифицированными — добавить, когда id станет отдельным сегментом пути.
+    """
+    relative = relative.removesuffix(".uid")
+    if _budgeted_shared(relative):
+        return None
+    if relative in CLASS_LOCAL_FILES:
+        return f"class/{CLASS_LOCAL_FILES[relative]}"
+    parts = Path(relative).parts
+    name = Path(relative).name
+    if relative.startswith("scripts/classes/") and name.endswith("_weapon.gd") and len(parts) == 3:
+        return f"class/{name.removesuffix('_weapon.gd')}"
+    for prefix in CLASS_DIRECTORY_PREFIXES:
+        if relative.startswith(prefix) and len(parts) > len(Path(prefix).parts):
+            return f"class/{parts[len(Path(prefix).parts)]}"
+    if relative.startswith("docs/design/ultimates/") and name.endswith(".md"):
+        return f"class/{name.removesuffix('.md')}"
+    if relative.startswith("data/animation/") and name.endswith(".json") and len(parts) == 4:
+        return f"actor/{name.removesuffix('.json')}"
+    if relative.startswith("tests/actors/") and name.endswith("_smoke_test.gd"):
+        return f"actor/{name.removesuffix('_smoke_test.gd')}"
+    if relative.startswith("scripts/ui/screens/") and name.endswith(".gd") and len(parts) == 4:
+        return f"ui/{name.removesuffix('.gd')}"
+    if relative in CORE_FILES or relative.startswith(CORE_PREFIXES):
+        return "core"
+    if relative.startswith(("docs/process/", "docs/design/")):
+        return "process/docs"
+    return None
+
+
+def _git_output(root: Path, args: list[str]) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip() or "no error output"
+        raise RuntimeError(f"git {' '.join(args)} failed: {detail}")
+    return result.stdout
+
+
+def _integration_base_sha(root: Path, changed_ref: str) -> str:
+    """Resolve the declared integration base; fail closed when it is unusable."""
+    if not changed_ref or not changed_ref.strip():
+        raise RuntimeError("integration base is absent")
+    try:
+        _git_output(root, ["rev-parse", "--verify", f"{changed_ref}^{{commit}}"])
+        return _git_output(root, ["merge-base", changed_ref, "HEAD"]).strip()
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"integration base {changed_ref!r} cannot be resolved: {error}"
+        ) from error
+
+
+def _candidate_paths(root: Path, base_sha: str) -> list[str]:
+    fields = _git_output(
+        root, ["diff", "--name-status", "-M", "-z", base_sha, "--"]
+    ).split("\0")
+    paths: list[str] = []
+    index = 0
+    while index < len(fields) and fields[index]:
+        status = fields[index]
+        index += 1
+        # Renames and copies carry both the old and the new path: a rename that
+        # crosses domains is a two-domain change, not a free move.
+        take = 2 if status[0] in ("R", "C") else 1
+        paths.extend(fields[index:index + take])
+        index += take
+    untracked = _git_output(root, ["ls-files", "--others", "--exclude-standard", "-z"])
+    paths.extend(item for item in untracked.split("\0") if item)
+    return [path for path in paths if path]
+
+
+def _cross_domain_errors(root: Path, base_sha: str) -> tuple[bool, list[str]]:
+    messages = _git_output(root, ["log", "--format=%B", f"{base_sha}..HEAD"])
+    markers = CROSS_DOMAIN_MARKER_RE.findall(messages)
+    if not markers:
+        return False, []
+    if CROSS_DOMAIN_RE.search(messages):
+        return True, []
+    # A marker that fails the schema never buys a bypass; it fails closed.
+    return False, [
+        "ownership guard: malformed cross-domain declaration "
+        f"{markers[0].strip()!r}; expected 'cross-domain: FAN-<id> <rationale>'"
+    ]
+
+
+def ownership_domain_errors(root: Path, changed_ref: str) -> list[str]:
+    try:
+        base_sha = _integration_base_sha(root, changed_ref)
+    except RuntimeError as error:
+        return [f"ownership guard: {error}"]
+
+    declared, errors = _cross_domain_errors(root, base_sha)
+    if declared:
+        return errors
+
+    paths = _candidate_paths(root, base_sha)
+    domains = {domain for domain in map(ownership_domain, paths) if domain}
+    shared = sorted({path for path in paths if _budgeted_shared(path.removesuffix(".uid"))})
+    if len(domains) > 1:
+        errors.append(
+            "ownership guard: candidate spans ownership domains "
+            + ", ".join(sorted(domains))
+            + "; split the task or declare 'cross-domain: FAN-<id> <rationale>'"
+        )
+    if len(shared) > 1:
+        errors.append(
+            "ownership guard: candidate touches "
+            f"{len(shared)} budgeted shared files (" + ", ".join(shared) + "); "
+            "an ordinary task may touch at most one"
+        )
+    return errors
+
 
 def tracked_files(root: Path) -> list[str]:
     result = subprocess.run(
@@ -280,9 +465,9 @@ def credential_errors(root: Path, tracked: list[str]) -> list[str]:
     return errors
 
 
-def collect_errors(root: Path) -> list[str]:
+def collect_errors(root: Path, changed_ref: str | None = None) -> list[str]:
     tracked = tracked_files(root)
-    return (
+    errors = (
         case_and_resource_errors(root, tracked)
         + version_and_windows_errors(root)
         + architecture_errors(root, tracked)
@@ -290,20 +475,33 @@ def collect_errors(root: Path) -> list[str]:
         + player_import_probe_errors(root, tracked)
         + credential_errors(root, tracked)
     )
+    # The ownership policy needs a diff base; it runs only when the caller
+    # (tools/quality_gate.py) hands one over, and then fails closed.
+    if changed_ref is not None:
+        errors += ownership_domain_errors(root, changed_ref)
+    return errors
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument(
+        "--changed-ref",
+        default=None,
+        help="integration diff base for the ownership-domain and shared-file policy",
+    )
     args = parser.parse_args()
     root = args.root.resolve()
-    errors = collect_errors(root)
+    errors = collect_errors(root, args.changed_ref)
     if errors:
         for error in errors:
             print(f"FAIL: {error}", file=sys.stderr)
         print(f"Static quality guard failed: {len(errors)} error(s).", file=sys.stderr)
         return 1
-    print("Static quality guard passed (case/version/Windows/architecture/sidecars/credentials).")
+    print(
+        "Static quality guard passed "
+        "(case/version/Windows/architecture/sidecars/credentials/ownership)."
+    )
     return 0
 
 
