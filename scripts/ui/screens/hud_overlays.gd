@@ -34,6 +34,13 @@ func _create_threat_indicator_overlay(root: Control) -> void:
 
 
 
+# HUD пересоздаётся на каждом открытии/закрытии level-up в бою: шейдер виньетки
+# компилируется один раз на сессию, а ссылка на виньетку хранится вместо
+# рекурсивного find_child по HUD-слою на каждом кадре (_update_hud до дедупа).
+static var _low_hp_vignette_shader: Shader = null
+var _low_hp_vignette: ColorRect = null
+
+
 func _create_low_hp_vignette(root: Control) -> void:
 	var vignette := ColorRect.new()
 	vignette.name = "LowHpVignetteOverlay"
@@ -43,8 +50,9 @@ func _create_low_hp_vignette(root: Control) -> void:
 	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Fade animation should pause together with combat even though the HUD layer is ALWAYS.
 	vignette.process_mode = Node.PROCESS_MODE_PAUSABLE
-	var shader := Shader.new()
-	shader.code = """
+	if _low_hp_vignette_shader == null:
+		_low_hp_vignette_shader = Shader.new()
+		_low_hp_vignette_shader.code = """
 shader_type canvas_item;
 
 uniform vec3 vignette_color = vec3(0.72, 0.035, 0.035);
@@ -60,8 +68,9 @@ void fragment() {
 }
 """
 	var material := ShaderMaterial.new()
-	material.shader = shader
+	material.shader = _low_hp_vignette_shader
 	vignette.material = material
+	_low_hp_vignette = vignette
 	vignette.set_meta("vignette_active", false)
 	vignette.set_meta("vignette_target_alpha", 0.0)
 	root.add_child(vignette)
@@ -74,7 +83,9 @@ void fragment() {
 func _update_low_hp_vignette(hp: float, max_hp: float) -> void:
 	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
 		return
-	var vignette := game.hud_layer.find_child("LowHpVignetteOverlay", true, false) as ColorRect
+	if _low_hp_vignette == null or not is_instance_valid(_low_hp_vignette):
+		_low_hp_vignette = game.hud_layer.find_child("LowHpVignetteOverlay", true, false) as ColorRect
+	var vignette := _low_hp_vignette
 	if vignette == null:
 		return
 	var feedback_enabled := true
