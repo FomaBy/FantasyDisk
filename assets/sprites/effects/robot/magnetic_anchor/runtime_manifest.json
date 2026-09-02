@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3863",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "class_id": "robot",
+  "weapon_id": "robot_magnetic_anchor",
+  "effect_id": "attraction_implosion",
+  "pixel_lab": {
+    "object_id": "8bcd4f97-b6a7-4c45-b1e9-d2d5c5d4cad7",
+    "animation_group_id": "600f080f-f2d7-4e42-a5bc-dcbcaf6a6ae5",
+    "canonical_asset_key": "robot/magnetic_anchor",
+    "canonical_tag": null,
+    "tag_or_name_note": "The blocking CLI does not expose PixelLab tag/name assignment; object and animation IDs are recorded exactly.",
+    "export_ids": [],
+    "generator_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "raw 256x256 PixelLab frame -> nearest-neighbor 224x224 inset at (16,16) on transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor",
+    "raw_source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw",
+    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/robot/magnetic_anchor",
+    "spriteframes": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/robot/magnetic_anchor/runtime_manifest.json",
+    "quality_evidence": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_contact_sheet.png"
+  },
+  "animation": {
+    "name": "robot_magnetic_anchor_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f00.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f01.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f02.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f03.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f04.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f05.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f06.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f07.png",
+      "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "core charge, coil convergence, expanding attraction rings, electrical arcs, implosion pulse and recoil"
+  },
+  "import_policy": {
+    "importer": "texture",
+    "type": "CompressedTexture2D",
+    "compress_mode": 0,
+    "mipmaps_generate": false,
+    "premult_alpha": false,
+    "filtering": "nearest at runtime consumer; no generated mipmaps"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f00.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f00.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f00.png.import",
+      "raw_encoded_sha256": "b5216436ba04594c4bb7637d72cd78018e2ecd1f1ad6af9eee284c488df11846",
+      "raw_pixel_sha256": "3d9ca4bc02f6ca7ce68adaa1d42eab314539ecfc0a0ae968c8d00ad366d70df3",
+      "source_encoded_sha256": "058c721311f2f23b28548d5073a46656fd4104fb35f0b6377f13e16627075311",
+      "runtime_encoded_sha256": "058c721311f2f23b28548d5073a46656fd4104fb35f0b6377f13e16627075311",
+      "source_pixel_sha256": "50e7036154b8942661e3f5f45da2a999374e20b637ed41fa9b600ec72b0e13a7",
+      "runtime_pixel_sha256": "50e7036154b8942661e3f5f45da2a999374e20b637ed41fa9b600ec72b0e13a7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        50,
+        40,
+        206,
+        223
+      ],
+      "gutters_px": [
+        50,
+        40,
+        50,
+        33
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10994,
+      "visible_ratio_alpha_gt_8": 0.167755,
+      "opaque_pixels": 10994,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://cubwpturdg6sx",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f00.png-0220273065d1aeda07a021e6a1099f35.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f00.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f01.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f01.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f01.png.import",
+      "raw_encoded_sha256": "b04d94901b84a8d6a8522ff4e893794c7deab9de00ae0a26305677c989e6e048",
+      "raw_pixel_sha256": "936b3e0bc018ec9831bf2e8bb27bf29a0ea8bd3ff9ba1cd28055884a14bc59a6",
+      "source_encoded_sha256": "65f14286f1fd70e257df4914905a1247c626c84080f9f6e9c4bb52a149f858ba",
+      "runtime_encoded_sha256": "65f14286f1fd70e257df4914905a1247c626c84080f9f6e9c4bb52a149f858ba",
+      "source_pixel_sha256": "9462dae011c44a51d002302b76f2f651e0e767b3d7c8da46a7ec6ef55ed0f682",
+      "runtime_pixel_sha256": "9462dae011c44a51d002302b76f2f651e0e767b3d7c8da46a7ec6ef55ed0f682",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        50,
+        39,
+        206,
+        222
+      ],
+      "gutters_px": [
+        50,
+        39,
+        50,
+        34
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11354,
+      "visible_ratio_alpha_gt_8": 0.173248,
+      "opaque_pixels": 11354,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://w3adg7w6tai0",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f01.png-157de3d1f07777df4d3e3c4e3234447d.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f01.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f02.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f02.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f02.png.import",
+      "raw_encoded_sha256": "cee23dbca7100200e016c51c73f8b3276e89f7630357be2fb602ab5a69c83f02",
+      "raw_pixel_sha256": "66aaba99ec091b3d722a95478764db0c7663e094a3eb9c5e0b2e6514800c4e04",
+      "source_encoded_sha256": "1c861b09e0672318dea7b9fe137c730105f729088266e8d4b63df57af040498e",
+      "runtime_encoded_sha256": "1c861b09e0672318dea7b9fe137c730105f729088266e8d4b63df57af040498e",
+      "source_pixel_sha256": "00839c260be3eb81797203a1ffc60e1470ae6d8adc59852d81e7007b4efae1e0",
+      "runtime_pixel_sha256": "00839c260be3eb81797203a1ffc60e1470ae6d8adc59852d81e7007b4efae1e0",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        48,
+        38,
+        205,
+        221
+      ],
+      "gutters_px": [
+        48,
+        38,
+        51,
+        35
+      ],
+      "minimum_gutter_px": 35,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14437,
+      "visible_ratio_alpha_gt_8": 0.220291,
+      "opaque_pixels": 14437,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://5155har5xooe",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f02.png-1b31e8e29e68bba233b82c126c2b743b.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f02.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f03.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f03.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f03.png.import",
+      "raw_encoded_sha256": "3a8963827f575cc0d22dd9ec40bff67d0f67dd9b2072bacec84fe735f6b74f70",
+      "raw_pixel_sha256": "2288408e86b28575e8a20db79c669a4397cb1ca2e819343a568ed8bd552f7da9",
+      "source_encoded_sha256": "16c81e1bbb3aa4ce9ee5d3121627f1eede7469f3f896d4f633480888717f6106",
+      "runtime_encoded_sha256": "16c81e1bbb3aa4ce9ee5d3121627f1eede7469f3f896d4f633480888717f6106",
+      "source_pixel_sha256": "3dd0fed968886275fa5c540d78957491f40c53f249a0fa91488aca78be29ed9f",
+      "runtime_pixel_sha256": "3dd0fed968886275fa5c540d78957491f40c53f249a0fa91488aca78be29ed9f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        50,
+        38,
+        206,
+        222
+      ],
+      "gutters_px": [
+        50,
+        38,
+        50,
+        34
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13810,
+      "visible_ratio_alpha_gt_8": 0.210724,
+      "opaque_pixels": 13810,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://dp0tl5i1u5ved",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f03.png-ee901e99b362fc99dd28d5053e3c3999.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f03.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f04.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f04.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f04.png.import",
+      "raw_encoded_sha256": "56d6573a762f794ece88c307a2118b83b0b18f547ddcbc98117996bcc20c33e8",
+      "raw_pixel_sha256": "f8ac3987d31627b7ef8823445afdb9bfbb4994ce93a7d32f57a24c666ec0cf94",
+      "source_encoded_sha256": "71f02427322753b333a63803d620fb3e807b4eafd4d6b5ce542137f744df88af",
+      "runtime_encoded_sha256": "71f02427322753b333a63803d620fb3e807b4eafd4d6b5ce542137f744df88af",
+      "source_pixel_sha256": "eee6770a759cb341d85f61832d8194ac03d6751032dba4ba394804f3e19d6267",
+      "runtime_pixel_sha256": "eee6770a759cb341d85f61832d8194ac03d6751032dba4ba394804f3e19d6267",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        51,
+        39,
+        208,
+        223
+      ],
+      "gutters_px": [
+        51,
+        39,
+        48,
+        33
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13169,
+      "visible_ratio_alpha_gt_8": 0.200943,
+      "opaque_pixels": 13169,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bpbiftipjcdyk",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f04.png-52c54c62aa873de65414eb3cc7c7648b.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f04.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f05.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f05.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f05.png.import",
+      "raw_encoded_sha256": "2e6f578be0b455ee1b6d3f2b69d397d12e139e070f65e68d1e14f0d7f5409618",
+      "raw_pixel_sha256": "8bad4db81ac17a40f9a4b505844901474f814a7878189073a1c18f4add3502e0",
+      "source_encoded_sha256": "b5a0785ed8a873662ff4ccc7d5f3826b6c36a303630e8955f34ed2f27fdc54ce",
+      "runtime_encoded_sha256": "b5a0785ed8a873662ff4ccc7d5f3826b6c36a303630e8955f34ed2f27fdc54ce",
+      "source_pixel_sha256": "b3a1ed2cb0a92bd2b7e0eae46e34fbfbe2719577ab043f9964d1b487d70ee8ae",
+      "runtime_pixel_sha256": "b3a1ed2cb0a92bd2b7e0eae46e34fbfbe2719577ab043f9964d1b487d70ee8ae",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        45,
+        40,
+        211,
+        223
+      ],
+      "gutters_px": [
+        45,
+        40,
+        45,
+        33
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12379,
+      "visible_ratio_alpha_gt_8": 0.188889,
+      "opaque_pixels": 12379,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://wwlaj6hpq6k4",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f05.png-7807f3e61edf07d1b65e255dec722b3f.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f05.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f06.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f06.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f06.png.import",
+      "raw_encoded_sha256": "3a89c928a0058e96b80d058876009eddeba3a388fa42168d50a7ddeea1f5ae8f",
+      "raw_pixel_sha256": "787d469c65b3d558f7fb8283b4f9b4c75813cc438550c83ee50e2bd560e5ec6d",
+      "source_encoded_sha256": "e454aa8524236c06fbe933fcc202794fc09373e0e4a3ddea3f97b2089801eeef",
+      "runtime_encoded_sha256": "e454aa8524236c06fbe933fcc202794fc09373e0e4a3ddea3f97b2089801eeef",
+      "source_pixel_sha256": "d47b6c3d29e2ff5b176bcd71495004b75181b353ffe51464c92a1e10bb63e028",
+      "runtime_pixel_sha256": "d47b6c3d29e2ff5b176bcd71495004b75181b353ffe51464c92a1e10bb63e028",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        47,
+        34,
+        209,
+        223
+      ],
+      "gutters_px": [
+        47,
+        34,
+        47,
+        33
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12737,
+      "visible_ratio_alpha_gt_8": 0.194351,
+      "opaque_pixels": 12737,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bqps8qgvm8b6x",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f06.png-23a9f6e80dd795cdd6c97d410f5c436a.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f06.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f07.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f07.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f07.png.import",
+      "raw_encoded_sha256": "2ce4e6d2eae2092efe1998546fcb608617261b935698df4b4603e26b78288393",
+      "raw_pixel_sha256": "b1ed43c09e049790d9de8b8c9c64ee10f6dbbc88a9b496212f7cb75064a9bd64",
+      "source_encoded_sha256": "526ba38aec302c1b24dadbbdbc45e945586842efbba6795e4367d89981d997d3",
+      "runtime_encoded_sha256": "526ba38aec302c1b24dadbbdbc45e945586842efbba6795e4367d89981d997d3",
+      "source_pixel_sha256": "a8c228db74e795aee8f7a488a6c802f138860a9ed392c676f102afe21c1b265c",
+      "runtime_pixel_sha256": "a8c228db74e795aee8f7a488a6c802f138860a9ed392c676f102afe21c1b265c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        40,
+        32,
+        216,
+        222
+      ],
+      "gutters_px": [
+        40,
+        32,
+        40,
+        34
+      ],
+      "minimum_gutter_px": 32,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12361,
+      "visible_ratio_alpha_gt_8": 0.188614,
+      "opaque_pixels": 12361,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://d0htejj8lt2ns",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f07.png-80aee81bc29c204aee858a7315f1e3ee.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f07.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f08.png",
+      "runtime_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f08.png",
+      "import_file": "assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f08.png.import",
+      "raw_encoded_sha256": "fe9e8aedf501284af6ab32791f83fef4ceba84bc4737dc4ba2278d12a884a60f",
+      "raw_pixel_sha256": "7948a0b0e87080cf9074241ebbeb0e4b00eed4d91c48846aecd0d8d4bd672e47",
+      "source_encoded_sha256": "f6459af6253806bcc42ea5768f8cbd07f5c7d8756f620f9413cc295e9f346303",
+      "runtime_encoded_sha256": "f6459af6253806bcc42ea5768f8cbd07f5c7d8756f620f9413cc295e9f346303",
+      "source_pixel_sha256": "7ecafe8c7f7d3c8930a7a791f6e772606b532d76c7db062c7e0d3678e5ed373f",
+      "runtime_pixel_sha256": "7ecafe8c7f7d3c8930a7a791f6e772606b532d76c7db062c7e0d3678e5ed373f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        35,
+        38,
+        221,
+        223
+      ],
+      "gutters_px": [
+        35,
+        38,
+        35,
+        33
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12566,
+      "visible_ratio_alpha_gt_8": 0.191742,
+      "opaque_pixels": 12566,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://woyjr7nn1lbs",
+      "import_dest_files": [
+        "res://.godot/imported/magnetic_anchor_f08.png-7a569bbfa34bc24bd99a21d6f4fb437f.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f08.png",
+      "import_matches_runtime": true
+    }
+  ],
+  "source_runtime_parity": true
+}
