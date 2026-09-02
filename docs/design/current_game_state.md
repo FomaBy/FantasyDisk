@@ -864,7 +864,7 @@ weapon or prop, and no bright-green glow pixels. The committed evidence is
 `assets/sprites/characters/pixellab/elementalist/manifest.json`,
 `assets/sprites/characters/pixellab/elementalist/alpha_bbox_report.json`,
 `docs/design/references/fan3868_elementalist/qa_report.json` and
-`docs/design/previews/fan3868_elementalist_contact_sheet.png`.
+`docs/design/reference-assets-lfs/elementalist-FAN-3868/fan3868_elementalist_contact_sheet.png`.
 
 2026-07-01 SCRUM-803 promotes Assassin to the live PixelLab directional runtime
 contract using accepted empty-open-hands source character

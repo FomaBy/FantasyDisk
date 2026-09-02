@@ -462,7 +462,7 @@
     "pass": true
   },
   "evidence": {
-    "contact_sheet": "docs/design/previews/fan3868_elementalist_contact_sheet.png",
+    "contact_sheet": "docs/design/reference-assets-lfs/elementalist-FAN-3868/fan3868_elementalist_contact_sheet.png",
     "manifest": "assets/sprites/characters/pixellab/elementalist/manifest.json",
     "alpha_report": "assets/sprites/characters/pixellab/elementalist/alpha_bbox_report.json",
     "qa_report": "docs/design/references/fan3868_elementalist/qa_report.json"

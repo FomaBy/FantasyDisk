@@ -224,7 +224,7 @@
   },
   "spriteframes": "assets/sprites/characters/elementalist_spriteframes.tres",
   "bbox_report": "assets/sprites/characters/pixellab/elementalist/alpha_bbox_report.json",
-  "contact_sheet": "docs/design/previews/fan3868_elementalist_contact_sheet.png",
+  "contact_sheet": "docs/design/reference-assets-lfs/elementalist-FAN-3868/fan3868_elementalist_contact_sheet.png",
   "move_frame_count": 6,
   "frame_count": 56,
   "frames": [
