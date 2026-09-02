@@ -1,0 +1,56 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f00.png" id="1_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f01.png" id="2_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f02.png" id="3_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f03.png" id="4_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f04.png" id="5_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f05.png" id="6_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f06.png" id="7_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f07.png" id="8_shatter_rounds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_f08.png" id="9_shatter_rounds"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_shatter_rounds")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_shatter_rounds")
+}
+],
+"loop": false,
+"name": &"sniper_shatter_rounds_ultimate",
+"speed": 3.0
+}]
