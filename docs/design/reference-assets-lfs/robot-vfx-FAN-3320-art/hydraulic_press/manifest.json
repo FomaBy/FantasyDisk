@@ -16,7 +16,8 @@
     "animate_tool": "animate_object",
     "mode": "v3",
     "no_secrets_recorded": true,
-    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixellab_generation_manifest.json"
+    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixellab_generation_manifest.json",
+    "offline_builder": "tools/build_fan3863_robot_vfx_pack.py"
   },
   "frame_contract": {
     "size_px": [
