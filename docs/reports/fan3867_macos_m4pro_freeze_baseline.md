@@ -10,36 +10,72 @@ introducing a new `performance/` subdirectory.
 No gameplay code, scenes, assets, project/import settings, CI, or export
 configuration were changed for this report. All measurements are read-only.
 
-**Rework note (this revision):** independent QA (`FAILED` on candidate
-`aa3fa4ab925eddb6bba0f1ee8d1561487f1c1d7b`) found two defects, both fixed here
-and only here:
+**Rework note (this revision, second rework):** independent QA `FAILED` twice:
 
-1. The `dense_wave` contour's original description/report said `spawn basic
-   40`, but `scripts/dev_console.gd:16` clamps a single `spawn` call to
-   `SPAWN_COUNT_LIMIT = 24` (`scripts/dev_console.gd:625`), so the original
-   candidate actually spawned 24, not 40. Fixed by reproducing with two
-   console calls (`spawn basic 24` + `spawn basic 16`, verified against
-   `SPAWN_COUNT_LIMIT` in the same file) to honestly reach the intended load,
-   and by re-measuring one isolated cold and one warm run for this corrected
-   contour (methodology and results below, this revision only).
-2. The `vfx_heavy` subsystem-correlation summary undercounted its own raw
-   evidence (reported 8 spikes >50ms, `vfx_heavy_detail.csv` actually has 11;
-   reported `phys_ms` range `0.9-15.3`, actual `0.691-15.274`). Both numbers
-   below are recomputed directly from the unchanged, previously-attached
-   `vfx_heavy_detail.csv` and now match it exactly.
+- First `FAILED` (candidate `aa3fa4ab925eddb6bba0f1ee8d1561487f1c1d7b`): the
+  `dense_wave` contour's description said `spawn basic 40`, but
+  `scripts/dev_console.gd:16` clamps a single `spawn` call to
+  `SPAWN_COUNT_LIMIT = 24` (`scripts/dev_console.gd:625`), so the original
+  candidate actually spawned 24, not 40; and the `vfx_heavy`
+  subsystem-correlation summary undercounted its own raw evidence (reported
+  8 spikes >50ms, `vfx_heavy_detail.csv` actually has 11; reported `phys_ms`
+  range `0.9-15.3`, actual `0.691-15.274`). Fixed in candidate
+  `21f1bd7018aad52284f0afb9bc449d7fd7bcd251` by reproducing `dense_wave` with
+  two console calls (`spawn basic 24` + `spawn basic 16`) and by recomputing
+  the `vfx_heavy` table directly from the unchanged, previously-attached
+  `vfx_heavy_detail.csv`.
+- Second `FAILED` (candidate `21f1bd7018aad52284f0afb9bc449d7fd7bcd251`,
+  tree `609d426d210964d42c7dd2de156b18257921bc3b`): the measured numbers
+  above were confirmed correct, but (a) this report referenced its own
+  commit/tree only as "see handoff comment" instead of literal 40-hex values,
+  and (b) `origin/dev` had advanced past this candidate's base, so `dev` was
+  no longer an ancestor of the candidate and promotion would have required a
+  content-changing merge. Fixed in this revision by rebasing the report
+  commit onto the `origin/dev` HEAD current at rebase time and by pinning
+  every relevant SHA literally below.
 
-`ordinary` and `vfx_heavy` raw measurement CSVs and their headline
-p50/p95/p99/max/spike-count numbers were not in question and are unchanged
-from the previous revision.
+`ordinary`, `vfx_heavy`, and `dense_wave` raw measurement CSVs and their
+headline p50/p95/p99/max/spike-count numbers were not in question in either
+QA round and are unchanged from the previous revision.
+
+### Exact SHAs (literal, per QA acceptance criterion 1)
+
+- **Measured game base for `ordinary` and `vfx_heavy` contours** (commit and
+  tree the game was actually running at when those 6 CSVs were captured):
+  commit `8553691c7390be492e8edf8df59a5cce3a26e5bc`, tree
+  `a63263bdc450a1eb3ebc213444f4707c5510de06`.
+- **Measured game base for the corrected `dense_wave` contour** (commit and
+  tree the game was actually running at when `dense_wave_fix_cold/warm.csv`
+  were captured, i.e. this task branch immediately after rebasing onto
+  `origin/dev` during the first rework, before this report's own commit):
+  commit `25d169dbf5d427ac8515c1da0ab0454dd5697c0a`, tree
+  `f810ed1a85ee7613eae69761eea75728b4bf7f1b`.
+- **`origin/dev` at the time of this rework's rebase** (the admission base
+  this report commit is rebased onto, so `dev` is an ancestor of the
+  candidate and integration needs no content change): commit
+  `df9e5f589e6563b0f69bad8f4ac30adf68e51426`, tree
+  `131ee79ba14e2cc7739eac47d184da19d4d7d023`.
+- **This report's own commit/tree**: see the handoff comment for this
+  revision (a self-referential SHA inside its own commit message is not
+  meaningful before the commit is made; criterion 1 only requires the
+  *measured game base*, which is pinned above).
+
+**Representativeness of the `origin/dev` advance (criterion 4):** between the
+`dense_wave` measured base (`25d169dbf5`) and the current admission base
+(`df9e5f589e`), `git diff --name-status` shows only `assets/sprites/characters/full_frame/elementalist_pixellab/*`,
+`assets/sprites/characters/pixellab/elementalist/*`, `assets/sprites/effects/sniper/*`,
+`docs/design/**`, and `CHANGELOG.md` — Elementalist- and Sniper-specific
+character/VFX art and docs. `scripts/main.gd:393` sets the default hero
+`selected_character_id := "berserk"`, none of the measured scenarios select
+Elementalist or Sniper, and `dense_wave`/`vfx_heavy` only spawn `basic`,
+`shooter`, `mage`, `shaman` enemy types (`scripts/dev_console.gd`
+`SPAWN_ALIASES`) — none of which load the changed assets. No `scripts/`,
+`scenes/`, or `project.godot` paths changed in this range. The measured runs
+therefore remain representative of the current `origin/dev` admission base;
+no re-measurement was required.
 
 ### Environment
 
-- Exact commit: this revision's own commit/tree (see handoff comment), tree
-  from a task branch rebased onto fresh `origin/dev`. Original measurement
-  base for `ordinary`/`vfx_heavy`/pre-fix `dense_wave`: commit
-  `8553691c7390be492e8edf8df59a5cce3a26e5bc`. The corrected `dense_wave`
-  replay in this revision ran against the same working tree, unaffected by
-  the intervening `dev` history (no product files touched by either).
 - Machine: MacBook, Apple M4 Pro (`Mac16,8`), 48 GiB RAM, macOS 26.5.1
   (build 25F80), on AC power, battery 100%, `pmset -g therm` reported no
   thermal or performance warning at any point during any run (original or
