@@ -141,6 +141,14 @@ Rules:
 | `soldier` | disciplined dark-fantasy soldier, braced ranged/throw stance, not modern military |
 | `elementalist` | elemental caster, split fire/ice/stone/arcane accents, broad channel gestures |
 
+FAN-3868 directional Elementalist runtime art applies the same identity rules
+to the 8 idle directions and 6-frame movement rows: adult heroic proportions,
+deep-blue cloak, brown hair, empty hands, separate weapon visuals, and no baked
+green glow, aura or particles. Runtime normalization is a transparent 512×512
+full-frame cell with a 246px visible silhouette, bottom footline at y=471..472
+and bottom-center pivot x=255.5..256.0; the source and measured QA report live
+under `assets/sprites/characters/pixellab/elementalist/`.
+
 ## Generation Prompt Template
 
 Use this for each class source sheet and adapt the class identity line:
