@@ -1,0 +1,100 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:05:24Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "d41d4851-2e45-4360-9cb7-934b4e2812ed",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Sniper ultimate shatter-rounds crystal fan: five jagged dark ruby crystal bullets and a crescent muzzle sigil arranged as a wide ballistic fan, glacial crimson arcane energy, dark fantasy D&D pixel art seen straight from above, isolated VFX prop on a transparent background, crisp readable weapon-specific silhouette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single sniper shatter-rounds crystal fan centered with stable outline, proportions, palette and position in every frame; animate measurable ultimate motion: five crystal rounds gather into a tight chamber, crimson shards rotate and charge, the fan opens from narrow to wide with streaking crystal trails, a brilliant release flare and staggered shard echoes sweep outward, then the glow fractures and vents; preserve the shatter-rounds identity and all details, every frame distinct and readable, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    },
+    "animation_group_id": "ffba3500-b196-4e9c-b77f-22e2060e0a55",
+    "canonical_asset_key": "sniper/shatter_rounds"
+  },
+  "frames": [
+    {
+      "file": "shatter_rounds_f00.png",
+      "bytes": 19465,
+      "url_kind": "template",
+      "encoded_sha256": "d4ed52d844920dcf9f49fc2b8e6c0796dd0fa70db3eff044e890b2086b27271f",
+      "pixel_sha256": "131e33fc4a55989aeb918722f4cdfc1d0bf46f3ffa7f9d007d7161e656cccb23"
+    },
+    {
+      "file": "shatter_rounds_f01.png",
+      "bytes": 18308,
+      "url_kind": "template",
+      "encoded_sha256": "1e50952853b410853841e9d141c50785e80f65332cce90ded62da14661446a17",
+      "pixel_sha256": "98024f53d668f54554417c2a8860c8ebcc31ac34bbcf4e0e68916678ab9fef92"
+    },
+    {
+      "file": "shatter_rounds_f02.png",
+      "bytes": 16743,
+      "url_kind": "template",
+      "encoded_sha256": "abd91c071add69d03517a40db01ae9699464678c2ac0166e6b9056ced27e6658",
+      "pixel_sha256": "e0c3f96209fdd70c79fca36633f011f0fdc88352a1f8444083a087462de9a7b1"
+    },
+    {
+      "file": "shatter_rounds_f03.png",
+      "bytes": 20051,
+      "url_kind": "template",
+      "encoded_sha256": "a88abea55e2051c154d059d1c27ede57b651bc7b48f3651738f1d2025f01ba11",
+      "pixel_sha256": "3da5160669a0823ec7babaf7db7a6c5a758718108c4b0d5003ec8aa986010331"
+    },
+    {
+      "file": "shatter_rounds_f04.png",
+      "bytes": 19021,
+      "url_kind": "template",
+      "encoded_sha256": "bb4162e2ecfaf390cb2b1fca1a29c1b4765caf7a485a1bf30f011e3520524ec5",
+      "pixel_sha256": "ea76a540fe1a9c40a03bb03ea1a3dcf11b2195e9d60f88367f3b0f2435f88196"
+    },
+    {
+      "file": "shatter_rounds_f05.png",
+      "bytes": 18838,
+      "url_kind": "template",
+      "encoded_sha256": "42608980a25cf1f8027acb0ebc43c3db54d24e014d27a671bcb06b4f13f44cb3",
+      "pixel_sha256": "2bd52f5ed4f21404c3e6747c4fdeff631e14ba2493070058a65ef7236fbdef02"
+    },
+    {
+      "file": "shatter_rounds_f06.png",
+      "bytes": 18991,
+      "url_kind": "template",
+      "encoded_sha256": "cd2dbef7a24e1b9d23a8b10e277643e1c98020b21b083afa5e26d224cc0c26e3",
+      "pixel_sha256": "7658d2b22e60a7d1b2a762d30088391aa02f2c46994770efe73403d862a001e9"
+    },
+    {
+      "file": "shatter_rounds_f07.png",
+      "bytes": 18247,
+      "url_kind": "template",
+      "encoded_sha256": "89940ab2dd0e6be174e183e1de398c3b542af07ed6f9668a2a482d6cc9f6f175",
+      "pixel_sha256": "de08734e36ca9b547437454bd54dd797671b0acfa399360c2364601039dda57d"
+    },
+    {
+      "file": "shatter_rounds_f08.png",
+      "bytes": 20603,
+      "url_kind": "template",
+      "encoded_sha256": "d0826859860ef51fcd62db00870b2e52c6b2aec8ec96caf82ea69d1113945773",
+      "pixel_sha256": "60ca7c52cd93f46a81bf31e946619536b7b91ef078940573059e831d68951137"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/shatter_rounds/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/shatter_rounds",
+  "postprocess": {
+    "method": "raw PixelLab frame preserved under raw/; accepted frame is 224x224 nearest-neighbor inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true
+  }
+}

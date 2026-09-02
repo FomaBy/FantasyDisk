@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3864",
+  "class_id": "sniper",
+  "weapon_id": "sniper_spotter_scope",
+  "object_id": "cce044e5-6fc1-48e6-84aa-6155e490553b",
+  "animation_group_id": "d16eed89-13ad-440c-ba91-183da10d1883",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_contact_sheet.png",
+    "silhouette": "clear and weapon-specific in every frame",
+    "movement": "iris shutters, nested reticles rotate, sky-lock beams pulse, artillery markers rain, suppression burst and fading rings",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection; detached particles are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edges are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "frames": [
+    {
+      "index": 0,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f00.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f00.png",
+      "alpha_bbox_gt_8": [
+        65,
+        44,
+        190,
+        212
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14384,
+      "raw_pixel_sha256": "09bab0ff7aac6d07791f290b7acd6611fbf9ceae1da838ef58d7116701e53786",
+      "source_pixel_sha256": "277354cd8aaa8ec6c2784e1f23cbacaf9d1031be3a66a77a2b69a5338d484973",
+      "runtime_pixel_sha256": "277354cd8aaa8ec6c2784e1f23cbacaf9d1031be3a66a77a2b69a5338d484973"
+    },
+    {
+      "index": 1,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f01.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f01.png",
+      "alpha_bbox_gt_8": [
+        56,
+        44,
+        197,
+        212
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14897,
+      "raw_pixel_sha256": "1d3968636273b305728f2eaa11933a526ff6aa46ccc8e63cbd84211a4cd4ea0c",
+      "source_pixel_sha256": "5c302905c833957f58dca2f0c7e8321f716781246c8fa09cb14a3dd13247f814",
+      "runtime_pixel_sha256": "5c302905c833957f58dca2f0c7e8321f716781246c8fa09cb14a3dd13247f814"
+    },
+    {
+      "index": 2,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f02.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f02.png",
+      "alpha_bbox_gt_8": [
+        49,
+        44,
+        206,
+        214
+      ],
+      "minimum_gutter_px": 42,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16961,
+      "raw_pixel_sha256": "0520daf4a552572e854a88e9dc091899a6272e90e205cb6d315e5407cb7e9e8c",
+      "source_pixel_sha256": "ab11a0093a5ce732450cbd752c1417471cb01eb4728e2d603a49f795aecd3181",
+      "runtime_pixel_sha256": "ab11a0093a5ce732450cbd752c1417471cb01eb4728e2d603a49f795aecd3181"
+    },
+    {
+      "index": 3,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f03.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f03.png",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16003,
+      "raw_pixel_sha256": "cf9df1c11e374f55c684a1521cc2a71bbcce075dc69396b0277f7c047af749be",
+      "source_pixel_sha256": "3b910c8a44d0ff2364d9850d967f4818b9bef447becbba20f727e6ee1786f47f",
+      "runtime_pixel_sha256": "3b910c8a44d0ff2364d9850d967f4818b9bef447becbba20f727e6ee1786f47f"
+    },
+    {
+      "index": 4,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f04.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f04.png",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15693,
+      "raw_pixel_sha256": "5d54dc5dda356c23d74c8119c407be6cc647ddf77d72921e947a3e54dbef290a",
+      "source_pixel_sha256": "0de55dd4ff41882a25dde6066ea0cbfd3a3d0d37805570a4911c976ad0848859",
+      "runtime_pixel_sha256": "0de55dd4ff41882a25dde6066ea0cbfd3a3d0d37805570a4911c976ad0848859"
+    },
+    {
+      "index": 5,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f05.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f05.png",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15554,
+      "raw_pixel_sha256": "04acf464b1f794725ef376e69a612d96e21f1e5449f05d034f673f50715a4c0d",
+      "source_pixel_sha256": "dc4b0a3c3df28457dd00b19c345cfdea45b128445d3fbe89960668ad27d86535",
+      "runtime_pixel_sha256": "dc4b0a3c3df28457dd00b19c345cfdea45b128445d3fbe89960668ad27d86535"
+    },
+    {
+      "index": 6,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f06.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f06.png",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15551,
+      "raw_pixel_sha256": "9c9fa0385432f4f8484a8c2d1f66ef266d96b250f49f2336e30deeb535710064",
+      "source_pixel_sha256": "5d0f43a08acf959e694edc1fda8ccb9f92f5b5ab51d1f014bd7431697992c67e",
+      "runtime_pixel_sha256": "5d0f43a08acf959e694edc1fda8ccb9f92f5b5ab51d1f014bd7431697992c67e"
+    },
+    {
+      "index": 7,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f07.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f07.png",
+      "alpha_bbox_gt_8": [
+        55,
+        43,
+        199,
+        212
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15046,
+      "raw_pixel_sha256": "f1470dd2f35905499cb744ad120c8126f21908795b9dd5bedae435c442faef9e",
+      "source_pixel_sha256": "9463b52bf930c5cfe45a67a656ae95bd80f96b0cf7c91e427134a952bb8e9a46",
+      "runtime_pixel_sha256": "9463b52bf930c5cfe45a67a656ae95bd80f96b0cf7c91e427134a952bb8e9a46"
+    },
+    {
+      "index": 8,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f08.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f08.png",
+      "alpha_bbox_gt_8": [
+        62,
+        44,
+        192,
+        212
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14645,
+      "raw_pixel_sha256": "0588d1b7cb828d584c93da9bfaa8d78b6f43af66e83e7a4029324662ad84309d",
+      "source_pixel_sha256": "35a664b7a5ca43063a6c79e527d7f2f02ecb0d2bd6e7544aaa92db4336518636",
+      "runtime_pixel_sha256": "35a664b7a5ca43063a6c79e527d7f2f02ecb0d2bd6e7544aaa92db4336518636"
+    }
+  ]
+}
