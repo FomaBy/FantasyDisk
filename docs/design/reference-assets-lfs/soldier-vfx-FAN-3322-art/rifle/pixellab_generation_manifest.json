@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:58:23Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "67684a3f-5e2c-4014-874f-a6a5235d4c52",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single centered soldier ultimate VFX emblem: a ghostly olive military arquebus rifle with long dark steel barrel, carved wooden stock, worn brass lock and a small vertical war pennant, aimed horizontally, three restrained cyan tracer runes and warm muzzle ember, dark fantasy D&D pixel art seen from above, isolated transparent sprite, crisp readable weapon silhouette, no character body, no hands, no extra weapons, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single rifle centered with stable proportions, aimed direction and olive-wood-brass palette; three distinct aimed volleys charge along the barrel, muzzle flash and straight tracer streak grow on separate beats with visible recoil, brass lock sparks and a brief cyan smoke recall follows; every frame has clear measurable motion, no static duplicates, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "rifle_f00.png",
+      "bytes": 7597,
+      "url_kind": "template",
+      "encoded_sha256": "d5efd456d447d2e0d4ab655cc79e9792acc5cf69e08fb53461dd9559f0dd4b03",
+      "pixel_sha256": "b582b2439c8a089f75421856df789518c0535f0bd44756b8ffc09a2f3e19fecb"
+    },
+    {
+      "file": "rifle_f01.png",
+      "bytes": 9847,
+      "url_kind": "template",
+      "encoded_sha256": "1848e129ec958b8e56940f5305d768874172d00de6df61474e28380859abfbe0",
+      "pixel_sha256": "cc4e11855497bfab2eeaf58b5b3b259ad7809b7f379a3b45a47e6bf5e5e5af9a"
+    },
+    {
+      "file": "rifle_f02.png",
+      "bytes": 12023,
+      "url_kind": "template",
+      "encoded_sha256": "be9610766c2b4c385c9bb232260b31a5140203c144a29f22995e646be306e09e",
+      "pixel_sha256": "2fe5bd4b42a9a8a707a2a428a6ab3a2bc3d5899f748507e910e3c8c2a1d93cbf"
+    },
+    {
+      "file": "rifle_f03.png",
+      "bytes": 9920,
+      "url_kind": "template",
+      "encoded_sha256": "cc9dee082501f5f82a8feb517a0b2a265e04f3478b9ff9902a81ed52334ad75c",
+      "pixel_sha256": "e008651d3bf377d57f5fa2ba2f7c87f4ac10656799bb55cf13d779fedace9068"
+    },
+    {
+      "file": "rifle_f04.png",
+      "bytes": 8503,
+      "url_kind": "template",
+      "encoded_sha256": "f5e8042fecd695623140b0b39081c5e2ef07b699a5df2ca346b85c8e56fe912c",
+      "pixel_sha256": "f0a7cdf46fc4792dd31beab281fe8f2151d0e25dd9ba2f5f5173a09d9134d704"
+    },
+    {
+      "file": "rifle_f05.png",
+      "bytes": 9027,
+      "url_kind": "template",
+      "encoded_sha256": "d20f25d21a185489db3d4b5576c7a85c28c4277c4e97e9fd0658bc7fafde4ddc",
+      "pixel_sha256": "eb2912eb67dadc3d18cd95d4f7fdec003ff21ea05c22a29628c0d197bbe715e3"
+    },
+    {
+      "file": "rifle_f06.png",
+      "bytes": 10172,
+      "url_kind": "template",
+      "encoded_sha256": "cab3c764e86296c406c961205e9591934779951f02d9b692fe35a1494752e137",
+      "pixel_sha256": "b060845b82481dd5810d85748549d92d014283bbeaca734005130cced0634ff0"
+    },
+    {
+      "file": "rifle_f07.png",
+      "bytes": 10071,
+      "url_kind": "template",
+      "encoded_sha256": "976db443df9a7fb5c29a9238e64a45ac1a9290bc5172a5a503a005495087f512",
+      "pixel_sha256": "78db8a52b18f512a2ff7d76a0744342aa527446591a845e49221eab368d93b9d"
+    },
+    {
+      "file": "rifle_f08.png",
+      "bytes": 8481,
+      "url_kind": "template",
+      "encoded_sha256": "6222baa7478e2b966482d5932e3323c89dc54962e3d818d72778361922061048",
+      "pixel_sha256": "3e271fb295d0c388db8d1be0705b4d87bc6972b79dfd66d1775bb5a6fd993824"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

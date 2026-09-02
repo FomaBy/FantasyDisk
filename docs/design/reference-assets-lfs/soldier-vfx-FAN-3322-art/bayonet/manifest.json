@@ -1,0 +1,537 @@
+{
+  "schema_version": 1,
+  "source_dir": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet",
+  "runtime_dir": "assets/sprites/effects/soldier/bayonet",
+  "spriteframes": "assets/sprites/effects/soldier/bayonet/bayonet_spriteframes.tres",
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "duration_seconds": 3.0,
+  "animation": {
+    "name": "soldier_bayonet_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/soldier/bayonet/bayonet_f00.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f01.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f02.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f03.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f04.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f05.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f06.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f07.png",
+      "assets/sprites/effects/soldier/bayonet/bayonet_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "cyan ghost charge trails build along three levelled bayonets; a crossed-bayonet pin flares on the impact beat, then a short rally spark fades"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f00.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f00.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f00.png.import",
+      "raw_encoded_sha256": "5885fa789e58dd733d554002d1a2639bafdbe85c03f70f996553ec61476df18b",
+      "raw_pixel_sha256": "c30f2344121bb64b5e1832984193eb060efa8a1d181b241ac1d15b5c4ff603b9",
+      "generated_manifest_encoded_sha256": "5885fa789e58dd733d554002d1a2639bafdbe85c03f70f996553ec61476df18b",
+      "generated_manifest_pixel_sha256": "c30f2344121bb64b5e1832984193eb060efa8a1d181b241ac1d15b5c4ff603b9",
+      "source_encoded_sha256": "056e40a32fb6a8771e73cac1d04b871f769036186ccdbe90f4325984e648c09e",
+      "runtime_encoded_sha256": "056e40a32fb6a8771e73cac1d04b871f769036186ccdbe90f4325984e648c09e",
+      "source_pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7",
+      "runtime_pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        56,
+        210,
+        193
+      ],
+      "gutters_px": [
+        49,
+        56,
+        46,
+        63
+      ],
+      "minimum_gutter_px": 46,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12686,
+      "visible_ratio_alpha_gt_8": 0.193573,
+      "opaque_pixels": 12686,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://dl8f8hevduff4",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f00.png-974d1987378cfa885260f403100d9d19.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f00.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f00.png",
+      "encoded_sha256": "056e40a32fb6a8771e73cac1d04b871f769036186ccdbe90f4325984e648c09e",
+      "pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7"
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f01.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f01.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f01.png.import",
+      "raw_encoded_sha256": "b5b45b52a332e181afbbec6434d68d3ddca970b89c167fb58f03f4b8989c1afb",
+      "raw_pixel_sha256": "8ff5e8ef3400d330033ea3982ae8e9f7988ba12feaf3b0893c1440d4ba6d9388",
+      "generated_manifest_encoded_sha256": "b5b45b52a332e181afbbec6434d68d3ddca970b89c167fb58f03f4b8989c1afb",
+      "generated_manifest_pixel_sha256": "8ff5e8ef3400d330033ea3982ae8e9f7988ba12feaf3b0893c1440d4ba6d9388",
+      "source_encoded_sha256": "9a5e844773573d19a01c1b439f29c740c5d23450d29a5291435eea03a6221d54",
+      "runtime_encoded_sha256": "9a5e844773573d19a01c1b439f29c740c5d23450d29a5291435eea03a6221d54",
+      "source_pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818",
+      "runtime_pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        52,
+        51,
+        213,
+        202
+      ],
+      "gutters_px": [
+        52,
+        51,
+        43,
+        54
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14267,
+      "visible_ratio_alpha_gt_8": 0.217697,
+      "opaque_pixels": 14267,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://b6sw53wbaxaot",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f01.png-dd5c1634dab9f16cde4013b1f1426610.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f01.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f01.png",
+      "encoded_sha256": "9a5e844773573d19a01c1b439f29c740c5d23450d29a5291435eea03a6221d54",
+      "pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818"
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f02.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f02.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f02.png.import",
+      "raw_encoded_sha256": "9f0042b7c658be947c197d3b4fab531fdc4b07af0b675cbbf0dccd6ca9f0a1ec",
+      "raw_pixel_sha256": "644ddc817c32c2e378cb16a5b4e11498dcef5f718c1425e4506811445d7eb0d1",
+      "generated_manifest_encoded_sha256": "9f0042b7c658be947c197d3b4fab531fdc4b07af0b675cbbf0dccd6ca9f0a1ec",
+      "generated_manifest_pixel_sha256": "644ddc817c32c2e378cb16a5b4e11498dcef5f718c1425e4506811445d7eb0d1",
+      "source_encoded_sha256": "47cd8ce5f4b8fb71e7ce900d76f98bc41fea57b28a53c71a0deaad44ca758c77",
+      "runtime_encoded_sha256": "47cd8ce5f4b8fb71e7ce900d76f98bc41fea57b28a53c71a0deaad44ca758c77",
+      "source_pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975",
+      "runtime_pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        50,
+        51,
+        211,
+        202
+      ],
+      "gutters_px": [
+        50,
+        51,
+        45,
+        54
+      ],
+      "minimum_gutter_px": 45,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9786,
+      "visible_ratio_alpha_gt_8": 0.149323,
+      "opaque_pixels": 9786,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://wuiwx1uh2ew5",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f02.png-9f75c09a3faa17c81df7c4aa64d4c372.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f02.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f02.png",
+      "encoded_sha256": "47cd8ce5f4b8fb71e7ce900d76f98bc41fea57b28a53c71a0deaad44ca758c77",
+      "pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975"
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f03.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f03.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f03.png.import",
+      "raw_encoded_sha256": "4f273fc4a38bd293336db9ea0fa028befaa9986c9766e308341397666af49133",
+      "raw_pixel_sha256": "518d2e05596f03b150a47645fdde365077dcab0a97deb34fe78265067ea82afe",
+      "generated_manifest_encoded_sha256": "4f273fc4a38bd293336db9ea0fa028befaa9986c9766e308341397666af49133",
+      "generated_manifest_pixel_sha256": "518d2e05596f03b150a47645fdde365077dcab0a97deb34fe78265067ea82afe",
+      "source_encoded_sha256": "840c0542fe4e72496b99c6550586e2246450c6bf6b8ce5d67107b09f321dba67",
+      "runtime_encoded_sha256": "840c0542fe4e72496b99c6550586e2246450c6bf6b8ce5d67107b09f321dba67",
+      "source_pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8",
+      "runtime_pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        50,
+        64,
+        208,
+        193
+      ],
+      "gutters_px": [
+        50,
+        64,
+        48,
+        63
+      ],
+      "minimum_gutter_px": 48,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8943,
+      "visible_ratio_alpha_gt_8": 0.136459,
+      "opaque_pixels": 8943,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://bc0b0cswxdslc",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f03.png-17eddb1fd8d1a62ced53a28e29a0f539.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f03.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f03.png",
+      "encoded_sha256": "840c0542fe4e72496b99c6550586e2246450c6bf6b8ce5d67107b09f321dba67",
+      "pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8"
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f04.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f04.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f04.png.import",
+      "raw_encoded_sha256": "d3533c8bfa562487ad80777177e06982182d7454b501b8dea79828f5a548f919",
+      "raw_pixel_sha256": "14a5e591c703d8de02db2ccf080844c89ee9d49f02c4ba0df050afaf88f6f01a",
+      "generated_manifest_encoded_sha256": "d3533c8bfa562487ad80777177e06982182d7454b501b8dea79828f5a548f919",
+      "generated_manifest_pixel_sha256": "14a5e591c703d8de02db2ccf080844c89ee9d49f02c4ba0df050afaf88f6f01a",
+      "source_encoded_sha256": "151ac984e95a47b379a562a1eb91871b4e6f62dfe1710f48223db40f0de0952f",
+      "runtime_encoded_sha256": "151ac984e95a47b379a562a1eb91871b4e6f62dfe1710f48223db40f0de0952f",
+      "source_pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83",
+      "runtime_pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        47,
+        64,
+        202,
+        193
+      ],
+      "gutters_px": [
+        47,
+        64,
+        54,
+        63
+      ],
+      "minimum_gutter_px": 47,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10259,
+      "visible_ratio_alpha_gt_8": 0.15654,
+      "opaque_pixels": 10259,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://b0f7l5ogea3w5",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f04.png-3321798962538816b028f672bb51e93b.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f04.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f04.png",
+      "encoded_sha256": "151ac984e95a47b379a562a1eb91871b4e6f62dfe1710f48223db40f0de0952f",
+      "pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83"
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f05.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f05.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f05.png.import",
+      "raw_encoded_sha256": "1a4567f78d622941843042e6f93bd8643d727d8792967258c7e17dcb236ad14f",
+      "raw_pixel_sha256": "0d7950a492185c70e7c8d9827a4dd5e6ced5f0225fe5b0a723fec3eceeecab6f",
+      "generated_manifest_encoded_sha256": "1a4567f78d622941843042e6f93bd8643d727d8792967258c7e17dcb236ad14f",
+      "generated_manifest_pixel_sha256": "0d7950a492185c70e7c8d9827a4dd5e6ced5f0225fe5b0a723fec3eceeecab6f",
+      "source_encoded_sha256": "1a005aa5d8f7913dfaff5f441e94674a37e0dc5dd73200df3de5cdfe9d2f1748",
+      "runtime_encoded_sha256": "1a005aa5d8f7913dfaff5f441e94674a37e0dc5dd73200df3de5cdfe9d2f1748",
+      "source_pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7",
+      "runtime_pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        47,
+        64,
+        202,
+        192
+      ],
+      "gutters_px": [
+        47,
+        64,
+        54,
+        64
+      ],
+      "minimum_gutter_px": 47,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11692,
+      "visible_ratio_alpha_gt_8": 0.178406,
+      "opaque_pixels": 11692,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://osaimfs8lobr",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f05.png-114cc7b8df1ce894f5965418b54b79b8.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f05.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f05.png",
+      "encoded_sha256": "1a005aa5d8f7913dfaff5f441e94674a37e0dc5dd73200df3de5cdfe9d2f1748",
+      "pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7"
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f06.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f06.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f06.png.import",
+      "raw_encoded_sha256": "c0d3615b6ebd5eaf21e1156d37a56b3a11d335fad2e6f3d4d2ab07c5bdb33b79",
+      "raw_pixel_sha256": "c8e75f1d1641d72534283eb9f0b1af796c48ce04beb6a0effa78ef6c4e00b8cc",
+      "generated_manifest_encoded_sha256": "c0d3615b6ebd5eaf21e1156d37a56b3a11d335fad2e6f3d4d2ab07c5bdb33b79",
+      "generated_manifest_pixel_sha256": "c8e75f1d1641d72534283eb9f0b1af796c48ce04beb6a0effa78ef6c4e00b8cc",
+      "source_encoded_sha256": "f63bdca6026ce871c73ce3c74470bc8253f1b031bce0507f235e6d72c155aa51",
+      "runtime_encoded_sha256": "f63bdca6026ce871c73ce3c74470bc8253f1b031bce0507f235e6d72c155aa51",
+      "source_pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17",
+      "runtime_pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        48,
+        64,
+        205,
+        192
+      ],
+      "gutters_px": [
+        48,
+        64,
+        51,
+        64
+      ],
+      "minimum_gutter_px": 48,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11199,
+      "visible_ratio_alpha_gt_8": 0.170883,
+      "opaque_pixels": 11199,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://chtmrwwjinnh1",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f06.png-a4fd9a7368c7f69e916ddb2e8b91089b.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f06.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f06.png",
+      "encoded_sha256": "f63bdca6026ce871c73ce3c74470bc8253f1b031bce0507f235e6d72c155aa51",
+      "pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17"
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f07.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f07.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f07.png.import",
+      "raw_encoded_sha256": "ee24e2d5dc8ff7ac26e4ca47d1b5c1544d7f431d4d4bb7624728002d2d8d1744",
+      "raw_pixel_sha256": "8433985112e36dc598f7f0ea75a2eed8cc493a5ec1e2eda0e9497dc448eb41c4",
+      "generated_manifest_encoded_sha256": "ee24e2d5dc8ff7ac26e4ca47d1b5c1544d7f431d4d4bb7624728002d2d8d1744",
+      "generated_manifest_pixel_sha256": "8433985112e36dc598f7f0ea75a2eed8cc493a5ec1e2eda0e9497dc448eb41c4",
+      "source_encoded_sha256": "5aafa5dc728b2e1f92a36e40788cc8108a778596838a786f2d18db793e378933",
+      "runtime_encoded_sha256": "5aafa5dc728b2e1f92a36e40788cc8108a778596838a786f2d18db793e378933",
+      "source_pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9",
+      "runtime_pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        65,
+        211,
+        193
+      ],
+      "gutters_px": [
+        49,
+        65,
+        45,
+        63
+      ],
+      "minimum_gutter_px": 45,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10696,
+      "visible_ratio_alpha_gt_8": 0.163208,
+      "opaque_pixels": 10696,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://c8y1v5fm4ijaj",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f07.png-2996e1692a701a53e64958fac07fa9c0.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f07.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f07.png",
+      "encoded_sha256": "5aafa5dc728b2e1f92a36e40788cc8108a778596838a786f2d18db793e378933",
+      "pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9"
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f08.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f08.png",
+      "import_file": "assets/sprites/effects/soldier/bayonet/bayonet_f08.png.import",
+      "raw_encoded_sha256": "3610a9e089b45784a5c1c2c1995cedff6b4f442515d9606e283733838fd038bf",
+      "raw_pixel_sha256": "973e95dd2a6a3155f68b9ad600db9a082be577152fedc8c3c85428f1f519de6a",
+      "generated_manifest_encoded_sha256": "3610a9e089b45784a5c1c2c1995cedff6b4f442515d9606e283733838fd038bf",
+      "generated_manifest_pixel_sha256": "973e95dd2a6a3155f68b9ad600db9a082be577152fedc8c3c85428f1f519de6a",
+      "source_encoded_sha256": "4af1eb167600db8732751f9a9143a39879a6b5c3734add49e949e1b26cc64b37",
+      "runtime_encoded_sha256": "4af1eb167600db8732751f9a9143a39879a6b5c3734add49e949e1b26cc64b37",
+      "source_pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4",
+      "runtime_pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        64,
+        210,
+        193
+      ],
+      "gutters_px": [
+        49,
+        64,
+        46,
+        63
+      ],
+      "minimum_gutter_px": 46,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9784,
+      "visible_ratio_alpha_gt_8": 0.149292,
+      "opaque_pixels": 9784,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://crol2uovt4xu1",
+      "import_dest_files": [
+        "res://.godot/imported/bayonet_f08.png-18e408821e6c2df1f1da24320db9d64b.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f08.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "bayonet_f08.png",
+      "encoded_sha256": "4af1eb167600db8732751f9a9143a39879a6b5c3734add49e949e1b26cc64b37",
+      "pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4"
+    }
+  ],
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  }
+}
