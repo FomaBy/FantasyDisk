@@ -53,6 +53,11 @@
   пак «мерцал» костюмом на 7 из 8 направлений и сохранял запечённое зелёное
   свечение рук. Оба дефекта устранены, геометрия (512×512, footline, pivot,
   видимая высота) сохранена (FAN-2879).
+- FAN-3868 заменил Elementalist pack на новый PixelLab character
+  `0644c584-d0bf-4b3d-94e0-0371da886ed7`: 8 idle rotations + 8×6 cleaned
+  movement frames, unarmed adult blue-cloak silhouette, no baked green glow,
+  explicit directional runtime assets, 512×512 full-frame normalization,
+  visible height 246px, footline y=471..472 and pivot x=255.5..256.0.
 - Гнилая Гончая (`mini_rot_hound`) получила полноценный 8-направленный
   PixelLab-пак (idle/move/attack/hit/death/shadow_strike по всем восьми
   ракурсам) вместо одностороннего набора кадров — первый живой пак нового

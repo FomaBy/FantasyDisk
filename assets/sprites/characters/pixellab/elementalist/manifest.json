@@ -1,29 +1,49 @@
 {
   "source": "PixelLab MCP",
   "character_id": "elementalist",
-  "pixellab_character_id": "4b01496c-09c9-4cc8-8913-a9feee4e3a69",
-  "pixellab_group_id": "2695f40c-58d1-4e25-a171-542455ceeb32",
-  "pixellab_animation_group_id": "e2221a55-d903-4d66-91ee-84c1006d5736",
-  "pixellab_name": "Elementalist v2",
-  "generated_at": "2026-08-18T14:11:48Z",
-  "task": "FAN-2879",
-  "mode": "pro_full_pack_regen_replaced_dead_source",
+  "pixellab_character_id": "0644c584-d0bf-4b3d-94e0-0371da886ed7",
+  "pixellab_name": "FantasyDisk Elementalist FAN-3868 Canonical",
+  "pixellab_animation_group_id": "35c3725c-c8bf-45a7-99a1-ec271bba2505",
+  "pixellab_animation_job_ids": {
+    "south": "7831cf97-3fb6-4789-b616-49683ddd6907",
+    "south-east": "51776efe-6d02-4c18-aa36-57810d62a9c4",
+    "east": "5f471b4f-e62a-4a9a-afa1-47ad729e873c",
+    "north-east": "0683e635-90e8-49cf-a4ad-10f0992b5d8c",
+    "north": "0105ba8b-48f5-4d18-b31a-f971660c13f5",
+    "north-west": "063ecf45-dd94-47dd-a870-97258e752f8f",
+    "west": "1644dfc2-ac01-4236-8fd8-bce9eb295116",
+    "south-west": "72f1e5c2-52e3-4529-996c-42ccbd5886c1"
+  },
+  "generated_at": "2026-09-02T19:29:13Z",
+  "task": "FAN-3868",
+  "mode": "v3_reference_full_pack_regen",
   "generation_method": {
-    "character": "create_character(mode=pro, body_type=humanoid, n_directions=8, view=low top-down, size=128)",
-    "animation": "animate_character(mode=template, template_animation_id=walking-6-frames, directions=all 8, single job/group)",
-    "rationale": "Pinned pixellab_character_id 7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f returned 404 (source deleted), so a brand-new PixelLab character was created from a text-only description (no reference image available) and ALL 8 walk directions were requested in one animate_character call sharing one animation_group_id. Generating every direction as one job from one character removes the mid-loop costume-swap defect proven on FAN-2599 (evidence-only candidate adf9be54, comment 42cbe958), where directions were stitched from separate template/v3 jobs across different rounds."
+    "character": "create_character(mode=v3, body_type=humanoid, n_directions=8, view=low top-down, size=246, completed_size=240x240)",
+    "animation": "animate_character(mode=v3, animation_name=move, directions=all 8, frame_count=6, one animation_group_id)",
+    "animation_group_id": "35c3725c-c8bf-45a7-99a1-ec271bba2505",
+    "animation_job_count": 8,
+    "animation_cost_generations": 48,
+    "reference_image_url": "https://raw.githubusercontent.com/FomaBy/FantasyDisk/3b6470dfbb31ffa7f17d0e14d46a0cc0f32c3152/assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+    "reference_commit": "3b6470dfbb31ffa7f17d0e14d46a0cc0f32c3152",
+    "reference_path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+    "cli_attempt": "tools/pixellab_generate_pack.py attempted with config-derived token; hung on animate_character response before writing output, exact child terminated; direct exposed PixelLab MCP used for same character animation group."
   },
   "body_type": "humanoid",
   "view": "low top-down",
+  "requested_size": [
+    246,
+    246
+  ],
   "completed_size": [
-    128,
-    128
+    240,
+    240
   ],
   "runtime_canvas": "512x512",
   "runtime_target_visible_height": 246,
-  "runtime_scale_policy": "per-frame alpha crop scaled to 246px visible height",
+  "runtime_scale_policy": "per-frame alpha crop scaled to 246px visible height, nearest-neighbor, centered X, bottom aligned",
   "runtime_bottom_padding": 40,
-  "template_animation_id": "walking-6-frames",
+  "runtime_footline_target": "y=471..472",
+  "runtime_pivot_target": "x=255.5..256.0",
   "animation_frames_per_direction": 6,
   "clockwise_preview_order": [
     "south",
@@ -45,7 +65,7 @@
     "west",
     "south-west"
   ],
-  "prompt": "FantasyDisk elementalist playable hero, dark fantasy D&D elemental caster, bright multi-element unarmed mage with readable fire, ice, lightning and stone motifs integrated into robe trim, shoulder mantle and color accents only. Blue-and-gold layered robe with long flowing cape/cloak, brown leather boots, short brown hair, human male face. Empty open hands, bare skin, no gloves glowing, absolutely no green magical glow or light aura around the hands or forearms, no particles, no staff, no wand, no orb, no prism, no crystal focus, no meteor, no floating elemental spheres, no held prop, no weapon, no UI frame, no text. Transparent background. Full body visible, centered sprite, strong clean human silhouette, visible arms and legs for walking animation, heroic but readable top-down RPG character, saturated elemental palette with crimson ember, icy cyan, storm gold and earth stone accents, not sci-fi, not cute, no baked spell effects anywhere on the body.",
+  "prompt": "Adult human elemental mage hero for FantasyDisk, dark fantasy D&D tabletop pixel art, heroic roster-class anatomy and grounded top-down RPG silhouette. Preserve deep blue layered cloak and mantle, brown hair, empty relaxed hands, brown boots, restrained ember/cyan/gold/stone cloth accents. No green glow or aura, particles, spell effects, weapon, held prop, costume swaps, chibi head, or body morph.",
   "source_files": {
     "idle": {
       "south": "elementalist_idle_south.png",
@@ -203,17 +223,1856 @@
     }
   },
   "spriteframes": "assets/sprites/characters/elementalist_spriteframes.tres",
-  "bbox_report": "build/qa/fan2879_elementalist_pixellab/alpha_bbox_report.json",
-  "contact_sheet": "build/qa/fan2879_elementalist_pixellab/contact_sheet.png",
+  "bbox_report": "assets/sprites/characters/pixellab/elementalist/alpha_bbox_report.json",
+  "contact_sheet": "docs/design/reference-assets-lfs/elementalist-FAN-3868/fan3868_elementalist_contact_sheet.png",
   "move_frame_count": 6,
-  "runtime_dir": "assets/sprites/characters/full_frame/elementalist_pixellab",
-  "rejected_predecessor_pixellab_character_ids": [
-    "3068581d-2ff2-4203-ba5e-37c56edefdc6",
-    "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f"
+  "frame_count": 56,
+  "frames": [
+    {
+      "file": "elementalist_idle_south.png",
+      "bytes": 12569,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "406f864b4f2cfa84c7eb1936cf36b62fa66613b75bdb8c20743f89b89476a901",
+      "pixel_sha256": "2ea9c1b974ce1ee5ceba8c752db33a29f7d4882ab6112ca59e4e895ed09398d1",
+      "kind": "idle",
+      "direction": "south",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 12762,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        226,
+        363,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        213,
+        246
+      ],
+      "runtime_encoded_sha256": "d604e3fac55c11d0da343ef343a635c454189cc1a09127844d2d88cb2f852dd8",
+      "runtime_pixel_sha256": "43825324f1418561a5fa45f760a87ae47759cdb991cc104cb9ac059d6a3410fc",
+      "runtime_bytes": 16253
+    },
+    {
+      "file": "elementalist_move_south_00.png",
+      "bytes": 14976,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "03e13d09458dc613be59161a525e555b03c75e9f0fdd5adcad9fc74a74ae96f4",
+      "pixel_sha256": "0ba7302e6ff1ede22d88a6fffe79d55ba84b78c7987623cf8d6b77127f37fbe4",
+      "kind": "move",
+      "direction": "south",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 15408,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        226,
+        368,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        223,
+        246
+      ],
+      "runtime_encoded_sha256": "a5b6b7c31eecbc735ca9293d05d660502d4b4552d2ad57210101ee40ab14112d",
+      "runtime_pixel_sha256": "ec0ba24b15a6ba50688a2c67ae0ed2418ed3e4dde2033a0243a14d15a35a2555",
+      "runtime_bytes": 19697
+    },
+    {
+      "file": "elementalist_move_south_01.png",
+      "bytes": 15347,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "03e9349f6c331eb6d0a7f2aee6de54a2f5832ab7b6001b52bb085b8249eaa652",
+      "pixel_sha256": "ebdb7c33cff46496513c0e9d2685b117dd9096324796b807d24a0dfae7a0a7b8",
+      "kind": "move",
+      "direction": "south",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 15379,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        226,
+        363,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        213,
+        246
+      ],
+      "runtime_encoded_sha256": "25ca9cd479d03ac678b006cd90acade9ca7e6297cbe59eb8271821a3e61eb9ce",
+      "runtime_pixel_sha256": "70fa9664af416317e782e7abcd66bf75b91d08a182668b7ea6242d0e93768ba1",
+      "runtime_bytes": 20167
+    },
+    {
+      "file": "elementalist_move_south_02.png",
+      "bytes": 15760,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "a2178ae4efbcfb20dc12867ad2c02160c878196f2b84e93f676e1541b7ff9788",
+      "pixel_sha256": "eea427b3ab211ad669dd1980e006300da7425baa1f8790f9edfc63cb258370d7",
+      "kind": "move",
+      "direction": "south",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 15876,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        226,
+        362,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        211,
+        246
+      ],
+      "runtime_encoded_sha256": "bcb7eb19fb6e6fa3da96c07efc3d90862d975bb9ecdb1cafa71781143513ed31",
+      "runtime_pixel_sha256": "eaeb7f8a2b68bbe84b9f36b095e306de3e7a139480e7567c13e5c91d550be89f",
+      "runtime_bytes": 20576
+    },
+    {
+      "file": "elementalist_move_south_03.png",
+      "bytes": 15023,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "f5a16f4084479fbecf253cafdc2fd6f1fb19f1138a0cd032c618d80d3c6a9999",
+      "pixel_sha256": "b1225db0989a81a342c5c990dd9e837bf0e974687229595d3910517be53abcae",
+      "kind": "move",
+      "direction": "south",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 15380,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        226,
+        362,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        211,
+        246
+      ],
+      "runtime_encoded_sha256": "4cb16ba78de2d5b50d86fb83cdb47fc74c23ca46359343e7ea675d71afafc3e7",
+      "runtime_pixel_sha256": "89ad747b1549c034cb6b111a593d0728d0cb7f02842a49799f6f0426e916d3c0",
+      "runtime_bytes": 19802
+    },
+    {
+      "file": "elementalist_move_south_04.png",
+      "bytes": 15877,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "ac97d5b29b6bc755d2efeafd0ce25c1654efcf8b99d8092c770459fab82fbebb",
+      "pixel_sha256": "0b54fe48e31dd89d8679ffb3675429fdd9b17098ded9c92e362a5341a95f8c6c",
+      "kind": "move",
+      "direction": "south",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 15259,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        226,
+        357,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        202,
+        246
+      ],
+      "runtime_encoded_sha256": "cb33ae2228649cfd7ab6427141ee8297654c339862cafdc1defbb8e9a877324f",
+      "runtime_pixel_sha256": "85d873920b073e63b7ec82d4dad232ef0396e20e89bec1c2db4688eb9933de42",
+      "runtime_bytes": 19808
+    },
+    {
+      "file": "elementalist_move_south_05.png",
+      "bytes": 14694,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "02ce199e2a78c11e0b9ab1ff47d21e7391170a17e2b699e3bc37884ed3c413d2",
+      "pixel_sha256": "c1eec0761c0dccaf258d506c93b4e3cff00585672d89ea35726f944f56ebe93c",
+      "kind": "move",
+      "direction": "south",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 13900,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        226,
+        350,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        188,
+        246
+      ],
+      "runtime_encoded_sha256": "68c98f06692dd813008d98da4703530f1184a59b1a836fc0a54ef7e849d2afe8",
+      "runtime_pixel_sha256": "db8aab88bc7a876c208c40d4269d4f7e779b1c925d7b478695143089a0be53f7",
+      "runtime_bytes": 18105
+    },
+    {
+      "file": "elementalist_idle_south-east.png",
+      "bytes": 14130,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "6d55f4a5e3b87cdfa19a1159e272bcabe4ba0bd2b4d4330cc73439c161e31f3f",
+      "pixel_sha256": "2dff6b8d2cea351793439a7fc1df79263a9a66b862d8100f2eea92a7c0f54bb5",
+      "kind": "idle",
+      "direction": "south-east",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 14219,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        226,
+        347,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        182,
+        246
+      ],
+      "runtime_encoded_sha256": "60ec5a50fc2321c1bed937d1232c57eaced2ef097a331d527a952f6579f4a764",
+      "runtime_pixel_sha256": "3ba84954ab7642e62c668078724e4b6baddc476b93c5504d5c2fc61a2a62773a",
+      "runtime_bytes": 18708
+    },
+    {
+      "file": "elementalist_move_south-east_00.png",
+      "bytes": 13036,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "b3e6e920607d6eb8bd224670c454e174db431094d867d0e0424a2973282d88eb",
+      "pixel_sha256": "caa5345d1f724982d562f06d520216431247c5815d0dc3820069a468efca1463",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11631,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        190,
+        246
+      ],
+      "runtime_encoded_sha256": "f4aaa49f0ac50eda11e750c161a05db4c574aa1917d2c552c4f2ae61354daee6",
+      "runtime_pixel_sha256": "2f882616dbbc2d9670314b89758c5434b7e7b802f414cdbb1fbc114a1219edef",
+      "runtime_bytes": 14754
+    },
+    {
+      "file": "elementalist_move_south-east_01.png",
+      "bytes": 12228,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "496b18638723d613b5fef2aaf15e18e834acfc1e3e09c5a6a581531560ab0a05",
+      "pixel_sha256": "118361b2b36edec157a2ec60414a3d2ed8a42c3ddfca54d87da403129dec1dfa",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9939,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        226,
+        359,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        205,
+        246
+      ],
+      "runtime_encoded_sha256": "de23995006cafb939e8bbc4ff0fdfe12736ea5ed6837286900832ea9e739d2d9",
+      "runtime_pixel_sha256": "2f06d2a1a21cc0765de7d4adf26c26abdf70da5f9e82e1c74aef60942d23e6e7",
+      "runtime_bytes": 12711
+    },
+    {
+      "file": "elementalist_move_south-east_02.png",
+      "bytes": 12484,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "362489294d110d055447bdfe98f92c5ab3623d398ea9d111b0531ebf29f0cde5",
+      "pixel_sha256": "c234e394c13bc3dadf430c85c4a246001a81ec6a68ed8ca4cc2c3d45642356fd",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 6487,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        226,
+        364,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        215,
+        246
+      ],
+      "runtime_encoded_sha256": "56b4ce8f5c05536c4f2950ad6668798ae1c1bd167b894aba25ff611b49f7937a",
+      "runtime_pixel_sha256": "d607bc6182a64ca2c3e7d7a3ce6d95e52be2062aeb826cbe4b2f1929a0700ee2",
+      "runtime_bytes": 8311
+    },
+    {
+      "file": "elementalist_move_south-east_03.png",
+      "bytes": 12399,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "3227b7ee16687dce1651e5f9f9fd84b282873310ad473190dcdbbb03b06a14f6",
+      "pixel_sha256": "54721e88daa452f5eb7e7627ea15bb0b268b1579b90b2b67e37926b80d9d06b1",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8852,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        226,
+        362,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        211,
+        246
+      ],
+      "runtime_encoded_sha256": "2e1229888a7f58dd2b9cd7242214fe34440cc40ac5b6767649dbbb359cc5738e",
+      "runtime_pixel_sha256": "06690dd868bad784b332699056fd1f95c3773e6a1f6a905f81c53832c6e8367b",
+      "runtime_bytes": 11142
+    },
+    {
+      "file": "elementalist_move_south-east_04.png",
+      "bytes": 11711,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "67e4a21cc8ead822ab2d9f865c91c53f342983a99aa4a9a7a5b5365ffad45eed",
+      "pixel_sha256": "6d9dc150c650eddc7a2af13cdb16eb0c586c1382105bcf36fb2f461752823c96",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10510,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        226,
+        343,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        173,
+        246
+      ],
+      "runtime_encoded_sha256": "8803af3c4cc01a928363783287adf47b835b2c7aa98bd8c76dff87ea8fc833b4",
+      "runtime_pixel_sha256": "9c47de03a3e847f71618bba57bceffdbd0b3bf14ffd1089dc7dfa2528dde82aa",
+      "runtime_bytes": 13426
+    },
+    {
+      "file": "elementalist_move_south-east_05.png",
+      "bytes": 11658,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "f40abfb315166bdfa553806aa75b84316cde6ae1e033be4063cfdcf8d329e0c8",
+      "pixel_sha256": "3d9e7ddc16ed1b263c9a04e8b569d29e34ce082929cba5ae97017bd303d14303",
+      "kind": "move",
+      "direction": "south-east",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10792,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        226,
+        345,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        178,
+        246
+      ],
+      "runtime_encoded_sha256": "a0f2fa3ae9e437a99f7ce43d481d90e5f176d8a7578924581301d9451ef2709c",
+      "runtime_pixel_sha256": "06783ba764570d308213644ca2fe2f32d7a952cef794fb9780c782dfc3ee5679",
+      "runtime_bytes": 13945
+    },
+    {
+      "file": "elementalist_idle_east.png",
+      "bytes": 9135,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "bf03e9a47dfe3191eaab43e35c0988e7315faf7dfceb8bbc1ecf1fa9cfc44eb4",
+      "pixel_sha256": "27c5230aab43ad42a61deec2b0ea91c8cbe4cf77b6222459240b982fa1925efd",
+      "kind": "idle",
+      "direction": "east",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 8039,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        196,
+        226,
+        317,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        121,
+        246
+      ],
+      "runtime_encoded_sha256": "8393866b25bfe4278731c86cbaef040339e57ec82fe0c09e530489e59c3ae032",
+      "runtime_pixel_sha256": "51583e84e23c89eb362d97529f5446f9610eab85ffb79ad7a2160a91fe82677f",
+      "runtime_bytes": 10853
+    },
+    {
+      "file": "elementalist_move_east_00.png",
+      "bytes": 9704,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "725f1b0b51599812818ab4c6e84df71e958e23fd13d93fd14d0e75bd6041a225",
+      "pixel_sha256": "8c0fbb8d7361df2b5607c780be27554eb290e275043675c4939b184cbfe880aa",
+      "kind": "move",
+      "direction": "east",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9004,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        226,
+        325,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        137,
+        246
+      ],
+      "runtime_encoded_sha256": "4efd09577f6387d3ce4ab643e24b5cfa574d1233106d191b3b1dc56ba33828ee",
+      "runtime_pixel_sha256": "765f3742c58d0a60aa64de450fba7b16009f8ac452fa0ff3d20bd5e0879e0d22",
+      "runtime_bytes": 12117
+    },
+    {
+      "file": "elementalist_move_east_01.png",
+      "bytes": 9484,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "869729f9ef8d0f905328dd784320b9f74131754841dec53d592d2805406d42cb",
+      "pixel_sha256": "944ea574b39428a26506b0a6e95d70c743998e432ea9b01333a1243344019412",
+      "kind": "move",
+      "direction": "east",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8891,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        226,
+        344,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        176,
+        246
+      ],
+      "runtime_encoded_sha256": "db6930e3ba5a120f39bab0d2710c6628d210a31b703acb1ca12fbb0d35ebe9c9",
+      "runtime_pixel_sha256": "8ea76e5413ba787b838fbcd2c34b0d976e24018e15496cab32abdc7d9a0f8af8",
+      "runtime_bytes": 11603
+    },
+    {
+      "file": "elementalist_move_east_02.png",
+      "bytes": 9669,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "2949be23a3e579d999b273107f88faec4598aeca9cdaf39e15a1302b57703892",
+      "pixel_sha256": "c71feac51e91644a6a65c9fd3f18a691eb76db335d4718d3547b35c169b6a26c",
+      "kind": "move",
+      "direction": "east",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7953,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        226,
+        336,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        159,
+        246
+      ],
+      "runtime_encoded_sha256": "023074f945d8b36da8215424a269ad799f955648eb99b9089d163e9f6248eeac",
+      "runtime_pixel_sha256": "d2ca82b3359490420ee6b2b39c297d00fce1610af9b4818ea49724f553b8e1f4",
+      "runtime_bytes": 10485
+    },
+    {
+      "file": "elementalist_move_east_03.png",
+      "bytes": 9182,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "0b68b5de156f68d930d651a6bff6733b724d4cd5ff87062220d601597efa2cb5",
+      "pixel_sha256": "9abb1c81127221646e1f1a3536659cd35d05b4606e9594de26487247034e7409",
+      "kind": "move",
+      "direction": "east",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8420,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        226,
+        324,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        135,
+        246
+      ],
+      "runtime_encoded_sha256": "c626f86317332631aedb26d81f8e55378156aaefeba48c4ae93dc786356a0b5c",
+      "runtime_pixel_sha256": "f6c03a98faab1b4d60714808e4cf11f8c2a6059736701e3a477e9a422aa6d31d",
+      "runtime_bytes": 10978
+    },
+    {
+      "file": "elementalist_move_east_04.png",
+      "bytes": 9636,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "99061a353fd70034e16f36582fb53403c4bc7b84dbc51fc2752917cb18ee1c8b",
+      "pixel_sha256": "f89724cd99b68ce04994d74d415deb4d47e64084168738f4e378095b0486a3b8",
+      "kind": "move",
+      "direction": "east",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9292,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        226,
+        332,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        151,
+        246
+      ],
+      "runtime_encoded_sha256": "28e7483005cfceff91c967f15a54d409db901c6a966099fa7c081641f5820167",
+      "runtime_pixel_sha256": "97b3e1430627a02abc25f2d58793a95286c5e252e361837bd47c36f3c1fc46ca",
+      "runtime_bytes": 12103
+    },
+    {
+      "file": "elementalist_move_east_05.png",
+      "bytes": 9730,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "36490b30866a4ac0bd9255a15847583819e5b86a510d20adf18e06203a7cd43c",
+      "pixel_sha256": "92bbe9c084c8e0c5afc09c88c61771114450c4b13f3657437626e288d9d5b8c4",
+      "kind": "move",
+      "direction": "east",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9569,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        226,
+        351,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        189,
+        246
+      ],
+      "runtime_encoded_sha256": "01c7e43d78ab3d5ff92be3c51f20c215e65a96b6dbce4ec6144bd0a0cec1fa2c",
+      "runtime_pixel_sha256": "599ff83ab6e6eef0562c9bd16c892c9f8d358306fdf3fdaf8302b476618a2aea",
+      "runtime_bytes": 12668
+    },
+    {
+      "file": "elementalist_idle_north-east.png",
+      "bytes": 12025,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "238f4a915ad3374b3371e16fed4760b17cb2e6d78934a835801fc19d1492b084",
+      "pixel_sha256": "ce12ed52c734e50447563e035662355b6d38f6d2d09914c1bc8a2e40200ce656",
+      "kind": "idle",
+      "direction": "north-east",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 8672,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        226,
+        347,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        182,
+        246
+      ],
+      "runtime_encoded_sha256": "d2c0f2ac72777c0408d13090d332fad9094956d1b04843bb20932b91f6740222",
+      "runtime_pixel_sha256": "88bdad945a276d99612912d15abe06dad3837cc7b765e2c28c4c7d14e8e2ce5d",
+      "runtime_bytes": 11715
+    },
+    {
+      "file": "elementalist_move_north-east_00.png",
+      "bytes": 11216,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "6366508056ce3b523ed943d9cc48fb41450fc0c8361b3ed9c7921617d526689e",
+      "pixel_sha256": "4fde49a42ddbf2376d69e7f860b1397db09b74ebc24e50dc6b69850950ea14ed",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9280,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        226,
+        354,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        195,
+        246
+      ],
+      "runtime_encoded_sha256": "0394641fd93d26178888a0acb5dc396db89ab245b9a4e9ea24acbe2d56dde234",
+      "runtime_pixel_sha256": "a7aa11dba86efbc2fdc674a46e1decdd92ce36b1606bb887a62220556b2ab7c4",
+      "runtime_bytes": 12229
+    },
+    {
+      "file": "elementalist_move_north-east_01.png",
+      "bytes": 11145,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "c39b6abefe8e04cd02b8ef7de7af9350b33a042f18b1f16b9e949bc930198b5e",
+      "pixel_sha256": "3d49362b66963ba5730ffb9b37867687916753902d5f763ad5a777deb14927c7",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10271,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        226,
+        357,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        202,
+        246
+      ],
+      "runtime_encoded_sha256": "c8233bb463ae6b607f161c743c0d6833bacfd59e118b51b63fc55fc06d078de7",
+      "runtime_pixel_sha256": "cc52e55c76bb31a05bf50633b410362e7c028bed52c371b66345776bfef29a7d",
+      "runtime_bytes": 13277
+    },
+    {
+      "file": "elementalist_move_north-east_02.png",
+      "bytes": 11591,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "2450476abb34945bc4284cd78c1473e6606291a545ae2930c5dd0fb958658ae3",
+      "pixel_sha256": "09e0af8c6581f2294b21b16713e1cc308e805275b744ecc0e059f61164cb5497",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8577,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        356,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        199,
+        246
+      ],
+      "runtime_encoded_sha256": "d33446c8bbc555fd16b51be4460734909f446ebae57e7bbd2aef6cd74c542a97",
+      "runtime_pixel_sha256": "fe8445d2c8664c8ac27890d7d213008d4b208d2d254c885e487f9806ecbfc2bf",
+      "runtime_bytes": 11819
+    },
+    {
+      "file": "elementalist_move_north-east_03.png",
+      "bytes": 10324,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "c565921c792748e4317af5d11ed8259e3e7f240a17fc8b3a219f04db2a51927a",
+      "pixel_sha256": "99574c6cd0ce5ca975a8f51190bd6e3f0b82aa2b1474f4134ded6555bf1f4700",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7207,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        226,
+        344,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        175,
+        246
+      ],
+      "runtime_encoded_sha256": "69213de3a94d55545003f0cd9e6cbe843e65043a2f65616c01963eb5547f5684",
+      "runtime_pixel_sha256": "f29df768fd239cede175da0e42e058da11bd6430e57611a3a605d387f6577fb1",
+      "runtime_bytes": 9361
+    },
+    {
+      "file": "elementalist_move_north-east_04.png",
+      "bytes": 10215,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "cf50861cdf34133109cc1fb23bc9135082f5fcd1c6d0cd6a7a9adcd926ae0170",
+      "pixel_sha256": "299bd1349e9c4749e13bd046b8b5b5f346db37edbaccfea5761fb7837c17c2f5",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7163,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        226,
+        337,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        162,
+        246
+      ],
+      "runtime_encoded_sha256": "a3495341fe40e690dd7c7a8ad49aca8b6ecd51915dfc9fb6aaee740299a0232e",
+      "runtime_pixel_sha256": "d3cb76d99befdc3988b18c862c96e632c96ca2c299ae0e104d9e8a531087133b",
+      "runtime_bytes": 9669
+    },
+    {
+      "file": "elementalist_move_north-east_05.png",
+      "bytes": 10052,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "0caf937184fede8301283cf6ca235b1338b5e9e49a7b8b3b696bfefc64aca25c",
+      "pixel_sha256": "16d4ccd88ef19b6404a88f46ad276d776c8a1e036b81fa9a7435490721eee33e",
+      "kind": "move",
+      "direction": "north-east",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7826,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        226,
+        335,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        157,
+        246
+      ],
+      "runtime_encoded_sha256": "f0635e23adc1245d11c63afaf9d6994269f6cc70a3489d711679b12865b2fb1b",
+      "runtime_pixel_sha256": "ec6a8362b7ae989381998701e7c457dabbebae179b9a15aba9d1c99e865e84b3",
+      "runtime_bytes": 10543
+    },
+    {
+      "file": "elementalist_idle_north.png",
+      "bytes": 13282,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "75348d3d6083eae6f761c7203fb28d17d57a019dcfe4617b25f7d10103b9ea88",
+      "pixel_sha256": "c6fb9aa52d88b44ee8584193e05d6d1d97bd8665cd1d0d8940378b3f7f9d1d9f",
+      "kind": "idle",
+      "direction": "north",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 12064,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        226,
+        368,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        224,
+        246
+      ],
+      "runtime_encoded_sha256": "18172358fb85053b012fc41592b28f28df9b9bb35baec36b43a73c64649b2077",
+      "runtime_pixel_sha256": "ad58c72b8d802de26971dbe28c448d53054670d2761097df1f1f95dd1a2ec6ac",
+      "runtime_bytes": 15651
+    },
+    {
+      "file": "elementalist_move_north_00.png",
+      "bytes": 13153,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "d3d6867862edc0171a5b647bf1d032d90ed5591bf5710cd80c8cc2e9a80280e4",
+      "pixel_sha256": "1704c76bdbafa792c74d59875e0adacbcb391a429aceb4a46b3ae63354603ed4",
+      "kind": "move",
+      "direction": "north",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 13352,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        137,
+        226,
+        375,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        238,
+        246
+      ],
+      "runtime_encoded_sha256": "1dab594a9e1e5d19d520f4b6db0ba7ca2ca8c01131a64dcf5bab1b0b78365a27",
+      "runtime_pixel_sha256": "8f93d30d7591f936c4c91d33ee7d52697341b87e5efa6170c811e6a250dd02d9",
+      "runtime_bytes": 17552
+    },
+    {
+      "file": "elementalist_move_north_01.png",
+      "bytes": 12660,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "45c1cefd619444199998a10ce3e1153a9d25c4c47203f4f712fcec344e75f7bd",
+      "pixel_sha256": "176d150f7e362f310fea2cbcd0a62305e669ab3d6317cbcfb235f7985abdc5c9",
+      "kind": "move",
+      "direction": "north",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11974,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        226,
+        371,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        229,
+        246
+      ],
+      "runtime_encoded_sha256": "0925de7040680f924df7fa68cf176ba404b2874c514be695a826d4be1d62cf16",
+      "runtime_pixel_sha256": "82385d7b11143ee91eb97eb0987770172e413623a348859fa3acac1f5ec24d69",
+      "runtime_bytes": 15640
+    },
+    {
+      "file": "elementalist_move_north_02.png",
+      "bytes": 13656,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "3b53cad6d3110de8506ed10f4f5bfe97b30c4d177cd2982b01e92f279f83c457",
+      "pixel_sha256": "f8eef2bcc1df8cb5e6acedbf3018a5cc2fa1caaef302690e2b4e7bf54d3e5323",
+      "kind": "move",
+      "direction": "north",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10549,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        226,
+        358,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        203,
+        246
+      ],
+      "runtime_encoded_sha256": "68ada64dfed828040a4b2772f088cc12ee8052377febf0419350d9fd3cd8d344",
+      "runtime_pixel_sha256": "9b212bc9547b5ffd3505c73f51ffb56c4207c9b0e1f1b4e42dd75546c4b55e28",
+      "runtime_bytes": 13622
+    },
+    {
+      "file": "elementalist_move_north_03.png",
+      "bytes": 13579,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "7bb8e558aac1777bd04b958d95d85d7c0b56a612a32de033e3e83a1a01567920",
+      "pixel_sha256": "ff687de60fe1fbd200f1ac6c9dc0bd304717aa8ad80c8adb090cee1fa02ba5a6",
+      "kind": "move",
+      "direction": "north",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9814,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        190,
+        246
+      ],
+      "runtime_encoded_sha256": "f490ea424abe626eb487520e49abadc26d63c942deb53f091fc9a1bb0d24f9b7",
+      "runtime_pixel_sha256": "6491beb77915d1f7a472fb97b0ee75a7763aea95455783ee90a59b2cec88a4c7",
+      "runtime_bytes": 13044
+    },
+    {
+      "file": "elementalist_move_north_04.png",
+      "bytes": 13720,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "c157ca28b41b91d9d84c201dcc0cb828883cc80dbe3dd1e69ae2a0eb5757a61f",
+      "pixel_sha256": "14ae310e998b78ee9cb383c124df09fc6c175a81edda149927f3fda23779213d",
+      "kind": "move",
+      "direction": "north",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10470,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        226,
+        353,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        194,
+        246
+      ],
+      "runtime_encoded_sha256": "56f2014f09118fe33140cfacce73b9b517c13210ff264d055a640aa8369a95ab",
+      "runtime_pixel_sha256": "bdf8033142a4346b941b697840c0b7c6be16ba99258d0c5524d2a08d77098d90",
+      "runtime_bytes": 13693
+    },
+    {
+      "file": "elementalist_move_north_05.png",
+      "bytes": 11898,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "c9e3cd34fa86eb49ba29efaf49684b6f7b748030b9c132a390e74186f5776d9f",
+      "pixel_sha256": "7729bd35fcbcc4da467341034df0d7c2378f0c72fae4a810764a276983af1ccb",
+      "kind": "move",
+      "direction": "north",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9054,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        226,
+        361,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        209,
+        246
+      ],
+      "runtime_encoded_sha256": "d02c744b52892b9c2475c699f04e2bdcce85a7bc8a1c17627931258371d02e3d",
+      "runtime_pixel_sha256": "878db510eaa8f3de0999d591644fc766a2906dc66cdda1cca31aa9eba0006ae8",
+      "runtime_bytes": 11942
+    },
+    {
+      "file": "elementalist_idle_north-west.png",
+      "bytes": 12096,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "ee23594cb9d2d48ca12e7fe83fac668808234619f5490e3bdfffd2f94e211d52",
+      "pixel_sha256": "5db351b012459e25aa189039a6b4f5996dfb5661c73e40771d047881e0c69b48",
+      "kind": "idle",
+      "direction": "north-west",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 11085,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        190,
+        246
+      ],
+      "runtime_encoded_sha256": "a65b2d7ea741852a4f3a1d62e679bd521ac4f1c2b2ac449e578202ddbde45cda",
+      "runtime_pixel_sha256": "92cfb18d849edab61248d45a8b5efece0efc0cb724c13f37df1ac5a53cbad8d9",
+      "runtime_bytes": 14651
+    },
+    {
+      "file": "elementalist_move_north-west_00.png",
+      "bytes": 11324,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "78271cdc6785aff4e4133021665925c0fdf42aceadefe04ece21b7a237016bcb",
+      "pixel_sha256": "3b3dac9eef6faa8e055a57c99e27b1595f3dd72a42c2f112140900a5efce95c9",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10671,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        356,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        199,
+        246
+      ],
+      "runtime_encoded_sha256": "1b2b87448a0504f4569daf600763d3cc0e514c5f1bdfd04ae4bbdc1df60a89fa",
+      "runtime_pixel_sha256": "97992a76c5f1d8aa64fb244b54a59e95e5dd2c4e9b871e83221161e0f0990a7d",
+      "runtime_bytes": 14134
+    },
+    {
+      "file": "elementalist_move_north-west_01.png",
+      "bytes": 10440,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "b82a2a865d14e68996a00fd188c6a1fba1c414524c0a3b76d27f3dea5fb20a0d",
+      "pixel_sha256": "1b3d082b65f61c65c76a29ad79f2fd567604548a726cb808ccdf593358dae475",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11003,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        226,
+        359,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        205,
+        246
+      ],
+      "runtime_encoded_sha256": "b711ae458f27e794d83ca8387c509c754049d5a7acbe09af492cca7c2a6b28bd",
+      "runtime_pixel_sha256": "d814cdc5a1b079d26a33cf069e9cd8e00160392deae1b3b53390ddda9196b7be",
+      "runtime_bytes": 14838
+    },
+    {
+      "file": "elementalist_move_north-west_02.png",
+      "bytes": 10863,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "5eee8caff0906f76c22b1fb06af0f8b03157898dfcc1367cd12433535a9a26da",
+      "pixel_sha256": "89520e73378a9db3217bb2c10213ee2cd9860df9cea64dccf9c420994f798f3b",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9757,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        226,
+        352,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        192,
+        246
+      ],
+      "runtime_encoded_sha256": "0e981007f782b46ac173fd9d08d3e85dd93ba8c80b970d62dc3885c3c2137659",
+      "runtime_pixel_sha256": "2e6aa017a15514eeaed49b0ce5f1124362feb90d44283d9bdbcb317df5524331",
+      "runtime_bytes": 13156
+    },
+    {
+      "file": "elementalist_move_north-west_03.png",
+      "bytes": 9991,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "09444b27535cac79899160394eec44c8f1616f7da794e41540c0916e1c511474",
+      "pixel_sha256": "76757a81b6ad81947511b3654d6ee8bf75aea3e9660edc200175883cddc07b3c",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 6679,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        349,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        186,
+        246
+      ],
+      "runtime_encoded_sha256": "00d00a4b43fd2dcc81a98b46c09bd2e8252e6da2e3aa33566e1a862f507cbd03",
+      "runtime_pixel_sha256": "09584a2e290e98b5a17c4a96e6cee0361dbefde06c487983bcdf62d2e5138110",
+      "runtime_bytes": 9058
+    },
+    {
+      "file": "elementalist_move_north-west_04.png",
+      "bytes": 10551,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "831d7a8e296a4297b3e3255a172135fd6f8c812b13f49982a40772638b096f37",
+      "pixel_sha256": "f59ffd4d9b0ef4601649a8c703ba6a24ec5212b698f2662b27fd52a463fcaf26",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9584,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        226,
+        346,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        180,
+        246
+      ],
+      "runtime_encoded_sha256": "dccc176f912f19286b3cac0f474e0ab1fcdd0070d5cc0ab294b6d3cca08c36cb",
+      "runtime_pixel_sha256": "32c0164839854c8aff75435728c2dff9be06c4817dee3ea71726646bd71f459f",
+      "runtime_bytes": 12896
+    },
+    {
+      "file": "elementalist_move_north-west_05.png",
+      "bytes": 10017,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "12968d8f4b0fe847cd0198fccb5b375564bc133ac2b14972a6f2911a847fc004",
+      "pixel_sha256": "98fea87ff3f4ddf81e421c52355aa24929395cbcdf4a976801e710a53e5c5aa1",
+      "kind": "move",
+      "direction": "north-west",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7938,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        350,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        187,
+        246
+      ],
+      "runtime_encoded_sha256": "b7ed23bcfd700dac58b756de435995f755027c1574865f16b0f8a0ab9039433e",
+      "runtime_pixel_sha256": "8cd8b96fb1a769a141b39e339d53f7f616f004b946a57b35104ab292a49f60a1",
+      "runtime_bytes": 10311
+    },
+    {
+      "file": "elementalist_idle_west.png",
+      "bytes": 8918,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "375c1dce756dd5c6ad0cdada78d346aae05bef16cd0ee5b5d62d31624e165dc6",
+      "pixel_sha256": "28872c31e7fed806f050de3ce93616c3972ba298f10f01f0ca2b2b1c62e775d5",
+      "kind": "idle",
+      "direction": "west",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 6725,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        226,
+        311,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        110,
+        246
+      ],
+      "runtime_encoded_sha256": "51846d11accf45a09046da5a048b4f9b75d8c5828066ae1444b76c1b2b1d25f0",
+      "runtime_pixel_sha256": "3d20e0a6f0f4273b29ab6db888373e7b879ce795c23f36d030f31fb496bab048",
+      "runtime_bytes": 9220
+    },
+    {
+      "file": "elementalist_move_west_00.png",
+      "bytes": 9096,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "b19a963b0d03fd87906d8c06039fe84ccef26938380c0e6f388c4925da02476c",
+      "pixel_sha256": "c3daf0a1a53bae5f1bfadd07e9f5c23c871174d29f9803c2832f64a6fa3e393c",
+      "kind": "move",
+      "direction": "west",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8687,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        226,
+        324,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        135,
+        246
+      ],
+      "runtime_encoded_sha256": "efb8de1a39d27a6e51bb94623a3e3cd97933ad3589ebe6647ef7410dbd751545",
+      "runtime_pixel_sha256": "48560bfa8102525beaa13a666577c63e954dfe598f940899d61771ad2d72c0f0",
+      "runtime_bytes": 11628
+    },
+    {
+      "file": "elementalist_move_west_01.png",
+      "bytes": 8724,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "2f97f25104968cdbd00d9625adbef167b20a1bc4760c5bc5206d56115bcbf87a",
+      "pixel_sha256": "fc36effab21e501dddf5b34735cd770bd16af81a801aef249bf6c7e250ff3322",
+      "kind": "move",
+      "direction": "west",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10555,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        350,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        187,
+        246
+      ],
+      "runtime_encoded_sha256": "1ac1f7cfb3023f616e019b51f88cf107691d4ece10c701aa37345b1908e7e8c8",
+      "runtime_pixel_sha256": "502926ddf4f3ac40ada17ac1ef7c5bac9d643491d157060b79697eefe82df3a2",
+      "runtime_bytes": 13378
+    },
+    {
+      "file": "elementalist_move_west_02.png",
+      "bytes": 8807,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "57b0bde95cdb8cd28fa98c075edd5ff230b3c7888a21156349d483bbfc4d580e",
+      "pixel_sha256": "7ac5f41d0acf63ccf95007157d867f370cbeb05f0abdd315ae8ec69b70c14a69",
+      "kind": "move",
+      "direction": "west",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7526,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        226,
+        331,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        150,
+        246
+      ],
+      "runtime_encoded_sha256": "61392f25527feb39c8bd412063bb1c78799d0047d71d3e331d088851a64a0ee7",
+      "runtime_pixel_sha256": "58ee1ba7e99808122752cd9be77cf371a929472d121668d84ca488dc9959f716",
+      "runtime_bytes": 10572
+    },
+    {
+      "file": "elementalist_move_west_03.png",
+      "bytes": 10284,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "1c1f848c5deed272a516ab6d31de66c4b9299d821da58ea724579ee600b0ec7d",
+      "pixel_sha256": "53ae69c0460fe24eaeb11f5accf15b2e1dd0bccf3f6fb69011a9bee2d0d22fe5",
+      "kind": "move",
+      "direction": "west",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 8338,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        226,
+        328,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        144,
+        246
+      ],
+      "runtime_encoded_sha256": "dd405dd7a5615b6cffb6400402397be72a5c2dca3fcee0467ac2b7366df45030",
+      "runtime_pixel_sha256": "097a40609cf7ecef5ebfac56a1992c978341480cd188980eaaad35eeb11b0d26",
+      "runtime_bytes": 11376
+    },
+    {
+      "file": "elementalist_move_west_04.png",
+      "bytes": 11036,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "fbab4f04b6d8c1f4a011bb812ef2e789a513bc26d3ca8a60aba539d0085f2474",
+      "pixel_sha256": "6eecd2cbc02d055e2abca419dc5da3ce63dc61f3e1db4daa0f7faac1b81b526c",
+      "kind": "move",
+      "direction": "west",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 7839,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        226,
+        336,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        160,
+        246
+      ],
+      "runtime_encoded_sha256": "bca6553168bdfd6fb776135d99319c957bcb5833aa43b184535b83cf2a3d5648",
+      "runtime_pixel_sha256": "e4e65f32976d21ed2ae3c82ecc085f9f3780fef2fba7fda10a050073a26c23ca",
+      "runtime_bytes": 10425
+    },
+    {
+      "file": "elementalist_move_west_05.png",
+      "bytes": 9928,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "2df37d9635270ef2358eb95d6b27cf1373cae946831d4d986450fa949bb8300b",
+      "pixel_sha256": "e8cd7fd7481ad06b1eebc1e29fd724465a5f3f9c9518a626a0d41eacf4f9e088",
+      "kind": "move",
+      "direction": "west",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 9045,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        226,
+        347,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        181,
+        246
+      ],
+      "runtime_encoded_sha256": "9c08c737185749257da8bd758eb009aed6565b2dfbb7c186900eb982afd89fab",
+      "runtime_pixel_sha256": "0d1d9229635215fbf71e8460a39e3abc45e77a16aa23f4864a1baaee6468ae19",
+      "runtime_bytes": 11985
+    },
+    {
+      "file": "elementalist_idle_south-west.png",
+      "bytes": 13594,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "7359f524c7e790db87a3cb5a82347ba71f661e7c93771bb813a033eb6c0fa841",
+      "pixel_sha256": "0b7ccd26a3975d413814456f0901982d138907dbd783816d700f23536786436d",
+      "kind": "idle",
+      "direction": "south-west",
+      "index": 0,
+      "url_kind": "character_rotation",
+      "source_bytes": 11057,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        226,
+        342,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        172,
+        246
+      ],
+      "runtime_encoded_sha256": "a5b29a0f2fa36eea823573f117526a1cc42c7dc8f7482416fbf2c1cacf8f3b05",
+      "runtime_pixel_sha256": "919a1521c97e4c56c25a701760b338a2f667b08080ba632654be3c58f31e22fc",
+      "runtime_bytes": 13930
+    },
+    {
+      "file": "elementalist_move_south-west_00.png",
+      "bytes": 10931,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "bbb32668bec70eef0241aaed036f916c667bc6bd45ce5db84e6e352771692608",
+      "pixel_sha256": "657a84da1e4f6247e16f35566e0360e96b3bc1f17d9649eae9097ecc8e5faafe",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 0,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 12231,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        190,
+        246
+      ],
+      "runtime_encoded_sha256": "cb39923b493226960ef8748775b171d20c08b80fa64dfa2d1d6870aecf840632",
+      "runtime_pixel_sha256": "65fbac7cb6538ad09583d02ebe45421496162f7c45287610aa9f44c705c0f382",
+      "runtime_bytes": 16420
+    },
+    {
+      "file": "elementalist_move_south-west_01.png",
+      "bytes": 11916,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "6d13a6d85fd9149c63c0944f90fe04d1d6d583c5210bf12a489de6d525ef19de",
+      "pixel_sha256": "ceec1aca21951fe49773866093d2cbc00563a382722dc5f2e60f9e72a4a89349",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 1,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11636,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        226,
+        344,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        175,
+        246
+      ],
+      "runtime_encoded_sha256": "0f176f3cc73fdd358489c159b6b6e87547b803c379fdd82243c69dbb127c2eba",
+      "runtime_pixel_sha256": "230f449064019f7af2915500fe047a5737df025185cfb5f0e5c8d52faf5fd617",
+      "runtime_bytes": 15012
+    },
+    {
+      "file": "elementalist_move_south-west_02.png",
+      "bytes": 13196,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "cd5e13beb86ce45e31035827007b903ab9b8e8c9943c6ea78ba2c8d0d6909430",
+      "pixel_sha256": "fd0beccd95ee3b108c2cdb5a7da23ab73128be9da86ee3ae16eee29e1dd0f213",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 2,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11942,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        355,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        197,
+        246
+      ],
+      "runtime_encoded_sha256": "83508590c1467bd8ba17554c07922e9ec12539cbe5a4f833cb5703204e46e11d",
+      "runtime_pixel_sha256": "cf41d4922436d2fb31fac48419e924071897eb94b8243c39ef2f453dae5cc25d",
+      "runtime_bytes": 15713
+    },
+    {
+      "file": "elementalist_move_south-west_03.png",
+      "bytes": 11481,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "17c96bbea252675f4b779f30adfaf70a2901df95da3201f7aea57a52bcd9967d",
+      "pixel_sha256": "3b1f7804df6316908b9c1ad76c55ea81c59458ee8d60402e1a367e3c2c85d884",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 3,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11315,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        355,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        198,
+        246
+      ],
+      "runtime_encoded_sha256": "361e72805db372dd2b0ba55cf3bc9c70caed98b2eaa4847bb2f8257075ec5931",
+      "runtime_pixel_sha256": "7969a5e36306a2e127941e79460a8532592ae65a20044a479eec70ee50f4e8aa",
+      "runtime_bytes": 14973
+    },
+    {
+      "file": "elementalist_move_south-west_04.png",
+      "bytes": 11268,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "d78047a4d7ade344608e4105703b1871bcc411410d713aa4d90eca8df90afcb2",
+      "pixel_sha256": "3cee66738c35275c741334a59ffd5440d17939386c1d7a1ab70f7323da716e30",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 4,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 10781,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        354,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        196,
+        246
+      ],
+      "runtime_encoded_sha256": "9fd2105b5672d498703720d7a77f078f914800a0afb0911aa8ec2589f411e0a0",
+      "runtime_pixel_sha256": "ceb449e8dad5430c93849b05439c104ea291ee31c0532bb0fe81acb86fd0e40b",
+      "runtime_bytes": 14054
+    },
+    {
+      "file": "elementalist_move_south-west_05.png",
+      "bytes": 11348,
+      "source_size": [
+        240,
+        240
+      ],
+      "encoded_sha256": "133b062196c52b0dab45b5de76fe5666a151a3cc43b537cb78639dd85fb2fc46",
+      "pixel_sha256": "0c70799f793998aa6a8d470a69c39a03f83039dea29e5fcc249ce6f4d04d24d9",
+      "kind": "move",
+      "direction": "south-west",
+      "index": 5,
+      "url_kind": "character_animation_direct",
+      "source_bytes": 11442,
+      "runtime_size": [
+        512,
+        512
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        354,
+        472
+      ],
+      "runtime_alpha_bbox_size": [
+        196,
+        246
+      ],
+      "runtime_encoded_sha256": "093ca0c323375944c2612f9360ad8b237d0a1c9aa9387585d4fb2fc8796f49b2",
+      "runtime_pixel_sha256": "f854dfac597ef761cb4d7ba0f4e810210cce893573becba3e77d356a497e7041",
+      "runtime_bytes": 15171
+    }
   ],
-  "predecessor_notes": "3068581d-... rejected (SCRUM-801): baked fire/orb props into hands. 7a334fc4-... (used by the FAN-2599 evidence-only candidate) is now 404 / deleted on PixelLab and could not be reused for this regen -- treated as rejected/unusable per FAN-2879 dispatch. No non-PixelLab fallback was used for any of the three characters.",
+  "frame_selection_notes": "PixelLab v3 custom returned 7 frames per direction (reference frame index 0 plus 6 animated frames); source pack stores animated frames 1..6 as 00..05. All 8 directions belong to one animation group; no flips or mirrors used.",
+  "reference_provenance": {
+    "commit": "3b6470dfbb31ffa7f17d0e14d46a0cc0f32c3152",
+    "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+    "url": "https://raw.githubusercontent.com/FomaBy/FantasyDisk/3b6470dfbb31ffa7f17d0e14d46a0cc0f32c3152/assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png"
+  },
   "legacy_or_manual_fallback_used": false,
   "hand_glow_removed": true,
-  "hand_glow_removal_note": "Description explicitly bans hand/forearm glow, light aura, and particles on every direction and every frame, closing out SCRUM-801 v3_character_state_empty_hands_cleanup for this actor.",
-  "known_residual_risk": "Mirror-pair mean-abs-RGBA-diff (east/west, north-east/north-west, south-east/south-west; idle + all 6 move frames = 21 pairs) measured 1.0-5.4 in local self-QA -- several pairs, especially the 3 idle pairs (~1.0-1.2), read below the >=3.5 honest-pack baseline in the acceptance criteria, even though every pair is verified pixel-non-identical (no byte-for-byte mirror duplication) and each direction was generated independently in the same pro-mode job. The character's idle pose is fairly bilaterally symmetric, which likely explains the low diff rather than a copy-paste defect. Flagged for QA judgment rather than silently claimed as passing."
+  "known_residual_risk": "No bright-green glow pixels remain under the committed QA rule; independent QA should still inspect the cleaned directional animation in-engine.",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "FAN-3868-provenance-2"
+  },
+  "manual_palette_cleanup_used": true,
+  "manual_palette_cleanup_frame": "elementalist_move_north-east_02.png",
+  "source_cleanup": {
+    "method": "PixelLab edit_image_pixen applied once to every final source frame; six palette-outlier frames received PixelLab reference edit_image correction; one north-east frame received deterministic hue sanitation after the reference edit job stalled and was cancelled.",
+    "pixen_final_frame_jobs": 56,
+    "reference_edit_completed_jobs": 6,
+    "reference_edit_cancelled_jobs": 2,
+    "reference_edit_job_ids": [
+      "53946659-96d7-4260-8b3f-e3880d371f09",
+      "6bebe0b8-5513-4182-9415-84185166205b",
+      "5e1da431-68ec-4a65-b6a7-7839173d2714",
+      "41485884-2be2-4eff-8f28-842fe709ea4e",
+      "2be9196d-a169-49f9-886a-275b08b11d17",
+      "a628c256-5b3f-4280-aa00-7bcb491973c5"
+    ],
+    "manual_frame": "elementalist_move_north-east_02.png"
+  },
+  "qa_metrics": {
+    "source_frame_count": 56,
+    "runtime_frame_count": 56,
+    "source_size": [
+      240,
+      240
+    ],
+    "runtime_size": [
+      512,
+      512
+    ],
+    "visible_height_min": 246,
+    "visible_height_max": 246,
+    "footline_exclusive_y_min": 472,
+    "footline_exclusive_y_max": 472,
+    "pivot_center_x_min": 255.5,
+    "pivot_center_x_max": 256.0,
+    "bright_green_pixels": 0,
+    "continuity_average_percent": 23.2147,
+    "mirror_pair_count": 21,
+    "mirror_min_score": 3.5486,
+    "mirror_byte_identical_count": 0
+  }
 }

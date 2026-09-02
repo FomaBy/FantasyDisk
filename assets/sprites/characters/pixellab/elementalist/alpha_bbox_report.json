@@ -11,29 +11,29 @@
       "source": "elementalist_idle_south.png",
       "runtime": "elementalist_idle_south.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        40,
-        25,
-        91,
-        111
+        67,
+        62,
+        169,
+        180
       ],
       "source_alpha_bbox_size": [
-        51,
-        86
+        102,
+        118
       ],
       "alpha_threshold": 0,
-      "scale": 2.86046511627907,
+      "scale": 2.084745762712,
       "resized_visible_size": [
-        146,
+        102,
         246
       ],
       "runtime_alpha_bbox": [
-        183,
+        150,
         226,
-        329,
+        363,
         472
       ]
     },
@@ -41,29 +41,29 @@
       "source": "elementalist_move_south_00.png",
       "runtime": "elementalist_move_south_00.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        39,
-        14,
-        91,
-        111
+        64,
+        61,
+        171,
+        179
       ],
       "source_alpha_bbox_size": [
-        52,
-        97
+        107,
+        118
       ],
       "alpha_threshold": 0,
-      "scale": 2.536082474226804,
+      "scale": 2.084745762712,
       "resized_visible_size": [
-        132,
+        107,
         246
       ],
       "runtime_alpha_bbox": [
-        190,
+        145,
         226,
-        322,
+        368,
         472
       ]
     },
@@ -71,29 +71,29 @@
       "source": "elementalist_move_south_01.png",
       "runtime": "elementalist_move_south_01.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        39,
-        14,
-        91,
-        111
+        66,
+        59,
+        170,
+        179
       ],
       "source_alpha_bbox_size": [
-        52,
-        97
+        104,
+        120
       ],
       "alpha_threshold": 0,
-      "scale": 2.536082474226804,
+      "scale": 2.05,
       "resized_visible_size": [
-        132,
+        104,
         246
       ],
       "runtime_alpha_bbox": [
-        190,
+        150,
         226,
-        322,
+        363,
         472
       ]
     },
@@ -101,29 +101,29 @@
       "source": "elementalist_move_south_02.png",
       "runtime": "elementalist_move_south_02.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        39,
-        13,
-        90,
-        111
+        64,
+        59,
+        167,
+        179
       ],
       "source_alpha_bbox_size": [
-        51,
-        98
+        103,
+        120
       ],
       "alpha_threshold": 0,
-      "scale": 2.510204081632653,
+      "scale": 2.05,
       "resized_visible_size": [
-        128,
+        103,
         246
       ],
       "runtime_alpha_bbox": [
-        192,
+        151,
         226,
-        320,
+        362,
         472
       ]
     },
@@ -131,29 +131,29 @@
       "source": "elementalist_move_south_03.png",
       "runtime": "elementalist_move_south_03.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        38,
-        13,
-        90,
-        109
+        61,
+        60,
+        165,
+        181
       ],
       "source_alpha_bbox_size": [
-        52,
-        96
+        104,
+        121
       ],
       "alpha_threshold": 0,
-      "scale": 2.5625,
+      "scale": 2.03305785124,
       "resized_visible_size": [
-        133,
+        104,
         246
       ],
       "runtime_alpha_bbox": [
-        190,
+        151,
         226,
-        323,
+        362,
         472
       ]
     },
@@ -161,29 +161,29 @@
       "source": "elementalist_move_south_04.png",
       "runtime": "elementalist_move_south_04.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        39,
-        14,
-        91,
-        111
+        61,
+        59,
+        163,
+        183
       ],
       "source_alpha_bbox_size": [
-        52,
-        97
+        102,
+        124
       ],
       "alpha_threshold": 0,
-      "scale": 2.536082474226804,
+      "scale": 1.983870967742,
       "resized_visible_size": [
-        132,
+        102,
         246
       ],
       "runtime_alpha_bbox": [
-        190,
+        155,
         226,
-        322,
+        357,
         472
       ]
     },
@@ -191,1289 +191,29 @@
       "source": "elementalist_move_south_05.png",
       "runtime": "elementalist_move_south_05.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        39,
-        14,
-        91,
-        110
+        63,
+        61,
+        156,
+        183
       ],
       "source_alpha_bbox_size": [
-        52,
-        96
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5625,
-      "resized_visible_size": [
-        133,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        190,
-        226,
-        323,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_south-east.png",
-      "runtime": "elementalist_idle_south-east.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        39,
-        25,
-        83,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        44,
-        87
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.8275862068965516,
-      "resized_visible_size": [
-        124,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        194,
-        226,
-        318,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_00.png",
-      "runtime": "elementalist_move_south-east_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        35,
-        17,
-        80,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        45,
-        94
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.617021276595745,
-      "resized_visible_size": [
-        118,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        197,
-        226,
-        315,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_01.png",
-      "runtime": "elementalist_move_south-east_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        34,
-        16,
-        86,
-        109
-      ],
-      "source_alpha_bbox_size": [
-        52,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        138,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        187,
-        226,
-        325,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_02.png",
-      "runtime": "elementalist_move_south-east_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        38,
-        17,
-        82,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        44,
-        94
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.617021276595745,
-      "resized_visible_size": [
-        115,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        313,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_03.png",
-      "runtime": "elementalist_move_south-east_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        39,
-        17,
-        79,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        40,
-        96
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5625,
-      "resized_visible_size": [
-        102,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        205,
-        226,
-        307,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_04.png",
-      "runtime": "elementalist_move_south-east_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        33,
-        17,
-        86,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        53,
-        96
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5625,
-      "resized_visible_size": [
-        136,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        188,
-        226,
-        324,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-east_05.png",
-      "runtime": "elementalist_move_south-east_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        39,
-        17,
-        85,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        46,
-        96
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5625,
-      "resized_visible_size": [
-        118,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        197,
-        226,
-        315,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_east.png",
-      "runtime": "elementalist_idle_east.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        44,
-        22,
-        81,
-        108
-      ],
-      "source_alpha_bbox_size": [
-        37,
-        86
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.86046511627907,
-      "resized_visible_size": [
-        106,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        203,
-        226,
-        309,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_00.png",
-      "runtime": "elementalist_move_east_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        36,
-        21,
-        79,
-        114
-      ],
-      "source_alpha_bbox_size": [
-        43,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        114,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        199,
-        226,
-        313,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_01.png",
-      "runtime": "elementalist_move_east_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        36,
-        21,
-        88,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        52,
-        91
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7032967032967035,
-      "resized_visible_size": [
-        141,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        186,
-        226,
-        327,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_02.png",
-      "runtime": "elementalist_move_east_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        35,
-        21,
-        81,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        46,
-        90
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7333333333333334,
-      "resized_visible_size": [
-        126,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        193,
-        226,
-        319,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_03.png",
-      "runtime": "elementalist_move_east_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        41,
-        21,
-        78,
-        114
-      ],
-      "source_alpha_bbox_size": [
-        37,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        98,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        207,
-        226,
-        305,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_04.png",
-      "runtime": "elementalist_move_east_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        44,
-        21,
-        88,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        44,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        122,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        195,
-        226,
-        317,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_east_05.png",
-      "runtime": "elementalist_move_east_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        36,
-        21,
-        80,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        44,
-        91
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7032967032967035,
-      "resized_visible_size": [
-        119,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        196,
-        226,
-        315,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_north-east.png",
-      "runtime": "elementalist_idle_north-east.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        40,
-        22,
-        82,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        42,
-        88
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7954545454545454,
-      "resized_visible_size": [
-        117,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        315,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_00.png",
-      "runtime": "elementalist_move_north-east_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        38,
-        22,
-        81,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        43,
-        88
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7954545454545454,
-      "resized_visible_size": [
-        120,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        196,
-        226,
-        316,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_01.png",
-      "runtime": "elementalist_move_north-east_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        37,
-        22,
-        87,
-        118
-      ],
-      "source_alpha_bbox_size": [
-        50,
-        96
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5625,
-      "resized_visible_size": [
-        128,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        192,
-        226,
-        320,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_02.png",
-      "runtime": "elementalist_move_north-east_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        37,
-        22,
-        83,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        46,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        127,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        192,
-        226,
-        319,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_03.png",
-      "runtime": "elementalist_move_north-east_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        38,
-        21,
-        80,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        42,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        116,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        314,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_04.png",
-      "runtime": "elementalist_move_north-east_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        34,
-        21,
-        86,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        52,
-        92
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6739130434782608,
-      "resized_visible_size": [
-        139,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        186,
-        226,
-        325,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-east_05.png",
-      "runtime": "elementalist_move_north-east_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        33,
-        21,
-        82,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        49,
-        91
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7032967032967035,
-      "resized_visible_size": [
-        132,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        190,
-        226,
-        322,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_north.png",
-      "runtime": "elementalist_idle_north.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        43,
-        23,
-        88,
-        109
-      ],
-      "source_alpha_bbox_size": [
-        45,
-        86
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.86046511627907,
-      "resized_visible_size": [
-        129,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        192,
-        226,
-        321,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_00.png",
-      "runtime": "elementalist_move_north_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        20,
-        88,
-        114
-      ],
-      "source_alpha_bbox_size": [
-        46,
-        94
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.617021276595745,
-      "resized_visible_size": [
-        120,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        196,
-        226,
-        316,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_01.png",
-      "runtime": "elementalist_move_north_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        20,
-        85,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        43,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        114,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        199,
-        226,
-        313,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_02.png",
-      "runtime": "elementalist_move_north_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        20,
-        83,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        41,
-        92
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6739130434782608,
-      "resized_visible_size": [
-        110,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        201,
-        226,
-        311,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_03.png",
-      "runtime": "elementalist_move_north_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        45,
-        19,
-        88,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        43,
-        92
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6739130434782608,
-      "resized_visible_size": [
-        115,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        313,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_04.png",
-      "runtime": "elementalist_move_north_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        45,
-        19,
-        86,
-        114
-      ],
-      "source_alpha_bbox_size": [
-        41,
-        95
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5894736842105264,
-      "resized_visible_size": [
-        106,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        203,
-        226,
-        309,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north_05.png",
-      "runtime": "elementalist_move_north_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        19,
-        86,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        44,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        116,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        314,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_north-west.png",
-      "runtime": "elementalist_idle_north-west.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        22,
-        92,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        42,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        116,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        198,
-        226,
-        314,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_00.png",
-      "runtime": "elementalist_move_north-west_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        18,
-        90,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        40,
-        94
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.617021276595745,
-      "resized_visible_size": [
-        105,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        204,
-        226,
-        309,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_01.png",
-      "runtime": "elementalist_move_north-west_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        40,
-        18,
-        94,
-        112
-      ],
-      "source_alpha_bbox_size": [
-        54,
-        94
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.617021276595745,
-      "resized_visible_size": [
-        141,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        186,
-        226,
-        327,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_02.png",
-      "runtime": "elementalist_move_north-west_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        48,
-        18,
-        95,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        47,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        124,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        194,
-        226,
-        318,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_03.png",
-      "runtime": "elementalist_move_north-west_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        18,
         93,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        43,
-        95
+        122
       ],
       "alpha_threshold": 0,
-      "scale": 2.5894736842105264,
-      "resized_visible_size": [
-        111,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        200,
-        226,
-        311,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_04.png",
-      "runtime": "elementalist_move_north-west_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        41,
-        18,
-        92,
-        116
-      ],
-      "source_alpha_bbox_size": [
-        51,
-        98
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.510204081632653,
-      "resized_visible_size": [
-        128,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        192,
-        226,
-        320,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_north-west_05.png",
-      "runtime": "elementalist_move_north-west_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        41,
-        18,
-        94,
-        113
-      ],
-      "source_alpha_bbox_size": [
-        53,
-        95
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.5894736842105264,
-      "resized_visible_size": [
-        137,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        188,
-        226,
-        325,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_idle_west.png",
-      "runtime": "elementalist_idle_west.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        51,
-        22,
-        87,
-        108
-      ],
-      "source_alpha_bbox_size": [
-        36,
-        86
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.86046511627907,
-      "resized_visible_size": [
-        103,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        204,
-        226,
-        307,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_00.png",
-      "runtime": "elementalist_move_west_00.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        20,
-        95,
-        109
-      ],
-      "source_alpha_bbox_size": [
-        45,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        124,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        194,
-        226,
-        318,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_01.png",
-      "runtime": "elementalist_move_west_01.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        20,
-        93,
-        109
-      ],
-      "source_alpha_bbox_size": [
-        51,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        141,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        186,
-        226,
-        327,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_02.png",
-      "runtime": "elementalist_move_west_02.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        48,
-        20,
-        95,
-        109
-      ],
-      "source_alpha_bbox_size": [
-        47,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        130,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        191,
-        226,
-        321,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_03.png",
-      "runtime": "elementalist_move_west_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        20,
-        84,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        34,
-        90
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7333333333333334,
+      "scale": 2.016393442623,
       "resized_visible_size": [
         93,
         246
       ],
       "runtime_alpha_bbox": [
-        210,
+        162,
         226,
-        303,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_04.png",
-      "runtime": "elementalist_move_west_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        42,
-        20,
-        83,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        41,
-        91
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7032967032967035,
-      "resized_visible_size": [
-        111,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        200,
-        226,
-        311,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_west_05.png",
-      "runtime": "elementalist_move_west_05.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        49,
-        20,
-        94,
-        110
-      ],
-      "source_alpha_bbox_size": [
-        45,
-        90
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.7333333333333334,
-      "resized_visible_size": [
-        123,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        194,
-        226,
-        317,
+        350,
         472
       ]
     },
@@ -1481,29 +221,29 @@
       "source": "elementalist_idle_south-west.png",
       "runtime": "elementalist_idle_south-west.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        49,
-        25,
-        93,
-        112
+        79,
+        60,
+        165,
+        183
       ],
       "source_alpha_bbox_size": [
-        44,
-        87
+        86,
+        123
       ],
       "alpha_threshold": 0,
-      "scale": 2.8275862068965516,
+      "scale": 2.0,
       "resized_visible_size": [
-        124,
+        86,
         246
       ],
       "runtime_alpha_bbox": [
-        194,
+        170,
         226,
-        318,
+        342,
         472
       ]
     },
@@ -1511,23 +251,203 @@
       "source": "elementalist_move_south-west_00.png",
       "runtime": "elementalist_move_south-west_00.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        50,
-        18,
-        91,
-        110
+        76,
+        61,
+        170,
+        183
       ],
       "source_alpha_bbox_size": [
-        41,
-        92
+        94,
+        122
       ],
       "alpha_threshold": 0,
-      "scale": 2.6739130434782608,
+      "scale": 2.016393442623,
       "resized_visible_size": [
-        110,
+        94,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-west_01.png",
+      "runtime": "elementalist_move_south-west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        83,
+        61,
+        170,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        87,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        226,
+        344,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-west_02.png",
+      "runtime": "elementalist_move_south-west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        62,
+        173,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        97,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        97,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        355,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-west_03.png",
+      "runtime": "elementalist_move_south-west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        61,
+        175,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        98,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        355,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-west_04.png",
+      "runtime": "elementalist_move_south-west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        61,
+        174,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        97,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        97,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        354,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-west_05.png",
+      "runtime": "elementalist_move_south-west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        61,
+        174,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        97,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        97,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        226,
+        354,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_west.png",
+      "runtime": "elementalist_idle_west.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        100,
+        57,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        125
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.968,
+      "resized_visible_size": [
+        56,
         246
       ],
       "runtime_alpha_bbox": [
@@ -1538,152 +458,1232 @@
       ]
     },
     {
-      "source": "elementalist_move_south-west_01.png",
-      "runtime": "elementalist_move_south-west_01.png",
+      "source": "elementalist_move_west_00.png",
+      "runtime": "elementalist_move_west_00.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        45,
-        18,
         92,
-        112
+        58,
+        160,
+        182
       ],
       "source_alpha_bbox_size": [
-        47,
-        94
+        68,
+        124
       ],
       "alpha_threshold": 0,
-      "scale": 2.617021276595745,
+      "scale": 1.983870967742,
       "resized_visible_size": [
-        123,
+        68,
         246
       ],
       "runtime_alpha_bbox": [
-        194,
+        189,
+        226,
+        324,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_west_01.png",
+      "runtime": "elementalist_move_west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        85,
+        61,
+        176,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        91,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        350,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_west_02.png",
+      "runtime": "elementalist_move_west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        92,
+        60,
+        164,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        118
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.084745762712,
+      "resized_visible_size": [
+        72,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        226,
+        331,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_west_03.png",
+      "runtime": "elementalist_move_west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        96,
+        57,
+        167,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        71,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        184,
+        226,
+        328,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_west_04.png",
+      "runtime": "elementalist_move_west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        91,
+        58,
+        169,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        78,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        226,
+        336,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_west_05.png",
+      "runtime": "elementalist_move_west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        61,
+        167,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        89,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        226,
+        347,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_north-west.png",
+      "runtime": "elementalist_idle_north-west.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        71,
+        57,
+        167,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        96,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_00.png",
+      "runtime": "elementalist_move_north-west_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        67,
+        60,
+        165,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        98,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        356,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_01.png",
+      "runtime": "elementalist_move_north-west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        65,
+        61,
+        165,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        100,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        226,
+        359,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_02.png",
+      "runtime": "elementalist_move_north-west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        72,
+        57,
+        169,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        97,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        97,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        226,
+        352,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_03.png",
+      "runtime": "elementalist_move_north-west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        57,
+        172,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        94,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        349,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_04.png",
+      "runtime": "elementalist_move_north-west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        82,
+        58,
+        172,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0,
+      "resized_visible_size": [
+        90,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        226,
+        346,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-west_05.png",
+      "runtime": "elementalist_move_north-west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        60,
+        171,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        92,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        163,
+        226,
+        350,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_north.png",
+      "runtime": "elementalist_idle_north.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        65,
+        58,
+        175,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        110,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        110,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        226,
+        368,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_00.png",
+      "runtime": "elementalist_move_north_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        62,
+        59,
+        178,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        116,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        116,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        137,
+        226,
+        375,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_01.png",
+      "runtime": "elementalist_move_north_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        64,
+        60,
+        175,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        111,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        111,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        226,
+        371,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_02.png",
+      "runtime": "elementalist_move_north_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        70,
+        60,
+        168,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        98,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        226,
+        358,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_03.png",
+      "runtime": "elementalist_move_north_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        75,
+        60,
+        167,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        92,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_04.png",
+      "runtime": "elementalist_move_north_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        72,
+        60,
+        166,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        94,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        226,
+        353,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north_05.png",
+      "runtime": "elementalist_move_north_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        68,
+        60,
+        169,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        101,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        226,
+        361,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_north-east.png",
+      "runtime": "elementalist_idle_north-east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        58,
+        167,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0,
+      "resized_visible_size": [
+        91,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        226,
+        347,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_00.png",
+      "runtime": "elementalist_move_north-east_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        75,
+        56,
+        174,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        125
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.968,
+      "resized_visible_size": [
+        99,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        159,
+        226,
+        354,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_01.png",
+      "runtime": "elementalist_move_north-east_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        69,
+        58,
+        170,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0,
+      "resized_visible_size": [
+        101,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        155,
+        226,
+        357,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_02.png",
+      "runtime": "elementalist_move_north-east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        67,
+        60,
+        165,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        98,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        226,
+        356,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_03.png",
+      "runtime": "elementalist_move_north-east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        69,
+        59,
+        156,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        87,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        226,
+        344,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_04.png",
+      "runtime": "elementalist_move_north-east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        73,
+        58,
+        152,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        79,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        226,
+        337,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_north-east_05.png",
+      "runtime": "elementalist_move_north-east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        56,
+        154,
+        177
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        77,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        226,
+        335,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_east.png",
+      "runtime": "elementalist_idle_east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        83,
+        58,
+        144,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        61,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        196,
         226,
         317,
         472
       ]
     },
     {
-      "source": "elementalist_move_south-west_02.png",
-      "runtime": "elementalist_move_south-west_02.png",
+      "source": "elementalist_move_east_00.png",
+      "runtime": "elementalist_move_east_00.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        48,
-        17,
-        92,
-        112
+        79,
+        58,
+        148,
+        182
       ],
       "source_alpha_bbox_size": [
-        44,
-        95
+        69,
+        124
       ],
       "alpha_threshold": 0,
-      "scale": 2.5894736842105264,
+      "scale": 1.983870967742,
       "resized_visible_size": [
-        114,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        199,
-        226,
-        313,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-west_03.png",
-      "runtime": "elementalist_move_south-west_03.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        50,
-        18,
-        91,
-        111
-      ],
-      "source_alpha_bbox_size": [
-        41,
-        93
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.6451612903225805,
-      "resized_visible_size": [
-        108,
-        246
-      ],
-      "runtime_alpha_bbox": [
-        202,
-        226,
-        310,
-        472
-      ]
-    },
-    {
-      "source": "elementalist_move_south-west_04.png",
-      "runtime": "elementalist_move_south-west_04.png",
-      "source_size": [
-        128,
-        128
-      ],
-      "source_alpha_bbox": [
-        43,
-        19,
-        92,
-        108
-      ],
-      "source_alpha_bbox_size": [
-        49,
-        89
-      ],
-      "alpha_threshold": 0,
-      "scale": 2.764044943820225,
-      "resized_visible_size": [
-        135,
+        69,
         246
       ],
       "runtime_alpha_bbox": [
         188,
         226,
-        323,
+        325,
         472
       ]
     },
     {
-      "source": "elementalist_move_south-west_05.png",
-      "runtime": "elementalist_move_south-west_05.png",
+      "source": "elementalist_move_east_01.png",
+      "runtime": "elementalist_move_east_01.png",
       "source_size": [
-        128,
-        128
+        240,
+        240
       ],
       "source_alpha_bbox": [
-        48,
-        19,
-        91,
-        108
+        74,
+        62,
+        160,
+        182
       ],
       "source_alpha_bbox_size": [
-        43,
-        89
+        86,
+        120
       ],
       "alpha_threshold": 0,
-      "scale": 2.764044943820225,
+      "scale": 2.05,
       "resized_visible_size": [
-        119,
+        86,
         246
       ],
       "runtime_alpha_bbox": [
-        196,
+        168,
         226,
-        315,
+        344,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_east_02.png",
+      "runtime": "elementalist_move_east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        75,
+        61,
+        152,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.067226890756,
+      "resized_visible_size": [
+        77,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        177,
+        226,
+        336,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_east_03.png",
+      "runtime": "elementalist_move_east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        58,
+        144,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        67,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        189,
+        226,
+        324,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_east_04.png",
+      "runtime": "elementalist_move_east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        75,
+        59,
+        150,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.016393442623,
+      "resized_visible_size": [
+        75,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        226,
+        332,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_east_05.png",
+      "runtime": "elementalist_move_east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        74,
+        62,
+        166,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        92,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        226,
+        351,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_idle_south-east.png",
+      "runtime": "elementalist_idle_south-east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        72,
+        60,
+        163,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0,
+      "resized_visible_size": [
+        91,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        165,
+        226,
+        347,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_00.png",
+      "runtime": "elementalist_move_south-east_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        71,
+        58,
+        167,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        96,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        226,
+        351,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_01.png",
+      "runtime": "elementalist_move_south-east_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        69,
+        57,
+        170,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.03305785124,
+      "resized_visible_size": [
+        101,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        226,
+        359,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_02.png",
+      "runtime": "elementalist_move_south-east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        66,
+        59,
+        169,
+        177
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        118
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.084745762712,
+      "resized_visible_size": [
+        103,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        149,
+        226,
+        364,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_03.png",
+      "runtime": "elementalist_move_south-east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        58,
+        62,
+        161,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.05,
+      "resized_visible_size": [
+        103,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        226,
+        362,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_04.png",
+      "runtime": "elementalist_move_south-east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        59,
+        58,
+        146,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.983870967742,
+      "resized_visible_size": [
+        87,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        226,
+        343,
+        472
+      ]
+    },
+    {
+      "source": "elementalist_move_south-east_05.png",
+      "runtime": "elementalist_move_south-east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        63,
+        59,
+        152,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0,
+      "resized_visible_size": [
+        89,
+        246
+      ],
+      "runtime_alpha_bbox": [
+        167,
+        226,
+        345,
         472
       ]
     }

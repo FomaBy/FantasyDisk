@@ -840,8 +840,9 @@ Elementalist and Robot to the same live PixelLab directional runtime contract.
 Accepted PixelLab character IDs are Soldier
 `72b487d3-feea-4012-b39f-b59ba24f7f11`, Thief
 `02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f`, Elementalist
-`4b01496c-09c9-4cc8-8913-a9feee4e3a69` (FAN-2879 replaced the deleted/404
-`7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`), and Robot
+`0644c584-d0bf-4b3d-94e0-0371da886ed7` (FAN-3868 replaced the deleted/404
+`7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f` and superseded the broken
+`4b01496c-09c9-4cc8-8913-a9feee4e3a69` pack), and Robot
 `37c6ccf2-ab40-4c89-83a3-db8365f85257`. Source idle rotations, movement frames
 and `manifest.json` live under
 `assets/sprites/characters/pixellab/{soldier,thief,elementalist,robot}/`;
@@ -853,6 +854,17 @@ fallbacks plus all 8 directional `idle_*`, 6-frame `move_*`, and 6-frame
 `sprite_path` at its PixelLab `*_idle_south.png`, so Hero Select, carousel,
 Codex, level-up portraits and runtime movement use the same live directional
 pack. Legacy full-frame/cutout/v2 assets remain fallback/history only.
+
+FAN-3868 Elementalist art QA keeps the new source at 240×240 in
+`assets/sprites/characters/pixellab/elementalist/` and the runtime at 512×512
+in `assets/sprites/characters/full_frame/elementalist_pixellab/`. The pack has
+56 final frames (8 idle + 48 move), 27 SpriteFrames rows (generic idle/move/walk
+plus 8 directional idle/move/walk rows), no attack rows, no flips, no held
+weapon or prop, and no bright-green glow pixels. The committed evidence is
+`assets/sprites/characters/pixellab/elementalist/manifest.json`,
+`assets/sprites/characters/pixellab/elementalist/alpha_bbox_report.json`,
+`docs/design/references/fan3868_elementalist/qa_report.json` and
+`docs/design/reference-assets-lfs/elementalist-FAN-3868/fan3868_elementalist_contact_sheet.png`.
 
 2026-07-01 SCRUM-803 promotes Assassin to the live PixelLab directional runtime
 contract using accepted empty-open-hands source character
