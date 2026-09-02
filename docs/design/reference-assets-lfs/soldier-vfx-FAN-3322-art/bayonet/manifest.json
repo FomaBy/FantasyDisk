@@ -75,7 +75,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f00.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f00.png",
+      "encoded_sha256": "056e40a32fb6a8771e73cac1d04b871f769036186ccdbe90f4325984e648c09e",
+      "pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7"
     },
     {
       "index": 1,
@@ -128,7 +131,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f01.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f01.png",
+      "encoded_sha256": "9a5e844773573d19a01c1b439f29c740c5d23450d29a5291435eea03a6221d54",
+      "pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818"
     },
     {
       "index": 2,
@@ -181,7 +187,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f02.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f02.png",
+      "encoded_sha256": "47cd8ce5f4b8fb71e7ce900d76f98bc41fea57b28a53c71a0deaad44ca758c77",
+      "pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975"
     },
     {
       "index": 3,
@@ -234,7 +243,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f03.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f03.png",
+      "encoded_sha256": "840c0542fe4e72496b99c6550586e2246450c6bf6b8ce5d67107b09f321dba67",
+      "pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8"
     },
     {
       "index": 4,
@@ -287,7 +299,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f04.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f04.png",
+      "encoded_sha256": "151ac984e95a47b379a562a1eb91871b4e6f62dfe1710f48223db40f0de0952f",
+      "pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83"
     },
     {
       "index": 5,
@@ -340,7 +355,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f05.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f05.png",
+      "encoded_sha256": "1a005aa5d8f7913dfaff5f441e94674a37e0dc5dd73200df3de5cdfe9d2f1748",
+      "pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7"
     },
     {
       "index": 6,
@@ -393,7 +411,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f06.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f06.png",
+      "encoded_sha256": "f63bdca6026ce871c73ce3c74470bc8253f1b031bce0507f235e6d72c155aa51",
+      "pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17"
     },
     {
       "index": 7,
@@ -446,7 +467,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f07.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f07.png",
+      "encoded_sha256": "5aafa5dc728b2e1f92a36e40788cc8108a778596838a786f2d18db793e378933",
+      "pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9"
     },
     {
       "index": 8,
@@ -499,7 +523,15 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/bayonet/bayonet_f08.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "bayonet_f08.png",
+      "encoded_sha256": "4af1eb167600db8732751f9a9143a39879a6b5c3734add49e949e1b26cc64b37",
+      "pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4"
     }
-  ]
+  ],
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  }
 }

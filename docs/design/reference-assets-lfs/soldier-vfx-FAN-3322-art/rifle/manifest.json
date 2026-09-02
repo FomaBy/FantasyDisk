@@ -75,7 +75,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f00.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f00.png",
+      "encoded_sha256": "27c57a3a8b02c452343c909b06a4df1a0249f72c29cea23bf78b63a17c00cea8",
+      "pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a"
     },
     {
       "index": 1,
@@ -128,7 +131,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f01.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f01.png",
+      "encoded_sha256": "076890c8eeb65bf4b3d54651e07e65deb9b424e6365234aaf08d07b65ce3d015",
+      "pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f"
     },
     {
       "index": 2,
@@ -181,7 +187,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f02.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f02.png",
+      "encoded_sha256": "1cc390e4e5a09e5a90c38acad7dcd3c31972eec8ff3cc7ab7804b861e3c283f9",
+      "pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724"
     },
     {
       "index": 3,
@@ -234,7 +243,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f03.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f03.png",
+      "encoded_sha256": "08f32f3791de1fafde060865f56818e29ca3e9281ab0c9c07055035dad41da2d",
+      "pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461"
     },
     {
       "index": 4,
@@ -287,7 +299,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f04.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f04.png",
+      "encoded_sha256": "b302918d706471cda63864df1dc0263c78f0cd61e742c294f18a13b182a3d82e",
+      "pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78"
     },
     {
       "index": 5,
@@ -340,7 +355,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f05.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f05.png",
+      "encoded_sha256": "2c977684ed71a8e8927bf0b12c3b4d446987cc3b0ef0df179d348000ac32a16b",
+      "pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74"
     },
     {
       "index": 6,
@@ -393,7 +411,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f06.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f06.png",
+      "encoded_sha256": "ed07f02e34e27e1141584e2867426c961d2fcc5e07c2ea8d972b69def7b1c6f7",
+      "pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa"
     },
     {
       "index": 7,
@@ -446,7 +467,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f07.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f07.png",
+      "encoded_sha256": "2fc6d07a14b4c1e5bb2cba323ceb528502964cda41dfd19027259720bd37c27c",
+      "pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a"
     },
     {
       "index": 8,
@@ -499,7 +523,15 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f08.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "rifle_f08.png",
+      "encoded_sha256": "03de0da99c97e212639f069a6fb2dfd0abb4d36f2c1adffb225784bb726153b1",
+      "pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f"
     }
-  ]
+  ],
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  }
 }

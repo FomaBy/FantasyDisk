@@ -75,7 +75,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f00.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f00.png",
+      "encoded_sha256": "be621143008a30b08e4d5b1852419fd9b8f4fd15e19c616a486ddb032061af06",
+      "pixel_sha256": "93097f78b2b6114a0bec747e66d624694c413b14183ff33e86565dcd21786ae1"
     },
     {
       "index": 1,
@@ -128,7 +131,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f01.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f01.png",
+      "encoded_sha256": "c29a8b4c61c1ca2d3c2380c435c278fb1eb1f7c9fde5de9d6399a29fe79573ab",
+      "pixel_sha256": "b982c8af5a2a3a490bb9f1a6ec498c2490bcbe2b8b2c9598ce08fe941c7be705"
     },
     {
       "index": 2,
@@ -181,7 +187,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f02.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f02.png",
+      "encoded_sha256": "fdcba0ef62d46d9d09e9f09b722ca462df4cd6307fdcd68c5367feabd53e1bd7",
+      "pixel_sha256": "64458863dbcc150fb219bcb1622dd142aa443bdc1a425a2766a8ea48b3c28ba6"
     },
     {
       "index": 3,
@@ -234,7 +243,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f03.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f03.png",
+      "encoded_sha256": "0eba9c09273bd0c0f97cc60f73f7b1a7d1340a29b1cd771075513dfbc9331365",
+      "pixel_sha256": "53795190feb8a402992108afe3da9b9f28035513128f3a082f540d3765809142"
     },
     {
       "index": 4,
@@ -287,7 +299,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f04.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f04.png",
+      "encoded_sha256": "36bc43062325ded83e5128bba22f855a8dd90e732eff6e144974f117632654e4",
+      "pixel_sha256": "1df66b8a1b08e1516407130b05acfe8a03c2cb74b4c0fdd459472e28a6e449a5"
     },
     {
       "index": 5,
@@ -340,7 +355,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f05.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f05.png",
+      "encoded_sha256": "ab88645c47f7e99a322c61cacae7b662e1827645cf7f419514664eda57df6ed9",
+      "pixel_sha256": "3e3350580cdf9b62c2bc9fbe6586f3ac5e0ef539afb5e1b0422c8c084db62551"
     },
     {
       "index": 6,
@@ -393,7 +411,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f06.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f06.png",
+      "encoded_sha256": "b954203cbac08dbf67264c0031829636101ad0c26884968a212c6f2003336514",
+      "pixel_sha256": "0515231343eab450c40eb2ac1b5e8052ebdbf1c182bcc0bef0e92c7df9b7994b"
     },
     {
       "index": 7,
@@ -446,7 +467,10 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f07.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f07.png",
+      "encoded_sha256": "4e2a5ad62609f277f7bbc501eac2dd3518ceaaba80b94cf6d5f09f1f84c38be5",
+      "pixel_sha256": "7a50b117d47b2cd24d381de13a5fe8bc4ff09ca82b6898c22528e45a0a4461b9"
     },
     {
       "index": 8,
@@ -499,7 +523,15 @@
       ],
       "import_source_file": "res://assets/sprites/effects/soldier/grenade/grenade_f08.png",
       "importer": "texture",
-      "import_matches_runtime": true
+      "import_matches_runtime": true,
+      "file": "grenade_f08.png",
+      "encoded_sha256": "f60c34592d8b8b90a40fb57929508139ad31c2d71218baf61d9587424741f9e8",
+      "pixel_sha256": "788f7974ea22c6cc45e732929fd34263c264584a1380af60854635e8eb2af06a"
     }
-  ]
+  ],
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  }
 }
