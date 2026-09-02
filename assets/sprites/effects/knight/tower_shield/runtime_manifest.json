@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "tower_shield",
+  "effect_id": "frontal_guard_counter",
+  "pixel_lab": {
+    "object_id": "d522269f-d979-4a61-b58a-8ffcb4469227",
+    "animation_group_id": "c25fe1a5-72ad-4575-a652-429c28327042",
+    "canonical_tag": "knight_tower_shield_frontal_guard_counter",
+    "generator_manifest": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "royal knight tower shield with gold rim, cobalt field and raised heraldic lion crest",
+  "motion_contract": "guard sigils lock into a barrier, the shield braces with recoil, contact sparks strike, then a controlled counter pulse releases",
+  "palette_contract": "dark steel, cobalt blue, gold, ivory crest, white guard sparks, charcoal outlines",
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 12.0,
+    "duration_seconds": 0.75,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "224x224 nearest-neighbor art centered in 256x256 canvas",
+    "flipbook_duration_seconds": 0.75
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield",
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/raw",
+    "runtime_dir": "assets/sprites/effects/knight/tower_shield",
+    "spriteframes": "assets/sprites/effects/knight/tower_shield/tower_shield_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/knight/tower_shield/runtime_manifest.json",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/contact_sheet.png"
+  },
+  "source_runtime_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f00.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f00.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f00.png.import",
+      "source_encoded_sha256": "cb8dacfad12e9148d5e806439da6c620a399e31c9236b4663ba56d6a75594a69",
+      "runtime_encoded_sha256": "cb8dacfad12e9148d5e806439da6c620a399e31c9236b4663ba56d6a75594a69",
+      "source_pixel_sha256": "f913ce3e18b2a5d62a912d5b4557e44c22bc6fabaddd7314134c7d6061029340",
+      "runtime_pixel_sha256": "f913ce3e18b2a5d62a912d5b4557e44c22bc6fabaddd7314134c7d6061029340",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://c6i3ls827iual",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f00.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f00.png-bce7ea32732de7e3a0c432139995b0b4.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f00.png-bce7ea32732de7e3a0c432139995b0b4.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f01.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f01.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f01.png.import",
+      "source_encoded_sha256": "cdaa35a62b5ab0ca2a49296f7031b2a33fa0048b6b93b8f812b93aece9838e77",
+      "runtime_encoded_sha256": "cdaa35a62b5ab0ca2a49296f7031b2a33fa0048b6b93b8f812b93aece9838e77",
+      "source_pixel_sha256": "bc9148054c1e335f2a21d991c6338f587b4059eacfb225ba3ebf89f79751b0ef",
+      "runtime_pixel_sha256": "bc9148054c1e335f2a21d991c6338f587b4059eacfb225ba3ebf89f79751b0ef",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://dqn7aomyk34et",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f01.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f01.png-7323cfde773fe70d9cb825b6fde29fc6.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f01.png-7323cfde773fe70d9cb825b6fde29fc6.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f02.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f02.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f02.png.import",
+      "source_encoded_sha256": "8486e13c4a42cc0fa0b6505d038a4a4eb48ede7a69ffec72830669e6b5e2c9e4",
+      "runtime_encoded_sha256": "8486e13c4a42cc0fa0b6505d038a4a4eb48ede7a69ffec72830669e6b5e2c9e4",
+      "source_pixel_sha256": "6b9a9b414ba5eaa48d1e87b13e8adc3501d9d0a521e3730c9ca34994dd7f3862",
+      "runtime_pixel_sha256": "6b9a9b414ba5eaa48d1e87b13e8adc3501d9d0a521e3730c9ca34994dd7f3862",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://2djed1vnfpxq",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f02.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f02.png-6058fb02a783e0ddbd6b559eda351287.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f02.png-6058fb02a783e0ddbd6b559eda351287.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f03.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f03.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f03.png.import",
+      "source_encoded_sha256": "25e568412c1020cac1fce04613f46c901a9cbcddb6e6036ce9d86f123ac1b6cc",
+      "runtime_encoded_sha256": "25e568412c1020cac1fce04613f46c901a9cbcddb6e6036ce9d86f123ac1b6cc",
+      "source_pixel_sha256": "c61bba1bf1a2417f2bed7f5e76def6ffaf7b280f3298a0adce86f25a9f8772cb",
+      "runtime_pixel_sha256": "c61bba1bf1a2417f2bed7f5e76def6ffaf7b280f3298a0adce86f25a9f8772cb",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bumuxu8qx7cux",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f03.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f03.png-9eeaf51d37f3cc6e3cc588a21969041b.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f03.png-9eeaf51d37f3cc6e3cc588a21969041b.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f04.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f04.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f04.png.import",
+      "source_encoded_sha256": "dcda51f7b2fd424739f8c42b651da8a2c1eb0b2449c31bd43944058fa6c3906d",
+      "runtime_encoded_sha256": "dcda51f7b2fd424739f8c42b651da8a2c1eb0b2449c31bd43944058fa6c3906d",
+      "source_pixel_sha256": "a00ee063cf93d1b1741e1dd06fe18599fb710cff74b8eec5093558f46c323c84",
+      "runtime_pixel_sha256": "a00ee063cf93d1b1741e1dd06fe18599fb710cff74b8eec5093558f46c323c84",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bxwsvesp4inkl",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f04.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f04.png-f2f65a7d464cc430e5bd167e8b53034c.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f04.png-f2f65a7d464cc430e5bd167e8b53034c.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f05.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f05.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f05.png.import",
+      "source_encoded_sha256": "72ef8b9bb23e40e43dc69553682bd2ae409fc3d49b40fc6909c579e332eff279",
+      "runtime_encoded_sha256": "72ef8b9bb23e40e43dc69553682bd2ae409fc3d49b40fc6909c579e332eff279",
+      "source_pixel_sha256": "e0143e2981af41b3fe4c513d7a547dcb605680cecbae8dbb6ae0999670ea2fc0",
+      "runtime_pixel_sha256": "e0143e2981af41b3fe4c513d7a547dcb605680cecbae8dbb6ae0999670ea2fc0",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://cm3f40k3jra5y",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f05.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f05.png-31a97ac3f8e1a4a476250bf99aad57e3.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f05.png-31a97ac3f8e1a4a476250bf99aad57e3.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f06.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f06.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f06.png.import",
+      "source_encoded_sha256": "739c1924f6632dff359b42fb3ec0f9947dad4e424f13871fd4ef218042e05544",
+      "runtime_encoded_sha256": "739c1924f6632dff359b42fb3ec0f9947dad4e424f13871fd4ef218042e05544",
+      "source_pixel_sha256": "7fa361304876940f46c59f0f02d647123bd3456cd921d329b8f8711229cabe3c",
+      "runtime_pixel_sha256": "7fa361304876940f46c59f0f02d647123bd3456cd921d329b8f8711229cabe3c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://1iu16gyvs262",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f06.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f06.png-299c73d4565da9c3dd73efbf7f29f55f.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f06.png-299c73d4565da9c3dd73efbf7f29f55f.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f07.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f07.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f07.png.import",
+      "source_encoded_sha256": "ea4f203b0fb143159ac2e5c9460f77264b1eeee63596b247130d1a7e6cdab606",
+      "runtime_encoded_sha256": "ea4f203b0fb143159ac2e5c9460f77264b1eeee63596b247130d1a7e6cdab606",
+      "source_pixel_sha256": "1ae13cf52a9633791e36ca0734648e36a24e855db3f5815f70d6d8f02dda064f",
+      "runtime_pixel_sha256": "1ae13cf52a9633791e36ca0734648e36a24e855db3f5815f70d6d8f02dda064f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bx63dcpmm7ena",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f07.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f07.png-b2dc7e6ade4a4bbea819b937e1080560.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f07.png-b2dc7e6ade4a4bbea819b937e1080560.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/tower_shield/tower_shield_f08.png",
+      "runtime_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f08.png",
+      "import_file": "assets/sprites/effects/knight/tower_shield/tower_shield_f08.png.import",
+      "source_encoded_sha256": "88d56d2f559da87be2f2a31b93831f25cfb06f9ddede38877bfea58185036864",
+      "runtime_encoded_sha256": "88d56d2f559da87be2f2a31b93831f25cfb06f9ddede38877bfea58185036864",
+      "source_pixel_sha256": "a49a2d659a8ef34552440fd379f7469ba4f192d79b36034446c22ea7183ffd0c",
+      "runtime_pixel_sha256": "a49a2d659a8ef34552440fd379f7469ba4f192d79b36034446c22ea7183ffd0c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://csyfer7lv6aux",
+      "import_source_file": "res://assets/sprites/effects/knight/tower_shield/tower_shield_f08.png",
+      "import_dest_files": [
+        "res://.godot/imported/tower_shield_f08.png-c2e71b242fe7a42b4ad3d201e68750ac.ctex"
+      ],
+      "import_path": "res://.godot/imported/tower_shield_f08.png-c2e71b242fe7a42b4ad3d201e68750ac.ctex",
+      "import_matches_runtime": true
+    }
+  ],
+  "spriteframes_contract": {
+    "animation_name": "tower_shield_guard",
+    "fps": 12.0,
+    "loop": false,
+    "frame_order": [
+      "tower_shield_f00.png",
+      "tower_shield_f01.png",
+      "tower_shield_f02.png",
+      "tower_shield_f03.png",
+      "tower_shield_f04.png",
+      "tower_shield_f05.png",
+      "tower_shield_f06.png",
+      "tower_shield_f07.png",
+      "tower_shield_f08.png"
+    ],
+    "imports_match_runtime": true
+  },
+  "godot_import": {
+    "engine": "Godot 4.7.stable.official.5b4e0cb0f",
+    "fresh_headless_import": true,
+    "imports_match_runtime": true
+  },
+  "canonical_ultimate_key": "knight/tower_shield"
+}

@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "holy_flail",
+  "visual_identity": "holy knight flail with radiant silver chain, heavy morning-star head, ivory gold cobalt gems and sacred halo",
+  "motion_contract": "the chain uncoils through an expanding clockwise spiral, the flail head sweeps the arc, holy sparks trace it, then the circle closes and settles",
+  "palette_contract": "silver chain, antique gold, ivory, cobalt blue, white holy light, charcoal outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.150543,
+    "max": 0.265549,
+    "mean": 0.216627
+  },
+  "all_pair_changed_pixel_ratio_min": 0.150543,
+  "alpha_bbox_gt_8": [
+    [
+      35,
+      39,
+      201,
+      201
+    ],
+    [
+      37,
+      37,
+      200,
+      208
+    ],
+    [
+      42,
+      37,
+      210,
+      213
+    ],
+    [
+      45,
+      38,
+      225,
+      223
+    ],
+    [
+      49,
+      40,
+      215,
+      216
+    ],
+    [
+      49,
+      40,
+      207,
+      211
+    ],
+    [
+      47,
+      39,
+      215,
+      226
+    ],
+    [
+      43,
+      37,
+      218,
+      218
+    ],
+    [
+      40,
+      37,
+      210,
+      211
+    ]
+  ],
+  "minimum_gutter_px": 30,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.753967,
+    "max": 0.829498
+  },
+  "main_component_count": [
+    8,
+    1,
+    1,
+    5,
+    11,
+    2,
+    6,
+    7,
+    1
+  ],
+  "tiny_component_px_after_threshold": [
+    30,
+    0,
+    0,
+    0,
+    12,
+    1,
+    0,
+    0,
+    0
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "9df99615acee9a5caade3470806d075b8826d223303c5a6a7cff209444d75096",
+    "9842994292227ee3d8859f26d55f687d8318a766b16e4bf7280f5cdfad13e1e6",
+    "414d74aaa715699576295a2df96016bdce92b8f79e248e45c64625d16f5d4fb8",
+    "0bce80088fcfe051b6cc5aa8d3fb2b3ed3f786f8d3fa683dacfa5176081eb1ec",
+    "b43e65c53c8fe2e3c430cce86e1602043056609d98017ada752dafc06a51231a",
+    "91fb8c1b30253016c2e8d1f05bec4ef18b0c6e5bb34bf6db590ef473d85ecb8c",
+    "1b204136a426fc0fe85b6f877026d01c0db6b2d3e8b608ff5cc283f2ce620cb0",
+    "8188aa4bf7075e82e8b0bdaa3eb496b927e8e52bb54b0829cc5fdf83b17f9b47",
+    "60a018a29017b684687999d89ba874b654d5e5132cce7dd4d0387c5c1512cefa"
+  ]
+}
