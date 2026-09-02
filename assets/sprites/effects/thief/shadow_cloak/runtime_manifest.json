@@ -1,0 +1,515 @@
+{
+  "schema_version": 1,
+  "source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak",
+  "runtime_dir": "assets/sprites/effects/thief/shadow_cloak",
+  "spriteframes": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_spriteframes.tres",
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "duration_seconds": 3.0,
+  "animation": {
+    "name": "thief_shadow_cloak_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png",
+      "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "adjacent_changed_pixels_rgba": [
+      4357,
+      5262,
+      4604,
+      6223,
+      4546,
+      5931,
+      5953,
+      6677
+    ],
+    "motion_contract": "cloak unfurls in a tight spiral, violet lining sweeps forward like a phantom lunge, a dark-violet backstab slash flares, then the cloak snaps closed"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f00.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png.import",
+      "raw_encoded_sha256": "53a07d7569d53de9576910bc1e2d34f0ac866ce074e6a6fce01826743d8e7771",
+      "raw_pixel_sha256": "efc7f174a08ee0eb6d614396b5ddfec02c391aa419a0ce893b5ad15f6b4027d0",
+      "generated_manifest_encoded_sha256": "53a07d7569d53de9576910bc1e2d34f0ac866ce074e6a6fce01826743d8e7771",
+      "generated_manifest_pixel_sha256": "efc7f174a08ee0eb6d614396b5ddfec02c391aa419a0ce893b5ad15f6b4027d0",
+      "source_encoded_sha256": "0d7487d7dbd3f044ca5899128c4028880981cc327cf0575faf86a65cfc841488",
+      "runtime_encoded_sha256": "0d7487d7dbd3f044ca5899128c4028880981cc327cf0575faf86a65cfc841488",
+      "source_pixel_sha256": "ca9deaa5ab8dc00d481edc2f67630007640693c3f20e9324bff3d534fd375359",
+      "runtime_pixel_sha256": "ca9deaa5ab8dc00d481edc2f67630007640693c3f20e9324bff3d534fd375359",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        68,
+        64,
+        188,
+        205
+      ],
+      "gutters_px": [
+        68,
+        64,
+        68,
+        51
+      ],
+      "minimum_gutter_px": 51,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9212,
+      "visible_ratio_alpha_gt_8": 0.140564,
+      "opaque_pixels": 9212,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://bi0h577dg0wuq",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f00.png-d807fadfc13e1cc6d6af56feb58a78c6.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f01.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png.import",
+      "raw_encoded_sha256": "b74d0e48feed95b25df345fcc6d555617392fbe5dce1cca661a117d9dc911d0e",
+      "raw_pixel_sha256": "6bd2aca182d7a5f22db51fac81c198a21ce97fad149973755a95cfa234d0fb15",
+      "generated_manifest_encoded_sha256": "b74d0e48feed95b25df345fcc6d555617392fbe5dce1cca661a117d9dc911d0e",
+      "generated_manifest_pixel_sha256": "6bd2aca182d7a5f22db51fac81c198a21ce97fad149973755a95cfa234d0fb15",
+      "source_encoded_sha256": "c809cda1efd8962a99ec1f1e6a285bcf2fe02fd92b01e5a696079a9854b971ba",
+      "runtime_encoded_sha256": "c809cda1efd8962a99ec1f1e6a285bcf2fe02fd92b01e5a696079a9854b971ba",
+      "source_pixel_sha256": "cc4f6be5adeb272cbebfc34b979b536d2cfdc16851ca549b4c856dcc9bed6353",
+      "runtime_pixel_sha256": "cc4f6be5adeb272cbebfc34b979b536d2cfdc16851ca549b4c856dcc9bed6353",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        74,
+        62,
+        188,
+        201
+      ],
+      "gutters_px": [
+        74,
+        62,
+        68,
+        55
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9275,
+      "visible_ratio_alpha_gt_8": 0.141525,
+      "opaque_pixels": 9275,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://dc6md4tknvfsp",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f01.png-1aa79447caaf2865412eff9bd29842da.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f02.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png.import",
+      "raw_encoded_sha256": "e18114502bbf636eceb4c2ee1f511bf0eca0aa7eb07e49e7757084af32dfa4b7",
+      "raw_pixel_sha256": "b054ce30b72db6ce0d0366eafeb079c83a901c42e48c6075b6c5bbeafc84d67f",
+      "generated_manifest_encoded_sha256": "e18114502bbf636eceb4c2ee1f511bf0eca0aa7eb07e49e7757084af32dfa4b7",
+      "generated_manifest_pixel_sha256": "b054ce30b72db6ce0d0366eafeb079c83a901c42e48c6075b6c5bbeafc84d67f",
+      "source_encoded_sha256": "a33681e0421bfe69af7bc47bef1bf47d7218c600e633090899d3f3c67d7d6e9e",
+      "runtime_encoded_sha256": "a33681e0421bfe69af7bc47bef1bf47d7218c600e633090899d3f3c67d7d6e9e",
+      "source_pixel_sha256": "c20c3cffb98924a42149f995445f26ac8dd9ad996a129a16f41c175ecc648ce5",
+      "runtime_pixel_sha256": "c20c3cffb98924a42149f995445f26ac8dd9ad996a129a16f41c175ecc648ce5",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        70,
+        64,
+        187,
+        198
+      ],
+      "gutters_px": [
+        70,
+        64,
+        69,
+        58
+      ],
+      "minimum_gutter_px": 58,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9366,
+      "visible_ratio_alpha_gt_8": 0.142914,
+      "opaque_pixels": 9366,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://q4h18xi1cybo",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f02.png-75810668ee0a9cba5464e920332d297b.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f03.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png.import",
+      "raw_encoded_sha256": "55317439faee59f63583d7cbcac1bce285b8f2bc839efc469d3f705218d8f4bf",
+      "raw_pixel_sha256": "6426031839cbbaaf7d587cf6f00fa13c110528c2fa92139169533d25b3618f2c",
+      "generated_manifest_encoded_sha256": "55317439faee59f63583d7cbcac1bce285b8f2bc839efc469d3f705218d8f4bf",
+      "generated_manifest_pixel_sha256": "6426031839cbbaaf7d587cf6f00fa13c110528c2fa92139169533d25b3618f2c",
+      "source_encoded_sha256": "53d78e421045a4f6532d3db33b3519fb76affd2751146be06eced0395b525e09",
+      "runtime_encoded_sha256": "53d78e421045a4f6532d3db33b3519fb76affd2751146be06eced0395b525e09",
+      "source_pixel_sha256": "0dbe259ee6c0c6000fa01732d5cb218c3ab1528a1e1ad70e165d57e3a11d5b32",
+      "runtime_pixel_sha256": "0dbe259ee6c0c6000fa01732d5cb218c3ab1528a1e1ad70e165d57e3a11d5b32",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        67,
+        58,
+        190,
+        201
+      ],
+      "gutters_px": [
+        67,
+        58,
+        66,
+        55
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9314,
+      "visible_ratio_alpha_gt_8": 0.14212,
+      "opaque_pixels": 9314,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cppnj6tja53uu",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f03.png-585568b6f0e98676f68da8b931655843.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f04.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png.import",
+      "raw_encoded_sha256": "97865255f19bee73cd2a17745fcf19814409fb3377c2ece25e4a54af5f844ef9",
+      "raw_pixel_sha256": "afd22ba9dfce3acedfc85a9c4eb0b89566fc8da4c7964a4735eaf104716ae1e0",
+      "generated_manifest_encoded_sha256": "97865255f19bee73cd2a17745fcf19814409fb3377c2ece25e4a54af5f844ef9",
+      "generated_manifest_pixel_sha256": "afd22ba9dfce3acedfc85a9c4eb0b89566fc8da4c7964a4735eaf104716ae1e0",
+      "source_encoded_sha256": "615f4442d91aaa80d784f20e2fa411b84468e93cd1d4fa71fffb56a918a56cd3",
+      "runtime_encoded_sha256": "615f4442d91aaa80d784f20e2fa411b84468e93cd1d4fa71fffb56a918a56cd3",
+      "source_pixel_sha256": "4187e02df76e5e54698f7f43e03270ce2eabf45de0e6343650d1021a607916fe",
+      "runtime_pixel_sha256": "4187e02df76e5e54698f7f43e03270ce2eabf45de0e6343650d1021a607916fe",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        60,
+        57,
+        198,
+        201
+      ],
+      "gutters_px": [
+        60,
+        57,
+        58,
+        55
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9972,
+      "visible_ratio_alpha_gt_8": 0.152161,
+      "opaque_pixels": 9972,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://brs011aluo154",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f04.png-90d9a6fb0ce7da3ee12edf10e343ef46.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f05.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png.import",
+      "raw_encoded_sha256": "4c5beb0f3b511b6cb6e227b90ab9476a16c088bf78a0715c7289c6afde0a1fdc",
+      "raw_pixel_sha256": "ed1352e7380147216435cc41e6bb6f157314fa0f42d0b76b59e1a539381c9d14",
+      "generated_manifest_encoded_sha256": "4c5beb0f3b511b6cb6e227b90ab9476a16c088bf78a0715c7289c6afde0a1fdc",
+      "generated_manifest_pixel_sha256": "ed1352e7380147216435cc41e6bb6f157314fa0f42d0b76b59e1a539381c9d14",
+      "source_encoded_sha256": "1bfacdb57b56cda2e4132a1242319911f8213cf477dcf4728f037da5cc988118",
+      "runtime_encoded_sha256": "1bfacdb57b56cda2e4132a1242319911f8213cf477dcf4728f037da5cc988118",
+      "source_pixel_sha256": "1212776184393743566ae8be265578989b7775b9153eb049bf5721064687471a",
+      "runtime_pixel_sha256": "1212776184393743566ae8be265578989b7775b9153eb049bf5721064687471a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        56,
+        61,
+        202,
+        199
+      ],
+      "gutters_px": [
+        56,
+        61,
+        54,
+        57
+      ],
+      "minimum_gutter_px": 54,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9628,
+      "visible_ratio_alpha_gt_8": 0.146912,
+      "opaque_pixels": 9628,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://g0j85fsq00xl",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f05.png-61726f8c4246923982a30a4563a7aac6.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f06.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png.import",
+      "raw_encoded_sha256": "6d5abc03167149a4165ab34aa8ea064b3c472b0ca97c6352a415a6c258ea49f9",
+      "raw_pixel_sha256": "d152da341ba677095b359b5092616330e57f6d7cf94fca418252734e11a73224",
+      "generated_manifest_encoded_sha256": "6d5abc03167149a4165ab34aa8ea064b3c472b0ca97c6352a415a6c258ea49f9",
+      "generated_manifest_pixel_sha256": "d152da341ba677095b359b5092616330e57f6d7cf94fca418252734e11a73224",
+      "source_encoded_sha256": "f39e34d774b6f2cc2294462cd1d355e50d4351f66dfe42f0ce657980332fe0ab",
+      "runtime_encoded_sha256": "f39e34d774b6f2cc2294462cd1d355e50d4351f66dfe42f0ce657980332fe0ab",
+      "source_pixel_sha256": "8b79b18ec6e542785a00475edc55c4e0397d7c7795f0b289799a879d79e15002",
+      "runtime_pixel_sha256": "8b79b18ec6e542785a00475edc55c4e0397d7c7795f0b289799a879d79e15002",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        58,
+        69,
+        199,
+        181
+      ],
+      "gutters_px": [
+        58,
+        69,
+        57,
+        75
+      ],
+      "minimum_gutter_px": 57,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8749,
+      "visible_ratio_alpha_gt_8": 0.133499,
+      "opaque_pixels": 8749,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://b60bhk4fnlpx",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f06.png-83b8a64ae7faf737ebbba7b95cbce182.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f07.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png.import",
+      "raw_encoded_sha256": "aafaadbe8a20f0c8fd85f4dfa1a9d408cc242a35e2da317b018fab1382eb343b",
+      "raw_pixel_sha256": "a0b8bf0bf3eb40067d08ed798327238931bca73d1964d4e6d82bfb7506e58d0a",
+      "generated_manifest_encoded_sha256": "aafaadbe8a20f0c8fd85f4dfa1a9d408cc242a35e2da317b018fab1382eb343b",
+      "generated_manifest_pixel_sha256": "a0b8bf0bf3eb40067d08ed798327238931bca73d1964d4e6d82bfb7506e58d0a",
+      "source_encoded_sha256": "f1c48b80c60c50a612696bc7dfcdbff5f4e5f87f600fd214befc1ab27a6e8967",
+      "runtime_encoded_sha256": "f1c48b80c60c50a612696bc7dfcdbff5f4e5f87f600fd214befc1ab27a6e8967",
+      "source_pixel_sha256": "9c5e3fbc833c324bc08d4c47e16db8988092245b56628ae684fc083d9cd5bae0",
+      "runtime_pixel_sha256": "9c5e3fbc833c324bc08d4c47e16db8988092245b56628ae684fc083d9cd5bae0",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        64,
+        68,
+        193,
+        177
+      ],
+      "gutters_px": [
+        64,
+        68,
+        63,
+        79
+      ],
+      "minimum_gutter_px": 63,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8129,
+      "visible_ratio_alpha_gt_8": 0.124039,
+      "opaque_pixels": 8129,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://fvlvr5t3g6ib",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f07.png-d2f68eb30f0b116b2d878221c9e02bcc.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f08.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png",
+      "import_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png.import",
+      "raw_encoded_sha256": "fcef4e6c28814d0082805cd30511fa9fdf173706b2e65672ce52ce1e6fa7ade6",
+      "raw_pixel_sha256": "68473707ee1c33398e4a26fd0f5ef65c234290578e39e13ce1c36d9b5d056641",
+      "generated_manifest_encoded_sha256": "fcef4e6c28814d0082805cd30511fa9fdf173706b2e65672ce52ce1e6fa7ade6",
+      "generated_manifest_pixel_sha256": "68473707ee1c33398e4a26fd0f5ef65c234290578e39e13ce1c36d9b5d056641",
+      "source_encoded_sha256": "54f881768664d030c534536a2cb7d4792617199e43a511b238192ab826b44a48",
+      "runtime_encoded_sha256": "54f881768664d030c534536a2cb7d4792617199e43a511b238192ab826b44a48",
+      "source_pixel_sha256": "085d57cda1aca5e8c18a4195db593647e0a914dc29d6bfadf8202727fe19df61",
+      "runtime_pixel_sha256": "085d57cda1aca5e8c18a4195db593647e0a914dc29d6bfadf8202727fe19df61",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        73,
+        64,
+        183,
+        182
+      ],
+      "gutters_px": [
+        73,
+        64,
+        73,
+        74
+      ],
+      "minimum_gutter_px": 64,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8484,
+      "visible_ratio_alpha_gt_8": 0.129456,
+      "opaque_pixels": 8484,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://ee5th735grff",
+      "import_dest_files": [
+        "res://.godot/imported/shadow_cloak_f08.png-071100fec516ad36e452dc912182275f.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    }
+  ]
+}

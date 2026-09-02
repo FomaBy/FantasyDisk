@@ -1,0 +1,515 @@
+{
+  "schema_version": 1,
+  "source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch",
+  "runtime_dir": "assets/sprites/effects/thief/coin_pouch",
+  "spriteframes": "assets/sprites/effects/thief/coin_pouch/coin_pouch_spriteframes.tres",
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "duration_seconds": 3.0,
+  "animation": {
+    "name": "thief_coin_pouch_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f00.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f01.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f02.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f03.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f04.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f05.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f06.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f07.png",
+      "assets/sprites/effects/thief/coin_pouch/coin_pouch_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "adjacent_changed_pixels_rgba": [
+      6648,
+      11561,
+      10217,
+      11132,
+      6846,
+      3825,
+      3630,
+      2753
+    ],
+    "motion_contract": "drawstring pouch snaps open, engraved gold coins spill in a curved ricochet trail, the lead coin flashes on impact, then the coins arc back and settle"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f00.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f00.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f00.png.import",
+      "raw_encoded_sha256": "f0b4050175b6cb736d9c9977dc8e9d781e046ed91f3431cbcedd935fbbc7ca04",
+      "raw_pixel_sha256": "bbcbc410b9f25d6f66e274f1bc86cab8523f448152d3faaea7bbc4a865b5d595",
+      "generated_manifest_encoded_sha256": "f0b4050175b6cb736d9c9977dc8e9d781e046ed91f3431cbcedd935fbbc7ca04",
+      "generated_manifest_pixel_sha256": "bbcbc410b9f25d6f66e274f1bc86cab8523f448152d3faaea7bbc4a865b5d595",
+      "source_encoded_sha256": "acc21bd8b22eb8957619cf998f8871859e2bd43eeae73a4e31b9faa285c29781",
+      "runtime_encoded_sha256": "acc21bd8b22eb8957619cf998f8871859e2bd43eeae73a4e31b9faa285c29781",
+      "source_pixel_sha256": "bb10acdabda5f73398d6ebab3b26e13dca5901edb856820fe264b0308e2c1560",
+      "runtime_pixel_sha256": "bb10acdabda5f73398d6ebab3b26e13dca5901edb856820fe264b0308e2c1560",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        47,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        47,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20834,
+      "visible_ratio_alpha_gt_8": 0.317902,
+      "opaque_pixels": 20834,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://demd885v8ftjp",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f00.png-5c8e33ec8d056089f75ab096f601fe5a.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f00.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f01.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f01.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f01.png.import",
+      "raw_encoded_sha256": "54a7080dcbf42223217c59b26fff1dabd23da19de03f450d2d5f12ba54ee47d6",
+      "raw_pixel_sha256": "db18490a6f2d090777eb168afc4cdc09ce39cc28b67ed865b68c581328c38566",
+      "generated_manifest_encoded_sha256": "54a7080dcbf42223217c59b26fff1dabd23da19de03f450d2d5f12ba54ee47d6",
+      "generated_manifest_pixel_sha256": "db18490a6f2d090777eb168afc4cdc09ce39cc28b67ed865b68c581328c38566",
+      "source_encoded_sha256": "70c2e543fb30ef12ef0fbf51c34bbbc6a16130d81693d29b7b3033e3cd1aa09e",
+      "runtime_encoded_sha256": "70c2e543fb30ef12ef0fbf51c34bbbc6a16130d81693d29b7b3033e3cd1aa09e",
+      "source_pixel_sha256": "0ba0bbe53c5260a7d51a02ad0d388ce81204cff17eab8a9523f462a6615c1fa2",
+      "runtime_pixel_sha256": "0ba0bbe53c5260a7d51a02ad0d388ce81204cff17eab8a9523f462a6615c1fa2",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        52,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        52,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21035,
+      "visible_ratio_alpha_gt_8": 0.320969,
+      "opaque_pixels": 21035,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://bwcrgxgd40k5r",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f01.png-10723efb51def47f002523987a8fcd56.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f01.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f02.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f02.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f02.png.import",
+      "raw_encoded_sha256": "ee1d01e08a00058d410603d884640f05fe94d0ccb5fcdc96725288c5bd38fab4",
+      "raw_pixel_sha256": "0e2af8aa51d64e45138b8cef19553f296fdc51c5e7e88cbcc68288abea9ddaeb",
+      "generated_manifest_encoded_sha256": "ee1d01e08a00058d410603d884640f05fe94d0ccb5fcdc96725288c5bd38fab4",
+      "generated_manifest_pixel_sha256": "0e2af8aa51d64e45138b8cef19553f296fdc51c5e7e88cbcc68288abea9ddaeb",
+      "source_encoded_sha256": "08f87a504d8dc049b035ccac11b13f7a0abc9799f3692ab7f2060056424e44aa",
+      "runtime_encoded_sha256": "08f87a504d8dc049b035ccac11b13f7a0abc9799f3692ab7f2060056424e44aa",
+      "source_pixel_sha256": "3a2a1a47d410da729ec0125c501ce54d87034589e7cce67b8f7c370b92938e43",
+      "runtime_pixel_sha256": "3a2a1a47d410da729ec0125c501ce54d87034589e7cce67b8f7c370b92938e43",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        30,
+        48,
+        227,
+        226
+      ],
+      "gutters_px": [
+        30,
+        48,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 29,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21169,
+      "visible_ratio_alpha_gt_8": 0.323013,
+      "opaque_pixels": 21169,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://c4caytqo3qv7v",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f02.png-e91e19998b2be93a4d3f46b0a06878a1.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f02.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f03.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f03.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f03.png.import",
+      "raw_encoded_sha256": "73a35b0e3afa88c3e65322383898ccc95c479540bd3eb1214d2bf8e1311544dc",
+      "raw_pixel_sha256": "366d8a3b98e99a1b9b90b1e91aab15f8e9604f65f617eccc35b36320e471834f",
+      "generated_manifest_encoded_sha256": "73a35b0e3afa88c3e65322383898ccc95c479540bd3eb1214d2bf8e1311544dc",
+      "generated_manifest_pixel_sha256": "366d8a3b98e99a1b9b90b1e91aab15f8e9604f65f617eccc35b36320e471834f",
+      "source_encoded_sha256": "1cb47b011dacc3b8c958fc03f2575a5588e70410d2bf2d888b2002ad38ac4b25",
+      "runtime_encoded_sha256": "1cb47b011dacc3b8c958fc03f2575a5588e70410d2bf2d888b2002ad38ac4b25",
+      "source_pixel_sha256": "71b37f488c05b9b73cd5624a2e048255047b52d5f94eca6d5632a599d7b15554",
+      "runtime_pixel_sha256": "71b37f488c05b9b73cd5624a2e048255047b52d5f94eca6d5632a599d7b15554",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        29,
+        37,
+        227,
+        226
+      ],
+      "gutters_px": [
+        29,
+        37,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 29,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 22147,
+      "visible_ratio_alpha_gt_8": 0.337936,
+      "opaque_pixels": 22147,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cagljnwe3bvbv",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f03.png-e9d8a4368975e0da18bafce75bd5b7f7.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f03.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f04.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f04.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f04.png.import",
+      "raw_encoded_sha256": "6e3c63d003658309c1032acc399772ec7e58e29aca6e2569969f65674d6c31e9",
+      "raw_pixel_sha256": "b26cef010d4328d54693fd8628722d2d1a6e08bfeb211fa18793b6c4a14255dd",
+      "generated_manifest_encoded_sha256": "6e3c63d003658309c1032acc399772ec7e58e29aca6e2569969f65674d6c31e9",
+      "generated_manifest_pixel_sha256": "b26cef010d4328d54693fd8628722d2d1a6e08bfeb211fa18793b6c4a14255dd",
+      "source_encoded_sha256": "84468a63782eadc07a682d681e91967b78663bf81351442a4679bd4adcda512e",
+      "runtime_encoded_sha256": "84468a63782eadc07a682d681e91967b78663bf81351442a4679bd4adcda512e",
+      "source_pixel_sha256": "80b5a442eadc91e4be7b371f5e041836d9fdead6e57d0e1c2b2c4c4cc7adf7fd",
+      "runtime_pixel_sha256": "80b5a442eadc91e4be7b371f5e041836d9fdead6e57d0e1c2b2c4c4cc7adf7fd",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        31,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        31,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21945,
+      "visible_ratio_alpha_gt_8": 0.334854,
+      "opaque_pixels": 21945,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cjn5pg4gafjvy",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f04.png-27b068a476d97cd5525d2bf07e8245e5.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f04.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f05.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f05.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f05.png.import",
+      "raw_encoded_sha256": "c11eb1a4f44d79e5acc2c7037191fc251aa5370f4edf3d50c4014f6c8d2faeb0",
+      "raw_pixel_sha256": "981b578389b955c0a42e93165d99908f7d89037e4724a69cee90afbe0107b338",
+      "generated_manifest_encoded_sha256": "c11eb1a4f44d79e5acc2c7037191fc251aa5370f4edf3d50c4014f6c8d2faeb0",
+      "generated_manifest_pixel_sha256": "981b578389b955c0a42e93165d99908f7d89037e4724a69cee90afbe0107b338",
+      "source_encoded_sha256": "170f22f077f2f31529303c147adcba205eada6fd08a8b7d2eac0b8fd4a577eca",
+      "runtime_encoded_sha256": "170f22f077f2f31529303c147adcba205eada6fd08a8b7d2eac0b8fd4a577eca",
+      "source_pixel_sha256": "4279aef3ffaee663c67d8517394fcc2c93ad5ac7ddc712b0f72d6893df895e88",
+      "runtime_pixel_sha256": "4279aef3ffaee663c67d8517394fcc2c93ad5ac7ddc712b0f72d6893df895e88",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        30,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        30,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21521,
+      "visible_ratio_alpha_gt_8": 0.328384,
+      "opaque_pixels": 21521,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cpviph51vgd80",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f05.png-4d111b097f69a83a03374fbcd2502367.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f05.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f06.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f06.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f06.png.import",
+      "raw_encoded_sha256": "19a7154fe9b006f64e22ec6e75c2db974635e0cf5621950ea85e2bb3f7c92409",
+      "raw_pixel_sha256": "a077594be5013c6aa58b0297c2642698188f8394851eb76c22b98aac43498135",
+      "generated_manifest_encoded_sha256": "19a7154fe9b006f64e22ec6e75c2db974635e0cf5621950ea85e2bb3f7c92409",
+      "generated_manifest_pixel_sha256": "a077594be5013c6aa58b0297c2642698188f8394851eb76c22b98aac43498135",
+      "source_encoded_sha256": "63a9203d9e1fb5c384145c1a3437ff2164000525f28c1bdcdab1666c3b4b3f98",
+      "runtime_encoded_sha256": "63a9203d9e1fb5c384145c1a3437ff2164000525f28c1bdcdab1666c3b4b3f98",
+      "source_pixel_sha256": "698069d31a2f383590c4f5ad71fb84ab545497239082fd87ca11be69eab575d3",
+      "runtime_pixel_sha256": "698069d31a2f383590c4f5ad71fb84ab545497239082fd87ca11be69eab575d3",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        32,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        32,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21384,
+      "visible_ratio_alpha_gt_8": 0.326294,
+      "opaque_pixels": 21384,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://b6lvau7mxd0h6",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f06.png-b1fee5439e1940e5ecaf60599e26192e.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f06.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f07.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f07.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f07.png.import",
+      "raw_encoded_sha256": "eaeffcee191cb1e277d8cfab34fc71db365ae201ff7b10c216ce3755c4ff0154",
+      "raw_pixel_sha256": "968349ad2c891748521426942c809d51b01f5863739ad0376380547454ae92f4",
+      "generated_manifest_encoded_sha256": "eaeffcee191cb1e277d8cfab34fc71db365ae201ff7b10c216ce3755c4ff0154",
+      "generated_manifest_pixel_sha256": "968349ad2c891748521426942c809d51b01f5863739ad0376380547454ae92f4",
+      "source_encoded_sha256": "2b88463bf8427cfd656b67327ac075022bd5ddfc7d91b2782b208a50f19668e7",
+      "runtime_encoded_sha256": "2b88463bf8427cfd656b67327ac075022bd5ddfc7d91b2782b208a50f19668e7",
+      "source_pixel_sha256": "f88473d854243c9f5d13a5e908ea76f5d99eeb87b98376fdc45bc370f651ed7e",
+      "runtime_pixel_sha256": "f88473d854243c9f5d13a5e908ea76f5d99eeb87b98376fdc45bc370f651ed7e",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        56,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        56,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21429,
+      "visible_ratio_alpha_gt_8": 0.326981,
+      "opaque_pixels": 21429,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://5drt46fimlgg",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f07.png-d874ea8e1feba89363d88a51ade208a8.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f07.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/coin_pouch_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw/coin_pouch_f08.png",
+      "runtime_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f08.png",
+      "import_file": "assets/sprites/effects/thief/coin_pouch/coin_pouch_f08.png.import",
+      "raw_encoded_sha256": "b13765a74cc3f613ef1343d3512384fc163f4837f85daa11df7c05029294d6a0",
+      "raw_pixel_sha256": "d83d4dfa597150b7c16623c99f6e7b4d49e267f5526132aa3eed65802541d3dc",
+      "generated_manifest_encoded_sha256": "b13765a74cc3f613ef1343d3512384fc163f4837f85daa11df7c05029294d6a0",
+      "generated_manifest_pixel_sha256": "d83d4dfa597150b7c16623c99f6e7b4d49e267f5526132aa3eed65802541d3dc",
+      "source_encoded_sha256": "84102d75036138f167c2804aaa2bc386f6cad6320d16c856d298a59a8e534706",
+      "runtime_encoded_sha256": "84102d75036138f167c2804aaa2bc386f6cad6320d16c856d298a59a8e534706",
+      "source_pixel_sha256": "10e9bced6345193d7eed948c992d969fbdba5879f59d0aa372f794ed3526a019",
+      "runtime_pixel_sha256": "10e9bced6345193d7eed948c992d969fbdba5879f59d0aa372f794ed3526a019",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        28,
+        56,
+        227,
+        226
+      ],
+      "gutters_px": [
+        28,
+        56,
+        29,
+        30
+      ],
+      "minimum_gutter_px": 28,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21790,
+      "visible_ratio_alpha_gt_8": 0.332489,
+      "opaque_pixels": 21790,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://bo3vbw3qfjck4",
+      "import_dest_files": [
+        "res://.godot/imported/coin_pouch_f08.png-03d965b850cb57f5d3621833a987f435.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/thief/coin_pouch/coin_pouch_f08.png",
+      "importer": "texture",
+      "import_matches_runtime": true
+    }
+  ]
+}

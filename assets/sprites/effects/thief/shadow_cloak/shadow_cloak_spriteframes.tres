@@ -1,0 +1,46 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png" id="1_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png" id="2_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png" id="3_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png" id="4_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png" id="5_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png" id="6_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png" id="7_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png" id="8_shadow_cloak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png" id="9_shadow_cloak"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_shadow_cloak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_shadow_cloak")
+}],
+"loop": false,
+"name": &"thief_shadow_cloak_ultimate",
+"speed": 3.0
+}]
