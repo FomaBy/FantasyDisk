@@ -2,8 +2,8 @@
   "schema_version": 1,
   "issue": "FAN-3865",
   "source_brief": "FAN-3323",
-  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
-  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "base_sha": "033fd61359bc84bfb551357059584b841d7cbaea",
+  "base_tree": "523f7455f387788999b20f6a6929b36062f6887c",
   "class_id": "thief",
   "weapon_id": "thief_shadow_cloak",
   "title": "Безмолвный Приговор",
@@ -47,6 +47,8 @@
     "forbidden": [
       "characters",
       "text",
+      "letters",
+      "symbols",
       "border",
       "background",
       "static duplicates",
@@ -82,14 +84,14 @@
     "distinct_pixel_frames": 9,
     "adjacent_pixel_changes": 8,
     "adjacent_changed_pixels_rgba": [
-      4357,
-      5262,
-      4604,
-      6223,
-      4546,
-      5931,
-      5953,
-      6677
+      5362,
+      6440,
+      5601,
+      7555,
+      5456,
+      7246,
+      7208,
+      7814
     ],
     "motion_contract": "cloak unfurls in a tight spiral, violet lining sweeps forward like a phantom lunge, a dark-violet backstab slash flares, then the cloak snaps closed"
   },

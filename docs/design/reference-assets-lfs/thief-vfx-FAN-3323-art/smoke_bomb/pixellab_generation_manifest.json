@@ -1,92 +1,92 @@
 {
   "tool": "tools/pixellab_generate_pack.py",
   "tool_version": "1.0.0",
-  "generated_at": "2026-09-02T09:54:22Z",
+  "generated_at": "2026-09-02T20:32:58Z",
   "encoder": {
     "library": "Pillow",
     "library_version": "11.3.0",
     "builder_version": "1.0.0"
   },
   "object": {
-    "pixel_lab_object_id": "375f29b9-672e-4add-8ad8-adb3a7998110",
+    "pixel_lab_object_id": "2e8def6e-0640-41e7-8f89-d860b6599c2d",
     "create_tool": "create_1_direction_object",
     "create_params": {
-      "description": "one centered Thief ultimate smoke bomb: a small matte-black iron smoke grenade with a violet rune cap, silver pull ring and faint indigo vapor leaking from its seams, top-down D&D dark fantasy pixel art, isolated VFX prop on transparent background, crisp thief-specific silhouette, generous empty margin, no character, no text, no border, no background",
+      "description": "one centered Thief ultimate smoke bomb: a large round black iron smoke-bomb sphere wrapped with two crossed braided rope bands, a short burning fuse with a tiny warm ember, and three soft grey-blue smoke wisps curling from the fuse, top-down D&D dark fantasy pixel art, isolated VFX prop on transparent background, fill roughly 65 to 75 percent of the square while keeping the entire silhouette visible, crisp thief-specific silhouette, no character, no text, no letters, no symbols, no pull ring, no pin, no modern military grenade, no rectangular canister, no border, no background",
       "size": 256,
       "view": "top-down"
     },
     "animate_tool": "animate_object",
     "animate_params": {
       "mode": "v3",
-      "animation_description": "keep the same single Thief smoke bomb with violet rune cap, silver pull ring and indigo vapor centered with stable outline, proportions, palette and identity in every frame; animate a readable ultimate smoke-bomb dodge release: pull ring snaps free, a compact indigo-violet puff blooms outward in layered curls, the bomb briefly flashes at the center of the concealment burst, then the smoke thins into three drifting wisps and settles; measurable expanding and fading motion with distinct silhouettes in every frame, no static duplicates, no clipping, no stray pixels, transparent background, no new objects, no text",
+      "animation_description": "keep the same single round black iron rope-wrapped smoke bomb, crossed rope bands and short burning fuse centered with stable outline, proportions, palette and identity in every frame; animate a readable ultimate concealment release: the fuse ember flares, grey-blue smoke pours from the burning fuse and expands into layered curling wisps around the bomb, a broad soft smoke dome blooms at the impact beat, then the dome collapses into three drifting wisps while the round bomb remains clearly readable; measurable expanding and fading motion with distinct silhouettes in every frame, no static duplicates, no clipping, no stray pixels, transparent background, no new objects, no text, no letters, no pull ring, no pin, no modern grenade",
       "frame_count": 8
     },
-    "animation_group_id": "5c49da96-e30a-4855-b61d-ba459648dd3a",
+    "animation_group_id": "5a24cca2-2d98-49d7-9746-917bb2aeef5c",
     "canonical_asset_key": "thief/smoke_bomb"
   },
   "frames": [
     {
       "file": "smoke_bomb_f00.png",
-      "bytes": 4646,
+      "bytes": 11418,
       "url_kind": "template",
-      "encoded_sha256": "239a68a54f1ca71583b889e88635769110a6cfcb34b267daf3806c23313433e8",
-      "pixel_sha256": "04a84ebf1f516688dc00bbd98cacc5595b6e159d9ae7474f6902c150d7f69e10"
+      "encoded_sha256": "91578f747dacd73c0e3be9c1b6dfaa09789e4cc5d128e37fd45cbc4b34a3b009",
+      "pixel_sha256": "a03b0262d126fd376c61296a718d42bd72e8a9e6f9a615b5f198435660438737"
     },
     {
       "file": "smoke_bomb_f01.png",
-      "bytes": 5558,
+      "bytes": 12137,
       "url_kind": "template",
-      "encoded_sha256": "a643e1ad493c6ff8a3c8596b4dc265f0806a0ca1fca8c2e5654b476d883615cf",
-      "pixel_sha256": "e2bdc50ef598a276216c3fcf1e99b36da4c4ac6fbdc99d1928f4eceddf00842d"
+      "encoded_sha256": "ef967930dcefd82517f9c4de9ea77fa53bb3f4a62934fa07991f8aea7900c689",
+      "pixel_sha256": "401ef24798e448a67fead6897c9a62478be94be125da2228e8c5adb534f0ef22"
     },
     {
       "file": "smoke_bomb_f02.png",
-      "bytes": 6929,
+      "bytes": 11700,
       "url_kind": "template",
-      "encoded_sha256": "6f1984affde004373a4d07309b798e86844db3ace5282284e44a4e789a86a2f5",
-      "pixel_sha256": "785c627eaabd8fe44556a922f6873080ae858092dabe8e267ab6135a2223e3eb"
+      "encoded_sha256": "d0736b64ce573a35869327d374880ced78997276933d43da733e918881998c45",
+      "pixel_sha256": "1d056c3c0dc56a8fdb48aa579f07e563db0d08b50e2d53b4c4dca2353268aa0f"
     },
     {
       "file": "smoke_bomb_f03.png",
-      "bytes": 9510,
+      "bytes": 13177,
       "url_kind": "template",
-      "encoded_sha256": "1e64fa3ba33a40b8ec5817ce76c4bbaa35b9285bcd85c7adec91aa495698ac14",
-      "pixel_sha256": "7e7e68a13c96524cf72acb0011d5bbcb55468e0ecae52918f0f6a69483e276a6"
+      "encoded_sha256": "7248fd7978297aa02761bfa5f3b41aad04d6173c8245f3dea012cedb1ffa6faa",
+      "pixel_sha256": "7d27ee60a41d171c7dcaf3d6f471efe716f3335539c486db33eb176dcf76c05e"
     },
     {
       "file": "smoke_bomb_f04.png",
-      "bytes": 10472,
+      "bytes": 15389,
       "url_kind": "template",
-      "encoded_sha256": "555181023ebdfd93f57b76bf65fcc7ace2be0b5d3fc29cecdec804ced179f248",
-      "pixel_sha256": "d6b41cc3c5b4f414955a4496fa8c0eb6811800cf4734779722b7b872bdd88a63"
+      "encoded_sha256": "375b917817169adfea4460fd770885585bed18d155891bb64ca6b6f0647cb719",
+      "pixel_sha256": "04a08e4f92c93f2530263db83ad829ee5168b13e0a8eb3f2e75035331307626f"
     },
     {
       "file": "smoke_bomb_f05.png",
-      "bytes": 9945,
+      "bytes": 17020,
       "url_kind": "template",
-      "encoded_sha256": "85fe6adf1770bc1ce32c3815e074e3fa3f2d95cd31cbacd4f72e184d702d3d70",
-      "pixel_sha256": "ad2141198018fdd285d0d016e6266c719659cc56b3ed6ca1758ede7e408234c5"
+      "encoded_sha256": "45a62455b5cc4829077fd236c0d1a10b7a70539dc0c888b4efe7d0af01c6fbf2",
+      "pixel_sha256": "7d1fa8702d54e1adc7b8ba02e12b6170bc5b466394628e317082f6861c6d314d"
     },
     {
       "file": "smoke_bomb_f06.png",
-      "bytes": 8308,
+      "bytes": 16961,
       "url_kind": "template",
-      "encoded_sha256": "c0c08aeebe1e3ce9811fb7908d22294a3d41395e9331ae5b10b3a2959fa99ef2",
-      "pixel_sha256": "99dcab53562087aa0db1b650d5e37ce7698cf45fc0b03f051a3f0f239d10217b"
+      "encoded_sha256": "6549feab6d8159d69f73cdae87858574864146ad14cb411b0dbf8188683d5ed4",
+      "pixel_sha256": "db56f486e97a833e7ecc1e447b89bd882639b395bbf3610e03d6250fa077a8b4"
     },
     {
       "file": "smoke_bomb_f07.png",
-      "bytes": 6905,
+      "bytes": 16406,
       "url_kind": "template",
-      "encoded_sha256": "3e503f4e854cd8398605fb35b8efe9c27f5b58d7cfe2339dc27de5ea00f8beec",
-      "pixel_sha256": "0ee94545fb8fbb565d27cc21897a0735b3ace66dee4722bbafd9b39a60cbbb40"
+      "encoded_sha256": "a2901ddd5ce58b884e9ebbd1fcfd826a1786a5c916f68dfad150f653e10e47f1",
+      "pixel_sha256": "28da076d366b3c9873d0f599a55014b41c94a84467368b9ff28b793f7ccf491f"
     },
     {
       "file": "smoke_bomb_f08.png",
-      "bytes": 6889,
+      "bytes": 10558,
       "url_kind": "template",
-      "encoded_sha256": "9bd998113dd4087b8ceff44578d938abf65575c1679f932db3d89f5ec7787ee3",
-      "pixel_sha256": "809571f7be69226d387b27cfc3a0225b7b3b28715b4dc42d37783a58d808544a"
+      "encoded_sha256": "3047f6d58d60abf957bd7af52025c39b28924852a016339f43d067bee9eae65d",
+      "pixel_sha256": "0066d6b6250357dfa2b231ff275ea9422b5c8659c3a71a4c7b5a751e0aaf423c"
     }
   ],
   "frame_count": 9,

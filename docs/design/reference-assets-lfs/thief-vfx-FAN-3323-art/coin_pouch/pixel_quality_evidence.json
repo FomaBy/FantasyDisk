@@ -11,7 +11,7 @@
     "silhouette": "clear, centered and weapon-specific in every frame",
     "movement": "drawstring pouch snaps open, engraved gold coins spill in a curved ricochet trail, the lead coin flashes on impact, then the coins arc back and settle",
     "clipping": "none observed; alpha does not touch any canvas edge",
-    "stray_pixels": "none observed in contact-sheet inspection; detached coins, wisps and smoke curls are intentional release accents",
+    "stray_pixels": "no unintentional stray pixels observed in contact-sheet inspection; detached coins, coin sparks and smoke curls are intentional release accents",
     "opaque_background": "none; all four corners are transparent and edge rows are empty",
     "seams": "none observed",
     "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"

@@ -22,14 +22,14 @@
     "distinct_pixel_frames": 9,
     "adjacent_pixel_changes": 8,
     "adjacent_changed_pixels_rgba": [
-      6648,
-      11561,
-      10217,
-      11132,
-      6846,
-      3825,
-      3630,
-      2753
+      8942,
+      14979,
+      13110,
+      14317,
+      8673,
+      4878,
+      4712,
+      3466
     ],
     "motion_contract": "drawstring pouch snaps open, engraved gold coins spill in a curved ricochet trail, the lead coin flashes on impact, then the coins arc back and settle"
   },

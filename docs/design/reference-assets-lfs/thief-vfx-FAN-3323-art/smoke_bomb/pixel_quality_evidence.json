@@ -3,15 +3,15 @@
   "issue": "FAN-3865",
   "class_id": "thief",
   "weapon_id": "thief_smoke_bomb",
-  "object_id": "375f29b9-672e-4add-8ad8-adb3a7998110",
-  "animation_group_id": "5c49da96-e30a-4855-b61d-ba459648dd3a",
+  "object_id": "2e8def6e-0640-41e7-8f89-d860b6599c2d",
+  "animation_group_id": "5a24cca2-2d98-49d7-9746-917bb2aeef5c",
   "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
   "visual_review": {
     "contact_sheet": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/smoke_bomb_contact_sheet.png",
     "silhouette": "clear, centered and weapon-specific in every frame",
-    "movement": "pull ring snaps free, indigo-violet smoke blooms in layered curls, the bomb flashes at the center, then smoke thins into drifting wisps",
+    "movement": "the fuse ember flares, grey-blue smoke expands into layered curling wisps and a broad concealment dome, then the dome collapses into three drifting wisps while the round bomb remains readable",
     "clipping": "none observed; alpha does not touch any canvas edge",
-    "stray_pixels": "none observed in contact-sheet inspection; detached coins, wisps and smoke curls are intentional release accents",
+    "stray_pixels": "no unintentional stray pixels observed in contact-sheet inspection; fuse ember, smoke wisps and drifting smoke fragments are intentional release accents",
     "opaque_background": "none; all four corners are transparent and edge rows are empty",
     "seams": "none observed",
     "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
@@ -36,17 +36,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f00.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f00.png",
       "alpha_bbox_gt_8": [
-        97,
-        92,
-        165,
-        157
+        76,
+        31,
+        180,
+        201
       ],
-      "minimum_gutter_px": 91,
+      "minimum_gutter_px": 31,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 2651,
-      "raw_pixel_sha256": "04a84ebf1f516688dc00bbd98cacc5595b6e159d9ae7474f6902c150d7f69e10",
-      "source_pixel_sha256": "1f13c29d95acf0012903d8c234d976e437ae8d96a63288289bf756da432ba1ee",
-      "runtime_pixel_sha256": "1f13c29d95acf0012903d8c234d976e437ae8d96a63288289bf756da432ba1ee"
+      "visible_pixels_alpha_gt_8": 9723,
+      "raw_pixel_sha256": "a03b0262d126fd376c61296a718d42bd72e8a9e6f9a615b5f198435660438737",
+      "source_pixel_sha256": "91359d1f31053065b4cf25a53539f241d2bc2dba6360ae1cc07f580684c6b291",
+      "runtime_pixel_sha256": "91359d1f31053065b4cf25a53539f241d2bc2dba6360ae1cc07f580684c6b291"
     },
     {
       "index": 1,
@@ -54,17 +54,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f01.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f01.png",
       "alpha_bbox_gt_8": [
-        91,
-        94,
-        171,
-        159
+        76,
+        27,
+        180,
+        202
       ],
-      "minimum_gutter_px": 85,
+      "minimum_gutter_px": 27,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 2843,
-      "raw_pixel_sha256": "e2bdc50ef598a276216c3fcf1e99b36da4c4ac6fbdc99d1928f4eceddf00842d",
-      "source_pixel_sha256": "1f1f7da9f638462d2220516d6df09f2cad7769eb5c6b49abbba008225d2d7265",
-      "runtime_pixel_sha256": "1f1f7da9f638462d2220516d6df09f2cad7769eb5c6b49abbba008225d2d7265"
+      "visible_pixels_alpha_gt_8": 9890,
+      "raw_pixel_sha256": "401ef24798e448a67fead6897c9a62478be94be125da2228e8c5adb534f0ef22",
+      "source_pixel_sha256": "332e83b51837819969abe13fd46143d10688245e4a2c0be3e96bbe2b1ae4f69d",
+      "runtime_pixel_sha256": "332e83b51837819969abe13fd46143d10688245e4a2c0be3e96bbe2b1ae4f69d"
     },
     {
       "index": 2,
@@ -72,17 +72,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f02.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f02.png",
       "alpha_bbox_gt_8": [
-        80,
-        91,
-        181,
-        169
+        76,
+        31,
+        180,
+        202
       ],
-      "minimum_gutter_px": 75,
+      "minimum_gutter_px": 31,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 4270,
-      "raw_pixel_sha256": "785c627eaabd8fe44556a922f6873080ae858092dabe8e267ab6135a2223e3eb",
-      "source_pixel_sha256": "abfda7e1478a0f8add1900c086e521beac52e612a60cbde5541cbeb8525418b1",
-      "runtime_pixel_sha256": "abfda7e1478a0f8add1900c086e521beac52e612a60cbde5541cbeb8525418b1"
+      "visible_pixels_alpha_gt_8": 9606,
+      "raw_pixel_sha256": "1d056c3c0dc56a8fdb48aa579f07e563db0d08b50e2d53b4c4dca2353268aa0f",
+      "source_pixel_sha256": "5494e514162ea432cb4a2cdf06841dc5b54e1096295cf9831e6b80e4972166a3",
+      "runtime_pixel_sha256": "5494e514162ea432cb4a2cdf06841dc5b54e1096295cf9831e6b80e4972166a3"
     },
     {
       "index": 3,
@@ -90,17 +90,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f03.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f03.png",
       "alpha_bbox_gt_8": [
-        68,
-        88,
-        190,
-        179
+        69,
+        47,
+        184,
+        200
       ],
-      "minimum_gutter_px": 66,
+      "minimum_gutter_px": 47,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 5907,
-      "raw_pixel_sha256": "7e7e68a13c96524cf72acb0011d5bbcb55468e0ecae52918f0f6a69483e276a6",
-      "source_pixel_sha256": "c56cce27ddc5e5a45d200d118d01817cfe75c36e986522fe9aee035bdcda61ad",
-      "runtime_pixel_sha256": "c56cce27ddc5e5a45d200d118d01817cfe75c36e986522fe9aee035bdcda61ad"
+      "visible_pixels_alpha_gt_8": 10276,
+      "raw_pixel_sha256": "7d27ee60a41d171c7dcaf3d6f471efe716f3335539c486db33eb176dcf76c05e",
+      "source_pixel_sha256": "f946fd119c2daaca46ab3fcafa056f3cf5bcf30afa34b46a2701ceffafda34eb",
+      "runtime_pixel_sha256": "f946fd119c2daaca46ab3fcafa056f3cf5bcf30afa34b46a2701ceffafda34eb"
     },
     {
       "index": 4,
@@ -108,17 +108,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f04.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f04.png",
       "alpha_bbox_gt_8": [
-        49,
-        82,
+        51,
+        47,
         203,
-        189
+        219
       ],
-      "minimum_gutter_px": 49,
+      "minimum_gutter_px": 37,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 6904,
-      "raw_pixel_sha256": "d6b41cc3c5b4f414955a4496fa8c0eb6811800cf4734779722b7b872bdd88a63",
-      "source_pixel_sha256": "f963afb8fd1682eb6ae2d6c2dd5ff387a72c0e705329075ae4aabdfc943dfc3c",
-      "runtime_pixel_sha256": "f963afb8fd1682eb6ae2d6c2dd5ff387a72c0e705329075ae4aabdfc943dfc3c"
+      "visible_pixels_alpha_gt_8": 16923,
+      "raw_pixel_sha256": "04a08e4f92c93f2530263db83ad829ee5168b13e0a8eb3f2e75035331307626f",
+      "source_pixel_sha256": "1b998f82e661230027c082cb5912f288ef568c8a0677452ed5a4ddcf31fd99e4",
+      "runtime_pixel_sha256": "1b998f82e661230027c082cb5912f288ef568c8a0677452ed5a4ddcf31fd99e4"
     },
     {
       "index": 5,
@@ -126,17 +126,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f05.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f05.png",
       "alpha_bbox_gt_8": [
-        46,
-        76,
-        208,
-        189
+        47,
+        48,
+        210,
+        226
       ],
-      "minimum_gutter_px": 46,
+      "minimum_gutter_px": 30,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 5588,
-      "raw_pixel_sha256": "ad2141198018fdd285d0d016e6266c719659cc56b3ed6ca1758ede7e408234c5",
-      "source_pixel_sha256": "7aee388cb926ef1a43f52e8361260e9883f613be424f3f8cf8411f56ef8370d4",
-      "runtime_pixel_sha256": "7aee388cb926ef1a43f52e8361260e9883f613be424f3f8cf8411f56ef8370d4"
+      "visible_pixels_alpha_gt_8": 20114,
+      "raw_pixel_sha256": "7d1fa8702d54e1adc7b8ba02e12b6170bc5b466394628e317082f6861c6d314d",
+      "source_pixel_sha256": "5fe7a5f1b165ce76305f506139fcea50ce3497e288019d358bf2e413a429c3b5",
+      "runtime_pixel_sha256": "5fe7a5f1b165ce76305f506139fcea50ce3497e288019d358bf2e413a429c3b5"
     },
     {
       "index": 6,
@@ -144,17 +144,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f06.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f06.png",
       "alpha_bbox_gt_8": [
-        45,
-        78,
-        209,
-        185
+        44,
+        57,
+        213,
+        227
       ],
-      "minimum_gutter_px": 45,
+      "minimum_gutter_px": 29,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 4724,
-      "raw_pixel_sha256": "99dcab53562087aa0db1b650d5e37ce7698cf45fc0b03f051a3f0f239d10217b",
-      "source_pixel_sha256": "bcf227e6638c5368bc43ba52d36ff8b21ab14cf1edfca4f06b6a9eba1bfc9458",
-      "runtime_pixel_sha256": "bcf227e6638c5368bc43ba52d36ff8b21ab14cf1edfca4f06b6a9eba1bfc9458"
+      "visible_pixels_alpha_gt_8": 19768,
+      "raw_pixel_sha256": "db56f486e97a833e7ecc1e447b89bd882639b395bbf3610e03d6250fa077a8b4",
+      "source_pixel_sha256": "86a46eb9413f7b2ccab714bc28bd94e9722fb50de6fb2c8121f27ff451c8957d",
+      "runtime_pixel_sha256": "86a46eb9413f7b2ccab714bc28bd94e9722fb50de6fb2c8121f27ff451c8957d"
     },
     {
       "index": 7,
@@ -162,17 +162,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f07.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f07.png",
       "alpha_bbox_gt_8": [
-        48,
-        70,
-        207,
-        181
+        47,
+        49,
+        209,
+        223
       ],
-      "minimum_gutter_px": 48,
+      "minimum_gutter_px": 33,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 3618,
-      "raw_pixel_sha256": "0ee94545fb8fbb565d27cc21897a0735b3ace66dee4722bbafd9b39a60cbbb40",
-      "source_pixel_sha256": "a7bb0e16ac408970349cdbd9bf2215be6247761d1731146affacb13ddef797d9",
-      "runtime_pixel_sha256": "a7bb0e16ac408970349cdbd9bf2215be6247761d1731146affacb13ddef797d9"
+      "visible_pixels_alpha_gt_8": 16040,
+      "raw_pixel_sha256": "28da076d366b3c9873d0f599a55014b41c94a84467368b9ff28b793f7ccf491f",
+      "source_pixel_sha256": "ad3aaa149326c4ed10a0de4a42e8f62afec13c3d10b61a12bb23dc5c24787552",
+      "runtime_pixel_sha256": "ad3aaa149326c4ed10a0de4a42e8f62afec13c3d10b61a12bb23dc5c24787552"
     },
     {
       "index": 8,
@@ -180,17 +180,17 @@
       "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw/smoke_bomb_f08.png",
       "runtime_file": "assets/sprites/effects/thief/smoke_bomb/smoke_bomb_f08.png",
       "alpha_bbox_gt_8": [
-        51,
-        68,
-        204,
-        157
+        76,
+        41,
+        180,
+        201
       ],
-      "minimum_gutter_px": 51,
+      "minimum_gutter_px": 41,
       "edge_visible_pixels": 0,
-      "visible_pixels_alpha_gt_8": 3735,
-      "raw_pixel_sha256": "809571f7be69226d387b27cfc3a0225b7b3b28715b4dc42d37783a58d808544a",
-      "source_pixel_sha256": "8b75a0e24f8324c8858e9ff697eafc54db8499769770f93d4a1e59624c309b06",
-      "runtime_pixel_sha256": "8b75a0e24f8324c8858e9ff697eafc54db8499769770f93d4a1e59624c309b06"
+      "visible_pixels_alpha_gt_8": 9365,
+      "raw_pixel_sha256": "0066d6b6250357dfa2b231ff275ea9422b5c8659c3a71a4c7b5a751e0aaf423c",
+      "source_pixel_sha256": "cbd7062e1ad24636b56660b0e9d0a1ae7b4d7252deee4d17a88cc54aac427318",
+      "runtime_pixel_sha256": "cbd7062e1ad24636b56660b0e9d0a1ae7b4d7252deee4d17a88cc54aac427318"
     }
   ],
   "decision": "pass"

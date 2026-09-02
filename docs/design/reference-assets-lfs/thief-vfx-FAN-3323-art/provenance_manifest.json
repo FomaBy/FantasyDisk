@@ -2,8 +2,8 @@
   "schema_version": 1,
   "issue": "FAN-3865",
   "source_brief": "FAN-3323",
-  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
-  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "base_sha": "033fd61359bc84bfb551357059584b841d7cbaea",
+  "base_tree": "523f7455f387788999b20f6a6929b36062f6887c",
   "target_branch": "dev",
   "class_id": "thief",
   "route": "pixellab",
@@ -54,7 +54,17 @@
       "source_runtime_pixel_parity": true,
       "distinct_pixel_frames": 9,
       "adjacent_pixel_changes": 8,
-      "motion_contract": "drawstring pouch snaps open, engraved gold coins spill in a curved ricochet trail, the lead coin flashes on impact, then the coins arc back and settle"
+      "motion_contract": "drawstring pouch snaps open, engraved gold coins spill in a curved ricochet trail, the lead coin flashes on impact, then the coins arc back and settle",
+      "adjacent_changed_pixels_rgba": [
+        8942,
+        14979,
+        13110,
+        14317,
+        8673,
+        4878,
+        4712,
+        3466
+      ]
     },
     {
       "weapon_id": "thief_shadow_cloak",
@@ -78,14 +88,24 @@
       "source_runtime_pixel_parity": true,
       "distinct_pixel_frames": 9,
       "adjacent_pixel_changes": 8,
-      "motion_contract": "cloak unfurls in a tight spiral, violet lining sweeps forward like a phantom lunge, a dark-violet backstab slash flares, then the cloak snaps closed"
+      "motion_contract": "cloak unfurls in a tight spiral, violet lining sweeps forward like a phantom lunge, a dark-violet backstab slash flares, then the cloak snaps closed",
+      "adjacent_changed_pixels_rgba": [
+        5362,
+        6440,
+        5601,
+        7555,
+        5456,
+        7246,
+        7208,
+        7814
+      ]
     },
     {
       "weapon_id": "thief_smoke_bomb",
       "asset_key": "thief/smoke_bomb",
       "title": "Идеальное Ограбление",
-      "object_id": "375f29b9-672e-4add-8ad8-adb3a7998110",
-      "animation_group_id": "5c49da96-e30a-4855-b61d-ba459648dd3a",
+      "object_id": "2e8def6e-0640-41e7-8f89-d860b6599c2d",
+      "animation_group_id": "5a24cca2-2d98-49d7-9746-917bb2aeef5c",
       "source_manifest": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/manifest.json",
       "generated_manifest": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/pixellab_generation_manifest.json",
       "raw_source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw",
@@ -102,15 +122,27 @@
       "source_runtime_pixel_parity": true,
       "distinct_pixel_frames": 9,
       "adjacent_pixel_changes": 8,
-      "motion_contract": "pull ring snaps free, indigo-violet smoke blooms in layered curls, the bomb flashes at the center, then smoke thins into drifting wisps"
+      "motion_contract": "the fuse ember flares, grey-blue smoke expands into layered curling wisps and a broad concealment dome, then the dome collapses into three drifting wisps while the round bomb remains readable",
+      "adjacent_changed_pixels_rgba": [
+        5470,
+        2317,
+        6280,
+        11219,
+        19064,
+        14596,
+        18137,
+        10938
+      ]
     }
   ],
   "generation_cost": {
     "unit": "PixelLab generations",
-    "packs_generated": 3,
+    "packs_generated": 4,
     "per_pack_cost": "not exposed by the blocking CLI or get_object response",
     "balance_snapshot": "auth smoke PASS before generation; no balance details were emitted by the checked-in smoke tool",
-    "note": "No paid operation, purchase, or credit top-up was performed; live response did not expose a per-job cost."
+    "note": "Four PixelLab pack generations were run for this issue: initial coin_pouch, shadow_cloak and smoke_bomb packs plus one replacement smoke_bomb pack after independent QA. No paid operation, purchase, or credit top-up was performed; the live response did not expose a per-job cost.",
+    "candidate_packs": 3,
+    "rework_generations": 1
   },
   "scope_note": "Only Thief-local source/runtime art, import sidecars, SpriteFrames and provenance/QA manifests are included; no scenes, mechanics, data, registries or shared files."
 }
