@@ -347,9 +347,6 @@ def ownership_domain_errors(root: Path, changed_ref: str) -> list[str]:
         return [f"ownership guard: {error}"]
 
     declared, errors = _cross_domain_errors(root, base_sha)
-    if declared:
-        return errors
-
     paths = _candidate_paths(root, base_sha)
     domains: set[str] = set()
     for path in paths:
@@ -361,13 +358,13 @@ def ownership_domain_errors(root: Path, changed_ref: str) -> list[str]:
         if domain:
             domains.add(domain)
     shared = sorted({path for path in paths if _budgeted_shared(path.removesuffix(".uid"))})
-    if len(domains) > 1:
+    if not declared and len(domains) > 1:
         errors.append(
             "ownership guard: candidate spans ownership domains "
             + ", ".join(sorted(domains))
             + "; split the task or declare 'cross-domain: FAN-<id> <rationale>'"
         )
-    if len(shared) > 1:
+    if not declared and len(shared) > 1:
         errors.append(
             "ownership guard: candidate touches "
             f"{len(shared)} budgeted shared files (" + ", ".join(shared) + "); "

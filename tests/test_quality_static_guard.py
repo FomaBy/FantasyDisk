@@ -1200,6 +1200,18 @@ class EmbeddedOwnershipIdTest(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertIn("ambiguous actor ids bone_caller, void_mage", errors[0])
 
+    def test_cross_domain_declaration_does_not_bypass_ambiguous_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {"assets/sprites/effects/void_mage_vs_bone_caller.png": "png\n"},
+                message="candidate\n\ncross-domain: FAN-3856 intentional dual-zone migration",
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("ambiguous actor ids bone_caller, void_mage", errors[0])
+
     def test_one_actor_or_class_zone_passes(self):
         for name, changes in (
             (
