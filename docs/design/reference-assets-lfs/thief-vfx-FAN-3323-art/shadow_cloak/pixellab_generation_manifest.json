@@ -1,0 +1,101 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T09:50:03Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "a82a1b09-05be-4fb8-a1fe-03295523279b",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Thief ultimate shadow cloak: a compact folded charcoal-black hooded cloak with deep violet lining, a silver clasp shaped like a crescent dagger and three wisps of purple shadow curling from the hem, top-down D&D dark fantasy pixel art, isolated VFX prop on transparent background, crisp thief-specific silhouette, generous empty margin, no character, no text, no border, no background",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single Thief shadow cloak, crescent-dagger clasp and violet shadow wisps centered with stable outline, proportions, palette and identity in every frame; animate a readable ultimate shadow-backstab release: cloak unfurls in a tight spiral, its violet lining sweeps forward like a phantom lunge while shadow wisps coil around the crescent clasp, a sharp dark-violet backstab slash flares on the impact beat, then the cloak snaps closed and the wisps fade; measurable motion and distinct silhouettes in every frame, no static duplicates, no clipping, no stray pixels, transparent background, no new objects, no text",
+      "frame_count": 8
+    },
+    "animation_group_id": "9174ed5a-7fab-4644-a544-0e304a5015f0",
+    "canonical_asset_key": "thief/shadow_cloak"
+  },
+  "frames": [
+    {
+      "file": "shadow_cloak_f00.png",
+      "bytes": 6966,
+      "url_kind": "template",
+      "encoded_sha256": "53a07d7569d53de9576910bc1e2d34f0ac866ce074e6a6fce01826743d8e7771",
+      "pixel_sha256": "efc7f174a08ee0eb6d614396b5ddfec02c391aa419a0ce893b5ad15f6b4027d0"
+    },
+    {
+      "file": "shadow_cloak_f01.png",
+      "bytes": 9758,
+      "url_kind": "template",
+      "encoded_sha256": "b74d0e48feed95b25df345fcc6d555617392fbe5dce1cca661a117d9dc911d0e",
+      "pixel_sha256": "6bd2aca182d7a5f22db51fac81c198a21ce97fad149973755a95cfa234d0fb15"
+    },
+    {
+      "file": "shadow_cloak_f02.png",
+      "bytes": 9119,
+      "url_kind": "template",
+      "encoded_sha256": "e18114502bbf636eceb4c2ee1f511bf0eca0aa7eb07e49e7757084af32dfa4b7",
+      "pixel_sha256": "b054ce30b72db6ce0d0366eafeb079c83a901c42e48c6075b6c5bbeafc84d67f"
+    },
+    {
+      "file": "shadow_cloak_f03.png",
+      "bytes": 9937,
+      "url_kind": "template",
+      "encoded_sha256": "55317439faee59f63583d7cbcac1bce285b8f2bc839efc469d3f705218d8f4bf",
+      "pixel_sha256": "6426031839cbbaaf7d587cf6f00fa13c110528c2fa92139169533d25b3618f2c"
+    },
+    {
+      "file": "shadow_cloak_f04.png",
+      "bytes": 10240,
+      "url_kind": "template",
+      "encoded_sha256": "97865255f19bee73cd2a17745fcf19814409fb3377c2ece25e4a54af5f844ef9",
+      "pixel_sha256": "afd22ba9dfce3acedfc85a9c4eb0b89566fc8da4c7964a4735eaf104716ae1e0"
+    },
+    {
+      "file": "shadow_cloak_f05.png",
+      "bytes": 10070,
+      "url_kind": "template",
+      "encoded_sha256": "4c5beb0f3b511b6cb6e227b90ab9476a16c088bf78a0715c7289c6afde0a1fdc",
+      "pixel_sha256": "ed1352e7380147216435cc41e6bb6f157314fa0f42d0b76b59e1a539381c9d14"
+    },
+    {
+      "file": "shadow_cloak_f06.png",
+      "bytes": 9747,
+      "url_kind": "template",
+      "encoded_sha256": "6d5abc03167149a4165ab34aa8ea064b3c472b0ca97c6352a415a6c258ea49f9",
+      "pixel_sha256": "d152da341ba677095b359b5092616330e57f6d7cf94fca418252734e11a73224"
+    },
+    {
+      "file": "shadow_cloak_f07.png",
+      "bytes": 9139,
+      "url_kind": "template",
+      "encoded_sha256": "aafaadbe8a20f0c8fd85f4dfa1a9d408cc242a35e2da317b018fab1382eb343b",
+      "pixel_sha256": "a0b8bf0bf3eb40067d08ed798327238931bca73d1964d4e6d82bfb7506e58d0a"
+    },
+    {
+      "file": "shadow_cloak_f08.png",
+      "bytes": 7881,
+      "url_kind": "template",
+      "encoded_sha256": "fcef4e6c28814d0082805cd30511fa9fdf173706b2e65672ce52ce1e6fa7ade6",
+      "pixel_sha256": "68473707ee1c33398e4a26fd0f5ef65c234290578e39e13ce1c36d9b5d056641"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak",
+  "postprocess": {
+    "method": "raw PixelLab 256x256 frames preserved under raw/; accepted/runtime frames are nearest-neighbor 224x224 inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "accepted_safe_gutter_px": 16
+  }
+}
