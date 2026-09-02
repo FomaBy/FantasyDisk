@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "source_brief": "FAN-3318",
+  "class_id": "priest",
+  "weapon_id": "priest_censer",
+  "title": "Нерушимый Обет",
+  "ultimate_role": "ward_pulses",
+  "visual_identity": "suspended gold-and-ivory censer, chained incense capsule, teal ember and expanding ward rings",
+  "generator": {
+    "route": "PixelLab MCP",
+    "tool": "tools/pixellab_generate_pack.py",
+    "mode": "v3",
+    "pixel_lab_object_id": "4a2d3282-d5dd-4bd1-8b98-b1ca00ed45f6",
+    "pixel_lab_animation_group_id": "647099af-429f-4603-8d2e-29d2b8abb510",
+    "raw_manifest": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/pixellab_generation_manifest.json",
+    "raw_manifest_sha256": "7ebe00c2804e161ba7a51cd0560538abe2366201a30e8f466e1971943926eb16",
+    "generation_cost": {
+      "per_pack": "not exposed by the blocking CLI or get_object response",
+      "paid_operation": false
+    },
+    "no_secrets_recorded": true
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16
+  },
+  "postprocess": {
+    "raw_preserved": true,
+    "accepted_source_cleaned": true,
+    "weapon_reference": "assets/sprites/weapons/priest_censer.png",
+    "ghost_silhouette": "canonical weapon alpha rendered in the pack accent at 20% opacity behind the PixelLab animation",
+    "effect_alpha_factor": 0.68,
+    "source_runtime_parity": true
+  },
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "frame_order": [
+      "priest_censer_f00.png",
+      "priest_censer_f01.png",
+      "priest_censer_f02.png",
+      "priest_censer_f03.png",
+      "priest_censer_f04.png",
+      "priest_censer_f05.png",
+      "priest_censer_f06.png",
+      "priest_censer_f07.png",
+      "priest_censer_f08.png"
+    ]
+  },
+  "spriteframes": "assets/sprites/effects/priest/priest_censer/priest_censer_spriteframes.tres",
+  "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_contact_sheet.png",
+  "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/static_alpha_readability_report.json",
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f00.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f00.png.import",
+        "sha256": "dbeabea8f30d6003721c3fdecf1ff6a5611e4a462a2dc428a4e01dd460973dba",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f01.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f01.png.import",
+        "sha256": "44754105273427b15c8df4be5b830c41f5491e5f142f51dcc4a8a83f744ee3de",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f02.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f02.png.import",
+        "sha256": "77f68f2d738ffd3e30296b649b414523df644c9bc88e0ff3f8e5ce67662e51d7",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f03.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f03.png.import",
+        "sha256": "996da030d5426c1d253f6eddbf5e4371f3b3d7b7285652cc6d6dfbecf31b1ac6",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f04.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f04.png.import",
+        "sha256": "9cfaa024b1b8a6339a3854641799d154d9b65cbe1c2f4cf586d1084f4bcebd16",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f05.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f05.png.import",
+        "sha256": "09e91d0fff340f65ab732a6520253457253fd62b56f5e4fadb7063dc6fcef390",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f06.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f06.png.import",
+        "sha256": "fca8b42c4f8cb74be93c28ba1dcc44b086527de5f7ba8d6f093764af31e6c7f2",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f07.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f07.png.import",
+        "sha256": "7bb2170d793b2697c1f3b84d51ff2981bf1ea6c7f9e2277bb09f60a191c47a81",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_censer/priest_censer_f08.png": {
+        "path": "assets/sprites/effects/priest/priest_censer/priest_censer_f08.png.import",
+        "sha256": "d647e8af9d22d33fe9d3a25076dc85a2532413b70ff4fe61ea7b1efafffec4b9",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "motion": {
+    "distinct_frame_pixel_hashes": 9,
+    "adjacent_pairs_with_motion": 8,
+    "adjacent_changed_pixel_ratios": [
+      0.171539,
+      0.249496,
+      0.241898,
+      0.234695,
+      0.222717,
+      0.221954,
+      0.163712,
+      0.170837
+    ],
+    "mean_absolute_rgba_diffs": [
+      5.595,
+      21.6827,
+      16.8251,
+      15.6862,
+      13.6191,
+      18.1272,
+      5.3969,
+      6.8373
+    ],
+    "motion_score_mean_changed_pixel_ratio": 0.209606,
+    "loop": false,
+    "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f00.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f00.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f00.png",
+      "raw_source_sha256": "6adab8e469e21b104ec564aef0a5e7237587d521e1ff09ecee044d46c211a755",
+      "raw_source_pixel_sha256": "6164bef1d0c559a3ad1581a8ac70c3bd2f66406f70d3287dfac7aa08d97d417f",
+      "source_sha256": "90aaf319d01839945ed7658f3b8025b2b6991a679a01f658a1d07bb256fb8d9a",
+      "runtime_sha256": "90aaf319d01839945ed7658f3b8025b2b6991a679a01f658a1d07bb256fb8d9a",
+      "source_pixel_sha256": "2d641eb7a9427d677d94a6808e730b965b787e9fc86125c9d4fbf973333f891d",
+      "runtime_pixel_sha256": "2d641eb7a9427d677d94a6808e730b965b787e9fc86125c9d4fbf973333f891d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        74,
+        16,
+        182,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.1445,
+      "mean_alpha_visible_pixels": 151.9314,
+      "visible_ratio_alpha_gt_8": 0.171829,
+      "center_64_mean_alpha": 175.7058,
+      "outer_32_border_mean_alpha": 2.0078
+    },
+    {
+      "frame": 1,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f01.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f01.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f01.png",
+      "raw_source_sha256": "b87b845b80b1a679a6304f0593ff1d1f13c170e20d0cccbe88a3eb5404d9cf79",
+      "raw_source_pixel_sha256": "78268a6df91e4069ce1245b9ae56cdd0fe184329a3cef9096e02ce26874bd0bc",
+      "source_sha256": "2b2418deafe1ac1f5f132baad1a3b8707c4964e9be90a564cf90346771cabf8f",
+      "runtime_sha256": "2b2418deafe1ac1f5f132baad1a3b8707c4964e9be90a564cf90346771cabf8f",
+      "source_pixel_sha256": "8a3a0be62a31d952c52b3a5ac4b88bde48e6fc62c66ba2bef28332a2cedf571f",
+      "runtime_pixel_sha256": "8a3a0be62a31d952c52b3a5ac4b88bde48e6fc62c66ba2bef28332a2cedf571f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        73,
+        16,
+        182,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.5942,
+      "mean_alpha_visible_pixels": 153.7263,
+      "visible_ratio_alpha_gt_8": 0.172729,
+      "center_64_mean_alpha": 176.2502,
+      "outer_32_border_mean_alpha": 2.0743
+    },
+    {
+      "frame": 2,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f02.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f02.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f02.png",
+      "raw_source_sha256": "56533344918063daeddc93b13d924435a211ad459794818a493abbc29d5b7593",
+      "raw_source_pixel_sha256": "b6eb4df1aec64d7847affc168e74b80547a0e6ecd3afa1620d19c2dfabeaaf40",
+      "source_sha256": "0fc596d0797af34aeb659e17ffa89207f0b5b5e93e85ee7eb3a290ec9224b924",
+      "runtime_sha256": "0fc596d0797af34aeb659e17ffa89207f0b5b5e93e85ee7eb3a290ec9224b924",
+      "source_pixel_sha256": "f69f0b9651310ae620ed56f8f0e8e3ab450e110bd090f347fdee365ef3b1f68a",
+      "runtime_pixel_sha256": "f69f0b9651310ae620ed56f8f0e8e3ab450e110bd090f347fdee365ef3b1f68a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        39,
+        16,
+        217,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 29.622,
+      "mean_alpha_visible_pixels": 151.9994,
+      "visible_ratio_alpha_gt_8": 0.194397,
+      "center_64_mean_alpha": 159.4243,
+      "outer_32_border_mean_alpha": 2.0774
+    },
+    {
+      "frame": 3,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f03.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f03.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f03.png",
+      "raw_source_sha256": "ba538c38c55c6c1eab5a43c61bf91b9df8cb99545271c544267456dc87791078",
+      "raw_source_pixel_sha256": "63ba0302c04b6352d5e71263cd8e79c3de82a745d7bd6d2a0f6ccd51ccc61fc1",
+      "source_sha256": "da9c6beddef5aba5c16ff3f77f7ec8d74feb7623af669ea3937dcf751bcb5c35",
+      "runtime_sha256": "da9c6beddef5aba5c16ff3f77f7ec8d74feb7623af669ea3937dcf751bcb5c35",
+      "source_pixel_sha256": "6483113046bfd1f98ff7ecba648f6cd645ca0eadd44ac5d3bee90ac62f3fd453",
+      "runtime_pixel_sha256": "6483113046bfd1f98ff7ecba648f6cd645ca0eadd44ac5d3bee90ac62f3fd453",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        36,
+        16,
+        219,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 30.0519,
+      "mean_alpha_visible_pixels": 151.6609,
+      "visible_ratio_alpha_gt_8": 0.197678,
+      "center_64_mean_alpha": 162.2559,
+      "outer_32_border_mean_alpha": 2.0465
+    },
+    {
+      "frame": 4,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f04.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f04.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f04.png",
+      "raw_source_sha256": "e9754f424a03c2d9e380d26ba5a631ac3d9739b79ae46076a6497ac5417d2952",
+      "raw_source_pixel_sha256": "52a629a1439374008df1f227c24c00c0a1d35bbc384091205292207f5e0501c5",
+      "source_sha256": "c6eb3cbf0061bc87d42673b5471af270f3a2fe394f405a4ae3951f3af1b2cc50",
+      "runtime_sha256": "c6eb3cbf0061bc87d42673b5471af270f3a2fe394f405a4ae3951f3af1b2cc50",
+      "source_pixel_sha256": "a810f777a718af9b340069811d30e7ce5fd56456c7a93162d37b33578fad919f",
+      "runtime_pixel_sha256": "a810f777a718af9b340069811d30e7ce5fd56456c7a93162d37b33578fad919f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        35,
+        16,
+        220,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 29.149,
+      "mean_alpha_visible_pixels": 151.1988,
+      "visible_ratio_alpha_gt_8": 0.192276,
+      "center_64_mean_alpha": 162.2166,
+      "outer_32_border_mean_alpha": 2.0545
+    },
+    {
+      "frame": 5,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f05.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f05.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f05.png",
+      "raw_source_sha256": "daa6874325d9a1f66967197fa7b6b7f71a39bee951f5d50291b1fcfe9a3548b6",
+      "raw_source_pixel_sha256": "48d0fb7cfd273e03d89305ff3b9a8259cf3e75b2dc34179327b1bc5474fbab76",
+      "source_sha256": "39de2e39d42c3ef929fe641f807fa0dfe15a79a1a3053efe3cbc2d67ce8b3305",
+      "runtime_sha256": "39de2e39d42c3ef929fe641f807fa0dfe15a79a1a3053efe3cbc2d67ce8b3305",
+      "source_pixel_sha256": "3a7264356c732a5b89ad8abdd5144c14ea4dad23ae58fad3c0b9ae18817b108b",
+      "runtime_pixel_sha256": "3a7264356c732a5b89ad8abdd5144c14ea4dad23ae58fad3c0b9ae18817b108b",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        36,
+        16,
+        219,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 27.7912,
+      "mean_alpha_visible_pixels": 150.8619,
+      "visible_ratio_alpha_gt_8": 0.183746,
+      "center_64_mean_alpha": 161.2676,
+      "outer_32_border_mean_alpha": 2.0509
+    },
+    {
+      "frame": 6,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f06.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f06.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f06.png",
+      "raw_source_sha256": "32261bd453992af09c03bc75caf52bffedce452c25759631cf45c8fd8349d6f0",
+      "raw_source_pixel_sha256": "29e8928198f07a8af10762da2df5c4158311c73d01489d938037c26ed0aadd48",
+      "source_sha256": "0df1a0e48a49c1fd47422b2acf4f316846ff4f21dd71ebbabf117893571557e0",
+      "runtime_sha256": "0df1a0e48a49c1fd47422b2acf4f316846ff4f21dd71ebbabf117893571557e0",
+      "source_pixel_sha256": "bbb62abb5cf0ef4d203d70c2af5f2b61e366d35649db0f8b5bc6b39a4daaa673",
+      "runtime_pixel_sha256": "bbb62abb5cf0ef4d203d70c2af5f2b61e366d35649db0f8b5bc6b39a4daaa673",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        82,
+        16,
+        174,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 24.3594,
+      "mean_alpha_visible_pixels": 151.4729,
+      "visible_ratio_alpha_gt_8": 0.160522,
+      "center_64_mean_alpha": 175.7395,
+      "outer_32_border_mean_alpha": 2.035
+    },
+    {
+      "frame": 7,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f07.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f07.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f07.png",
+      "raw_source_sha256": "f1b609c791744d043e60cf2f04c7dd159889c567c3b0cf86091191f997ee9178",
+      "raw_source_pixel_sha256": "21a17e26a62a77f2607b9bc080f2a470fa4a2ef1bdd57e0a74efa760dc405280",
+      "source_sha256": "e8f8cfd492feb2c70d9ec949a7ec1bc26deef11a5022a8f13037d3c2b84aaa60",
+      "runtime_sha256": "e8f8cfd492feb2c70d9ec949a7ec1bc26deef11a5022a8f13037d3c2b84aaa60",
+      "source_pixel_sha256": "f6dd147cefa954920b4dca2cf4a3b29be6c20b7cfceaeb150b95c05205849e57",
+      "runtime_pixel_sha256": "f6dd147cefa954920b4dca2cf4a3b29be6c20b7cfceaeb150b95c05205849e57",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        80,
+        16,
+        175,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 24.9552,
+      "mean_alpha_visible_pixels": 152.6323,
+      "visible_ratio_alpha_gt_8": 0.163223,
+      "center_64_mean_alpha": 176.2866,
+      "outer_32_border_mean_alpha": 2.061
+    },
+    {
+      "frame": 8,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw/priest_censer_f08.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_f08.png",
+      "runtime": "assets/sprites/effects/priest/priest_censer/priest_censer_f08.png",
+      "raw_source_sha256": "789a778655908e51891567a3224eceb6afce08bfa1061375d6fb75db49cb33c9",
+      "raw_source_pixel_sha256": "e114518c0111f9814d6e070ca43532256498399d88c231417ae903414703280f",
+      "source_sha256": "c14d8d517ad80678a8aadf1d4c49ff176c6648c01c381a81e1c8a115b889831e",
+      "runtime_sha256": "c14d8d517ad80678a8aadf1d4c49ff176c6648c01c381a81e1c8a115b889831e",
+      "source_pixel_sha256": "47ca284773111f62fc4349060e854900d48f8b8cfc5e679a55449d2c998b8ba0",
+      "runtime_pixel_sha256": "47ca284773111f62fc4349060e854900d48f8b8cfc5e679a55449d2c998b8ba0",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        79,
+        16,
+        177,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.0189,
+      "mean_alpha_visible_pixels": 153.357,
+      "visible_ratio_alpha_gt_8": 0.169403,
+      "center_64_mean_alpha": 175.5662,
+      "outer_32_border_mean_alpha": 2.0063
+    }
+  ]
+}
