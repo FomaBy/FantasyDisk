@@ -1200,6 +1200,35 @@ class EmbeddedOwnershipIdTest(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertIn("ambiguous actor ids bone_caller, void_mage", errors[0])
 
+    def test_class_owned_ultimate_sprite_uses_its_class_domain(self):
+        relative = "assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar.png"
+        self.assertEqual(self.module.ownership_domain(relative), "class/chemist")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    relative: "png\n",
+                    "data/ultimates/classes/chemist/homunculus_vial.json": "{}\n",
+                },
+            )
+            self.assertEqual(self.errors(root), [])
+
+    def test_chemist_ultimate_and_homunculus_actor_require_declaration(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.repo(tmp)
+            self.commit(
+                root,
+                {
+                    "assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar.png": "png\n",
+                    "assets/sprites/allies/ally_homunculus.png": "png\n",
+                },
+            )
+            errors = self.errors(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("actor/homunculus, class/chemist", errors[0])
+
     def test_cross_domain_declaration_does_not_bypass_ambiguous_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = self.repo(tmp)

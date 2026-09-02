@@ -203,6 +203,8 @@ def _budgeted_shared(relative: str) -> bool:
 
 def _embedded_surface(relative: str) -> tuple[str, str, frozenset[str]] | None:
     """(domain kind, searched region, registry) for id-in-name ownership surfaces."""
+    if relative.startswith("assets/") and "/ultimates/" in relative:
+        return "class", relative.split("/ultimates/", 1)[1], CLASS_IDS
     if relative.startswith("assets/sprites/"):
         return "actor", relative.removeprefix("assets/sprites/"), ACTOR_IDS
     if relative.startswith("tests/ultimates/"):
