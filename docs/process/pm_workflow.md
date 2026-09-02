@@ -47,8 +47,15 @@ Acceptance criteria:
 - <observable result>
 ```
 
-Coordination umbrellas estimate coordination only, set
-`work_type=coordination_umbrella`, and list independently estimated children.
+Management-only cards are forbidden (owner mandate 2026-09-02): no programs,
+workstreams, coordination umbrellas (`work_type=coordination_umbrella`) or
+decomposition cards. Decompose by creating independently gated delivery slices
+directly; group them with the `program:<name>` label (optionally metadata
+`program=<name>`) and record the plan in one comment on the first slice or in
+the release card. `parent` is allowed only when the parent is itself a
+deliverable; `waiting_on` names only work cards or external gates (`machine:`,
+`provider:`, `owner:`). An external gate with a known date carries
+`deferred_until=<YYYY-MM-DD>` and is not an idle-fleet condition before it.
 
 ## 3. Write and verify the gate
 

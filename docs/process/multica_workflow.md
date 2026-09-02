@@ -114,6 +114,13 @@ canonical dispatcher may unassign the parent
 and move it to `in_review` only when child/parent SHA, reviewer independence, and
 live QA state all agree.
 
+## No management-only cards (owner mandate 2026-09-02)
+
+A card exists only when it carries verifiable work. Programs, workstreams,
+coordination umbrellas and decomposition cards are not created; grouping is
+the `program:<name>` label on work cards, and a program's status is the sum of
+its cards. See `pm_workflow.md` for the decomposition rule.
+
 ## QA execution
 
 QA verifies only its assigned child. For a normal small change it inspects the
