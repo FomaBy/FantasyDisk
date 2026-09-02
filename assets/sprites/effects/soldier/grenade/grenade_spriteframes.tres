@@ -1,0 +1,29 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f00.png" id="1_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f01.png" id="2_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f02.png" id="3_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f03.png" id="4_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f04.png" id="5_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f05.png" id="6_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f06.png" id="7_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f07.png" id="8_grenade"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soldier/grenade/grenade_f08.png" id="9_grenade"]
+
+[resource]
+animations = [{
+"frames": [
+{"duration": 1.0, "texture": ExtResource("1_grenade")},
+{"duration": 1.0, "texture": ExtResource("2_grenade")},
+{"duration": 1.0, "texture": ExtResource("3_grenade")},
+{"duration": 1.0, "texture": ExtResource("4_grenade")},
+{"duration": 1.0, "texture": ExtResource("5_grenade")},
+{"duration": 1.0, "texture": ExtResource("6_grenade")},
+{"duration": 1.0, "texture": ExtResource("7_grenade")},
+{"duration": 1.0, "texture": ExtResource("8_grenade")},
+{"duration": 1.0, "texture": ExtResource("9_grenade")}
+],
+"loop": false,
+"name": &"soldier_grenade_ultimate",
+"speed": 3.0
+}]

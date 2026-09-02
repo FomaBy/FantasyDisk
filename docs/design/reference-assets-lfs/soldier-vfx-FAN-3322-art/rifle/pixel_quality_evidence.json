@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3860",
+  "class_id": "soldier",
+  "weapon_id": "soldier_rifle",
+  "object_id": "67684a3f-5e2c-4014-874f-a6a5235d4c52",
+  "animation_group_id": "83468d9e-be8d-4a8e-bc48-246e4d37e450",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_contact_sheet.png",
+    "silhouette": "clear, centered and weapon-specific in every frame",
+    "movement": "three charge beats produce muzzle flashes and straight tracer runes with visible recoil, followed by a brief cyan smoke recall",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection; detached sparks/trails are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edge rows are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "frames": [
+    {
+      "index": 0,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f00.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f00.png",
+      "alpha_bbox_gt_8": [
+        34,
+        109,
+        221,
+        170
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3528,
+      "source_pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a",
+      "runtime_pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a"
+    },
+    {
+      "index": 1,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f01.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f01.png",
+      "alpha_bbox_gt_8": [
+        34,
+        96,
+        221,
+        170
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4045,
+      "source_pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f",
+      "runtime_pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f"
+    },
+    {
+      "index": 2,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f02.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f02.png",
+      "alpha_bbox_gt_8": [
+        34,
+        59,
+        221,
+        188
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4956,
+      "source_pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724",
+      "runtime_pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724"
+    },
+    {
+      "index": 3,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f03.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f03.png",
+      "alpha_bbox_gt_8": [
+        34,
+        60,
+        221,
+        168
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3950,
+      "source_pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461",
+      "runtime_pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461"
+    },
+    {
+      "index": 4,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f04.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f04.png",
+      "alpha_bbox_gt_8": [
+        34,
+        57,
+        221,
+        170
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3797,
+      "source_pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78",
+      "runtime_pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78"
+    },
+    {
+      "index": 5,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f05.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f05.png",
+      "alpha_bbox_gt_8": [
+        34,
+        107,
+        221,
+        170
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3683,
+      "source_pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74",
+      "runtime_pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74"
+    },
+    {
+      "index": 6,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f06.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f06.png",
+      "alpha_bbox_gt_8": [
+        34,
+        93,
+        221,
+        168
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4245,
+      "source_pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa",
+      "runtime_pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa"
+    },
+    {
+      "index": 7,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f07.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f07.png",
+      "alpha_bbox_gt_8": [
+        34,
+        59,
+        221,
+        169
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3898,
+      "source_pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a",
+      "runtime_pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a"
+    },
+    {
+      "index": 8,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f08.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f08.png",
+      "alpha_bbox_gt_8": [
+        34,
+        110,
+        221,
+        170
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3607,
+      "source_pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f",
+      "runtime_pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f"
+    }
+  ],
+  "decision": "pass"
+}

@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:50:54Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "174d2ac0-ee64-4e30-9ff5-be7a95a54c18",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single centered spectral soldier bayonet phalanx emblem: three overlapping levelled steel bayonets with olive military cloth tabs, worn brass fittings and cold cyan ghost energy, dark fantasy D&D pixel art seen from above, isolated ultimate VFX prop, crisp readable silhouette, transparent background, no character body, no hands, no extra weapons, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the three bayonets centered with stable proportions and the same olive-brass-cyan palette; a forward charge streak grows along the blades, crossed bayonet pin flares on a distinct impact beat, ghost trails sweep in a straight corridor, then a short rally spark fades; every frame has clear measurable motion, no static duplicates, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "bayonet_f00.png",
+      "bytes": 14200,
+      "url_kind": "template",
+      "encoded_sha256": "5885fa789e58dd733d554002d1a2639bafdbe85c03f70f996553ec61476df18b",
+      "pixel_sha256": "c30f2344121bb64b5e1832984193eb060efa8a1d181b241ac1d15b5c4ff603b9"
+    },
+    {
+      "file": "bayonet_f01.png",
+      "bytes": 21790,
+      "url_kind": "template",
+      "encoded_sha256": "b5b45b52a332e181afbbec6434d68d3ddca970b89c167fb58f03f4b8989c1afb",
+      "pixel_sha256": "8ff5e8ef3400d330033ea3982ae8e9f7988ba12feaf3b0893c1440d4ba6d9388"
+    },
+    {
+      "file": "bayonet_f02.png",
+      "bytes": 15302,
+      "url_kind": "template",
+      "encoded_sha256": "9f0042b7c658be947c197d3b4fab531fdc4b07af0b675cbbf0dccd6ca9f0a1ec",
+      "pixel_sha256": "644ddc817c32c2e378cb16a5b4e11498dcef5f718c1425e4506811445d7eb0d1"
+    },
+    {
+      "file": "bayonet_f03.png",
+      "bytes": 13770,
+      "url_kind": "template",
+      "encoded_sha256": "4f273fc4a38bd293336db9ea0fa028befaa9986c9766e308341397666af49133",
+      "pixel_sha256": "518d2e05596f03b150a47645fdde365077dcab0a97deb34fe78265067ea82afe"
+    },
+    {
+      "file": "bayonet_f04.png",
+      "bytes": 15055,
+      "url_kind": "template",
+      "encoded_sha256": "d3533c8bfa562487ad80777177e06982182d7454b501b8dea79828f5a548f919",
+      "pixel_sha256": "14a5e591c703d8de02db2ccf080844c89ee9d49f02c4ba0df050afaf88f6f01a"
+    },
+    {
+      "file": "bayonet_f05.png",
+      "bytes": 17325,
+      "url_kind": "template",
+      "encoded_sha256": "1a4567f78d622941843042e6f93bd8643d727d8792967258c7e17dcb236ad14f",
+      "pixel_sha256": "0d7950a492185c70e7c8d9827a4dd5e6ced5f0225fe5b0a723fec3eceeecab6f"
+    },
+    {
+      "file": "bayonet_f06.png",
+      "bytes": 17839,
+      "url_kind": "template",
+      "encoded_sha256": "c0d3615b6ebd5eaf21e1156d37a56b3a11d335fad2e6f3d4d2ab07c5bdb33b79",
+      "pixel_sha256": "c8e75f1d1641d72534283eb9f0b1af796c48ce04beb6a0effa78ef6c4e00b8cc"
+    },
+    {
+      "file": "bayonet_f07.png",
+      "bytes": 17126,
+      "url_kind": "template",
+      "encoded_sha256": "ee24e2d5dc8ff7ac26e4ca47d1b5c1544d7f431d4d4bb7624728002d2d8d1744",
+      "pixel_sha256": "8433985112e36dc598f7f0ea75a2eed8cc493a5ec1e2eda0e9497dc448eb41c4"
+    },
+    {
+      "file": "bayonet_f08.png",
+      "bytes": 13625,
+      "url_kind": "template",
+      "encoded_sha256": "3610a9e089b45784a5c1c2c1995cedff6b4f442515d9606e283733838fd038bf",
+      "pixel_sha256": "973e95dd2a6a3155f68b9ad600db9a082be577152fedc8c3c85428f1f519de6a"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}
