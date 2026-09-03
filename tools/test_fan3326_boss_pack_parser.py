@@ -14,7 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from build_fan3326_boss_pack import (  # noqa: E402
+    BuildError,
     DIRECTIONS,
+    assert_queued,
+    request_frame_count,
     SECRET_STATES,
     check_manifest,
     download_source,
@@ -162,6 +165,21 @@ def main() -> int:
         corrupt.write_text('{"frames": []}', encoding="utf-8")
         assert not check_manifest(corrupt)
         assert not rebuild_manifest(corrupt)
+
+    # FAN-3854 (2026-09-03): PixelLab v3 accepts only even 4..16 frame counts; the
+    # request rounds up while the canonical row still consumes the spec count.
+    assert [request_frame_count(n) for n in (6, 7, 8, 1, 16, 17)] == [6, 8, 8, 4, 16, 16]
+    assert len(expand_urls(["<url>/{i}.png"], 7)) == 7  # surplus 8th frame is ignored
+    # A rejected request arrives as plain text, not a JSON-RPC error, and used to be
+    # logged as "jobs=unreported" while the builder polled forever.
+    rejected = False
+    try:
+        assert_queued({"_raw": "error: v3 frame_count must be even 4-16, got 7"}, "rift_warden/move")
+    except BuildError as error:
+        rejected = "rift_warden/move" in str(error)
+    assert rejected
+    assert_queued({"_raw": "queued 7 jobs"}, "rift_warden/move")
+    assert_queued({"jobs": ["x"]}, "rift_warden/move")
 
     print("FAN-3326 parser alias regression passed")
     return 0

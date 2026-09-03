@@ -273,6 +273,55 @@ def effective_frame_count(group: dict[str, Any] | None, spec: dict[str, Any]) ->
     return int(spec["frames"])
 
 
+def request_frame_count(frame_count: int) -> int:
+    """PixelLab v3 accepts only an even frame count in 4..16.
+
+    The canonical pack still consumes ``frame_count`` frames per row; the
+    provider row simply carries one surplus frame, which ``expand_urls``
+    already tolerates.  Before this rounding the server answered an odd
+    request with a plain-text error and the builder logged it as
+    ``jobs=unreported`` while polling forever (FAN-3854, 2026-09-03).
+    """
+    return max(4, min(16, frame_count + (frame_count % 2)))
+
+
+def assert_queued(response: Any, label: str) -> None:
+    """The MCP tool reports a rejected request as text, not as a JSON-RPC error."""
+    text = response.get("_raw", "") if isinstance(response, dict) else ""
+    if text.lstrip().lower().startswith("error"):
+        raise BuildError("PixelLab rejected %s: %s" % (label, text.strip()[:200]))
+
+
+SLOT_WAIT_SECONDS = 1800
+SLOT_POLL_SECONDS = 30
+
+
+def slots_exhausted(response: Any) -> bool:
+    """``error: need N slots but only M available (x/20 active)`` — a transient cap, not a rejection."""
+    text = response.get("_raw", "") if isinstance(response, dict) else ""
+    return text.lstrip().lower().startswith("error") and "slots" in text and "available" in text
+
+
+def call_when_slots_free(tool: str, params: dict[str, Any], bearer: str, call_id: int, label: str, log=print) -> Any:
+    """Submit one animation group, waiting for PixelLab concurrency slots to free up.
+
+    The account has a fixed number of concurrent generation slots; a full pack
+    queues far more direction jobs than that, so a burst submission fails
+    mid-way.  Waiting here keeps the run synchronous and fail-closed on every
+    other error.
+    """
+    deadline = time.time() + SLOT_WAIT_SECONDS
+    while True:
+        response = call(tool, params, bearer, call_id)
+        if not slots_exhausted(response):
+            assert_queued(response, label)
+            return response
+        if time.time() >= deadline:
+            raise BuildError("PixelLab slots did not free up within %ss for %s" % (SLOT_WAIT_SECONDS, label))
+        log("slots busy for %s; waiting %ss" % (label, SLOT_POLL_SECONDS))
+        time.sleep(SLOT_POLL_SECONDS)
+
+
 def missing_directions(group: dict[str, Any] | None, spec: dict[str, Any]) -> tuple[int, list[str]]:
     frame_count = effective_frame_count(group, spec)
     if not group:
@@ -308,11 +357,20 @@ def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None
             queued_groups += 1
             if queued_groups > group_cap:
                 raise BuildError("missing group cap exceeded: %d > %d" % (queued_groups, group_cap))
+            # Rows can land while an earlier group waited for slots; re-read the
+            # live report so finished directions are never requested twice.
+            report = get_report("get_object", object_id, bearer, call_id)
+            call_id += 1
+            group = report["animations"].get(server_state)
+            frame_count, missing = missing_directions(group, spec)
+            if not missing:
+                queued_groups -= 1
+                continue
             params: dict[str, Any] = {
                 "object_id": object_id,
                 "mode": "v3",
                 "directions": missing,
-                "frame_count": frame_count,
+                "frame_count": request_frame_count(frame_count),
                 "animation_description": OBJECT_PROMPTS[boss_id][state],
             }
             if group:
@@ -321,7 +379,7 @@ def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None
                     params["replace_existing"] = True
             else:
                 params["display_name"] = server_state
-            response = call("animate_object", params, bearer, call_id)
+            response = call_when_slots_free("animate_object", params, bearer, call_id, "%s/%s" % (boss_id, state), log)
             call_id += 1
             log("queued %s %s: %s %s" % (boss_id, state, ",".join(missing), job_ids(response)))
 
@@ -341,7 +399,7 @@ def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None
                 "character_id": SECRET_CHARACTER_ID,
                 "mode": "v3",
                 "directions": missing,
-                "frame_count": frame_count,
+                "frame_count": request_frame_count(frame_count),
                 "animation_name": server_state,
                 "action_description": SECRET_PROMPTS[server_state],
             }
@@ -349,7 +407,7 @@ def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None
                 params["animation_group_id"] = group["group_id"]
                 if any(direction in group["directions"] for direction in missing):
                     params["replace_existing"] = True
-            response = call("animate_character", params, bearer, call_id)
+            response = call_when_slots_free("animate_character", params, bearer, call_id, "secret_ascension_boss/%s" % canonical, log)
             call_id += 1
             log("queued secret %s: %s %s" % (canonical, ",".join(missing), job_ids(response)))
     if batch_boss and queued_groups == 0:
@@ -364,9 +422,21 @@ def job_ids(response: Any) -> str:
     return "jobs=" + (",".join(ids) if ids else "unreported")
 
 
+def active_job_count(bearer: str, call_id: int) -> int | None:
+    """Number of queued/processing PixelLab jobs, or None when the list is unreadable."""
+    response = call("list_jobs", {}, bearer, call_id)
+    text = response.get("_raw", "") if isinstance(response, dict) else ""
+    match = re.match(r"\s*(\d+) jobs", text)
+    return int(match.group(1)) if match else None
+
+
+IDLE_POLLS_BEFORE_FAILURE = 2
+
+
 def wait_for_pack(bearer: str, timeout: float, interval: float, batch_boss: str | None = None, log=print) -> tuple[dict[str, dict[str, Any]], dict[str, Any] | None]:
     deadline = time.time() + timeout
     call_id = 1000
+    idle_polls = 0
     while True:
         objects: dict[str, dict[str, Any]] = {}
         complete = True
@@ -416,6 +486,17 @@ def wait_for_pack(bearer: str, timeout: float, interval: float, batch_boss: str 
             return objects, secret
         if time.time() >= deadline:
             raise TimeoutError("PixelLab pack timed out after %ss: %s" % (timeout, ", ".join(missing_report)))
+        # A direction job can fail server-side without touching the object
+        # status; the group then never completes.  Fail fast instead of
+        # waiting for the timeout: a rerun requeues exactly the missing rows.
+        active = active_job_count(bearer, call_id)
+        call_id += 1
+        idle_polls = idle_polls + 1 if active == 0 else 0
+        if idle_polls >= IDLE_POLLS_BEFORE_FAILURE:
+            raise BuildError(
+                "PixelLab has no active jobs but rows are still missing (a job failed); rerun to requeue: %s"
+                % ", ".join(missing_report)
+            )
         time.sleep(interval)
 
 
