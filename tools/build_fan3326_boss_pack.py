@@ -27,7 +27,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageOps
 
 TOOLS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS_DIR))
@@ -334,6 +334,103 @@ def missing_directions(group: dict[str, Any] | None, spec: dict[str, Any]) -> tu
     return frame_count, missing
 
 
+OPPOSITE_DIRECTIONS = [("east", "west"), ("north-east", "north-west"), ("south-east", "south-west")]
+
+
+def mirrored_frames(rows: dict[str, list[Path]]) -> list[str]:
+    """Opposite directions whose frames are exact horizontal mirrors of each other.
+
+    PixelLab occasionally fills a direction by reflecting its opposite.  Such a
+    row is a mirrored substitute, not a real eighth direction (FAN-3326 AC1),
+    so both the live build and the offline check fail closed on it.
+    """
+    findings: list[str] = []
+    for left, right in OPPOSITE_DIRECTIONS:
+        mirrored: list[int] = []
+        for index, (left_path, right_path) in enumerate(zip(rows.get(left, []), rows.get(right, []))):
+            with Image.open(left_path) as left_image, Image.open(right_path) as right_image:
+                left_rgba = left_image.convert("RGBA")
+                right_rgba = right_image.convert("RGBA")
+                if left_rgba.size == right_rgba.size and ImageChops.difference(ImageOps.mirror(left_rgba), right_rgba).getbbox() is None:
+                    mirrored.append(index)
+        if mirrored:
+            findings.append("%s<->%s frames %s" % (left, right, mirrored))
+    return findings
+
+
+def queue_regeneration(bearer: str, requests: list[str], log=print) -> None:
+    """Replace named directions of an existing group (mirrored or corrupt rows)."""
+    call_id = 50
+    for request in requests:
+        parts = request.split("/")
+        if len(parts) != 3:
+            raise BuildError("--regenerate expects BOSS/STATE/DIRECTION[,DIRECTION]: %s" % request)
+        boss_id, state, directions_text = parts
+        directions = directions_text.split(",")
+        unknown = [direction for direction in directions if direction not in DIRECTIONS]
+        if unknown:
+            raise BuildError("--regenerate unknown directions %s in %s" % (unknown, request))
+        if boss_id == "secret_ascension_boss":
+            spec = SECRET_STATES.get(state)
+            if spec is None:
+                raise BuildError("--regenerate unknown secret state %s" % state)
+            report = get_report("get_character", SECRET_CHARACTER_ID, bearer, call_id)
+            call_id += 1
+            group = report["animations"].get(spec["server_state"])
+            if not group:
+                raise BuildError("--regenerate: secret_ascension_boss has no group %s" % spec["server_state"])
+            params: dict[str, Any] = {
+                "character_id": SECRET_CHARACTER_ID,
+                "mode": "v3",
+                "directions": directions,
+                "frame_count": request_frame_count(effective_frame_count(group, spec)),
+                "animation_name": spec["server_state"],
+                "action_description": SECRET_PROMPTS[spec["server_state"]],
+                "animation_group_id": group["group_id"],
+                "replace_existing": True,
+            }
+            response = call_when_slots_free("animate_character", params, bearer, call_id, "secret_ascension_boss/%s" % state, log)
+        else:
+            object_id = OBJECT_IDS.get(boss_id)
+            if object_id is None:
+                raise BuildError("--regenerate unknown boss %s" % boss_id)
+            spec = OBJECT_STATES.get(state) or ({"server_state": state, "frames": 6, "loop": False} if state in OBJECT_SKILLS[boss_id] else None)
+            if spec is None or spec["server_state"] == "__rotations__":
+                raise BuildError("--regenerate unsupported state %s/%s" % (boss_id, state))
+            report = get_report("get_object", object_id, bearer, call_id)
+            call_id += 1
+            group = report["animations"].get(spec["server_state"])
+            if not group:
+                raise BuildError("--regenerate: %s has no group %s" % (boss_id, spec["server_state"]))
+            params = {
+                "object_id": object_id,
+                "mode": "v3",
+                "directions": directions,
+                "frame_count": request_frame_count(effective_frame_count(group, spec)),
+                "animation_description": OBJECT_PROMPTS[boss_id][state],
+                "animation_group_id": group["group_id"],
+                "replace_existing": True,
+            }
+            response = call_when_slots_free("animate_object", params, bearer, call_id, "%s/%s" % (boss_id, state), log)
+        call_id += 1
+        log("regenerating %s %s: %s %s" % (boss_id, state, ",".join(directions), job_ids(response)))
+
+
+def wait_for_idle(bearer: str, timeout: float, interval: float, log=print) -> None:
+    """Block until PixelLab reports no active jobs (replaced rows keep their old URLs until then)."""
+    deadline = time.time() + timeout
+    call_id = 900
+    while True:
+        active = active_job_count(bearer, call_id)
+        call_id += 1
+        if active == 0:
+            return
+        if time.time() >= deadline:
+            raise TimeoutError("PixelLab still has %s active jobs after %ss" % (active, timeout))
+        log("waiting for %s active PixelLab jobs" % active)
+        time.sleep(interval)
+
+
 def queue_missing(bearer: str, batch_boss: str | None = None, log=print) -> None:
     call_id = 100
     queued_groups = 0
@@ -422,12 +519,19 @@ def job_ids(response: Any) -> str:
     return "jobs=" + (",".join(ids) if ids else "unreported")
 
 
+def parse_active_job_count(text: str) -> int | None:
+    """``list_jobs`` answers ``N jobs:`` or ``no active jobs (...)``; None when unreadable."""
+    stripped = text.lstrip()
+    if stripped.lower().startswith("no active jobs"):
+        return 0
+    match = re.match(r"(\d+) jobs", stripped)
+    return int(match.group(1)) if match else None
+
+
 def active_job_count(bearer: str, call_id: int) -> int | None:
     """Number of queued/processing PixelLab jobs, or None when the list is unreadable."""
     response = call("list_jobs", {}, bearer, call_id)
-    text = response.get("_raw", "") if isinstance(response, dict) else ""
-    match = re.match(r"\s*(\d+) jobs", text)
-    return int(match.group(1)) if match else None
+    return parse_active_job_count(response.get("_raw", "") if isinstance(response, dict) else "")
 
 
 IDLE_POLLS_BEFORE_FAILURE = 2
@@ -626,6 +730,9 @@ def build_actor(actor_id: str, source_kind: str, asset_id: str, report: dict[str
                 raise BuildError("%s missing PixelLab state %s" % (actor_id, spec["server_state"]))
         target_frames = effective_frame_count(group, spec)
         rows, call_id = download_source(actor_id, canonical, group, target_frames, source_kind, bearer, call_id, log)
+        mirrored = mirrored_frames(rows)
+        if mirrored:
+            raise BuildError("%s/%s has mirrored substitute rows (%s); rerun with --regenerate %s/%s/<direction>" % (actor_id, canonical, "; ".join(mirrored), actor_id, canonical))
         source_rows[canonical] = rows
         state_records[canonical] = {
             "pixel_lab_state": spec["server_state"],
@@ -763,6 +870,15 @@ def check_manifest(path: Path) -> bool:
             if actual != expected:
                 print("FAIL: %s %s drifted" % (frame["runtime_file"], label))
                 ok = False
+    rows_by_state: dict[str, dict[str, list[Path]]] = {}
+    for frame in manifest["frames"]:
+        if isinstance(frame, dict) and isinstance(frame.get("state"), str) and isinstance(frame.get("direction"), str) and isinstance(frame.get("source_file"), str):
+            rows_by_state.setdefault(frame["state"], {}).setdefault(frame["direction"], []).append(path.parent / frame["source_file"])
+    for state, rows in sorted(rows_by_state.items()):
+        if all(source.exists() for paths in rows.values() for source in paths):
+            for finding in mirrored_frames({direction: sorted(paths) for direction, paths in rows.items()}):
+                print("FAIL: %s/%s mirrored substitute row: %s" % (path.parent.parent.name, state, finding))
+                ok = False
     print("check %s: %d frames" % ("passed" if ok else "failed", len(manifest.get("frames", []))))
     return ok
 
@@ -809,6 +925,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--batch-boss", choices=[*OBJECT_IDS, "secret_ascension_boss"], help="queue and harvest only one boss (max 8 pending groups)")
     parser.add_argument("--check", action="store_true", help="verify all six manifests and runtime bytes offline")
     parser.add_argument("--rebuild", action="store_true", help="rebuild SpriteFrames from tracked source/runtime manifests offline")
+    parser.add_argument("--regenerate", action="append", default=[], metavar="BOSS/STATE/DIRECTION[,DIRECTION]", help="replace named directions of an existing PixelLab group before building (mirrored or corrupt rows)")
     args = parser.parse_args(argv)
 
     manifests = [ROOT / ("assets/sprites/bosses/%s_8dir/pixellab_source/manifest.json" % actor_id) for actor_id, *_ in actor_specs()]
@@ -818,6 +935,9 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         bearer = read_auth()
+        if args.regenerate:
+            queue_regeneration(bearer, args.regenerate)
+            wait_for_idle(bearer, args.timeout, args.poll_interval)
         if not args.resume:
             queue_missing(bearer, args.batch_boss)
         object_reports, secret_report = wait_for_pack(bearer, args.timeout, args.poll_interval, args.batch_boss)

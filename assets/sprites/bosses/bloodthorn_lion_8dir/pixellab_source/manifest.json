@@ -3,7 +3,7 @@
   "actor_id": "bloodthorn_lion",
   "tool": "tools/build_fan3326_boss_pack.py",
   "tool_version": "1.0.0",
-  "generated_at": "2026-09-03T16:18:40Z",
+  "generated_at": "2026-09-03T17:21:41Z",
   "pixel_lab": {
     "kind": "object",
     "asset_id": "1b923d8c-e83e-48a1-970e-4681f63ead0a"
@@ -53,7 +53,7 @@
     },
     "move": {
       "pixel_lab_state": "move",
-      "pixel_lab_group_id": "66cc214d-8df4-4354-bf8d-c4a8192938f7",
+      "pixel_lab_group_id": "db2e485f-2d45-4aed-8d08-d5d47df10c2a",
       "frame_count": 7,
       "directions": [
         "east",
@@ -69,64 +69,64 @@
         {
           "source": "bloodthorn_lion_move_north_east_00.png",
           "runtime": "bloodthorn_lion_move_north_east_00.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            221,
-            230
+            227,
+            236
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_01.png",
           "runtime": "bloodthorn_lion_move_north_east_01.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            221,
-            236
+            225,
+            234
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_02.png",
           "runtime": "bloodthorn_lion_move_north_east_02.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            215,
-            235
+            224,
+            233
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_03.png",
           "runtime": "bloodthorn_lion_move_north_east_03.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            211,
-            230
+            225,
+            233
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_04.png",
           "runtime": "bloodthorn_lion_move_north_east_04.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            211,
-            226
+            219,
+            233
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_05.png",
           "runtime": "bloodthorn_lion_move_north_east_05.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            217,
-            214
+            222,
+            227
           ]
         },
         {
           "source": "bloodthorn_lion_move_north_east_06.png",
           "runtime": "bloodthorn_lion_move_north_east_06.png",
-          "scale": 1.4936708860759493,
+          "scale": 1.5324675324675325,
           "visible_size": [
-            226,
-            220
+            222,
+            219
           ]
         }
       ]
@@ -588,10 +588,10 @@
       "index": 0,
       "source_file": "move/bloodthorn_lion_move_east_00.png",
       "runtime_file": "bloodthorn_lion_move_east_00.png",
-      "source_encoded_sha256": "fdb72885f0efb9803721d46c15a13c2e9226fdb9c5e2ba24a09d5d94c3c570fa",
-      "source_pixel_sha256": "b0b8b5a29e467f8b758645142fd36e077d12cce88a4186678fc2e62967084b4f",
-      "runtime_encoded_sha256": "32b100142ee978f8665b660f82cc703c9f1917447b3da600cf4e1e7cf55587e1",
-      "runtime_pixel_sha256": "4da681bb12406791aa78fa1e7e3fc39d0ed8006b31e93bdba88dadd7a00cfacb"
+      "source_encoded_sha256": "36e08605f13e38fc3631d62c9ec68320e48078dd1587019952efc5349690c1ac",
+      "source_pixel_sha256": "ad410ef9f7471be68422c570896d9637ea7645599285432ffdd600ec6be926c0",
+      "runtime_encoded_sha256": "7bb2972fd462a250d82bf825b2c7fbebb55f3c0c1c0d8fce3bdf9a10f1006d63",
+      "runtime_pixel_sha256": "851df8661df529c0c052440b698a637ea51f6824c6ec1788d65069b57a8c172a"
     },
     {
       "state": "move",
@@ -599,10 +599,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_east_01.png",
       "runtime_file": "bloodthorn_lion_move_east_01.png",
-      "source_encoded_sha256": "de2d723f00b2fca914acd2a7e4e9f90c82106beb039ecc82ce0c865f5bfc9d16",
-      "source_pixel_sha256": "e9df625fb2b0b9d6d64aa16e1ccbcea83cf150dcbc9da9a4d9de6ce4616fc28b",
-      "runtime_encoded_sha256": "54cd67f1a95689f9dc21d27689a1994e3f8a22c1047cd4420f3f864ac9bed42c",
-      "runtime_pixel_sha256": "6f7c80e475575ef252791f143185b57e5f4ded1205e036bd1b8076081e0306ee"
+      "source_encoded_sha256": "9dc31648daf287334876e5db1fd81edff8dafbdfb7395492d09e69aadd377d6f",
+      "source_pixel_sha256": "10880c78c9d78155d06f68d0f0eb1dcddfa057f20e7e9bb1780ded219a705fcc",
+      "runtime_encoded_sha256": "fdaa76e41dbe48e96c9a686ccd49c98221cba593c586d8e9532550061c8ad4d8",
+      "runtime_pixel_sha256": "4b08f42e05c99431c54cb20ddbfe5732c003130983c35eea4f2713fd2ec23350"
     },
     {
       "state": "move",
@@ -610,10 +610,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_east_02.png",
       "runtime_file": "bloodthorn_lion_move_east_02.png",
-      "source_encoded_sha256": "75c69ca15356597ef412d0ee745fae41322676f48ab60f7bd895e3d794399d6c",
-      "source_pixel_sha256": "cd0604043f965ba71dd3d903a0a03cb04addb5418b5b93aef3fde4ddcbeb9f28",
-      "runtime_encoded_sha256": "43556c2b6f98483a1c0014e6c629060b25069ec3c8bcb7fdcfc4a19daff81dcf",
-      "runtime_pixel_sha256": "8307f89958b3f8617b0f853c1b0e639a2e4773cedf80b199ea60bacda42dcfc6"
+      "source_encoded_sha256": "ca759f17e7a6ce93e14f37a4edb74fb88c16c20f9560e5e1cc84429a072c6f0e",
+      "source_pixel_sha256": "1e390639f370101d6fe1b497b5443c28a50a39ec5342bef7fc4d4edaebfd08aa",
+      "runtime_encoded_sha256": "6ddaae964c3d0be752b4816409ca75c97ffe62509592cb915098928c12665aab",
+      "runtime_pixel_sha256": "b159c5bc244465532c86606188d67e86d8758cb44aed6459769b09bf75c78068"
     },
     {
       "state": "move",
@@ -621,10 +621,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_east_03.png",
       "runtime_file": "bloodthorn_lion_move_east_03.png",
-      "source_encoded_sha256": "9ad5c115884efb68d2fe89d174b3cf4845f293933472e15bcff916d738f39ced",
-      "source_pixel_sha256": "2d1a27b73a4b68ad14ab86add4d76f34afa3da47d11a358b989dd4111639a377",
-      "runtime_encoded_sha256": "0187a58d8a7d9e7f2b019ec440eca521d4d53a510855a31009009bd1cb97010f",
-      "runtime_pixel_sha256": "e6656272624a5c51ca56974408bbbd7e33894b44101541c7725fcbba78626cca"
+      "source_encoded_sha256": "71939efa1fca413149aaf316961a09bc79792da648851c8a64eef44f88487428",
+      "source_pixel_sha256": "dcaf9bc07629b8dac484463014bcedfdc3dda3f93f596380ab24b4f54a24d1e5",
+      "runtime_encoded_sha256": "dd2fcd50c219a67188afd71936288312de45905321515add538f7ec4971a3801",
+      "runtime_pixel_sha256": "ff9f798048c65c0622dfe5f4f8283499f71bfb8eeaf013ee1df68b284f6eb41a"
     },
     {
       "state": "move",
@@ -632,10 +632,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_east_04.png",
       "runtime_file": "bloodthorn_lion_move_east_04.png",
-      "source_encoded_sha256": "013b7df437c16ba924d1692ecf4e7a7b42c095985c14c903d28cbea4fe10c2bb",
-      "source_pixel_sha256": "1541b03d2ef60a0c556c2c4c97edbc9f33e03a114b724142bfcdc5b5448ec7b0",
-      "runtime_encoded_sha256": "bd5d5ac028f3bd5e8e4bcb00d08ca5930b765e1e6abb50f276b1bb4385b3fc68",
-      "runtime_pixel_sha256": "c6a7fe5e8838e089d752db940506988b0b24ad11289c4bfacaa7e9cce4b9e1e4"
+      "source_encoded_sha256": "a76e82f6ddd6247e9a5031734c98eee2678f24efcce49afe88760448f9384c23",
+      "source_pixel_sha256": "a95b32aa8e48dd89edeacecff2f491420e3eea35e234479633e4b7473cbe6a87",
+      "runtime_encoded_sha256": "a520bb5c14ed8978c1f0e146e6e182748937e0ce8e8ef0d37ae9c2d6d7f786d6",
+      "runtime_pixel_sha256": "058b52dea72c510802262bb297cf58cd59919b88710be16f4e22b1e98de03fce"
     },
     {
       "state": "move",
@@ -643,10 +643,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_east_05.png",
       "runtime_file": "bloodthorn_lion_move_east_05.png",
-      "source_encoded_sha256": "885a60e7cdf30ae13a3c264b3a52c8b2854d0c4d55bc2542d6e07932da9bcb4a",
-      "source_pixel_sha256": "2f086b7252b93a4783b9f2603c7d8ab3e56cfa180dd7441d3a6a0254964cfe78",
-      "runtime_encoded_sha256": "7525ca46f642d394c0fa91f68e5b752d04a4d70c117a40f7dae571c158be7031",
-      "runtime_pixel_sha256": "c1773d4adb19d07862fcba4d50812ba5406a9ddafd9cf0f7d7ff64718456cba9"
+      "source_encoded_sha256": "2db3ddc0389266e50e1b7bd550ea9f52f802c4db07da9016538e1a856332a08f",
+      "source_pixel_sha256": "b5a559887fdc156dea45bda26eb26dfd5be674879b719fd81e975cf5adfcd905",
+      "runtime_encoded_sha256": "7c5c6cecc39c1dd8653816e32b34d8d022b98b184dcc61d690580b374923a0d2",
+      "runtime_pixel_sha256": "537378d56f809c09f1312ea8110a53e46b51aeb1acae1e43535f502943875f7d"
     },
     {
       "state": "move",
@@ -654,10 +654,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_east_06.png",
       "runtime_file": "bloodthorn_lion_move_east_06.png",
-      "source_encoded_sha256": "6d38d6b9625e5a31498c7ed8cbe452584988459a880ad8d63e3cbb802c0786b8",
-      "source_pixel_sha256": "14d187e32b4de21f6b5cdff9c230ed0db931c5c149c489672ae6ed9a1888157f",
-      "runtime_encoded_sha256": "b72c38c21800b2c7fbef8f52b6545a2bb49e5c738e90f75166a2e7c9e9379079",
-      "runtime_pixel_sha256": "a8a4700158adb3d212d1fb3c8dfd05a215fd42fcd7305c876bd02240fc80ed9d"
+      "source_encoded_sha256": "52355cc9f78822accdc936b1fa1136e00f164a94d4fc19cb2429bf58093a2a7a",
+      "source_pixel_sha256": "a7f231d9323d382b0dfa1768061d6f5f739505cf8be6df39389f706bbfcad0f3",
+      "runtime_encoded_sha256": "8524db7c221c7f6f504bef37ebe2e05b9f0e2a67ccd2b42aadf06a0f33264bc5",
+      "runtime_pixel_sha256": "41d888ed1d30ee2ec45336da4f129ebfd469fedca92e710c63be0d291ebfa6ef"
     },
     {
       "state": "move",
@@ -667,8 +667,8 @@
       "runtime_file": "bloodthorn_lion_move_south_east_00.png",
       "source_encoded_sha256": "5216c263cd962d96b36a60435e3bd3d227a32ff05693b2a9a520827d1ac8168d",
       "source_pixel_sha256": "548ac6df4659dc260754dc6f81dee2fc35eaab95361b08eb80a8a7662670bc2a",
-      "runtime_encoded_sha256": "75ae6067ae0e0bc4af9f1e3d0b77af7bbd890cc41695027928bf0ddb4fd2d5f8",
-      "runtime_pixel_sha256": "f8742ea4e2bc7a19bfceb74835966f23e22eec7816a9bead3316cec4f0ab52b3"
+      "runtime_encoded_sha256": "b194e73c056ebce4a02e9ef54b7bbd94190dc1c8c40fdbd2a288767a6b486023",
+      "runtime_pixel_sha256": "5911040aaff61b3add9952b24f33b4281537d81f1a81638ce5f08bed5d102388"
     },
     {
       "state": "move",
@@ -676,10 +676,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_south_east_01.png",
       "runtime_file": "bloodthorn_lion_move_south_east_01.png",
-      "source_encoded_sha256": "3276e4bbd49c5a761969fdc6227985c022b9317ea58bf3b085267aaf912b456c",
-      "source_pixel_sha256": "6bad1e6ffdff5b121f63c16480f862fa5e1675ec6a99f37199bcb3a9ced18b70",
-      "runtime_encoded_sha256": "e520fe890d613bb58c7b1ec4bb5fa7ab741fb60952d91f7f02058439eb7bdf9b",
-      "runtime_pixel_sha256": "eb1a7e6a5ea657fbcf2707f4928e9fe88f17514013523aedd993fb143d86c7b9"
+      "source_encoded_sha256": "290b729e1c677bf16eba14fe8490396fc8ada9847b6ea395ca56b32471a54e08",
+      "source_pixel_sha256": "f5cf4d904cd07414759d5330d1097f4548a5a2f3a5c09d7dc59fba0e514567e9",
+      "runtime_encoded_sha256": "9c2532da64f59cae20e8c500009d8722a091aef01f4ce06ccedf72f01bfdfbf2",
+      "runtime_pixel_sha256": "dde4505ba4c9b72714fd89894f2c65c732266ca494deceba2113c84674be0794"
     },
     {
       "state": "move",
@@ -687,10 +687,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_south_east_02.png",
       "runtime_file": "bloodthorn_lion_move_south_east_02.png",
-      "source_encoded_sha256": "776ac10c2648a67b4a17f8e1897fbdcd95b9a6948b7753ca9162cac41b8b93d3",
-      "source_pixel_sha256": "2e19256a9c2a55234c9a801eb99f43bb7cc598f4d4e014cf0dde5c31799eee4d",
-      "runtime_encoded_sha256": "8fcc792c4b4cd1ef5b1321ba0a3adefd884063897df06763aed9186d3a18a2c7",
-      "runtime_pixel_sha256": "488296497a1d99cf029022eb1e800799d85d7bb9fb8f39b0a1d8aecc99a314d0"
+      "source_encoded_sha256": "e4fc439bcdab34497e77c4ac2abf20a8db13ad33fa625833581e067f7fe50924",
+      "source_pixel_sha256": "9c5b0fd96e2560b9c9de43a7990c93ab31835e17c43fc0d9e9c856fc5ca65b63",
+      "runtime_encoded_sha256": "097daaf0a504e9496288c9e9bd59e5fecc9b237b26a3192463ab01f1a0291871",
+      "runtime_pixel_sha256": "3e42a1a945a9abbce7a257e08f83be380f8e8b744c3941aeaa27940ccd3b5080"
     },
     {
       "state": "move",
@@ -698,10 +698,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_south_east_03.png",
       "runtime_file": "bloodthorn_lion_move_south_east_03.png",
-      "source_encoded_sha256": "f0c2b6c51f7529657e935276da47db7afffd0810d75366ef725475f3185b9c0c",
-      "source_pixel_sha256": "3d3635f28dae8f41c40f7625728ef8e1a91a8c2cdaacd39f32a07951859f527f",
-      "runtime_encoded_sha256": "696ad1e7f3ebb22954d673e0292838733e83a8f55033970365a724c98eb33a64",
-      "runtime_pixel_sha256": "8806fd1b6c31520a9baca46572dcc0115ae408ed731185c544d123e642b68b2b"
+      "source_encoded_sha256": "8e9d3539cd84563b373fc4192b2478be890834216a2b63ee4891a2c80ac45a11",
+      "source_pixel_sha256": "d9e4720a6b2c0d76e475ab6479f60711d54351a458a1832c717f18f355d84904",
+      "runtime_encoded_sha256": "45ed7adfd0a3d855a1d1e6e90b92a29309a968f06c0a93819c7ba9b2ea63939d",
+      "runtime_pixel_sha256": "ce8bf11dc135e2814d3cc8d8265556b5a19a894468199428939fe2a176f288ed"
     },
     {
       "state": "move",
@@ -709,10 +709,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_south_east_04.png",
       "runtime_file": "bloodthorn_lion_move_south_east_04.png",
-      "source_encoded_sha256": "f65a8f826fb48f98191d7a3a05d89bef7b6120f894df3fa9e4c20cdfffbd7bc5",
-      "source_pixel_sha256": "1acc201b664c94d5d81c648b0acf4796de1d56347efd07eb57e974862c9200e4",
-      "runtime_encoded_sha256": "13dd3d513c4fe2de3d3925a860ff3b648e6a7652e6a8b482f2d4d7135b1e5d98",
-      "runtime_pixel_sha256": "e1950f645c81ead92afa82e74d6f002a2f32dddc7b50da08401adee975c79069"
+      "source_encoded_sha256": "dccefe107e187224a97ac35418f628653367e07731f78d8460f25a10bd137cc1",
+      "source_pixel_sha256": "6e15325bd9e939c852781585bbb58e8506f575016170782d2b209bc5579a757b",
+      "runtime_encoded_sha256": "864bb99940ee0e2e24b4814e1120ee8baef829fd594e83e1f6e7cf0fb6fc52a4",
+      "runtime_pixel_sha256": "d7fc876531d50ce67a01bb680cf4d146f70f2a5ce2b667e33ec2816cdc84d6c1"
     },
     {
       "state": "move",
@@ -720,10 +720,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_south_east_05.png",
       "runtime_file": "bloodthorn_lion_move_south_east_05.png",
-      "source_encoded_sha256": "b295a75d727cefa2caa151207099ea298113a77f3533f68c607874031098d14b",
-      "source_pixel_sha256": "d6bd5a0a7ccae3746fc8a9c2325f41061baa14b4974875b3d1a934441e7482f3",
-      "runtime_encoded_sha256": "5963ac490ffaf820bff687ec54ab722223da4a58dc43fefa4b147585012f8cd4",
-      "runtime_pixel_sha256": "7372620db80bef94e28ed9e6ec850bd08e9a023ebd502d6d221068b0a41cee85"
+      "source_encoded_sha256": "8ad9d4a50398e50d7e279a2dcc9186429bc74fa1484a8b0c3e41d2aeab77ec96",
+      "source_pixel_sha256": "bffcec1f3534de4c09f5822ada76e059469f6fa7e185b9e2783b78662dd35669",
+      "runtime_encoded_sha256": "f0b0017ce445b95f1b380804d18491e1257ac0bc34b67bf1ebe2765cead4dbae",
+      "runtime_pixel_sha256": "69c3b7926172f1d69596d49c991bda12d2904ac5a5a3a2979249f32124ad9e5c"
     },
     {
       "state": "move",
@@ -731,10 +731,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_south_east_06.png",
       "runtime_file": "bloodthorn_lion_move_south_east_06.png",
-      "source_encoded_sha256": "bed0daff3aa47dec186c49403289da8292b214615cadb97513a28bbdbba586f3",
-      "source_pixel_sha256": "b400954775476d8185b5b433abb5a5f75e2969690b57dce2a3cb252c5aa133b5",
-      "runtime_encoded_sha256": "a7152b96e1e6297142c5b716a446a7e4d87d6d3a2329fbb2ae494b3e0075a180",
-      "runtime_pixel_sha256": "e2b73df9a679429d29b010e09e4cb4410fe4c660e88736dac0ceb4fe39c10937"
+      "source_encoded_sha256": "7b577504619edfcc1ac77f2aa86c2b27229c8385095d6e82be86080120580320",
+      "source_pixel_sha256": "664cf01ad0a6855dd4e675b2d5037b2646b1d945d2fc33c346a82e77a6462683",
+      "runtime_encoded_sha256": "117c5e288084e0d004154c7956186fd9f3892fb0377ce3db147aed9b2fe74561",
+      "runtime_pixel_sha256": "11d7b7ce7a42ca3f7a09e08232c4e44294c1061b561a0e209671cdbe4a628dcf"
     },
     {
       "state": "move",
@@ -753,10 +753,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_south_01.png",
       "runtime_file": "bloodthorn_lion_move_south_01.png",
-      "source_encoded_sha256": "2782e20d6ae9a33f5ff6bc6e00ece4a7d484cab0c53f04c758edf35ec099164c",
-      "source_pixel_sha256": "fe76cc0c6bda4ebf2df903236d2e5ae398a4c74b6ccdbc92a3b087b5b3199759",
-      "runtime_encoded_sha256": "484b56b6d46306e5ada8b6d1cf0fa7ad00f919324dcffb1b024d86c9e532d9db",
-      "runtime_pixel_sha256": "d074e7fc64cc3e23286f2750905166d4bcf4b7ae9643badd694ce6a2b4eb923b"
+      "source_encoded_sha256": "e7286d15f9a210b36d85918f23923670bc016902cab30f2ab296ba86518e99d9",
+      "source_pixel_sha256": "04b31670d5682c598abc73e1189e7cddea9d786ea1b65d0b53721264d05373dd",
+      "runtime_encoded_sha256": "e79257adc20f14b0c22244ea8259866247c0324169e222bcd8226c9abf23b908",
+      "runtime_pixel_sha256": "e60d46c3f76252a671afd42d9657d544a5649b90c48c5c4113495accc78e0c47"
     },
     {
       "state": "move",
@@ -764,10 +764,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_south_02.png",
       "runtime_file": "bloodthorn_lion_move_south_02.png",
-      "source_encoded_sha256": "b9d44e24f49f40d3cb19e78cad94cfea26a054b28676aa5eff0b4965e4c0b490",
-      "source_pixel_sha256": "53098fb01d91e3ad51a0cd4acb640f4f186f19ff1dd28fa4484e9d6934001545",
-      "runtime_encoded_sha256": "97958f54c75ed1182b36ed9f385b36a9991c61c660828f3e2ee3cddeaf95c285",
-      "runtime_pixel_sha256": "791de6e1cec0671907816d3f97fd957cf5841529658941ba31f4cdea88136791"
+      "source_encoded_sha256": "4eb229350dca3839531b43581b0f7a92405e96c2f8e6d59c5e354aca8926644c",
+      "source_pixel_sha256": "4e7c5568f06cef5a8da71563e88bf93714e8fc55f313b482c1b02ed7dc0a4e2f",
+      "runtime_encoded_sha256": "fb4839d8a47279574415061a4c37e9f5df004417b4459247cc25e096c7ca648b",
+      "runtime_pixel_sha256": "acee45dd891379dc6ae283fb002692045bb4c51d597a93fa31671b686ecc6973"
     },
     {
       "state": "move",
@@ -775,10 +775,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_south_03.png",
       "runtime_file": "bloodthorn_lion_move_south_03.png",
-      "source_encoded_sha256": "516788978969c1ddfeee6de5eefaa29c81578a3d437a01d62d59fa59c4a4632d",
-      "source_pixel_sha256": "6612f2c62f1b41244bfd882bf943be910cc2987328154988f5b76fcbe23c5d3f",
-      "runtime_encoded_sha256": "70af1f92d9ccbabf80ebcc965160509461e1ace822764c1d12f3001267fbc3c8",
-      "runtime_pixel_sha256": "360c4913cac1b791f13ff864905410a821cf46c2343a0507b11429e8d2d07ba1"
+      "source_encoded_sha256": "dafaed0e0d7340ba61e28ce1c62f202704d031d6cd2202deb767b778e56b22f7",
+      "source_pixel_sha256": "044f5fbc4eb093f3db0c84e2fb139b631ed6e9476f4b6aae366a7ee0f5236059",
+      "runtime_encoded_sha256": "1ed5a96a2b12e598bc4f3fcab684bc08c4bbc17a8838ec421be7092637231eb4",
+      "runtime_pixel_sha256": "ed98c5efbc7f82181cbd3c26f1ad51cdf83745e7aee49af51e1329d985f015d1"
     },
     {
       "state": "move",
@@ -786,10 +786,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_south_04.png",
       "runtime_file": "bloodthorn_lion_move_south_04.png",
-      "source_encoded_sha256": "d62e88cb7d14e8a0a6eeaa6b49d085e9fa3f6f72b28dfb9d2a545513273beacc",
-      "source_pixel_sha256": "c9734c9da466d20602f9b9c6dc61a410bfd8c3441b136889cad632ceef95655a",
-      "runtime_encoded_sha256": "892d21d57a8e3c8ead4fbc37e87c044d54209fe9f9e6cf0ab9cc51f155c63bac",
-      "runtime_pixel_sha256": "7c234f6acc78ac9e62577982539b64f49062a29db690146f7207d296bc78fd8b"
+      "source_encoded_sha256": "9cda2f29bab956408bf8f4c8c500e5ce49e5e7afee4e325b027ece719b766585",
+      "source_pixel_sha256": "a3fe6cbaeb14d6c0c6fa81d4764e11ca327045dc2469f97eb6e66328ee3882a5",
+      "runtime_encoded_sha256": "11938f9d975636c201b61d1f95e9ad698c9e3243ab96d2db23f50f2e7f2d4c39",
+      "runtime_pixel_sha256": "2dc6078bf1d44340c0cd41df79af027c7d2f1b1adc80a7527c88b77f3295077a"
     },
     {
       "state": "move",
@@ -797,10 +797,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_south_05.png",
       "runtime_file": "bloodthorn_lion_move_south_05.png",
-      "source_encoded_sha256": "dd5e8c78c73c307f6d266c6e0d4d172bac3b832befaef1db3d4079aef6d2c59e",
-      "source_pixel_sha256": "5832f8b7150bad7e52aa4da0fa2e973fccfc1cc342881f26968e1b0ba2f4b270",
-      "runtime_encoded_sha256": "673bd81b6f9bab7cfda486c78b2e55f26b4f228e9af3a90bb098e51109468669",
-      "runtime_pixel_sha256": "43e99ee3914bf8c9752fc66c7a6df4869116209b209842e528d43e76420494de"
+      "source_encoded_sha256": "861d3dfe92ba804c2c30fb2c2edb1b96b12c58c710126ec6b3f03c467dda669f",
+      "source_pixel_sha256": "470cec7173d95a432b78e72f331dfd7f78579f4a2cc0cdde4f2beb4c53bbc807",
+      "runtime_encoded_sha256": "0823775043125eb20b9d1485dcea77680d5db881fc80d0eecaf9796ecbff49c8",
+      "runtime_pixel_sha256": "12ab35f06f3e656ff4944d827b400d325556adfc98164b0e71797edd8481a722"
     },
     {
       "state": "move",
@@ -808,10 +808,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_south_06.png",
       "runtime_file": "bloodthorn_lion_move_south_06.png",
-      "source_encoded_sha256": "db64c0d87134ded311d28f68e4fb627a6f4ad6a272abd3a572047897586b21e7",
-      "source_pixel_sha256": "920f51416bf2ac479a7482a009f3e7b7457e262e1d0efd4a8c0cc86c998276a1",
-      "runtime_encoded_sha256": "09d8c61d59ed65573e9908d001ac574d54ae3893805e911f7f30509d0dcf0d8d",
-      "runtime_pixel_sha256": "31e31a0392a60f4869a7d6543c59ae3ef9c853927c186554c3fcb3fba650cd01"
+      "source_encoded_sha256": "9401413e5500ac1781181f7e2f70fa39343f8de00b5a1408123e7d05e922956e",
+      "source_pixel_sha256": "42ecf906de087688fb32b8ef3189727c7e0a780f40846790d179e68aa2aa976c",
+      "runtime_encoded_sha256": "457077433ed3d89eb967ff605da64937c875e01f8daedd0209238635ecd6fdd0",
+      "runtime_pixel_sha256": "81b939f51fa863bab39d78dc412d7d745e8bd3ac75ca33bfd0c0e8c0995cd7d8"
     },
     {
       "state": "move",
@@ -830,10 +830,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_south_west_01.png",
       "runtime_file": "bloodthorn_lion_move_south_west_01.png",
-      "source_encoded_sha256": "a423b197802be754d81a45280c8462eb9f9fc3d150026802b94acdf69b233236",
-      "source_pixel_sha256": "402dfdcbd6ee186592fc60c735464b180885c16d4404dfa5bb7d554e32759416",
-      "runtime_encoded_sha256": "fd019b40f5c8343666ca25c73b8f86f2187cd51a34d20e9f4a6c3ded4b29782f",
-      "runtime_pixel_sha256": "659b41a6cceb9260700fb12f954035bc597575d493d8338bf1d553ae1099b3ee"
+      "source_encoded_sha256": "79788dc72ba47d917f9b1aebbb681de76104c828168edf559d707b993cbc019e",
+      "source_pixel_sha256": "b0d781602bfb5fce81c369115d87be19349d5ec9ed514f0e7b4c69a0fca63d6e",
+      "runtime_encoded_sha256": "9ce26993c67c332819428d57268a4a09cb9793f03bd5753dbc0154068883d154",
+      "runtime_pixel_sha256": "13eb579784821ace069596a56972eca9b8d9776c6554f9d0463919967549766d"
     },
     {
       "state": "move",
@@ -841,10 +841,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_south_west_02.png",
       "runtime_file": "bloodthorn_lion_move_south_west_02.png",
-      "source_encoded_sha256": "0cd7232b3cc73c9a17666cc4754236cffa0108e54b2e54249d8bef31fa0a39e9",
-      "source_pixel_sha256": "62dd4e5ec581a76901e0d224192bb8840c972967325cfc33326b825fc310d587",
-      "runtime_encoded_sha256": "6fe48dc4b95c969e1b8bbff9ebe82a61dd8f03fdaf06cfab2831c78529baefa0",
-      "runtime_pixel_sha256": "2e900e095e57fd06c89372c69c8f10b79eb93fbdc911145ef09164f8fe15ddf7"
+      "source_encoded_sha256": "0291e4046d6f549c53874c652266c0c03885ac3b75e0509d9cff3308c35c0699",
+      "source_pixel_sha256": "5306ce5b7fb1dd6059e6517be637c9b86fe9b85a42e8012896192f5527e12ce2",
+      "runtime_encoded_sha256": "4b6482d1f0c4aa2650efdc4bef0701552a6e0ab66f2c126c8e7e8e41153942af",
+      "runtime_pixel_sha256": "1c6fcaef121856d7f67c091ea66b589b30dd385251c6eeb33880f8c7a1758ebb"
     },
     {
       "state": "move",
@@ -852,10 +852,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_south_west_03.png",
       "runtime_file": "bloodthorn_lion_move_south_west_03.png",
-      "source_encoded_sha256": "d8afccf97c886c9ed59be08a7693d1294a038ccb05fa58720eae7a685b4868d2",
-      "source_pixel_sha256": "ed08c76f389a0853c57912ed3f3eeebbac57e4b3c10662bfe15267e90826ca5e",
-      "runtime_encoded_sha256": "57feff91c5e67838293455942723509f279dd8d51bd9af993769e103f276ce94",
-      "runtime_pixel_sha256": "125f3ff0b7c3c4a080224ed1c80f3f5c59889e36382645613fd892a3aa71606b"
+      "source_encoded_sha256": "b61f76cdc6e0d9e64157770db5bd22fe64a582d850c3c11eafafed52f3df0d8d",
+      "source_pixel_sha256": "e0fe99395590e9f67eab26b34682d8aeaf361597153afbcf57dbe82f67d44705",
+      "runtime_encoded_sha256": "a130543eb34c0f892ecd4557323d08e1958dce5c98a41865c8db1b6e2c2198c9",
+      "runtime_pixel_sha256": "da52cc79d5cea8ee2ff2d8183e65834ecffba0b61809eb08b1d40b8f1854fdd3"
     },
     {
       "state": "move",
@@ -863,10 +863,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_south_west_04.png",
       "runtime_file": "bloodthorn_lion_move_south_west_04.png",
-      "source_encoded_sha256": "7e74803fc0a3c2185837ccbb19daabcae9ac71626abb36da9827bb8969db145a",
-      "source_pixel_sha256": "744194e8057e7d88f76fd87340e77dfd5cb913f0c72c56070c0c786cdbae9479",
-      "runtime_encoded_sha256": "6aa09f034b90e88c26a9a6bbb5b8ab73374879ac5119c6c47651e0c6b8b00442",
-      "runtime_pixel_sha256": "eba2b47b71bd2cc82c655df177b4e292155ccf278f1e0be2e612fbd5ec7e02ce"
+      "source_encoded_sha256": "5820ead33f29c6aa99627c88df9898576b2b73aff6b46ff2d193f5dcb0f07f5f",
+      "source_pixel_sha256": "eaf82fb1c0a3d9d3d50760a4c4929b4c548627f0160cfe2aa2626ab2a2b33269",
+      "runtime_encoded_sha256": "cd7b2fa026d0ae72589333f6ba5a732bfaa97dc6ed2fd1248100755a1f7ae977",
+      "runtime_pixel_sha256": "46bb576a6557a6f71617ae6a6bafc8de1cac64fe9b212ffadc7af96dfb85db9c"
     },
     {
       "state": "move",
@@ -874,10 +874,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_south_west_05.png",
       "runtime_file": "bloodthorn_lion_move_south_west_05.png",
-      "source_encoded_sha256": "3fec773329b8dbb2a1da884693f0f6e537bc2ec1c58ea24198dde24c988393a0",
-      "source_pixel_sha256": "73ee40492dad90b73a2051434ae3d578495c9c12ecd44099ef0aebf8883d43b5",
-      "runtime_encoded_sha256": "6fd5ea07f9d31a6cf1db8700c32f55271fcd2d25d70729f9aa7816f43196aa1b",
-      "runtime_pixel_sha256": "8f4a7592c8d06cc891e7e2444a17f182b83c855727f10ad951ebff2d825c2411"
+      "source_encoded_sha256": "0699d1f075b06a08754b958bfbe3868f19dced4fefe6f13d778b960d994af297",
+      "source_pixel_sha256": "c27c73d51fd844cc345effeaa74b4ec0d57392bcfdfe6798b1343bfaa20eb300",
+      "runtime_encoded_sha256": "2b722fbf5b4bd20723624d0734ff5a3101fa8f194b1b8e97e70962d5d9a4c769",
+      "runtime_pixel_sha256": "0aa8ebccd814d253f74c35b1c403c05a22fb143f3690560a6736ac252405f625"
     },
     {
       "state": "move",
@@ -885,10 +885,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_south_west_06.png",
       "runtime_file": "bloodthorn_lion_move_south_west_06.png",
-      "source_encoded_sha256": "3b90ae0b4a866da4aa44231e11c32cafc016cb07414f94703b7d68c54236fa65",
-      "source_pixel_sha256": "1ae0ebef8782de848ebc25b4ffc11cf99ff1668b1ba5cc88cf2fa418bec8b7e5",
-      "runtime_encoded_sha256": "b5d53b08237122d7cd1a1cf3a99fd935942cc597e15efe62a9a703a6af609950",
-      "runtime_pixel_sha256": "14c0f4f2257e3ce72827664e0aa537b889440acda104fc3467e502475740f30a"
+      "source_encoded_sha256": "53db9ed829410f5e04b473dd57c057cba88de40b6a9c4762147ec8691262cb56",
+      "source_pixel_sha256": "4c4dd61c4f37a0cd4783bd2ff716457caa56176aed18b8ff1eb4fbcd2989a204",
+      "runtime_encoded_sha256": "48b562f886b2ad7c5cc14263a433ba8e6b3886ac2f6c4b9335286d41af299bf5",
+      "runtime_pixel_sha256": "629673076994d79a1ac8218f0f419d51be2a1dd8713bef2a83e7900cf822d861"
     },
     {
       "state": "move",
@@ -898,8 +898,8 @@
       "runtime_file": "bloodthorn_lion_move_west_00.png",
       "source_encoded_sha256": "710103dda9b0c00f8fad5d8cee91d9b2bf7564af591ec86d33240ca8409e9c62",
       "source_pixel_sha256": "9ffb4f5d44ae23b81c716004300cd1ea9044d6ab89ed7fad16e04275ae75db75",
-      "runtime_encoded_sha256": "67ac314251a044581f282408f42d4931e9624dd87afb067b40b745baf1890944",
-      "runtime_pixel_sha256": "647999914095d3430b21e167a8a070c91f3499ab083ae06e603d454784da828e"
+      "runtime_encoded_sha256": "70e4ccb88bdb43164285e9f86a9ec99ccdb44c064b33a66ea52b7edb291cea1c",
+      "runtime_pixel_sha256": "af22b6f83c7ea5d0eea960376ead9f76016b20651c3ec1ba52fad82e2b3a68cf"
     },
     {
       "state": "move",
@@ -907,10 +907,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_west_01.png",
       "runtime_file": "bloodthorn_lion_move_west_01.png",
-      "source_encoded_sha256": "ac51c07a73d44da15095666e95c8afc16648d29725ec7d9a6c2ead16e9065226",
-      "source_pixel_sha256": "748e2404299d155ee1be73fb4c2417bb412ad92265e1f780d99f17c76f578be5",
-      "runtime_encoded_sha256": "53dd7674dd9293d236d6e22ee2b61541187ae12c17c846ebc014414f40807741",
-      "runtime_pixel_sha256": "67585663a65718c090840ab7ce5693ec702f54d2e9b55f1bdda4b3d754ca5033"
+      "source_encoded_sha256": "a7038ff3f183918b17e1f8ace8c83c9e032980a53a51e1496c25f210b9b045ea",
+      "source_pixel_sha256": "54781b50d9d611f1970ec49a9a263da975f16ab0dcbedd3e4f3816b55bc66625",
+      "runtime_encoded_sha256": "ffc8c76b112eef63734da6fa274e9eb306e12bdcccb52c41591eef0b10573d3b",
+      "runtime_pixel_sha256": "3887d1220562d71963a1b13e231598ca47a54407320aedb8c5a5725cc96e09bf"
     },
     {
       "state": "move",
@@ -918,10 +918,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_west_02.png",
       "runtime_file": "bloodthorn_lion_move_west_02.png",
-      "source_encoded_sha256": "d0b9cf6fe68e71b1e716a7d0de08414428a5b4f7ef9a35fe1fce2aeee05f5907",
-      "source_pixel_sha256": "2c8561248582f007382a7f3792229d5246819195343508634aa484e807d81b1e",
-      "runtime_encoded_sha256": "6873f3e7d281ef6d7a71f78d67c6d9392face3759f7792ea05f68e248229d4c9",
-      "runtime_pixel_sha256": "0cc7c82289c8df261933ab0c680a9dd38092766227577323e1b26955da5d257a"
+      "source_encoded_sha256": "de2ef5e65ba1fe95534d2565da3107086aa956a2e3857b9b913bf0d0fc21880c",
+      "source_pixel_sha256": "ca776e7d931aa8fdeb5e1796620157bedd2a659a71d1dff784dd5fcd626ac599",
+      "runtime_encoded_sha256": "1d938aa797835331e0e54b5124d293e7b987df8f09251846a491545272b217b1",
+      "runtime_pixel_sha256": "594e195216a316b99e1f100318c02fb80d1bc0551155bc99e6e3f36148aced05"
     },
     {
       "state": "move",
@@ -929,10 +929,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_west_03.png",
       "runtime_file": "bloodthorn_lion_move_west_03.png",
-      "source_encoded_sha256": "856ea3236e136fe2a9825f128659767278584f9b20da687a9cd0aab1cf667760",
-      "source_pixel_sha256": "51ec87968e524102e3ec30540142fd07a7510f433104f0da787f599a01db48d6",
-      "runtime_encoded_sha256": "33f5874b53378d9aafbae5de90aabfc47d95f3fc946758003927b500d1d80be3",
-      "runtime_pixel_sha256": "06a5a378d3658a6184bd9a4ea8512acf086c986c876ca966506e745fc7fdf657"
+      "source_encoded_sha256": "91a0f31b108015ee0ead5ecc63ca548951c3efd5677e8db07b479d381a98e710",
+      "source_pixel_sha256": "0d667f0429af183109e88eb6f61ef8a9c69bd009c9bde269315e359b47f980a4",
+      "runtime_encoded_sha256": "d359de28dd731d3db43ce8c3759ec57e76eec926a9ddba186ed2461ee572eda8",
+      "runtime_pixel_sha256": "c58fc8ebc99bb2c51c7aa16761bb16c031627b94e844ae2716aabb875f0ba866"
     },
     {
       "state": "move",
@@ -940,10 +940,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_west_04.png",
       "runtime_file": "bloodthorn_lion_move_west_04.png",
-      "source_encoded_sha256": "2661f6271a04d3968326e3c7fe1783f41efc22eccf9f469e7b20f479ba30c569",
-      "source_pixel_sha256": "8b82566f66b531d64b9af831615ed2328d15d8dc25c33264da1116c92cf5c810",
-      "runtime_encoded_sha256": "ec103bcfcba378dad5d577182e2718d51840d553c9f1dfcfc97e87ae2c726326",
-      "runtime_pixel_sha256": "7bb6adc3912ac5345b7db231f5508556cf5c81f3c354d5721e108f833af3e202"
+      "source_encoded_sha256": "0dea2c83972c62b5297a6de90161bf463db4777be864412e7135de0a32903357",
+      "source_pixel_sha256": "45d51f0c9f4c1265cb51987837685a07c79b7afc73e7ec1a16850feaca991e2a",
+      "runtime_encoded_sha256": "119b41d51aa87a752cff377acfada1668c9050c9e5bc55c43bd60901bbee364c",
+      "runtime_pixel_sha256": "f540919723074c14503e1732e5a503d6a2c87ed1a2ee834aded29ffc3d940fd7"
     },
     {
       "state": "move",
@@ -951,10 +951,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_west_05.png",
       "runtime_file": "bloodthorn_lion_move_west_05.png",
-      "source_encoded_sha256": "e5bc203e54cf16049b69d901d43924f1f6c72378618b1b3f8e2a978290d64666",
-      "source_pixel_sha256": "7c54c3bc9b10afe7723d38ee5a69759c34493aeab30fea3282d63bab6f261429",
-      "runtime_encoded_sha256": "ac503c4056cac111478b650edd133d5fff7cb2997d355a1d978a75a3c00c68a1",
-      "runtime_pixel_sha256": "bc734c94b067cb6a90af4520e2f4739531a4f9023f839c67382701edb18f58e2"
+      "source_encoded_sha256": "7ff31c8bdc8990e75b8d97b9ed90638465210b06fecba694f8bc9db01d25ef9e",
+      "source_pixel_sha256": "d9ac4471f54c7b7f99cd5852bcac2ad0be8ff7aaddfc17359cb5c3d8fb085422",
+      "runtime_encoded_sha256": "f04003863396807d34c587376e5d1fafe7ce85e559b8dc06ed748024e1f1be4b",
+      "runtime_pixel_sha256": "2dc37336e7b8e73d9dfce327105ffb1b375907c8bf39f989097d7796f41c163b"
     },
     {
       "state": "move",
@@ -962,10 +962,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_west_06.png",
       "runtime_file": "bloodthorn_lion_move_west_06.png",
-      "source_encoded_sha256": "662ad63e2ca8d18af7fbb7fca74631a341fa0db99484e8e45c1cbabc592db9fc",
-      "source_pixel_sha256": "0a0f69431218c97381acaa0557e7776375234aae2aa63435ec445f8256e89085",
-      "runtime_encoded_sha256": "6d9328c85859392c5aaf0007971500fe833f4da514e49465c7f2f1ae5d11bd0f",
-      "runtime_pixel_sha256": "418e4d4f7cbb02b5b7ea1fb8e67a2aaa9033fb42c73c6f1eac659b55070fde9b"
+      "source_encoded_sha256": "c460f0b7931287674f9c737c96e87a3443918225c99b545378729f889cce55e6",
+      "source_pixel_sha256": "32640c8dc3f3f0903ef34f0c855cd78378ecb8a7a3347a573a392243cf387102",
+      "runtime_encoded_sha256": "07c771ea32ca4a269d73658122b017943e2536c859ef7ed367d0d702068689dd",
+      "runtime_pixel_sha256": "46c5f655a7a713552458b1c8514f5102d2f544e768f0bcfb4a616b6280ba67ee"
     },
     {
       "state": "move",
@@ -975,8 +975,8 @@
       "runtime_file": "bloodthorn_lion_move_north_west_00.png",
       "source_encoded_sha256": "16b7a53767636c7219142fc00bd653bcc307b6398fd75c5f130e5fe7fa298194",
       "source_pixel_sha256": "52e2b172151e8440d610626b8df4f43faec30088559fa992fd5b9be6fde4b349",
-      "runtime_encoded_sha256": "0cd28e433c7ee850f454c9aed65f45afb2854e92dc432b3645f7a3ea898b2ef8",
-      "runtime_pixel_sha256": "433e02f623b08315e9196d26621a07ee51cfa135cc1ec9a0f669d095a1ae2e6f"
+      "runtime_encoded_sha256": "80536c501e431c8eef61124e8d65487d7e778026fccfc3b54f819de03f1dbecc",
+      "runtime_pixel_sha256": "e04721379a33157dacc8911ef468862d65c5ef240fd366ce1597bd76baa33ccd"
     },
     {
       "state": "move",
@@ -984,10 +984,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_north_west_01.png",
       "runtime_file": "bloodthorn_lion_move_north_west_01.png",
-      "source_encoded_sha256": "89b7c8cfbc97d6773470c51e8dad69cb91cdbcbf8a866a8301c74e76a777a7d4",
-      "source_pixel_sha256": "eee94b35f49a936cc7186ed9dee9ea7e0ed283f5da43122949767b747bbaa798",
-      "runtime_encoded_sha256": "6229683317dcb946d4ae796a876368fcca7e85f0d4adbb2d93453259703d1b2c",
-      "runtime_pixel_sha256": "dad3229b9d67d90d3cb933fb12bc040753551865f11116bb4c6aa0c6f6e82919"
+      "source_encoded_sha256": "51b97b49ac9c13a92b80bf7ef8d52749e61b94d0f6b3c41ecc2cbca2f5ee882a",
+      "source_pixel_sha256": "9d31c5454be27f9806688f7c9f9079688ffabee2cbc01bc377aed3f467decf1a",
+      "runtime_encoded_sha256": "858d7a117066cee6ec9b7cc8e761341e4bebfc919a26854d893d6b2b840d4f13",
+      "runtime_pixel_sha256": "d7d6b1622cdee8414ec7be435da4f274e1a5421956cf0833d8511c7634de107f"
     },
     {
       "state": "move",
@@ -995,10 +995,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_north_west_02.png",
       "runtime_file": "bloodthorn_lion_move_north_west_02.png",
-      "source_encoded_sha256": "4cec6c6fa7d8e0b5889f6f500327d9ad0499f2a45287ba1793fffafa61308f2d",
-      "source_pixel_sha256": "5a06662ed330ca95ca42ed63ae9e1a912ba819a2d0d25ebd8186bf84b5a8880b",
-      "runtime_encoded_sha256": "2e014ef2af80fca3f9f2658acb8984fdcc3e254971279e7b9239052c336b41c2",
-      "runtime_pixel_sha256": "31b8c1539df5932c430fb91b04228c8000a0569b362ce50e21e124300cdbcfeb"
+      "source_encoded_sha256": "98b3ed6ea8b8d82c9e8bcfbefd26402cea924bd2007df994d4f8e44f3aa8aabd",
+      "source_pixel_sha256": "2139a4bde78411f15bd03a6b58e313810c2de590eeed46b6b27b9ba1b7ffdafc",
+      "runtime_encoded_sha256": "8bc9cf20ca0068fab2c0eb485b662789a6e0182d415f3ccbae829721db0d2504",
+      "runtime_pixel_sha256": "3301acd600af90edb8179fa08e532f82763093ad9d8a4ff4da070bc5a5dcbe46"
     },
     {
       "state": "move",
@@ -1006,10 +1006,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_north_west_03.png",
       "runtime_file": "bloodthorn_lion_move_north_west_03.png",
-      "source_encoded_sha256": "5258818836177c652933112fde09fc55eb173f2b132d30e2408e8c21bbafb875",
-      "source_pixel_sha256": "37ad78206f78c338804376006409ce9f133b14e0e0aac1f21da18c5f6f4619c8",
-      "runtime_encoded_sha256": "ff23cb501b23f5a7d34d0268b4298ad6faa63963f7d5715c26a1cd6d924ee983",
-      "runtime_pixel_sha256": "66ee279626d1b305b7744d8c96752eb93ee73b720674f7a6c857ca41fe068676"
+      "source_encoded_sha256": "759b49f173b69d409e19f8d26e9253660fb6eeadaf4e83289b7ed8564b15ccdc",
+      "source_pixel_sha256": "e4097fd8517d7c50f2709d072a9388b09e1e05d26f401704c684fb5d324cb288",
+      "runtime_encoded_sha256": "24113de3aa10a902e9a01cd04bc9fe62767e5a0e306b4945d796ccf9aa1f2b6b",
+      "runtime_pixel_sha256": "12d33c994c7253cba1631cced51344def307bcb36cb16a70a08a51b87ce65ce3"
     },
     {
       "state": "move",
@@ -1017,10 +1017,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_north_west_04.png",
       "runtime_file": "bloodthorn_lion_move_north_west_04.png",
-      "source_encoded_sha256": "e08abc4b8e46cadb961066dcf27ecb9823ac73ec12808d0600320424eeec3625",
-      "source_pixel_sha256": "86da244ae5a7e55976133d49e7e8ace87296df24d4398344096ee826a910a1cd",
-      "runtime_encoded_sha256": "11b20afa3736d8c57bb8b0fbd20e8f84b075895c77c582c06491a83a0f8c408c",
-      "runtime_pixel_sha256": "508d442ae726c48b39158df51384dfdf512962cd000bce72eff5d003c0535cce"
+      "source_encoded_sha256": "269a50c8adcd09c1033c8cee0429465555f2f36f09e055789ebe1b3572e4c659",
+      "source_pixel_sha256": "cae865c48c2f89bded4f000f9d71ef954fad35050b2c91e6042354c02eca476e",
+      "runtime_encoded_sha256": "34198ed5c11d02534de7c9808f99f467b672eb706754b26c28c246cb00093e91",
+      "runtime_pixel_sha256": "efbd7ba133e50830be301fb2260806678c14a00362b0ffb0fc4a8c86e4f7d755"
     },
     {
       "state": "move",
@@ -1028,10 +1028,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_north_west_05.png",
       "runtime_file": "bloodthorn_lion_move_north_west_05.png",
-      "source_encoded_sha256": "cf4e6c6625e95e4e377badee878b0e46561d0a728cf6448fa8467f32a1efc94d",
-      "source_pixel_sha256": "e029edaa81edaefa5d5a938a4937c7ede6782e66c3b9126419f9865705065435",
-      "runtime_encoded_sha256": "79967718e42e0ef138b443cd49463f0bc0bf6d668aac957f8efd35888fa11085",
-      "runtime_pixel_sha256": "2f9aefe0824b52ee70975f0b140b82c2309b46f73add53db7b4e865ddd743492"
+      "source_encoded_sha256": "d10f8022b670cc0d68f7bb121a31fff8b70f4d82fb180ad02d49ea9cfb3bf233",
+      "source_pixel_sha256": "20f981798580391df650b08d2b8165db75e26f3d9126a5cd37b60c565512bd8b",
+      "runtime_encoded_sha256": "11e4e86f3b5ee799cdc983208931bbdd1025c9f4dd613e7bf6d1911a988cd825",
+      "runtime_pixel_sha256": "891d9a6cd4b65022837be3bf65696a98938737a7dc5083f7725827c5adc30b76"
     },
     {
       "state": "move",
@@ -1039,10 +1039,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_north_west_06.png",
       "runtime_file": "bloodthorn_lion_move_north_west_06.png",
-      "source_encoded_sha256": "4b9b56c3cf2fb6441a9651d8adea5a3190b92f5d2b98cbcc8c4b40427cc9b1ec",
-      "source_pixel_sha256": "e066392e4dffeea643db786efdbcd0783839efea355c9352d85afbdd1ca15c04",
-      "runtime_encoded_sha256": "d54b89dd330f3761b813b16e4899aaf264fe6ab45bf5165eaa373727227302e0",
-      "runtime_pixel_sha256": "602c6bf70742b10df4b80125e8fb7f7911cc6571b3d6aee64129a201ab54e9ab"
+      "source_encoded_sha256": "6ef577fa9b8cd540e7241be4d7ef9f07095f426b27dab092b2026b28a9e3b251",
+      "source_pixel_sha256": "77bfa49995ff374580c6de5c5e5aa8927a55bd7388c3cdf49d6dd64a4a55cdb4",
+      "runtime_encoded_sha256": "4dbfb4a90917b77354b9a8ad75d89ee114f0ee857f1afa97691a39b5d59ede69",
+      "runtime_pixel_sha256": "16b4162cbe95fa7a6850fddf796d30a93295771cc330277dddd53c4e248cffa3"
     },
     {
       "state": "move",
@@ -1052,8 +1052,8 @@
       "runtime_file": "bloodthorn_lion_move_north_00.png",
       "source_encoded_sha256": "5e4bc2161f796885bf71f74f20bc2b5dc3e831b935a2ed0c2d43927fd2b0d9a2",
       "source_pixel_sha256": "e7105d9978fecb6954cb69b7c2a2562711339fbce5e01759e8445b6589cc15e9",
-      "runtime_encoded_sha256": "f632cacb7a435a068fe4ecc5149def0e8a8b1eb39f99373f18b86128f43fae80",
-      "runtime_pixel_sha256": "24e9c451115444d22bc265d9d76a640a5bf66a5dcef886ea0a4b93043029a475"
+      "runtime_encoded_sha256": "dd94d2d6400b6c377cbd52b1e1ba831fd76fb4b361ff957bc35bc3d09ae49f55",
+      "runtime_pixel_sha256": "647405d2b3614c11a8e8f2449f858d72e44c604b7aa86777ea4a6ad0d1f0f4b6"
     },
     {
       "state": "move",
@@ -1061,10 +1061,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_north_01.png",
       "runtime_file": "bloodthorn_lion_move_north_01.png",
-      "source_encoded_sha256": "f574263a0ac2889d8c958591e4733ce32510421c1a8ebc327ed482813fd41a0d",
-      "source_pixel_sha256": "7de44cb542c1fcf43dd4d5fce9a59e0022c4369039a2a150cc1b0ffa3c991e9c",
-      "runtime_encoded_sha256": "0bc695e9c08b931cc67eb65eee611e921b824652d39891936766b046a898709c",
-      "runtime_pixel_sha256": "0e501cf9ff6dd0e1ba331f7884322dc508e694930c7e244ff0fca60375c8a9c0"
+      "source_encoded_sha256": "aa781af7986205e254295a6a658397a4e316614b662e497295a27de134b1f4bd",
+      "source_pixel_sha256": "116ecb5151c54928e66f9bea9082df7f238a409be2a7a5c5e71ee435656ea1b2",
+      "runtime_encoded_sha256": "8e06b9b3c3ed6ce251b9077e00cc6f468ad26a45082a65ff848c03a058e28616",
+      "runtime_pixel_sha256": "b40e11068d6649496ebfc2529cc739a6657bf9b007f55ba2f2ef858fb9866f52"
     },
     {
       "state": "move",
@@ -1072,10 +1072,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_north_02.png",
       "runtime_file": "bloodthorn_lion_move_north_02.png",
-      "source_encoded_sha256": "2df58c50e2cba8e16b654414d4c991c6feb90ecf247e05288353e13479821f39",
-      "source_pixel_sha256": "2dfebdd491bedac59747b42af65660ad047ab8ddf3e8742788f8b73ef71a1cb2",
-      "runtime_encoded_sha256": "57cbd65a7fb5300b25224152e5c39ae55e4961c63d5f48161ba1420eb36b5a32",
-      "runtime_pixel_sha256": "223514a54f1e3587594db5c9b8d3986af86d2f7e9e67dc28b45c4be24f721791"
+      "source_encoded_sha256": "f4f334ca8d10688c568873df4e625afa3c2458ab91a6a2caa83278f223f7e12d",
+      "source_pixel_sha256": "4882913545a3c54dd438964618041dd3a251f15f07933c3612985c3366478ee6",
+      "runtime_encoded_sha256": "cb5ac6878d3e297cac97503e93eb48c0047252de6d7113d00bd8da927a535c46",
+      "runtime_pixel_sha256": "4eeccc1184feda6aa29f4639be8cf8ede0acc20a453b254949b35848ed8e69f6"
     },
     {
       "state": "move",
@@ -1083,10 +1083,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_north_03.png",
       "runtime_file": "bloodthorn_lion_move_north_03.png",
-      "source_encoded_sha256": "febc9d1e9ff7cbeff200e24dd33b533607c6579bbc0a3c161485f25b34ee579e",
-      "source_pixel_sha256": "a2b9206d3252acc96b2176d9633f1651e1739161bd5abe816a1ccaf8c31176c6",
-      "runtime_encoded_sha256": "bff240d683f84ee733906957add05d19a74ef79cde4dcdcc570db9cb43c5eb7a",
-      "runtime_pixel_sha256": "a4a748cb67ee8e3fb40a45c514cd454d75e35f1994382d8f19b3c986a7da945b"
+      "source_encoded_sha256": "593940653e5369306808e171b6ebe6f04738e6c135adf944752f90902a8c2452",
+      "source_pixel_sha256": "296d799571341f7c4611f27b4584ef242542a14b3970b55c50952539db74abab",
+      "runtime_encoded_sha256": "060905203d81c3a2a5fc69c7de15e1e94d71498b6cd84885d1c5a6e4bbdc9841",
+      "runtime_pixel_sha256": "72d4f3b68ae672b7ff248e0e0853936b8bba3de8c740a888fe2bc673937c757c"
     },
     {
       "state": "move",
@@ -1094,10 +1094,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_north_04.png",
       "runtime_file": "bloodthorn_lion_move_north_04.png",
-      "source_encoded_sha256": "6a86c888688406d054a6fc9b58243ba1b177a742b73f4302a338c3432f25c2d9",
-      "source_pixel_sha256": "a85232093ede8d0c9f26de856c4083acb955c3f1c8a54ba049a43eafc0243c40",
-      "runtime_encoded_sha256": "1fc950e9e9b096ec24d98c3ad065fbb8d09a6c2f287bd76a6ba4a62e1fd36b6f",
-      "runtime_pixel_sha256": "c0858a519d9aabfb362080ab54f07b9c615b92257059cf8dfd1173f680fa04b0"
+      "source_encoded_sha256": "ea3a86eb5d1c6e0fa6846d02b1629e4e46603ee14ce317bd4677421363ee6ef5",
+      "source_pixel_sha256": "9a6b0a17fb425c0757a97a81a4f8bdf2f0f80911ff0e3316eb338497d5359729",
+      "runtime_encoded_sha256": "46d6fa97eca5211cf7a43aee8f751cbfd70394d6d90e46756371ab2a9814329a",
+      "runtime_pixel_sha256": "abf0f731d314628e4405f3e48f727956a9872db263f0329a18c6daf0949d80ac"
     },
     {
       "state": "move",
@@ -1105,10 +1105,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_north_05.png",
       "runtime_file": "bloodthorn_lion_move_north_05.png",
-      "source_encoded_sha256": "368adabe4a1c764aef748bd504386fcf2c1f1957c92159accfaf11e84a2ef874",
-      "source_pixel_sha256": "b6af4e6296d5ba29f1d131fa3b94da9b3f5df3b6fb8aa841a672635a890c736d",
-      "runtime_encoded_sha256": "2995e9c6a11d03cd8e35a4714d4c07a6724b66cf7a24fbfc6fe53938567abfbe",
-      "runtime_pixel_sha256": "888f3f9176636f10b1fce78413d1e0ea3db6620586ad85edc6c71bc38225b4ce"
+      "source_encoded_sha256": "53edaa8278bf7fa8523f834c505a70b764060096f164fa84b789992bd839d15d",
+      "source_pixel_sha256": "b598ffa25ce0ca8a49e7973fda37b67ca8411ce14bfcc5b77aa926d2da7c266b",
+      "runtime_encoded_sha256": "160e668eaf318c14c9da3bfed91eb0948c644c465d6e5f08667b74a061d65595",
+      "runtime_pixel_sha256": "ec964be3d267904e3c9a3b59bba75acf43685ee2170f7577352e5bb4333a9f84"
     },
     {
       "state": "move",
@@ -1116,10 +1116,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_north_06.png",
       "runtime_file": "bloodthorn_lion_move_north_06.png",
-      "source_encoded_sha256": "6ac63bd392ff0df096ed9a104ca5ccd545cc9ccbf61b7b1ae85e9b743bedda6e",
-      "source_pixel_sha256": "8780b009d0f46ae30dd5c687823c7c78c99912b5e469f0f71c18cb90fc22caa0",
-      "runtime_encoded_sha256": "77d51b5315f9b17fb5a92f60450f092e8d2dfed57586075454b0ad1365ebae84",
-      "runtime_pixel_sha256": "90f4e4fbe13508f2e784e4ea7a38749ab0122551d80677a8e70d2a0175bee7df"
+      "source_encoded_sha256": "8f2d6d8d011c7daa027d6b0e5393f8cbcc7f1a361acec5063c36e3f2198f07da",
+      "source_pixel_sha256": "7b20b7516444f49983bb64f90d94e99711944cf21dc1533540f80375fb41ab7c",
+      "runtime_encoded_sha256": "ab8eaf750fade12625850710d0be2e9d08b9df7d1141e65c9e210700696579ec",
+      "runtime_pixel_sha256": "1c60cea9c0006554cf12458ba2c6f31ec0c36934420d8eceacf4f3d69e4abc74"
     },
     {
       "state": "move",
@@ -1129,8 +1129,8 @@
       "runtime_file": "bloodthorn_lion_move_north_east_00.png",
       "source_encoded_sha256": "c65f0d6308a02d5128b7dbfdc1a814af8a550610533e66aef3182a1d3293a6c2",
       "source_pixel_sha256": "516049252c1ce13984b4c6a69a48189e9d7116d699136703e72af1e92cbe9d45",
-      "runtime_encoded_sha256": "9bb9625a30222df195a685d050a7b997a1c8d0575c20dd516beb0df8ed09dade",
-      "runtime_pixel_sha256": "c5bb2601e1747f6d6d18e7b9018f57fabc7c46d8fddf43041f520bbd10272b2b"
+      "runtime_encoded_sha256": "23807a0d8e2c5ca79a8151d7586f9048a67d8c0ab31c3808bbd0534befa3fb2a",
+      "runtime_pixel_sha256": "b4b293a59ae4c1277b47756a2d093a7fc4ba7f01075f3090ab0d9b0435d0469f"
     },
     {
       "state": "move",
@@ -1138,10 +1138,10 @@
       "index": 1,
       "source_file": "move/bloodthorn_lion_move_north_east_01.png",
       "runtime_file": "bloodthorn_lion_move_north_east_01.png",
-      "source_encoded_sha256": "63c07f955ac8a45178290575a62888741a09cb5ab7f01d0639d0619326d347f3",
-      "source_pixel_sha256": "a7905d88783a6f809af0846d0ec12a672e2aeeb4f73887b2f0662edd9eca6deb",
-      "runtime_encoded_sha256": "ab32e35c82eff13618045da38913433338b1fd886ab28fbd9603df3f7f15a3df",
-      "runtime_pixel_sha256": "a6e55c8e6dc5d0056be2e7f013e8b0ae758df8446965cf5ba739ade84714ed05"
+      "source_encoded_sha256": "f7260cee5b7d39eceb94f966f5cdf2bec7697a94a974b5a4e7729451c7b7bf7e",
+      "source_pixel_sha256": "400d2509015659d7ca23aa40b36ee82de092d9ccc1696339e66b15cd92ac3fc3",
+      "runtime_encoded_sha256": "f19b7bec2e9fe85290c24acf42dbd286b3e003f559004c9a68d92b441d931276",
+      "runtime_pixel_sha256": "7d7d6e02889dffe7fa5035f3297ae19f6f9f30f467f5de5c0a7589ce6c9f19d5"
     },
     {
       "state": "move",
@@ -1149,10 +1149,10 @@
       "index": 2,
       "source_file": "move/bloodthorn_lion_move_north_east_02.png",
       "runtime_file": "bloodthorn_lion_move_north_east_02.png",
-      "source_encoded_sha256": "c62c0676ae1f3ec1035c3e4285c10e867ac6e4246824ebd5e48e79368d280e47",
-      "source_pixel_sha256": "26f79e9a46014c25204c017f96409ebfdc6d030bcbed3d2755c14f059df9d500",
-      "runtime_encoded_sha256": "c5538343923f00912702c895a437278568ccbf9666395b817f9bb6f0d66e2cad",
-      "runtime_pixel_sha256": "ff93f2e88ef489ad9a6a10e0372970cfc93b4cf9bc07e42bdd591aa353f1b28d"
+      "source_encoded_sha256": "161facf855ff7fb8ebe3bd97de7a53247cc551a40bfca5f21662a9bb2218ca40",
+      "source_pixel_sha256": "3b463398543c8ba6986a3282bfabf02a6b79ae15d55835aa78c1f1a3ef253740",
+      "runtime_encoded_sha256": "2e789ee2372a4d386219d61e2a9f7ab0264f37a950e20dd3adc10f26a95145ff",
+      "runtime_pixel_sha256": "dde11405082a112cbfd254166b92432ee5e7a3a98a80795a7de6debbf53b7c2a"
     },
     {
       "state": "move",
@@ -1160,10 +1160,10 @@
       "index": 3,
       "source_file": "move/bloodthorn_lion_move_north_east_03.png",
       "runtime_file": "bloodthorn_lion_move_north_east_03.png",
-      "source_encoded_sha256": "e0fd057d64e9c62c07f0a35c977923e3dae7c4295381b8f52476d68f56f0e93f",
-      "source_pixel_sha256": "d9acc846376ef71d3f72eea60c9ab6f3f4b94d82219b46d3826c646e20213cc8",
-      "runtime_encoded_sha256": "8ac26673963e374d500f7acedc319c81cc08f63620279bef699546d092df3cab",
-      "runtime_pixel_sha256": "9e19392f635047724aebe7f901c66d001159aded5004ccacb31d48be4a09a0e6"
+      "source_encoded_sha256": "bfaf4e7dda0ed60b58c04b6d873465944ae5f39677165d9f92a41cff424d0f73",
+      "source_pixel_sha256": "df1d658129e6244e99007d1759bbc9858b35f0d7c1054afa646568f6c402cf36",
+      "runtime_encoded_sha256": "d40e1edc524c47a06c3c013d239e760966577dd20a5db42d1dea5613ad2d5d45",
+      "runtime_pixel_sha256": "fcf836e484bdd79ec4de9a9c811912fc7272c9062eb8fc3e0f2088830dcdf103"
     },
     {
       "state": "move",
@@ -1171,10 +1171,10 @@
       "index": 4,
       "source_file": "move/bloodthorn_lion_move_north_east_04.png",
       "runtime_file": "bloodthorn_lion_move_north_east_04.png",
-      "source_encoded_sha256": "6ed037d178755ad47ced3cc3fddb7fc2e661ea92af4ae4fe3d1ce175fdb0c29a",
-      "source_pixel_sha256": "ff85d78ec4a9332d2a75810cdf357a0c4b27ffdba5e7ec32acaf2db04518b35c",
-      "runtime_encoded_sha256": "198b11b59402afac75875c704cb2810e5e6fc7edb136d9048f27847aabd190bb",
-      "runtime_pixel_sha256": "ff24e4b93018012df8b07ccc99da827d074da23a165abc8c29fe45240fe1e480"
+      "source_encoded_sha256": "44632d416ad6177a99ce316783dba3954dd723d97d2ed43a385462ef654e2166",
+      "source_pixel_sha256": "9ddfb3a8518cd1b1bda232c00b14c51ce45679b67f6f6feb4fc983b5ee316f8d",
+      "runtime_encoded_sha256": "fda7decc29db85d4998c172a5265daf0647e14855a459f99b223854c90fb5871",
+      "runtime_pixel_sha256": "cf5c5449ad2f247239157aaaef494bb80f9bb39b87e50a2eb7a15fba23229666"
     },
     {
       "state": "move",
@@ -1182,10 +1182,10 @@
       "index": 5,
       "source_file": "move/bloodthorn_lion_move_north_east_05.png",
       "runtime_file": "bloodthorn_lion_move_north_east_05.png",
-      "source_encoded_sha256": "42781458334f79119eee19aa7ed8b4033fa0a753e9eb62a605bbeedb19829780",
-      "source_pixel_sha256": "c74bfddadd7beed13a072d83b53f4e070977676a108304ca36912ebb55034fcb",
-      "runtime_encoded_sha256": "dd14d4462277c1a4f6ffd77cb77b5d35fab1bdd5ff05f8f7bb0ce931da696d13",
-      "runtime_pixel_sha256": "40b8f3ed3589a4c30c075178c27d8055b3dc84a85318781363599a2b31865f24"
+      "source_encoded_sha256": "939692426cf1759ebefd80af1ca6768fceb05883e80240c578c13b0c5c0e7a7c",
+      "source_pixel_sha256": "f1053099f0e45e16152a199c9bddcd12e57cf771895a6bef45aaab865322e9f2",
+      "runtime_encoded_sha256": "c16b2640ab9f2000ad7cc4e3937d092c0f64085a588e4f1eb1c468fa1447800b",
+      "runtime_pixel_sha256": "dc8b3be6cf6b7b5a89958dda8aa8006a50a6608e1491f2fc5cf3d3bdde5e3597"
     },
     {
       "state": "move",
@@ -1193,10 +1193,10 @@
       "index": 6,
       "source_file": "move/bloodthorn_lion_move_north_east_06.png",
       "runtime_file": "bloodthorn_lion_move_north_east_06.png",
-      "source_encoded_sha256": "d9d3591aed625852883e47664d8beccae293965c8c32a0141ad0bdce1db5053b",
-      "source_pixel_sha256": "953f195a6510de4c5e16927e46d08422f029cba2cdc26f6592c8cefa25878027",
-      "runtime_encoded_sha256": "573a2a74b58c4a3aefb82643ffcee74969dfbc701348dec89242bc634c519675",
-      "runtime_pixel_sha256": "443b0cd5cf9eb60483ad91bf1da7becaa8961a75bb0dc865e762b794116ff211"
+      "source_encoded_sha256": "98356e47c164d6540850899798c16b9a866b745b3866a75da4d9fe2e371362e6",
+      "source_pixel_sha256": "f99a0e73aa247ad3e91e44ea439e5646b5427bb6be772b8904595a64c0fd952c",
+      "runtime_encoded_sha256": "28f6a129ecc395eaf07cb1031b855daa6acf56e14b5ed905dce8fdacf2b849ee",
+      "runtime_pixel_sha256": "9c60a4e5ccd93eb672f305443ce94c54a8e1ecd5eedeff6fac268c8a36f8592d"
     },
     {
       "state": "attack",

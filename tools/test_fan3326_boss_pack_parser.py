@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 from unittest.mock import patch
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -23,7 +23,9 @@ from build_fan3326_boss_pack import (  # noqa: E402
     download_source,
     effective_frame_count,
     expand_urls,
+    mirrored_frames,
     missing_directions,
+    parse_active_job_count,
     parse_report,
     rebuild_manifest,
     wait_for_pack,
@@ -180,6 +182,32 @@ def main() -> int:
     assert rejected
     assert_queued({"_raw": "queued 7 jobs"}, "rift_warden/move")
     assert_queued({"jobs": ["x"]}, "rift_warden/move")
+
+    # A direction filled by reflecting its opposite is a mirrored substitute, not a real row.
+    with tempfile.TemporaryDirectory() as mirror_dir:
+        east = Image.new("RGBA", (8, 8), (0, 0, 0, 0))
+        east.putpixel((1, 2), (255, 0, 0, 255))
+        east.putpixel((6, 5), (0, 255, 0, 255))
+        distinct = east.copy()
+        distinct.putpixel((3, 3), (0, 0, 255, 255))
+        paths = {}
+        for name, image in (("east_0", east), ("west_0", ImageOps.mirror(east)), ("west_1", distinct), ("north_east_0", east), ("north_west_0", distinct)):
+            target = Path(mirror_dir) / (name + ".png")
+            image.save(target)
+            paths[name] = target
+        findings = mirrored_frames({
+            "east": [paths["east_0"], paths["east_0"]],
+            "west": [paths["west_0"], paths["west_1"]],
+            "north-east": [paths["north_east_0"]],
+            "north-west": [paths["north_west_0"]],
+        })
+        assert findings == ["east<->west frames [0]"], findings
+        assert mirrored_frames({"east": [paths["east_0"]], "west": [paths["west_1"]]}) == []
+        assert mirrored_frames({"east": [paths["east_0"]]}) == []
+
+    assert parse_active_job_count("15 jobs:\nabc processing 17%") == 15
+    assert parse_active_job_count("no active jobs (nothing pending or processing)\nhint: ...") == 0
+    assert parse_active_job_count("error: unauthorized") is None
 
     print("FAN-3326 parser alias regression passed")
     return 0
