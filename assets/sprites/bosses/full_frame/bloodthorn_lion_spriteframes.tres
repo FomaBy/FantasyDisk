@@ -1,35 +1,309 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_00.png" id="1_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_01.png" id="2_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_02.png" id="3_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_03.png" id="4_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_04.png" id="5_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_attack_primary_05.png" id="6_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_00.png" id="7_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_01.png" id="8_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_02.png" id="9_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_03.png" id="10_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_04.png" id="11_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_death_05.png" id="12_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_00.png" id="13_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_01.png" id="14_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_02.png" id="15_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_03.png" id="16_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_04.png" id="17_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_move_05.png" id="18_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_00.png" id="19_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_01.png" id="20_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_02.png" id="21_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_03.png" id="22_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_04.png" id="23_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_spike_ring_05.png" id="24_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_00.png" id="25_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_01.png" id="26_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_02.png" id="27_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_03.png" id="28_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_04.png" id="29_bloodthorn_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bloodthorn_lion/bloodthorn_lion_skill_rift_zone_05.png" id="30_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_east_00.png" id="1_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_south_east_00.png" id="2_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_south_00.png" id="3_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_south_west_00.png" id="4_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_west_00.png" id="5_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_north_west_00.png" id="6_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_north_00.png" id="7_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_idle_north_east_00.png" id="8_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_00.png" id="9_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_01.png" id="10_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_02.png" id="11_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_03.png" id="12_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_04.png" id="13_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_05.png" id="14_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_east_06.png" id="15_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_00.png" id="16_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_01.png" id="17_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_02.png" id="18_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_03.png" id="19_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_04.png" id="20_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_05.png" id="21_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_east_06.png" id="22_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_00.png" id="23_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_01.png" id="24_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_02.png" id="25_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_03.png" id="26_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_04.png" id="27_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_05.png" id="28_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_06.png" id="29_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_00.png" id="30_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_01.png" id="31_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_02.png" id="32_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_03.png" id="33_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_04.png" id="34_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_05.png" id="35_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_south_west_06.png" id="36_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_00.png" id="37_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_01.png" id="38_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_02.png" id="39_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_03.png" id="40_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_04.png" id="41_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_05.png" id="42_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_west_06.png" id="43_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_00.png" id="44_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_01.png" id="45_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_02.png" id="46_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_03.png" id="47_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_04.png" id="48_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_05.png" id="49_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_west_06.png" id="50_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_00.png" id="51_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_01.png" id="52_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_02.png" id="53_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_03.png" id="54_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_04.png" id="55_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_05.png" id="56_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_06.png" id="57_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_00.png" id="58_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_01.png" id="59_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_02.png" id="60_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_03.png" id="61_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_04.png" id="62_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_05.png" id="63_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_move_north_east_06.png" id="64_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_00.png" id="65_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_01.png" id="66_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_02.png" id="67_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_03.png" id="68_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_04.png" id="69_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_east_05.png" id="70_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_00.png" id="71_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_01.png" id="72_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_02.png" id="73_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_03.png" id="74_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_04.png" id="75_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_east_05.png" id="76_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_00.png" id="77_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_01.png" id="78_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_02.png" id="79_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_03.png" id="80_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_04.png" id="81_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_05.png" id="82_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_00.png" id="83_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_01.png" id="84_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_02.png" id="85_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_03.png" id="86_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_04.png" id="87_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_south_west_05.png" id="88_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_00.png" id="89_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_01.png" id="90_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_02.png" id="91_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_03.png" id="92_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_04.png" id="93_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_west_05.png" id="94_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_00.png" id="95_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_01.png" id="96_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_02.png" id="97_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_03.png" id="98_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_04.png" id="99_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_west_05.png" id="100_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_00.png" id="101_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_01.png" id="102_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_02.png" id="103_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_03.png" id="104_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_04.png" id="105_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_05.png" id="106_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_00.png" id="107_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_01.png" id="108_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_02.png" id="109_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_03.png" id="110_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_04.png" id="111_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_attack_north_east_05.png" id="112_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_00.png" id="113_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_01.png" id="114_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_02.png" id="115_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_03.png" id="116_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_04.png" id="117_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_east_05.png" id="118_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_00.png" id="119_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_01.png" id="120_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_02.png" id="121_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_03.png" id="122_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_04.png" id="123_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_east_05.png" id="124_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_00.png" id="125_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_01.png" id="126_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_02.png" id="127_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_03.png" id="128_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_04.png" id="129_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_05.png" id="130_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_00.png" id="131_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_01.png" id="132_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_02.png" id="133_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_03.png" id="134_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_04.png" id="135_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_south_west_05.png" id="136_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_00.png" id="137_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_01.png" id="138_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_02.png" id="139_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_03.png" id="140_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_04.png" id="141_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_west_05.png" id="142_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_00.png" id="143_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_01.png" id="144_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_02.png" id="145_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_03.png" id="146_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_04.png" id="147_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_west_05.png" id="148_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_00.png" id="149_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_01.png" id="150_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_02.png" id="151_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_03.png" id="152_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_04.png" id="153_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_05.png" id="154_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_00.png" id="155_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_01.png" id="156_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_02.png" id="157_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_03.png" id="158_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_04.png" id="159_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_hit_north_east_05.png" id="160_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_00.png" id="161_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_01.png" id="162_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_02.png" id="163_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_03.png" id="164_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_04.png" id="165_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_east_05.png" id="166_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_00.png" id="167_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_01.png" id="168_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_02.png" id="169_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_03.png" id="170_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_04.png" id="171_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_east_05.png" id="172_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_00.png" id="173_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_01.png" id="174_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_02.png" id="175_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_03.png" id="176_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_04.png" id="177_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_05.png" id="178_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_00.png" id="179_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_01.png" id="180_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_02.png" id="181_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_03.png" id="182_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_04.png" id="183_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_south_west_05.png" id="184_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_00.png" id="185_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_01.png" id="186_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_02.png" id="187_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_03.png" id="188_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_04.png" id="189_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_west_05.png" id="190_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_00.png" id="191_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_01.png" id="192_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_02.png" id="193_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_03.png" id="194_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_04.png" id="195_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_west_05.png" id="196_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_00.png" id="197_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_01.png" id="198_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_02.png" id="199_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_03.png" id="200_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_04.png" id="201_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_05.png" id="202_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_00.png" id="203_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_01.png" id="204_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_02.png" id="205_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_03.png" id="206_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_04.png" id="207_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_death_north_east_05.png" id="208_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_00.png" id="209_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_01.png" id="210_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_02.png" id="211_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_03.png" id="212_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_04.png" id="213_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_east_05.png" id="214_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_00.png" id="215_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_01.png" id="216_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_02.png" id="217_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_03.png" id="218_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_04.png" id="219_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_east_05.png" id="220_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_00.png" id="221_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_01.png" id="222_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_02.png" id="223_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_03.png" id="224_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_04.png" id="225_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_05.png" id="226_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_00.png" id="227_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_01.png" id="228_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_02.png" id="229_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_03.png" id="230_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_04.png" id="231_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_south_west_05.png" id="232_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_00.png" id="233_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_01.png" id="234_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_02.png" id="235_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_03.png" id="236_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_04.png" id="237_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_west_05.png" id="238_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_00.png" id="239_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_01.png" id="240_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_02.png" id="241_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_03.png" id="242_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_04.png" id="243_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_west_05.png" id="244_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_00.png" id="245_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_01.png" id="246_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_02.png" id="247_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_03.png" id="248_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_04.png" id="249_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_05.png" id="250_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_00.png" id="251_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_01.png" id="252_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_02.png" id="253_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_03.png" id="254_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_04.png" id="255_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_spike_ring_north_east_05.png" id="256_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_00.png" id="257_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_01.png" id="258_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_02.png" id="259_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_03.png" id="260_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_04.png" id="261_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_east_05.png" id="262_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_00.png" id="263_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_01.png" id="264_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_02.png" id="265_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_03.png" id="266_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_04.png" id="267_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_east_05.png" id="268_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_00.png" id="269_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_01.png" id="270_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_02.png" id="271_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_03.png" id="272_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_04.png" id="273_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_05.png" id="274_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_00.png" id="275_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_01.png" id="276_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_02.png" id="277_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_03.png" id="278_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_04.png" id="279_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_south_west_05.png" id="280_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_00.png" id="281_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_01.png" id="282_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_02.png" id="283_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_03.png" id="284_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_04.png" id="285_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_west_05.png" id="286_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_00.png" id="287_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_01.png" id="288_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_02.png" id="289_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_03.png" id="290_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_04.png" id="291_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_west_05.png" id="292_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_00.png" id="293_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_01.png" id="294_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_02.png" id="295_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_03.png" id="296_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_04.png" id="297_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_05.png" id="298_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_00.png" id="299_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_01.png" id="300_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_02.png" id="301_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_03.png" id="302_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_04.png" id="303_bloodthorn_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/bloodthorn_lion_8dir/runtime/bloodthorn_lion_skill_rift_zone_north_east_05.png" id="304_bloodthorn_lion"]
 
 [resource]
 animations = [
@@ -37,192 +311,2192 @@ animations = [
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_bloodthorn_lion")
 }],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_bloodthorn_lion")
-}, {
-"duration": 1.0,
 "texture": ExtResource("2_bloodthorn_lion")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("3_bloodthorn_lion")
-}, {
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_bloodthorn_lion")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("5_bloodthorn_lion")
-}, {
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("6_bloodthorn_lion")
 }],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("7_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("9_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_bloodthorn_lion")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("16_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("17_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("18_bloodthorn_lion")
+"texture": ExtResource("8_bloodthorn_lion")
 }],
 "loop": true,
-"name": &"move",
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("20_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("21_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("22_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("23_bloodthorn_lion")
-}, {
-"duration": 1.0,
-"texture": ExtResource("24_bloodthorn_lion")
-}],
-"loop": false,
-"name": &"skill_spike_ring",
-"speed": 12.0
+"texture": ExtResource("16_bloodthorn_lion")
 },
 {
-"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_bloodthorn_lion")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("19_bloodthorn_lion")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("20_bloodthorn_lion")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("21_bloodthorn_lion")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("22_bloodthorn_lion")
-}, {
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("23_bloodthorn_lion")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("24_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("58_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_bloodthorn_lion")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_bloodthorn_lion")
 }],
 "loop": false,
-"name": &"attack_spike_ring",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_bloodthorn_lion")
-}, {
+"texture": ExtResource("71_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_bloodthorn_lion")
-}, {
+"texture": ExtResource("72_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_bloodthorn_lion")
-}, {
+"texture": ExtResource("73_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_bloodthorn_lion")
-}, {
+"texture": ExtResource("74_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_bloodthorn_lion")
-}, {
+"texture": ExtResource("75_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_bloodthorn_lion")
+"texture": ExtResource("76_bloodthorn_lion")
 }],
 "loop": false,
-"name": &"skill_rift_zone",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_bloodthorn_lion")
-}, {
+"texture": ExtResource("77_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_bloodthorn_lion")
-}, {
+"texture": ExtResource("78_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_bloodthorn_lion")
-}, {
+"texture": ExtResource("79_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_bloodthorn_lion")
-}, {
+"texture": ExtResource("80_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_bloodthorn_lion")
-}, {
+"texture": ExtResource("81_bloodthorn_lion")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_bloodthorn_lion")
+"texture": ExtResource("82_bloodthorn_lion")
 }],
 "loop": false,
-"name": &"attack_rift_zone",
+"name": &"attack_south",
 "speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("119_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("131_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("185_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("191_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("203_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_spike_ring_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("71_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("77_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_spike_ring_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_bloodthorn_lion")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_bloodthorn_lion")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north_east",
+"speed": 10.0
 }
 ]

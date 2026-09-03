@@ -1,35 +1,309 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_00.png" id="1_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_01.png" id="2_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_02.png" id="3_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_03.png" id="4_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_04.png" id="5_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_attack_primary_05.png" id="6_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_00.png" id="7_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_01.png" id="8_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_02.png" id="9_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_03.png" id="10_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_04.png" id="11_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_05.png" id="12_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_00.png" id="13_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_01.png" id="14_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_02.png" id="15_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_03.png" id="16_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_04.png" id="17_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_move_05.png" id="18_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_00.png" id="19_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_01.png" id="20_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_02.png" id="21_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_03.png" id="22_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_04.png" id="23_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_gravity_well_05.png" id="24_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_00.png" id="25_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_01.png" id="26_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_02.png" id="27_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_03.png" id="28_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_04.png" id="29_rift_warden"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_skill_rift_zone_05.png" id="30_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_east_00.png" id="1_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_south_east_00.png" id="2_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_south_00.png" id="3_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_south_west_00.png" id="4_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_west_00.png" id="5_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_north_west_00.png" id="6_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_north_00.png" id="7_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_idle_north_east_00.png" id="8_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_00.png" id="9_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_01.png" id="10_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_02.png" id="11_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_03.png" id="12_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_04.png" id="13_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_05.png" id="14_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_east_06.png" id="15_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_00.png" id="16_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_01.png" id="17_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_02.png" id="18_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_03.png" id="19_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_04.png" id="20_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_05.png" id="21_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_east_06.png" id="22_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_00.png" id="23_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_01.png" id="24_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_02.png" id="25_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_03.png" id="26_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_04.png" id="27_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_05.png" id="28_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_06.png" id="29_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_00.png" id="30_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_01.png" id="31_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_02.png" id="32_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_03.png" id="33_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_04.png" id="34_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_05.png" id="35_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_south_west_06.png" id="36_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_00.png" id="37_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_01.png" id="38_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_02.png" id="39_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_03.png" id="40_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_04.png" id="41_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_05.png" id="42_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_west_06.png" id="43_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_00.png" id="44_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_01.png" id="45_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_02.png" id="46_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_03.png" id="47_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_04.png" id="48_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_05.png" id="49_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_west_06.png" id="50_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_00.png" id="51_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_01.png" id="52_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_02.png" id="53_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_03.png" id="54_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_04.png" id="55_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_05.png" id="56_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_06.png" id="57_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_00.png" id="58_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_01.png" id="59_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_02.png" id="60_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_03.png" id="61_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_04.png" id="62_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_05.png" id="63_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_move_north_east_06.png" id="64_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_00.png" id="65_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_01.png" id="66_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_02.png" id="67_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_03.png" id="68_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_04.png" id="69_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_east_05.png" id="70_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_00.png" id="71_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_01.png" id="72_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_02.png" id="73_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_03.png" id="74_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_04.png" id="75_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_east_05.png" id="76_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_00.png" id="77_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_01.png" id="78_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_02.png" id="79_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_03.png" id="80_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_04.png" id="81_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_05.png" id="82_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_00.png" id="83_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_01.png" id="84_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_02.png" id="85_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_03.png" id="86_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_04.png" id="87_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_south_west_05.png" id="88_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_00.png" id="89_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_01.png" id="90_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_02.png" id="91_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_03.png" id="92_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_04.png" id="93_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_west_05.png" id="94_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_00.png" id="95_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_01.png" id="96_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_02.png" id="97_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_03.png" id="98_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_04.png" id="99_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_west_05.png" id="100_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_00.png" id="101_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_01.png" id="102_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_02.png" id="103_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_03.png" id="104_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_04.png" id="105_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_05.png" id="106_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_00.png" id="107_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_01.png" id="108_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_02.png" id="109_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_03.png" id="110_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_04.png" id="111_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_attack_north_east_05.png" id="112_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_00.png" id="113_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_01.png" id="114_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_02.png" id="115_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_03.png" id="116_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_04.png" id="117_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_east_05.png" id="118_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_00.png" id="119_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_01.png" id="120_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_02.png" id="121_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_03.png" id="122_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_04.png" id="123_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_east_05.png" id="124_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_00.png" id="125_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_01.png" id="126_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_02.png" id="127_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_03.png" id="128_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_04.png" id="129_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_05.png" id="130_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_00.png" id="131_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_01.png" id="132_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_02.png" id="133_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_03.png" id="134_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_04.png" id="135_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_south_west_05.png" id="136_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_00.png" id="137_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_01.png" id="138_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_02.png" id="139_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_03.png" id="140_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_04.png" id="141_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_west_05.png" id="142_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_00.png" id="143_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_01.png" id="144_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_02.png" id="145_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_03.png" id="146_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_04.png" id="147_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_west_05.png" id="148_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_00.png" id="149_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_01.png" id="150_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_02.png" id="151_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_03.png" id="152_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_04.png" id="153_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_05.png" id="154_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_00.png" id="155_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_01.png" id="156_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_02.png" id="157_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_03.png" id="158_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_04.png" id="159_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_hit_north_east_05.png" id="160_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_00.png" id="161_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_01.png" id="162_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_02.png" id="163_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_03.png" id="164_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_04.png" id="165_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_east_05.png" id="166_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_00.png" id="167_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_01.png" id="168_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_02.png" id="169_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_03.png" id="170_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_04.png" id="171_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_east_05.png" id="172_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_00.png" id="173_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_01.png" id="174_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_02.png" id="175_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_03.png" id="176_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_04.png" id="177_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_05.png" id="178_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_00.png" id="179_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_01.png" id="180_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_02.png" id="181_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_03.png" id="182_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_04.png" id="183_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_south_west_05.png" id="184_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_00.png" id="185_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_01.png" id="186_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_02.png" id="187_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_03.png" id="188_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_04.png" id="189_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_west_05.png" id="190_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_00.png" id="191_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_01.png" id="192_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_02.png" id="193_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_03.png" id="194_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_04.png" id="195_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_west_05.png" id="196_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_00.png" id="197_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_01.png" id="198_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_02.png" id="199_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_03.png" id="200_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_04.png" id="201_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_05.png" id="202_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_00.png" id="203_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_01.png" id="204_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_02.png" id="205_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_03.png" id="206_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_04.png" id="207_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_death_north_east_05.png" id="208_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_00.png" id="209_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_01.png" id="210_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_02.png" id="211_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_03.png" id="212_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_04.png" id="213_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_east_05.png" id="214_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_00.png" id="215_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_01.png" id="216_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_02.png" id="217_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_03.png" id="218_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_04.png" id="219_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_east_05.png" id="220_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_00.png" id="221_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_01.png" id="222_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_02.png" id="223_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_03.png" id="224_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_04.png" id="225_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_05.png" id="226_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_00.png" id="227_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_01.png" id="228_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_02.png" id="229_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_03.png" id="230_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_04.png" id="231_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_south_west_05.png" id="232_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_00.png" id="233_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_01.png" id="234_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_02.png" id="235_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_03.png" id="236_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_04.png" id="237_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_west_05.png" id="238_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_00.png" id="239_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_01.png" id="240_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_02.png" id="241_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_03.png" id="242_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_04.png" id="243_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_west_05.png" id="244_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_00.png" id="245_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_01.png" id="246_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_02.png" id="247_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_03.png" id="248_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_04.png" id="249_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_05.png" id="250_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_00.png" id="251_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_01.png" id="252_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_02.png" id="253_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_03.png" id="254_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_04.png" id="255_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_gravity_well_north_east_05.png" id="256_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_00.png" id="257_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_01.png" id="258_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_02.png" id="259_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_03.png" id="260_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_04.png" id="261_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_east_05.png" id="262_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_00.png" id="263_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_01.png" id="264_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_02.png" id="265_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_03.png" id="266_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_04.png" id="267_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_east_05.png" id="268_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_00.png" id="269_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_01.png" id="270_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_02.png" id="271_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_03.png" id="272_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_04.png" id="273_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_05.png" id="274_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_00.png" id="275_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_01.png" id="276_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_02.png" id="277_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_03.png" id="278_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_04.png" id="279_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_south_west_05.png" id="280_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_00.png" id="281_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_01.png" id="282_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_02.png" id="283_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_03.png" id="284_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_04.png" id="285_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_west_05.png" id="286_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_00.png" id="287_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_01.png" id="288_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_02.png" id="289_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_03.png" id="290_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_04.png" id="291_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_west_05.png" id="292_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_00.png" id="293_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_01.png" id="294_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_02.png" id="295_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_03.png" id="296_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_04.png" id="297_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_05.png" id="298_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_00.png" id="299_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_01.png" id="300_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_02.png" id="301_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_03.png" id="302_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_04.png" id="303_rift_warden"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/rift_warden_8dir/runtime/rift_warden_skill_rift_zone_north_east_05.png" id="304_rift_warden"]
 
 [resource]
 animations = [
@@ -37,192 +311,2192 @@ animations = [
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_rift_warden")
 }],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_rift_warden")
-}, {
-"duration": 1.0,
 "texture": ExtResource("2_rift_warden")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("3_rift_warden")
-}, {
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_rift_warden")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("5_rift_warden")
-}, {
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("6_rift_warden")
 }],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("7_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("9_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_rift_warden")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("16_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("17_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("18_rift_warden")
+"texture": ExtResource("8_rift_warden")
 }],
 "loop": true,
-"name": &"move",
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_rift_warden")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("20_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("21_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("22_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("23_rift_warden")
-}, {
-"duration": 1.0,
-"texture": ExtResource("24_rift_warden")
-}],
-"loop": false,
-"name": &"skill_gravity_well",
-"speed": 12.0
+"texture": ExtResource("16_rift_warden")
 },
 {
-"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_rift_warden")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("19_rift_warden")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("20_rift_warden")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("21_rift_warden")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("22_rift_warden")
-}, {
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("23_rift_warden")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("24_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_rift_warden")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_rift_warden")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_rift_warden")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_rift_warden")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_rift_warden")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("58_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_rift_warden")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_rift_warden")
 }],
 "loop": false,
-"name": &"attack_gravity_well",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_rift_warden")
-}, {
+"texture": ExtResource("71_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_rift_warden")
-}, {
+"texture": ExtResource("72_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_rift_warden")
-}, {
+"texture": ExtResource("73_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_rift_warden")
-}, {
+"texture": ExtResource("74_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_rift_warden")
-}, {
+"texture": ExtResource("75_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_rift_warden")
+"texture": ExtResource("76_rift_warden")
 }],
 "loop": false,
-"name": &"skill_rift_zone",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_rift_warden")
-}, {
+"texture": ExtResource("77_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_rift_warden")
-}, {
+"texture": ExtResource("78_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_rift_warden")
-}, {
+"texture": ExtResource("79_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_rift_warden")
-}, {
+"texture": ExtResource("80_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_rift_warden")
-}, {
+"texture": ExtResource("81_rift_warden")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_rift_warden")
+"texture": ExtResource("82_rift_warden")
 }],
 "loop": false,
-"name": &"attack_rift_zone",
+"name": &"attack_south",
 "speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rift_warden")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rift_warden")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rift_warden")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_rift_warden")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_rift_warden")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_rift_warden")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("119_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_rift_warden")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_rift_warden")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("131_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_rift_warden")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_rift_warden")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_rift_warden")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_rift_warden")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_rift_warden")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_rift_warden")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_rift_warden")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_rift_warden")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_rift_warden")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("185_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_rift_warden")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("191_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_rift_warden")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_rift_warden")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("203_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_rift_warden")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_rift_warden")
+}],
+"loop": false,
+"name": &"skill_gravity_well_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_rift_warden")
+}],
+"loop": false,
+"name": &"skill_rift_zone_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("71_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("77_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_rift_warden")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_rift_warden")
+}],
+"loop": false,
+"name": &"attack_gravity_well_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_rift_warden")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_rift_warden")
+}],
+"loop": false,
+"name": &"attack_rift_zone_north_east",
+"speed": 10.0
 }
 ]
