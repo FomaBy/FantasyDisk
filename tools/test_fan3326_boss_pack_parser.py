@@ -3,7 +3,11 @@
 
 from __future__ import annotations
 
+import hashlib
+import io
+import json
 import tempfile
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 import sys
 from unittest.mock import patch
@@ -13,6 +17,7 @@ from PIL import Image, ImageOps
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
+import build_fan3326_boss_pack as builder  # noqa: E402
 from build_fan3326_boss_pack import (  # noqa: E402
     BuildError,
     DIRECTIONS,
@@ -53,6 +58,80 @@ def report(label: str, group_id: str, frame_counts: list[int] | None = None) -> 
         for direction, count in zip(DIRECTIONS, frame_counts)
     )
     return "\n".join(rows) + "\n"
+
+
+def png_bytes(color: tuple[int, int, int, int]) -> bytes:
+    buffer = io.BytesIO()
+    Image.new("RGBA", (8, 8), color).save(buffer, format="PNG")
+    return buffer.getvalue()
+
+
+def image_hashes(path: Path) -> tuple[str, str]:
+    encoded = hashlib.sha256(path.read_bytes()).hexdigest()
+    with Image.open(path) as image:
+        pixels = hashlib.sha256(image.convert("RGBA").tobytes()).hexdigest()
+    return encoded, pixels
+
+
+def write_check_fixture(
+    root: Path,
+    *,
+    corrupt_source: bool = False,
+    corrupt_runtime: bool = False,
+    missing_source: bool = False,
+) -> tuple[Path, Path]:
+    source_root = root / "assets/sprites/bosses/rift_warden_8dir/pixellab_source"
+    runtime_root = root / "assets/sprites/bosses/rift_warden_8dir/runtime"
+    source_path = source_root / "idle/east.png"
+    runtime_path = runtime_root / "idle/east.png"
+    source_path.parent.mkdir(parents=True)
+    runtime_path.parent.mkdir(parents=True)
+    if not missing_source:
+        source_path.write_bytes(b"not-a-png" if corrupt_source else png_bytes((255, 0, 0, 255)))
+    runtime_path.write_bytes(b"not-a-png" if corrupt_runtime else png_bytes((0, 255, 0, 255)))
+
+    source_encoded, source_pixels = ("source", "source") if corrupt_source or missing_source else image_hashes(source_path)
+    runtime_encoded, runtime_pixels = ("runtime", "runtime") if corrupt_runtime else image_hashes(runtime_path)
+    manifest = {
+        "frames": [{
+            "state": "idle",
+            "direction": "east",
+            "index": 0,
+            "source_file": "idle/east.png",
+            "runtime_file": "idle/east.png",
+            "source_encoded_sha256": source_encoded,
+            "source_pixel_sha256": source_pixels,
+            "runtime_encoded_sha256": runtime_encoded,
+            "runtime_pixel_sha256": runtime_pixels,
+        }],
+        "states": {"idle": {}},
+    }
+    manifest_path = source_root / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    return source_path, runtime_path
+
+
+def run_check_fixture(root: Path) -> tuple[int, str, str]:
+    output = io.StringIO()
+    errors = io.StringIO()
+    with patch.object(builder, "ROOT", root):
+        with patch.object(builder, "actor_specs", return_value=[("rift_warden", "object", "fixture", {}, {})]):
+            with redirect_stdout(output), redirect_stderr(errors):
+                result = builder.main(["--check"])
+    return result, output.getvalue(), errors.getvalue()
+
+
+def frame(marker: int) -> Image.Image:
+    image = Image.new("RGBA", (8, 8), (0, 0, 0, 0))
+    image.putpixel((marker, 1), (255, 0, 0, 255))
+    image.putpixel((7 - marker, 6), (0, 255, 0, 255))
+    return image
+
+
+def saved(directory: Path, name: str, image: Image.Image) -> Path:
+    path = directory / (name + ".png")
+    image.save(path)
+    return path
 
 
 def main() -> int:
@@ -168,6 +247,37 @@ def main() -> int:
         assert not check_manifest(corrupt)
         assert not rebuild_manifest(corrupt)
 
+    with tempfile.TemporaryDirectory(prefix="fan3326_decode_test_") as temp_dir:
+        fixture_root = Path(temp_dir)
+        source, _ = write_check_fixture(fixture_root, corrupt_source=True)
+        result, output, errors = run_check_fixture(fixture_root)
+        assert result == 6
+        assert output.count("FAIL:") == 1
+        assert "rift_warden/idle source PNG decode failed" in output
+        assert str(source) in output
+        assert "cannot identify image file" in output
+        assert "Traceback" not in output + errors
+
+    with tempfile.TemporaryDirectory(prefix="fan3326_decode_test_") as temp_dir:
+        fixture_root = Path(temp_dir)
+        _, runtime = write_check_fixture(fixture_root, corrupt_runtime=True)
+        result, output, errors = run_check_fixture(fixture_root)
+        assert result == 6
+        assert output.count("FAIL:") == 1
+        assert "rift_warden/idle runtime PNG decode failed" in output
+        assert str(runtime) in output
+        assert "cannot identify image file" in output
+        assert "Traceback" not in output + errors
+
+    with tempfile.TemporaryDirectory(prefix="fan3326_missing_frame_test_") as temp_dir:
+        fixture_root = Path(temp_dir)
+        source, _ = write_check_fixture(fixture_root, missing_source=True)
+        result, output, errors = run_check_fixture(fixture_root)
+        assert result == 6
+        assert "FAIL: missing" in output
+        assert str(source) in output
+        assert "Traceback" not in output + errors
+
     # FAN-3854 (2026-09-03): PixelLab v3 accepts only even 4..16 frame counts; the
     # request rounds up while the canonical row still consumes the spec count.
     assert [request_frame_count(n) for n in (6, 7, 8, 1, 16, 17)] == [6, 8, 8, 4, 16, 16]
@@ -191,19 +301,54 @@ def main() -> int:
         distinct = east.copy()
         distinct.putpixel((3, 3), (0, 0, 255, 255))
         paths = {}
-        for name, image in (("east_0", east), ("west_0", ImageOps.mirror(east)), ("west_1", distinct), ("north_east_0", east), ("north_west_0", distinct)):
+        for name, image in (("east_0", east), ("east_1", distinct), ("west_0", ImageOps.mirror(east)), ("west_1", distinct), ("north_east_0", east), ("north_west_0", distinct)):
             target = Path(mirror_dir) / (name + ".png")
             image.save(target)
             paths[name] = target
         findings = mirrored_frames({
-            "east": [paths["east_0"], paths["east_0"]],
+            "east": [paths["east_0"], paths["east_1"]],
             "west": [paths["west_0"], paths["west_1"]],
             "north-east": [paths["north_east_0"]],
             "north-west": [paths["north_west_0"]],
         })
-        assert findings == ["east<->west frames [0]"], findings
-        assert mirrored_frames({"east": [paths["east_0"]], "west": [paths["west_1"]]}) == []
-        assert mirrored_frames({"east": [paths["east_0"]]}) == []
+        assert len(findings) == 1, findings
+        assert "east[0]=" in findings[0] and "west[0]=" in findings[0], findings
+        assert str(paths["east_0"]) in findings[0]
+        assert str(paths["west_0"]) in findings[0]
+
+        assert any("row length mismatch" in finding for finding in mirrored_frames({
+            "east": [paths["east_0"], paths["east_0"]],
+            "west": [paths["west_0"]],
+        }))
+        missing = Path(mirror_dir) / "missing.png"
+        missing_findings = mirrored_frames({"east": [missing], "west": [paths["west_0"]]})
+        assert len(missing_findings) == 1
+        assert "missing frame: east[0]=" in missing_findings[0]
+        assert str(missing) in missing_findings[0]
+        counterpart_findings = mirrored_frames({"east": [paths["east_0"]]})
+        assert len(counterpart_findings) == 1
+        assert "missing counterpart row" in counterpart_findings[0]
+        assert "west" in counterpart_findings[0]
+
+    with tempfile.TemporaryDirectory() as permutation_dir:
+        directory = Path(permutation_dir)
+        east_a = saved(directory, "east_a", frame(1))
+        east_b = saved(directory, "east_b", frame(2))
+        west_b = saved(directory, "west_b", ImageOps.mirror(frame(2)))
+        west_a = saved(directory, "west_a", ImageOps.mirror(frame(1)))
+        findings = mirrored_frames({"east": [east_a, east_b], "west": [west_b, west_a]})
+        assert len(findings) == 2, findings
+        assert any("east[0]=" in finding and "west[1]=" in finding for finding in findings)
+        assert any("east[1]=" in finding and "west[0]=" in finding for finding in findings)
+        assert any(str(east_a) in finding and str(west_a) in finding for finding in findings)
+        assert any(str(east_b) in finding and str(west_b) in finding for finding in findings)
+
+        corrected_west_a = saved(directory, "corrected_west_a", frame(3))
+        corrected_west_b = saved(directory, "corrected_west_b", frame(4))
+        assert mirrored_frames({
+            "east": [east_a, east_b],
+            "west": [corrected_west_a, corrected_west_b],
+        }) == []
 
     assert parse_active_job_count("15 jobs:\nabc processing 17%") == 15
     assert parse_active_job_count("no active jobs (nothing pending or processing)\nhint: ...") == 0

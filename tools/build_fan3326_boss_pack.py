@@ -346,15 +346,40 @@ def mirrored_frames(rows: dict[str, list[Path]]) -> list[str]:
     """
     findings: list[str] = []
     for left, right in OPPOSITE_DIRECTIONS:
-        mirrored: list[int] = []
-        for index, (left_path, right_path) in enumerate(zip(rows.get(left, []), rows.get(right, []))):
-            with Image.open(left_path) as left_image, Image.open(right_path) as right_image:
+        left_paths = rows.get(left, [])
+        right_paths = rows.get(right, [])
+        if not left_paths and not right_paths:
+            continue
+        if not left_paths or not right_paths:
+            missing = right if left_paths else left
+            findings.append("%s<->%s missing counterpart row: %s" % (left, right, missing))
+            continue
+        if len(left_paths) != len(right_paths):
+            findings.append(
+                "%s<->%s row length mismatch: %s=%d, %s=%d"
+                % (left, right, left, len(left_paths), right, len(right_paths))
+            )
+            continue
+        missing_frames = [
+            "%s[%d]=%s" % (direction, index, path)
+            for direction, paths in ((left, left_paths), (right, right_paths))
+            for index, path in enumerate(paths)
+            if not path.is_file()
+        ]
+        if missing_frames:
+            findings.append("%s<->%s missing frame: %s" % (left, right, ", ".join(missing_frames)))
+            continue
+        for left_index, left_path in enumerate(left_paths):
+            with Image.open(left_path) as left_image:
                 left_rgba = left_image.convert("RGBA")
-                right_rgba = right_image.convert("RGBA")
+            for right_index, right_path in enumerate(right_paths):
+                with Image.open(right_path) as right_image:
+                    right_rgba = right_image.convert("RGBA")
                 if left_rgba.size == right_rgba.size and ImageChops.difference(ImageOps.mirror(left_rgba), right_rgba).getbbox() is None:
-                    mirrored.append(index)
-        if mirrored:
-            findings.append("%s<->%s frames %s" % (left, right, mirrored))
+                    findings.append(
+                        "%s<->%s mirrored frame pair: %s[%d]=%s <-> %s[%d]=%s"
+                        % (left, right, left, left_index, left_path, right, right_index, right_path)
+                    )
     return findings
 
 
@@ -832,11 +857,18 @@ def read_manifest(path: Path) -> dict[str, Any] | None:
     return manifest
 
 
+def print_decode_failure(actor_id: str, state: str, kind: str, path: Path, error: Exception) -> None:
+    reason = " ".join(str(error).split())[:200] or type(error).__name__
+    print("FAIL: %s/%s %s PNG decode failed at %s: %s" % (actor_id, state, kind, path, reason))
+
+
 def check_manifest(path: Path) -> bool:
     manifest = read_manifest(path)
     if manifest is None:
         return False
     ok = True
+    decode_failed_states: set[str] = set()
+    actor_id = path.parent.parent.name.removesuffix("_8dir")
     for frame in manifest["frames"]:
         if not isinstance(frame, dict) or any(
             not isinstance(frame.get(field), str) for field in (
@@ -847,8 +879,8 @@ def check_manifest(path: Path) -> bool:
             print("FAIL: %s: malformed frame entry" % path)
             ok = False
             continue
+        state = frame["state"]
         source = path.parent / frame["source_file"]
-        actor_id = path.parent.parent.name.removesuffix("_8dir")
         runtime = ROOT / "assets/sprites/bosses" / (actor_id + "_8dir") / "runtime" / frame["runtime_file"]
         if not source.exists() or not runtime.exists():
             print("FAIL: missing %s or %s" % (source, runtime))
@@ -856,10 +888,17 @@ def check_manifest(path: Path) -> bool:
             continue
         try:
             source_encoded, source_pixels = frame_hashes(source)
+        except Exception as exc:  # noqa: BLE001
+            print_decode_failure(actor_id, state, "source", source, exc)
+            ok = False
+            decode_failed_states.add(state)
+            continue
+        try:
             runtime_encoded, runtime_pixels = frame_hashes(runtime)
         except Exception as exc:  # noqa: BLE001
-            print("FAIL: image decode: %s" % exc)
+            print_decode_failure(actor_id, state, "runtime", runtime, exc)
             ok = False
+            decode_failed_states.add(state)
             continue
         for actual, expected, label in [
             (source_encoded, frame["source_encoded_sha256"], "source bytes"),
@@ -875,7 +914,7 @@ def check_manifest(path: Path) -> bool:
         if isinstance(frame, dict) and isinstance(frame.get("state"), str) and isinstance(frame.get("direction"), str) and isinstance(frame.get("source_file"), str):
             rows_by_state.setdefault(frame["state"], {}).setdefault(frame["direction"], []).append(path.parent / frame["source_file"])
     for state, rows in sorted(rows_by_state.items()):
-        if all(source.exists() for paths in rows.values() for source in paths):
+        if state not in decode_failed_states and all(source.exists() for paths in rows.values() for source in paths):
             for finding in mirrored_frames({direction: sorted(paths) for direction, paths in rows.items()}):
                 print("FAIL: %s/%s mirrored substitute row: %s" % (path.parent.parent.name, state, finding))
                 ok = False
