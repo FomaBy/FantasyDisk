@@ -9,6 +9,6 @@ func _initialize() -> void:
 
 
 func _run_actor_checks() -> void:
-	_assert_boss_pack("bone_archon", ["skill_skull_volley", "skill_bone_prison"], {})
+	_assert_boss_pack("bone_archon", ["skill_skull_volley", "skill_bone_prison"], {"idle": 1, "move": 7, "attack": 6, "hit": 6, "death": 6, "skill_skull_volley": 6, "skill_bone_prison": 6})
 	_assert_boss_scene_full_frame("bone_archon", "res://scenes/BossBoneArchon.tscn", "bone_archon:skull_volley:windup", "skill_skull_volley", "_play_boss_skill_visual", ["skill_bone_prison", "cast", Vector2.RIGHT], "skill_bone_prison")
 	_assert_static_sprite_path("res://scenes/BossBoneArchon.tscn", "Sprite2D", "res://assets/sprites/bosses/boss_bone_archon.png")

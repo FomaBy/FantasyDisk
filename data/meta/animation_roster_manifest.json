@@ -202,11 +202,6 @@
     "directional": true
   },
   {
-    "id": "mini_rot_hound",
-    "group": "monster",
-    "frames": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres"
-  },
-  {
     "id": "mini_shadow_devourer",
     "group": "monster",
     "frames": "res://assets/sprites/elites/full_frame/mini_shadow_devourer_spriteframes.tres",
@@ -235,6 +230,11 @@
     "group": "monster",
     "frames": "res://assets/sprites/elites/full_frame/mini_plague_berserker_spriteframes.tres",
     "directional": true
+  },
+  {
+    "id": "mini_rot_hound",
+    "group": "monster",
+    "frames": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres"
   },
   {
     "id": "rift_warden",

@@ -4,7 +4,7 @@
 Проверки:
   1. Ростер покрывает ровно 56 уникальных runtime actor id с точными
      размерами групп (17/25/7/5/2), без дублей и пропусков.
-  2. Гейты приёмки: priest, secret_ascension_boss и канонические
+  2. Гейты приёмки: priest, secret_ascension_boss и любые оставшиеся
      fallback мини-элиты присутствуют явно (не скрыты за fallback).
   3. Fallback-мини-элиты указывают на существующий пак базовой элитки.
   4. Манифест на диске (data/meta/animation_roster_manifest.json)
@@ -53,12 +53,14 @@ def main() -> int:
         if gate not in ids:
             failures.append(f"acceptance gate actor missing: {gate}")
 
+    # FAN-3875: FAN-3627 gave every registered mini-elite its own pack and
+    # emptied MINI_ELITE_FALLBACK, so the old "exactly 4 fallbacks" expectation
+    # certified a retired substitution. What still matters is that any fallback
+    # left in the table is listed explicitly and points at a pack that exists.
     fallback_ids = sorted(audit.MINI_ELITE_FALLBACK)
     for fid in fallback_ids:
         if fid not in ids:
             failures.append(f"canonical fallback mini-elite missing: {fid}")
-    if len(fallback_ids) != 4:
-        failures.append(f"expected 4 canonical fallback mini-elites, got {len(fallback_ids)}")
     for mini, base in audit.MINI_ELITE_FALLBACK.items():
         pack = ROOT / "assets/sprites/elites/full_frame" / f"{base}_spriteframes.tres"
         if not pack.exists():

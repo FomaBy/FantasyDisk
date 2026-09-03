@@ -33,7 +33,7 @@ func _initialize() -> void:
 	_test_manifest_contract()
 	_test_directional_registry_resolution()
 	_test_alias_and_compound_resolution()
-	await _test_mini_swarm_sniper_fallback()
+	await _test_mini_swarm_sniper_identity()
 	_test_fail_closed_negative_control()
 	_test_spawn_reentry_and_cleanup()
 	if _failed:
@@ -114,11 +114,25 @@ func _test_alias_and_compound_resolution() -> void:
 	body.free()
 
 
-func _test_mini_swarm_sniper_fallback() -> void:
-	if not FullFrameAnimationRegistry.registry_config("elite", "mini_swarm_sniper").is_empty():
-		_fail("Expected mini_swarm_sniper to remain absent from the mini-specific registry.")
-	if FullFrameAnimationRegistry.sprite_frames_for("elite", "mini_swarm_sniper") != null:
-		_fail("Expected mini_swarm_sniper to have no mini-specific SpriteFrames.")
+## FAN-3875: FAN-3627 gave mini_swarm_sniper its own eight-direction pack and
+## retired the shard_marshal substitution this suite used to require. The
+## neighbour check now certifies that intentional independent identity — the
+## mini must resolve its OWN pack, never the base elite's.
+func _test_mini_swarm_sniper_identity() -> void:
+	if not bool(FullFrameAnimationRegistry.registry_config("elite", "mini_swarm_sniper").get("explicit_eight_directions", false)):
+		_fail("Expected mini_swarm_sniper registry entry to declare explicit_eight_directions=true.")
+	var mini_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", "mini_swarm_sniper")
+	if mini_frames == null:
+		_fail("Expected mini_swarm_sniper to expose its own mini-specific SpriteFrames.")
+		return
+	var marshal_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", "shard_marshal")
+	if marshal_frames != null and mini_frames.resource_path == marshal_frames.resource_path:
+		_fail("Expected mini_swarm_sniper to own a distinct pack, not the retired shard_marshal fallback.")
+	# Same contract states as the base elite, own row lengths: only the
+	# directional completeness is shared between the two identities.
+	for state_name in STATE_ROWS:
+		if not FullFrameAnimationRegistry.has_full_directional_rows(mini_frames, str(state_name)):
+			_fail("Expected mini_swarm_sniper pack to expose all 8 directional rows for %s." % str(state_name))
 	var scene := load("res://scenes/EliteCommander.tscn") as PackedScene
 	var enemy := scene.instantiate()
 	enemy.set_meta("mini_elite_kind", "mini_swarm_sniper")
@@ -127,13 +141,13 @@ func _test_mini_swarm_sniper_fallback() -> void:
 	enemy.call("refresh_full_frame_visual")
 	var body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
 	if body == null or not body.visible:
-		_fail("Expected mini_swarm_sniper fallback to create a visible FullFrameBody.")
-	elif str(body.get_meta("entity_id", "")) != "shard_marshal":
-		_fail("Expected mini_swarm_sniper to resolve the shard_marshal base identity.")
+		_fail("Expected mini_swarm_sniper to create a visible FullFrameBody.")
+	elif str(body.get_meta("entity_id", "")) != "mini_swarm_sniper":
+		_fail("Expected mini_swarm_sniper to resolve its own identity, got %s." % str(body.get_meta("entity_id", "")))
 	elif not FullFrameAnimationRegistry.play_state(body, "move", Vector2.RIGHT):
-		_fail("Expected mini_swarm_sniper fallback to play shard_marshal move.")
+		_fail("Expected mini_swarm_sniper to play its own move row.")
 	elif body.flip_h or str(body.animation) != "move_east":
-		_fail("Expected mini_swarm_sniper fallback to use move_east without flip_h.")
+		_fail("Expected mini_swarm_sniper to use move_east without flip_h.")
 	enemy.queue_free()
 	await process_frame
 
