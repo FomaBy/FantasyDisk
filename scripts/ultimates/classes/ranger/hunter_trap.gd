@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.ranger.hunter_trap"
 const EXECUTOR_ID := "weapon_ultimate.executor.ranger.hunter_trap"
@@ -14,6 +16,8 @@ var jaw_target_for_tests: Node = null
 
 var _activation = null
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -163,6 +167,7 @@ func _bite(
 			jaw_target_for_tests = target
 		if lock:
 			_lock(target)
+	_play_impacts(caught)
 
 
 func _lock(target: Node2D) -> void:
@@ -188,6 +193,20 @@ func _has_lease(target: Node) -> bool:
 	return false
 
 
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
+
+
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
@@ -211,4 +230,6 @@ func _exit_tree() -> void:
 			target.set_meta(StatusEffects.META_KEY, owned)
 	_leased_statuses.clear()
 	jaw_target_for_tests = null
+	_impacts = null
+	_impacts_started = false
 	_activation = null
