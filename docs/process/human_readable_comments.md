@@ -1,67 +1,21 @@
-# Человекочитаемые комментарии в Multica
+# Human-readable Multica comments
 
-Директива пользователя (Сергей Фомин), 2026-07-15. Обязательно для ВСЕХ агентов
-FantasyDisk во всех Multica issues.
+Write maintained instructions and operational prose in English. Preserve exact machine values, IDs, user quotations, localisation strings, links, and historical evidence unchanged. Comments should lead with the outcome and then give only the evidence a reader needs.
 
-## Зачем
+## Delivery comment
 
-Сергей управляет проектом по комментариям в Multica. Он должен понимать
-состояние любой задачи, не читая код, логи и внутренние сокращения агентов.
-Комментарий, который понятен только другому агенту, — это несданная работа.
+State the result, affected scope, exact candidate SHA/tree/base/source ref, changed paths, commands and outcomes, unexecuted checks, residual risk, and next same-card lifecycle state. Do not call unexecuted work a pass. Avoid absolute runtime paths, secrets, stack traces containing credentials, or false performance claims.
 
-## Главное правило
+## Blocker comment
 
-Каждый комментарий в Multica начинается с короткого резюме простым
-человекочитаемым русским языком: что произошло, в каком состоянии задача и что
-будет дальше. Только после этого — технические детали.
+State impact, checks already made, the precise `waiting_on` condition, and the safe unblock criterion. A broad label, stale dependency, or lack of enthusiasm is not a blocker.
 
-- Резюме — 1–5 предложений обычным языком, без жаргона, без сырых логов,
-  без «стрелочных» сокращений (`A → B → fail`) и без внутренних кодовых имён.
-- Пиши так, как объяснял бы человеку, который не открывал репозиторий:
-  называй вещи по смыслу («экран выбора героя», «урон берсерка»), а не только
-  по именам файлов и функций.
-- Технические детали (SHA, команды, пути, тесты, логи) нужны — но во втором
-  блоке, после человеческого резюме, а не вместо него.
-- Английские технические термины допустимы, но текст вокруг них — русский и
-  понятный.
+## QA comment
 
-## Блокеры и проблемы — особо строго
+Use the exact verdict vocabulary `PASSED`, `FAILED`, or `INCONCLUSIVE`; identify the exact candidate and map acceptance criteria to executed evidence. QA does not repair production code or select rework.
 
-Любой блокер, баг, конфликт или неожиданная проблема описывается так, чтобы
-Сергей сразу понял суть и цену вопроса, без уточняющих вопросов. Обязательная
-структура:
+## Lifecycle rules
 
-```
-Проблема: что именно сломалось/мешает, простыми словами.
-Что это значит для игры/проекта: что не работает или что задерживается.
-Что я уже попробовал: коротко, по-человечески.
-Что нужно для разблокировки: конкретное действие и кто его может сделать.
-```
+One deliverable card contains development, independent same-card QA, bounded rework, and routine exact-content integration. Developers publish immutable candidates; the lifecycle PM admits review under the shared guard, and the dedicated integrator serially promotes approved content into `dev`. Do not create routine QA/DevOps duplicate cards or use mentions as courtesy notifications.
 
-Плохо: `blocked: ff-merge failed, dirty tree, см. лог`.
-
-Хорошо: «Проблема: не могу влить свежий dev — в рабочей копии лежат чужие
-незакоммиченные правки экрана инвентаря. Что это значит: задача по балансу
-берсерка стоит, пока правки не заберёт их владелец. Что я попробовал: обычный
-безопасный merge, силовые методы не применял, чтобы не потерять чужую работу.
-Что нужно: владелец правок (Codex Dev Sol) должен закоммитить или убрать свой
-WIP, после этого я продолжу сам.»
-
-## Ко всем типам комментариев
-
-Правило действует для всех комментариев без исключений: claim/start-comment,
-heartbeat, handoff, QA-вердикт, финальный отчёт, ответы в тредах. Обязательные
-процессные поля (Owner, Lane, locked paths, SHA, `Disk cleanup:` и т.д. — см.
-`AGENTS.md` и `docs/process/multica_workflow.md`) сохраняются, но идут после
-человекочитаемого резюме.
-
-## Самопроверка перед отправкой
-
-Перед `multica issue comment add` перечитай комментарий и ответь:
-
-1. Поймёт ли Сергей из первых строк, что произошло и что дальше?
-2. Если есть проблема/блокер — ясно ли, что сломалось, чем это грозит и что
-   нужно для разблокировки?
-3. Нет ли в резюме сырых логов, стеков и сокращений вместо объяснения?
-
-Если хотя бы один ответ «нет» — перепиши резюме, потом отправляй.
+Post comments using the Multica CLI's file-backed content mode. Comments are evidence, not authority to override the live issue, ownership, or candidate pin.

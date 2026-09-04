@@ -28,7 +28,7 @@ decision with no safe default.
 
 ## 2. Estimate and decompose
 
-Judge Complexity, Uncertainty, and Effort holistically. CUE не складывается по формуле.
+Judge Complexity, Uncertainty, and Effort holistically. CUE is not an additive formula.
 Do not translate Story Points into time or score the factors independently.
 
 Allowed Story Points are `1, 2, 3, 5, 8, 13`. Prefer independently acceptable
@@ -82,10 +82,9 @@ work is absent; never borrow downward.
 
 ## 5. Pre-stage lifecycle
 
-Before implementation handoff, create or reuse one unassigned `backlog` QA
-child with its own CUE, complexity, acceptance criteria, and routing gate. Set
-`pipeline_status=awaiting_candidate` and record that it waits on the
-implementation's exact SHA.
+Before implementation handoff, record the expected independent same-card QA
+lane and exact-candidate handoff fields. QA starts only after the developer
+publishes an immutable candidate and PM admits it under the shared guard.
 
 For a failed or inconclusive verdict, define a bounded defect/rework issue with
 reproduction, expected/actual behavior, evidence, candidate SHA, scope,
@@ -135,6 +134,6 @@ contract.
 
 ## Communication
 
-Start Multica comments with a concise Russian summary, then give technical
+Start Multica comments with a concise plain-language summary, then give technical
 fields. Keep agent IDs, quota state, leases, reset times, incident history, and
 candidate SHA in live records rather than durable Markdown.

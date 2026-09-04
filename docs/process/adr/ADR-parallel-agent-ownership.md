@@ -1,126 +1,25 @@
-# ADR: домены владения для параллельной работы 3–4 агентов
+# ADR: Parallel agent ownership domains
 
-Статус: accepted (FAN-3638, мандат владельца 27.08.2026 — исполнитель Fable).
-Дата: 2026-08-28. База диагностики: dev@fef0e5e5c (ранняя выборка dev@948b4459).
+Status: accepted. Original decision: FAN-3638, 2026-08-28. Historical audit base: `dev@fef0e5e5c` (early sample `dev@948b4459`). Reconciled: 2026-09-05.
 
-## Контекст
+## Context
 
-3–4 агента не могут работать над игрой параллельно: почти каждая игровая
-задача пишет в одни и те же центральные файлы, поэтому planned_write_set /
-locked_paths пересекаются, а rebase ловит конфликты. Карта конфликтов
-(касания за последние 300 коммитов dev × типы задач, которые файл правят):
+The historical 300-commit audit found frequent collisions in central files: `scripts/full_frame_animation_registry.gd` (22 touches), `build/ultimate_effectiveness_baseline.json` (19), `tests/animation_smoke_test.gd` (18), `docs/design/systems/animation.md` (17), `CHANGELOG.md` (17), and `docs/design/content_registry.md` (11). The old monoliths were also hot spots: `ui_screens.gd` (~16,993 lines), `class_weapon.gd` (~5,996), `player.gd` (4,295), `enemy.gd` (1,950), and `runtime_smoke_test.gd` (~9,997).
 
-| Файл | Касаний | Кто конфликтует |
-| --- | --- | --- |
-| `scripts/full_frame_animation_registry.gd` | 22 | каждая ACTOR ANIMATION / ART / polish-batch задача |
-| `build/ultimate_effectiveness_baseline.json` | 19 | каждая ULTIMATE BALANCE / VFX RETROFIT задача (17 классов) |
-| `tests/animation_smoke_test.gd` (1 998 строк) | 18 | каждая актёрная задача |
-| `docs/design/systems/animation.md` | 17 | каждая актёрная/арт задача |
-| `CHANGELOG.md` | 17 | все задачи |
-| `scripts/ultimates/presentation/*` (schema, contract) | 10–12 | презентационные задачи ультимейтов |
-| `docs/design/content_registry.md` (1 805 строк) | 11 | все контентные задачи |
-| `scripts/ui_screens.gd` (16 993 строки) | — | все UI-задачи |
-| `scripts/class_weapon.gd` (5 996 строк) | — | оружейные задачи 17 классов |
-| `scripts/player.gd` (4 295), `scripts/enemy.gd` (1 950) | — | per-class ветвления внутри общих ядер |
-| `tests/runtime_smoke_test.gd` (9 997 строк) | — | общий тестовый монолит |
+Those figures are historical evidence, not current architecture measurements. At baseline `a53a521604cd7ab7137733838cdda11b3efaf71e`, the facades are now `ui_screens.gd` (50 lines) and `class_weapon.gd` (46 lines); the large runtime components remain `player.gd` (4,295), `enemy.gd` (1,950), `main.gd` (1,842), `route_map_screen.gd` (1,574), and `combat_director.gd` (1,493).
 
-Открытый бэклог подтверждает форму нагрузки: пер-актёрные ACTOR ANIMATION /
-polish-batch (FAN-2593…2607, 3324…3327), пер-классовые VFX RETROFIT
-(FAN-3310…3323) и ULTIMATE BALANCE (FAN-2529…2537), UI, релизные и CI-карты.
-Параллельные задачи почти всегда различаются актёром/классом/экраном — а
-пишут в общие файлы.
+## Decision
 
-## Решение
+Use explicit, disjoint path leases for actor, class, UI, documentation, and bounded core work as defined by `ownership_map.md`. Ownership is based on exact paths and shared behaviour contracts, not a broad category label. The first six authorized slices are listed there. A task needing a second shared file or another domain is marked `cross-domain` and serializes with all affected leases.
 
-Data-driven декомпозиция по владению: центральные реестры распадаются на
-авто-обнаруживаемые фрагменты «файл-на-единицу», монолиты режутся по швам
-владения, границы закрепляются картой (`docs/process/ownership_map.md`) и
-гардом в `tools/quality_static_guard.py`. Поведение игры не меняется —
-существующие ратчеты и контракт-тесты остаются байт-в-байт эквивалентными
-по семантике.
+Actor data is per file in `data/animation/<kind>/<actor_id>.json`; class executors and ultimate data are per class; UI screens are per-screen modules behind a facade; additive per-actor and per-class tests avoid shared test monoliths. An inheritance-chain split is physical layout, not proof of independent behaviour: facade, state, virtual API, preload order, and shared kits remain one contract where applicable.
 
-Домены владения (полные глобы и эталонные planned_write_set — в
-`ownership_map.md`):
+## Invariants and consequences
 
-- `actor/<actor_id>` — анимационные данные, ассеты и smoke-тест одного актёра;
-- `class/<class_id>` — оружие, ультимейты, баланс и VFX одного из 17 классов
-  (balance/<class> и vfx/<class> — под-срезы того же домена: у них общие файлы
-  класса, поэтому отдельными доменами не являются);
-- `ui/<screen>` — скрипт, сцены и тесты одного экрана;
-- `core` — общие ядра (player, enemy, реестры-фасады, гейты) — по-прежнему
-  один агент за раз;
-- `process/docs` — процессные документы.
+- Preserve public APIs, canonical IDs, save formats, observable RNG order, art provenance, localisation, gameplay, and balance values.
+- New GDScript includes `.gd.uid`; no `.godot` material is committed.
+- Ratchets and contract tests may not be weakened to make a change pass.
+- Every candidate follows same-card independent QA and exact-content serial integration into `dev`; developers do not select QA or integrate their work.
+- `core` is a routing hint, not a global lock. Actual overlapping files or contracts serialize; disjoint core paths may be independently assessed.
 
-Целевые структуры по горячим точкам:
-
-1. **Реестр анимаций**: `FULL_FRAME_SPRITEFRAMES` (37 актёров, чистые данные)
-   переезжает в `data/animation/<kind>/<actor_id>.json`; фасад
-   `full_frame_animation_registry.gd` сканирует каталог (паттерн
-   `scripts/ultimates/registry/weapon_ultimate_package_discovery.gd`, уже
-   проверенный в экспорте) и собирает прежнюю таблицу; весь публичный API
-   (`registry_config`, `sprite_frames_for`, `configure_entity_visual`,
-   `play_state`, …) и обращения тестов к `FULL_FRAME_SPRITEFRAMES` сохраняются.
-   Vector2 сериализуется как `{"x":…,"y":…}` и восстанавливается загрузчиком.
-2. **Baseline эффективности**: `build/ultimate_effectiveness_baseline.json`
-   (51 строка = 17×3) шардируется в `build/effectiveness/<class_id>.json`
-   (+ `_envelope.json` c schema_version/scenario_ids/metric_keys/tolerances);
-   writer `tools/ultimate_effectiveness_report.gd` пишет шарды, читатели
-   (`tests/ultimates/effectiveness_runner_test.gd`,
-   `tools/check_druid_baseline_isolation.py`) собирают конверт из шардов.
-   Изоляция «чужой класс не дрейфует» становится структурной: задача класса X
-   трогает только свой шард.
-3. **CHANGELOG**: задачи пишут фрагменты `changelog.d/<FAN-id>.md`; сборка в
-   `## [Unreleased]`/`## [<version>]` происходит на релизном шаге
-   (`tools/build_release.sh` + release-director), где уже живёт единственный
-   парсер (`tools/release_notes_visual_claims_guard.py`).
-4. **content_registry.md**: режется на `docs/design/content/<domain>.md`
-   по существующим `##`-секциям + автогенерируемый индекс;
-   `tests/fan1891_attack_area_contract_test.gd` перенацеливается на новый
-   файл секции.
-5. **Тестовые монолиты**: `animation_smoke_test.gd` и `runtime_smoke_test.gd`
-   становятся тонкими раннерами; пер-актёрные проверки уезжают в
-   `tests/actors/<actor_id>_smoke_test.gd` — дискавери
-   `tools/quality_gate.py` уже рекурсивное (`TEST_DIR.rglob`), новая актёрная
-   задача добавляет СВОЙ файл. Имена файлов-стемов уникальны
-   (`_index_by_name` падает на дублях).
-6. **Код-монолиты**: `ui_screens.gd` → скрипт-на-экран в
-   `scripts/ui/screens/`; `class_weapon.gd` → базовый класс +
-   `scripts/classes/<class_id>_weapon.gd`; из `player.gd`/`enemy.gd` выносятся
-   только per-class ветвления; ядро не переписывается. Паттерн раскладки —
-   уже принятый в репо re-export/фасад (`progression_data.gd` →
-   `progression_data_*.gd`).
-
-## Инварианты
-
-- Прежние публичные API фасадов сохраняются; потребители не меняются, кроме
-  явно перечисленных перенацеливаний тестов.
-- Ратчеты только ужесточаются: `LEGACY_LINE_CEILINGS` монотонно сокращается,
-  новые файлы живут под `NEW_SCRIPT_LINE_LIMIT` (1200).
-- Каждая резка — отдельный пуш-кандидат с зелёным quality gate
-  (`--profile changed --changed-ref origin/dev`, CI-эквивалент) и обычным
-  конвейером QA→DevOps.
-- Никакого изменения геймплея/баланса: контракт- и ратчет-тесты остаются
-  зелёными без ослабления допусков.
-- `.gd` всегда коммитится с парным `.gd.uid`.
-
-## План миграции
-
-- Фаза 0 (этот документ + `ownership_map.md`) — карта владения, PM может
-  выдавать непересекающиеся planned_write_set уже по текущим глобам.
-- Фаза 1 — реестры/данные: п.1–4 выше (главный выигрыш).
-- Фаза 2 — тестовые монолиты: п.5.
-- Фаза 3 — код-монолиты: п.6, по швам, отдельными кандидатами.
-- Фаза 4 — гард доменов в `tools/quality_static_guard.py` (кросс-доменный
-  дифф без пометки cross-domain падает; бюджет «общих» файлов ≤1 на PR)
-  + пилот из 4 параллельных задач с метрикой: 0 пересечений write-set,
-  0 конфликтов rebase.
-
-## Последствия
-
-- Плюс: 3–4 агента пишут в разные файлы; конфликты типа FAN-2665 (чужой
-  класс дрейфует при пере-генерации baseline) исключаются структурно.
-- Минус: больше мелких файлов (37 JSON актёров, 17 шардов baseline,
-  фрагменты changelog); компенсируется автосканом и индексами.
-- Риск: DirAccess-скан `res://` в экспортированной сборке — паттерн уже
-  доказан `weapon_ultimate_package_discovery.gd`; smoke-тест реестра остаётся
-  гарантией полноты (guard «registry suspiciously small» сохраняется).
+The FD02 inventory tool is a follow-up, not a dependency. Once published, its report becomes the preferred source for current counts and lease candidates.
