@@ -150,7 +150,47 @@
   ],
   "evidence": {
     "contact_sheet": "docs/design/references/weapon_ultimates/ranger/ranger_ultimate_timelines_contact_sheet.png",
-    "capture_script": "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd",
-    "focused_test": "tests/ultimates/presentation/ranger_ultimate_presentation_test.gd"
+    "capture_script": "tests/ultimates/presentation/ranger_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/ranger_ultimate_presentation_test.gd",
+    "contact_sheets": [
+      "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_2k.png"
+    ],
+    "live_capture": {
+      "issue": "FAN-3889",
+      "source_ref": "dev",
+      "source_commit_sha": "246daf31d18efc72e908ba0a667dfd86b1d4f14c",
+      "source_tree_sha": "bda20358067368737c4b559141018274751755f1",
+      "capture_script": "tests/ultimates/presentation/ranger_ultimate_contact_capture.gd",
+      "focused_test": "tests/ultimates/presentation/ranger_ultimate_timelines.gd",
+      "weapon_ids": [
+        "moon_crossbow",
+        "storm_longbow",
+        "hunter_trap"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "png_object_ids": {
+        "648p": "7e2cee6eb155e444dbb4900beb7f8c583c6f849813c27e2f49923b8bcc85cac9",
+        "720p": "be9876a99c812c2439abe80a43b5f6fda5bb22d5f51ed7c439362d091fe292e2",
+        "1080p": "b05f523aa2407bf814c58ee1b82a119673be513a2283e348540b614f35b1bf18",
+        "2k": "42118ca85b3101a2f49955b02d0d7cb5cfbdbed14de610fde8e8d71d96ddd5b0"
+      },
+      "panels_per_sheet": 12,
+      "note": "Twelve live panels per sheet: three canonical weapons by four presentation modes, each rendered from its shipped scene at a fixed beat. `crowded` draws the declared crowd cap, `reduced_motion` renders with the shipped screen_shake toggle off, and `photosensitivity_safe` suppresses the arena-wide backdrop veil at capture time. No production scene, VFX, gameplay or balance value is changed."
+    },
+    "contact_sheet_script": "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd"
   }
 }
