@@ -1,6 +1,8 @@
 extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/thief/coin_pouch/coin_pouch_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.thief.thief_coin_pouch"
 const EXECUTOR_ID := "weapon_ultimate.executor.thief.thief_coin_pouch"
@@ -13,6 +15,8 @@ var return_burst_for_tests := false
 var _activation = null
 var _targets: Array = []
 var _hit_claims := {}
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -76,6 +80,7 @@ func hit(index: int) -> void:
 	})
 	if (index + 1) % _activation.param_int("gold_every", 3) == 0:
 		_award_gold()
+	_play_impacts([target])
 
 
 func return_home() -> void:
@@ -104,6 +109,22 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, false)
+
+
+## Per-victim read (FAN-3886): each ricochet hop pops its own burst on top of
+## the victim's white hit flash; later hops join the ripple the first started.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _exit_tree() -> void:

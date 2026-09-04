@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/thief/smoke_bomb/smoke_bomb_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.thief.thief_smoke_bomb"
 const EXECUTOR_ID := "weapon_ultimate.executor.thief.thief_smoke_bomb"
@@ -19,6 +21,8 @@ var _activation = null
 var _outlined: Array = []
 var _collapse_claims := {}
 var _leases: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -81,6 +85,7 @@ func configure(activation, outlined: Array) -> void:
 func collapse() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var crushed: Array = []
 	for index in _outlined.size():
 		if _collapse_claims.has(index):
 			continue
@@ -92,12 +97,30 @@ func collapse() -> void:
 		_deal(target, _activation.scaled_damage("pressure_damage", 0.0), "smoke_collapse:%d" % index, {
 			"ultimate_mechanic": "stolen_pressure", "outline_index": index,
 		})
+		crushed.append(target)
+	_play_impacts(crushed)
 
 
 func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, false)
+
+
+## Per-victim read (FAN-3886): the closing pressure pops one burst per outlined
+## enemy on top of its white hit flash, rippling outward from the thrown bomb.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _exit_tree() -> void:

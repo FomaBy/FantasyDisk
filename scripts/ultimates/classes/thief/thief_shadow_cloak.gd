@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/thief/shadow_cloak/shadow_cloak_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.thief.thief_shadow_cloak"
 const EXECUTOR_ID := "weapon_ultimate.executor.thief.thief_shadow_cloak"
@@ -20,6 +22,8 @@ var _activation = null
 var _marks: Array = []
 var _strike_claims := {}
 var _leases: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -87,6 +91,7 @@ func stab(index: int) -> void:
 	_strike_claims[index] = true
 	var amount: float = _activation.scaled_damage("stab_damage", 0.0) \
 		* (1.0 + _activation.param_float("escalation", 0.12) * float(index))
+	var struck: Array = []
 	for raw_target in _marks:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -95,6 +100,8 @@ func stab(index: int) -> void:
 		_deal(target, amount, "shadow_stab:%d:%d" % [index, target.get_instance_id()], {
 			"ultimate_mechanic": "shadow_backstab", "strike_index": index,
 		})
+		struck.append(target)
+	_play_impacts(struck)
 
 
 func finish_line() -> void:
@@ -109,6 +116,22 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, false)
+
+
+## Per-victim read (FAN-3886): every marked enemy pops its own burst on top of
+## its white hit flash; later stabs join the ripple the first strike started.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _exit_tree() -> void:
