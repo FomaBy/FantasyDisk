@@ -37,6 +37,7 @@ func _initialize() -> void:
 	_exclusion_semantics(origin, enemies, errors)
 	_tie_semantics(origin, enemies, errors)
 	_parity_and_operations(origin, enemies, errors)
+	await _negative_count_semantics(holder, origin, errors)
 
 	holder.queue_free()
 	await process_frame
@@ -83,6 +84,49 @@ func _spawn_boundary_pair(holder: Node2D) -> Dictionary:
 	past_edge.global_position = Vector2(QUERY_RANGE + 1.0, 0.0)
 	past_edge.add_to_group("enemies")
 	return {"at_edge": at_edge, "past_edge": past_edge}
+
+
+# FAN-3917 rework: negative counts keep the exact baseline slice(0, count)
+# semantics, where Godot resolves the negative end relative to the sorted
+# eligible list: count=-1 drops the farthest eligible enemy, count <= -list
+# size returns an empty array, and exclusions shrink the list the end is
+# resolved against.
+func _negative_count_semantics(holder: Node2D, origin: Node2D, errors: Array) -> void:
+	# Isolate the fixture so exactly three enemies are eligible.
+	for enemy_node in TARGET_QUERY.enemies(origin):
+		enemy_node.free()
+	await process_frame
+	var near := _enemy("NegativeNear", Vector2(100.0, 0.0))
+	var middle := _enemy("NegativeMiddle", Vector2(200.0, 0.0))
+	var far := _enemy("NegativeFar", Vector2(300.0, 0.0))
+	holder.add_child(near)
+	holder.add_child(middle)
+	holder.add_child(far)
+	await process_frame
+	var drop_last: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, -1)
+	if drop_last.size() != 2 or drop_last[0] != near or drop_last[1] != middle:
+		errors.append("count=-1 must return the nearest two of three eligible enemies (baseline slice semantics)")
+	var drop_two: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, -2)
+	if drop_two.size() != 1 or drop_two[0] != near:
+		errors.append("count=-2 must return only the nearest enemy")
+	var drop_all: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, -3)
+	if not drop_all.is_empty():
+		errors.append("count=-3 must return an empty array when three enemies are eligible")
+	var beyond_bounds: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, -10)
+	if not beyond_bounds.is_empty():
+		errors.append("count=-10 must return an empty array (end clamped past the list start)")
+	var excluded := {near.get_instance_id(): true}
+	var filtered: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, -1, excluded)
+	if filtered.size() != 1 or filtered[0] != middle:
+		errors.append("count=-1 with the nearest excluded must drop the farthest of the remaining two")
+
+
+func _enemy(node_name: String, position: Vector2) -> Node2D:
+	var enemy := Node2D.new()
+	enemy.name = node_name
+	enemy.global_position = position
+	enemy.add_to_group("enemies")
+	return enemy
 
 
 func _counts_semantics(origin: Node2D, enemies: Array, errors: Array) -> void:
@@ -178,7 +222,7 @@ func _baseline_nearest_many(origin: Node2D, range_limit: float, count: int, excl
 
 
 func _parity_and_operations(origin: Node2D, enemies: Array, errors: Array) -> void:
-	var counts_to_check := [1, 2, 3, 5, 10, 25]
+	var counts_to_check := [1, 2, 3, 5, 10, 25, -1, -3, -10]
 	var baseline_comparator_calls := 0
 	for count in counts_to_check:
 		var comparator_calls := [0]

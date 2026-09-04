@@ -74,14 +74,23 @@ static func nearest(source: Node, origin: Vector2, range_limit := INF, excluded_
 
 # FAN-3917: bounded top-k selection. The retired implementation allocated one
 # Dictionary per in-range candidate and sorted the whole candidate list before
-# slicing to `count`. This version keeps at most `count` entries in two
-# parallel buffers, so per-query work is bounded by the scan plus small
-# insertions and no candidate Dictionary is ever allocated. Ordering contract:
-# ascending distance, inclusive at exactly range_limit, ties broken by enemy
-# scan order (first cached enemy wins), count <= 0 returns an empty array.
+# slicing to `count`. For positive counts this version keeps at most `count`
+# entries in two parallel buffers, so per-query work is bounded by the scan
+# plus small insertions and no candidate Dictionary is ever allocated.
+# Ordering contract: ascending distance, inclusive at exactly range_limit,
+# ties broken by enemy scan order (first cached enemy wins).
+#
+# Negative counts keep the exact baseline semantics: slice(0, count) on the
+# full sorted candidate list, where Godot resolves a negative end relative to
+# the list length (count=-1 drops the farthest eligible enemy, count <= -list
+# size returns an empty array). There is no documented nonnegative
+# precondition on the public parameter, so the legacy path below stays the
+# source of truth for those inputs.
 static func nearest_many(source: Node, origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary = {}) -> Array:
+	if count < 0:
+		return _nearest_many_legacy_slice(source, origin, range_limit, count, excluded_ids)
 	var result := []
-	if count <= 0:
+	if count == 0:
 		return result
 	var range_squared := range_limit * range_limit
 	var top_distances := PackedFloat64Array()
@@ -114,6 +123,27 @@ static func nearest_many(source: Node, origin: Vector2, range_limit: float, coun
 			top_nodes.remove_at(count)
 	for enemy_node in top_nodes:
 		result.append(enemy_node)
+	return result
+
+
+# Verbatim pre-FAN-3917 nearest_many body; serves negative `count` inputs so
+# their slice-relative-to-length behavior stays bit-identical to the baseline.
+static func _nearest_many_legacy_slice(source: Node, origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary) -> Array:
+	var candidates := []
+	var range_squared := range_limit * range_limit
+	for enemy_node in enemies(source):
+		if not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
+			continue
+		var distance := origin.distance_squared_to(enemy_node.global_position)
+		if distance > range_squared:
+			continue
+		candidates.append({"node": enemy_node, "distance": distance})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["distance"]) < float(b["distance"])
+	)
+	var result := []
+	for candidate in candidates.slice(0, count):
+		result.append(candidate["node"])
 	return result
 
 
