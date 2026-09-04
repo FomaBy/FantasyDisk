@@ -9,6 +9,8 @@ const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_pr
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const Pack := preload("res://scenes/vfx/ultimates/robot/robot_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/robot.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/robot/manifest.json"
@@ -16,6 +18,11 @@ const SCENE_PATHS := {
 	Pack.MAGNETIC_ANCHOR: "res://scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
 	Pack.HYDRAULIC_PRESS: "res://scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
 	Pack.REACTOR_CORE: "res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn",
+}
+const IMPACT_FRAMES := {
+	Pack.MAGNETIC_ANCHOR: "res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_spriteframes.tres",
+	Pack.HYDRAULIC_PRESS: "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_spriteframes.tres",
+	Pack.REACTOR_CORE: "res://assets/sprites/effects/robot/reactor_core/reactor_core_spriteframes.tres",
 }
 const PHASE_ORDER: Array[String] = ["windup", "release", "active", "recovery", "cancel"]
 const READABILITY_HEIGHTS: Array[int] = [648, 720, 1080, 1440]
@@ -51,6 +58,16 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
@@ -65,8 +82,10 @@ func _initialize() -> void:
 	_test_assets_and_budgets(errors)
 	_test_provenance_and_evidence(errors)
 	_test_capture_text(errors)
+	_test_victim_impact_source_contract(errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_test_scene_lifecycle(registry, str(weapon_id), errors)
+		_test_victim_impact(str(weapon_id), errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -261,6 +280,71 @@ func _test_scene_lifecycle(registry, weapon_id: String, errors: Array[String]) -
 	teardown_scene.free()
 	for handle in teardown_probes.values():
 		_expect((handle as HandleProbe).released == 1, "%s node teardown must release each handle" % weapon_id, errors)
+
+
+func _test_victim_impact(weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	_expect(packed != null, "%s impact scene must load" % weapon_id, errors)
+	if packed == null:
+		return
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	_expect(scene.has_method("present"), "%s scene must accept damaging beat payloads" % weapon_id, errors)
+	if scene.has_method("present"):
+		var victims: Array = []
+		for index in 2:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(30.0 + float(index) * 25.0, 0.0)
+			root.add_child(victim)
+			victims.append(victim)
+		scene.call("present", "%s.impact_probe" % weapon_id, {"victims": victims})
+		var impacts := _impact_player(scene) as Node2D
+		_expect(impacts != null, "%s must create UltimateVictimImpactPlayer for affected victims" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size(), "%s must route every affected victim" % weapon_id, errors)
+			impacts.call("advance", 0.0)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == str(IMPACT_FRAMES.get(weapon_id, "")), "%s must load its Robot-local victim-impact frames" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			_expect(int((impacts.call("snapshot") as Dictionary).get("flashes", 0)) == victims.size(), "%s must preserve the existing victim flash" % weapon_id, errors)
+			scene.call("finish", "cancel")
+			var cleaned := impacts.call("snapshot") as Dictionary
+			_expect(int(cleaned.get("active", 0)) == 0 and int(cleaned.get("pending", 0)) == 0 and int(cleaned.get("pooled", 0)) == 0, "%s cancel must clear victim impacts" % weapon_id, errors)
+		for victim in victims:
+			victim.queue_free()
+	scene.queue_free()
+
+
+func _test_victim_impact_source_contract(errors: Array[String]) -> void:
+	var weapons: Array[Dictionary] = []
+	for weapon_id in Pack.WEAPON_IDS:
+		weapons.append({"weapon_id": weapon_id, "scene_path": str(SCENE_PATHS.get(weapon_id, "")).trim_prefix("res://")})
+	_expect(DirectionContract.victim_impact_violations_from_sources(Pack.CLASS_ID, weapons).is_empty(), "every canonical Robot weapon must map to UltimateVictimImpactPlayer", errors)
+
+	var root := ProjectSettings.globalize_path("user://fan3883_victim_impact_negative")
+	DirAccess.make_dir_recursive_absolute(root.path_join("scripts/ultimates/classes/robot"))
+	DirAccess.make_dir_recursive_absolute(root.path_join("scenes/vfx/ultimates/robot"))
+	for weapon in weapons:
+		var weapon_id := str(weapon.get("weapon_id", ""))
+		var scene_path := root.path_join(str(weapon.get("scene_path", "")))
+		_write_source_fixture(root.path_join("scripts/ultimates/classes/robot/%s.gd" % weapon_id), "")
+		_write_source_fixture(scene_path, "[ext_resource type=\"Script\" path=\"%s\" id=\"1\"]\n" % root.path_join("scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd"))
+	_write_source_fixture(root.path_join("scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd"), "extends Node2D\n")
+	_expect(DirectionContract.victim_impact_violations_from_sources(Pack.CLASS_ID, weapons, root).size() == Pack.WEAPON_IDS.size(), "removing the Robot mapping must fail every canonical weapon", errors)
+
+
+func _write_source_fixture(path: String, source: String) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(source)
+	file.close()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 static func panel_center(size: Vector2i, pack: Dictionary) -> Vector2:
