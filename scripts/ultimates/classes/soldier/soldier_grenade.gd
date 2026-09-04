@@ -131,6 +131,7 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 		return
 	detonated[index] = true
 	var event_id := "soldier_grenade_chain:%d" % index
+	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), 99999.0, 0):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -142,10 +143,12 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 			"soldier_grenade_hit",
 			false
 		)
+		victims.append(target)
 	activation.present(EXECUTOR_ID + ".detonate", {
 		"position": points[index],
 		"radius": activation.param_float("blast_radius", 155.0),
 		"shape": "orb_burst",
+		"victims": victims,
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():

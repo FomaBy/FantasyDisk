@@ -14,7 +14,13 @@ const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/soldier/ma
 const SCHEMA_PATH := "res://data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
+const VICTIM_FRAME_PATHS := {
+	"soldier_rifle": "res://assets/sprites/effects/soldier/rifle/rifle_spriteframes.tres",
+	"soldier_grenade": "res://assets/sprites/effects/soldier/grenade/grenade_spriteframes.tres",
+	"soldier_bayonet": "res://assets/sprites/effects/soldier/bayonet/bayonet_spriteframes.tres",
+}
 const PACKS := [
 	{
 		"weapon_id": "soldier_rifle",
@@ -64,6 +70,16 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -84,6 +100,7 @@ func _initialize() -> void:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, schema, errors)
 	_check_distinction(packages, errors)
 	_check_v2_contract(packages, errors)
+	_check_weapon_local_impacts(errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
@@ -238,6 +255,48 @@ func _check_v2_contract(packages: Dictionary, errors: Array[String]) -> void:
 		_expect(float(timing.get("recovery", 0.0)) - float(timing.get("release", 0.0)) >= 1.2, "%s active presentation must meet the v2 floor" % key, errors)
 		_expect(bool(presence.get("fullscreen_footprint", false)) and bool(presence.get("camera_shake", false)) and int(presence.get("hitstop_ms", 0)) >= 80 and int(presence.get("hitstop_ms", 0)) <= 150, "%s must declare arena-wide first-impact weight" % key, errors)
 		_expect(not str(identity.get("cast_pose_id", "")).is_empty() and not str(identity.get("weapon_silhouette_asset", "")).is_empty() and not str(identity.get("class_palette_id", "")).is_empty(), "%s must declare a Soldier identity" % key, errors)
+
+
+func _check_weapon_local_impacts(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var scene := (_pack_for(weapon_id).get("scene") as PackedScene).instantiate() as Node2D
+		root.add_child(scene)
+		_expect(scene.has_method("present"), "%s must accept live presentation beats" % weapon_id, errors)
+		if scene.has_method("present"):
+			scene.call("present", "%s.probe" % weapon_id, {})
+		_expect(_impact_player(scene) == null, "%s must not draw an impact without victims" % weapon_id, errors)
+		var victims: Array = []
+		for index in 3:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(float(index + 1) * 48.0, 0.0)
+			root.add_child(victim)
+			victims.append(victim)
+		if scene.has_method("present"):
+			scene.call("present", "%s.probe" % weapon_id, {"victims": victims})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s must route live victims through UltimateVictimImpactPlayer" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every supplied victim" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == VICTIM_FRAME_PATHS[weapon_id], "%s must use its mapped victim-impact frames" % weapon_id, errors)
+			for victim in victims:
+				_expect((victim as VictimProbe).flashes == 1, "%s must preserve each victim hit flash" % weapon_id, errors)
+			if scene.has_method("finish"):
+				scene.call("finish", "cancel")
+			var cleaned := impacts.call("snapshot") as Dictionary
+			_expect(int(cleaned.get("active", 0)) == 0 and int(cleaned.get("pending", 0)) == 0 and int(cleaned.get("pooled", 0)) == 0, "%s cancellation must release every impact node" % weapon_id, errors)
+		for victim in victims:
+			(victim as Node).queue_free()
+		scene.queue_free()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_capture_composition(errors: Array[String]) -> void:
