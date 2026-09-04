@@ -109,18 +109,47 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 
 ## Per-victim read (FAN-3886): the closing pressure pops one burst per outlined
 ## enemy on top of its white hit flash, rippling outward from the thrown bomb.
+## The ripple must outlive this effect: collapse is the cast tween's last step,
+## so the activation frees this dome the same tick the bursts are queued in;
+## the ripple therefore lives on the current scene and releases itself once
+## drained.
 func _play_impacts(victims: Array) -> void:
 	if victims.is_empty() or _activation == null:
 		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
+		var parent := get_tree().current_scene
+		if parent == null:
+			parent = get_tree().root
+		parent.add_child(_impacts)
 		_impacts_started = false
 	if _impacts_started:
 		_impacts.enqueue(victims, _activation.origin())
 	else:
 		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
 		_impacts_started = true
+		_release_impacts_when_drained()
+
+
+## One scene-timer release covers the dome's whole duration plus the longest
+## possible ripple. The timer's callable holds only the ripple node itself,
+## because this effect — an activation-owned spawn — is freed the same tick
+## collapse queues the bursts.
+func _release_impacts_when_drained() -> void:
+	var impacts: Node = _impacts
+	var hold: float = _activation.param_float("duration", 4.0) + _ripple_bound_seconds()
+	var release := func() -> void:
+		if is_instance_valid(impacts):
+			impacts.call("finish")
+			impacts.queue_free()
+	get_tree().create_timer(hold).timeout.connect(release)
+
+
+## The longest ripple the shared service can plan: every wave at the widest
+## stagger, then one full burst.
+static func _ripple_bound_seconds() -> float:
+	return float(ImpactPlayer.MAX_WAVES) * float(ImpactPlayer.STAGGER_MAX_FRAMES) \
+			* float(ImpactPlayer.FRAME_SECONDS) + ImpactPlayer.BURST_SECONDS + 0.2
 
 
 func _exit_tree() -> void:

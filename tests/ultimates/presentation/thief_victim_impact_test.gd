@@ -67,6 +67,9 @@ class ActivationProbe extends RefCounted:
 
 
 func _initialize() -> void:
+	# One real frame first: the effect scripts reach get_tree() from inside
+	# _play_impacts, which is null until the tree has ticked once.
+	await process_frame
 	var errors: Array[String] = []
 	var manifest := _load_json(MANIFEST_PATH, errors)
 	if not errors.is_empty():
@@ -102,6 +105,7 @@ func _check_runtime_contour(weapon_id: String, errors: Array[String]) -> void:
 		victim.position = Vector2(80.0 + float(index) * 120.0, 0.0)
 		root.add_child(victim)
 		victims.append(victim)
+	var before := _impact_player_ids()
 	match weapon_id:
 		"thief_coin_pouch":
 			effect.call("configure", activation, victims)
@@ -113,7 +117,9 @@ func _check_runtime_contour(weapon_id: String, errors: Array[String]) -> void:
 		"thief_smoke_bomb":
 			effect.call("configure", activation, victims)
 			effect.call("collapse")
-	var impacts := _impact_player(effect)
+	# A previous weapon's ripple may still be inside its own release window on
+	# the shared root, so this weapon's ripple is the new node, not the first.
+	var impacts := _impact_player(before)
 	_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
 	if impacts != null:
 		var planned := impacts.call("snapshot") as Dictionary
@@ -126,7 +132,7 @@ func _check_runtime_contour(weapon_id: String, errors: Array[String]) -> void:
 		var played := impacts.call("snapshot") as Dictionary
 		_expect(int(played.get("flashes", 0)) == victims.size(),
 			"%s degradation must never drop the existing white victim flash" % weapon_id, errors)
-		var burst := effect.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+		var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
 		_expect(burst != null and burst.sprite_frames != null \
 				and burst.sprite_frames.resource_path == str(FLIPBOOK_PATHS[weapon_id]),
 			"%s victim impact must use its own integrated flipbook" % weapon_id, errors)
@@ -175,11 +181,28 @@ func _typed_weapons(raw: Array) -> Array[Dictionary]:
 	return weapons
 
 
-func _impact_player(effect: Node) -> Node:
-	for child in effect.get_children():
-		if child.get_script() == ImpactPlayer:
+## The ripple outlives the activation-owned effect (FAN-3886 lifecycle fix),
+## so it is looked up on the scene root, not under the effect node; `exclude`
+## skips ripples left over from earlier weapons in this same run.
+func _impact_player(exclude: Dictionary = {}) -> Node:
+	var parent := current_scene
+	if parent == null:
+		parent = root
+	for child in parent.get_children():
+		if child.get_script() == ImpactPlayer and not exclude.has(child.get_instance_id()):
 			return child
 	return null
+
+
+func _impact_player_ids() -> Dictionary:
+	var ids := {}
+	var parent := current_scene
+	if parent == null:
+		parent = root
+	for child in parent.get_children():
+		if child.get_script() == ImpactPlayer:
+			ids[child.get_instance_id()] = true
+	return ids
 
 
 func _damage_sink(_target: Node, _amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
