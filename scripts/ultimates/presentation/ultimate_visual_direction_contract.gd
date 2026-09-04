@@ -100,7 +100,6 @@ const ADOPTION_GAPS := {
 		"thief": "awaiting the readability/accessibility declaration",
 	},
 	"victim_impact": {
-		"assassin": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 		"chemist": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 		"knight": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 		"priest": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
