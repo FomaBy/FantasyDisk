@@ -1,6 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_grenade.png" id="1_grenade"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/soldier/soldier_victim_impact.gd" id="2_impact"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/soldier/grenade/grenade_spriteframes.tres" id="3_impact_frames"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -182,6 +184,8 @@ tracks/13/keys = {
 _data = {"ultimate": SubResource("Animation_seven_seconds")}
 
 [node name="SoldierGrenadeSevenSeconds" type="Node2D"]
+script = ExtResource("2_impact")
+victim_frames = ExtResource("3_impact_frames")
 metadata/ultimate_id = "soldier/soldier_grenade"
 metadata/silhouette = "seven_oversized_grenades_seeded_around_one_aim_point"
 metadata/motion_path = "high_lob_then_shared_shrinking_fuse_countdown_over_a_static_seeded_formation"

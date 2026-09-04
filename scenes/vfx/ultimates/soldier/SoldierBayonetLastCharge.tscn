@@ -1,6 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_bayonet.png" id="1_bayonet"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/soldier/soldier_victim_impact.gd" id="2_impact"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/soldier/bayonet/bayonet_spriteframes.tres" id="3_impact_frames"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -146,6 +148,8 @@ tracks/10/keys = {
 _data = {"ultimate": SubResource("Animation_last_charge")}
 
 [node name="SoldierBayonetLastCharge" type="Node2D"]
+script = ExtResource("2_impact")
+victim_frames = ExtResource("3_impact_frames")
 metadata/ultimate_id = "soldier/soldier_bayonet"
 metadata/silhouette = "three_offset_ranks_of_ghost_infantry_holding_levelled_bayonets"
 metadata/motion_path = "three_time_offset_phalanx_charges_down_one_aimed_corridor_without_hero_displacement"

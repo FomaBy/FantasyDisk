@@ -112,6 +112,7 @@ func charge_rank(rank: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var rank_count: int = _activation.param_int("rank_count", 3)
+	var victims: Array = []
 	for index in _targets.size():
 		if index % rank_count != rank:
 			continue
@@ -143,10 +144,12 @@ func charge_rank(rank: int) -> void:
 			"soldier_bayonet_hit",
 			false
 		)
+		victims.append(target)
 	_activation.present(EXECUTOR_ID + ".rank", {
 		"shape": "beam",
 		"from": global_position,
 		"to": global_position + _direction * _activation.param_float("max_range", 780.0),
+		"victims": victims,
 	})
 
 
