@@ -99,9 +99,7 @@ const ADOPTION_GAPS := {
 		"soldier": "awaiting the readability/accessibility declaration",
 		"thief": "awaiting the readability/accessibility declaration",
 	},
-	"victim_impact": {
-		"chemist": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
-	},
+	"victim_impact": {},
 }
 
 ## Area telegraphs are flavour, never the read (FAN-3008). A blinking area
