@@ -1,6 +1,8 @@
 extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.sniper.sniper_deadeye_rifle"
 const EXECUTOR_ID := "weapon_ultimate.executor.sniper.sniper_deadeye_rifle"
@@ -12,6 +14,7 @@ var rail_size_for_tests := 0
 
 var _activation = null
 var _rail: Array = []
+var _impacts = null
 
 
 static func parameter_contract() -> Dictionary:
@@ -92,6 +95,7 @@ func fire() -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var shot: float = _activation.scaled_damage("shot_damage", 0.0)
+	var victims: Array[Node2D] = []
 	for index in _rail.size():
 		var target := _rail[index] as Node2D
 		if not _alive(target):
@@ -107,6 +111,19 @@ func fire() -> void:
 			mechanic == "deadeye_floor",
 			{"ultimate_mechanic": mechanic}
 		)
+		victims.append(target)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		return
+	_impacts.enqueue(victims, global_position)
 
 
 func _alive(target: Node2D) -> bool:
@@ -125,3 +142,4 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 func _exit_tree() -> void:
 	_activation = null
 	_rail.clear()
+	_impacts = null

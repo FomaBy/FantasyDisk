@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.sniper.sniper_spotter_scope"
 const EXECUTOR_ID := "weapon_ultimate.executor.sniper.sniper_spotter_scope"
@@ -35,6 +37,7 @@ var strike_count_for_tests := 0
 var _activation = null
 var _locks: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts = null
 
 
 static func parameter_contract() -> Dictionary:
@@ -108,6 +111,7 @@ func configure(activation, zone_center: Vector2, locks: Array) -> void:
 func strike(index: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var victims: Array[Node2D] = []
 	for raw_target in _locks:
 		var target := raw_target as Node2D
 		if not _strikeable(target):
@@ -120,6 +124,19 @@ func strike(index: int) -> void:
 			false,
 			{"ultimate_mechanic": "sky_lock_strike", "sky_pulse": index}
 		)
+		victims.append(target)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		return
+	_impacts.enqueue(victims, global_position)
 
 
 func _strikeable(target: Node2D) -> bool:
@@ -158,6 +175,7 @@ func _exit_tree() -> void:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_locks.clear()
+	_impacts = null
 	_activation = null
 
 
