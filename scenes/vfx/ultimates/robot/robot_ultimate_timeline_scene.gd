@@ -7,6 +7,13 @@ extends Node2D
 
 const Pack := preload("res://scenes/vfx/ultimates/robot/robot_ultimate_presentation_pack.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+
+const IMPACT_FRAMES := {
+	Pack.MAGNETIC_ANCHOR: preload("res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_spriteframes.tres"),
+	Pack.HYDRAULIC_PRESS: preload("res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_spriteframes.tres"),
+	Pack.REACTOR_CORE: preload("res://assets/sprites/effects/robot/reactor_core/reactor_core_spriteframes.tres"),
+}
 
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
@@ -18,6 +25,8 @@ signal timeline_finished(reason: String)
 var _timeline = null
 var _manifest: Dictionary = {}
 var _elements: Array[Sprite2D] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 func _ready() -> void:
@@ -52,9 +61,11 @@ func is_active() -> bool:
 
 func finish(reason: String) -> Dictionary:
 	if _timeline == null:
+		_finish_impacts()
 		return {}
 	var snapshot := _release_handles(reason)
 	_clear_elements()
+	_finish_impacts()
 	set_process(false)
 	timeline_finished.emit(reason)
 	return snapshot
@@ -125,6 +136,32 @@ func _clear_elements() -> void:
 		if is_instance_valid(sprite):
 			sprite.queue_free()
 	_elements.clear()
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	var victims: Variant = payload.get("victims", [])
+	if not victims is Array or (victims as Array).is_empty():
+		return
+	var frames := IMPACT_FRAMES.get(weapon_id, null) as SpriteFrames
+	if frames == null:
+		push_error("RobotUltimateTimelineScene: missing victim-impact frames for %s" % weapon_id)
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims as Array, global_position)
+	else:
+		_impacts.play(frames, victims as Array, global_position)
+		_impacts_started = true
+
+
+func _finish_impacts() -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+	_impacts = null
+	_impacts_started = false
 
 
 func _apply_formation(elapsed: float) -> void:
