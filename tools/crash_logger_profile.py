@@ -264,7 +264,12 @@ def _profile_one(
     warmup_frames: int,
     sample_frames: int,
 ) -> dict:
-    _run(["git", "worktree", "add", "--detach", str(worktree), revision], project)
+    # Multica's checkout lifecycle hook owns persistent workspaces. These
+    # detached, task-scoped measurement trees are intentionally ephemeral.
+    _run(
+        ["git", "-c", "core.hooksPath=/dev/null", "worktree", "add", "--detach", str(worktree), revision],
+        project,
+    )
     try:
         if cache.is_dir():
             (worktree / ".godot").symlink_to(cache, target_is_directory=True)
@@ -320,7 +325,7 @@ def command_profile(args: argparse.Namespace) -> dict:
     baseline_sha = _resolve_commit(project, args.baseline_sha)
     candidate_sha = _resolve_commit(project, args.candidate_sha)
     cache = (project / ".godot").resolve()
-    with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project) as temp_name:
+    with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project.parent) as temp_name:
         temp = Path(temp_name).resolve()
         baseline = _profile_one(
             project, godot, baseline_sha, temp / "baseline", cache, args.warmup_frames, args.frames_per_sample
