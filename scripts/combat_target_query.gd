@@ -30,6 +30,13 @@ static func cache_generation() -> int:
 	return _cache_generation
 
 
+# FAN-3917: test-only operation counters. They stay false in gameplay and
+# exist so the top-k characterization suite can measure the shipped selection
+# loop against the retired full-sort baseline on fixed seeded fixtures.
+static var debug_top_k_counters_enabled := false
+static var debug_top_k_distance_comparisons := 0
+
+
 # SCRUM-920/922: единая таксономия «эпиков» для правил смещения (knockback).
 # Боссы и ГЛАВНЫЕ элиты карты не смещаются (или капятся потребителем); мини-элиты
 # волн (профиль epic_scale_profile == "mini_elite", спавн:
@@ -65,22 +72,48 @@ static func nearest(source: Node, origin: Vector2, range_limit := INF, excluded_
 	return closest_enemy
 
 
+# FAN-3917: bounded top-k selection. The retired implementation allocated one
+# Dictionary per in-range candidate and sorted the whole candidate list before
+# slicing to `count`. This version keeps at most `count` entries in two
+# parallel buffers, so per-query work is bounded by the scan plus small
+# insertions and no candidate Dictionary is ever allocated. Ordering contract:
+# ascending distance, inclusive at exactly range_limit, ties broken by enemy
+# scan order (first cached enemy wins), count <= 0 returns an empty array.
 static func nearest_many(source: Node, origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary = {}) -> Array:
-	var candidates := []
+	var result := []
+	if count <= 0:
+		return result
 	var range_squared := range_limit * range_limit
+	var top_distances := PackedFloat64Array()
+	var top_nodes: Array[Node2D] = []
+	var debug := debug_top_k_counters_enabled
 	for enemy_node in enemies(source):
 		if not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
 			continue
 		var distance := origin.distance_squared_to(enemy_node.global_position)
+		if debug:
+			debug_top_k_distance_comparisons += 1
 		if distance > range_squared:
 			continue
-		candidates.append({"node": enemy_node, "distance": distance})
-	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return float(a["distance"]) < float(b["distance"])
-	)
-	var result := []
-	for candidate in candidates.slice(0, count):
-		result.append(candidate["node"])
+		if top_nodes.size() == count:
+			if debug:
+				debug_top_k_distance_comparisons += 1
+			if distance >= top_distances[count - 1]:
+				continue
+		var insert_at := top_nodes.size()
+		while insert_at > 0:
+			if debug:
+				debug_top_k_distance_comparisons += 1
+			if distance >= top_distances[insert_at - 1]:
+				break
+			insert_at -= 1
+		top_distances.insert(insert_at, distance)
+		top_nodes.insert(insert_at, enemy_node)
+		if top_nodes.size() > count:
+			top_distances.remove_at(count)
+			top_nodes.remove_at(count)
+	for enemy_node in top_nodes:
+		result.append(enemy_node)
 	return result
 
 
