@@ -27,8 +27,16 @@ manifest_url="https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/dow
 
 [autoload]
 
+CrashLogger="*res://scripts/crash_logger.gd"
 AudioManager="*res://scripts/audio_manager.gd"
 InputDeviceManager="*res://scripts/input_device_manager.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
+file_logging/log_path="user://logs/godot.log"
+file_logging/max_log_files=5
+settings/gdscript/always_track_call_stacks=true
 
 [display]
 
