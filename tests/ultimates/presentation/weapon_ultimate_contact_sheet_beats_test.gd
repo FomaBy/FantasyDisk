@@ -2,6 +2,7 @@ extends SceneTree
 
 const Contract := preload("res://scripts/ultimates/presentation/contact_sheet_beats_contract.gd")
 const PROFILE_ROOT := "res://data/ultimates/schema/v1/classes"
+const CERTIFIED_CLASS_IDS: Array[String] = ["berserk", "biologist", "druid", "elementalist", "engineer", "guitarist"]
 
 
 func _initialize() -> void:
@@ -10,6 +11,7 @@ func _initialize() -> void:
 	var class_ids: Array = packages.keys()
 	class_ids.sort()
 	_check_allowlist(class_ids, errors)
+	_check_certified_classes(errors)
 
 	var checked_classes: Array[String] = []
 	var pending_classes: Array[String] = []
@@ -88,6 +90,12 @@ func _check_allowlist(class_ids: Array, errors: Array[String]) -> void:
 			seen[class_id] = true
 
 
+func _check_certified_classes(errors: Array[String]) -> void:
+	for class_id in CERTIFIED_CLASS_IDS:
+		if Contract.MIGRATION_ALLOWLIST.has(class_id):
+			errors.append("certified class remains on migration allowlist: %s" % class_id)
+
+
 func _declaration_errors(class_id: String, weapons: Array) -> Array[String]:
 	var errors: Array[String] = []
 	var frames_by_weapon := Contract.frames_for_class(class_id)
@@ -99,6 +107,7 @@ func _declaration_errors(class_id: String, weapons: Array) -> Array[String]:
 				errors.append("class %s weapon %s missing required phase %s" % [class_id, weapon_id, phase])
 			continue
 		var phases := {}
+		var phase_times := {}
 		for raw_frame in raw_frames as Array:
 			if not raw_frame is Dictionary:
 				errors.append("class %s weapon %s has a non-dictionary frame" % [class_id, weapon_id])
@@ -112,6 +121,10 @@ func _declaration_errors(class_id: String, weapons: Array) -> Array[String]:
 			var time = frame.get("time", null)
 			if typeof(time) != TYPE_INT and typeof(time) != TYPE_FLOAT:
 				errors.append("class %s weapon %s %s frame must declare numeric time" % [class_id, weapon_id, phase])
+			elif float(time) <= 0.0:
+				errors.append("class %s weapon %s %s frame time must be inside the timeline" % [class_id, weapon_id, phase])
+			elif Contract.REQUIRED_PHASES.has(phase):
+				phase_times[phase] = float(time)
 			var nodes = frame.get("required_nodes", null)
 			if not nodes is Array or (nodes as Array).is_empty():
 				errors.append("class %s weapon %s %s frame must declare non-empty required_nodes" % [class_id, weapon_id, phase])
@@ -119,9 +132,15 @@ func _declaration_errors(class_id: String, weapons: Array) -> Array[String]:
 			for raw_node in nodes as Array:
 				if str(raw_node).is_empty():
 					errors.append("class %s weapon %s %s frame has an empty required node" % [class_id, weapon_id, phase])
+		var previous_time := 0.0
 		for phase in Contract.REQUIRED_PHASES:
 			if not phases.has(phase):
 				errors.append("class %s weapon %s missing required phase %s" % [class_id, weapon_id, phase])
+			elif phase_times.has(phase):
+				var time := float(phase_times[phase])
+				if time <= previous_time:
+					errors.append("class %s weapon %s %s frame time is out of phase order" % [class_id, weapon_id, phase])
+				previous_time = time
 	for raw_weapon_id in frames_by_weapon.keys():
 		var weapon_id := str(raw_weapon_id)
 		if not weapons.has(weapon_id):
