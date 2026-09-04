@@ -22,7 +22,8 @@ is auto-fixed.
 Usage:
   python3 tools/animation_roster_audit.py            # full audit + sheets
   python3 tools/animation_roster_audit.py --no-sheets
-  python3 tools/animation_roster_audit.py --check    # exit 1 on any finding
+  python3 tools/animation_roster_audit.py --check    # exit 1 on any finding;
+                                                    # never writes the manifest
 
 Outputs: build/animation_audit/{audit_report.json,audit_report.md,
                                 contact_sheets/<actor_id>.png}
@@ -354,6 +355,26 @@ def build_manifest() -> list[dict]:
     return manifest
 
 
+def sync_manifest(check: bool, path: Path = MANIFEST_PATH) -> str:
+    """Keep the canonical manifest in sync with ROSTER; report drift under --check.
+
+    FAN-3875: --check is a certifying pass, so it must never write. Rewriting the
+    tracked manifest from there reordered an otherwise-identical file and left the
+    worktree dirty mid-audit. Regeneration now belongs to a plain run only.
+    Returns "" when the manifest already matches, else a drift message.
+    """
+    expected = json.dumps(build_manifest(), indent=2, ensure_ascii=False) + "\n"
+    current = path.read_text(encoding="utf-8") if path.exists() else None
+    if current == expected:
+        return ""
+    if check:
+        return (f"stale roster manifest {path.name}: "
+                "rerun `python3 tools/animation_roster_audit.py` to regenerate")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(expected, encoding="utf-8")
+    return ""
+
+
 def audit_actor(actor: dict, sheets: bool) -> dict:
     rel = actor["frames"]
     path = ROOT / rel
@@ -424,9 +445,7 @@ def main() -> int:
             print("ROSTER ERROR:", p, file=sys.stderr)
         return 2
 
-    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MANIFEST_PATH.write_text(json.dumps(build_manifest(), indent=2, ensure_ascii=False) + "\n",
-                             encoding="utf-8")
+    manifest_drift = sync_manifest(check)
 
     results = [audit_actor(a, make_sheets) for a in ROSTER]
     total_frames = sum(r["frame_count"] for r in results)
@@ -461,7 +480,9 @@ def main() -> int:
     print(f"actors={len(results)} groups={counts} frames={total_frames} findings={len(all_findings)}")
     print(f"report: {OUT_DIR / 'audit_report.md'}")
     print(f"manifest: {MANIFEST_PATH}")
-    if check and all_findings:
+    if manifest_drift:
+        print("MANIFEST DRIFT:", manifest_drift, file=sys.stderr)
+    if check and (all_findings or manifest_drift):
         return 1
     return 0
 

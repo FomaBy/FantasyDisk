@@ -30,6 +30,8 @@ const LOOP_STATES := ["idle", "move", "levitate"]
 const ONE_SHOT_STATES := ["attack", "hit", "death", "cast", "skill_blink"]
 const CORE_STATES := ["idle", "move", "attack", "hit", "death", "cast"]
 
+var _failed := false
+
 
 func _initialize() -> void:
 	_test_direction_naming()
@@ -39,14 +41,23 @@ func _initialize() -> void:
 	_test_state_transition_rules()
 	_test_registry_meta_configuration_path()
 	_test_pause_death_despawn_cleanup()
+	_test_undeclared_directional_rows_fail_closed()
 	_test_live_registry_packs_audit()
+	if _failed:
+		quit(1)
+		return
 	print("Eight-direction runtime contract test passed.")
 	quit()
 
 
+# FAN-3875: SceneTree.quit() лишь ПЛАНИРУЕТ выход — скрипт продолжает
+# выполняться, поэтому прежний quit(1) отсюда затирался финальным quit() и вся
+# сьюта всегда завершалась кодом 0 (бумажный гейт: push_error в логе, зелёный
+# exit в CI). Флаг + единственный quit в конце — идиома соседних сьют
+# (tests/animation_smoke_test.gd, tests/fan2623_shard_marshal_directional_test.gd).
 func _fail(message: String) -> void:
+	_failed = true
 	push_error(message)
-	quit(1)
 
 
 func _make_texture() -> Texture2D:
@@ -361,29 +372,33 @@ func _test_pause_death_despawn_cleanup() -> void:
 
 
 func _test_live_registry_packs_audit() -> void:
-	# Аудит живой таблицы реестра: флаг 8-направленного контракта — bool, и
-	# каждый пак, его объявивший, обязан иметь ПОЛНЫЙ набор восьми строк у
-	# каждого заявленного основного состояния (частичное покрытие — нарушение
-	# контракта актора). Сегодня паков с флагом нет — гейт вакуумно-зелёный и
-	# активируется автоматически, когда 0.3.1-паки начнут приземляться.
+	# Аудит живой таблицы реестра в обе стороны: пак, объявивший флаг, обязан
+	# иметь ПОЛНЫЙ набор восьми строк у каждого заявленного основного состояния
+	# (частичное покрытие — нарушение контракта актора), а пак с направленными
+	# строками обязан объявить контракт (FAN-3875, см. проверку ниже).
 	var table: Dictionary = FullFrameAnimationRegistry.FULL_FRAME_SPRITEFRAMES
 	var directional_packs := 0
 	for entity_kind in table.keys():
 		var kind_table: Dictionary = table[entity_kind]
 		for entity_id in kind_table.keys():
 			var config: Dictionary = kind_table[entity_id]
-			if not config.has("explicit_eight_directions"):
-				continue
-			if not (config.get("explicit_eight_directions") is bool):
-				_fail("Registry %s/%s: explicit_eight_directions must be bool." % [str(entity_kind), str(entity_id)])
+			var where := "%s/%s" % [str(entity_kind), str(entity_id)]
+			if config.has("explicit_eight_directions") and not (config.get("explicit_eight_directions") is bool):
+				_fail("Registry %s: explicit_eight_directions must be bool." % where)
 				return
-			if not bool(config["explicit_eight_directions"]):
-				continue
-			directional_packs += 1
 			var frames := FullFrameAnimationRegistry.sprite_frames_for(str(entity_kind), str(entity_id))
 			if frames == null:
-				_fail("Registry %s/%s declares an eight-direction contract but resolves no SpriteFrames." % [str(entity_kind), str(entity_id)])
+				if bool(config.get("explicit_eight_directions", false)):
+					_fail("Registry %s declares an eight-direction contract but resolves no SpriteFrames." % where)
+					return
+				continue
+			var undeclared := _undeclared_directional_contract_error(where, config, frames)
+			if undeclared != "":
+				_fail(undeclared)
 				return
+			if not bool(config.get("explicit_eight_directions", false)):
+				continue
+			directional_packs += 1
 			for state in CORE_STATES:
 				var exposes_state := frames.has_animation(state)
 				if not exposes_state:
@@ -396,3 +411,41 @@ func _test_live_registry_packs_audit() -> void:
 					return
 	if directional_packs > 0:
 		print("Eight-direction live packs audited: %d." % directional_packs)
+
+
+# FAN-3875: обратная сторона контракта. Форвард-проверка выше видит только паки,
+# которые флаг ОБЪЯВИЛИ, поэтому пак с реальными направленными строками и без
+# объявления проходил гейт молча: `play_state` пропускал направленную ветку и
+# уезжал в безымянный резолв, а у пака без безымянных строк не находил вообще
+# ничего (пять боссов FAN-3854 доехали до dev застывшей картинкой). Гейт
+# закрывается fail-closed: направленные строки обязаны иметь объявленный
+# контракт. Горизонтальный контракт (`explicit_horizontal_directions`, ghost-паки
+# SCRUM-885 с октантным исходником) — тоже объявление и остаётся валидным.
+func _undeclared_directional_contract_error(where: String, config: Dictionary, frames: SpriteFrames) -> String:
+	if bool(config.get("explicit_eight_directions", false)) or bool(config.get("explicit_horizontal_directions", false)):
+		return ""
+	for state in CORE_STATES:
+		for suffix in FullFrameAnimationRegistry.DIRECTION_SUFFIXES:
+			var row := "%s_%s" % [state, suffix]
+			if frames.has_animation(row):
+				return "Registry %s: exposes directional row %s but declares no explicit directional contract." % [where, row]
+	return ""
+
+
+func _test_undeclared_directional_rows_fail_closed() -> void:
+	# Негативный контроль гейта: пак с восемью направленными строками и шардом
+	# без объявления обязан быть отвергнут, иначе регрессия FAN-3854 повторится.
+	var directional_frames := _make_frames(_full_pack_rows(OCTANTS.keys()))
+	var silent_config := {"frames": "res://__fixture__.tres", "source_faces_left": true}
+	if _undeclared_directional_contract_error("fixture/undeclared", silent_config, directional_frames) == "":
+		_fail("Expected a pack with directional rows and no declared contract to fail the audit.")
+		return
+	# Объявленный контракт (любой из двух) и безнаправленный пак — валидны.
+	for declared in ["explicit_eight_directions", "explicit_horizontal_directions"]:
+		var declared_config := silent_config.duplicate()
+		declared_config[declared] = true
+		if _undeclared_directional_contract_error("fixture/%s" % declared, declared_config, directional_frames) != "":
+			_fail("Expected a pack declaring %s to pass the undeclared-contract audit." % declared)
+			return
+	if _undeclared_directional_contract_error("fixture/bare", silent_config, _make_frames(["idle", "move", "attack"])) != "":
+		_fail("Expected a pack without directional rows to stay outside the directional contract.")

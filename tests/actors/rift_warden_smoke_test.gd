@@ -9,7 +9,7 @@ func _initialize() -> void:
 
 
 func _run_actor_checks() -> void:
-	_assert_boss_pack("rift_warden", ["skill_gravity_well", "skill_rift_zone"], {})
+	_assert_boss_pack("rift_warden", ["skill_gravity_well", "skill_rift_zone"], {"idle": 1, "move": 7, "attack": 6, "hit": 6, "death": 6, "skill_gravity_well": 6, "skill_rift_zone": 6})
 	_assert_boss_scene_full_frame("rift_warden", "res://scenes/BossWarden.tscn", "rift_warden:gravity_well:windup", "skill_gravity_well", "_play_boss_skill_visual", ["skill_gravity_well", "cast", Vector2.RIGHT], "skill_gravity_well")
 	_assert_static_sprite_path("res://scenes/BossWarden.tscn", "Sprite2D", "res://assets/sprites/bosses/boss_rift_warden.png")
 	_check_rift_warden_rig()
