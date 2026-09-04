@@ -10,7 +10,13 @@ Those figures are historical evidence, not current architecture measurements. At
 
 ## Decision
 
-Use explicit, disjoint path leases for actor, class, UI, documentation, and bounded core work as defined by `ownership_map.md`. Ownership is based on exact paths and shared behaviour contracts, not a broad category label. The first six authorized slices are listed there. A task needing a second shared file or another domain is marked `cross-domain` and serializes with all affected leases.
+Use explicit, disjoint path leases as defined by `ownership_map.md`. The first
+six authorized slices are the concrete FD01/FAN-3908, FD02/FAN-3909,
+FD10/FAN-3917, FD12/FAN-3919, FD13/FAN-3920, and FD16/FAN-3923 cards with their
+full published path manifests and exclusive resources. Ownership is based on
+exact paths and shared behaviour contracts, not a broad category label. A task
+needing a second shared file or another domain is marked `cross-domain` and
+serializes with all affected leases.
 
 Actor data is per file in `data/animation/<kind>/<actor_id>.json`; class executors and ultimate data are per class; UI screens are per-screen modules behind a facade; additive per-actor and per-class tests avoid shared test monoliths. An inheritance-chain split is physical layout, not proof of independent behaviour: facade, state, virtual API, preload order, and shared kits remain one contract where applicable.
 

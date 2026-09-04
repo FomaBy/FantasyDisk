@@ -6,16 +6,22 @@ Two cards may proceed concurrently only when their declared write sets and behav
 
 ## Initial six owner-authorized slices
 
-| Slice | Exclusive paths | Shared-contract rule |
-| --- | --- | --- |
-| `actor/<actor_id>` | `data/animation/<kind>/<actor_id>.json`, `tests/actors/<actor_id>_smoke_test.gd`, actor-specific sprites | Do not edit a registry facade, shared animation test, or `animation.md` without an explicit shared lease. |
-| `class/<class_id>` | `scripts/classes/<class_id>_weapon.gd`, `scripts/ultimates/classes/<class_id>/**`, `data/ultimates/classes/<class_id>/**`, class tests/assets/docs | `balance/<class>` and `vfx/<class>` are the same class lease; shared legacy weapon families require a joint or serial lease. |
-| `ui/<screen>` | `scripts/ui/screens/<screen>.gd`, screen-local UI scripts/scenes/tests | The facade and UI kits are shared; one task may claim at most one listed shared file. |
-| `process/docs` | Exact process/design documents listed in the card | A documentation lease does not authorize gameplay or tooling edits. |
-| `architecture-map` | This map, its ADR, and `technical_architecture.md` | Documentation-only; no generated inventory or tool changes. |
-| `core/<bounded-surface>` | Exact named files, for example `scripts/player.gd` | Core work serializes only when it changes a shared behaviour contract. |
+These are the concrete initial-frontier cards, not reusable architecture
+categories. Their path lists are the exact declared leases at publication; live
+Multica status decides whether a card may start.
 
-The six slices are a dispatch template, not a promise that all six are ready at once. Each card must still name exact paths and acceptance criteria.
+| Card and resource | Exact declared paths |
+| --- | --- |
+| FD01 / [FAN-3908](mention://issue/01a06e33-1f4b-79fc-919d-003ef3bf9d17) — `git:FomaBy/FantasyDisk:paths:architecture-map` | `AGENTS.md`; `docs/design/systems/technical_architecture.md`; `docs/process/adr/ADR-parallel-agent-ownership.md`; `docs/process/agent_role_boundaries_and_handoffs.md`; `docs/process/ai_agent_memorandum.md`; `docs/process/code_quality_and_performance.md`; `docs/process/context_engineering.md`; `docs/process/dispatcher-authority.md`; `docs/process/human_readable_comments.md`; `docs/process/multica_workflow.md`; `docs/process/ownership_map.md`; `docs/process/pm_workflow.md`; `docs/process/qa_protocol.md`; `docs/process/story_points.md`; `docs/process/versioning_and_branching.md` |
+| FD02 / [FAN-3909](mention://issue/01a06e33-3256-78d3-962a-f7484eaa3d70) — `git:FomaBy/FantasyDisk:paths:quality-tooling` | `tests/test_architecture_inventory.py`; `tests/test_gdscript_contracts.py`; `tests/test_quality_static_guard.py`; `tools/architecture_inventory.py`; `tools/check_gdscript_contracts.py`; `tools/quality_static_guard.py` |
+| FD10 / [FAN-3917](mention://issue/01a06e33-c68a-7632-b216-9925b3eef746) — `git:FomaBy/FantasyDisk:paths:target-query` | `scripts/combat_target_query.gd`; `scripts/combat_target_query.gd.uid`; `tests/combat_target_query_cache_test.gd`; `tests/combat_target_query_cache_test.gd.uid`; `tests/combat_target_query_top_k_test.gd`; `tests/combat_target_query_top_k_test.gd.uid` |
+| FD12 / [FAN-3919](mention://issue/01a06e33-ec38-7925-a04b-a46f91566420) — `git:FomaBy/FantasyDisk:paths:encounter-spawn` | `scripts/combat_director.gd`; `scripts/combat_director.gd.uid`; `scripts/encounters/encounter_adapter.gd`; `scripts/encounters/encounter_adapter.gd.uid`; `scripts/encounters/encounter_scene_cache.gd`; `scripts/encounters/encounter_scene_cache.gd.uid`; `tests/encounters/encounter_scene_prewarm_test.gd`; `tests/encounters/encounter_scene_prewarm_test.gd.uid`; `tests/encounters/encounter_spawn_plan_quota_test.gd`; `tests/encounters/encounter_spawn_plan_quota_test.gd.uid` |
+| FD13 / [FAN-3920](mention://issue/01a06e33-fec6-72c6-b696-20db9397c946) — `git:FomaBy/FantasyDisk:paths:player-core` | `scripts/player.gd`; `scripts/player.gd.uid`; `scripts/player/player_damage_policy.gd`; `scripts/player/player_damage_policy.gd.uid`; `tests/player_damage_policy_characterization_test.gd`; `tests/player_damage_policy_characterization_test.gd.uid` |
+| FD16 / [FAN-3923](mention://issue/01a06e34-35ec-7847-93af-26d68a2bf4e1) — `git:FomaBy/FantasyDisk:paths:progression-data` | `scripts/progression/weapon_budget_model.gd`; `scripts/progression/weapon_budget_model.gd.uid`; `scripts/progression_data.gd`; `scripts/progression_data.gd.uid`; `tests/weapon_budget_model_characterization_test.gd`; `tests/weapon_budget_model_characterization_test.gd.uid` |
+
+The table does not reserve a broad `core` category. The six cards may proceed
+when their live write sets are still disjoint; each retains its own acceptance
+criteria and the shared `git:FomaBy/FantasyDisk:dev` integration lease.
 
 ## Existing split surfaces
 
