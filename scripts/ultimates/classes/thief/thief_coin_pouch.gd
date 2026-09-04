@@ -122,6 +122,9 @@ func _play_impacts(victims: Array) -> void:
 		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
+		# The damage path above already drew each victim's ordinary hit flash
+		# (enemy.gd:_show_combat_feedback); the burst must not repeat it.
+		_impacts.extra_hit_flash = false
 		var parent := get_tree().current_scene
 		if parent == null:
 			parent = get_tree().root

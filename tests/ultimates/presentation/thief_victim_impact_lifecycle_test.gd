@@ -132,6 +132,8 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 	var saw_impact := false
 	var impact_victims := 0
 	var impact_flashes := 0
+	var impact_bursts_spawned := 0
+	var impact_bursts_active := 0
 	var impact_outlived_controller := false
 	var cast_done := false
 	while frames < MAX_CAST_FRAMES + MAX_DRAIN_FRAMES and not cast_done:
@@ -143,6 +145,8 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 			var state: Dictionary = impact.call("snapshot")
 			impact_victims = maxi(impact_victims, int(state.get("victims", 0)))
 			impact_flashes = maxi(impact_flashes, int(state.get("flashes", 0)))
+			impact_bursts_spawned = maxi(impact_bursts_spawned, int(state.get("created_nodes", 0)))
+			impact_bursts_active = maxi(impact_bursts_active, int(state.get("active", 0)))
 			if not controller.is_active():
 				impact_outlived_controller = true
 		if frames > MAX_CAST_FRAMES:
@@ -151,20 +155,24 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 			cast_done = true
 	if controller.is_active():
 		errors.append("%s must finish its cast naturally within the frame budget" % weapon_id)
-	await _controller_await_drain(holder, weapon_id, errors, victims, saw_impact, impact_victims, impact_flashes, impact_outlived_controller)
+	await _controller_await_drain(holder, weapon_id, errors, victims, saw_impact, impact_victims,
+		impact_flashes, impact_bursts_spawned, impact_bursts_active, impact_outlived_controller)
 	await _drop(host)
 
 
 func _controller_await_drain(holder: Node2D, weapon_id: String, errors: Array[String], victims: Array,
-		saw_impact: bool, impact_victims: int, impact_flashes: int, impact_outlived_controller: bool) -> void:
+		saw_impact: bool, impact_victims: int, impact_flashes: int, impact_bursts_spawned: int,
+		impact_bursts_active: int, impact_outlived_controller: bool) -> void:
 	# Wait out the drain window so the release timer proves node cleanup.
 	for _index in 30:
 		await process_frame
 	_expect(saw_impact, "%s must start the shared victim impact on the real controller path" % weapon_id, errors)
 	_expect(impact_victims >= victims.size(),
 		"%s impact must cover every hit victim across its whole ripple (best victims=%d)" % [weapon_id, impact_victims], errors)
-	_expect(impact_flashes >= victims.size(),
-		"%s impact must fire its own per-victim flash on real frames (flashes=%d)" % [weapon_id, impact_flashes], errors)
+	_expect(impact_bursts_spawned >= 1 and impact_bursts_active >= 1,
+		"%s impact burst must visibly spawn and play on real frames (created=%d, active=%d)" % [weapon_id, impact_bursts_spawned, impact_bursts_active], errors)
+	_expect(impact_flashes == 0,
+		"%s impact must not draw the ordinary hit flash itself (AC-4: exactly one per damage event), flashes=%d" % [weapon_id, impact_flashes], errors)
 	_expect(impact_outlived_controller,
 		"%s impact must still exist at the frame the controller completed (the QA smoke-bomb blocker)" % weapon_id, errors)
 	var impact_left := false
@@ -179,8 +187,10 @@ func _controller_await_drain(holder: Node2D, weapon_id: String, errors: Array[St
 	for raw_target in victims:
 		var target := raw_target as FixtureTarget
 		_expect(target.health < target.max_health, "%s must actually damage the victims" % weapon_id, errors)
-		_expect(target.flashes - target.damage_flashes >= 1,
-			"%s victim must receive the impact flash in addition to the damage flash" % weapon_id, errors)
+		_expect(target.damage_flashes >= 1,
+			"%s ordinary damage must draw the victim's hit flash exactly through the damage path" % weapon_id, errors)
+		_expect(target.flashes == target.damage_flashes,
+			"%s must draw exactly one ordinary hit flash per victim (got %d for %d damage events)" % [weapon_id, target.flashes, target.damage_flashes], errors)
 
 
 func _impact_player(holder: Node2D) -> Node:

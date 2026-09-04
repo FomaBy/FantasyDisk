@@ -82,6 +82,7 @@ func _initialize() -> void:
 		_expect(EFFECT_SCENES.has(weapon_id), "manifest weapon %s has no canonical thief effect scene" % weapon_id, errors)
 	for weapon_id in EFFECT_SCENES:
 		_check_runtime_contour(weapon_id, errors)
+	_check_default_mode_compatibility(errors)
 	_check_real_mapping(weapons, errors)
 	_check_negative_probes(weapons, errors)
 	if not errors.is_empty():
@@ -130,13 +131,43 @@ func _check_runtime_contour(weapon_id: String, errors: Array[String]) -> void:
 			"%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
 		impacts.call("advance", 1.0)
 		var played := impacts.call("snapshot") as Dictionary
-		_expect(int(played.get("flashes", 0)) == victims.size(),
-			"%s degradation must never drop the existing white victim flash" % weapon_id, errors)
+		# The thief executors already draw the ordinary flash on their damage
+		# path, so their ripples run with extra_hit_flash off (AC-4: exactly one
+		# ordinary hit feedback per damage event): no victim flashes twice.
+		_expect(int(played.get("flashes", 0)) == 0,
+			"%s impact must not repeat the ordinary hit flash (flashes=%s)" % [weapon_id, str(played)], errors)
+		for raw_victim in victims:
+			_expect((raw_victim as VictimProbe).flashes == 0,
+				"%s victim must receive no second ordinary flash from the impact" % weapon_id, errors)
 		var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
 		_expect(burst != null and burst.sprite_frames != null \
 				and burst.sprite_frames.resource_path == str(FLIPBOOK_PATHS[weapon_id]),
 			"%s victim impact must use its own integrated flipbook" % weapon_id, errors)
 	effect.queue_free()
+	for victim in victims:
+		(victim as Node).queue_free()
+
+
+## Compatibility probe for the widened shared-service mode (PM rework 3): the
+## default caller still gets the ordinary victim flash from the ripple itself,
+## so non-thief callers keep their exact behaviour.
+func _check_default_mode_compatibility(errors: Array[String]) -> void:
+	var impacts: Node2D = ImpactPlayer.new()
+	root.add_child(impacts)
+	var victims: Array = []
+	for index in 3:
+		var victim := VictimProbe.new()
+		victim.position = Vector2(80.0 + float(index) * 120.0, 0.0)
+		root.add_child(victim)
+		victims.append(victim)
+	var frames: Resource = load(str(FLIPBOOK_PATHS["thief_coin_pouch"]))
+	impacts.play(frames, victims, Vector2.ZERO)
+	impacts.advance(1.0)
+	var played := impacts.call("snapshot") as Dictionary
+	_expect(int(played.get("flashes", 0)) == victims.size(),
+		"default-mode ripple must still draw the ordinary victim flash (got %s)" % str(played), errors)
+	impacts.finish()
+	impacts.queue_free()
 	for victim in victims:
 		(victim as Node).queue_free()
 
