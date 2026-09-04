@@ -3,6 +3,8 @@ extends Node2D
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/knight/long_spear/long_spear_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.knight.long_spear"
 const EXECUTOR_ID := "weapon_ultimate.executor.knight.long_spear"
@@ -15,6 +17,8 @@ var _activation = null
 var _targets: Array = []
 var _direction := Vector2.RIGHT
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -92,6 +96,7 @@ func advance_row(row: int) -> void:
 		"from": global_position,
 		"to": global_position + _direction * _activation.param_float("aim_range", 780.0),
 	})
+	var victims: Array = []
 	for index in _targets.size():
 		if index % rows != row:
 			continue
@@ -113,6 +118,22 @@ func advance_row(row: int) -> void:
 			"phalanx_pierce",
 			false
 		)
+		victims.append(target)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _is_normal(target: Node) -> bool:
@@ -142,6 +163,8 @@ func _exit_tree() -> void:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_targets.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 
