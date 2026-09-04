@@ -136,10 +136,16 @@ static func _transmute(activation: Activation, origin: Vector2, crystallized: Ar
 		"position": origin,
 		"radius": activation.param_float("pentagram_radius", 0.0),
 	})
+	var struck: Array = []
 	for raw_target in crystallized:
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		if activation.consume_target_value(target, CRYSTAL_KEY, TRANSMUTE_EVENT) == null:
 			continue
-		activation.deal_damage(target, damage, {}, TRANSMUTE_EVENT)
+		var result := activation.deal_damage(target, damage, {}, TRANSMUTE_EVENT)
+		if result.applied > 0.0:
+			struck.append(target)
+	# The detonation beat carries the enemies it actually transmuted, so the
+	# authored scene plays one victim burst per hit enemy and none anywhere else.
+	activation.present(EXECUTOR_ID + ".transmute", {"position": origin, "victims": struck})

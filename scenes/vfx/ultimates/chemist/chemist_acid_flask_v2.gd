@@ -3,6 +3,11 @@ extends Node2D
 
 ## Ultimate Direction v2 runtime driver for «Царь-Колба» (FAN-2958).
 ##
+## FAN-3879: this script also owns the per-victim read. The executor beats name
+## the enemies they actually dissolved that tick (`victims` payload key); this
+## scene is the only live effect channel the Chemist package spawns, so the
+## burst rides its own `present()` exactly like the Doctor package.
+##
 ## The AnimationPlayer owns every drawn beat (backdrop veil, hero glow, the
 ## PixelLab acid_flask frames, the arena-wide lake shoreline, the charge pillars
 ## and the evaporation smoke). This script owns only the node-free weight
@@ -20,6 +25,12 @@ const HITSTOP_MS := 110.0
 const SHAKE_SECONDS := 0.55
 const SHAKE_AMPLITUDE := 9.0
 const SFX_DUCK_DB := -9.0
+
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/chemist/acid_flask/victim_impact_spriteframes.tres")
+
+## Beat payload key naming the enemies a beat actually dissolved.
+const VICTIMS_KEY := "victims"
 
 ## Reduced motion: the release flash keeps its beats at a damped peak instead of
 ## the full acid-white burst, so the calm variant is a fade, not a flash.
@@ -44,6 +55,7 @@ var _duck_active := false
 var _sfx_bus_index := -1
 var _camera: Camera2D = null
 var _camera_offset_before_shake := Vector2.ZERO
+var _impacts: Node2D = null
 
 
 func _ready() -> void:
@@ -102,6 +114,27 @@ func finish(reason: String) -> void:
 	_shake_remaining = 0.0
 	_elapsed = 0.0
 	_impact_fired = false
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+		_impacts.free()
+	_impacts = null
+
+
+## One executor beat. A beat that names the enemies it actually dissolved gets
+## the shared victim-impact burst on each of them; every other beat draws
+## nothing here, so an unaffected target can never receive one.
+func present(_event_id: String, payload: Dictionary) -> void:
+	var victims: Array = payload.get(VICTIMS_KEY, [])
+	if victims.is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		return
+	# A later beat joins the running ripple instead of replacing it, so a
+	# multi-tick pour reads as one cascade rather than restarting per tick.
+	_impacts.enqueue(victims, global_position)
 
 
 func _exit_tree() -> void:

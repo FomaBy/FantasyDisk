@@ -16,6 +16,11 @@ extends Node2D
 ## the executor keeps fuse_at 0.9, beat_interval 0.85 and beat_count 3, so the
 ## three stomps still land at 1.75s, 2.60s and 3.45s — all inside the drawn
 ## active window. Only the drawn convergence and split were tightened.
+##
+## FAN-3879: this script also owns the per-victim read. Each stomp beat names
+## the enemies it actually damaged (`victims` payload key); this scene is the
+## only live effect channel the Chemist package spawns, so the burst rides its
+## own `present()` exactly like the Doctor package.
 
 const RELEASE_AT := 0.9
 const IMPACT_AT := 1.75
@@ -30,6 +35,12 @@ const SFX_DUCK_DB := -9.0
 ## damage tick, so each one re-arms the shake; only the first takes the hitstop,
 ## which the v2 contract scopes to the first impact.
 const STOMP_BEATS: Array[float] = [1.75, 2.6, 3.45]
+
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/chemist/homunculus_vial/victim_impact_spriteframes.tres")
+
+## Beat payload key naming the enemies a stomp actually damaged.
+const VICTIMS_KEY := "victims"
 
 ## Reduced motion: the fusion flash keeps its beats at a damped peak instead of
 ## the full emerald burst, so the calm variant is a fade, not a flash.
@@ -55,6 +66,7 @@ var _duck_active := false
 var _sfx_bus_index := -1
 var _camera: Camera2D = null
 var _camera_offset_before_shake := Vector2.ZERO
+var _impacts: Node2D = null
 
 
 func _ready() -> void:
@@ -116,6 +128,25 @@ func finish(reason: String) -> void:
 	_elapsed = 0.0
 	_impact_fired = false
 	_next_stomp = 0
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+		_impacts.free()
+	_impacts = null
+
+
+## One executor beat. A stomp that names the enemies it actually damaged gets
+## the shared victim-impact burst on each of them; every other beat draws
+## nothing here, so an unaffected target can never receive one.
+func present(_event_id: String, payload: Dictionary) -> void:
+	var victims: Array = payload.get(VICTIMS_KEY, [])
+	if victims.is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		return
+	_impacts.enqueue(victims, global_position)
 
 
 func _exit_tree() -> void:

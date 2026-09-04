@@ -4,6 +4,7 @@ const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/chemist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/chemist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["blast_powder", "acid_flask", "homunculus_vial"]
 const SCENES := {
 	"blast_powder": preload("res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn"),
@@ -80,6 +81,18 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+## Stands in for a hit enemy: the impact service calls the victim's own white
+## flash by name, so the probe answers exactly the two methods it looks for.
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profiles := _profiles_by_weapon(_load_json(PROFILE_PATH, errors))
@@ -122,6 +135,8 @@ func _process(_delta: float) -> bool:
 	_check_blast_driver(_blast_package, errors)
 	_check_acid_driver(_acid_package, errors)
 	_check_homunculus_driver(_homunculus_package, errors)
+	for weapon_id in WEAPON_IDS:
+		_check_victim_impacts(weapon_id, errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return true
@@ -505,6 +520,61 @@ func _release_driver_scene(scene: Node2D) -> void:
 	scene.finish("node_end")
 	root.remove_child(scene)
 	scene.free()
+
+
+## Per-victim impacts (FAN-3879). Chemist spawns no separate effect scene, so
+## the v2 driver is the only live effect channel: a beat naming the enemies it
+## actually hit bursts the weapon's own victim-impact pack on exactly those
+## enemies, a beat naming none draws nothing at all, and the whole ripple is
+## released with the scene — the runtime-contour half of the mapping this card
+## wires (FAN-3879 acceptance #3/#4), on top of the source-level gate the
+## roster ratchet (`ADOPTION_GAPS["victim_impact"]`) already fails closed on.
+func _check_victim_impacts(weapon_id: String, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
+	var declared := scene.get_child_count()
+
+	scene.present("fixture.beat", {"position": Vector2.ZERO})
+	_expect(scene.get_child_count() == declared, "%s must draw no impact for a beat that hit nobody" % weapon_id, errors)
+
+	var victims: Array[Node2D] = []
+	for index in 3:
+		var victim := VictimProbe.new()
+		victim.global_position = Vector2(80.0 + float(index) * 120.0, 0.0)
+		root.add_child(victim)
+		victims.append(victim)
+	scene.present("fixture.beat", {"position": Vector2.ZERO, "victims": victims})
+	var impacts := _impact_player(scene)
+	_expect(impacts != null, "%s must start its own victim-impact burst" % weapon_id, errors)
+	if impacts != null:
+		var planned := impacts.call("snapshot") as Dictionary
+		_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every actually affected enemy" % weapon_id, errors)
+		# A later beat joins the running ripple instead of restarting it.
+		scene.present("fixture.beat", {"victims": [victims[0]]})
+		_expect(int((impacts.call("snapshot") as Dictionary).get("victims", 0)) == victims.size() + 1,
+			"%s later beats must join the running ripple" % weapon_id, errors)
+		impacts.call("advance", 1.0)
+		_expect(int((impacts.call("snapshot") as Dictionary).get("flashes", 0)) == victims.size() + 1,
+			"%s must keep the white victim flash on every hit enemy" % weapon_id, errors)
+		var expected := "res://assets/sprites/effects/chemist/%s/victim_impact_spriteframes.tres" % weapon_id
+		var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+		_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == expected,
+			"%s victim impact must use its own integrated pack" % weapon_id, errors)
+		for victim in victims:
+			_expect((victim as VictimProbe).flashes > 0, "%s must burst on every affected enemy" % weapon_id, errors)
+
+	scene.finish("node_end")
+	_expect(scene.get_child_count() == declared, "%s must release every impact node with the scene" % weapon_id, errors)
+	root.remove_child(scene)
+	scene.free()
+	for victim in victims:
+		victim.free()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
