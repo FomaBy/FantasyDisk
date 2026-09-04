@@ -3,12 +3,34 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/knight.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/knight/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["long_spear", "tower_shield", "holy_flail"]
 const SCENES := {
 	"long_spear": preload("res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"),
 	"tower_shield": preload("res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn"),
 	"holy_flail": preload("res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn"),
 }
+const EFFECT_SCENES := {
+	"long_spear": preload("res://scripts/ultimates/classes/knight/long_spear.tscn"),
+	"tower_shield": preload("res://scripts/ultimates/classes/knight/tower_shield.tscn"),
+	"holy_flail": preload("res://scripts/ultimates/classes/knight/holy_flail.tscn"),
+}
+const VICTIM_FRAMES := {
+	"long_spear": "res://assets/sprites/effects/knight/long_spear/long_spear_spriteframes.tres",
+	"tower_shield": "res://assets/sprites/effects/knight/tower_shield/tower_shield_spriteframes.tres",
+	"holy_flail": "res://assets/sprites/effects/knight/holy_flail/holy_flail_spriteframes.tres",
+}
+## Damaging beats one enemy takes across the driven cast: the three phalanx rows
+## split the corridor snapshot one row apiece, the shield counters once, and the
+## spiral re-resolves its whole ring on each of the two turns driven below.
+const IMPACT_BEATS := {
+	"long_spear": 1,
+	"tower_shield": 1,
+	"holy_flail": 2,
+}
+## Above UltimateVictimImpactPlayer.DEGRADE_VICTIM_THRESHOLD, so the crowd
+## variant is exercised too.
+const IMPACT_VICTIM_COUNT := 39
 const PACKS := [
 	{
 		"weapon_id": "long_spear",
@@ -66,6 +88,73 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
+class ImpactActivationProbe extends RefCounted:
+	var targets: Array = []
+
+	func origin() -> Vector2:
+		return Vector2.ZERO
+
+	func is_finished() -> bool:
+		return false
+
+	func composition_aborted() -> bool:
+		return false
+
+	func abort_composition() -> void:
+		pass
+
+	func composition_step(_step_id: String) -> void:
+		pass
+
+	func param_int(_key: String, fallback: int) -> int:
+		return fallback
+
+	func param_float(_key: String, fallback: float) -> float:
+		return fallback
+
+	func scaled_damage(_key: String, fallback: float) -> float:
+		return fallback
+
+	func aim_direction(_radius: float) -> Vector2:
+		return Vector2.RIGHT
+
+	func configure_guard_prevention(
+		_owner_id: String, _resource_id: String, _cap: float,
+		_direction: Vector2, _arc_degrees: float, _sources: Array
+	) -> bool:
+		return true
+
+	func consume_owner_resource(_owner_id: String, _resource_id: String, _reason: String) -> Dictionary:
+		return {"amount": 40.0}
+
+	func select_targets(_origin: Vector2, _radius: float, _cap: int, _order: String) -> Array:
+		return targets
+
+	func record_target_value(_target: Node, _key: String, _value: int, _reason: String) -> bool:
+		return true
+
+	func apply_control(_target: Node, _impulse: Vector2, _status_id: String, _status: Dictionary) -> Dictionary:
+		return {"status_applied": true, "tier": "normal", "displaced": true}
+
+	func deal_damage(
+		_target: Node, amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool
+	) -> Dictionary:
+		return {"applied": amount, "killed": false}
+
+	func present(_phase_id: String, _payload: Dictionary) -> void:
+		pass
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -83,13 +172,14 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_weapon_local_impacts(errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Knight ultimate timelines passed (three distinct scenes, frozen phases, lifecycle, evidence, and crowd budgets).")
+	print("Knight ultimate timelines passed (three distinct scenes, frozen phases, victim impacts, lifecycle, evidence, and crowd budgets).")
 	quit(0)
 
 
@@ -178,6 +268,67 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		for weapon_id in WEAPON_IDS:
 			values[str((packages.get(weapon_id, {}) as Dictionary).get(field, ""))] = true
 		_expect(values.size() == 3 and not values.has(""), "all three weapons must have different %s values" % field, errors)
+
+
+## Every Knight ultimate must route the enemies it actually hits through the
+## shared per-victim impact service, with its own class flipbook. A weapon whose
+## mapping is removed or broken reports no player here and fails the suite.
+func _check_weapon_local_impacts(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var effect := (EFFECT_SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(effect)
+		effect.set("ultimate_damage_sink", Callable(self, "_damage_sink"))
+		var activation := ImpactActivationProbe.new()
+		var victims: Array = []
+		for index in IMPACT_VICTIM_COUNT:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(40.0 + float(index) * 8.0, float(index % 3) * 18.0)
+			root.add_child(victim)
+			victims.append(victim)
+		activation.targets = victims
+		match weapon_id:
+			"long_spear":
+				effect.call("configure", activation, victims, Vector2.RIGHT)
+				for row in 3:
+					effect.call("advance_row", row)
+			"tower_shield":
+				_expect(bool(effect.call("configure", activation)), "tower_shield guard stance must configure", errors)
+				effect.call("counter_burst")
+			"holy_flail":
+				effect.call("configure", activation, {
+					"turns": [], "radii": [], "impulses": [], "direction_switches": 0,
+				})
+				effect.call("turn", 0)
+				effect.call("turn", 1)
+		var expected_victims: int = IMPACT_VICTIM_COUNT * int(IMPACT_BEATS[weapon_id])
+		var impacts := _impact_player(effect)
+		_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == expected_victims, "%s must enqueue each hit enemy once per damaging beat" % weapon_id, errors)
+			_expect(bool(planned.get("degraded", false)), "%s must use the bounded crowd variant above 38 victims" % weapon_id, errors)
+			_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6, "%s victim impact must last 0.3-0.6 seconds" % weapon_id, errors)
+			_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES, "%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(int(played.get("flashes", 0)) == expected_victims, "%s degradation must never drop the existing white victim flash" % weapon_id, errors)
+			_expect(int(played.get("created_nodes", 0)) <= ImpactPlayer.POOL_CAP, "%s burst node creation must stay inside the pool cap" % weapon_id, errors)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == str(VICTIM_FRAMES[weapon_id]), "%s victim impact must use its own class flipbook" % weapon_id, errors)
+		effect.queue_free()
+		for victim in victims:
+			(victim as Node).queue_free()
+
+
+func _impact_player(effect: Node) -> Node:
+	for child in effect.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
+
+
+func _damage_sink(_target: Node, amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
+	return {"applied": amount, "killed": false}
 
 
 func _check_capture_composition(errors: Array[String]) -> void:

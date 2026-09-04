@@ -4,6 +4,8 @@ const PROFILE_ID := "weapon_ultimate.profile.priest.priest_chime"
 const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_chime"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_chime.tscn"
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/priest/priest_chime/priest_chime_spriteframes.tres")
 
 ## Ultimate Direction v2 (FAN-2535): bell one interrupts every live enemy and
 ## bell two chains through the same full set. Chain rank still shapes damage,
@@ -15,6 +17,8 @@ var toll_count_for_tests := 0
 
 var _activation = null
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -179,8 +183,21 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 	if not ultimate_damage_sink.is_valid():
 		return
 	var result = ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
+	_play_impacts([target])
 	if result != null:
 		chain_removed_for_tests += maxf(float(result.applied), 0.0)
+
+
+func _play_impacts(victims: Array) -> void:
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _player() -> Node:
@@ -191,6 +208,10 @@ func _player() -> Node:
 
 
 func _exit_tree() -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+	_impacts = null
+	_impacts_started = false
 	for lease in _leased_statuses:
 		var target = lease.get("target") as Node
 		if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):

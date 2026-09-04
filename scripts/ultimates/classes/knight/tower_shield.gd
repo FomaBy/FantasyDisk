@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/knight/tower_shield/tower_shield_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.knight.tower_shield"
 const EXECUTOR_ID := "weapon_ultimate.executor.knight.tower_shield"
@@ -15,6 +17,8 @@ var _activation = null
 var _direction := Vector2.RIGHT
 var _counter_resolved := false
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -108,6 +112,7 @@ func counter_burst() -> void:
 		"shape": "ring_pulse", "position": global_position,
 		"radius": _activation.param_float("counter_radius", 195.0),
 	})
+	var victims: Array = []
 	for raw_target in _activation.select_targets(
 		global_position, _activation.param_float("counter_radius", 195.0), 0, "nearest"
 	):
@@ -115,6 +120,7 @@ func counter_burst() -> void:
 		if target == null or not is_instance_valid(target) or not _inside_counter_arc(target):
 			continue
 		counter_target_count_for_tests += 1
+		victims.append(target)
 		var offset := target.global_position - global_position
 		var impulse := _direction if offset.length_squared() <= 0.001 else offset.normalized()
 		var status_id := "knight_tower_shield_push_%d_%d" % [
@@ -134,6 +140,21 @@ func counter_burst() -> void:
 			"counter:%d" % target.get_instance_id(),
 			true
 		)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _inside_counter_arc(target: Node2D) -> bool:
@@ -148,6 +169,8 @@ func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 

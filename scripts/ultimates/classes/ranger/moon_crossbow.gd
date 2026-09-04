@@ -1,6 +1,8 @@
 extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.ranger.moon_crossbow"
 const EXECUTOR_ID := "weapon_ultimate.executor.ranger.moon_crossbow"
@@ -14,6 +16,8 @@ var split_count_for_tests := 0
 var mark_transfer_count_for_tests := 0
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -111,6 +115,9 @@ func fire(wave: int) -> void:
 			{"ultimate_mechanic": "moon_split", "wave": wave, "split_index": index}
 		)
 		split_count_for_tests += 1
+	var victims: Array = [prey]
+	victims.append_array(neighbours)
+	_play_impacts(victims)
 	if result != null and bool(result.killed):
 		_transfer_mark(prey, neighbours, wave)
 
@@ -167,6 +174,20 @@ func _alive(target: Node2D) -> bool:
 	return health_value == null or float(health_value) > 0.0
 
 
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
+
+
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
@@ -175,4 +196,6 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 
 func _exit_tree() -> void:
 	marked_target_for_tests = null
+	_impacts = null
+	_impacts_started = false
 	_activation = null

@@ -55,6 +55,7 @@ static func crush(activation, index: int) -> void:
 		return
 	var axis := direction as Vector2
 	var perpendicular := Vector2(-axis.y, axis.x)
+	var victims: Array = []
 	for raw_target in activation.targets_in_corridor(
 		activation.origin(), axis, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
@@ -68,9 +69,11 @@ static func crush(activation, index: int) -> void:
 		)
 		activation.deal_damage(target, activation.scaled_damage("crush_damage", 7.50),
 			{"source": "robot_hydraulic_crush", "crush": index}, "crush:%d" % index)
+		victims.append(target)
 	activation.present(EXECUTOR_ID + ".crush", {
 		"position": activation.origin(), "radius": activation.param_float("half_width", 150.0), "shape": "beam",
 		"from": activation.origin(), "to": activation.origin() + axis * activation.param_float("length", 430.0),
+		"victims": victims,
 	})
 
 
@@ -80,6 +83,7 @@ static func release(activation) -> void:
 	var direction = activation.primitive_value("robot_press_direction", Vector2.ZERO)
 	if not direction is Vector2:
 		return
+	var victims: Array = []
 	for raw_target in activation.targets_in_corridor(
 		activation.origin(), direction as Vector2, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
@@ -87,7 +91,8 @@ static func release(activation) -> void:
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(target, activation.scaled_damage("release_damage", 7.50),
 				{"source": "robot_hydraulic_release"}, "release", true)
-	activation.present(EXECUTOR_ID + ".release", {"position": activation.origin(), "radius": 180.0, "shape": "orb_burst"})
+			victims.append(target)
+	activation.present(EXECUTOR_ID + ".release", {"position": activation.origin(), "radius": 180.0, "shape": "orb_burst", "victims": victims})
 
 
 static func _control_policy() -> Dictionary:

@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/sniper/shatter_rounds/shatter_rounds_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.sniper.sniper_shatter_rounds"
 const EXECUTOR_ID := "weapon_ultimate.executor.sniper.sniper_shatter_rounds"
@@ -34,6 +36,7 @@ var _activation = null
 var _pool: Array = []
 var _staggered: Dictionary = {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts = null
 
 
 static func parameter_contract() -> Dictionary:
@@ -99,6 +102,7 @@ func configure(activation, pool: Array) -> void:
 func impact(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var victims: Array[Node2D] = []
 	for raw_target in _pool:
 		var target := raw_target as Node2D
 		if not _alive(target):
@@ -114,6 +118,19 @@ func impact(wave: int) -> void:
 			{"ultimate_mechanic": "crystal_wave", "wave": wave}
 		)
 		_stagger(target)
+		victims.append(target)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		return
+	_impacts.enqueue(victims, global_position)
 
 
 func _stagger(target: Node2D) -> void:
@@ -150,6 +167,7 @@ func _exit_tree() -> void:
 	_leased_statuses.clear()
 	_staggered.clear()
 	_pool.clear()
+	_impacts = null
 	_activation = null
 
 

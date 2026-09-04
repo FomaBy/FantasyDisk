@@ -76,6 +76,7 @@ static func release(activation, center: Vector2) -> void:
 static func implode(activation, center: Vector2) -> void:
 	if activation == null or activation.is_finished():
 		return
+	var implosion_victims: Array = []
 	for raw_target in activation.targets(
 		center, activation.param_float("radius", 250.0), 0
 	):
@@ -85,7 +86,9 @@ static func implode(activation, center: Vector2) -> void:
 				target, activation.scaled_damage("implosion_damage", 16.0),
 				{"source": "robot_singularity_implosion"}, "implosion"
 			)
-	activation.present(EXECUTOR_ID + ".implosion", {"position": center, "radius": 48.0, "shape": "orb_burst"})
+			implosion_victims.append(target)
+	activation.present(EXECUTOR_ID + ".implosion", {"position": center, "radius": 48.0, "shape": "orb_burst", "victims": implosion_victims})
+	var emp_victims: Array = []
 	for raw_target in activation.targets(
 		center, activation.param_float("emp_radius", 300.0), 0
 	):
@@ -95,8 +98,10 @@ static func implode(activation, center: Vector2) -> void:
 				target, activation.scaled_damage("emp_damage", 6.0),
 				{"source": "robot_singularity_emp"}, "emp", true
 			)
+			emp_victims.append(target)
 	activation.present(EXECUTOR_ID + ".emp", {
 		"position": center, "radius": activation.param_float("emp_radius", 300.0), "shape": "ring_pulse",
+		"victims": emp_victims,
 	})
 
 

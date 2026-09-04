@@ -4,6 +4,7 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 
 const PROFILE_ID := "weapon_ultimate.profile.soldier.soldier_rifle"
 const EXECUTOR_ID := "weapon_ultimate.executor.soldier.soldier_rifle"
+const SELF_PATH := "res://scripts/ultimates/classes/soldier/soldier_rifle.gd"
 
 
 static func parameter_contract() -> Dictionary:
@@ -24,7 +25,6 @@ static func parameter_contract() -> Dictionary:
 ## only those silhouettes. Every step shares one activation-owned lifecycle
 ## tween so cleanup cannot race a parallel nominal timer.
 static func execute(activation) -> float:
-	var package_params: Dictionary = activation.params
 	var aim_range: float = activation.param_float("max_range", 960.0)
 	activation.composition_step("aim_context")
 	if not Library.execute_primitive("aim_context", activation, {
@@ -58,15 +58,45 @@ static func execute(activation) -> float:
 	if not (sequence["errors"] as Array).is_empty():
 		return 0.0
 	activation.composition_step("aimed_sequence")
-	activation.params = sequence["params"]
-	var sequence_duration := Library.execute("aimed_sequence", activation)
-	activation.params = package_params
-	if sequence_duration <= 0.0:
-		return 0.0
-	var lifetime: float = activation.param_float("lifetime", 5.6)
-	var lifecycle: Tween = activation.last_tween()
+	var sequence_params := sequence["params"] as Dictionary
+	var radius := float(sequence_params["radius"])
+	var shots := int(sequence_params["shot_count"])
+	var interval := float(sequence_params["interval"])
+	var damage: float = activation.scaled_damage("damage", float(sequence_params["damage"]))
+	var planned: Array = activation.targets(activation.origin(), radius, 0)
+	var lifecycle: Tween = activation.track_tween()
 	if lifecycle == null:
 		return 0.0
+	var script := load(SELF_PATH)
+	for shot_index in shots:
+		lifecycle.tween_interval(interval)
+		lifecycle.tween_callback(
+			Callable(script, "fire_volley").bind(activation, planned, shot_index, radius, damage)
+		)
+	var sequence_duration := interval * float(shots)
+	var lifetime: float = activation.param_float("lifetime", 5.6)
 	if lifetime > sequence_duration:
 		lifecycle.tween_interval(lifetime - sequence_duration)
 	return maxf(lifetime, sequence_duration)
+
+
+static func fire_volley(
+	activation, planned: Array, shot_index: int, radius: float, damage: float
+) -> void:
+	for target in _targets_for_volley(activation, planned, shot_index, radius):
+		activation.present("aimed_sequence", {
+			"shape": "beam",
+			"from": activation.origin(),
+			"to": target.global_position,
+			"victims": [target],
+		})
+		activation.deal_damage(target, damage)
+
+
+static func _targets_for_volley(activation, planned: Array, shot_index: int, radius: float) -> Array[Node2D]:
+	var targets: Array[Node2D] = []
+	var source: Array = planned if shot_index == 0 else activation.targets(activation.origin(), radius, 0)
+	for raw_target in source:
+		if raw_target is Node2D and is_instance_valid(raw_target):
+			targets.append(raw_target as Node2D)
+	return targets

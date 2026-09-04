@@ -3,6 +3,8 @@ extends Node2D
 const PROFILE_ID := "weapon_ultimate.profile.priest.priest_censer"
 const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_censer"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_censer.tscn"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/priest/priest_censer/priest_censer_spriteframes.tres")
 
 ## Ultimate Direction v2 (FAN-2535): the ward remains a prevention-funded
 ## counter, but a funded finish now reaches every live enemy. The visible arc
@@ -17,6 +19,8 @@ var _ultimate_host: Node = null
 var _player: Node = null
 var _equipped_weapon: Node = null
 var _last_direction := Vector2.RIGHT
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -194,6 +198,19 @@ func counter_burst() -> void:
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary) -> void:
 	if ultimate_damage_sink.is_valid():
 		ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
+		_play_impacts([target])
+
+
+func _play_impacts(victims: Array) -> void:
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _player_from_host() -> Node:
@@ -204,6 +221,10 @@ func _player_from_host() -> Node:
 
 
 func _exit_tree() -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+	_impacts = null
+	_impacts_started = false
 	_restore_equipped_weapon()
 	_erase_zero_absorb_key()
 	_ultimate_host = null

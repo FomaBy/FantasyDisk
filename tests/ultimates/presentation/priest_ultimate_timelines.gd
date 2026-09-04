@@ -3,7 +3,20 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/priest.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/priest/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["priest_reliquary", "priest_censer", "priest_chime"]
+const EXECUTOR_SCENES := {
+	"priest_reliquary": preload("res://scripts/ultimates/classes/priest/priest_reliquary.tscn"),
+	"priest_censer": preload("res://scripts/ultimates/classes/priest/priest_censer.tscn"),
+	"priest_chime": preload("res://scripts/ultimates/classes/priest/priest_chime.tscn"),
+}
+const VICTIM_FRAMES := {
+	"priest_reliquary": "res://assets/sprites/effects/priest/priest_reliquary/priest_reliquary_spriteframes.tres",
+	"priest_censer": "res://assets/sprites/effects/priest/priest_censer/priest_censer_spriteframes.tres",
+	"priest_chime": "res://assets/sprites/effects/priest/priest_chime/priest_chime_spriteframes.tres",
+}
+const SOURCE_FIXTURE_ROOT := "user://fan3881_priest_victim_impact"
 const SCENES := {
 	"priest_reliquary": preload("res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"),
 	"priest_censer": preload("res://scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn"),
@@ -67,6 +80,16 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -79,6 +102,7 @@ func _initialize() -> void:
 	_expect(not str((manifest.get("contract", {}) as Dictionary).get("runtime_adapter_status", "")).is_empty(), "runtime adapter boundary must be documented", errors)
 	_check_provenance(manifest, errors)
 	var profiles := _profiles_by_weapon(profile_root)
+	_check_victim_impacts(profiles, errors)
 	var packages := _packages_by_weapon(manifest)
 	_expect(packages.size() == 3, "manifest must contain exactly three Priest weapon packages", errors)
 	for weapon_id in WEAPON_IDS:
@@ -92,6 +116,69 @@ func _initialize() -> void:
 		return
 	print("Priest ultimate timelines passed (three distinct scenes, frozen phases, lifecycle, evidence, and crowd budgets).")
 	quit(0)
+
+
+func _check_victim_impacts(profiles: Dictionary, errors: Array[String]) -> void:
+	var canonical_ids: Array = profiles.keys()
+	canonical_ids.sort()
+	var expected_ids: Array = WEAPON_IDS.duplicate()
+	expected_ids.sort()
+	_expect(canonical_ids == expected_ids, "live Priest schema must enumerate only the canonical three weapons", errors)
+	var mapped_ids: Array = EXECUTOR_SCENES.keys()
+	mapped_ids.sort()
+	_expect(mapped_ids == canonical_ids, "every canonical Priest weapon must own an impact mapping", errors)
+
+	var weapons: Array[Dictionary] = []
+	for weapon_id in canonical_ids:
+		weapons.append({"weapon_id": weapon_id})
+	var source_violations := DirectionContract.victim_impact_violations_from_sources("priest", weapons)
+	_expect(source_violations.is_empty(), "Priest source mappings must all instantiate UltimateVictimImpactPlayer: %s" % str(source_violations), errors)
+	_check_broken_mapping_probe(errors)
+
+	for weapon_id in canonical_ids:
+		var scene := (EXECUTOR_SCENES.get(weapon_id) as PackedScene).instantiate() as Node2D
+		var victim := VictimProbe.new()
+		root.add_child(scene)
+		root.add_child(victim)
+		scene.set("ultimate_damage_sink", Callable(self, "_damage_result"))
+		scene.call("_deal", victim, 1.0, "fan3881:%s" % weapon_id, false, {})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s must start UltimateVictimImpactPlayer on a real hit" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == 1, "%s must route the hit victim exactly once", errors)
+			impacts.call("advance", 1.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(victim.flashes == 1 and int(played.get("flashes", 0)) == 1, "%s must retain the victim hit flash", errors)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == str(VICTIM_FRAMES.get(weapon_id, "")), "%s must load its local impact frames", errors)
+			impacts.call("finish")
+		scene.queue_free()
+		victim.queue_free()
+
+
+func _check_broken_mapping_probe(errors: Array[String]) -> void:
+	var fixture_root := ProjectSettings.globalize_path(SOURCE_FIXTURE_ROOT)
+	var fixture_dir := fixture_root.path_join("scripts/ultimates/classes/priest")
+	DirAccess.make_dir_recursive_absolute(fixture_dir)
+	var source := FileAccess.get_file_as_string("res://scripts/ultimates/classes/priest/priest_censer.gd")
+	var fixture := fixture_dir.path_join("priest_censer.gd")
+	var file := FileAccess.open(fixture, FileAccess.WRITE)
+	file.store_string(source.replace("ImpactPlayer.new()", "Node2D.new()"))
+	file.close()
+	var violations := DirectionContract.victim_impact_violations_from_sources("priest", [{"weapon_id": "priest_censer"}], fixture_root)
+	_expect(violations.size() == 1 and violations[0].begins_with("victim_impact.unwired: priest/priest_censer"), "a broken canonical Priest mapping must fail closed", errors)
+
+
+func _damage_result(_target: Node, _amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
+	return {"applied": 1.0}
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
