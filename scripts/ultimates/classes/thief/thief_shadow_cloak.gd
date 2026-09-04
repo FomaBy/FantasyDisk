@@ -24,6 +24,7 @@ var _strike_claims := {}
 var _leases: Array[Dictionary] = []
 var _impacts: Node2D = null
 var _impacts_started := false
+var _impact_marker_pool: Array = []
 
 
 static func parameter_contract() -> Dictionary:
@@ -93,9 +94,11 @@ func stab(index: int) -> void:
 		* (1.0 + _activation.param_float("escalation", 0.12) * float(index))
 	var struck: Array = []
 	for raw_target in _marks:
-		var target := raw_target as Node
-		if target == null or not is_instance_valid(target):
+		# A victim killed by an earlier stab is freed by the death fallback;
+		# validity must be read before the cast, or the cast itself errors.
+		if not is_instance_valid(raw_target):
 			continue
+		var target := raw_target as Node
 		strike_count_for_tests += 1
 		_deal(target, amount, "shadow_stab:%d:%d" % [index, target.get_instance_id()], {
 			"ultimate_mechanic": "shadow_backstab", "strike_index": index,
@@ -137,10 +140,13 @@ func _play_impacts(victims: Array) -> void:
 			parent = get_tree().root
 		parent.add_child(_impacts)
 		_impacts_started = false
+	var markers := _impact_markers(victims)
+	if markers.is_empty():
+		return
 	if _impacts_started:
-		_impacts.enqueue(victims, _activation.origin())
+		_impacts.enqueue(markers, _activation.origin())
 	else:
-		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts.play(VICTIM_FRAMES, markers, _activation.origin())
 		_impacts_started = true
 		_release_impacts_when_drained()
 
@@ -152,10 +158,16 @@ func _release_impacts_when_drained() -> void:
 	var impacts: Node = _impacts
 	var hold: float = float(_activation.param_int("strike_count", 8)) \
 			* _activation.param_float("strike_interval", 0.16) + _ripple_bound_seconds()
+	# The shared container (not a copy) is captured: beats scheduled after the
+	# timer was armed still add their markers, and all of them are freed here.
+	var markers := _impact_marker_pool
 	var release := func() -> void:
 		if is_instance_valid(impacts):
 			impacts.call("finish")
 			impacts.queue_free()
+		for marker in markers:
+			if is_instance_valid(marker):
+				(marker as Node2D).queue_free()
 	get_tree().create_timer(hold).timeout.connect(release)
 
 
@@ -176,8 +188,11 @@ func _exit_tree() -> void:
 
 
 func _remove_lease(lease: Dictionary) -> void:
-	var target := lease.get("target") as Node
-	if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
+	var raw_target = lease.get("target")
+	if not is_instance_valid(raw_target):
+		return
+	var target := raw_target as Node
+	if not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)
 	if not statuses is Dictionary:
@@ -188,3 +203,21 @@ func _remove_lease(lease: Dictionary) -> void:
 		target.remove_meta(StatusEffects.META_KEY)
 	else:
 		target.set_meta(StatusEffects.META_KEY, owned)
+
+## The ripple reads each victim only on its next `_process`, but a lethal hit
+## frees the enemy at the end of this very frame (enemy.gd's death fallback),
+## so a killed target never survives to its own burst. The ordinary flash is
+## already drawn by the damage path and this ripple runs with it off, so a
+## burst needs exactly the victim's position: every beat rides stable position
+## markers, released together with the ripple.
+func _impact_markers(victims: Array) -> Array:
+	var markers: Array = []
+	for raw_victim in victims:
+		var victim := raw_victim as Node2D
+		if victim == null or not is_instance_valid(victim):
+			continue
+		var marker := Node2D.new()
+		marker.global_position = victim.global_position
+		_impact_marker_pool.append(marker)
+		markers.append(marker)
+	return markers

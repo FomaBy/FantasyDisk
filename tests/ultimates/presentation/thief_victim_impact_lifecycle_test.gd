@@ -23,17 +23,22 @@ class FixtureTarget extends Node2D:
 	var max_health := 5000.0
 	var flashes := 0
 	var damage_flashes := 0
+	var dies_on_damage := false
 
 	func _combat_feedback_enabled() -> bool:
 		return true
 
 	## The real enemy flashes on the damage path (enemy.gd _show_combat_feedback);
 	## the count is kept apart so the impact's own flash contribution is visible.
+	## A lethal hit ends like enemy.gd's death fallback: the node is freed at the
+	## end of this frame, before the ripple's next _process reads it.
 	func take_damage(amount: float, _feedback := {}) -> void:
 		health = maxf(health - amount, 0.0)
 		if amount > 0.0:
 			damage_flashes += 1
 			_show_hit_flash()
+		if dies_on_damage and is_zero_approx(health):
+			queue_free()
 
 	func _show_hit_flash() -> void:
 		flashes += 1
@@ -97,7 +102,10 @@ func _initialize() -> void:
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	await process_frame
 	for weapon_id in WEAPON_IDS:
-		await _test_weapon(registry, holder, weapon_id, errors)
+		await _test_weapon(registry, holder, weapon_id, errors, false)
+		# Lethal contour (the fifth QA blocker): a target killed by the cast is
+		# freed before the ripple's next _process; its burst must still appear.
+		await _test_weapon(registry, holder, weapon_id, errors, true)
 	for error in errors:
 		push_error("Thief victim impact lifecycle: %s" % error)
 	if not errors.is_empty():
@@ -110,7 +118,7 @@ func _initialize() -> void:
 
 ## One full natural cast per weapon: activate, let real frames run the tween
 ## chain to completion, keep watching while the ripple drains.
-func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[String]) -> void:
+func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[String], lethal: bool) -> void:
 	var host := FixtureHost.new()
 	holder.add_child(host)
 	await process_frame
@@ -118,6 +126,10 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 	for index in 3:
 		var target := FixtureTarget.new()
 		target.position = Vector2(80.0 + float(index) * 120.0, 0.0)
+		if lethal:
+			target.health = 10.0
+			target.max_health = 10.0
+			target.dies_on_damage = true
 		host.add_child(target)
 		host.fixture_targets.append(target)
 		victims.append(target)
@@ -185,6 +197,10 @@ func _controller_await_drain(holder: Node2D, weapon_id: String, errors: Array[St
 	_expect(not impact_left, "%s drained ripple must release its node" % weapon_id, errors)
 	_expect(orphan_bursts == 0, "%s drained ripple must leave no orphan burst sprites" % weapon_id, errors)
 	for raw_target in victims:
+		# Lethal contour: a target killed by the cast is freed — its burst
+		# evidence is the ripple counters above, not this node.
+		if not is_instance_valid(raw_target):
+			continue
 		var target := raw_target as FixtureTarget
 		_expect(target.health < target.max_health, "%s must actually damage the victims" % weapon_id, errors)
 		_expect(target.damage_flashes >= 1,

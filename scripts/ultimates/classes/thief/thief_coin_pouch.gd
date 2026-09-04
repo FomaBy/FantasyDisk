@@ -17,6 +17,7 @@ var _targets: Array = []
 var _hit_claims := {}
 var _impacts: Node2D = null
 var _impacts_started := false
+var _impact_marker_pool: Array = []
 
 
 static func parameter_contract() -> Dictionary:
@@ -70,9 +71,9 @@ func hit(index: int) -> void:
 	if _activation == null or _activation.is_finished() or _hit_claims.has(index) or index >= _targets.size():
 		return
 	_hit_claims[index] = true
-	var target := _targets[index] as Node
-	if target == null or not is_instance_valid(target):
+	if not is_instance_valid(_targets[index]):
 		return
+	var target := _targets[index] as Node
 	var amount: float = _activation.scaled_damage("coin_damage", 0.0) \
 		* pow(_activation.param_float("damage_falloff", 0.90), float(index))
 	_deal(target, amount, "jackpot_coin:%d" % index, {
@@ -130,10 +131,13 @@ func _play_impacts(victims: Array) -> void:
 			parent = get_tree().root
 		parent.add_child(_impacts)
 		_impacts_started = false
+	var markers := _impact_markers(victims)
+	if markers.is_empty():
+		return
 	if _impacts_started:
-		_impacts.enqueue(victims, _activation.origin())
+		_impacts.enqueue(markers, _activation.origin())
 	else:
-		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts.play(VICTIM_FRAMES, markers, _activation.origin())
 		_impacts_started = true
 		_release_impacts_when_drained()
 
@@ -145,10 +149,16 @@ func _release_impacts_when_drained() -> void:
 	var impacts: Node = _impacts
 	var hold: float = float(_targets.size()) * _activation.param_float("hop_delay", 0.10) \
 			+ _ripple_bound_seconds()
+	# The shared container (not a copy) is captured: beats scheduled after the
+	# timer was armed still add their markers, and all of them are freed here.
+	var markers := _impact_marker_pool
 	var release := func() -> void:
 		if is_instance_valid(impacts):
 			impacts.call("finish")
 			impacts.queue_free()
+		for marker in markers:
+			if is_instance_valid(marker):
+				(marker as Node2D).queue_free()
 	get_tree().create_timer(hold).timeout.connect(release)
 
 
@@ -163,3 +173,21 @@ func _exit_tree() -> void:
 	_targets.clear()
 	_hit_claims.clear()
 	_activation = null
+
+## The ripple reads each victim only on its next `_process`, but a lethal hit
+## frees the enemy at the end of this very frame (enemy.gd's death fallback),
+## so a killed target never survives to its own burst. The ordinary flash is
+## already drawn by the damage path and this ripple runs with it off, so a
+## burst needs exactly the victim's position: every beat rides stable position
+## markers, released together with the ripple.
+func _impact_markers(victims: Array) -> Array:
+	var markers: Array = []
+	for raw_victim in victims:
+		var victim := raw_victim as Node2D
+		if victim == null or not is_instance_valid(victim):
+			continue
+		var marker := Node2D.new()
+		marker.global_position = victim.global_position
+		_impact_marker_pool.append(marker)
+		markers.append(marker)
+	return markers

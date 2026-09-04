@@ -173,9 +173,8 @@ func _check_default_mode_compatibility(errors: Array[String]) -> void:
 
 
 ## The shared gate agrees with the live class schema and manifest (acceptance 1, 2).
-## The aggregate contract file itself is locked by this card (AC-6), so the
-## victim_impact adoption ratchet still names thief; only the class-local
-## mapping is proven here.
+## The stale `victim_impact` adoption-gap entry for thief was dropped from the
+## shared contract (rework 5), so the class-local mapping is the whole proof.
 func _check_real_mapping(weapons: Array, errors: Array[String]) -> void:
 	_expect(DirectionContract.victim_impact_violations_from_sources("thief", weapons).is_empty(),
 		"every canonical thief weapon must route victims through UltimateVictimImpactPlayer: %s" % [
