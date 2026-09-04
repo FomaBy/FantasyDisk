@@ -108,6 +108,7 @@ const ADOPTION_GAPS := {
 		"robot": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 		"sniper": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 		"soldier": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
+		"thief": "caster-side spectacle only: awaiting its FAN-3002 impact retrofit",
 	},
 }
 

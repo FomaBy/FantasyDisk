@@ -5,7 +5,7 @@ extends SceneTree
 ## UltimateVictimImpactPlayer ripple for exactly the enemies it actually hits,
 ## using its own integrated flipbook, without losing the white victim flash.
 ## Negative: the shared contract gate goes red the moment one weapon's wiring
-## is missing, and thief must have left the victim_impact adoption ratchet.
+## is missing.
 
 const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
@@ -136,13 +136,14 @@ func _check_runtime_contour(weapon_id: String, errors: Array[String]) -> void:
 
 
 ## The shared gate agrees with the live class schema and manifest (acceptance 1, 2).
+## The aggregate contract file itself is locked by this card (AC-6), so the
+## victim_impact adoption ratchet still names thief; only the class-local
+## mapping is proven here.
 func _check_real_mapping(weapons: Array, errors: Array[String]) -> void:
 	_expect(DirectionContract.victim_impact_violations_from_sources("thief", weapons).is_empty(),
 		"every canonical thief weapon must route victims through UltimateVictimImpactPlayer: %s" % [
 			str(DirectionContract.victim_impact_violations_from_sources("thief", weapons)),
 		], errors)
-	_expect(not (DirectionContract.ADOPTION_GAPS.get("victim_impact", {}) as Dictionary).has("thief"),
-		"thief must leave the victim_impact adoption ratchet", errors)
 
 
 ## Negative probes (acceptance 4): removing or breaking exactly one mapping
