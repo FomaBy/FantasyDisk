@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/knight/holy_flail/holy_flail_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.knight.holy_flail"
 const EXECUTOR_ID := "weapon_ultimate.executor.knight.holy_flail"
@@ -15,6 +17,8 @@ var _state: Dictionary = {}
 var _next_turn := 0
 var _resolved_turns := {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -151,6 +155,7 @@ func _resolve_targets(turn_index: int, radius: float, final_turn: bool) -> void:
 	var damage_key := "launch_damage" if final_turn else "pull_damage"
 	var fallback_damage := 10.0 if final_turn else 4.0
 	var seen := {}
+	var victims: Array = []
 	for raw_target in _activation.select_targets(center, radius, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -190,6 +195,22 @@ func _resolve_targets(turn_index: int, radius: float, final_turn: bool) -> void:
 			"holy_flail:turn:%d" % turn_index,
 			"holy_flail_launch" if final_turn else "holy_flail_pull"
 		)
+		victims.append(target)
+	_play_impacts(victims)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _lease_status(target: Node, status_id: String) -> void:
@@ -217,6 +238,8 @@ func _exit_tree() -> void:
 	_leased_statuses.clear()
 	_resolved_turns.clear()
 	_state.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null
 
 
