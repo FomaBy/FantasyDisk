@@ -150,6 +150,18 @@ class _RUsageInfoV0(ctypes.Structure):
     ]
 
 
+class _MachTimebaseInfo(ctypes.Structure):
+    _fields_ = [("numerator", ctypes.c_uint32), ("denominator", ctypes.c_uint32)]
+
+
+def _mac_abstime_to_ns(value: int) -> int:
+    timebase = _MachTimebaseInfo()
+    libsystem = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+    if libsystem.mach_timebase_info(ctypes.byref(timebase)) != 0 or timebase.denominator == 0:
+        raise ProbeFailure("cannot resolve the macOS Mach absolute-time conversion")
+    return value * int(timebase.numerator) // int(timebase.denominator)
+
+
 def _mac_child_pids(parent_pid: int) -> list[int]:
     libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
     child_pids = (ctypes.c_int * 64)()
@@ -166,7 +178,7 @@ def _mac_process_cpu_ns(pid: int) -> int:
     libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
     if libproc.proc_pid_rusage(ctypes.c_int(pid), ctypes.c_int(0), ctypes.byref(usage)) != 0:
         raise ProbeFailure(f"cannot read Godot CPU usage for PID {pid}: errno {ctypes.get_errno()}")
-    return int(usage.user_time + usage.system_time)
+    return _mac_abstime_to_ns(int(usage.user_time + usage.system_time))
 
 
 def _run(command: list[str], cwd: Path, *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
