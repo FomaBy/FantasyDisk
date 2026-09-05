@@ -30,6 +30,13 @@ static func cache_generation() -> int:
 	return _cache_generation
 
 
+# FAN-3917: test-only operation counters. They stay false in gameplay and
+# exist so the top-k characterization suite can measure the shipped selection
+# loop against the retired full-sort baseline on fixed seeded fixtures.
+static var debug_top_k_counters_enabled := false
+static var debug_top_k_distance_comparisons := 0
+
+
 # SCRUM-920/922: единая таксономия «эпиков» для правил смещения (knockback).
 # Боссы и ГЛАВНЫЕ элиты карты не смещаются (или капятся потребителем); мини-элиты
 # волн (профиль epic_scale_profile == "mini_elite", спавн:
@@ -65,7 +72,63 @@ static func nearest(source: Node, origin: Vector2, range_limit := INF, excluded_
 	return closest_enemy
 
 
+# FAN-3917: bounded top-k selection. The retired implementation allocated one
+# Dictionary per in-range candidate and sorted the whole candidate list before
+# slicing to `count`. For positive counts this version keeps at most `count`
+# entries in two parallel buffers, so per-query work is bounded by the scan
+# plus small insertions and no candidate Dictionary is ever allocated.
+# Ordering contract: ascending distance, inclusive at exactly range_limit,
+# ties broken by enemy scan order (first cached enemy wins).
+#
+# Negative counts keep the exact baseline semantics: slice(0, count) on the
+# full sorted candidate list, where Godot resolves a negative end relative to
+# the list length (count=-1 drops the farthest eligible enemy, count <= -list
+# size returns an empty array). There is no documented nonnegative
+# precondition on the public parameter, so the legacy path below stays the
+# source of truth for those inputs.
 static func nearest_many(source: Node, origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary = {}) -> Array:
+	if count < 0:
+		return _nearest_many_legacy_slice(source, origin, range_limit, count, excluded_ids)
+	var result := []
+	if count == 0:
+		return result
+	var range_squared := range_limit * range_limit
+	var top_distances := PackedFloat64Array()
+	var top_nodes: Array[Node2D] = []
+	var debug := debug_top_k_counters_enabled
+	for enemy_node in enemies(source):
+		if not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
+			continue
+		var distance := origin.distance_squared_to(enemy_node.global_position)
+		if debug:
+			debug_top_k_distance_comparisons += 1
+		if distance > range_squared:
+			continue
+		if top_nodes.size() == count:
+			if debug:
+				debug_top_k_distance_comparisons += 1
+			if distance >= top_distances[count - 1]:
+				continue
+		var insert_at := top_nodes.size()
+		while insert_at > 0:
+			if debug:
+				debug_top_k_distance_comparisons += 1
+			if distance >= top_distances[insert_at - 1]:
+				break
+			insert_at -= 1
+		top_distances.insert(insert_at, distance)
+		top_nodes.insert(insert_at, enemy_node)
+		if top_nodes.size() > count:
+			top_distances.remove_at(count)
+			top_nodes.remove_at(count)
+	for enemy_node in top_nodes:
+		result.append(enemy_node)
+	return result
+
+
+# Verbatim pre-FAN-3917 nearest_many body; serves negative `count` inputs so
+# their slice-relative-to-length behavior stays bit-identical to the baseline.
+static func _nearest_many_legacy_slice(source: Node, origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary) -> Array:
 	var candidates := []
 	var range_squared := range_limit * range_limit
 	for enemy_node in enemies(source):

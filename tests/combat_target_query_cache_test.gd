@@ -54,6 +54,43 @@ func _initialize() -> void:
 	if not contact_segment.has(contact):
 		errors.append("segment back_allowance should include a contact-stuck enemy behind the segment start")
 
+	# FAN-3917 lifecycle characterization: the frame cache holds node
+	# references, so per-query validity checks decide same-frame lifetimes.
+	var generation_before_free := TARGET_QUERY.cache_generation()
+	far.free()
+	var radius_after_free := TARGET_QUERY.in_radius(origin, origin.global_position, 500.0)
+	if radius_after_free.has(far):
+		errors.append("same-frame freed enemy must not be returned by in_radius")
+	var nearest_after_free = TARGET_QUERY.nearest(origin, origin.global_position, 500.0)
+	if nearest_after_free == far:
+		errors.append("same-frame freed enemy must not be returned by nearest")
+	if TARGET_QUERY.cache_generation() != generation_before_free:
+		errors.append("same-frame free must not rebuild the enemy cache")
+	var spawned_next_frame := _enemy("NextFrameEnemy", Vector2(10.0, 0.0))
+	holder.add_child(spawned_next_frame)
+	await process_frame
+	var nearest_next_frame = TARGET_QUERY.nearest(origin, origin.global_position, 500.0)
+	if nearest_next_frame != contact and nearest_next_frame != spawned_next_frame:
+		errors.append("enemy spawned on a later frame must be visible to the next query")
+	if not is_instance_valid(nearest_next_frame) or origin.global_position.distance_to(nearest_next_frame.global_position) > 10.001:
+		errors.append("next-frame nearest must be one of the closest live enemies")
+	var nearest_many_all: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, 0)
+	if not nearest_many_all.is_empty():
+		errors.append("nearest_many count=0 must return an empty array")
+	var nearest_many_one: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, 1)
+	if nearest_many_one.size() != 1 or origin.global_position.distance_to(nearest_many_one[0].global_position) > 0.001:
+		errors.append("nearest_many count=1 must return exactly the nearest enemy")
+	var nearest_many_everyone: Array = TARGET_QUERY.nearest_many(origin, origin.global_position, 500.0, 100)
+	if nearest_many_everyone.has(far):
+		errors.append("nearest_many on a later frame must not resurrect the freed enemy")
+	var includes_spawned := false
+	for node in nearest_many_everyone:
+		if node == spawned_next_frame:
+			includes_spawned = true
+			break
+	if not includes_spawned:
+		errors.append("nearest_many on a later frame must include the newly spawned enemy")
+
 	holder.queue_free()
 	await process_frame
 
