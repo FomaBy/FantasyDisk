@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3890",
+  "class_id": "thief",
+  "capture_script": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture.gd",
+  "focused_test": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture_test.gd",
+  "victim_impact_source_candidate": {
+    "issue": "FAN-3886",
+    "sha": "245af1bd2390e0b82be4f596b53278ff7d9ee874",
+    "tree": "058d8d80a6cf60f59680c4deaf83b9202d201d1c",
+    "description": "Integrated Thief victim-impact delivery used by this capture package."
+  },
+  "capture_base": {
+    "ref": "origin/dev",
+    "sha": "612279e7ee83a5d60468cbae2e1d039f8715a91d",
+    "tree": "8be184e13edd88d88da1e3aa0257e070c121d695"
+  },
+  "canonical_weapon_ids": [
+    "thief_coin_pouch",
+    "thief_shadow_cloak",
+    "thief_smoke_bomb"
+  ],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "description": "Three-victim live timeline and impact snapshot at the ordinary active beat."
+    },
+    {
+      "id": "crowded",
+      "description": "Thirty-nine live victim markers exercise the production degraded ripple path while HUD and hazard probes remain visible."
+    },
+    {
+      "id": "reduced_motion",
+      "description": "A held, no-camera-shake capture frame preserves the same weapon and victim-impact read without advancing motion after sampling."
+    },
+    {
+      "id": "photosensitivity_safe",
+      "description": "A held low-contrast frame contains no repeating full-screen flash; the bounded victim-impact burst remains local to its targets."
+    }
+  ],
+  "layout": {
+    "rows": "canonical_weapon_ids",
+    "columns": "presentation_modes",
+    "cells_per_sheet": 12,
+    "runtime_resources": {
+      "timeline_scenes": [
+        "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+        "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+        "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn"
+      ],
+      "effect_scenes": [
+        "scripts/ultimates/classes/thief/thief_coin_pouch.tscn",
+        "scripts/ultimates/classes/thief/thief_shadow_cloak.tscn",
+        "scripts/ultimates/classes/thief/thief_smoke_bomb.tscn"
+      ],
+      "victim_impact_service": "scripts/ultimates/presentation/victim_impact_player.gd"
+    }
+  },
+  "viewports": [
+    {
+      "id": "648p",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_648p.png",
+      "lfs_object_id": "sha256:4ab53002237c9693fb804bd5e099183272d876a908c53dec2372c46b3593e5e3"
+    },
+    {
+      "id": "720p",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_720p.png",
+      "lfs_object_id": "sha256:72c99877b29c0ad53e2047893e4faa5fe432b86c673cbcba9aec9c6263606f0c"
+    },
+    {
+      "id": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_1080p.png",
+      "lfs_object_id": "sha256:5281ab6ebf77e17424d4913af8c551699b0f06086d43901ef8f63cb74facf782"
+    },
+    {
+      "id": "2k",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_2k.png",
+      "lfs_object_id": "sha256:8be0343543248af519a60b6a275d87391add5352fea9442c305df512f5b297db"
+    }
+  ],
+  "verification": {
+    "windowed_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/thief_ultimate_four_viewport_capture.gd",
+    "focused_probe": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_ultimate_four_viewport_capture_test.gd",
+    "victim_impact_probe": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_victim_impact_test.gd",
+    "lfs_integrity": "git lfs fsck"
+  },
+  "scope_boundary": "This is reproducible capture evidence only. Production Thief VFX, gameplay, balance, shared registries, and legacy adoption manifests remain unchanged."
+}

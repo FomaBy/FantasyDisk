@@ -44,3 +44,25 @@ python3 tools/godot_gate.py --headless --path . \
 
 The shared `scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd`
 remains intentionally untouched; FAN-1541 owns shared runtime integration.
+
+## FAN-3890 four-viewport victim-impact capture
+
+`fan3890_capture_manifest.json` is a separate, reproducible evidence package
+for the integrated Thief victim-impact delivery. Its four Git-LFS PNG sheets
+each contain the same 3 × 4 matrix: the canonical Coin Pouch, Shadow Cloak,
+and Smoke Bomb scenes in normal, crowded, reduced-motion, and
+photosensitivity-safe presentation. The windowed renderer samples shipped
+timeline scenes and the current per-victim flipbooks, then freezes the sampled
+frame so the player HUD and hazard read remain reviewable.
+
+```bash
+FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed \
+  --script res://tests/ultimates/presentation/thief_ultimate_four_viewport_capture.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/presentation/thief_ultimate_four_viewport_capture_test.gd
+```
+
+The new manifest pins the FAN-3886 integration and capture-base SHA/tree,
+canonical IDs, modes, viewport sizes, and LFS object IDs. It intentionally
+does not alter the legacy class manifest or shared adoption registry; those
+remain owned by their dedicated contract work.
