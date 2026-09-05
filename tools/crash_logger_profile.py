@@ -4,15 +4,18 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 import json
 import math
 import os
 from pathlib import Path
 import re
+import signal
 import statistics
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 
 
@@ -51,6 +54,8 @@ func _run() -> void:
 	var sample_frames := 3000
 	var sample_count := 1
 	var calibration_usec := 2000
+	var phase_file := ""
+	var phase_ack_file := ""
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--warmup-frames="):
 			warmup_frames = int(argument.trim_prefix("--warmup-frames="))
@@ -60,6 +65,10 @@ func _run() -> void:
 			sample_count = int(argument.trim_prefix("--sample-count="))
 		elif argument.begins_with("--calibration-usec="):
 			calibration_usec = int(argument.trim_prefix("--calibration-usec="))
+		elif argument.begins_with("--phase-file="):
+			phase_file = argument.trim_prefix("--phase-file=")
+		elif argument.begins_with("--phase-ack-file="):
+			phase_ack_file = argument.trim_prefix("--phase-ack-file=")
 	var logger: Node = root.get_node_or_null("CrashLogger")
 	if logger == null and ResourceLoader.exists("res://scripts/crash_logger.gd"):
 		logger = load("res://scripts/crash_logger.gd").new()
@@ -71,11 +80,15 @@ func _run() -> void:
 	root.add_child(calibration_load)
 	for frame in range(warmup_frames):
 		await process_frame
+	_phase("normal_start", phase_file, phase_ack_file)
 	var normal: Dictionary = await _sample_windows(sample_frames, sample_count)
+	_phase("normal_end", phase_file, phase_ack_file)
 	calibration_load.busy_usec = calibration_usec
 	for frame in range(maxi(60, int(warmup_frames / 10))):
 		await process_frame
+	_phase("calibration_start", phase_file, phase_ack_file)
 	var calibrated: Dictionary = await _sample_windows(sample_frames, sample_count)
+	_phase("calibration_end", phase_file, phase_ack_file)
 	calibration_load.busy_usec = 0
 	calibration_load.queue_free()
 	main.queue_free()
@@ -83,7 +96,7 @@ func _run() -> void:
 	await process_frame
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
-		"metric": "wall time with automatic render loop disabled and one forced draw per process frame",
+		"metric": "wall-clock diagnostic; authoritative CPU samples added by host profiler",
 		"warmup_frames": warmup_frames,
 		"frames_per_sample": sample_frames,
 		"samples_ms": normal["wall_ms"],
@@ -93,13 +106,24 @@ func _run() -> void:
 	quit(0)
 
 
+func _phase(name: String, phase_file: String, phase_ack_file: String) -> void:
+	if phase_file.is_empty() or phase_ack_file.is_empty():
+		return
+	var file := FileAccess.open(phase_file, FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_string(name)
+	file.close()
+	while FileAccess.get_file_as_string(phase_ack_file) != name:
+		OS.delay_msec(1)
+
+
 func _sample_windows(sample_frames: int, sample_count: int) -> Dictionary:
 	var wall_samples_ms: Array[float] = []
 	for sample_index in range(sample_count):
 		var wall_started := Time.get_ticks_usec()
 		for frame in range(sample_frames):
 			await process_frame
-			RenderingServer.force_draw(false, 0.0)
 		var elapsed_usec := Time.get_ticks_usec() - wall_started
 		wall_samples_ms.append(float(elapsed_usec) / float(sample_frames) / 1000.0)
 	return {"wall_ms": wall_samples_ms}
@@ -108,6 +132,41 @@ func _sample_windows(sample_frames: int, sample_count: int) -> Dictionary:
 
 class ProbeFailure(RuntimeError):
     pass
+
+
+class _RUsageInfoV0(ctypes.Structure):
+    _fields_ = [
+        ("uuid", ctypes.c_uint8 * 16),
+        ("user_time", ctypes.c_uint64),
+        ("system_time", ctypes.c_uint64),
+        ("package_idle_wakeups", ctypes.c_uint64),
+        ("interrupt_wakeups", ctypes.c_uint64),
+        ("pageins", ctypes.c_uint64),
+        ("wired_size", ctypes.c_uint64),
+        ("resident_size", ctypes.c_uint64),
+        ("physical_footprint", ctypes.c_uint64),
+        ("process_start_abstime", ctypes.c_uint64),
+        ("process_exit_abstime", ctypes.c_uint64),
+    ]
+
+
+def _mac_child_pids(parent_pid: int) -> list[int]:
+    libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
+    child_pids = (ctypes.c_int * 64)()
+    byte_count = libproc.proc_listchildpids(
+        ctypes.c_int(parent_pid), ctypes.byref(child_pids), ctypes.sizeof(child_pids)
+    )
+    if byte_count < 0:
+        raise ProbeFailure(f"cannot inspect gated Godot child PID: errno {ctypes.get_errno()}")
+    return [pid for pid in child_pids[: byte_count // ctypes.sizeof(ctypes.c_int)] if pid > 0]
+
+
+def _mac_process_cpu_ns(pid: int) -> int:
+    usage = _RUsageInfoV0()
+    libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
+    if libproc.proc_pid_rusage(ctypes.c_int(pid), ctypes.c_int(0), ctypes.byref(usage)) != 0:
+        raise ProbeFailure(f"cannot read Godot CPU usage for PID {pid}: errno {ctypes.get_errno()}")
+    return int(usage.user_time + usage.system_time)
 
 
 def _run(command: list[str], cwd: Path, *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
@@ -128,6 +187,72 @@ def _run(command: list[str], cwd: Path, *, env: dict[str, str] | None = None) ->
             f"command exited {completed.returncode}: {' '.join(command)}\n{completed.stdout}"
         )
     return completed
+
+
+def _run_profile_gated(
+    command: list[str],
+    cwd: Path,
+    env: dict[str, str],
+    phase_file: Path,
+    phase_ack_file: Path,
+) -> tuple[subprocess.CompletedProcess[str], dict[str, int]]:
+    if sys.platform != "darwin":
+        raise ProbeFailure("the process-CPU P1 profile is certified only for the required macOS host")
+    merged_env = os.environ.copy()
+    merged_env.update(env)
+    phases = ("normal_start", "normal_end", "calibration_start", "calibration_end")
+    cpu_at_phase: dict[str, int] = {}
+    godot_pid = 0
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as output:
+        process = subprocess.Popen(
+            command,
+            cwd=cwd,
+            env=merged_env,
+            text=True,
+            stdout=output,
+            stderr=subprocess.STDOUT,
+        )
+        phase_index = 0
+        try:
+            while process.poll() is None:
+                if phase_index < len(phases) and phase_file.is_file():
+                    observed = phase_file.read_text(encoding="utf-8").strip()
+                    expected = phases[phase_index]
+                    if observed == expected:
+                        if godot_pid == 0:
+                            children = _mac_child_pids(process.pid)
+                            if len(children) != 1:
+                                raise ProbeFailure(
+                                    f"expected one live Godot child for gated profile, found {children}"
+                                )
+                            godot_pid = children[0]
+                        cpu_at_phase[expected] = _mac_process_cpu_ns(godot_pid)
+                        phase_ack_file.write_text(expected, encoding="utf-8")
+                        phase_index += 1
+                time.sleep(0.005)
+        except BaseException:
+            # Only terminate direct, task-owned children of the gate process.
+            for child_pid in _mac_child_pids(process.pid):
+                try:
+                    os.kill(child_pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+            process.terminate()
+            process.wait()
+            raise
+        return_code = process.wait()
+        output.seek(0)
+        captured = output.read()
+    completed = subprocess.CompletedProcess(command, return_code, captured, "")
+    if return_code != 0:
+        raise ProbeFailure(
+            f"command exited {return_code}: {' '.join(command)}\n{captured}"
+        )
+    if tuple(cpu_at_phase) != phases:
+        raise ProbeFailure(
+            f"profile process completed without the required CPU phase sequence: {list(cpu_at_phase)}"
+        )
+    return completed, cpu_at_phase
 
 
 def _godot_path(value: str) -> Path:
@@ -317,10 +442,12 @@ def _profile_one(
             (worktree / ".godot").symlink_to(cache, target_is_directory=True)
         probe = worktree / ".fan3905_frame_probe.gd"
         probe.write_text(PROFILE_SCRIPT, encoding="utf-8")
+        phase_file = worktree / ".fan3905_profile_phase"
+        phase_ack_file = worktree / ".fan3905_profile_phase_ack"
         gate = worktree / "tools" / "godot_gate.py"
         if not gate.is_file():
             raise ProbeFailure(f"frame profile revision {revision} lacks tools/godot_gate.py")
-        completed = _run(
+        completed, cpu_at_phase = _run_profile_gated(
             [
                 sys.executable,
                 str(gate),
@@ -335,15 +462,18 @@ def _profile_one(
                 "--disable-vsync",
                 "--max-fps",
                 "0",
-                "--disable-render-loop",
                 "--",
                 f"--warmup-frames={warmup_frames}",
                 f"--sample-frames={sample_frames}",
                 f"--sample-count={sample_count}",
                 f"--calibration-usec={calibration_usec}",
+                f"--phase-file={phase_file}",
+                f"--phase-ack-file={phase_ack_file}",
             ],
             worktree,
-            env={"FSD_GODOT_EXCLUSIVE": "1", "GODOT_BIN": str(godot)},
+            {"FSD_GODOT_EXCLUSIVE": "1", "GODOT_BIN": str(godot)},
+            phase_file,
+            phase_ack_file,
         )
         diagnostics = _diagnostic_lines(completed.stdout)
         if diagnostics:
@@ -352,8 +482,20 @@ def _profile_one(
         if len(marker_lines) != 1:
             raise ProbeFailure(f"frame profile for {revision} emitted {len(marker_lines)} result markers")
         payload = json.loads(marker_lines[0][len(PROFILE_MARKER) :])
-        samples = [float(value) for value in payload.get("samples_ms", [])]
-        calibration_samples = [float(value) for value in payload.get("calibration_samples_ms", [])]
+        wall_samples = [float(value) for value in payload.get("samples_ms", [])]
+        calibration_wall_samples = [
+            float(value) for value in payload.get("calibration_samples_ms", [])
+        ]
+        samples = [
+            (cpu_at_phase["normal_end"] - cpu_at_phase["normal_start"])
+            / sample_frames
+            / 1_000_000.0
+        ]
+        calibration_samples = [
+            (cpu_at_phase["calibration_end"] - cpu_at_phase["calibration_start"])
+            / sample_frames
+            / 1_000_000.0
+        ]
         if len(samples) != sample_count or any(not math.isfinite(value) or value <= 0 for value in samples):
             raise ProbeFailure(
                 f"frame profile for {revision} did not return {sample_count} valid samples"
@@ -366,6 +508,12 @@ def _profile_one(
             )
         if payload.get("display") == "headless":
             raise ProbeFailure("P1 profile unexpectedly used the headless display driver")
+        payload["wall_samples_ms"] = wall_samples
+        payload["calibration_wall_samples_ms"] = calibration_wall_samples
+        payload["samples_ms"] = samples
+        payload["calibration_samples_ms"] = calibration_samples
+        payload["metric"] = "macOS process CPU user+system time per rendered main-menu frame"
+        payload["cpu_accounting"] = "proc_pid_rusage RUSAGE_INFO_V0 sampled at acknowledged GDScript phase boundaries"
         return {"sha": revision, **payload}
     finally:
         _run(["git", "worktree", "remove", "--force", str(worktree)], project)
@@ -378,15 +526,19 @@ def _median_and_mad(samples: list[float]) -> tuple[float, float]:
 
 
 def _merge_profile_runs(runs: list[dict]) -> dict:
+    sample_fields = {
+        "samples_ms",
+        "calibration_samples_ms",
+        "wall_samples_ms",
+        "calibration_wall_samples_ms",
+    }
     merged = {
         key: value
         for key, value in runs[0].items()
-        if key not in {"samples_ms", "calibration_samples_ms"}
+        if key not in sample_fields
     }
-    merged["samples_ms"] = [float(run["samples_ms"][0]) for run in runs]
-    merged["calibration_samples_ms"] = [
-        float(run["calibration_samples_ms"][0]) for run in runs
-    ]
+    for field in sample_fields:
+        merged[field] = [float(run[field][0]) for run in runs]
     merged["trial_count"] = len(runs)
     return merged
 
@@ -481,8 +633,8 @@ def command_profile(args: argparse.Namespace) -> dict:
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "median of five paired exact-SHA ratios with one forced draw per process frame and automatic render-loop pacing disabled; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
-        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration, one forced draw per frame, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
+        "confidence_rationale": "median of five paired exact-SHA process-CPU ratios; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
+        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration and shared import cache; phase-acknowledged process CPU excludes display pacing; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 
