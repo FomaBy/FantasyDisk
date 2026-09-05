@@ -16,6 +16,7 @@ if str(TOOLS_DIR) not in sys.path:
 
 from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 from release_version_mapping import platform_version_mapping, release_assignment_errors
+from check_gdscript_contracts import contract_errors as gdscript_contract_errors
 
 
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
@@ -614,6 +615,7 @@ def collect_errors(root: Path, changed_ref: str | None = None) -> list[str]:
         + script_uid_errors(root, tracked)
         + player_import_probe_errors(root, tracked)
         + credential_errors(root, tracked)
+        + gdscript_contract_errors(root)
     )
     # The ownership policy needs a diff base; it runs only when the caller
     # (tools/quality_gate.py) hands one over, and then fails closed.
