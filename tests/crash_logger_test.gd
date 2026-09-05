@@ -127,13 +127,13 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	var no_frames: Array[Dictionary] = []
 	service.clear_breadcrumbs_for_tests()
 	service.record_breadcrumb_for_tests(
-		"\"access_token\":\"TEST_ACCESS_TOKEN_CREDENTIAL\" class=berserk",
-		"Authorization: Basic TEST_BASIC_CREDENTIAL weapon=axe",
-		"X-Api-Key: TEST_X_API_KEY_CREDENTIAL event=activation",
+		"\"access_token\":\"TEST_ACCESS_TOKEN_CREDENTIAL\" token=TEST_CLASS_CREDENTIAL class=berserk",
+		"Authorization: Basic TEST_BASIC_CREDENTIAL Bearer TEST_WEAPON_CREDENTIAL weapon=axe",
+		"X-Api-Key: TEST_X_API_KEY_CREDENTIAL secret=TEST_EVENT_CREDENTIAL event=activation",
 		77,
 	)
 	service.capture_error_for_tests(
-		"refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible /Users/example/private/file",
+		"Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible /Users/example/private/file",
 		no_frames,
 		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast",
 		"Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout",
@@ -161,6 +161,10 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 		"TEST_BASIC_CREDENTIAL",
 		"TEST_X_API_KEY_CREDENTIAL",
 		"TEST_REFRESH_TOKEN_CREDENTIAL",
+		"TEST_CLASS_CREDENTIAL",
+		"TEST_WEAPON_CREDENTIAL",
+		"TEST_EVENT_CREDENTIAL",
+		"TEST_TEXT_CREDENTIAL",
 		"TEST_CODE_CREDENTIAL",
 		"TEST_RATIONALE_CREDENTIAL",
 	]:
