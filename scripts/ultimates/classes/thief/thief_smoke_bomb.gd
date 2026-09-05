@@ -119,6 +119,10 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 func _play_impacts(victims: Array) -> void:
 	if victims.is_empty() or _activation == null:
 		return
+	# Markers first: an empty beat must not create a player it would then keep.
+	var markers := _impact_markers(victims)
+	if markers.is_empty():
+		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
 		# The damage path above already drew each victim's ordinary hit flash
@@ -129,9 +133,6 @@ func _play_impacts(victims: Array) -> void:
 			parent = get_tree().root
 		parent.add_child(_impacts)
 		_impacts_started = false
-	var markers := _impact_markers(victims)
-	if markers.is_empty():
-		return
 	if _impacts_started:
 		_impacts.enqueue(markers, _activation.origin())
 	else:
@@ -140,13 +141,14 @@ func _play_impacts(victims: Array) -> void:
 		_release_impacts_when_drained()
 
 
-## One scene-timer release covers the dome's whole duration plus the longest
-## possible ripple. The timer's callable holds only the ripple node itself,
-## because this effect — an activation-owned spawn — is freed the same tick
-## collapse queues the bursts.
+## One scene-timer release covers only the longest possible ripple: collapse
+## is the dome's own last step, so by the time the bursts are queued the cast
+## duration has already elapsed and must not be waited out a second time. The
+## timer's callable holds only the ripple node itself, because this effect —
+## an activation-owned spawn — is freed the same tick collapse queues them.
 func _release_impacts_when_drained() -> void:
 	var impacts: Node = _impacts
-	var hold: float = _activation.param_float("duration", 4.0) + _ripple_bound_seconds()
+	var hold: float = _ripple_bound_seconds()
 	# The shared container (not a copy) is captured: beats scheduled after the
 	# timer was armed still add their markers, and all of them are freed here.
 	var markers := _impact_marker_pool

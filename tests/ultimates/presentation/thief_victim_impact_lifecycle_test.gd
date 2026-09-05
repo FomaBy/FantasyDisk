@@ -3,9 +3,13 @@ extends SceneTree
 ## Controller-level victim-impact lifecycle proof for every canonical Thief
 ## ultimate (FAN-3886 rework). Each cast runs the real Registry → Controller →
 ## executor → activation path with no manual tween stepping and no manual
-## advance() on the ripple: natural frames must show the per-victim impact
-## after the cast's own effect is torn down, and must release every node once
-## the ripple drains. This is the contour the QA blocker was reproduced on.
+## advance() on the ripple. Two contours per weapon: a late-hit run (targets
+## survive to the cast's last beat) must still show live bursts after the
+## controller tears its effect down, and an early-lethal run (every target
+## dies on the first beat, like enemy.gd's death fallback) must still spawn
+## and play one burst per killed victim for the mandated burst window. Both
+## must release player, markers and bursts promptly after the ripple drains —
+## the empty player may not be retained beyond the conservative ripple bound.
 
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
@@ -16,6 +20,13 @@ const CLASS_ID := "thief"
 const WEAPON_IDS := ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]
 const MAX_CAST_FRAMES := 6000
 const MAX_DRAIN_FRAMES := 6000
+## The shared service's conservative ripple bound (widest stagger, full
+## burst, margin) plus process-frame tolerance: the empty player must be
+## released well inside it. A release that re-waits a whole cast duration
+## (the Smoke Bomb defect) lands far outside and fails.
+const MAX_EMPTY_RETENTION_MS := 2500
+const BURST_WINDOW_MIN_SECONDS := 0.30
+const BURST_WINDOW_MAX_SECONDS := 0.60
 
 
 class FixtureTarget extends Node2D:
@@ -140,13 +151,20 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 		await _drop(host)
 		return
 	# Natural run: no custom_step, no advance() — only real process frames.
+	# Evidence is burst-centric, not node-centric: an existing-but-empty player
+	# proves nothing (AC-3), so live bursts, their window and their timely
+	# release are what gets measured.
 	var frames := 0
 	var saw_impact := false
 	var impact_victims := 0
 	var impact_flashes := 0
 	var impact_bursts_spawned := 0
-	var impact_bursts_active := 0
-	var impact_outlived_controller := false
+	var impact_bursts_peak_active := 0
+	var impact_active_after_controller := false
+	var burst_window := -1.0
+	var busy_last_ms := -1
+	var freed_ms := -1
+	var drained_before_free := false
 	var cast_done := false
 	while frames < MAX_CAST_FRAMES + MAX_DRAIN_FRAMES and not cast_done:
 		await process_frame
@@ -158,35 +176,60 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 			impact_victims = maxi(impact_victims, int(state.get("victims", 0)))
 			impact_flashes = maxi(impact_flashes, int(state.get("flashes", 0)))
 			impact_bursts_spawned = maxi(impact_bursts_spawned, int(state.get("created_nodes", 0)))
-			impact_bursts_active = maxi(impact_bursts_active, int(state.get("active", 0)))
-			if not controller.is_active():
-				impact_outlived_controller = true
+			impact_bursts_peak_active = maxi(impact_bursts_peak_active, int(state.get("active", 0)))
+			burst_window = maxf(burst_window, float(state.get("burst_seconds", -1.0)))
+			var busy := int(state.get("pending", 0)) > 0 or int(state.get("active", 0)) > 0
+			drained_before_free = not busy
+			if busy:
+				busy_last_ms = Time.get_ticks_msec()
+				if not controller.is_active():
+					impact_active_after_controller = true
+		elif saw_impact and freed_ms < 0:
+			freed_ms = Time.get_ticks_msec()
 		if frames > MAX_CAST_FRAMES:
 			cast_done = true
 		elif not controller.is_active() and impact == null and frames > 10:
 			cast_done = true
 	if controller.is_active():
 		errors.append("%s must finish its cast naturally within the frame budget" % weapon_id)
-	await _controller_await_drain(holder, weapon_id, errors, victims, saw_impact, impact_victims,
-		impact_flashes, impact_bursts_spawned, impact_bursts_active, impact_outlived_controller)
+	await _assert_contour(holder, weapon_id, errors, victims, lethal, saw_impact, impact_victims,
+		impact_flashes, impact_bursts_spawned, impact_bursts_peak_active,
+		impact_active_after_controller, burst_window, busy_last_ms, freed_ms, drained_before_free)
 	await _drop(host)
 
 
-func _controller_await_drain(holder: Node2D, weapon_id: String, errors: Array[String], victims: Array,
-		saw_impact: bool, impact_victims: int, impact_flashes: int, impact_bursts_spawned: int,
-		impact_bursts_active: int, impact_outlived_controller: bool) -> void:
+func _assert_contour(holder: Node2D, weapon_id: String, errors: Array[String], victims: Array,
+		lethal: bool, saw_impact: bool, impact_victims: int, impact_flashes: int,
+		impact_bursts_spawned: int, impact_bursts_peak_active: int,
+		impact_active_after_controller: bool, burst_window: float,
+		busy_last_ms: int, freed_ms: int, drained_before_free: bool) -> void:
 	# Wait out the drain window so the release timer proves node cleanup.
 	for _index in 30:
 		await process_frame
 	_expect(saw_impact, "%s must start the shared victim impact on the real controller path" % weapon_id, errors)
 	_expect(impact_victims >= victims.size(),
 		"%s impact must cover every hit victim across its whole ripple (best victims=%d)" % [weapon_id, impact_victims], errors)
-	_expect(impact_bursts_spawned >= 1 and impact_bursts_active >= 1,
-		"%s impact burst must visibly spawn and play on real frames (created=%d, active=%d)" % [weapon_id, impact_bursts_spawned, impact_bursts_active], errors)
+	_expect(impact_bursts_spawned >= victims.size() and impact_bursts_peak_active >= 1,
+		"%s must spawn one burst per victim and play it on real frames (created=%d, peak active=%d)" % [weapon_id, impact_bursts_spawned, impact_bursts_peak_active], errors)
+	_expect(burst_window >= BURST_WINDOW_MIN_SECONDS and burst_window <= BURST_WINDOW_MAX_SECONDS,
+		"%s burst window must stay the mandated 0.3-0.6s (planned %.2fs)" % [weapon_id, burst_window], errors)
 	_expect(impact_flashes == 0,
 		"%s impact must not draw the ordinary hit flash itself (AC-4: exactly one per damage event), flashes=%d" % [weapon_id, impact_flashes], errors)
-	_expect(impact_outlived_controller,
-		"%s impact must still exist at the frame the controller completed (the QA smoke-bomb blocker)" % weapon_id, errors)
+	# Late-hit contour only: when the last beat lands at the cast's end, a
+	# live burst must survive the controller's teardown — the original
+	# blocker. In the early-lethal contour every victim dies on the first
+	# beat, so the bursts legitimately end long before the cast does; what
+	# must hold there is one real burst per killed victim, asserted above.
+	if not lethal:
+		_expect(impact_active_after_controller,
+			"%s must still show live bursts after the controller completed" % weapon_id, errors)
+	_expect(drained_before_free, "%s ripple must fully drain before its player is released" % weapon_id, errors)
+	_expect(busy_last_ms >= 0 and freed_ms >= 0,
+		"%s must observe both the last busy ripple frame and its release" % weapon_id, errors)
+	if busy_last_ms >= 0 and freed_ms >= 0:
+		var retained_ms := freed_ms - busy_last_ms
+		_expect(retained_ms <= MAX_EMPTY_RETENTION_MS,
+			"%s empty player retained %dms after its last burst (bound %dms) — release must not re-wait cast time" % [weapon_id, retained_ms, MAX_EMPTY_RETENTION_MS], errors)
 	var impact_left := false
 	var orphan_bursts := 0
 	for child in holder.get_children():

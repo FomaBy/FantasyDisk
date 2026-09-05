@@ -130,6 +130,10 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 func _play_impacts(victims: Array) -> void:
 	if victims.is_empty() or _activation == null:
 		return
+	# Markers first: an empty beat must not create a player it would then keep.
+	var markers := _impact_markers(victims)
+	if markers.is_empty():
+		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
 		# The damage path above already drew each victim's ordinary hit flash
@@ -140,9 +144,6 @@ func _play_impacts(victims: Array) -> void:
 			parent = get_tree().root
 		parent.add_child(_impacts)
 		_impacts_started = false
-	var markers := _impact_markers(victims)
-	if markers.is_empty():
-		return
 	if _impacts_started:
 		_impacts.enqueue(markers, _activation.origin())
 	else:
