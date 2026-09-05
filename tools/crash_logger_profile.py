@@ -76,6 +76,11 @@ func _run() -> void:
 	for frame in range(maxi(60, int(warmup_frames / 10))):
 		await process_frame
 	var calibrated: Dictionary = await _sample_windows(sample_frames, sample_count)
+	calibration_load.busy_usec = 0
+	calibration_load.queue_free()
+	main.queue_free()
+	await process_frame
+	await process_frame
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
 		"metric": "wall time with --fixed-fps 60 real-time synchronization disabled",
