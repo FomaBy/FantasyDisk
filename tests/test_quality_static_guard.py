@@ -127,6 +127,14 @@ class QualityStaticGuardTest(unittest.TestCase):
     def test_current_checkout_passes(self):
         self.assertEqual(self.module.collect_errors(ROOT), [])
 
+    def test_gdscript_contract_entrypoint_is_wired_into_the_static_guard(self):
+        original = self.module.gdscript_contract_errors
+        try:
+            self.module.gdscript_contract_errors = lambda _root: ["fixture GDScript contract failure"]
+            self.assertIn("fixture GDScript contract failure", self.module.collect_errors(ROOT))
+        finally:
+            self.module.gdscript_contract_errors = original
+
     def test_missing_fantasydisk_player_import_probe_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = self.fantasydisk_fixture(tmp)
