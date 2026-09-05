@@ -11,8 +11,14 @@ editable roster.
 A ``passing`` state is never read from the repository.  It exists only in a
 report this checker generated from a successful fresh run, bound to the
 candidate SHA, the normalized recipe digest and the digest of the actual log.
-``--verify-report`` re-derives every binding, so a stale, manual or edited
-record fails closed.
+Evidence enters the report on exactly two paths: the checker executes the
+recipe itself, or ``tools/quality_gate.py`` executes the suite and hands the
+actual command, output and exit status to ``bind_profile_run`` inside its own
+process.  No manifest, log or report on disk is ever imported as proof, and an
+executed command that does not normalize to the committed recipe binds
+nothing.  ``--verify-report`` re-derives every binding against the current
+clean checkout, so a stale, manual or edited record fails closed; it detects
+drift after a run and is not a substitute for reproducing the run.
 
 Recipes are argv arrays executed without shell interpretation.  The only
 allowlisted shape is the repository-local Godot gate launching one suite from
@@ -98,6 +104,33 @@ def argv_digest(argv: Sequence[str]) -> str:
     return sha256_bytes(encoded.encode("utf-8"))
 
 
+def normalized_executed_argv(command: object, root: Path) -> list[str] | None:
+    """Map a command that was actually executed back to its recipe form.
+
+    Runtime scratch arguments after ``--`` are dropped, the interpreter token
+    is fixed to ``python3``, the runner must resolve to this repository's Godot
+    gate and ``--path`` must resolve to this checkout.  ``None`` means the
+    command is not an execution of any allowlisted recipe, so no evidence can
+    bind to it.
+    """
+    if not isinstance(command, (list, tuple)) or not all(isinstance(token, str) for token in command):
+        return None
+    tokens = list(command)
+    if "--" in tokens:
+        tokens = tokens[: tokens.index("--")]
+    if len(tokens) != RECIPE_ARGV_LENGTH:
+        return None
+    root_resolved = root.resolve()
+    try:
+        runner = (root_resolved / tokens[1]).resolve(strict=True)
+        project = (root_resolved / tokens[4]).resolve(strict=True)
+    except (OSError, RuntimeError):
+        return None
+    if runner != (root_resolved / RECIPE_RUNNER).resolve() or project != root_resolved:
+        return None
+    return [RECIPE_INTERPRETER, RECIPE_RUNNER, tokens[2], tokens[3], ".", tokens[5], tokens[6]]
+
+
 def _read_json(path: Path) -> object:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -113,11 +146,11 @@ def _git(root: Path, *args: str) -> str:
     )
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or f"git {' '.join(args)} failed")
-    return result.stdout.strip()
+    return result.stdout
 
 
 def candidate_sha(root: Path) -> str:
-    sha = _git(root, "rev-parse", "HEAD")
+    sha = _git(root, "rev-parse", "HEAD").strip()
     if not re.fullmatch(r"[0-9a-f]{40}", sha):
         raise RuntimeError(f"HEAD is not a 40-hex commit: {sha!r}")
     return sha
@@ -125,7 +158,7 @@ def candidate_sha(root: Path) -> str:
 
 def worktree_dirty_paths(root: Path) -> list[str]:
     status = _git(root, "status", "--porcelain=v1", "--untracked-files=all")
-    return [line for line in status.splitlines() if line]
+    return [line for line in status.splitlines() if line.strip()]
 
 
 # --------------------------------------------------------------------------
@@ -721,36 +754,65 @@ def _within_task_output(root: Path, path: Path) -> bool:
     return (root / TASK_OUTPUT_DIR).resolve() in resolved.parents
 
 
-def load_profile_results(root: Path, path: Path | None, sha: str) -> tuple[dict[str, dict], list[str]]:
-    """Suites the invoking quality-gate profile already executed on this candidate."""
-    if path is None:
-        return {}, []
-    try:
-        document = _read_json(path)
-    except (OSError, json.JSONDecodeError) as exc:
-        return {}, [failure(
-            f"profile results {path} cannot be parsed: {exc}",
-            "profile evidence cannot be reused, so nothing is deduplicated",
-            "pass the manifest written by tools/quality_gate.py or omit --profile-results",
-        )]
-    if not isinstance(document, dict) or document.get("candidate_sha") != sha:
-        return {}, [failure(
-            f"profile results {path} do not belong to candidate {sha}",
-            "evidence from another candidate would be attached to this one",
-            "regenerate the manifest in the same quality-gate run",
-        )]
-    suites = document.get("suites")
-    if not isinstance(suites, dict):
-        return {}, []
-    reusable: dict[str, dict] = {}
-    for script, result in suites.items():
-        if not isinstance(result, dict) or not isinstance(result.get("log_path"), str):
-            continue
-        log_path = root / result["log_path"]
-        if not _within_task_output(root, log_path) or not log_path.is_file():
-            continue
-        reusable[script] = {**result, "log_file": log_path}
-    return reusable, []
+def profile_outcome(result: object) -> dict:
+    """Outcome of a suite the invoking quality gate executed in this process.
+
+    The gate hands over the command it launched, the output it captured and
+    the exit status it observed; nothing is read from a manifest on disk.
+    Whether that command is an execution of the recipe is decided by
+    :func:`generate_report` through :func:`normalized_executed_argv`.
+    """
+    record = result if isinstance(result, dict) else {}
+    output = record.get("output")
+    if isinstance(output, bytes):
+        log_bytes = output
+    elif isinstance(output, str):
+        log_bytes = output.encode("utf-8", errors="replace")
+    else:
+        log_bytes = b""
+    command = record.get("command")
+    timed_out = bool(record.get("timed_out"))
+    exit_code = record.get("exit_code")
+    diagnostic = fatal_output_signal(log_bytes.decode("utf-8", errors="replace"))
+    reasons: list[str] = []
+    if not isinstance(output, (str, bytes)):
+        reasons.append("profile result carries no captured output")
+    if timed_out:
+        reasons.append("timeout in the invoking profile")
+    if diagnostic:
+        reasons.append(f"fatal diagnostic: {diagnostic}")
+    if exit_code != 0 and not timed_out:
+        reasons.append(f"exit {exit_code}")
+    return {
+        "executed_argv": list(command) if isinstance(command, (list, tuple)) else [],
+        "exit_code": exit_code,
+        "timed_out": timed_out,
+        "output_truncated": False,
+        "fatal_diagnostic": diagnostic,
+        "duration_seconds": record.get("duration_seconds", 0.0),
+        "log_bytes": log_bytes,
+        "passed": not reasons,
+        "reasons": reasons,
+        "executed_by": "quality_gate_profile",
+    }
+
+
+def _bind_to_recipe(outcome: dict, recipe_argv: Sequence[str], root: Path) -> None:
+    """Refuse evidence whose executed command is not this recipe."""
+    if outcome["executed_by"] == "none":
+        return
+    executed = normalized_executed_argv(outcome["executed_argv"], root)
+    if executed is None:
+        outcome["reasons"].append(
+            "executed command is missing or is not an allowlisted recipe execution"
+            if not outcome["executed_argv"]
+            else f"executed command {outcome['executed_argv']!r} is not an allowlisted recipe execution"
+        )
+    elif executed != normalized_argv(recipe_argv):
+        outcome["reasons"].append(
+            f"executed command normalizes to {executed!r}, not to the recipe {normalized_argv(recipe_argv)!r}"
+        )
+    outcome["passed"] = not outcome["reasons"]
 
 
 def _entry_record(entry: dict, state: str, reason: str = "", evidence: dict | None = None) -> dict:
@@ -777,13 +839,16 @@ def generate_report(
     log_dir: Path,
     timeout: float,
     output_limit: int,
-    profile_results: dict[str, dict],
+    profile_results: dict[str, dict] | None = None,
     execute: bool = True,
 ) -> tuple[dict, list[str]]:
     """Execute every distinct recipe once and bind its evidence to all covered entries.
 
-    With ``execute=False`` (the quality gate's ``--bind-only``) nothing is
-    launched: a recipe the invoking profile did not run fails as unexecuted.
+    ``profile_results`` are in-memory suite results of the quality gate that
+    is calling :func:`bind_profile_run` in this same process, keyed by
+    ``res://`` suite.  With ``execute=False`` nothing is launched: a recipe the
+    invoking profile did not run fails as unexecuted.  Every executed command,
+    the checker's own included, must normalize to the recipe it proves.
     """
     errors: list[str] = []
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -807,36 +872,13 @@ def generate_report(
     results: dict[str, dict] = {}
     for index, (digest, recipe) in enumerate(recipes.items(), start=1):
         script = recipe["script"]
-        reused = profile_results.get(script)
+        reused = (profile_results or {}).get(script)
         print(
             f"RECIPE {index}/{len(recipes)} {script} -> {', '.join(recipe['entries'])}",
             flush=True,
         )
         if reused is not None:
-            log_bytes = Path(reused["log_file"]).read_bytes()
-            text = log_bytes.decode("utf-8", errors="replace")
-            diagnostic = fatal_output_signal(text)
-            timed_out = bool(reused.get("timed_out"))
-            exit_code = reused.get("exit_code")
-            reasons = []
-            if timed_out:
-                reasons.append("timeout in the invoking profile")
-            if diagnostic:
-                reasons.append(f"fatal diagnostic: {diagnostic}")
-            if exit_code != 0 and not timed_out:
-                reasons.append(f"exit {exit_code}")
-            outcome = {
-                "executed_argv": reused.get("executed_argv", []),
-                "exit_code": exit_code,
-                "timed_out": timed_out,
-                "output_truncated": False,
-                "fatal_diagnostic": diagnostic,
-                "duration_seconds": reused.get("duration_seconds", 0.0),
-                "log_bytes": log_bytes,
-                "passed": not reasons,
-                "reasons": reasons,
-                "executed_by": "quality_gate_profile",
-            }
+            outcome = profile_outcome(reused)
         elif not execute:
             outcome = {
                 "executed_argv": [],
@@ -853,6 +895,7 @@ def generate_report(
         else:
             outcome = execute_recipe(recipe["argv"], root, timeout, output_limit)
             outcome["executed_by"] = "ultimate_feature_list_check"
+        _bind_to_recipe(outcome, recipe["argv"], root)
         log_path = log_dir / f"{digest}.log"
         log_path.write_bytes(outcome["log_bytes"])
         log_digest = sha256_bytes(outcome["log_bytes"])
@@ -932,9 +975,19 @@ def generate_report(
 
 
 def verify_report(
-    root: Path, report_path: Path, entries: Sequence[dict], sha: str
+    root: Path,
+    report_path: Path,
+    entries: Sequence[dict],
+    sha: str,
+    feature_list_digest: str,
 ) -> list[str]:
-    """Re-derive every binding of a stored report against the current candidate."""
+    """Re-derive every binding of a stored report against the current candidate.
+
+    The checkout must be the same clean commit the report was generated on:
+    HEAD, the feature list, every committed recipe, every log and every
+    recipe execution record are re-derived.  This catches drift after a run;
+    a report is proof only for whoever produced it or reproduces it.
+    """
     try:
         report = _read_json(report_path)
     except (OSError, json.JSONDecodeError) as exc:
@@ -956,6 +1009,26 @@ def verify_report(
             "every passing record is stale: it proves another commit",
             "regenerate the report on the current candidate",
         ))
+    if report.get("feature_list_digest") != feature_list_digest:
+        errors.append(failure(
+            "report was generated from a different feature list than the one in this checkout",
+            "the mapping the report describes is not the committed one (same HEAD, edited list)",
+            "regenerate the report against the current feature list",
+        ))
+    recorded_dirty = report.get("worktree_dirty")
+    if recorded_dirty != []:
+        errors.append(failure(
+            f"report was generated on a dirty worktree ({recorded_dirty!r})",
+            "the executed suites may differ from candidate HEAD, so the pass is not bound to it",
+            "commit or discard local changes and regenerate the report from a clean checkout",
+        ))
+    dirty_now = worktree_dirty_paths(root)
+    if dirty_now:
+        errors.append(failure(
+            f"worktree is dirty now ({dirty_now!r})",
+            "the checkout no longer equals candidate HEAD, so the report cannot be re-derived against it",
+            "commit or discard local changes before verifying",
+        ))
     by_id = {entry["id"]: entry for entry in entries}
     records = report.get("entries")
     if not isinstance(records, list):
@@ -964,6 +1037,8 @@ def verify_report(
             "no evidence can be verified",
             "regenerate the report",
         )]
+    recipe_records = report.get("recipes")
+    recipe_records = recipe_records if isinstance(recipe_records, dict) else {}
     seen: set[str] = set()
     for record in records:
         if not isinstance(record, dict) or not isinstance(record.get("id"), str):
@@ -1059,6 +1134,35 @@ def verify_report(
                 "the suite announced a failure, so the pass is false",
                 "fix the suite or the ultimate and regenerate the report",
             ))
+            continue
+        recipe_record = recipe_records.get(entry["argv_digest"])
+        if not isinstance(recipe_record, dict):
+            errors.append(failure(
+                f"report entry {entry_id!r} has no recipe execution record",
+                "the pass cannot be traced to an executed command",
+                "regenerate the report with a fresh run",
+            ))
+            continue
+        executed = normalized_executed_argv(recipe_record.get("executed_argv"), root)
+        if executed != normalized_argv(entry["verification"]):
+            errors.append(failure(
+                f"report entry {entry_id!r} recipe record executed {recipe_record.get('executed_argv')!r}, "
+                "which does not normalize to the committed recipe",
+                "the log proves some other command, or none, not this recipe",
+                "regenerate the report with a fresh run",
+            ))
+            continue
+        if (
+            recipe_record.get("passed") is not True
+            or recipe_record.get("exit_code") != 0
+            or recipe_record.get("log_digest") != evidence.get("log_digest")
+            or recipe_record.get("log_path") != log_relative
+        ):
+            errors.append(failure(
+                f"report entry {entry_id!r} recipe record disagrees with the entry evidence",
+                "the entry was edited independently of the execution that produced it",
+                "regenerate the report with a fresh run",
+            ))
     missing = sorted(set(by_id) - seen)
     if missing:
         errors.append(failure(
@@ -1081,15 +1185,9 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--report", default=DEFAULT_REPORT_PATH, help="generated report path relative to root")
     parser.add_argument("--log-dir", default=DEFAULT_LOG_DIR, help="recipe log directory relative to root")
     parser.add_argument("--validate-only", action="store_true", help="validate the list and recipes; run nothing")
-    parser.add_argument("--verify-report", help="verify a stored report against HEAD instead of running")
     parser.add_argument(
-        "--profile-results",
-        help="quality-gate manifest of suites already executed on this candidate (deduplication)",
-    )
-    parser.add_argument(
-        "--bind-only",
-        action="store_true",
-        help="never launch a recipe; bind evidence from --profile-results and fail unexecuted recipes",
+        "--verify-report",
+        help="re-derive a stored report against the current clean HEAD instead of running",
     )
     parser.add_argument(
         "--timeout",
@@ -1108,6 +1206,89 @@ def _print_errors(errors: Sequence[str]) -> None:
         print(f"ULTIMATE FEATURE LIST FAIL: {error}", file=sys.stderr, flush=True)
 
 
+def _print_summary(report: dict, report_path: Path, root: Path) -> None:
+    summary = report["summary"]
+    print(
+        f"ULTIMATE FEATURE LIST {report['status'].upper()}: "
+        f"{summary['passing']} passing, {summary['failed']} failed, {summary['blocked']} blocked, "
+        f"{summary['not_started']} not_started; report={report_path.relative_to(root).as_posix()}",
+        flush=True,
+    )
+
+
+def load_validated_feature_list(root: Path, feature_list_path: Path) -> tuple[list[str], dict, list[dict], list[str]]:
+    """Canonical discovery plus feature-list validation; ``entries`` is empty on error."""
+    classes, identities, errors = canonical_identities(root)
+    document, load_errors = load_feature_list(feature_list_path)
+    errors.extend(load_errors)
+    entries: list[dict] = []
+    if not load_errors:
+        entries, list_errors = validate_feature_list(document, classes, identities, root)
+        errors.extend(list_errors)
+    return classes, identities, entries, errors
+
+
+def bind_profile_run(
+    root: Path,
+    profile_results: dict[str, dict],
+    report: str = DEFAULT_REPORT_PATH,
+    log_dir: str = DEFAULT_LOG_DIR,
+) -> dict:
+    """Quality-gate entry point: bind the feature list to suites the gate ran itself.
+
+    ``profile_results`` are the calling gate's own in-memory results for this
+    run, keyed by ``res://`` suite (``command``, ``output``, ``exit_code``,
+    ``timed_out``, ``duration_seconds``).  Nothing is launched and nothing is
+    read from a manifest: the trust boundary is this process.  Returns a gate
+    step record; ``exit_code`` follows the CLI contract (0/1/2).
+    """
+    started = time.monotonic()
+    root = root.resolve()
+    step: dict = {"name": "ultimate-feature-list", "status": "failed", "exit_code": 1, "report": report}
+    report_path = root / report
+    log_dir_path = root / log_dir
+    for label, path in (("report", report_path), ("log_dir", log_dir_path)):
+        if not _within_task_output(root, path):
+            step.update(exit_code=2, errors=[f"{label} must stay under {TASK_OUTPUT_DIR}/"])
+            print(f"ultimate_feature_list_check: {step['errors'][0]}", file=sys.stderr, flush=True)
+            return step
+    feature_list_path = root / FEATURE_LIST_PATH
+    _, _, entries, errors = load_validated_feature_list(root, feature_list_path)
+    if errors:
+        _print_errors(errors)
+        step["errors"] = errors
+        step["duration_seconds"] = round(time.monotonic() - started, 3)
+        return step
+    try:
+        sha = candidate_sha(root)
+    except RuntimeError as exc:
+        print(f"ultimate_feature_list_check: {exc}", file=sys.stderr, flush=True)
+        step.update(exit_code=2, errors=[str(exc)])
+        return step
+    report_document, run_errors = generate_report(
+        root,
+        entries,
+        sha,
+        sha256_bytes(feature_list_path.read_bytes()),
+        report_path,
+        log_dir_path,
+        DEFAULT_TIMEOUT,
+        DEFAULT_OUTPUT_LIMIT,
+        profile_results,
+        execute=False,
+    )
+    _print_errors(run_errors)
+    _print_summary(report_document, report_path, root)
+    step.update(
+        status="failed" if run_errors else "passed",
+        exit_code=1 if run_errors else 0,
+        duration_seconds=round(time.monotonic() - started, 3),
+        summary=report_document["summary"],
+        errors=run_errors,
+    )
+    return step
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     if os.environ.get(NESTED_GUARD_ENV):
@@ -1119,9 +1300,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     if args.timeout <= 0 or args.output_limit <= 0:
         print("ultimate_feature_list_check: timeout and output limit must be positive", file=sys.stderr)
-        return 2
-    if args.bind_only and not args.profile_results:
-        print("ultimate_feature_list_check: --bind-only requires --profile-results", file=sys.stderr)
         return 2
     root = args.root.resolve()
     report_path = root / args.report
@@ -1136,13 +1314,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
                 return 2
     feature_list_path = root / args.feature_list
-    classes, identities, errors = canonical_identities(root)
-    document, load_errors = load_feature_list(feature_list_path)
-    errors.extend(load_errors)
-    entries: list[dict] = []
-    if not load_errors:
-        entries, list_errors = validate_feature_list(document, classes, identities, root)
-        errors.extend(list_errors)
+    classes, identities, entries, errors = load_validated_feature_list(root, feature_list_path)
     if errors:
         _print_errors(errors)
         print(f"ULTIMATE FEATURE LIST FAILED: {len(errors)} validation error(s)", file=sys.stderr)
@@ -1161,40 +1333,30 @@ def main(argv: Sequence[str] | None = None) -> int:
     except RuntimeError as exc:
         print(f"ultimate_feature_list_check: {exc}", file=sys.stderr)
         return 2
+    feature_list_digest = sha256_bytes(feature_list_path.read_bytes())
     if args.verify_report:
-        verify_errors = verify_report(root, root / args.verify_report, entries, sha)
+        verify_errors = verify_report(root, root / args.verify_report, entries, sha, feature_list_digest)
         if verify_errors:
             _print_errors(verify_errors)
             print(f"ULTIMATE FEATURE LIST FAILED: {len(verify_errors)} verification error(s)", file=sys.stderr)
             return 1
         print(f"ULTIMATE FEATURE LIST VERIFIED: report bound to candidate {sha}", flush=True)
         return 0
-    profile_results, profile_errors = load_profile_results(
-        root, root / args.profile_results if args.profile_results else None, sha
-    )
-    if profile_errors:
-        _print_errors(profile_errors)
-        return 1
+    # The standalone checker always executes every distinct recipe itself; the
+    # only other evidence path is the quality gate calling bind_profile_run in
+    # its own process with the suites it executed.
     report, run_errors = generate_report(
         root,
         entries,
         sha,
-        sha256_bytes(feature_list_path.read_bytes()),
+        feature_list_digest,
         report_path,
         log_dir,
         args.timeout,
         args.output_limit,
-        profile_results,
-        execute=not args.bind_only,
     )
     _print_errors(run_errors)
-    summary = report["summary"]
-    print(
-        f"ULTIMATE FEATURE LIST {report['status'].upper()}: "
-        f"{summary['passing']} passing, {summary['failed']} failed, {summary['blocked']} blocked, "
-        f"{summary['not_started']} not_started; report={report_path.relative_to(root).as_posix()}",
-        flush=True,
-    )
+    _print_summary(report, report_path, root)
     return 1 if run_errors else 0
 
 

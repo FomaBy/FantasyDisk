@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import importlib.util
 import json
 import os
 import re
@@ -247,9 +248,10 @@ PATH_TEST_RULES = {
 }
 # FAN-3904: the ultimate feature-list checker (17 classes / 51 weapons) joins
 # the changed profile only when its inputs move.  The gate itself selects and
-# runs the recipe suites once, keeps their logs, and the checker then binds the
-# evidence to this run (`--bind-only`): no suite is launched twice and the
-# checker never launches Godot from inside the gate.
+# runs the recipe suites once and then hands its own in-memory results (actual
+# command, captured output, exit status) to the checker library inside this
+# process: no suite is launched twice, no manifest or log on disk is imported
+# as evidence, and the checker never launches Godot from inside the gate.
 ULTIMATE_FEATURE_LIST_CHECK = ROOT / "tools" / "ultimate_feature_list_check.py"
 ULTIMATE_FEATURE_LIST_PATH = "data/ultimates/feature_list.json"
 ULTIMATE_FEATURE_LIST_DIR = "build/ultimate_feature_list"
@@ -1293,56 +1295,52 @@ def run_godot_test(path: Path, timeout: float) -> dict:
     }
 
 
-def _keep_profile_suite_log(outcome: dict, output: str, command: Sequence[str]) -> None:
-    """FAN-3904: persist one suite log so the checker can bind to this run."""
-    log_dir = ROOT / ULTIMATE_FEATURE_LIST_DIR / "profile_logs"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / f"{outcome['name']}.log"
-    log_path.write_text(output, encoding="utf-8")
-    outcome["log_path"] = log_path.relative_to(ROOT).as_posix()
-    outcome["command"] = list(command)
+def _load_feature_list_checker():
+    """Import the checker library lazily; it imports this module for shared helpers."""
+    module = sys.modules.get("ultimate_feature_list_check")
+    if module is None:
+        # The checker falls back to `import quality_gate`; point that name at the
+        # running module so both share one fatal_output_signal/EXTENDS_RE.
+        running = sys.modules.get(__name__)
+        if running is not None:
+            sys.modules.setdefault("quality_gate", running)
+        spec = importlib.util.spec_from_file_location(
+            "ultimate_feature_list_check", ULTIMATE_FEATURE_LIST_CHECK
+        )
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot load {ULTIMATE_FEATURE_LIST_CHECK}")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules["ultimate_feature_list_check"] = module
+    return module
 
 
-def run_ultimate_feature_list_check(static_timeout: float, godot_results: Sequence[dict]) -> dict:
-    """Bind the feature list to this run's suite logs; the checker launches nothing."""
-    output_dir = ROOT / ULTIMATE_FEATURE_LIST_DIR
-    output_dir.mkdir(parents=True, exist_ok=True)
-    suites = {
-        result["script"]: {
-            "log_path": result["log_path"],
-            "exit_code": result.get("exit_code"),
-            "timed_out": bool(result.get("timed_out")),
-            "duration_seconds": result.get("duration_seconds", 0.0),
-            "executed_argv": result.get("command", []),
-        }
-        for result in godot_results
-        if isinstance(result.get("script"), str) and isinstance(result.get("log_path"), str)
-    }
-    manifest = output_dir / "profile_results.json"
-    manifest.write_text(
-        json.dumps({
-            "schema_version": 1,
-            "candidate_sha": subprocess.check_output(
-                ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
-            ).strip(),
-            "suites": suites,
-        }, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    command = [
-        sys.executable,
-        str(ULTIMATE_FEATURE_LIST_CHECK),
-        "--bind-only",
-        "--report",
-        ULTIMATE_FEATURE_LIST_REPORT,
-        "--log-dir",
-        f"{ULTIMATE_FEATURE_LIST_DIR}/logs",
-        "--profile-results",
-        manifest.relative_to(ROOT).as_posix(),
-    ]
+def run_ultimate_feature_list_check(profile_run: dict[str, dict]) -> dict:
+    """Bind the feature list to the suites this gate run executed, in this process.
+
+    ``profile_run`` maps each executed ``res://`` suite to the command this run
+    launched, the output it captured and the exit status it observed.  The
+    checker launches nothing and reads no manifest; the trust boundary is the
+    gate process that produced these results.
+    """
+    started = time.monotonic()
     print("ULTIMATE FEATURE LIST binding evidence to this run's suites", flush=True)
-    result = _run_command("ultimate-feature-list", command, static_timeout)
-    result["report"] = ULTIMATE_FEATURE_LIST_REPORT
+    try:
+        checker = _load_feature_list_checker()
+        result = checker.bind_profile_run(ROOT, profile_run, ULTIMATE_FEATURE_LIST_REPORT)
+    except Exception as exc:  # noqa: BLE001 - a crashed binding must fail the step closed
+        print(f"ULTIMATE FEATURE LIST FAIL: checker binding raised {exc!r}", file=sys.stderr, flush=True)
+        result = {
+            "name": "ultimate-feature-list",
+            "status": "failed",
+            "exit_code": 1,
+            "errors": [f"checker binding raised {exc!r}"],
+            "report": ULTIMATE_FEATURE_LIST_REPORT,
+        }
+    result.setdefault("name", "ultimate-feature-list")
+    result.setdefault("report", ULTIMATE_FEATURE_LIST_REPORT)
+    result["duration_seconds"] = round(time.monotonic() - started, 3)
+    result["executed_suites"] = sorted(profile_run)
     return result
 
 
@@ -1713,6 +1711,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
             bind_feature_list = feature_list_selected and not missing_recipe_suites
+            recipe_scripts = feature_list_recipe_scripts() if bind_feature_list else set()
+            # FAN-3904: the checker binds only to results this process produced;
+            # they stay in memory and never pass through a file or the report.
+            profile_run: dict[str, dict] = {}
             for index, path in enumerate(selected, start=1):
                 print(
                     f"GODOT {index}/{len(selected)} {path.relative_to(ROOT).as_posix()}",
@@ -1721,17 +1723,18 @@ def main(argv: Sequence[str] | None = None) -> int:
                 outcome = run_godot_test(path, args.test_timeout)
                 output = outcome.pop("output", "")
                 command = outcome.pop("command", [])
-                if bind_feature_list:
-                    _keep_profile_suite_log(outcome, output, command)
+                if bind_feature_list and outcome["script"] in recipe_scripts:
+                    profile_run[outcome["script"]] = {**outcome, "output": output, "command": command}
                 godot_results.append(outcome)
                 if outcome["status"] == "failed":
                     failed = True
                     if args.fail_fast:
                         break
             if bind_feature_list and not (failed and args.fail_fast):
-                feature_list_result = run_ultimate_feature_list_check(
-                    args.static_timeout, godot_results
-                )
+                # Generated import sidecars would otherwise show up as a dirty
+                # worktree inside the checker's report and void its binding.
+                removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
+                feature_list_result = run_ultimate_feature_list_check(profile_run)
                 if feature_list_result["status"] == "failed":
                     failed = True
     else:
