@@ -80,9 +80,10 @@ python3 tools/crash_logger_profile.py profile \
 
 The profiler serializes each Godot process through `tools/godot_gate.py`, runs
 five independent baseline/candidate pairs in alternating order, and reports one
-post-warmup sample per SHA in each pair. Godot's `--fixed-fps 60` mode disables
-real-time synchronization, so display pacing cannot hide injected work. A
-deterministic 2 ms per-frame CPU load calibrates every trial; the run is
+post-warmup sample per SHA in each pair. It disables Godot's automatic render
+loop and forces exactly one draw per measured process frame, so presentation
+pacing cannot hide injected work or skip draws. A deterministic 2 ms per-frame
+CPU load calibrates every trial; the run is
 inconclusive unless every trial detects that load. The median of the five paired
 regressions is evaluated against the 1% budget with a one-sided 95% bound. If
 calibration or noise cannot resolve that budget, treat the result as

@@ -83,7 +83,7 @@ func _run() -> void:
 	await process_frame
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
-		"metric": "wall time with --fixed-fps 60 real-time synchronization disabled",
+		"metric": "wall time with automatic render loop disabled and one forced draw per process frame",
 		"warmup_frames": warmup_frames,
 		"frames_per_sample": sample_frames,
 		"samples_ms": normal["wall_ms"],
@@ -99,6 +99,7 @@ func _sample_windows(sample_frames: int, sample_count: int) -> Dictionary:
 		var wall_started := Time.get_ticks_usec()
 		for frame in range(sample_frames):
 			await process_frame
+			RenderingServer.force_draw(false, 0.0)
 		var elapsed_usec := Time.get_ticks_usec() - wall_started
 		wall_samples_ms.append(float(elapsed_usec) / float(sample_frames) / 1000.0)
 	return {"wall_ms": wall_samples_ms}
@@ -334,8 +335,7 @@ def _profile_one(
                 "--disable-vsync",
                 "--max-fps",
                 "0",
-                "--fixed-fps",
-                "60",
+                "--disable-render-loop",
                 "--",
                 f"--warmup-frames={warmup_frames}",
                 f"--sample-frames={sample_frames}",
@@ -481,8 +481,8 @@ def command_profile(args: argparse.Namespace) -> dict:
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "median of five paired exact-SHA ratios under fixed-step wall time with real-time synchronization disabled; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
-        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration, --fixed-fps 60, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
+        "confidence_rationale": "median of five paired exact-SHA ratios with one forced draw per process frame and automatic render-loop pacing disabled; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
+        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration, one forced draw per frame, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 
