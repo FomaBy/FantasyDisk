@@ -28,7 +28,7 @@ decision with no safe default.
 
 ## 2. Estimate and decompose
 
-Judge Complexity, Uncertainty, and Effort holistically. CUE is not an additive formula.
+Judge Complexity, Uncertainty, and Effort holistically. CUE does not sum by formula and is not an additive formula. Use `1, 2, 3, 5, 8, 13`, exactly one `SP:<N>` label, matching `story_points`, and matching `estimation_model`.
 Do not translate Story Points into time or score the factors independently.
 
 Allowed Story Points are `1, 2, 3, 5, 8, 13`. Prefer independently acceptable

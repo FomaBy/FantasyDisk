@@ -1,6 +1,6 @@
 # Technical architecture
 
-Updated: 2026-09-05. Measured at `a53a521604cd7ab7137733838cdda11b3efaf71e`. The checkout contains 1,028 GDScript/Python source and test files. This is a runtime map, not a substitute for source or a work-ownership lease.
+Updated: 2026-09-05. Measured at `a53a521604cd7ab7137733838cdda11b3efaf71e`. The scoped runtime/test/tool count is 1,028 GDScript/Python files, measured by `find scripts tests tools -type f \( -name '*.gd' -o -name '*.py' \) | wc -l`; it intentionally excludes other checkout directories. This is a runtime map, not a substitute for source or a work-ownership lease.
 
 ## Runtime components
 

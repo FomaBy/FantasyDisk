@@ -1,21 +1,39 @@
 # Human-readable Multica comments
 
-Write maintained instructions and operational prose in English. Preserve exact machine values, IDs, user quotations, localisation strings, links, and historical evidence unchanged. Comments should lead with the outcome and then give only the evidence a reader needs.
+User directive (Sergey Fomin), 2026-07-15. This applies to every FantasyDisk agent and every Multica issue. Sergey manages the project through Multica comments and must understand a task without opening code, logs, or agent shorthand.
 
-## Delivery comment
+## Main rule
 
-State the result, affected scope, exact candidate SHA/tree/base/source ref, changed paths, commands and outcomes, unexecuted checks, residual risk, and next same-card lifecycle state. Do not call unexecuted work a pass. Avoid absolute runtime paths, secrets, stack traces containing credentials, or false performance claims.
+Begin every Multica comment with a short plain-language summary in the language of the person being addressed. For Russian-facing owner communication, that means a concise Russian summary; retain direct historical quotations in their original language. Then provide technical evidence. Maintained instructions and operational wrappers are English, but human-facing replies follow the recipient's language.
 
-## Blocker comment
+- Write 1–5 ordinary sentences without raw logs, arrow shorthand, or unexplained internal code names.
+- Explain the product meaning (for example, “hero selection screen” or “Berserk damage”), not only a file or method name.
+- SHA, commands, paths, tests, and logs remain necessary, but come after the summary.
+- English technical terms are acceptable when the surrounding explanation is clear to the recipient.
 
-State impact, checks already made, the precise `waiting_on` condition, and the safe unblock criterion. A broad label, stale dependency, or lack of enthusiasm is not a blocker.
+## Blockers and problems
 
-## QA comment
+Every blocker, bug, conflict, or unexpected problem must state:
 
-Use the exact verdict vocabulary `PASSED`, `FAILED`, or `INCONCLUSIVE`; identify the exact candidate and map acceptance criteria to executed evidence. QA does not repair production code or select rework.
+```text
+Problem: what is broken or preventing progress, in plain language.
+Project impact: what does not work or is delayed.
+What I tried: a short human explanation.
+Unblock action: the concrete action and who can take it.
+```
 
-## Lifecycle rules
+Bad: `blocked: ff-merge failed, dirty tree, see log`.
 
-One deliverable card contains development, independent same-card QA, bounded rework, and routine exact-content integration. Developers publish immutable candidates; the lifecycle PM admits review under the shared guard, and the dedicated integrator serially promotes approved content into `dev`. Do not create routine QA/DevOps duplicate cards or use mentions as courtesy notifications.
+Good: explain that another owner's uncommitted inventory-screen work prevents a safe merge, that the Berserk balance task waits, that no destructive method was used, and that the owner must commit or remove the WIP.
 
-Post comments using the Multica CLI's file-backed content mode. Comments are evidence, not authority to override the live issue, ownership, or candidate pin.
+## All comment types and self-check
+
+This applies to claim/start comments, heartbeats, handoffs, QA verdicts, final reports, and thread replies. Required process fields—owner, lane, locked paths, SHA, and `Disk cleanup:`—remain after the plain-language summary.
+
+Before `multica issue comment add`, ask:
+
+1. Do the first lines explain what happened and what follows?
+2. If there is a problem, are the failure, impact, and unblock action clear?
+3. Did the summary avoid raw logs, stacks, and unexplained abbreviations?
+
+If any answer is no, rewrite the summary first. Comments are evidence, not authority to override live issue ownership, candidate pins, or lifecycle state.

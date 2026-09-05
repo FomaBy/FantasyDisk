@@ -46,8 +46,7 @@ live run or exact handoff.
 
 PM creates or re-estimates an unassigned `backlog` issue. Before dispatch:
 
-Story Points use `1, 2, 3, 5, 8, 13`. CUE is not an additive formula; it is a
-holistic judgment.
+Story Points use `1, 2, 3, 5, 8, 13`. CUE does not sum by formula and is not an additive formula; it is a holistic judgment. Keep exactly one `SP:<N>` label, matching `story_points`, and matching `estimation_model`.
 
 - description includes `Story points: <N>`, CUE rationale, complexity tier and
   rationale, routing lane, scope, and verifiable acceptance criteria;
