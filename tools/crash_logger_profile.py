@@ -49,12 +49,15 @@ func _init() -> void:
 func _run() -> void:
 	var warmup_frames := 600
 	var sample_frames := 3000
+	var sample_count := 1
 	var calibration_usec := 2000
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--warmup-frames="):
 			warmup_frames = int(argument.trim_prefix("--warmup-frames="))
 		elif argument.begins_with("--sample-frames="):
 			sample_frames = int(argument.trim_prefix("--sample-frames="))
+		elif argument.begins_with("--sample-count="):
+			sample_count = int(argument.trim_prefix("--sample-count="))
 		elif argument.begins_with("--calibration-usec="):
 			calibration_usec = int(argument.trim_prefix("--calibration-usec="))
 	var logger: Node = root.get_node_or_null("CrashLogger")
@@ -68,11 +71,11 @@ func _run() -> void:
 	root.add_child(calibration_load)
 	for frame in range(warmup_frames):
 		await process_frame
-	var normal: Dictionary = await _sample_windows(sample_frames)
+	var normal: Dictionary = await _sample_windows(sample_frames, sample_count)
 	calibration_load.busy_usec = calibration_usec
 	for frame in range(maxi(60, int(warmup_frames / 10))):
 		await process_frame
-	var calibrated: Dictionary = await _sample_windows(sample_frames)
+	var calibrated: Dictionary = await _sample_windows(sample_frames, sample_count)
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
 		"metric": "wall time with --fixed-fps 60 real-time synchronization disabled",
@@ -85,9 +88,9 @@ func _run() -> void:
 	quit(0)
 
 
-func _sample_windows(sample_frames: int) -> Dictionary:
+func _sample_windows(sample_frames: int, sample_count: int) -> Dictionary:
 	var wall_samples_ms: Array[float] = []
-	for sample_index in range(5):
+	for sample_index in range(sample_count):
 		var wall_started := Time.get_ticks_usec()
 		for frame in range(sample_frames):
 			await process_frame
@@ -295,6 +298,7 @@ def _profile_one(
     warmup_frames: int,
     sample_frames: int,
     calibration_usec: int,
+    sample_count: int,
 ) -> dict:
     # Multica's checkout lifecycle hook owns persistent workspaces. These
     # detached, task-scoped measurement trees are intentionally ephemeral.
@@ -330,6 +334,7 @@ def _profile_one(
                 "--",
                 f"--warmup-frames={warmup_frames}",
                 f"--sample-frames={sample_frames}",
+                f"--sample-count={sample_count}",
                 f"--calibration-usec={calibration_usec}",
             ],
             worktree,
@@ -344,12 +349,16 @@ def _profile_one(
         payload = json.loads(marker_lines[0][len(PROFILE_MARKER) :])
         samples = [float(value) for value in payload.get("samples_ms", [])]
         calibration_samples = [float(value) for value in payload.get("calibration_samples_ms", [])]
-        if len(samples) != 5 or any(not math.isfinite(value) or value <= 0 for value in samples):
-            raise ProbeFailure(f"frame profile for {revision} did not return five valid samples")
-        if len(calibration_samples) != 5 or any(
+        if len(samples) != sample_count or any(not math.isfinite(value) or value <= 0 for value in samples):
+            raise ProbeFailure(
+                f"frame profile for {revision} did not return {sample_count} valid samples"
+            )
+        if len(calibration_samples) != sample_count or any(
             not math.isfinite(value) or value <= 0 for value in calibration_samples
         ):
-            raise ProbeFailure(f"frame profile for {revision} did not return five valid calibration samples")
+            raise ProbeFailure(
+                f"frame profile for {revision} did not return {sample_count} valid calibration samples"
+            )
         if payload.get("display") == "headless":
             raise ProbeFailure("P1 profile unexpectedly used the headless display driver")
         return {"sha": revision, **payload}
@@ -363,6 +372,20 @@ def _median_and_mad(samples: list[float]) -> tuple[float, float]:
     return median, mad
 
 
+def _merge_profile_runs(runs: list[dict]) -> dict:
+    merged = {
+        key: value
+        for key, value in runs[0].items()
+        if key not in {"samples_ms", "calibration_samples_ms"}
+    }
+    merged["samples_ms"] = [float(run["samples_ms"][0]) for run in runs]
+    merged["calibration_samples_ms"] = [
+        float(run["calibration_samples_ms"][0]) for run in runs
+    ]
+    merged["trial_count"] = len(runs)
+    return merged
+
+
 def command_profile(args: argparse.Namespace) -> dict:
     project = _project_path(args.project)
     godot = _godot_path(args.godot)
@@ -371,46 +394,62 @@ def command_profile(args: argparse.Namespace) -> dict:
     cache = (project / ".godot").resolve()
     with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project.parent) as temp_name:
         temp = Path(temp_name).resolve()
-        baseline = _profile_one(
-            project,
-            godot,
-            baseline_sha,
-            temp / "baseline",
-            cache,
-            args.warmup_frames,
-            args.frames_per_sample,
-            args.calibration_usec,
-        )
-        candidate = _profile_one(
-            project,
-            godot,
-            candidate_sha,
-            temp / "candidate",
-            cache,
-            args.warmup_frames,
-            args.frames_per_sample,
-            args.calibration_usec,
-        )
+        baseline_runs: list[dict] = []
+        candidate_runs: list[dict] = []
+        for trial in range(5):
+            revisions = (
+                (("baseline", baseline_sha, baseline_runs), ("candidate", candidate_sha, candidate_runs))
+                if trial % 2 == 0
+                else (("candidate", candidate_sha, candidate_runs), ("baseline", baseline_sha, baseline_runs))
+            )
+            for label, revision, runs in revisions:
+                runs.append(
+                    _profile_one(
+                        project,
+                        godot,
+                        revision,
+                        temp / f"{label}-{trial}",
+                        cache,
+                        args.warmup_frames,
+                        args.frames_per_sample,
+                        args.calibration_usec,
+                        1,
+                    )
+                )
+        baseline = _merge_profile_runs(baseline_runs)
+        candidate = _merge_profile_runs(candidate_runs)
     baseline_median, baseline_mad = _median_and_mad(baseline["samples_ms"])
     candidate_median, candidate_mad = _median_and_mad(candidate["samples_ms"])
-    regression_percent = (candidate_median / baseline_median - 1.0) * 100.0
-    # Robust normal approximation around the median. 1.4826 scales MAD to sigma;
-    # 1.645 is the one-sided 95% bound required by the <=1% regression decision.
-    relative_se = math.sqrt(
-        (1.4826 * baseline_mad / math.sqrt(5) / baseline_median) ** 2
-        + (1.4826 * candidate_mad / math.sqrt(5) / candidate_median) ** 2
-    )
-    bound = 1.645 * relative_se * 100.0
+    paired_regressions = [
+        (candidate_sample / baseline_sample - 1.0) * 100.0
+        for baseline_sample, candidate_sample in zip(
+            baseline["samples_ms"], candidate["samples_ms"], strict=True
+        )
+    ]
+    regression_percent, paired_mad = _median_and_mad(paired_regressions)
+    # Pairing controls machine drift between neighboring exact-SHA trials.
+    # 1.4826 scales MAD to sigma; 1.645 is the one-sided 95% bound.
+    bound = 1.645 * 1.4826 * paired_mad / math.sqrt(5)
     lower = regression_percent - bound
     upper = regression_percent + bound
-    baseline_calibration_median = statistics.median(baseline["calibration_samples_ms"])
-    candidate_calibration_median = statistics.median(candidate["calibration_samples_ms"])
-    baseline_calibration_delta = baseline_calibration_median - baseline_median
-    candidate_calibration_delta = candidate_calibration_median - candidate_median
+    baseline_calibration_deltas = [
+        calibrated - normal
+        for normal, calibrated in zip(
+            baseline["samples_ms"], baseline["calibration_samples_ms"], strict=True
+        )
+    ]
+    candidate_calibration_deltas = [
+        calibrated - normal
+        for normal, calibrated in zip(
+            candidate["samples_ms"], candidate["calibration_samples_ms"], strict=True
+        )
+    ]
+    baseline_calibration_delta = statistics.median(baseline_calibration_deltas)
+    candidate_calibration_delta = statistics.median(candidate_calibration_deltas)
     calibration_floor_ms = args.calibration_usec / 1000.0 * args.calibration_min_fraction
     calibration_responsive = (
-        baseline_calibration_delta >= calibration_floor_ms
-        and candidate_calibration_delta >= calibration_floor_ms
+        min(baseline_calibration_deltas) >= calibration_floor_ms
+        and min(candidate_calibration_deltas) >= calibration_floor_ms
     )
     statistical_verdict = "PASS" if upper <= 1.0 else "FAIL" if lower > 1.0 else "INCONCLUSIVE"
     verdict = statistical_verdict if calibration_responsive else "INCONCLUSIVE"
@@ -424,17 +463,21 @@ def command_profile(args: argparse.Namespace) -> dict:
         "regression_percent": regression_percent,
         "baseline_mad_ms": baseline_mad,
         "candidate_mad_ms": candidate_mad,
+        "paired_regression_samples_percent": paired_regressions,
+        "paired_regression_mad_percent": paired_mad,
         "one_sided_95_percent_interval": [lower, upper],
         "calibration": {
             "injected_ms_per_frame": args.calibration_usec / 1000.0,
             "minimum_detected_ms": calibration_floor_ms,
             "baseline_detected_ms": baseline_calibration_delta,
             "candidate_detected_ms": candidate_calibration_delta,
+            "baseline_trial_deltas_ms": baseline_calibration_deltas,
+            "candidate_trial_deltas_ms": candidate_calibration_deltas,
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "fixed-step wall time with real-time synchronization disabled, median of five post-warmup means; MAD-scaled independent standard errors; one-sided z=1.645; calibrated with deterministic per-frame CPU load",
-        "run_order": "baseline then candidate; identical 1280x720 rendered main-menu configuration, --fixed-fps 60, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
+        "confidence_rationale": "median of five paired exact-SHA ratios under fixed-step wall time with real-time synchronization disabled; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
+        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration, --fixed-fps 60, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 
@@ -449,7 +492,7 @@ def _parser() -> argparse.ArgumentParser:
     profile = subparsers.add_parser("profile")
     profile.add_argument("--baseline-sha", required=True)
     profile.add_argument("--candidate-sha", required=True)
-    profile.add_argument("--warmup-frames", type=int, default=600)
+    profile.add_argument("--warmup-frames", type=int, default=3000)
     profile.add_argument("--frames-per-sample", type=int, default=3000)
     profile.add_argument("--calibration-usec", type=int, default=2000)
     profile.add_argument("--calibration-min-fraction", type=float, default=0.75)
