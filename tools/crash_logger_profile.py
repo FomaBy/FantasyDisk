@@ -662,7 +662,7 @@ def _parser() -> argparse.ArgumentParser:
     profile.add_argument("--baseline-sha", required=True)
     profile.add_argument("--candidate-sha", required=True)
     profile.add_argument("--warmup-frames", type=int, default=3000)
-    profile.add_argument("--frames-per-sample", type=int, default=3000)
+    profile.add_argument("--frames-per-sample", type=int, default=12000)
     profile.add_argument("--calibration-usec", type=int, default=2000)
     profile.add_argument("--calibration-min-fraction", type=float, default=0.75)
     return parser
