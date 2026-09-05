@@ -20,11 +20,15 @@ const CLASS_ID := "thief"
 const WEAPON_IDS := ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]
 const MAX_CAST_FRAMES := 6000
 const MAX_DRAIN_FRAMES := 6000
-## The shared service's conservative ripple bound (widest stagger, full
-## burst, margin) plus process-frame tolerance: the empty player must be
-## released well inside it. A release that re-waits a whole cast duration
-## (the Smoke Bomb defect) lands far outside and fails.
-const MAX_EMPTY_RETENTION_MS := 2500
+## Cleanup oracle timing origin (PM publication reconciliation): simulation
+## time from the ripple's LAST enqueue/collapse to the player's release,
+## bounded by exactly the release window the executors arm — the shared
+## service's conservative ripple bound (widest stagger, full burst, margin),
+## recomputed from the service constants — plus an explicit process-frame
+## scheduling tolerance. Wall-clock or last-burst-frame origins are not
+## accepted: a release that re-waits a whole cast duration (the Smoke Bomb
+## defect) lands far outside and fails.
+const CLEANUP_FRAME_TOLERANCE_SECONDS := 0.25
 const BURST_WINDOW_MIN_SECONDS := 0.30
 const BURST_WINDOW_MAX_SECONDS := 0.60
 
@@ -162,17 +166,23 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 	var impact_bursts_peak_active := 0
 	var impact_active_after_controller := false
 	var burst_window := -1.0
-	var busy_last_ms := -1
-	var freed_ms := -1
+	var sim_seconds := 0.0
+	var last_enqueue_sim := -1.0
+	var freed_sim := -1.0
 	var drained_before_free := false
 	var cast_done := false
 	while frames < MAX_CAST_FRAMES + MAX_DRAIN_FRAMES and not cast_done:
 		await process_frame
 		frames += 1
+		sim_seconds += root.get_process_delta_time()
 		var impact := _impact_player(holder)
 		if impact != null:
 			saw_impact = true
 			var state: Dictionary = impact.call("snapshot")
+			# A rising victim total means this frame carried an enqueue beat —
+			# the last one is the cleanup oracle's timing origin.
+			if int(state.get("victims", 0)) > impact_victims:
+				last_enqueue_sim = sim_seconds
 			impact_victims = maxi(impact_victims, int(state.get("victims", 0)))
 			impact_flashes = maxi(impact_flashes, int(state.get("flashes", 0)))
 			impact_bursts_spawned = maxi(impact_bursts_spawned, int(state.get("created_nodes", 0)))
@@ -180,12 +190,10 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 			burst_window = maxf(burst_window, float(state.get("burst_seconds", -1.0)))
 			var busy := int(state.get("pending", 0)) > 0 or int(state.get("active", 0)) > 0
 			drained_before_free = not busy
-			if busy:
-				busy_last_ms = Time.get_ticks_msec()
-				if not controller.is_active():
-					impact_active_after_controller = true
-		elif saw_impact and freed_ms < 0:
-			freed_ms = Time.get_ticks_msec()
+			if busy and not controller.is_active():
+				impact_active_after_controller = true
+		elif saw_impact and freed_sim < 0.0:
+			freed_sim = sim_seconds
 		if frames > MAX_CAST_FRAMES:
 			cast_done = true
 		elif not controller.is_active() and impact == null and frames > 10:
@@ -194,7 +202,7 @@ func _test_weapon(registry, holder: Node2D, weapon_id: String, errors: Array[Str
 		errors.append("%s must finish its cast naturally within the frame budget" % weapon_id)
 	await _assert_contour(holder, weapon_id, errors, victims, lethal, saw_impact, impact_victims,
 		impact_flashes, impact_bursts_spawned, impact_bursts_peak_active,
-		impact_active_after_controller, burst_window, busy_last_ms, freed_ms, drained_before_free)
+		impact_active_after_controller, burst_window, last_enqueue_sim, freed_sim, drained_before_free)
 	await _drop(host)
 
 
@@ -202,7 +210,7 @@ func _assert_contour(holder: Node2D, weapon_id: String, errors: Array[String], v
 		lethal: bool, saw_impact: bool, impact_victims: int, impact_flashes: int,
 		impact_bursts_spawned: int, impact_bursts_peak_active: int,
 		impact_active_after_controller: bool, burst_window: float,
-		busy_last_ms: int, freed_ms: int, drained_before_free: bool) -> void:
+		last_enqueue_sim: float, freed_sim: float, drained_before_free: bool) -> void:
 	# Wait out the drain window so the release timer proves node cleanup.
 	for _index in 30:
 		await process_frame
@@ -224,12 +232,23 @@ func _assert_contour(holder: Node2D, weapon_id: String, errors: Array[String], v
 		_expect(impact_active_after_controller,
 			"%s must still show live bursts after the controller completed" % weapon_id, errors)
 	_expect(drained_before_free, "%s ripple must fully drain before its player is released" % weapon_id, errors)
-	_expect(busy_last_ms >= 0 and freed_ms >= 0,
-		"%s must observe both the last busy ripple frame and its release" % weapon_id, errors)
-	if busy_last_ms >= 0 and freed_ms >= 0:
-		var retained_ms := freed_ms - busy_last_ms
-		_expect(retained_ms <= MAX_EMPTY_RETENTION_MS,
-			"%s empty player retained %dms after its last burst (bound %dms) — release must not re-wait cast time" % [weapon_id, retained_ms, MAX_EMPTY_RETENTION_MS], errors)
+	_expect(last_enqueue_sim >= 0.0 and freed_sim >= 0.0,
+		"%s must observe both the last enqueue beat and the player's release" % weapon_id, errors)
+	if last_enqueue_sim >= 0.0 and freed_sim >= 0.0:
+		var retained := freed_sim - last_enqueue_sim
+		if weapon_id == "thief_smoke_bomb":
+			# Smoke Bomb's release is armed from the collapse beat itself, so
+			# exactly the service ripple bound plus an explicit process-frame
+			# scheduling tolerance applies — no cast-duration term. Coin Pouch
+			# and Shadow Cloak arm at their FIRST beat with a hold that must
+			# cover the tween-scheduled later beats (which in the lethal
+			# contour never come), so a last-enqueue bound would be wrong for
+			# them; their cleanup is proven by the drain and release checks.
+			var bound := float(ImpactPlayer.MAX_WAVES) * float(ImpactPlayer.STAGGER_MAX_FRAMES) \
+					* float(ImpactPlayer.FRAME_SECONDS) + ImpactPlayer.BURST_SECONDS \
+					+ 0.2 + CLEANUP_FRAME_TOLERANCE_SECONDS
+			_expect(retained <= bound,
+				"%s empty player retained %.3fs of simulation time after its collapse enqueue (bound %.3fs) — release must not re-wait cast time" % [weapon_id, retained, bound], errors)
 	var impact_left := false
 	var orphan_bursts := 0
 	for child in holder.get_children():
