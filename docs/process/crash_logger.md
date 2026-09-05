@@ -14,6 +14,8 @@ sequence number.
 
 Writes are serialized on the main thread and committed with a temporary-file
 rename, so an interrupted write cannot masquerade as a complete incident.
+Callbacks enqueue under a mutex and schedule one coalesced deferred flush; clean
+frames do not poll the incident queue.
 Retention is bounded to 20 incident files and 1 MiB total, with a 64 KiB limit
 per record. The oldest files are removed first. A full in-memory callback queue
 retains the newest 64 incidents and reports how many older pending records were

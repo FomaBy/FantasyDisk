@@ -21,19 +21,22 @@ const SELF_TEST_ERROR := "FAN-3905 deterministic crash logger self-test"
 class IncidentSink:
 	extends Logger
 
+	var _flush_owner: Node
 	var _mutex := Mutex.new()
 	var _redaction_mutex := Mutex.new()
 	var _breadcrumbs: Array[Dictionary] = []
 	var _pending: Array[Dictionary] = []
 	var _suppressed_thread_id := 0
 	var _dropped_pending := 0
+	var _flush_scheduled := false
 	var _authorization_pattern: RegEx
 	var _bearer_pattern: RegEx
 	var _credential_pattern: RegEx
 	var _home_path_pattern: RegEx
 
 
-	func _init() -> void:
+	func _init(flush_owner: Node) -> void:
+		_flush_owner = flush_owner
 		_authorization_pattern = RegEx.create_from_string(
 			r"(?i)(\bauthorization\s*[:=]\s*)(?:(?:bearer|basic)\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
@@ -132,6 +135,7 @@ class IncidentSink:
 		_mutex.lock()
 		var result: Array[Dictionary] = _pending.duplicate(true)
 		_pending.clear()
+		_flush_scheduled = false
 		_mutex.unlock()
 		return result
 
@@ -156,6 +160,7 @@ class IncidentSink:
 
 
 	func _enqueue(record: Dictionary) -> void:
+		var schedule_flush := false
 		_mutex.lock()
 		if _suppressed_thread_id == OS.get_thread_caller_id():
 			_mutex.unlock()
@@ -168,7 +173,12 @@ class IncidentSink:
 			record["dropped_pending_before"] = _dropped_pending
 			_dropped_pending = 0
 		_pending.append(record)
+		if not _flush_scheduled:
+			_flush_scheduled = true
+			schedule_flush = true
 		_mutex.unlock()
+		if schedule_flush and is_instance_valid(_flush_owner):
+			_flush_owner.call_deferred("_flush_pending")
 
 
 	func _serialize_backtraces(script_backtraces: Array[ScriptBacktrace]) -> Dictionary:
@@ -264,17 +274,13 @@ var _build_identity_cache: Dictionary = {}
 func _ready() -> void:
 	_output_directory = _debug_output_directory()
 	_prepare_output_directory()
-	_sink = IncidentSink.new()
+	_sink = IncidentSink.new(self)
 	OS.add_logger(_sink)
 	get_tree().node_added.connect(_on_node_added)
 	for node in get_tree().get_nodes_in_group("player"):
 		_watch_player(node)
 	if OS.is_debug_build() and OS.get_cmdline_user_args().has(DEBUG_SELF_TEST_FLAG):
 		call_deferred("_run_debug_self_test")
-
-
-func _process(_delta: float) -> void:
-	_flush_pending()
 
 
 func _exit_tree() -> void:

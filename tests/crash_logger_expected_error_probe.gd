@@ -31,7 +31,8 @@ func _start_probe() -> void:
 
 func _run_probe() -> void:
 	_expected_error_parent()
-	_service.flush_pending_for_tests()
+	await process_frame
+	await process_frame
 	var incident_path: String = _service.last_incident_path_for_tests()
 	if incident_path.is_empty():
 		print("CRASH_LOGGER_EXPECTED_ERROR_PROBE_FAILED no incident")
