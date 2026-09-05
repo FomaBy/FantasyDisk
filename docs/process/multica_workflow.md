@@ -42,6 +42,15 @@ work, and no second dispatcher or competing QA may exist.
 Status is evidence, not intent. A card must not remain active without a matching
 live run or exact handoff.
 
+## Review admission and capacity
+
+At most six cards may be in `in_review` at one time. The lifecycle PM admits an
+immutable candidate only after rereading its exact SHA, attribution,
+dependencies, locks, and available review capacity while holding the shared
+launch guard. Developers do not self-admit the sixth slot, select QA, or merge
+their candidate. Independent QA and the dedicated integrator work on the same
+card; routine integration into `dev` remains serial.
+
 ## Readiness
 
 PM creates or re-estimates an unassigned `backlog` issue. Before dispatch:

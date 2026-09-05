@@ -4,6 +4,9 @@ Updated: 2026-08-01. FantasyDisk uses SemVer before 1.0 plus technical-hotfix fo
 
 The current released line is immutable `v0.3.0` on `main`; active Multica work targets `0.3.1` on `dev`. `0.1.8` and `0.1.9` are cancelled planned versions and must not appear in new issues, mirrors, fixVersions, or release/freeze notes. Sprint cadence is short (about two days), not weekly.
 
+Release freeze FAN-1128/FAN-1210 завершён публикацией `0.2.4`;
+новые продуктовые изменения идут в следующую SemVer-версию.
+
 ## Branch ownership and protection
 
 | Branch | Purpose | Rule |
