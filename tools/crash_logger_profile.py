@@ -75,31 +75,25 @@ func _run() -> void:
 	var calibrated: Dictionary = await _sample_windows(sample_frames)
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
-		"metric": "Performance.TIME_PROCESS",
+		"metric": "wall time with --fixed-fps 60 real-time synchronization disabled",
 		"warmup_frames": warmup_frames,
 		"frames_per_sample": sample_frames,
-		"samples_ms": normal["cpu_ms"],
-		"wall_samples_ms": normal["wall_ms"],
+		"samples_ms": normal["wall_ms"],
 		"calibration_injected_ms": float(calibration_usec) / 1000.0,
-		"calibration_samples_ms": calibrated["cpu_ms"],
-		"calibration_wall_samples_ms": calibrated["wall_ms"],
+		"calibration_samples_ms": calibrated["wall_ms"],
 	}))
 	quit(0)
 
 
 func _sample_windows(sample_frames: int) -> Dictionary:
-	var cpu_samples_ms: Array[float] = []
 	var wall_samples_ms: Array[float] = []
 	for sample_index in range(5):
 		var wall_started := Time.get_ticks_usec()
-		var process_seconds := 0.0
 		for frame in range(sample_frames):
 			await process_frame
-			process_seconds += Performance.get_monitor(Performance.TIME_PROCESS)
 		var elapsed_usec := Time.get_ticks_usec() - wall_started
-		cpu_samples_ms.append(process_seconds * 1000.0 / float(sample_frames))
 		wall_samples_ms.append(float(elapsed_usec) / float(sample_frames) / 1000.0)
-	return {"cpu_ms": cpu_samples_ms, "wall_ms": wall_samples_ms}
+	return {"wall_ms": wall_samples_ms}
 '''
 
 
@@ -331,6 +325,8 @@ def _profile_one(
                 "--disable-vsync",
                 "--max-fps",
                 "0",
+                "--fixed-fps",
+                "60",
                 "--",
                 f"--warmup-frames={warmup_frames}",
                 f"--sample-frames={sample_frames}",
@@ -347,12 +343,9 @@ def _profile_one(
             raise ProbeFailure(f"frame profile for {revision} emitted {len(marker_lines)} result markers")
         payload = json.loads(marker_lines[0][len(PROFILE_MARKER) :])
         samples = [float(value) for value in payload.get("samples_ms", [])]
-        wall_samples = [float(value) for value in payload.get("wall_samples_ms", [])]
         calibration_samples = [float(value) for value in payload.get("calibration_samples_ms", [])]
         if len(samples) != 5 or any(not math.isfinite(value) or value <= 0 for value in samples):
             raise ProbeFailure(f"frame profile for {revision} did not return five valid samples")
-        if len(wall_samples) != 5 or any(not math.isfinite(value) or value <= 0 for value in wall_samples):
-            raise ProbeFailure(f"frame profile for {revision} did not return five valid wall-clock diagnostics")
         if len(calibration_samples) != 5 or any(
             not math.isfinite(value) or value <= 0 for value in calibration_samples
         ):
@@ -440,9 +433,8 @@ def command_profile(args: argparse.Namespace) -> dict:
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "CPU process time, median of five post-warmup means; MAD-scaled independent standard errors; one-sided z=1.645; calibrated with deterministic per-frame CPU load",
-        "wall_clock_diagnostic": "reported separately because display pacing is not CPU process time",
-        "run_order": "baseline then candidate; identical 1280x720 rendered main-menu configuration and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
+        "confidence_rationale": "fixed-step wall time with real-time synchronization disabled, median of five post-warmup means; MAD-scaled independent standard errors; one-sided z=1.645; calibrated with deterministic per-frame CPU load",
+        "run_order": "baseline then candidate; identical 1280x720 rendered main-menu configuration, --fixed-fps 60, and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 

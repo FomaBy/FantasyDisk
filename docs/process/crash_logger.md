@@ -80,10 +80,10 @@ python3 tools/crash_logger_profile.py profile \
 
 The profiler serializes each Godot process through `tools/godot_gate.py`, runs
 identical rendered main-menu workloads after warmup, and reports five raw CPU
-process-time samples for each SHA. Wall-clock frame cadence is diagnostic only,
-because display pacing can hide injected work. A deterministic 2 ms per-frame
-CPU load calibrates both revisions; the run is inconclusive unless the metric
-detects that load. The calibrated CPU medians are evaluated against the 1%
+work-time samples for each SHA. Godot's `--fixed-fps 60` mode disables real-time
+synchronization, so display pacing cannot hide injected work. A deterministic
+2 ms per-frame CPU load calibrates both revisions; the run is inconclusive
+unless the metric detects that load. The calibrated work-time medians are evaluated against the 1%
 budget with a one-sided 95% bound. If calibration or noise cannot resolve that
 budget, treat the result as inconclusive and fix the measurement conditions or
 metric before rerunning; do not infer a pass from more paced wall-clock frames.
