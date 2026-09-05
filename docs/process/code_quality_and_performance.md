@@ -1,217 +1,26 @@
-# Code Quality & Windows Performance Gate
+# Code quality and performance
 
-Обновлено: 2026-08-25. Аудит FAN-1040 выполнен на исходном
-`1190db1d1de10ab90e21d2cdea32be908efbeada`; исправления проверяются единым gate.
+Updated: 2026-09-05. Historical quality audit: FAN-1040 at `1190db1d1de10ab90e21d2cdea32be908efbeada`. This document describes the required evidence; code and test output remain the source of truth.
 
-## Checkout и хранение repository evidence
+## Candidate checks
 
-Частый candidate gate использует `actions/checkout@v6` с `lfs: false` и
-`fetch-depth: 2` для pull request/merge queue; push сохраняет полную ancestry,
-потому что static gate сравнивает `github.event.before`. Shallow candidate
-дополнительно получает exact event base depth 2 в `refs/remotes/origin/dev`.
-Sparse checkout обязан содержать ровно его runtime/test/tool/policy inputs:
+Run `bash tools/install_hooks.sh` once in a new checkout. The static guard covers tracked runtime/resource and credential sources, script sidecars, syntax, policy, validators, Git/shell checks, and security configuration. It must not be bypassed by sparse checkout: absent files are read from `HEAD:<path>`.
 
-```text
-.claude .github assets data references scenes scripts services skills source_docs
-tests tools build/qa/scrum434_soldier_pixellab docs/process docs/tasks
-docs/design/data docs/design/templates/release_notes
-docs/design/mockups/release_0_2_4
-docs/design/mockups/scrum1061_semantic_typography
-docs/design/references/weapon_ultimates
-```
+Run Godot tests only through `tools/godot_gate.py`. `tools/quality_gate.py --profile changed --changed-ref origin/dev` is the CI-equivalent broad profile and `tools/quality_gate.py --profile full` is the exhaustive local/release profile. For an ordinary small change, run one directly affected suite and a second only for a distinct failure mode. The `changed` and `full` profiles are not a default local matrix. Use a broad profile for release/publish, saves/migrations, networking, payments/secrets/security, or an already-red CI that cannot be isolated.
 
-Наличие sparse-конфигурации включает в checkout `filter=blob:none`; отдельный
-`filter` не задавать. После event base candidate получает две закреплённые
-legacy-фикстуры, каждая depth 1:
-`2cba1b7050cb168bca70b6354cc7b654334dd53e` и
-`5d23555117c11620ee0f0834e6c30877fd1dafb8`. Остальные provenance-исключения
-остаются bounded: nightly static — depth 8 плюс эти фикстуры, A5 — depth 300 до
-закреплённого `be90b38df38788fc53190c862a873f4aab80ea28`.
+The pinned candidate CI engine is `4.7.stable.official.5b4e0cb0f`. A `push_error()` signature is fatal even if Godot exits zero; ordinary engine `ERROR:` output is not automatically a failed suite. Empty selection, `Ran 0 tests`, timeouts, `SCRIPT ERROR`, and `FATAL` fail closed. Inspect the JSON report: a filtered, skipped, dirty-worktree, or nonstandard-`--changed-ref` run is `partial_pass`, not certifying evidence.
 
-Static guard продолжает проверять все tracked runtime/resource и credential
-sources: если файл отсутствует в sparse worktree, текст читается из exact
-`HEAD:<path>`. Sparse checkout не уменьшает resource-case, architecture или
-credential coverage.
+## Baseline facts and storage policy
 
-Свежий локальный `file://` upload-pack замер синтетического двухродительского PR
-выполнен на merge-коммите `5c0047888b0adc27fe65a1a232dbaa0ca97c9939`:
-base `db934d2131d3e9db2495bae1f498112b02184086`, content/HEAD
-`e6ecf11dbfaf63d73d34b748561ca16b43e387fb`, tree
-`120b625169f16ecfc4377b5411d1941eb1a22f30`. Результат:
+The 2026-08-25 local synthetic two-parent PR experiment at `5c0047888b0adc27fe65a1a232dbaa0ca97c9939` measured full clone versus depth-2 sparse candidate checkout: checkout disk fell from 6,554,760 KiB to 3,359,448 KiB (48.7%), packed storage from 3,445,553 KiB to 2,640,164 KiB (23.4%), and wall time from about 28 s to 19.82 s (29.2%). Because the local server ignored the partial-clone filter, packed size is a conservative proxy, not network-byte evidence.
 
-| Режим | Candidate | `size-pack` | Checkout disk | `.git` disk | Wall |
-|---|---:|---:|---:|---:|---:|
-| До: full clone | `db934d213` | 3,445,553 KiB (3,528,246,272 B) | 6,554,760 KiB | 3,463,084 KiB | ≈28 s |
-| После: depth 2 + sparse + event base + фикстуры | `e6ecf11db` | 2,640,164 KiB (2,703,527,936 B) | 3,359,448 KiB | 2,648,264 KiB | 19.82 s |
+New source/reference binaries belong only in `docs/design/reference-assets-lfs/<issue-or-pack>/<file>` as valid Git LFS pointers. New or changed binary destinations elsewhere under `docs/design/**` or `build/qa/**` are rejected. Runtime `assets/**` remain normal Git content. Release/tag operations require full history and an exact detached source; shallow/sparse candidate checkouts are never release sources. `tools/test_coverage_gate.py`, `tools/release_scope_guard.py`, `tools/build_release.sh`, `tools/release_notes_visual_claims_guard.py`, `tools/check_druid_baseline_isolation.py`, and `tools/release_scope_manifest.json` remain active source/tool routing, not disposable documentation.
 
-Итого: checkout disk −48.7%, packed storage −23.4%, `.git` disk −23.5%, wall
-−29.2%. Сумма after `.pack` файлов — 2,702,559,406 B. Локальный сервер при clone
-и fetch предупреждал `filtering not recognized by server, ignoring`, поэтому
-pack — консервативный proxy packed-storage/fetch, а не замер network bytes;
-GitHub partial clone может передать меньше blob-данных.
+## Performance and safety boundaries
 
-Все новые source/reference binaries независимо от размера хранятся только под
-`docs/design/reference-assets-lfs/<issue-or-pack>/<file>` как валидные Git LFS
-pointer-файлы с атрибутами `filter=lfs diff=lfs merge=lfs -text`. Любой
-добавленный, изменённый, скопированный или переименованный binary destination в
-`docs/design/**` либо `build/qa/**` вне этого вложенного пути отклоняется без
-порогов размера; неизменённый legacy grandfathered, удаление разрешено. Runtime
-`assets/**` остаётся обычным Git-контентом и всегда входит в чистый build/test
-checkout.
+- Preserve line-count ratchets; new scripts remain under the configured 1,200-line limit unless a separately accepted rule changes it.
+- Prefer deterministic budgets (snapshot generations, node counts, candidate visits, cache bounds) over subjective smoothness claims.
+- Do not claim a Windows performance improvement without a native release build, scenario, baseline SHA, p50/p95/p99, stalls over 100 ms, and RSS/VRAM evidence. macOS headless is not a Windows frame-time test.
+- Preserve the historical findings: server-only feedback relay removed exposed webhook credentials; status and target-query hot paths avoid per-tick deep copies/introspection; autosave uses recoverable `.tmp`/`.bak` swap; configurable Node2D spawners validate roots.
 
-Детерминированное распознавание считает известные текстовые расширения
-(`.md`, `.json`, `.csv`, `.log`, Godot/Python/shell/config форматы) заявкой на
-текст, но проверяет весь blob потоково по 8 KiB: NUL, управляющие байты и
-некорректный UTF-8 переводят файл в binary независимо от позиции содержимого.
-Любое иное расширение считается binary, а файл без расширения проверяется по
-размеру и содержимому. Поэтому новые `.docx`, `.xlsx`, `.pdf`, `.gz`, неизвестные
-binary-форматы и binary под текстовым расширением не обходят правило, а обычные
-документы и manifests не получают ложный запрет. Сначала запрашивается размер
-Git blob: legacy binary вообще не читается, а future blob свыше 256 B
-отклоняется до чтения. Меньший future blob обязан быть ровно каноническим
-трёхстрочным LFS v1 pointer с lowercase SHA-256, decimal size и без добавленного
-payload.
-
-На rebased candidate focused storage suite прошёл (`36/36`), workflow/archive —
-`21/21`, sparse-source regressions — `3/3`. Certifying static gate подтвердил
-storage policy, syntax, audit, validators, Git/shell и security config; полный
-Python-набор выполнил 475 тестов с тремя failures и тремя skips. Одна ошибка
-повторяет уже
-отсутствующий в `origin/dev`
-`tests/ultimates/mechanics/elementalist_meteor_core_test.gd.uid`; два
-import-cache сбоя в `LiveEngineSignatureTests` отдельно воспроизводятся на clean
-exact `origin/dev` `919c0a3ee`. Это исходные repository invariants, а не
-исправления или waivers FAN-3470.
-
-Эта оптимизация относится только к candidate quality checkout. Release/tag
-операции обязаны иметь полную историю и tags, материализовать exact tag либо
-закреплённый candidate в отдельном detached worktree и сверять commit/tree
-provenance. Shallow/sparse candidate нельзя использовать как release source;
-опубликованную историю и существующие binaries нельзя переписывать ради LFS.
-
-## Lean default и risk-профили
-
-## Test coverage surface ratchet
-
-`tools/test_coverage_gate.py` is the reproducible coverage tool for the mixed
-Godot/Python suite. Godot does not provide a repository-supported source-line
-coverage exporter, so this metric deliberately measures executable test
-inventory rather than pretending to measure lines: the groups are `godot`
-(the same direct/inherited `extends SceneTree` suite discovery as the quality
-gate) and `python` (`test_*.py`). Their initial minimums are stored in
-`tools/test_coverage_baseline.json` (444 and 30 files respectively).
-
-Run it on a clean candidate:
-
-```bash
-python3 tools/test_coverage_gate.py \
-  --json-report build/test_coverage_report.json \
-  --markdown-report build/test_coverage_report.md
-```
-
-The tool excludes only generated/cache/vendor path components (`.godot`,
-`__pycache__`, `build`, `vendor`) while discovering tests; product sources are
-not part of this inventory and cannot be hidden by those exclusions. It emits a
-JSON report, a readable Markdown table, per-group inventory hashes, and duration.
-The CI gate gives the measurement five seconds, uploads the reports and their
-SHA-256 manifest with the exact candidate-SHA quality artifact, and fails if a
-group drops below its baseline. Current local baseline measurement is 0.023 s;
-the scheduled static lane repeats the same bounded check without adding Godot
-runtime work.
-
-Обычное небольшое gameplay/scene/test изменение запускает один непосредственно
-затронутый suite через `tools/godot_gate.py`; второй нужен только для отдельного
-failure mode. `changed`/`full` не являются локальной матрицей по умолчанию.
-Полный gate требуется только для release/publish, saves/migrations, network,
-payments/secrets/security или уже красного CI, когда focused checks не изолируют
-причину. Не дублировать один full gate на developer, QA, PR и post-merge стадиях.
-
-Доступные broad-профили для этих случаев:
-
-```bash
-python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
-python3 tools/quality_gate.py --profile full
-```
-
-Gate требует Godot 4.7 и последовательно проверяет case-sensitive `res://` пути,
-синхронность версии и Windows export preset, архитектурные line-count ratchet’ы,
-отсутствие raw/Base64 webhook credential, Python-тесты/синтаксис и direct +
-inherited Godot suites. `changed` автоматически включает изменённые/новые тесты
-и `semantic_typography_scrum1061_test` для области inventory, а также umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
-набор. Discovery рекурсивна: Godot suites берутся из всего `tests/**`, а
-Python-тесты запускаются отдельной `unittest discover` на каждый каталог с
-`test_*.py`, потому что `unittest` не заходит в non-package подкаталоги.
-Одинаковые имена suites в разных каталогах отвергаются как ambiguous.
-Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure. С FAN-1700
-провал набора не зависит от кода возврата: набор сообщает о провале через
-`push_error()`, Godot печатает при этом кадр `at: push_error (`, и гейт считает
-такой вывод фатальным даже при exit 0. Это закрывает ложно-зелёный прогон, когда
-`_fail()` без `return` доходит до успешного `quit()` (отложенный `quit(1)`
-затирается нулём). Обычные `ERROR:`-строки движка без этого кадра остаются
-безобидными и набор не роняют. С FAN-1718 эта сигнатура не может измениться
-молча: фикстуры FAN-1700 в `tests/test_quality_tools.py` обязаны нести баннер
-пинованного `GODOT_BUILD_ID` из `quality.yml`, а live-probe
-(`LiveEngineSignatureTests`) запускает установленный движок на минимальном
-временном проекте с `push_error(...)` и читает вывод боевым классификатором;
-чистый контрольный прогон обязан остаться без сигнала. Без движка probe
-детерминированно скипается с указанием причины; кандидатный CI экспортирует
-`GODOT_BIN` (закреплено в `test_quality_workflow.py`), поэтому там probe
-исполняется всегда, а заданный, но нерабочий `GODOT_BIN` — громкий failure,
-не skip.
-Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
-запрещён: нулевой выбор Godot-тестов или `Ran 0 tests` в Python-discovery дают
-`failed` с записью в `static_checks`, а не зелёный отчёт. Staged, unstaged или untracked worktree также всегда non-certifying и
-фиксируется в JSON evidence; commit-range и index whitespace проверяются
-отдельно. `--static-only` — engine-free профиль: `select_godot_tests` возвращает
-для него пустой список, поэтому он допустим только там, где Godot не установлен
-(push в `dev`). Required-проверка на pull request и merge queue запускает
-`changed` на закреплённом Godot `4.7.stable.official.5b4e0cb0f`. Для обычного
-малого PR это единственный broad CI; `full` остаётся release/risk gate для
-случаев выше.
-
-## Реестр находок
-
-| Приоритет | Доказательство | Решение |
-|---|---|---|
-| Critical | `feedback_reporter.gd` содержал полный Discord webhook в обратимом base64; тест закреплял его как контракт | Credential удалён, старый webhook отозван (`DELETE 204`, контрольный `404`). FAN-1056 добавил server-only relay, release-safe client protocol, server auth/rate/idempotency/privacy tests и post-export secret scan. Production остаётся выключен до provisioning HTTPS/storage/new webhook |
-| High | `_taunt_target()` вызывался каждым enemy каждый physics tick и делал `StatusEffects.snapshot().duplicate(true)` | Добавлен scalar `status_value`; полный status map больше не копируется в target selection |
-| High | `StatusEffects.tick()` строил `get_method_list()` каждый physics tick для каждого DoT | Introspection выполняется только при фактически наступившем DoT tick; финальное expiry также удаляет status/marker metadata |
-| High | Каждый enemy отдельно вызывал `get_nodes_in_group("enemies")` при separation refresh | Все refresh в кадре используют один `CombatTargetQuery` snapshot; mass regression фиксирует 48 enemies, ровно одну генерацию snapshot и максимум 4 neighbors |
-| High | Wave pack spawn повторно сканировал всю enemy group после каждого spawn | Cap вычисляется один раз, затем поддерживается локальным `remaining_slots`; combat smoke проверяет непревышение cap несколькими волнами |
-| High | Автосейв удалял последний хороший checkpoint до успешного rename, а clear мог оставить восстанавливаемый `.bak` | Введён `.tmp` → `.bak` swap с rollback/recovery; clear проверяет ошибки и удаляет auxiliary-файлы раньше primary; regressions покрывают оба прерывания |
-| High | Configurable `PackedScene.instantiate() as Node2D` часто сразу разыменовывался | Общий `SceneContracts` валидирует root и освобождает wrong-root instance; применён к основным enemy/elite/boss/pickup/summon spawners |
-| Medium | Focused shell discovery видел только точную первую строку `extends SceneTree` и обходил derived suites; Godot запускался мимо semaphore | Единый динамический discovery включает direct и inherited suites; shell runner направлен через `godot_gate.py`; semaphore поддерживает POSIX и native Windows |
-| Medium | `ui_screens.gd` (≈17k), `class_weapon.gd` (≈6k) и другие god objects продолжают расти | Static ratchet запрещает рост legacy-монолитов и новые scripts >1200 строк; extraction выполняется отдельными поведенческими задачами, без wholesale rewrite |
-
-## Оставшиеся риски и границы этого прохода
-
-- Feedback lifecycle race из FAN-1040 закрыт в FAN-1046: monotonic request owner,
-  at-most-once completion и cancellation защищают reopen/supersede. FAN-1056
-  дополнительно guards двухфазный relay по `(request_id, phase)`. Оставшийся
-  feedback blocker — только внешний production provisioning/rollout FAN-1041.
-- Combat start не полностью транзакционен: отсутствие Player или failure обязательного
-  prayer presenter могут оставить частично созданные HUD/music/runtime state. Нужен
-  центральный `_abort_combat_start()` и fault-injection tests.
-- Некоторые менее частые spawner paths всё ещё требуют миграции на `SceneContracts`;
-  gate защищает новые массовые Node2D boundaries, но не обещает механическую замену
-  всех duck-typed сцен за один проход.
-- Threat-indicator discovery переведён на общий snapshot с refresh 10 Hz, а
-  Bastion taunt читает scalar status без deep-copy. Оставшийся spatial O(N²)
-  separation требует native benchmark и отдельного grid-equivalence изменения.
-- `save_run_autosave()` возвращает failure, но ряд route/combat callers пока не
-  показывает пользователю ошибку. Сохранённый checkpoint больше не уничтожается,
-  однако caller-visible retry/error policy остаётся отдельной UX/persistence задачей.
-- Renderer остаётся `gl_compatibility`, Windows export — x86_64 embedded PCK/S3TC,
-  ANGLE/D3D12 выключены. Менять backend без A/B профиля на реальной Windows машине
-  запрещено; Mac headless не является доказательством Windows frametime.
-
-## Performance acceptance
-
-При массовых изменениях принимаются детерминированные бюджеты, а не субъективное
-«ощущается плавно»: число group snapshots/candidate visits, bounded node counts,
-cache generations и отсутствие per-frame deep copies/introspection. Wall-clock
-threshold в shared CI допустим только как дополнительный сигнал из-за шумности.
-Финальная Windows release-проверка всё равно включает профиль на реальном Windows
-устройстве и не подменяется macOS headless. С FAN-2798 она обязана включать
-заполненный перф-раздел по `docs/qa/perf-checklist.md` (метрики M1–M5 с числами);
-вердикт Windows-проверки без него неполный.
+The final Windows release check remains separately scoped and includes the filled `docs/qa/perf-checklist.md` M1–M5 evidence.

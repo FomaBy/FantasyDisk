@@ -1,133 +1,41 @@
-# Карта владения: непересекающиеся write-set для параллельных задач
+# Parallel ownership map
 
-Источник решения: `docs/process/adr/ADR-parallel-agent-ownership.md` (FAN-3638).
-Назначение: PM выдаёт каждой игровой задаче `planned_write_set` по этой карте;
-диспетчер ставит `locked_paths` по тем же глобам. Две задачи параллельны,
-если их домены различаются и ни одна не превышает бюджет общих файлов.
+Updated: 2026-09-05. Authority: `ADR-parallel-agent-ownership.md` and the live Multica card. This map describes path leases, not permission to start work. PM readiness, the dispatcher, and the same-card lifecycle remain control-plane concerns.
 
-Колонка «сейчас» действует до соответствующей фазы миграции ADR; «после
-миграции» — целевые глобы, включаются по мере влития фаз (помечено фазой).
+Two cards may proceed concurrently only when their declared write sets and behaviour contracts are disjoint. A broad label such as `core` is not an exclusive lease by itself. Actual shared files, generated outputs, data schemas, and observable contracts decide overlap. Integration into `dev` is always serial.
 
-## Домены
+## Initial six owner-authorized slices
 
-### actor/<actor_id> — анимация и ассеты одного актёра
+These are the concrete initial-frontier cards, not reusable architecture
+categories. Their path lists are the exact declared leases at publication; live
+Multica status decides whether a card may start.
 
-Сейчас (Фаза 1 — FAN-3660, Фаза 2 — FAN-3814: данные и smoke-тесты пошардированы):
-- `data/animation/<kind>/<actor_id>.json`
-- `tests/actors/<actor_id>_smoke_test.gd`
-- `assets/sprites/**/<actor_id>*`
-- свой блок в `docs/design/systems/animation.md` (общий файл!)
+| Card and resource | Exact declared paths |
+| --- | --- |
+| FD01 / [FAN-3908](mention://issue/01a06e33-1f4b-79fc-919d-003ef3bf9d17) — `git:FomaBy/FantasyDisk:paths:architecture-map` | `AGENTS.md`; `docs/design/systems/technical_architecture.md`; `docs/process/adr/ADR-parallel-agent-ownership.md`; `docs/process/agent_role_boundaries_and_handoffs.md`; `docs/process/ai_agent_memorandum.md`; `docs/process/code_quality_and_performance.md`; `docs/process/context_engineering.md`; `docs/process/dispatcher-authority.md`; `docs/process/human_readable_comments.md`; `docs/process/multica_workflow.md`; `docs/process/ownership_map.md`; `docs/process/pm_workflow.md`; `docs/process/qa_protocol.md`; `docs/process/story_points.md`; `docs/process/versioning_and_branching.md` |
+| FD02 / [FAN-3909](mention://issue/01a06e33-3256-78d3-962a-f7484eaa3d70) — `git:FomaBy/FantasyDisk:paths:quality-tooling` | `tests/test_architecture_inventory.py`; `tests/test_gdscript_contracts.py`; `tests/test_quality_static_guard.py`; `tools/architecture_inventory.py`; `tools/check_gdscript_contracts.py`; `tools/quality_static_guard.py` |
+| FD10 / [FAN-3917](mention://issue/01a06e33-c68a-7632-b216-9925b3eef746) — `git:FomaBy/FantasyDisk:paths:target-query` | `scripts/combat_target_query.gd`; `scripts/combat_target_query.gd.uid`; `tests/combat_target_query_cache_test.gd`; `tests/combat_target_query_cache_test.gd.uid`; `tests/combat_target_query_top_k_test.gd`; `tests/combat_target_query_top_k_test.gd.uid` |
+| FD12 / [FAN-3919](mention://issue/01a06e33-ec38-7925-a04b-a46f91566420) — `git:FomaBy/FantasyDisk:paths:encounter-spawn` | `scripts/combat_director.gd`; `scripts/combat_director.gd.uid`; `scripts/encounters/encounter_adapter.gd`; `scripts/encounters/encounter_adapter.gd.uid`; `scripts/encounters/encounter_scene_cache.gd`; `scripts/encounters/encounter_scene_cache.gd.uid`; `tests/encounters/encounter_scene_prewarm_test.gd`; `tests/encounters/encounter_scene_prewarm_test.gd.uid`; `tests/encounters/encounter_spawn_plan_quota_test.gd`; `tests/encounters/encounter_spawn_plan_quota_test.gd.uid` |
+| FD13 / [FAN-3920](mention://issue/01a06e33-fec6-72c6-b696-20db9397c946) — `git:FomaBy/FantasyDisk:paths:player-core` | `scripts/player.gd`; `scripts/player.gd.uid`; `scripts/player/player_damage_policy.gd`; `scripts/player/player_damage_policy.gd.uid`; `tests/player_damage_policy_characterization_test.gd`; `tests/player_damage_policy_characterization_test.gd.uid` |
+| FD16 / [FAN-3923](mention://issue/01a06e34-35ec-7847-93af-26d68a2bf4e1) — `git:FomaBy/FantasyDisk:paths:progression-data` | `scripts/progression/weapon_budget_model.gd`; `scripts/progression/weapon_budget_model.gd.uid`; `scripts/progression_data.gd`; `scripts/progression_data.gd.uid`; `tests/weapon_budget_model_characterization_test.gd`; `tests/weapon_budget_model_characterization_test.gd.uid` |
 
-После оставшейся миграции:
-- `changelog.d/<FAN-id>.md` (Фаза 1, шардирование CHANGELOG — отдельная работа)
+The table does not reserve a broad `core` category. The six cards may proceed
+when their live write sets are still disjoint; each retains its own acceptance
+criteria and the shared `git:FomaBy/FantasyDisk:dev` integration lease.
 
-Эталонный planned_write_set, пример actor/void_mage:
-`data/animation/enemy/void_mage.json`, `assets/sprites/enemies/full_frame/void_mage_8dir/**`,
-`tests/actors/void_mage_smoke_test.gd`.
+## Existing split surfaces
 
-### class/<class_id> — оружие, ультимейты, баланс, VFX одного из 17 классов
+- Animation data is per actor under `data/animation/**`; the facade remains `scripts/full_frame_animation_registry.gd`.
+- Class-specific execution is under `scripts/classes/`; `scripts/class_weapon.gd` closes the inheritance chain.
+- UI screen modules live under `scripts/ui/screens/`; `scripts/ui_screens.gd` is the facade.
+- Per-class ultimates, tests, and design pages belong to the matching class slice.
 
-(balance/<class> и vfx/<class> — под-срезы этого же домена; отдельные задачи
-одного класса НЕ параллелятся между собой, только между классами.)
+Physical inheritance-chain files are not independent components. A module that extends another can share state, virtual methods, preload order, or a facade contract; cards touching that chain must declare the shared contract and serialize if it overlaps.
 
-Сейчас (Фаза 3 оружия — FAN-3840: монолит `class_weapon.gd` разрезан):
-- `scripts/classes/<class_id>_weapon.gd` — класс-локальные исполнители режимов
-  и приватные хелперы живут только в нём; berserk и knight вместо него совместно
-  владеют общим legacy-семейством `scripts/berserk_weapon.gd` (+ наследники
-  `holy_flail_weapon.gd`, `two_handed_axe_weapon.gd`,
-  `two_handed_hammer_weapon.gd`) — путь общий для обоих классов, ни один из них
-  не может закрепить его как эксклюзивный; robot дополнительно владеет
-  `scripts/robot_hydraulic_press_weapon.gd`, druid и chemist совместно владеют
-  общим legacy `scripts/summoner_weapon.gd` — путь общий для обоих классов, а не
-  эксклюзивная собственность druid
-- `scripts/ultimates/classes/<class_id>/**`
-- `data/ultimates/classes/<class_id>/**`
-- `tests/balance/<class_id>/**` (Фаза 2 — FAN-3814), `tests/ultimates/**/<class_id>_*`
-- строки своего класса в `build/ultimate_effectiveness_baseline.json` (общий файл!)
-- `assets/**/ultimates/<class_id>/**`, `scenes/ultimates/<class_id>*`
-- `docs/design/ultimates/<class_id>.md`
+## Shared-path budget and conflict handling
 
-Ограниченная общая поверхность боевого класса ClassWeapon (бюджетные общие
-файлы — не более одного на задачу; порядок extends-цепочки закреплён в фасаде
-`scripts/class_weapon.gd` и в `tests/test_quality_static_guard.py`):
-- `scripts/class_weapon.gd` — фасад-сборка (замыкает extends-цепочку модулей,
-  потолок 500 строк в `tools/quality_static_guard.py`)
-- `scripts/classes/class_weapon_state.gd` — разделяемое состояние: preload- и
-  балансовые константы, `@export`-конфиг, реестр `ATTACK_MODE_EXECUTORS`
-- `scripts/classes/class_weapon_shared_api.gd` — forward-объявления
-  кросс-модульных методов (виртуальная диспетчеризация)
-- `scripts/classes/class_weapon_core.gd` — жизненный цикл и конвейер атаки
-- `scripts/classes/class_weapon_combat.gd` — общий боевой слой: цели, урон,
-  статусы, лужи, капы ширины, диспетчеризация событий созвездий
+A domain card may change no more than one shared path unless PM explicitly marks it `cross-domain`. Typical shared paths are `CHANGELOG.md`, `docs/design/content_registry.md`, `docs/design/systems/animation.md`, registry facades, UI kits, and progression-data files. A cross-domain card serializes with every affected lease. Do not broaden a lease during implementation: return the concrete additional path and reason for PM review.
 
-После миграции:
-- `build/effectiveness/<class_id>.json` (Фаза 1)
-- остальное как сейчас
+QA reads the candidate write set but does not obtain a production-code lease. QA reports through the same card; screenshots and reports belong in Multica evidence unless the card explicitly owns an additive evidence path.
 
-Эталонный planned_write_set (после Фаз 1–3), пример class/druid:
-`scripts/ultimates/classes/druid/**`, `data/ultimates/classes/druid/**`,
-`scripts/classes/druid_weapon.gd`, `build/effectiveness/druid.json`,
-`tests/balance/druid/**`, `tests/ultimates/**/druid_*`,
-`docs/design/ultimates/druid.md`, `changelog.d/FAN-XXXX.md`.
-
-### ui/<screen> — один экран/оверлей UI
-
-Сейчас (Фаза 3 UI — FAN-3824: монолит `ui_screens.gd` разрезан):
-- свой экранный модуль `scripts/ui/screens/<screen>.gd` — код экрана живёт
-  только в нём; новый экран = новый модуль (+ одна строка `extends` в фасаде)
-- `scripts/ui/<свои файлы>.gd`, `scenes/ui/**<screen>*`
-- `tests/*<screen>*_test.gd`
-
-Ограниченная общая поверхность UI (бюджетные общие файлы — не более одного
-на задачу, как и остальной бюджет ниже):
-- `scripts/ui_screens.gd` — фасад-сборка (замыкает extends-цепочку модулей,
-  потолок 500 строк в `tools/quality_static_guard.py`)
-- `scripts/ui/screens/ui_screens_state.gd` — разделяемое состояние/константы
-- `scripts/ui/screens/ui_screens_shared_api.gd` — forward-объявления
-  кросс-модульных методов
-- `scripts/ui/screens/{ui_style_kit,shared_shell_kit,menu_shell_kit}.gd` —
-  общие киты стилей и каркаса экранов
-
-Позже:
-- `tests/ui/<screen>_*_test.gd` (шардирование UI-тестов — отдельная работа)
-
-### core — общие ядра, один агент за раз (не параллелится ни с кем, кто их пишет)
-
-- `scripts/player.gd`, `scripts/enemy.gd`, `scripts/main.gd`,
-  `scripts/combat_director.gd`, `scripts/progression_data*.gd`
-- фасады реестров: `scripts/full_frame_animation_registry.gd` (после Фазы 1 —
-  только логика, не данные), `scripts/ultimates/{registry,schema,controller,
-  executors,presentation}/**`
-- `tools/**`, `.github/workflows/**`, `project.godot`, `export_presets.cfg`
-
-### process/docs — процессные и дизайн-документы
-
-- `docs/process/**`, `docs/design/**` (кроме пер-классовых
-  `docs/design/ultimates/<class_id>.md`, принадлежащих class/<class_id>)
-
-## Общие файлы: бюджет
-
-Файлы вне доменов, которые задача МОЖЕТ трогать — не более ОДНОГО на PR
-(после Фазы 4 это проверяет гард в `tools/quality_static_guard.py`; до неё —
-дисциплина PM/QA):
-
-- `CHANGELOG.md` — до Фазы 1; после — только `changelog.d/<FAN-id>.md` (свой файл, вне бюджета)
-- `docs/design/content_registry.md` — до Фазы 1; после — свой доменный файл `docs/design/content/*.md`
-- `docs/design/systems/animation.md`
-- `scripts/progression_data_*.gd` (данные классов/врагов — до выноса)
-
-Кросс-доменная задача (меняет ядро + несколько доменов) — это отдельная
-пометка `cross-domain` в описании карточки; она не параллелится с задачами
-затронутых доменов. Рефакторинги ядра и релизные карты — всегда cross-domain.
-
-## Правила для PM
-
-1. Каждой игровой задаче — ровно один домен из карты; planned_write_set
-   собирается из глобов домена + максимум один общий файл из бюджета.
-2. Параллельный набор (3–4 задачи) валиден, когда домены попарно различны
-   (актёры/классы/экраны разные) и пересечение write-set пусто.
-3. Задача, которой нужен чужой домен или второй общий файл, дробится или
-   помечается cross-domain и идёт последовательно.
-4. QA-карта наследует write-set проверяемой задачи только на чтение; её
-   собственные артефакты (скриншоты, отчёты) живут в комментариях Multica,
-   не в репозитории.
+The later FD02 inventory tool is not part of this card. When it exists, use its machine-readable report to refresh this map; until then, verify paths from the current checkout and the issue's exact manifest.

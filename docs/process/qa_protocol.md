@@ -2,8 +2,8 @@
 
 Updated: 2026-08-01
 
-QA verifies one explicitly assigned child pinned to one pushed candidate SHA.
-QA does not self-select a parent, create competing review, repair production
+QA verifies one explicitly assigned same-card review stage pinned to one pushed candidate SHA.
+QA does not self-select work, create competing review, repair production
 code, or allocate rework.
 
 Multica workspace lifecycle and dispatch transactions live in
@@ -13,14 +13,14 @@ verification.
 
 ## Entry gate
 
-Before testing, read the QA child, implementation parent, recent comments,
-children, metadata, dependencies, active runs, and repository ancestry. Require:
+Before testing, read the same card, recent comments, metadata, dependencies,
+active runs, and repository ancestry. Require:
 
 - exact `candidate_sha == dispatch_candidate_sha`;
 - candidate is pushed and reachable from the expected integration history;
 - reviewer is not the implementer;
 - exactly one live QA claim and no competing verdict;
-- child and parent refer to the same scope/candidate;
+- the review stage and implementation handoff refer to the same scope/candidate;
 - Story Points, estimation model, complexity, routing, and acceptance criteria
   are consistent;
 - blocked dependencies and locked resources do not invalidate the test.
@@ -159,12 +159,12 @@ Disk cleanup:
 ```
 
 - `PASSED`: every required criterion has sufficient executed evidence; finish
-  the QA child and trigger PM once.
-- `FAILED`: one or more required criteria fail; finish the child with evidence
+  the QA stage and trigger PM once.
+- `FAILED`: one or more required criteria fail; finish the stage with evidence
   and trigger PM once for bounded rework.
 - `INCONCLUSIVE`: evidence cannot establish the result; record the exact unblock
   condition and trigger PM once.
 
-QA does not directly close/reassign the implementation parent or launch the next
+QA does not directly close/reassign the implementation or launch the next
 stage. PM prepares the deterministic gate and the canonical dispatcher executes
 it.

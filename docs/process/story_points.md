@@ -1,171 +1,76 @@
 # Story Points — FantasyDisk
 
-Директива пользователя (Сергей Фомин), 2026-07-15. Это обязательное правило
-для всех новых и существенно изменяемых actionable-задач FantasyDisk: feature,
-bug, improvement, QA/review, design, animation, balance, release,
-documentation, process и handoff.
+User directive (Sergey Fomin), 2026-07-15. This is mandatory for every new or materially changed actionable FantasyDisk feature, bug, improvement, QA/review, design, animation, balance, release, documentation, process, and handoff issue.
 
-## Модель
+## Model
 
-FantasyDisk использует относительную модель **CUE**:
+FantasyDisk uses the relative **CUE** model: **Complexity** is the solution's interacting systems and dependencies; **Uncertainty** is novelty, external dependency, risk, and requirement ambiguity; **Effort** is implementation, assets, documentation, testing, manual verification, and cleanup through Definition of Done.
 
-- **Complexity** — сложность решения, количество взаимодействующих систем и
-  зависимостей;
-- **Uncertainty** — неизвестность, новизна, внешние зависимости, риск и
-  неоднозначность требований;
-- **Effort** — общий объём реализации, ассетов, документации, тестирования,
-  ручной проверки и cleanup до Definition of Done.
+Story points are neither hours nor a delivery-date promise. Compare the whole task with understood work and choose the next larger size when it falls between values until scope is clarified or decomposed. CUE does not sum by formula: discuss the factors holistically and choose the nearest appropriate size. The Fibonacci scale is **`1, 2, 3, 5, 8, 13`**.
 
-Story points — не часы и не обещание срока. Оценка сравнивает задачу с уже
-понятными задачами и учитывает весь путь до готового, проверенного результата.
-CUE не складывается по формуле: факторы обсуждаются целиком, после чего
-выбирается ближайший подходящий размер. Если задача находится между двумя
-значениями, берётся большее до уточнения или декомпозиции scope.
+This is the one canonical CUE/Fibonacci contract. A summary, attachment, skill, or template may restate it only without changing its meaning and must link here. Do not publish a second per-factor numeric rubric, a mechanical C/U/E sum, a threshold table, or any other conversion from CUE to SP.
 
-Используемая шкала Фибоначчи: **`1, 2, 3, 5, 8, 13`**.
-
-## Единый переносимый контракт
-
-Этот документ — единственный канонический контракт CUE/Fibonacci для
-FantasyDisk. Любая краткая инструкция, attachment, skill или шаблон может
-пересказывать его только без изменения смысла и должна ссылаться на этот файл.
-Нельзя публиковать вторую рубрику с оценками факторов по отдельной числовой
-шкале, механическим сложением C, U и E, таблицей порогов или иным переводом CUE
-в SP. Такие материалы считаются несовместимыми и должны быть явно заменены, а
-не использоваться параллельно с этим контрактом.
-
-| SP | Относительный размер и ориентир |
+| SP | Relative size and guide |
 | --- | --- |
-| `1` | Минимальная, полностью понятная правка в одной локальной зоне; почти нет неизвестности; простая целевая проверка. |
-| `2` | Небольшая задача по известному паттерну; несколько связанных правок; низкий риск; ограниченная проверка и документация. |
-| `3` | Средняя bounded-задача; несколько файлов/слоёв или одна заметная неизвестность; нужны согласованные тесты и документация. |
-| `5` | Существенная задача в одном подсистемном контуре или небольшом наборе интеграций; нетривиальные edge cases и заметный QA-объём. |
-| `8` | Большая cross-system/cross-role задача; существенные неизвестность, риск или платформенная/визуальная матрица; широкий регресс. |
-| `13` | Очень большая, но ещё единая по пользовательскому результату задача; высокий интеграционный риск. Перед dispatch обязателен отдельный review возможности декомпозиции. |
+| `1` | Fully understood local change with almost no uncertainty and one simple focused check. |
+| `2` | Small known-pattern task with a few related edits, limited verification and documentation. |
+| `3` | Bounded task across several files/layers or with one meaningful uncertainty; coordinated tests and documentation are needed. |
+| `5` | Material work in one subsystem or a small integration set, with nontrivial edge cases and QA. |
+| `8` | Large cross-system/cross-role work with substantial uncertainty, risk, or a platform/visual matrix. |
+| `13` | Very large but still one user outcome; review decomposition before dispatch. |
 
-Оценка больше `13 SP` недопустима для executable issue: задачу нужно разделить
-на independently testable child issues, каждая со своей оценкой, acceptance и
-locked paths. Значение `13 SP` не запрещает декомпозицию — если есть чистые
-границы результата, нужно предпочесть меньшие задачи.
+An executable issue above `13 SP` is prohibited: split it into independently testable issues with their own estimates, acceptance criteria, and locked paths. Prefer smaller independently acceptable work whenever a clean boundary exists.
 
-## Обязательная запись в Multica
+## Required Multica record
 
-При формировании или существенном обновлении требований описание issue содержит:
+The issue description records:
 
 ```md
-## Оценка сложности
+## Complexity estimate
 
 Story points: 5
 Label: `SP:5`
-Модель: CUE / Fibonacci `1, 2, 3, 5, 8, 13`
-Обоснование: <1–3 предложения про complexity, uncertainty и полный effort>
+Model: CUE / Fibonacci `1, 2, 3, 5, 8, 13`
+Rationale: <1–3 sentences covering complexity, uncertainty, and total effort>
 ```
 
-После появления `FAN-*` issue получает ровно один канонический workspace Label:
+After a `FAN-*` issue exists, it has exactly one canonical workspace label:
 
-| Story points | Label | Цвет |
+| Story points | Label | Colour |
 | --- | --- | --- |
-| `1` | `SP:1` | зелёный `#22c55e` |
-| `2` | `SP:2` | салатовый `#84cc16` |
-| `3` | `SP:3` | жёлтый `#eab308` |
-| `5` | `SP:5` | оранжевый `#f97316` |
-| `8` | `SP:8` | красный `#ef4444` |
-| `13` | `SP:13` | фиолетовый `#a855f7` |
+| `1` | `SP:1` | green `#22c55e` |
+| `2` | `SP:2` | lime `#84cc16` |
+| `3` | `SP:3` | yellow `#eab308` |
+| `5` | `SP:5` | orange `#f97316` |
+| `8` | `SP:8` | red `#ef4444` |
+| `13` | `SP:13` | purple `#a855f7` |
 
-Label — обязательное отчётное измерение. Числовая metadata сохраняется как
-техническое зеркало для суммирования и проверок. Создавать альтернативные SP
-Labels (`story-points-5`, `SP 5`, `size:5` и т.п.) запрещено.
-
-Найти UUID канонического Label, прикрепить его и записать числовое зеркало:
+The label is the mandatory reporting dimension. Numeric metadata is a technical mirror for aggregation and validation. Alternative labels such as `story-points-5`, `SP 5`, or `size:5` are prohibited. The description, one `SP:<N>` label, `story_points`, and `estimation_model` must agree.
 
 ```bash
 multica label list --output json
 multica issue label add FAN-123 <uuid-label-SP:5> --output json
 multica issue metadata set FAN-123 --key story_points --value 5 --type number
-multica issue metadata set FAN-123 --key estimation_model \
-  --value "CUE Fibonacci 1,2,3,5,8,13" --type string
+multica issue metadata set FAN-123 --key estimation_model --value "CUE Fibonacci 1,2,3,5,8,13" --type string
 multica issue label list FAN-123 --output json
 multica issue metadata list FAN-123 --output json
 ```
 
-Label `SP:<N>` — каноническая категория отчёта; description — человекочитаемое
-обоснование; metadata `story_points=<N>` — числовое зеркало. Все три значения
-обязаны совпадать. Локальный task mirror, если он нужен, повторяет блок оценки
-из Multica и не становится отдельным источником значения.
+## Readiness, reporting, and transition
 
-## Readiness gate
+- PM/the requirements author estimates before assignment, dispatch, or `in_progress`; dispatcher and worker recheck the label, metadata, description, and rationale.
+- An unestimated, contradictory, or over-13 issue is not dispatchable. The same rule applies to QA, bug, improvement, and handoff work.
+- If scope or acceptance materially changes, re-estimate before work continues: replace the label, update description/metadata, confirm exactly one label, and record old/new value and reason in Multica. Do not retrospectively tune SP merely because implementation progressed.
+- Reports group work by the canonical `SP:<N>` label. Historical Jira Archive is read-only and excluded at reporting time, never edited.
+- Use SP to assess flow stability, QA first-pass rate, WIP age, and plan/actual delivery. Never rank people, agents, or roles by completed SP or use SP as a personal KPI.
+- Existing closed history is not bulk re-estimated. Safe retrospective cleanup uses `tools/story_points_remediation.py` (`inventory`, dry-run plan, apply, audit), preserves rollback snapshots, and never mutates Jira Archive.
 
-- PM/автор требований оценивает задачу до assignment, dispatch или перехода в
-  `in_progress`.
-- Dispatcher и исполнитель повторно проверяют, что у issue ровно один
-  канонический `SP:<N>` Label, числовая metadata `story_points` совпадает с ним,
-  а description содержит то же значение и обоснование.
-- Неоценённая, противоречиво оценённая или оценённая выше `13 SP` задача не
-  готова к исполнению: её не назначают и не запускают, а возвращают PM на
-  уточнение/декомпозицию.
-- Правило распространяется на дочерние QA, bug, improvement и handoff issues:
-  статус child не заменяет оценку.
-- Если scope или acceptance materially изменились, владелец требований до
-  продолжения работы переоценивает issue. На время замены issue не dispatchable:
-  добавить новый канонический Label, удалить старый, обновить description и
-  metadata, затем проверить, что остался ровно один `SP:<N>`. В Multica comment
-  записать старое/новое значение и причину. Обычная реализация без изменения
-  scope не является поводом «подгонять» SP задним числом.
+## Prohibited uses
 
-## Отчёты эффективности
+Do not convert `1 SP` into fixed hours/days, alter an estimate for a particular worker's experience, lower it to meet a desired date, or mechanically sum unrelated work as a promised date.
 
-Отчёты группируют issues по каноническому `SP:<N>` Label. Числовую metadata
-можно использовать для сумм, но выборка и контроль полноты строятся по Label.
+## Model sources
 
-В отчёт принятых оценок входят только canonical pre-work estimates: ровно один
-`SP:<N>` Label, совпадающая metadata `story_points` с
-`estimation_model="CUE Fibonacci 1,2,3,5,8,13"` и блок `Story points` в
-description. Записи с другими значениями `estimation_model` (например,
-`CUE retrospective v1`) не являются принятыми оценками: они исключаются из live
-readiness и план/факт отчётов и могут публиковаться только отдельным,
-явно помеченным retrospective-приложением по прямому решению пользователя.
-Jira Archive — read-only history: его записи никогда не входят в live-отчёты и
-отделяются на уровне отчёта, а не правкой архива.
-
-Рекомендуемые метрики команды и процесса:
-
-- выполненные SP за период/sprint/release и доля завершённого от взятого scope;
-- median cycle time от `in_progress` до `done` отдельно для каждого SP Label;
-- first-pass QA rate и количество rework/follow-up issues по SP-группам;
-- возраст WIP и доля просроченного потока по SP-группам;
-- план/факт: SP, взятые в период, против SP, завершённых в том же периоде.
-
-Сравнивать нужно стабильность потока, качество планирования и delivery системы.
-Нельзя ранжировать отдельных людей/агентов по закрытым SP: размер относителен,
-зависит от scope и не является персональной производительностью.
-
-## Переход для существующей очереди
-
-- Новые issues сразу получают один `SP:<N>` Label, description и metadata.
-- Существующие `backlog`/`todo` без Label получают его до следующего dispatch.
-- Для `in_progress`/`in_review` оценка добавляется при ближайшем содержательном
-  обновлении issue; ради backfill нельзя переписывать фактический scope или
-  останавливать уже идущую безопасную проверку.
-- Исторические `done`, `cancelled` и Jira Archive массово не переоцениваются.
-- Обнаруженная на закрытой live-истории ретроспективная разметка снимается
-  через `tools/story_points_remediation.py` (inventory, dry-run plan, apply,
-  audit): исходное состояние и даты сохраняются в rollback-snapshot, статусы,
-  description и assignee не меняются. Jira Archive не мутируется ни при каких
-  условиях — его ретроспективные записи отделяются только на уровне отчёта.
-
-## Запрещённые применения
-
-- Не переводить `1 SP` в фиксированное количество часов или дней.
-- Не сравнивать людей, агентов или роли по закрытым SP и не использовать SP как
-  KPI производительности.
-- Не повышать оценку из-за конкретного менее опытного исполнителя и не снижать
-  её ради желаемого срока.
-- Не суммировать механически SP несвязанных команд как обещание даты. Для
-  прогнозирования использовать фактическую командную историю после накопления
-  сопоставимых задач, сохраняя понимание, что SP остаются относительным размером.
-
-## Основание модели
-
-- [Atlassian: Fibonacci Story Points](https://www.atlassian.com/agile/project-management/fibonacci-story-points) — относительная оценка, растущая неопределённость и декомпозиция слишком больших задач.
-- [Scrum.org: Practical Fibonacci](https://www.scrum.org/resources/blog/practical-fibonacci-beginners-guide-relative-sizing) — модель Complexity, Uncertainty, Effort и сравнительная шкала Фибоначчи.
-- [Atlassian: Story points and estimation](https://www.atlassian.com/agile/project-management/estimation) — story points учитывают объём, сложность и риск вместо прямой оценки в часах.
+- [Atlassian: Fibonacci Story Points](https://www.atlassian.com/agile/project-management/fibonacci-story-points)
+- [Scrum.org: Practical Fibonacci](https://www.scrum.org/resources/blog/practical-fibonacci-beginners-guide-relative-sizing)
+- [Atlassian: Story points and estimation](https://www.atlassian.com/agile/project-management/estimation)

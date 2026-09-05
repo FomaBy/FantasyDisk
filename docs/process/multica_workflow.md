@@ -20,9 +20,9 @@ lifecycle and repository evidence.
   transitions under `docs/process/dispatcher-authority.md`. It does not make
   product judgments.
 - Developer: one explicitly assigned implementation issue.
-- QA: one explicitly assigned child pinned to the pushed candidate SHA; no
-  production fixes in review scope.
-- DevOps: one explicitly assigned post-QA integration issue; merges only the
+- QA: one explicitly assigned same-card review stage pinned to the pushed
+  candidate SHA; no production fixes in review scope.
+- Integrator: the dedicated same-card integration stage; promotes only the
   exact QA-approved SHA into the explicit target.
 
 One daemon agent owns at most one live issue. No worker self-claims unassigned
@@ -35,19 +35,27 @@ work, and no second dispatcher or competing QA may exist.
 | `backlog` | parked and not running; dispatch gate may be incomplete or waiting |
 | `todo` | one assigned daemon run is queued or starting |
 | `in_progress` | the assigned worker has a live claim |
-| `in_review` | implementation parent released after an exact-SHA QA child is live, or waiting on deterministic verdict handling |
+| `in_review` | PM-admitted immutable candidate undergoing same-card QA or integration |
 | `blocked` | a concrete external/dependency condition prevents progress |
 | `done` | the issue's own completion/QA contract is satisfied |
 
 Status is evidence, not intent. A card must not remain active without a matching
 live run or exact handoff.
 
+## Review admission and capacity
+
+At most six cards may be in `in_review` at one time. The lifecycle PM admits an
+immutable candidate only after rereading its exact SHA, attribution,
+dependencies, locks, and available review capacity while holding the shared
+launch guard. Developers do not self-admit the sixth slot, select QA, or merge
+their candidate. Independent QA and the dedicated integrator work on the same
+card; routine integration into `dev` remains serial.
+
 ## Readiness
 
 PM creates or re-estimates an unassigned `backlog` issue. Before dispatch:
 
-Story Points use `1, 2, 3, 5, 8, 13`. CUE не складывается по формуле; it is a
-holistic judgment.
+Story Points use `1, 2, 3, 5, 8, 13`. CUE does not sum by formula and is not an additive formula; it is a holistic judgment. Keep exactly one `SP:<N>` label, matching `story_points`, and matching `estimation_model`.
 
 - description includes `Story points: <N>`, CUE rationale, complexity tier and
   rationale, routing lane, scope, and verifiable acceptance criteria;
@@ -156,7 +164,7 @@ and the canonical dispatcher launches the dedicated DevOps issue. DevOps:
 A conflict/mergeability probe must never produce a commit that a later `git
 push` can land on `dev` — including under a placeholder message such as
 "TEST MERGE - will discard". Any commit reachable from `dev`'s history is
-permanent per this project's no-rewrite rule (`## Запреты` in
+permanent per this project's no-rewrite rule (the prohibitions section in
 `docs/process/versioning_and_branching.md`); a throwaway label does not make
 it safe to push and does not entitle anyone to revert it later.
 

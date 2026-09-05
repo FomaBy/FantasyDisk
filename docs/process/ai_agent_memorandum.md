@@ -11,7 +11,7 @@ or domain reference only when a concrete gap requires it.
 - Jira/SCRUM and local task Markdown are history or mirrors, never a queue.
 - Work exactly one issue assigned to the current agent. Do not self-claim,
   assign another worker, start competing QA, or cross an active lock.
-- PM owns scope/readiness judgment. The canonical dispatcher in
+- PM owns scope/readiness judgment and guarded review admission. The canonical dispatcher in
   `docs/process/dispatcher-authority.md` alone performs PM-gated mechanical
   allocation. Developers implement; assigned QA verifies the exact pushed
   candidate independently; assigned DevOps integrates that same approved SHA
@@ -62,14 +62,14 @@ already-red CI whose failure scope cannot be isolated by focused checks.
 
 ## QA loop
 
-QA accepts only its assigned child and matching pushed SHA. It verifies
+QA accepts only its assigned same-card review stage and matching pushed SHA. It verifies
 reviewer independence, one live claim, ancestry, dependencies, and readiness,
 then independently runs one or two focused checks for a normal change. QA never
 fixes production code in the review scope and never calls a blocked or
 unexecuted check PASS.
 
-Publish `PASSED|FAILED|INCONCLUSIVE`, finish the QA child, and trigger PM once.
-Parent/rework allocation remains a PM/canonical-dispatcher lifecycle concern.
+Publish `PASSED|FAILED|INCONCLUSIVE`, finish the QA stage, and trigger PM once.
+Rework allocation remains a PM/canonical-dispatcher lifecycle concern.
 
 ## DevOps loop
 
@@ -81,8 +81,8 @@ A dirty operator mirror is skipped and is non-blocking.
 
 ## Communication and finish
 
-Start Multica comments with a short Russian summary, then add technical
-evidence. Explain blockers by impact, checks already made, and exact unblock
+Start Multica comments with a short plain-language outcome, then add technical
+evidence. Explain blockers by impact, checks already made, and the exact unblock
 condition.
 
 Protect secrets and operator work. Clean only task-owned disposable state.

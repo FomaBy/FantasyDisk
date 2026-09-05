@@ -2,9 +2,9 @@
 
 Updated: 2026-08-01
 
-One issue has one live owner and one non-overlapping locked scope. Roles may
-collaborate through independently acceptable child issues, not by editing the
-same files or assets concurrently.
+One deliverable card has one live owner and one non-overlapping locked scope.
+Development, independent same-card QA, bounded rework, and routine integration
+remain on that card. Roles never edit the same files or assets concurrently.
 
 Dispatch authority is pinned by `docs/process/dispatcher-authority.md`; worker
 provider or model names do not replace that record.
@@ -16,7 +16,7 @@ provider or model names do not replace that record.
 | PM | outcome, CUE/Fibonacci, AC, dependencies, complexity, routing, QA/rework readiness | assign delivery agents, launch lifecycle, implement product scope, perform independent QA |
 | Canonical dispatcher | deterministic assignment and lifecycle from PM-ready metadata | estimate, change AC/scope/routing, implement, test, interpret product ambiguity |
 | Developer | one assigned implementation scope, tests/docs, pushed candidate evidence | self-claim, dispatch, select QA, review its own work independently |
-| QA | one assigned exact-SHA child and independent verdict | self-select parent, repair production code, allocate rework, accept stale SHA |
+| QA | one assigned exact-SHA candidate and independent verdict | self-select work, repair production code, allocate rework, accept stale SHA |
 | Design/UI | visual system, mockup/art package, screen/layout evidence in assigned scope | backend/gameplay changes outside the handoff |
 | Animation | motion/source frames, runtime animation integration, animation evidence | unrelated UI/backend ownership |
 
@@ -89,7 +89,7 @@ owner/status source.
 
 Developer evidence:
 
-- Russian summary;
+- concise plain-language summary in the requested language;
 - exact pushed SHA and ancestry;
 - changed systems/files;
 - commands/results and untested checks;
