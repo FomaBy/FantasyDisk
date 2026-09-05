@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Mutation tests for the FAN-3383 Druid baseline row-isolation guard."""
+"""Mutation tests for shard assembly and the baseline row-isolation guard."""
 
 from __future__ import annotations
 
 import copy
 
-from check_druid_baseline_isolation import find_non_druid_drift, rows_by_key
+from check_druid_baseline_isolation import (
+    assemble_shards,
+    find_non_druid_drift,
+    rows_by_key,
+    split_document,
+)
 
 BASE_DOCUMENT = {
     "rows": [
@@ -22,6 +27,35 @@ BASE_DOCUMENT = {
 def main() -> int:
     failures: list[str] = []
     base_rows = rows_by_key(BASE_DOCUMENT)
+
+    envelope, shards = split_document(copy.deepcopy(BASE_DOCUMENT))
+    if assemble_shards(envelope, copy.deepcopy(shards)) != BASE_DOCUMENT:
+        failures.append("canonical shards must reassemble exactly")
+
+    changed_shards = copy.deepcopy(shards)
+    changed_shards[1]["rows"][0]["scenarios"]["crowd_20"]["targets_struck"] = 99.0
+    changed_document = assemble_shards(envelope, changed_shards)
+    for key, row in rows_by_key(changed_document).items():
+        if not key.startswith("druid/") and row != base_rows[key]:
+            failures.append(f"editing the Druid shard changed foreign row {key}")
+
+    malformed_cases = []
+    missing_shards = copy.deepcopy(shards)
+    missing_shards[1]["rows"].clear()
+    malformed_cases.append(("missing row", missing_shards, "baseline.row_missing:"))
+    duplicate_shards = copy.deepcopy(shards)
+    duplicate_shards[1]["rows"].append(copy.deepcopy(duplicate_shards[1]["rows"][0]))
+    malformed_cases.append(("duplicate row", duplicate_shards, "baseline.row_duplicate:"))
+    crossed_shards = copy.deepcopy(shards)
+    crossed_shards[1]["rows"][0]["class_id"] = "doctor"
+    malformed_cases.append(("cross-class row", crossed_shards, "baseline.row_cross_class:"))
+    for name, candidate_shards, expected in malformed_cases:
+        try:
+            assemble_shards(envelope, candidate_shards)
+            failures.append(f"{name} must be rejected")
+        except ValueError as error:
+            if expected not in str(error):
+                failures.append(f"{name} reported the wrong error: {error}")
 
     identical = copy.deepcopy(BASE_DOCUMENT)
     if find_non_druid_drift(base_rows, rows_by_key(identical)):

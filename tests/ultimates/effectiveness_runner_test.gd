@@ -22,6 +22,7 @@ const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.
 const Runner := preload("res://scripts/ultimates/balance/ultimate_effectiveness_runner.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const BaselineStore := preload("res://tools/ultimate_effectiveness_report.gd")
 
 const BASELINE_PATH := "res://build/ultimate_effectiveness_baseline.json"
 const DETERMINISM_CLASSES := ["doctor", "knight", "druid"]
@@ -30,7 +31,7 @@ var _errors: Array[String] = []
 
 
 func _initialize() -> void:
-	var baseline := _baseline_rows()
+	var baseline := _baseline_document().get("rows", []) as Array
 	_check_baseline(baseline)
 	await _check_determinism(baseline)
 	_check_validator_can_fail(baseline)
@@ -220,21 +221,31 @@ func _tamper(report: Array, index: int, mutate: Callable) -> Array:
 	return copy
 
 
-func _baseline_rows() -> Array:
+func _baseline_document() -> Dictionary:
 	if not FileAccess.file_exists(BASELINE_PATH):
 		_expect(false, "missing committed baseline %s" % BASELINE_PATH)
-		return []
+		return {}
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(BASELINE_PATH))
 	if not parsed is Dictionary:
 		_expect(false, "baseline %s is not a JSON object" % BASELINE_PATH)
-		return []
-	var document := parsed as Dictionary
+		return {}
+	var legacy_document := parsed as Dictionary
+	var loaded := BaselineStore.read_baseline_document()
+	for raw_error in loaded.get("errors", []) as Array:
+		_expect(false, str(raw_error))
+	var document = loaded.get("document")
+	if not document is Dictionary:
+		_expect(false, "sharded baseline reader did not return a document")
+		return {}
 	_expect(
-		int(document.get("schema_version", -1)) == Runner.SCHEMA_VERSION,
+		document == legacy_document,
+		"sharded baseline must reassemble exactly to the compatibility export"
+	)
+	_expect(
+		int((document as Dictionary).get("schema_version", -1)) == Runner.SCHEMA_VERSION,
 		"baseline schema_version must be %d" % Runner.SCHEMA_VERSION
 	)
-	var rows = document.get("rows")
-	return rows as Array if rows is Array else []
+	return document as Dictionary
 
 
 func _expect(condition: bool, message: String) -> void:
