@@ -1053,9 +1053,9 @@ func _current_dodge_chance() -> float:
 # передаёт self); снаряды/зоны/элитные страйки атакующего не передают (null).
 # Используется только trait'ом «Возмездие» — ответным отбросом атакующего.
 func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
-	# FAN-3920 (FD13): решение о входящем уроне — в коллабораторе
-	# PlayerDamagePolicy (гейты предотвращения, ролл уворота, математика
-	# митигейта); Player владеет состоянием, сигналами и эффектами.
+	# FAN-3920 (FD13): the incoming-damage decisions live in the
+	# PlayerDamagePolicy collaborator (prevention gates, dodge roll, mitigation
+	# math); Player owns the state, signals and effects.
 	match PLAYER_DAMAGE_POLICY.prevention_gate(self):
 		PLAYER_DAMAGE_POLICY.Prevention.GODMODE, PLAYER_DAMAGE_POLICY.Prevention.INVULNERABILITY:
 			return false
@@ -1095,22 +1095,26 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# события до этой строки не доходят и разогрев НЕ сбрасывают.
 	_warmup_no_hit_seconds = 0.0
 
-	var defended_amount := _try_knight_counter(amount)
-	var mitigation := PLAYER_DAMAGE_POLICY.mitigate(self, amount, defended_amount)
-	var constellation_ward_absorbed: float = mitigation["ward_absorbed"]
+	var defended_amount := PLAYER_DAMAGE_POLICY.apply_reactor_heat(self, _try_knight_counter(amount))
+	# FAN-3920 (FD13): mitigation is computed step-by-step so each synchronous
+	# owner event fires exactly where the inline pipeline fired it — callbacks
+	# may mutate Player state that later steps read.
+	var ward := PLAYER_DAMAGE_POLICY.apply_ward(self, defended_amount)
+	defended_amount = ward["defended_amount"]
+	var constellation_ward_absorbed: float = ward["ward_absorbed"]
 	if constellation_ward_absorbed > 0.0:
 		_dispatch_constellation_owner_event("damage_absorbed", {
 			"absorbed_amount": constellation_ward_absorbed,
 			"incoming_amount": amount,
-			"constellation_ward_source": mitigation["ward_source"],
+			"constellation_ward_source": ward["ward_source"],
 		})
-	var absorbed_amount: float = mitigation["absorbed_amount"]
-	var actually_absorbed: float = mitigation["actually_absorbed"]
+	var absorb_result := PLAYER_DAMAGE_POLICY.apply_defense_and_absorb(self, defended_amount)
+	var actually_absorbed: float = absorb_result["actually_absorbed"]
 	if actually_absorbed > 0.0:
 		_dispatch_constellation_owner_event("damage_absorbed", {"absorbed_amount": actually_absorbed, "incoming_amount": amount})
 	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
-	_charge_repair_subroutine(constellation_ward_absorbed + mitigation["defended_amount"] - absorbed_amount)
-	var final_damage: float = mitigation["final_damage"]
+	_charge_repair_subroutine(constellation_ward_absorbed + defended_amount - float(absorb_result["post_absorb_amount"]))
+	var final_damage: float = PLAYER_DAMAGE_POLICY.apply_final_multipliers(self, float(absorb_result["damage_after_defense"]))
 	GUARD_PREVENTION_INGRESS.emit_measured(self, amount, final_damage, _source, attacker)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time

@@ -19,9 +19,15 @@ const EPS := 0.0001
 class EventProbe:
 	extends Node
 	var events: Array = []
+	# Optional synchronous callback hook: owner events dispatch into the
+	# equipped weapon synchronously, so callbacks may mutate Player state that
+	# the pipeline reads afterwards (FAN-3920 rework: interleave parity).
+	var mutate: Callable = Callable()
 
 	func constellation_owner_event(event: String, context := {}, enemy: Node2D = null) -> Dictionary:
 		events.append({"event": event, "context": context.duplicate(true)})
+		if mutate.is_valid():
+			mutate.call(event, context)
 		return {}
 
 
@@ -62,18 +68,7 @@ func _initialize() -> void:
 		errors.append("invisibility: expected prevented hit (false) with full health")
 	player.set("_shadow_invisible_left", 0.0)
 
-	# Prevention order: earlier gates beat the Knight ultimate channel.
-	player.set("debug_godmode", true)
-	player.set("_ultimate_active", true)
-	if player.take_damage(40.0) != false:
-		errors.append("ordering: godmode must win over the Knight ultimate gate")
-	player.set("debug_godmode", false)
-	player.set("_damage_invulnerability_left", 1.0)
-	if player.take_damage(40.0) != false:
-		errors.append("ordering: i-frames must win over the Knight ultimate gate")
-	player.set("_damage_invulnerability_left", 0.0)
-
-	# --- Channel 2: Knight ultimate gate returns true, no damage, before dodge ---
+	# --- Channel 2: Knight ultimate gate and prevention ordering (real Knight) ---
 	var knight := await _make_player(holder, errors, "knight")
 	if knight != null:
 		_force_clean_mitigation(knight)
@@ -85,6 +80,28 @@ func _initialize() -> void:
 			errors.append("knight ultimate: expected return true with full health")
 		if absf(float(knight.get("_warmup_no_hit_seconds")) - 3.0) > EPS:
 			errors.append("knight ultimate: gate hit must not reset warmup")
+		# The ultimate gate runs BEFORE the dodge roll: even a near-capped dodge
+		# chance never converts this into a dodge outcome.
+		var knight_dodge: Dictionary = knight.get("derived_parameters").duplicate()
+		knight_dodge["raw_dodge"] = 1000000.0
+		knight.set("derived_parameters", knight_dodge)
+		knight.set("_damage_invulnerability_left", 0.0)
+		_set_health(knight, 1000.0, 1000.0)
+		if knight.take_damage(40.0) != true or _health(knight) != 1000.0:
+			errors.append("knight ultimate: gate must precede the dodge roll (expected true, no damage)")
+		# Earlier gates beat the ultimate channel on the same Knight.
+		knight.set("debug_godmode", true)
+		if knight.take_damage(40.0) != false:
+			errors.append("ordering: godmode must win over the Knight ultimate gate")
+		knight.set("debug_godmode", false)
+		knight.set("_damage_invulnerability_left", 1.0)
+		if knight.take_damage(40.0) != false:
+			errors.append("ordering: i-frames must win over the Knight ultimate gate")
+		knight.set("_damage_invulnerability_left", 0.0)
+		knight.set("_shadow_invisible_left", 1.0)
+		if knight.take_damage(40.0) != false or _health(knight) != 1000.0:
+			errors.append("ordering: invisibility must win over the Knight ultimate gate")
+		knight.set("_shadow_invisible_left", 0.0)
 		knight.set("_ultimate_active", false)
 		holder.remove_child(knight)
 		knight.queue_free()
@@ -226,6 +243,45 @@ func _initialize() -> void:
 	player.take_damage(40.0, "contact", attacker)
 	if absf(1000.0 - _health(player) - 40.0) > 0.05:
 		errors.append("attacker channel: expected 40.0 damage with a contact attacker, got %.3f" % (1000.0 - _health(player)))
+
+	# --- Synchronous owner-event callbacks mutate state read later by the
+	# pipeline (FAN-3920 rework: event/computation interleave parity) ---
+	_force_clean_mitigation(player)
+	_set_health(player, 1000.0, 1000.0)
+	player.set("equipped_weapon", probe)
+	probe.events.clear()
+	probe.mutate = func(event: String, context: Dictionary) -> void:
+		if event == "damage_absorbed" and context.has("constellation_ward_source"):
+			_override_derived(player, {"absorb": 5.0})
+	player.call("constellation_set_single_hit_ward", "probe_ward", 0.5, 10.0)
+	player.set("_damage_invulnerability_left", 0.0)
+	player.take_damage(40.0)
+	# 40 -> the ward absorbs 20 and its event fires synchronously (the callback
+	# raises flat absorb to 5) -> flat absorb eats 5 of the remaining 20 ->
+	# 15.0 final damage, and the ward event strictly precedes the absorb event.
+	if absf(1000.0 - _health(player) - 15.0) > 0.05:
+		errors.append("callback parity: ward callback raising absorb must yield 15.0, got %.3f" % (1000.0 - _health(player)))
+	var absorbed_sequence := probe.events.filter(func(e): return e["event"] == "damage_absorbed")
+	if absorbed_sequence.size() != 2 \
+			or not absorbed_sequence[0]["context"].has("constellation_ward_source") \
+			or absorbed_sequence[1]["context"].has("constellation_ward_source"):
+		errors.append("callback parity: ward damage_absorbed must fire strictly before the flat-absorb event, got %d events" % absorbed_sequence.size())
+
+	# Flat-absorb event callback arms the battle prayer, which the final class
+	# multipliers read only AFTER the absorb event on the baseline pipeline.
+	_force_clean_mitigation(player)
+	_override_derived(player, {"absorb": 5.0})
+	_set_health(player, 1000.0, 1000.0)
+	probe.events.clear()
+	probe.mutate = func(event: String, context: Dictionary) -> void:
+		if event == "damage_absorbed" and not context.has("constellation_ward_source"):
+			player.set("_battle_prayer_protection", 0.5)
+	player.set("_damage_invulnerability_left", 0.0)
+	player.take_damage(40.0)
+	if absf(1000.0 - _health(player) - 17.5) > 0.05:
+		errors.append("callback parity: absorb callback arming prayer must yield 17.5, got %.3f" % (1000.0 - _health(player)))
+	probe.mutate = Callable()
+	player.set("equipped_weapon", null)
 
 	# --- Knight block/counter (weapon passive) ---
 	var knight2 := await _make_player(holder, errors, "knight")
