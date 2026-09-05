@@ -64,6 +64,14 @@ const FLASH_GUARD_METHOD := "_combat_feedback_enabled"
 var pool_cap := POOL_CAP
 var degrade_threshold := DEGRADE_VICTIM_THRESHOLD
 
+## Caller mode for executors whose own damage path already draws the victim's
+## ordinary hit flash (`enemy.gd:_show_combat_feedback` → `_show_hit_flash`):
+## the burst flipbook still plays, the ordinary flash is simply not repeated
+## (FAN-3886 AC-4: exactly one ordinary hit feedback per damage event). The
+## default keeps the original behaviour — caster-side scenes that route no
+## ordinary damage through this player still get the flash here.
+var extra_hit_flash := true
+
 var _frames: SpriteFrames = null
 var _pending_seq := 0
 var _pool: Array[AnimatedSprite2D] = []
@@ -229,12 +237,13 @@ func _ordered_victims(victims: Array, cast_position: Vector2) -> Array[Node2D]:
 
 ## The white flash is the floor of the read: it fires for every victim before
 ## the burst is even acquired, so pool pressure and degradation can never take
-## it away.
+## it away. Callers that already drew it on their damage path turn it off with
+## `extra_hit_flash = false` — the burst is still acquired and played.
 func _spawn(victim: Variant) -> void:
 	if not (victim is Node2D) or not is_instance_valid(victim):
 		return
 	var target := victim as Node2D
-	if _flash(target):
+	if extra_hit_flash and _flash(target):
 		_flashes += 1
 	var sprite := _acquire()
 	if sprite == null:
