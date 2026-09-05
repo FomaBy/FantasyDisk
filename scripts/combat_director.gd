@@ -636,9 +636,11 @@ func spawn_encounter_plan(plan: Dictionary) -> int:
 		return 0
 	var remaining := mini(_active_enemy_cap(), int(plan.get("active_cap", 0))) \
 		- ENCOUNTER_CONTEXT.wave_quota_count(game.get_tree().get_nodes_in_group("enemies"))
+	if remaining <= 0:
+		return 0
 	var spawned_count := 0
 	for entry in plan.get("entries", []):
-		var scene := load(str(entry.get("scene", ""))) as PackedScene
+		var scene := _encounters.spawn_scene(plan, str(entry.get("scene", "")))
 		for _index in range(mini(int(entry.get("count", 0)), remaining)):
 			if _spawn_random_enemy(scene, Vector2.ZERO, false, float(plan.get("safe_radius", game.SPAWN_PLAYER_SAFE_RADIUS))) == null:
 				return spawned_count
