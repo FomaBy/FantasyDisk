@@ -18,8 +18,8 @@ const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_ru
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
-# FAN-3920 (FD13): коллаборатор входящего урона — гейты предотвращения,
-# ролл уворота и математика митигейта (состояние/сигналы остаются у Player).
+# FAN-3920 (FD13): incoming-damage collaborator — prevention gates,
+# dodge roll and mitigation math (state/signals stay with Player).
 const PLAYER_DAMAGE_POLICY := preload("res://scripts/player/player_damage_policy.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
