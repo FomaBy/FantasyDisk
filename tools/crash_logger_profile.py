@@ -423,7 +423,7 @@ def command_profile(args: argparse.Namespace) -> dict:
     paired_regressions = [
         (candidate_sample / baseline_sample - 1.0) * 100.0
         for baseline_sample, candidate_sample in zip(
-            baseline["samples_ms"], candidate["samples_ms"], strict=True
+            baseline["samples_ms"], candidate["samples_ms"]
         )
     ]
     regression_percent, paired_mad = _median_and_mad(paired_regressions)
@@ -435,13 +435,13 @@ def command_profile(args: argparse.Namespace) -> dict:
     baseline_calibration_deltas = [
         calibrated - normal
         for normal, calibrated in zip(
-            baseline["samples_ms"], baseline["calibration_samples_ms"], strict=True
+            baseline["samples_ms"], baseline["calibration_samples_ms"]
         )
     ]
     candidate_calibration_deltas = [
         calibrated - normal
         for normal, calibrated in zip(
-            candidate["samples_ms"], candidate["calibration_samples_ms"], strict=True
+            candidate["samples_ms"], candidate["calibration_samples_ms"]
         )
     ]
     baseline_calibration_delta = statistics.median(baseline_calibration_deltas)
