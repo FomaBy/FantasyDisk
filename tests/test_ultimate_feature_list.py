@@ -9,7 +9,10 @@ executing anything.
 """
 from __future__ import annotations
 
+import contextlib
+import hashlib
 import importlib.util
+import io
 import json
 import os
 import subprocess
@@ -144,7 +147,11 @@ def build_fixture(root: Path, mode: str = "pass") -> None:
         (root / "tests" / "ultimates" / f"{class_id(index)}_live_test.gd").write_text(
             "extends SceneTree\n", encoding="utf-8"
         )
-    (root / ".gitignore").write_text("build/\nstub_calls.log\nstub_child.pid\n", encoding="utf-8")
+    # Mode switches and stub bookkeeping never dirty the fixture worktree: a
+    # verified report requires the same clean commit it was generated on.
+    (root / ".gitignore").write_text(
+        "build/\nstub_calls.log\nstub_child.pid\nstub_control.json\n", encoding="utf-8"
+    )
     write_feature_list(root, default_entries())
     _git(root, "init", "-q")
     _git(root, "config", "user.name", "Feature List Test")
@@ -192,6 +199,61 @@ def run_checker(root: Path, *args: str, env: dict | None = None) -> subprocess.C
 
 def read_report(root: Path) -> dict:
     return json.loads((root / "build" / "ultimate_feature_list" / "report.json").read_text(encoding="utf-8"))
+
+
+def profile_result(root: Path, index: int, **overrides) -> dict:
+    """What tools/quality_gate.py holds in memory after running one recipe suite."""
+    result = {
+        "name": f"{class_id(index)}_live_test",
+        "script": suite_path(index),
+        "status": "passed",
+        "exit_code": 0,
+        "timed_out": False,
+        "duration_seconds": 1.5,
+        "output": f"Godot Engine (profile run)\n{class_id(index)}_live_test: PASS\n",
+        "command": [
+            sys.executable,
+            str(root / "tools" / "godot_gate.py"),
+            "--headless",
+            "--path",
+            str(root),
+            "--script",
+            suite_path(index),
+            "--",
+            "--user-data-dir=/scratch/user",
+        ],
+    }
+    result.update(overrides)
+    return result
+
+
+def bind_in_process(root: Path, results: list) -> tuple:
+    """Call the checker library the way the gate does; return (step, stdout, stderr)."""
+    checker = _load_module("ultimate_feature_list_check_tested", "tools/ultimate_feature_list_check.py")
+    out, err = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+        step = checker.bind_profile_run(root, {result["script"]: result for result in results})
+    return step, out.getvalue(), err.getvalue()
+
+
+def write_fake_manifest(root: Path, head: str) -> None:
+    """A manifest plus logs on disk that name HEAD: never evidence."""
+    log_dir = root / "build" / "ultimate_feature_list" / "profile_logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    suites = {}
+    for index in range(CLASS_COUNT):
+        log = log_dir / f"{class_id(index)}_live_test.log"
+        log.write_text(f"Godot Engine (fabricated)\n{class_id(index)}_live_test: PASS\n", encoding="utf-8")
+        suites[suite_path(index)] = {
+            "log_path": log.relative_to(root).as_posix(),
+            "exit_code": 0,
+            "timed_out": False,
+            "duration_seconds": 1.0,
+            "executed_argv": recipe(index),
+        }
+    (root / "build" / "ultimate_feature_list" / "profile_results.json").write_text(
+        json.dumps({"schema_version": 1, "candidate_sha": head, "suites": suites}), encoding="utf-8"
+    )
 
 
 class FixtureCase(unittest.TestCase):
@@ -439,9 +501,10 @@ class FreshEvidenceTests(FixtureCase):
         for record in report["entries"]:
             record["evidence"]["exit_code"] = 0
         report_path.write_text(json.dumps(report), encoding="utf-8")
-        # The logs themselves still say the suite failed on exit; the digest binds them.
-        self.assertEqual(
-            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 0
+        # The execution record of the recipe still says the run failed.
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json"),
+            "recipe record disagrees with the entry evidence",
         )
         # A committed word "passing" without evidence is refused outright.
         for record in report["entries"]:
@@ -456,11 +519,69 @@ class FreshEvidenceTests(FixtureCase):
         entries = default_entries()
         entries[0].update(state="blocked", verification=None, blocked_reason="suite pending")
         write_feature_list(self.root, entries)
+        _git(self.root, "commit", "-qam", "block one entry")
         self.assertEqual(run_checker(self.root, "--timeout", "30").returncode, 0)
         write_feature_list(self.root, default_entries())
+        _git(self.root, "commit", "-qam", "activate it again")
         self.assert_three_part_failure(
             run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json"),
             "is blocked but the feature list says active",
+        )
+
+    def test_verify_rejects_stale_same_sha_reuse(self) -> None:
+        """Same HEAD is not enough: the checkout must be the clean commit the run saw."""
+        self.assertEqual(run_checker(self.root, "--timeout", "30").returncode, 0)
+        report_path = "build/ultimate_feature_list/report.json"
+        self.assertEqual(run_checker(self.root, "--verify-report", report_path).returncode, 0)
+        suite = self.root / "tests" / "ultimates" / "class_00_live_test.gd"
+        suite.write_text("extends SceneTree\n# edited after the run\n", encoding="utf-8")
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", report_path), "worktree is dirty now"
+        )
+        _git(self.root, "checkout", "--", "tests/ultimates/class_00_live_test.gd")
+        self.assertEqual(run_checker(self.root, "--verify-report", report_path).returncode, 0)
+        # An edited feature list on the same HEAD is a different mapping.
+        entries = default_entries()
+        entries[0]["behavior"] = "reworded"
+        write_feature_list(self.root, entries)
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", report_path), "different feature list"
+        )
+        _git(self.root, "checkout", "--", "data/ultimates/feature_list.json")
+        # A report generated on a dirty worktree never verifies, even once clean.
+        suite.write_text("extends SceneTree\n# local change during the run\n", encoding="utf-8")
+        self.assertEqual(run_checker(self.root, "--timeout", "30").returncode, 0)
+        self.assertEqual(read_report(self.root)["worktree_dirty"], [" M tests/ultimates/class_00_live_test.gd"])
+        _git(self.root, "checkout", "--", "tests/ultimates/class_00_live_test.gd")
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", report_path), "generated on a dirty worktree"
+        )
+
+    def test_verify_rejects_fabricated_execution_records(self) -> None:
+        self.assertEqual(run_checker(self.root, "--timeout", "30").returncode, 0)
+        report_path = self.root / "build" / "ultimate_feature_list" / "report.json"
+        pristine = report_path.read_text(encoding="utf-8")
+        report = json.loads(pristine)
+        digest = report["entries"][0]["evidence"]["argv_digest"]
+        report["recipes"][digest]["executed_argv"] = []
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json"),
+            "does not normalize to the committed recipe",
+        )
+        report = json.loads(pristine)
+        report["recipes"][digest]["executed_argv"][6] = suite_path(1)
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json"),
+            "does not normalize to the committed recipe",
+        )
+        report = json.loads(pristine)
+        del report["recipes"]
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+        self.assert_three_part_failure(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json"),
+            "has no recipe execution record",
         )
 
 
@@ -524,6 +645,7 @@ class FailureModeTests(FixtureCase):
         entries[0].update(state="blocked", verification=None, blocked_reason="missing suite: class_00 live suite")
         entries[1].update(state="not_started", verification=None)
         write_feature_list(self.root, entries)
+        _git(self.root, "commit", "-qam", "block and unmap two entries")
         completed = run_checker(self.root, "--timeout", "30")
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         report = read_report(self.root)
@@ -538,84 +660,108 @@ class FailureModeTests(FixtureCase):
 
 
 class DeduplicationAndSafetyTests(FixtureCase):
-    def test_profile_results_are_reused_instead_of_rerun(self) -> None:
+    def test_gate_binding_uses_in_memory_results_and_launches_nothing(self) -> None:
         head = _git(self.root, "rev-parse", "HEAD")
-        log_dir = self.root / "build" / "ultimate_feature_list" / "profile_logs"
-        log_dir.mkdir(parents=True)
-        log = log_dir / "class_00_live_test.log"
-        log.write_text("Godot Engine (profile run)\nsuite passed\n", encoding="utf-8")
-        manifest = self.root / "build" / "ultimate_feature_list" / "profile_results.json"
-        manifest.write_text(json.dumps({
-            "schema_version": 1,
-            "candidate_sha": head,
-            "suites": {
-                suite_path(0): {
-                    "log_path": "build/ultimate_feature_list/profile_logs/class_00_live_test.log",
-                    "exit_code": 0,
-                    "timed_out": False,
-                    "duration_seconds": 1.5,
-                    "executed_argv": ["python3", "tools/godot_gate.py", "--script", suite_path(0)],
-                }
-            },
-        }), encoding="utf-8")
-        completed = run_checker(
-            self.root, "--timeout", "30", "--profile-results", "build/ultimate_feature_list/profile_results.json"
-        )
-        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertEqual(len(stub_calls(self.root)), CLASS_COUNT - 1)
+        results = [profile_result(self.root, index) for index in range(CLASS_COUNT)]
+        step, stdout, stderr = bind_in_process(self.root, results)
+        self.assertEqual(step["status"], "passed", stderr)
+        self.assertEqual(step["exit_code"], 0)
+        self.assertEqual(step["summary"], {"passing": 51, "failed": 0, "blocked": 0, "not_started": 0})
+        self.assertEqual(stub_calls(self.root), [], "binding must never launch a recipe")
+        self.assertIn("ULTIMATE FEATURE LIST PASSED: 51 passing", stdout)
         report = read_report(self.root)
+        self.assertEqual(report["candidate_sha"], head)
         evidence = report["entries"][0]["evidence"]
         self.assertEqual(evidence["executed_by"], "quality_gate_profile")
         self.assertEqual(evidence["candidate_sha"], head)
-        import hashlib
+        log = self.root / evidence["log_path"]
+        self.assertTrue(log.is_file())
+        self.assertEqual(log.read_text(encoding="utf-8"), results[0]["output"])
         self.assertEqual(evidence["log_digest"], hashlib.sha256(log.read_bytes()).hexdigest())
-        self.assertEqual(
-            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 0
-        )
+        self.assertEqual(report["recipes"][evidence["argv_digest"]]["executed_argv"], results[0]["command"])
+        self.assertFalse((self.root / "build" / "ultimate_feature_list" / "profile_results.json").exists())
+        verified = run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json")
+        self.assertEqual(verified.returncode, 0, verified.stdout + verified.stderr)
 
-    def test_profile_results_from_another_candidate_are_refused(self) -> None:
-        manifest = self.root / "build" / "ultimate_feature_list" / "profile_results.json"
-        manifest.parent.mkdir(parents=True)
-        manifest.write_text(json.dumps({"schema_version": 1, "candidate_sha": "0" * 40, "suites": {}}), encoding="utf-8")
-        completed = run_checker(
-            self.root, "--timeout", "30", "--profile-results", "build/ultimate_feature_list/profile_results.json"
-        )
-        self.assert_three_part_failure(completed, "do not belong to candidate")
-        self.assertEqual(stub_calls(self.root), [])
-
-    def test_bind_only_never_launches_and_fails_unexecuted_recipes(self) -> None:
-        head = _git(self.root, "rev-parse", "HEAD")
-        log_dir = self.root / "build" / "ultimate_feature_list" / "profile_logs"
-        log_dir.mkdir(parents=True)
-        (log_dir / "class_00_live_test.log").write_text("Godot Engine (profile run)\nclass_00_live_test: PASS\n", encoding="utf-8")
-        manifest = self.root / "build" / "ultimate_feature_list" / "profile_results.json"
-        manifest.write_text(json.dumps({
-            "schema_version": 1,
-            "candidate_sha": head,
-            "suites": {
-                suite_path(0): {
-                    "log_path": "build/ultimate_feature_list/profile_logs/class_00_live_test.log",
-                    "exit_code": 0,
-                    "timed_out": False,
-                }
-            },
-        }), encoding="utf-8")
-        completed = run_checker(
-            self.root, "--bind-only", "--profile-results", "build/ultimate_feature_list/profile_results.json"
-        )
-        self.assert_three_part_failure(completed, "not executed by the invoking profile")
-        self.assertEqual(stub_calls(self.root), [], "bind-only must never launch a recipe")
+    def test_gate_binding_refuses_missing_or_mismatching_executed_command(self) -> None:
+        gate = str(self.root / "tools" / "godot_gate.py")
+        results = [profile_result(self.root, index) for index in range(CLASS_COUNT)]
+        results[0]["command"] = []
+        results[1]["command"] = results[1]["command"][:6] + [suite_path(2)] + results[1]["command"][7:]
+        results[2]["command"] = [sys.executable, gate, "--headless", "--path", str(self.root), "--import"]
+        results[3]["command"] = [sys.executable, gate, "--headless", "--path", str(self.root.parent), "--script", suite_path(3)]
+        results[4]["command"] = [sys.executable, str(self.root / "scripts" / "outside_test.gd"), "--headless", "--path", str(self.root), "--script", suite_path(4)]
+        results[5]["command"] = [sys.executable, gate, "--headless", "--path", str(self.root), "--script", suite_path(5), "--export", "--", "--user-data-dir=x"]
+        results[6]["command"] = ["python3", "tools/godot_gate.py", "--headless", "--path", ".", "--script", suite_path(6), "--", "--user-data-dir=x"]
+        step, _, stderr = bind_in_process(self.root, results)
+        self.assertEqual(step["status"], "failed")
+        self.assertEqual(step["exit_code"], 1)
+        self.assertEqual(step["summary"], {"passing": 33, "failed": 18, "blocked": 0, "not_started": 0})
+        self.assertIn("executed command is missing", stderr)
+        self.assertIn("not to the recipe", stderr)
+        self.assertIn("not an allowlisted recipe execution", stderr)
+        self.assertIn("consequence:", stderr)
+        self.assertIn("fix:", stderr)
         report = read_report(self.root)
-        self.assertEqual(report["summary"], {"passing": 3, "failed": 48, "blocked": 0, "not_started": 0})
-        self.assertEqual(report["entries"][0]["evidence"]["executed_by"], "quality_gate_profile")
+        for index in range(6):
+            self.assertEqual(report["entries"][index * 3]["state"], "failed", index)
+        # Relative tokens that resolve to this checkout are the same command.
+        self.assertEqual(report["entries"][18]["state"], "passing")
+        self.assertEqual(stub_calls(self.root), [])
         self.assertEqual(
             run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 1
         )
 
-    def test_bind_only_requires_the_profile_manifest(self) -> None:
-        completed = run_checker(self.root, "--bind-only")
-        self.assertEqual(completed.returncode, 2)
+    def test_gate_binding_fails_unexecuted_recipes_and_ignores_disk_manifests(self) -> None:
+        head = _git(self.root, "rev-parse", "HEAD")
+        write_fake_manifest(self.root, head)
+        step, _, stderr = bind_in_process(self.root, [profile_result(self.root, 0)])
+        self.assertEqual(step["status"], "failed")
+        self.assertIn("not executed by the invoking profile", stderr)
+        self.assertEqual(step["summary"], {"passing": 3, "failed": 48, "blocked": 0, "not_started": 0})
+        self.assertEqual(stub_calls(self.root), [], "binding must never launch a recipe")
+        self.assertEqual(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 1
+        )
+
+    def test_gate_binding_records_failed_and_timed_out_suites(self) -> None:
+        results = [profile_result(self.root, index) for index in range(CLASS_COUNT)]
+        results[0].update(exit_code=1, status="failed")
+        results[1].update(exit_code=124, timed_out=True, status="failed")
+        results[2].update(output="Godot Engine\nERROR: boom\n   at: push_error (core/variant/variant_utility.cpp:1023)\n")
+        results[3].update(output=None)
+        step, _, stderr = bind_in_process(self.root, results)
+        self.assertEqual(step["status"], "failed")
+        self.assertEqual(step["summary"], {"passing": 39, "failed": 12, "blocked": 0, "not_started": 0})
+        self.assertIn("exit 1", stderr)
+        self.assertIn("timeout in the invoking profile", stderr)
+        self.assertIn("fatal diagnostic", stderr)
+        self.assertIn("no captured output", stderr)
+        report = read_report(self.root)
+        self.assertEqual(report["entries"][3]["evidence"]["exit_code"], 124)
         self.assertEqual(stub_calls(self.root), [])
+
+    def test_imported_manifests_are_not_a_checker_path(self) -> None:
+        head = _git(self.root, "rev-parse", "HEAD")
+        write_fake_manifest(self.root, head)
+        for flags in (
+            ("--profile-results", "build/ultimate_feature_list/profile_results.json"),
+            ("--bind-only", "--profile-results", "build/ultimate_feature_list/profile_results.json"),
+            ("--bind-only",),
+        ):
+            with self.subTest(flags=flags):
+                completed = run_checker(self.root, *flags)
+                self.assertEqual(completed.returncode, 2, completed.stderr)
+                self.assertIn("unrecognized arguments", completed.stderr)
+        self.assertEqual(stub_calls(self.root), [])
+        completed = run_checker(self.root, "--timeout", "30")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertEqual(len(stub_calls(self.root)), CLASS_COUNT, "the standalone checker runs every recipe itself")
+        report = read_report(self.root)
+        self.assertEqual({item["evidence"]["executed_by"] for item in report["entries"]}, {"ultimate_feature_list_check"})
+        for digest, record in report["recipes"].items():
+            self.assertNotIn("fabricated", (self.root / record["log_path"]).read_text(encoding="utf-8"))
+            self.assertEqual(Path(record["log_path"]).name, f"{digest}.log")
 
     def test_nested_invocation_is_refused(self) -> None:
         completed = run_checker(self.root, "--validate-only", env={"FSD_ULTIMATE_FEATURE_LIST_ACTIVE": "1"})
@@ -709,11 +855,11 @@ class QualityGateIntegrationTests(unittest.TestCase):
             code = self.quality.main(["--profile", "changed", "--report", str(report), *extra])
         return code, step, json.loads(report.read_text(encoding="utf-8"))
 
-    def test_checker_binds_once_per_gate_run_and_lands_in_the_report(self) -> None:
+    def test_checker_binds_once_per_gate_run_to_in_memory_results(self) -> None:
         calls: list = []
 
-        def checker(static_timeout: float, godot_results: list) -> dict:
-            calls.append((static_timeout, [dict(item) for item in godot_results]))
+        def checker(profile_run: dict) -> dict:
+            calls.append({script: dict(item) for script, item in profile_run.items()})
             return {"name": "ultimate-feature-list", "status": "passed", "exit_code": 0, "report": "x"}
 
         changed = {
@@ -723,25 +869,24 @@ class QualityGateIntegrationTests(unittest.TestCase):
         }
         selected = [ROOT / "tests" / "runtime_smoke_test.gd", *self.recipe_paths]
         with tempfile.TemporaryDirectory(prefix="quality-feature-list-") as scratch:
-            code, _, payload = self._run_gate(
-                changed, selected, checker, Path(scratch) / "report.json", "--static-timeout", "31"
-            )
+            code, _, payload = self._run_gate(changed, selected, checker, Path(scratch) / "report.json")
         self.assertEqual(code, 0)
         self.assertEqual(len(calls), 1, "three trigger paths must bind the checker once")
-        self.assertEqual(calls[0][0], 31.0)
-        results = calls[0][1]
-        self.assertEqual(len(results), len(selected))
-        for result in results:
-            self.assertNotIn("output", result)
-            self.assertTrue(result["log_path"].startswith("build/ultimate_feature_list/profile_logs/"))
-            log = ROOT / result["log_path"]
-            self.assertIn(f"{result['name']}: PASS", log.read_text(encoding="utf-8"))
+        handed_over = calls[0]
+        self.assertEqual(sorted(handed_over), self.recipe_scripts, "only recipe suites are handed over")
+        for script, result in handed_over.items():
+            self.assertEqual(result["script"], script)
+            self.assertIn(f"{result['name']}: PASS", result["output"])
+            self.assertEqual(result["command"][-1], result["name"])
+            self.assertNotIn("log_path", result)
         self.assertTrue(payload["certifying"])
         self.assertEqual(payload["status"], "passed")
         self.assertTrue(payload["ultimate_feature_list_selected"])
         self.assertEqual(payload["ultimate_feature_list"]["status"], "passed")
         for result in payload["godot_tests"]:
             self.assertNotIn("output", result)
+            self.assertNotIn("command", result)
+            self.assertNotIn("log_path", result)
 
     def test_checker_failure_fails_the_gate(self) -> None:
         failing = {"name": "ultimate-feature-list", "status": "failed", "exit_code": 1, "report": "x"}
@@ -784,45 +929,46 @@ class QualityGateIntegrationTests(unittest.TestCase):
         self.assertFalse(payload["certifying"])
         self.assertEqual(payload["status"], "partial_pass")
 
-    def test_gate_step_command_is_bind_only_with_profile_manifest(self) -> None:
-        captured: dict = {}
-
-        def fake_run_command(name, command, timeout, idle_timeout=None, expect_tests=False):
-            captured.update(name=name, command=list(command), timeout=timeout)
-            return {"name": name, "status": "passed", "exit_code": 0}
-
+    def test_gate_binds_in_process_without_manifest_or_subprocess(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-feature-list-root-") as scratch:
-            root = Path(scratch)
-            (root / "build").mkdir()
+            root = Path(scratch).resolve()
+            build_fixture(root)
+            head = _git(root, "rev-parse", "HEAD")
+            write_fake_manifest(root, head)
+            profile_run = {
+                suite_path(index): profile_result(root, index) for index in range(CLASS_COUNT)
+            }
+            out = io.StringIO()
             with mock.patch.object(self.quality, "ROOT", root), \
-                    mock.patch.object(self.quality, "_run_command", side_effect=fake_run_command), \
-                    mock.patch.object(self.quality.subprocess, "check_output", return_value="a" * 40 + "\n"):
-                result = self.quality.run_ultimate_feature_list_check(
-                    31.0,
-                    [{
-                        "name": "berserk_live_test",
-                        "script": "res://tests/ultimates/mechanics/berserk_live_test.gd",
-                        "status": "passed",
-                        "exit_code": 0,
-                        "timed_out": False,
-                        "duration_seconds": 2.0,
-                        "log_path": "build/ultimate_feature_list/profile_logs/berserk_live_test.log",
-                        "command": ["python3", "tools/godot_gate.py"],
-                    }],
-                )
-            manifest = json.loads(
-                (root / "build" / "ultimate_feature_list" / "profile_results.json").read_text(encoding="utf-8")
-            )
-        self.assertEqual(captured["name"], "ultimate-feature-list")
-        self.assertEqual(captured["command"][0], sys.executable)
-        self.assertEqual(Path(captured["command"][1]).name, "ultimate_feature_list_check.py")
-        self.assertIn("--bind-only", captured["command"])
-        self.assertIn("--profile-results", captured["command"])
-        self.assertEqual(captured["timeout"], 31.0)
-        self.assertNotIn("quality_gate.py", " ".join(captured["command"][1:]))
-        self.assertEqual(manifest["candidate_sha"], "a" * 40)
-        self.assertIn("res://tests/ultimates/mechanics/berserk_live_test.gd", manifest["suites"])
-        self.assertEqual(result["report"], "build/ultimate_feature_list/report.json")
+                    mock.patch.object(
+                        self.quality, "_run_command",
+                        side_effect=AssertionError("the checker must not run as a subprocess"),
+                    ), \
+                    contextlib.redirect_stdout(out):
+                result = self.quality.run_ultimate_feature_list_check(profile_run)
+            self.assertEqual(result["name"], "ultimate-feature-list")
+            self.assertEqual(result["status"], "passed", out.getvalue())
+            self.assertEqual(result["exit_code"], 0)
+            self.assertEqual(result["summary"], {"passing": 51, "failed": 0, "blocked": 0, "not_started": 0})
+            self.assertEqual(result["report"], "build/ultimate_feature_list/report.json")
+            self.assertEqual(result["executed_suites"], sorted(profile_run))
+            self.assertEqual(stub_calls(root), [], "the gate binding must launch nothing")
+            report = read_report(root)
+            self.assertEqual(report["candidate_sha"], head)
+            self.assertEqual({item["evidence"]["executed_by"] for item in report["entries"]}, {"quality_gate_profile"})
+            for record in report["recipes"].values():
+                self.assertNotIn("fabricated", (root / record["log_path"]).read_text(encoding="utf-8"))
+            verified = run_checker(root, "--verify-report", "build/ultimate_feature_list/report.json")
+            self.assertEqual(verified.returncode, 0, verified.stdout + verified.stderr)
+            # A binding crash fails the step closed instead of raising out of the gate.
+            with mock.patch.object(self.quality, "ROOT", root), \
+                    mock.patch.object(
+                        self.quality, "_load_feature_list_checker", side_effect=RuntimeError("boom")
+                    ), \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                crashed = self.quality.run_ultimate_feature_list_check(profile_run)
+            self.assertEqual(crashed["status"], "failed")
+            self.assertIn("boom", crashed["errors"][0])
 
 
 if __name__ == "__main__":
