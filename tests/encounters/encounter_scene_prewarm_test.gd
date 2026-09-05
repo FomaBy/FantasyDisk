@@ -35,14 +35,33 @@ func _initialize() -> void:
 	changed_plan["node_seed"] = 4243
 	_expect(cache.scene_for(changed_plan, "res://scenes/Enemy.tscn") == null,
 		"plan identity changes must not borrow a previous encounter cache")
+	var expected_resolver_calls := resolver.calls.size()
 	var wrong_root := plan.duplicate(true)
 	wrong_root["entries"][0]["scene"] = "res://scripts/enemy.gd"
-	_expect(not cache.prepare(wrong_root, Callable(resolver, "resolve")) and resolver.calls.size() == 4,
-		"wrong-root plans must fail before resolution")
+	_expect_rejected_without_resolution(cache, resolver, wrong_root, expected_resolver_calls,
+		"wrong-root plans")
 	var missing_scene := plan.duplicate(true)
 	missing_scene["entries"][0]["scene"] = "res://scenes/FAN3919Missing.tscn"
-	_expect(not cache.prepare(missing_scene, Callable(resolver, "resolve")) and resolver.calls.size() == 4,
-		"missing scenes must fail before resolution")
+	_expect_rejected_without_resolution(cache, resolver, missing_scene, expected_resolver_calls,
+		"missing scenes")
+	var malformed_entries_values: Array = ["not-an-array", {"scene": "res://scenes/Enemy.tscn"}, null, 7]
+	for malformed_entries: Variant in malformed_entries_values:
+		var malformed_plan := plan.duplicate(true)
+		malformed_plan["entries"] = malformed_entries
+		_expect_rejected_without_resolution(cache, resolver, malformed_plan, expected_resolver_calls,
+			"non-Array entries")
+	var non_dictionary_entry := plan.duplicate(true)
+	non_dictionary_entry["entries"] = ["not-a-dictionary"]
+	_expect_rejected_without_resolution(cache, resolver, non_dictionary_entry, expected_resolver_calls,
+		"non-Dictionary entries")
+	var non_string_scene := plan.duplicate(true)
+	non_string_scene["entries"][0]["scene"] = 7
+	_expect_rejected_without_resolution(cache, resolver, non_string_scene, expected_resolver_calls,
+		"non-String scene paths")
+	var non_integer_count := plan.duplicate(true)
+	non_integer_count["entries"][0]["count"] = "three"
+	_expect_rejected_without_resolution(cache, resolver, non_integer_count, expected_resolver_calls,
+		"non-integer entry counts")
 	cache.clear()
 	_expect(cache.scene_for(plan, "res://scenes/Enemy.tscn") == null,
 		"clearing the encounter boundary must release the cached plan")
@@ -73,6 +92,13 @@ func _legacy_full_capacity_wave(plan: Dictionary, resolver: CountingResolver) ->
 		for _index in range(mini(int(entry.get("count", 0)), remaining)):
 			if scene == null:
 				return
+
+
+func _expect_rejected_without_resolution(cache, resolver: CountingResolver, plan: Dictionary,
+		expected_resolver_calls: int, label: String) -> void:
+	_expect(not cache.prepare(plan, Callable(resolver, "resolve")), label + " must fail before resolution")
+	_expect(resolver.calls.size() == expected_resolver_calls and cache.resolution_count() == 0,
+		label + " must make zero resolver calls")
 
 
 func _expect(condition: bool, message: String) -> void:

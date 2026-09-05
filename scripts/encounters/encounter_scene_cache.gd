@@ -57,7 +57,7 @@ func _resolve(path: String, resolver: Callable) -> PackedScene:
 
 
 func _is_valid_plan(plan: Dictionary) -> bool:
-	var entries: Array = plan.get("entries", [])
+	var entries: Variant = plan.get("entries")
 	if not (entries is Array) or entries.is_empty():
 		return false
 	var seen: Dictionary = {}
@@ -65,13 +65,15 @@ func _is_valid_plan(plan: Dictionary) -> bool:
 	for entry: Variant in entries:
 		if not (entry is Dictionary):
 			return false
-		var entry_data: Dictionary = entry
+		var entry_data: Dictionary = entry as Dictionary
 		var raw_path: Variant = entry_data.get("scene")
 		var raw_count: Variant = entry_data.get("count")
-		var path: String = str(raw_path)
-		var count: int = int(raw_count)
-		if not (raw_path is String) or not path.begins_with(ENEMY_SCENE_ROOT) or not path.ends_with(".tscn") \
-				or seen.has(path) or not (raw_count is int) or count < 1 or not ResourceLoader.exists(path, "PackedScene"):
+		if not (raw_path is String) or not (raw_count is int):
+			return false
+		var path: String = raw_path
+		var count: int = raw_count
+		if not path.begins_with(ENEMY_SCENE_ROOT) or not path.ends_with(".tscn") \
+				or seen.has(path) or count < 1 or not ResourceLoader.exists(path, "PackedScene"):
 			return false
 		seen[path] = true
 		total_count += count
