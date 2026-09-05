@@ -27,13 +27,21 @@ class IncidentSink:
 	var _pending: Array[Dictionary] = []
 	var _suppressed_thread_id := 0
 	var _dropped_pending := 0
+	var _authorization_pattern: RegEx
+	var _bearer_pattern: RegEx
 	var _credential_pattern: RegEx
 	var _home_path_pattern: RegEx
 
 
 	func _init() -> void:
+		_authorization_pattern = RegEx.create_from_string(
+			r"(?i)(\bauthorization\s*[:=]\s*)(?:bearer\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+		)
+		_bearer_pattern = RegEx.create_from_string(
+			r"(?i)(\bbearer\s+)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+		)
 		_credential_pattern = RegEx.create_from_string(
-			r"(?i)(password|passwd|token|secret|api[_-]?key|authorization)(\s*[:=]\s*)([^\s,;]+)"
+			r"(?i)((?:^|[\s{,])[\"']?(?:password|passwd|token|secret|api[_-]?key)[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_home_path_pattern = RegEx.create_from_string(
 			r"(?i)([A-Z]:[\\/][^\s]+|/(Users|home)/[^\s]+)"
@@ -88,7 +96,12 @@ class IncidentSink:
 		_mutex.unlock()
 
 
-	func capture_for_test(error_text: String, frames: Array[Dictionary]) -> void:
+	func capture_for_test(
+		error_text: String,
+		frames: Array[Dictionary],
+		code := "",
+		rationale := "",
+	) -> void:
 		var safe_frames: Array[Dictionary] = []
 		for raw_frame in frames.slice(0, MAX_BACKTRACE_FRAMES):
 			var frame: Dictionary = raw_frame
@@ -107,8 +120,8 @@ class IncidentSink:
 				"function": "capture_for_test",
 				"file": "res://tests/crash_logger_test.gd",
 				"line": 0,
-				"code": _bounded(_redact(error_text), MAX_ERROR_FIELD_CHARS),
-				"rationale": "",
+				"code": _bounded(_redact(code if not code.is_empty() else error_text), MAX_ERROR_FIELD_CHARS),
+				"rationale": _bounded(_redact(rationale), MAX_ERROR_FIELD_CHARS),
 				"editor_notify": false,
 			},
 			"script_backtrace": _backtrace_payload(traces),
@@ -206,8 +219,12 @@ class IncidentSink:
 	func _redact(value: String) -> String:
 		_redaction_mutex.lock()
 		var result := value
+		if _authorization_pattern != null:
+			result = _authorization_pattern.sub(result, "$1<redacted>", true)
+		if _bearer_pattern != null:
+			result = _bearer_pattern.sub(result, "$1<redacted>", true)
 		if _credential_pattern != null:
-			result = _credential_pattern.sub(result, "$1$2<redacted>", true)
+			result = _credential_pattern.sub(result, "$1<redacted>", true)
 		if _home_path_pattern != null:
 			result = _home_path_pattern.sub(result, "<redacted-path>", true)
 		_redaction_mutex.unlock()
@@ -505,9 +522,14 @@ func record_breadcrumb_for_tests(class_id: String, weapon_id: String, event: Str
 		_sink.record_breadcrumb(class_id, weapon_id, event, frame)
 
 
-func capture_error_for_tests(error_text: String, frames: Array[Dictionary] = []) -> void:
+func capture_error_for_tests(
+	error_text: String,
+	frames: Array[Dictionary] = [],
+	code := "",
+	rationale := "",
+) -> void:
 	if OS.is_debug_build() and _sink != null:
-		_sink.capture_for_test(error_text, frames)
+		_sink.capture_for_test(error_text, frames, code, rationale)
 
 
 func flush_pending_for_tests() -> void:

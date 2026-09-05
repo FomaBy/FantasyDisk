@@ -89,3 +89,26 @@ Start with `error.text`, then inspect `script_backtrace.traces` from the newest
 frame outward and correlate the ordered `breadcrumbs` by frame. The SHA-256 is
 an immutable content identity: exported builds hash their `.pck`; editor runs
 hash the logger script and identify that fallback source explicitly.
+
+## Attaching one incident to a bug card
+
+Incident sharing is always a deliberate manual action:
+
+1. Open the project's user data folder and locate `logs/incidents/`. Select the
+   incident whose timestamp matches the reproduced failure; do not select the
+   directory, `godot.log`, or unrelated incidents.
+2. Inspect the selected JSON locally before sharing it. Confirm the error,
+   backtrace, and breadcrumbs belong to the report and contain no credentials
+   or personal data. If further redaction is needed, make a sanitized copy,
+   replace only the sensitive values, and confirm that the copy remains valid
+   JSON. Do not attach the unredacted original.
+3. Record the reproduction steps and the incident's `build_version`,
+   `build_sha256`, and `build_sha256_source` in the bug card so the attachment
+   can be tied to the exact build.
+4. Use the bug-card interface's **Add attachment** control to upload only the
+   inspected incident JSON (or its sanitized copy), then verify that this one
+   file appears on the card.
+5. Remove any temporary sanitized copy after the attachment is confirmed. The
+   locally retained incident remains subject to the normal bounded rotation.
+
+The logger never performs this attachment or any other upload automatically.

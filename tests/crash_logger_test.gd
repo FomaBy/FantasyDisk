@@ -89,9 +89,18 @@ func _test_full_breadcrumb_ring(service: Node) -> void:
 
 func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	var no_frames: Array[Dictionary] = []
+	service.clear_breadcrumbs_for_tests()
+	service.record_breadcrumb_for_tests(
+		"\"token\": \"TEST_CLASS_CREDENTIAL\" class=berserk",
+		"Authorization: Bearer TEST_WEAPON_CREDENTIAL weapon=axe",
+		"secret=TEST_EVENT_CREDENTIAL event=activation",
+		77,
+	)
 	service.capture_error_for_tests(
-		"password=visible token:abc /Users/example/private/file",
+		"Bearer TEST_TEXT_CREDENTIAL context=visible /Users/example/private/file",
 		no_frames,
+		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast",
+		"Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout",
 	)
 	service.flush_pending_for_tests()
 	var paths: PackedStringArray = service.incident_paths_for_tests()
@@ -111,7 +120,24 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	_check(str(record.get("timestamp_utc", "")).ends_with("Z"), "incident lacks a UTC timestamp")
 	_check(str(record.get("build_version", "")) == str(ProjectSettings.get_setting("application/config/version")), "incident build version differs from project version")
 	_check(str(record.get("build_sha256", "")).length() == 64, "incident lacks a 64-character immutable SHA-256")
-	_check(payload.to_lower().find("visible") == -1 and payload.to_lower().find("token:abc") == -1, "credential-like values were not redacted")
+	for credential in [
+		"TEST_CLASS_CREDENTIAL",
+		"TEST_WEAPON_CREDENTIAL",
+		"TEST_EVENT_CREDENTIAL",
+		"TEST_TEXT_CREDENTIAL",
+		"TEST_CODE_CREDENTIAL",
+		"TEST_RATIONALE_CREDENTIAL",
+	]:
+		_check(payload.find(credential) == -1, "credential remainder persisted from %s" % credential)
+	for benign_context in [
+		"class=berserk",
+		"weapon=axe",
+		"event=activation",
+		"context=visible",
+		"operation=cast",
+		"reason=timeout",
+	]:
+		_check(payload.find(benign_context) >= 0, "benign context was removed: %s" % benign_context)
 	_check(payload.find("/Users/example") == -1, "personal home path was not redacted")
 	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "incident exceeded the record byte limit")
 	_clean_incident_files(TEST_ROOT)
