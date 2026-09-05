@@ -153,12 +153,12 @@ class _RUsageInfoV0(ctypes.Structure):
 def _mac_child_pids(parent_pid: int) -> list[int]:
     libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
     child_pids = (ctypes.c_int * 64)()
-    byte_count = libproc.proc_listchildpids(
+    child_count = libproc.proc_listchildpids(
         ctypes.c_int(parent_pid), ctypes.byref(child_pids), ctypes.sizeof(child_pids)
     )
-    if byte_count < 0:
+    if child_count < 0:
         raise ProbeFailure(f"cannot inspect gated Godot child PID: errno {ctypes.get_errno()}")
-    return [pid for pid in child_pids[: byte_count // ctypes.sizeof(ctypes.c_int)] if pid > 0]
+    return [pid for pid in child_pids[:child_count] if pid > 0]
 
 
 def _mac_process_cpu_ns(pid: int) -> int:
