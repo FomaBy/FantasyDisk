@@ -28,6 +28,20 @@ PROFILE_SCRIPT = r'''extends SceneTree
 const PROFILE_MARKER := "FAN3905_FRAME_PROFILE="
 
 
+class CalibrationLoad:
+	extends Node
+
+	var busy_usec := 0
+
+
+	func _process(_delta: float) -> void:
+		if busy_usec <= 0:
+			return
+		var started := Time.get_ticks_usec()
+		while Time.get_ticks_usec() - started < busy_usec:
+			pass
+
+
 func _init() -> void:
 	call_deferred("_run")
 
@@ -35,11 +49,14 @@ func _init() -> void:
 func _run() -> void:
 	var warmup_frames := 600
 	var sample_frames := 3000
+	var calibration_usec := 2000
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--warmup-frames="):
 			warmup_frames = int(argument.trim_prefix("--warmup-frames="))
 		elif argument.begins_with("--sample-frames="):
 			sample_frames = int(argument.trim_prefix("--sample-frames="))
+		elif argument.begins_with("--calibration-usec="):
+			calibration_usec = int(argument.trim_prefix("--calibration-usec="))
 	var logger: Node = root.get_node_or_null("CrashLogger")
 	if logger == null and ResourceLoader.exists("res://scripts/crash_logger.gd"):
 		logger = load("res://scripts/crash_logger.gd").new()
@@ -47,22 +64,42 @@ func _run() -> void:
 	var main_scene: PackedScene = load("res://scenes/Main.tscn")
 	var main := main_scene.instantiate()
 	root.add_child(main)
+	var calibration_load := CalibrationLoad.new()
+	root.add_child(calibration_load)
 	for frame in range(warmup_frames):
 		await process_frame
-	var samples_ms: Array[float] = []
-	for sample_index in range(5):
-		var started := Time.get_ticks_usec()
-		for frame in range(sample_frames):
-			await process_frame
-		var elapsed_usec := Time.get_ticks_usec() - started
-		samples_ms.append(float(elapsed_usec) / float(sample_frames) / 1000.0)
+	var normal: Dictionary = await _sample_windows(sample_frames)
+	calibration_load.busy_usec = calibration_usec
+	for frame in range(maxi(60, int(warmup_frames / 10))):
+		await process_frame
+	var calibrated: Dictionary = await _sample_windows(sample_frames)
 	print(PROFILE_MARKER + JSON.stringify({
 		"display": DisplayServer.get_name(),
+		"metric": "Performance.TIME_PROCESS",
 		"warmup_frames": warmup_frames,
 		"frames_per_sample": sample_frames,
-		"samples_ms": samples_ms,
+		"samples_ms": normal["cpu_ms"],
+		"wall_samples_ms": normal["wall_ms"],
+		"calibration_injected_ms": float(calibration_usec) / 1000.0,
+		"calibration_samples_ms": calibrated["cpu_ms"],
+		"calibration_wall_samples_ms": calibrated["wall_ms"],
 	}))
 	quit(0)
+
+
+func _sample_windows(sample_frames: int) -> Dictionary:
+	var cpu_samples_ms: Array[float] = []
+	var wall_samples_ms: Array[float] = []
+	for sample_index in range(5):
+		var wall_started := Time.get_ticks_usec()
+		var process_seconds := 0.0
+		for frame in range(sample_frames):
+			await process_frame
+			process_seconds += Performance.get_monitor(Performance.TIME_PROCESS)
+		var elapsed_usec := Time.get_ticks_usec() - wall_started
+		cpu_samples_ms.append(process_seconds * 1000.0 / float(sample_frames))
+		wall_samples_ms.append(float(elapsed_usec) / float(sample_frames) / 1000.0)
+	return {"cpu_ms": cpu_samples_ms, "wall_ms": wall_samples_ms}
 '''
 
 
@@ -263,6 +300,7 @@ def _profile_one(
     cache: Path,
     warmup_frames: int,
     sample_frames: int,
+    calibration_usec: int,
 ) -> dict:
     # Multica's checkout lifecycle hook owns persistent workspaces. These
     # detached, task-scoped measurement trees are intentionally ephemeral.
@@ -275,9 +313,13 @@ def _profile_one(
             (worktree / ".godot").symlink_to(cache, target_is_directory=True)
         probe = worktree / ".fan3905_frame_probe.gd"
         probe.write_text(PROFILE_SCRIPT, encoding="utf-8")
+        gate = worktree / "tools" / "godot_gate.py"
+        if not gate.is_file():
+            raise ProbeFailure(f"frame profile revision {revision} lacks tools/godot_gate.py")
         completed = _run(
             [
-                str(godot),
+                sys.executable,
+                str(gate),
                 "--path",
                 str(worktree),
                 "--script",
@@ -292,9 +334,10 @@ def _profile_one(
                 "--",
                 f"--warmup-frames={warmup_frames}",
                 f"--sample-frames={sample_frames}",
+                f"--calibration-usec={calibration_usec}",
             ],
             worktree,
-            env={"FSD_GODOT_EXCLUSIVE": "1"},
+            env={"FSD_GODOT_EXCLUSIVE": "1", "GODOT_BIN": str(godot)},
         )
         diagnostics = _diagnostic_lines(completed.stdout)
         if diagnostics:
@@ -304,8 +347,16 @@ def _profile_one(
             raise ProbeFailure(f"frame profile for {revision} emitted {len(marker_lines)} result markers")
         payload = json.loads(marker_lines[0][len(PROFILE_MARKER) :])
         samples = [float(value) for value in payload.get("samples_ms", [])]
+        wall_samples = [float(value) for value in payload.get("wall_samples_ms", [])]
+        calibration_samples = [float(value) for value in payload.get("calibration_samples_ms", [])]
         if len(samples) != 5 or any(not math.isfinite(value) or value <= 0 for value in samples):
             raise ProbeFailure(f"frame profile for {revision} did not return five valid samples")
+        if len(wall_samples) != 5 or any(not math.isfinite(value) or value <= 0 for value in wall_samples):
+            raise ProbeFailure(f"frame profile for {revision} did not return five valid wall-clock diagnostics")
+        if len(calibration_samples) != 5 or any(
+            not math.isfinite(value) or value <= 0 for value in calibration_samples
+        ):
+            raise ProbeFailure(f"frame profile for {revision} did not return five valid calibration samples")
         if payload.get("display") == "headless":
             raise ProbeFailure("P1 profile unexpectedly used the headless display driver")
         return {"sha": revision, **payload}
@@ -328,10 +379,24 @@ def command_profile(args: argparse.Namespace) -> dict:
     with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project.parent) as temp_name:
         temp = Path(temp_name).resolve()
         baseline = _profile_one(
-            project, godot, baseline_sha, temp / "baseline", cache, args.warmup_frames, args.frames_per_sample
+            project,
+            godot,
+            baseline_sha,
+            temp / "baseline",
+            cache,
+            args.warmup_frames,
+            args.frames_per_sample,
+            args.calibration_usec,
         )
         candidate = _profile_one(
-            project, godot, candidate_sha, temp / "candidate", cache, args.warmup_frames, args.frames_per_sample
+            project,
+            godot,
+            candidate_sha,
+            temp / "candidate",
+            cache,
+            args.warmup_frames,
+            args.frames_per_sample,
+            args.calibration_usec,
         )
     baseline_median, baseline_mad = _median_and_mad(baseline["samples_ms"])
     candidate_median, candidate_mad = _median_and_mad(candidate["samples_ms"])
@@ -345,7 +410,17 @@ def command_profile(args: argparse.Namespace) -> dict:
     bound = 1.645 * relative_se * 100.0
     lower = regression_percent - bound
     upper = regression_percent + bound
-    verdict = "PASS" if upper <= 1.0 else "FAIL" if lower > 1.0 else "INCONCLUSIVE"
+    baseline_calibration_median = statistics.median(baseline["calibration_samples_ms"])
+    candidate_calibration_median = statistics.median(candidate["calibration_samples_ms"])
+    baseline_calibration_delta = baseline_calibration_median - baseline_median
+    candidate_calibration_delta = candidate_calibration_median - candidate_median
+    calibration_floor_ms = args.calibration_usec / 1000.0 * args.calibration_min_fraction
+    calibration_responsive = (
+        baseline_calibration_delta >= calibration_floor_ms
+        and candidate_calibration_delta >= calibration_floor_ms
+    )
+    statistical_verdict = "PASS" if upper <= 1.0 else "FAIL" if lower > 1.0 else "INCONCLUSIVE"
+    verdict = statistical_verdict if calibration_responsive else "INCONCLUSIVE"
     return {
         "verdict": verdict,
         "threshold_percent": 1.0,
@@ -357,8 +432,17 @@ def command_profile(args: argparse.Namespace) -> dict:
         "baseline_mad_ms": baseline_mad,
         "candidate_mad_ms": candidate_mad,
         "one_sided_95_percent_interval": [lower, upper],
-        "confidence_rationale": "median of five post-warmup means; MAD-scaled independent standard errors; one-sided z=1.645",
-        "run_order": "baseline then candidate; identical 1280x720 rendered main-menu configuration and shared import cache",
+        "calibration": {
+            "injected_ms_per_frame": args.calibration_usec / 1000.0,
+            "minimum_detected_ms": calibration_floor_ms,
+            "baseline_detected_ms": baseline_calibration_delta,
+            "candidate_detected_ms": candidate_calibration_delta,
+            "responsive": calibration_responsive,
+        },
+        "statistical_verdict": statistical_verdict,
+        "confidence_rationale": "CPU process time, median of five post-warmup means; MAD-scaled independent standard errors; one-sided z=1.645; calibrated with deterministic per-frame CPU load",
+        "wall_clock_diagnostic": "reported separately because display pacing is not CPU process time",
+        "run_order": "baseline then candidate; identical 1280x720 rendered main-menu configuration and shared import cache; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 
@@ -375,6 +459,8 @@ def _parser() -> argparse.ArgumentParser:
     profile.add_argument("--candidate-sha", required=True)
     profile.add_argument("--warmup-frames", type=int, default=600)
     profile.add_argument("--frames-per-sample", type=int, default=3000)
+    profile.add_argument("--calibration-usec", type=int, default=2000)
+    profile.add_argument("--calibration-min-fraction", type=float, default=0.75)
     return parser
 
 
@@ -389,12 +475,14 @@ def main() -> int:
         else:
             if args.warmup_frames < 60 or args.frames_per_sample < 300:
                 parser.error("profile requires at least 60 warmup and 300 measured frames")
+            if args.calibration_usec < 1000 or not 0.5 <= args.calibration_min_fraction <= 1.0:
+                parser.error("profile calibration requires >=1000 usec and a minimum fraction in [0.5, 1.0]")
             result = command_profile(args)
     except (ProbeFailure, OSError, json.JSONDecodeError, zipfile.BadZipFile) as exc:
         print(json.dumps({"verdict": "FAIL", "error": str(exc)}, ensure_ascii=False, indent=2))
         return 1
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if result.get("verdict") != "FAIL" else 1
+    return 0 if result.get("verdict") == "PASS" else 2 if result.get("verdict") == "INCONCLUSIVE" else 1
 
 
 if __name__ == "__main__":

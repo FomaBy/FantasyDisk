@@ -35,13 +35,13 @@ class IncidentSink:
 
 	func _init() -> void:
 		_authorization_pattern = RegEx.create_from_string(
-			r"(?i)(\bauthorization\s*[:=]\s*)(?:bearer\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+			r"(?i)(\bauthorization\s*[:=]\s*)(?:(?:bearer|basic)\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_bearer_pattern = RegEx.create_from_string(
 			r"(?i)(\bbearer\s+)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_credential_pattern = RegEx.create_from_string(
-			r"(?i)((?:^|[\s{,])[\"']?(?:password|passwd|token|secret|api[_-]?key)[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+			r"(?i)((?:^|[\s{,])[\"']?(?:password|passwd|token|(?:access|refresh)[_-]?token|secret|(?:x[_-]?)?api[_-]?key)[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_home_path_pattern = RegEx.create_from_string(
 			r"(?i)([A-Z]:[\\/][^\s]+|/(Users|home)/[^\s]+)"

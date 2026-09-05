@@ -37,8 +37,32 @@ func _run_probe() -> void:
 		print("CRASH_LOGGER_EXPECTED_ERROR_PROBE_FAILED no incident")
 		quit(2)
 		return
+	if not _incident_has_expected_stack(incident_path):
+		print("CRASH_LOGGER_EXPECTED_ERROR_PROBE_FAILED missing meaningful stack")
+		quit(2)
+		return
 	print("CRASH_LOGGER_EXPECTED_ERROR_PROBE incident=%s" % incident_path)
 	quit(0)
+
+
+func _incident_has_expected_stack(incident_path: String) -> bool:
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(incident_path))
+	if not parsed is Dictionary:
+		return false
+	var functions := {}
+	var meaningful_frames := 0
+	var backtrace: Dictionary = (parsed as Dictionary).get("script_backtrace", {})
+	for trace_value in backtrace.get("traces", []):
+		var trace: Dictionary = trace_value
+		for frame_value in trace.get("frames", []):
+			var frame: Dictionary = frame_value
+			if not str(frame.get("file", "")).begins_with("res://"):
+				continue
+			meaningful_frames += 1
+			functions[str(frame.get("function", ""))] = true
+	return meaningful_frames >= 2 \
+		and functions.has("_expected_error_leaf") \
+		and functions.has("_expected_error_parent")
 
 
 func _expected_error_parent() -> void:
