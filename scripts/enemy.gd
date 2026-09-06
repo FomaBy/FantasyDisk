@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
-
+const CombatSpatialIndex := preload("res://scripts/combat_spatial_index.gd")
 # SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
@@ -455,9 +455,9 @@ func _separation_rank_weight() -> float:
 	return 1.0
 
 
-# Кэш 3-4 ближайших соседей: общий snapshot группы строится максимум один раз
-# за кадр, каждый enemy фильтрует его раз в 0.2s (со stagger по id), а горячий
-# кадр работает только по 4 соседям.
+# The shared spatial index is rebuilt with CombatTargetQuery's frame snapshot.
+# It only returns nearby grid cells; exact range filtering and the four-nearest
+# ordering below remain the existing behavior.
 func _refresh_separation_neighbors() -> void:
 	_separation_neighbors.clear()
 	_separation_scratch_dist.clear()
@@ -466,7 +466,7 @@ func _refresh_separation_neighbors() -> void:
 		return
 	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
 	var limit_sq := search_limit * search_limit
-	for node in TARGET_QUERY.enemies(self):
+	for node in CombatSpatialIndex.candidates(self, global_position):
 		if not is_instance_valid(node):
 			continue
 		var other := node as Node2D

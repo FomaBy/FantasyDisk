@@ -82,6 +82,7 @@ func _initialize() -> void:
 	await _test_melee_arrival(errors)
 	await _test_deep_overlap_backoff(errors)
 	await _test_pair_separation(errors)
+	await _test_epic_separation_immunity(errors)
 	await _test_freed_cached_neighbor(errors)
 	await _test_shooter_strafe(errors)
 	await _test_spawn_protection(errors)
@@ -170,6 +171,20 @@ func _test_pair_separation(errors: Array[String]) -> void:
 	print("INFO (c): pair distance=%.1f, d to player=[%.1f, %.1f], contact_range=%.1f" % [pair_distance, d_a, d_b, contact_range])
 
 	_cleanup([enemy_a, enemy_b, player])
+	await process_frame
+
+
+# An epic does not contribute or receive separation neighbours.
+func _test_epic_separation_immunity(errors: Array[String]) -> void:
+	var player := _make_player(Vector2(2048, 1152))
+	var epic := _make_enemy(player.global_position + Vector2(260, 0))
+	var ordinary := _make_enemy(epic.global_position + Vector2(12, 0))
+	epic.add_to_group("bosses")
+	await process_frame
+	epic.call("_refresh_separation_neighbors")
+	if not (epic.get("_separation_neighbors") as Array).is_empty():
+		errors.append("Epic enemy populated separation neighbors.")
+	_cleanup([ordinary, epic, player])
 	await process_frame
 
 
