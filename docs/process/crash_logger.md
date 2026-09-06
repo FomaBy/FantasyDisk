@@ -29,9 +29,10 @@ Each record includes:
 - the newest 50 combat breadcrumbs, in chronological order, containing only
   class ID, weapon ID, event phase, and process-frame number.
 
-Credential-shaped values and personal home paths are redacted. External source
-paths are replaced with `<external>`. Do not add player names, save contents,
-free-form chat, access tokens, or other personal data to breadcrumbs.
+Credential-shaped values, including quoted JSON `Authorization` fields, and
+personal home paths are redacted. External source paths are replaced with
+`<external>`. Do not add player names, save contents, free-form chat, access
+tokens, or other personal data to breadcrumbs.
 
 ## Combat breadcrumbs
 
@@ -80,16 +81,25 @@ python3 tools/crash_logger_profile.py profile \
   --baseline-sha <baseline> --candidate-sha <candidate>
 ```
 
-The profiler serializes each Godot process through `tools/godot_gate.py`, runs
-five independent baseline/candidate pairs in alternating order, and reports one
-12,000-frame post-warmup sample per SHA in each pair. On the required macOS host, an
-acknowledged phase handshake samples Godot's process-wide user and system CPU
-time with `proc_pid_rusage`. The rendered main-menu scenario remains unchanged,
-while display and driver sleep are excluded from the metric. A deterministic 2
-ms per-frame CPU load calibrates every trial; the run is
-inconclusive unless every trial detects that load. The median of the five paired
-regressions is evaluated against the 1% budget with a one-sided 95% bound. If
-calibration or noise cannot resolve that budget, treat the result as
+This command is the fixed protocol; its measurement parameters cannot be
+overridden. The profiler resolves both revisions before execution, serializes
+each Godot process through `tools/godot_gate.py`, warms each process for 6,000
+frames, and reports one 24,000-frame sample per SHA in each of twelve pairs.
+The within-pair order is predeclared as three identical ABBA blocks:
+`BC, CB, CB, BC, BC, CB, CB, BC, BC, CB, CB, BC`, where `B` is the baseline
+and `C` is the candidate. Each revision therefore runs first in six pairs. On
+the required macOS host, an acknowledged phase handshake samples Godot's
+process-wide user and system CPU time with `proc_pid_rusage`. The rendered
+main-menu scenario remains unchanged, while display and driver sleep are
+excluded from the metric. A deterministic 2 ms per-frame CPU load calibrates
+every trial; the run is inconclusive unless every trial detects that load. The
+median of the twelve paired regressions is evaluated against the 1% budget with
+a one-sided 95% bound. The single result includes every CPU and wall-clock
+sample in execution order,
+baseline/candidate SHAs, the effective protocol and its SHA-256, the profiler
+source SHA-256, diagnostic host load averages before and after every run, and
+the cleanup result. Host load is observation evidence, not an input to the
+verdict. If calibration or noise cannot resolve that budget, treat the result as
 inconclusive and fix the measurement conditions or metric before rerunning; do
 not infer a pass from more paced wall-clock frames.
 

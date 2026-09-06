@@ -38,7 +38,7 @@ class IncidentSink:
 	func _init(flush_owner: Node) -> void:
 		_flush_owner = flush_owner
 		_authorization_pattern = RegEx.create_from_string(
-			r"(?i)(\bauthorization\s*[:=]\s*)(?:(?:bearer|basic)\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+			r"(?i)(\bauthorization[\"']?\s*[:=]\s*)(?:(?:bearer|basic)\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_bearer_pattern = RegEx.create_from_string(
 			r"(?i)(\bbearer\s+)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"

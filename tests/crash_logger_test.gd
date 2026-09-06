@@ -133,10 +133,10 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 		77,
 	)
 	service.capture_error_for_tests(
-		"Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible /Users/example/private/file",
+		"{\"Authorization\": \"Basic TEST_JSON_AUTHORIZATION_CREDENTIAL\"} context=json-visible Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible /Users/example/private/file",
 		no_frames,
 		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast",
-		"Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout",
+		"{\"authorization\":\"Bearer TEST_JSON_COMPACT_CREDENTIAL\"} reason=json-compact-visible Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout",
 	)
 	service.flush_pending_for_tests()
 	var paths: PackedStringArray = service.incident_paths_for_tests()
@@ -167,6 +167,8 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 		"TEST_TEXT_CREDENTIAL",
 		"TEST_CODE_CREDENTIAL",
 		"TEST_RATIONALE_CREDENTIAL",
+		"TEST_JSON_AUTHORIZATION_CREDENTIAL",
+		"TEST_JSON_COMPACT_CREDENTIAL",
 	]:
 		_check(payload.find(credential) == -1, "credential remainder persisted from %s" % credential)
 	for benign_context in [
@@ -176,6 +178,8 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 		"context=visible",
 		"operation=cast",
 		"reason=timeout",
+		"context=json-visible",
+		"reason=json-compact-visible",
 	]:
 		_check(payload.find(benign_context) >= 0, "benign context was removed: %s" % benign_context)
 	_check(payload.find("/Users/example") == -1, "personal home path was not redacted")

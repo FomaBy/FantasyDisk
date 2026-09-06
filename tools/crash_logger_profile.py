@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ctypes
+import hashlib
 import json
 import math
 import os
@@ -25,6 +26,25 @@ EXPECTED_ERROR = "FAN-3905 deterministic expected-error probe"
 SELF_TEST_ERROR = "FAN-3905 deterministic crash logger self-test"
 INCIDENT_GLOB = "incident_*.json"
 PROFILE_MARKER = "FAN3905_FRAME_PROFILE="
+PROFILE_WARMUP_FRAMES = 6000
+PROFILE_SAMPLE_FRAMES = 24000
+PROFILE_CALIBRATION_USEC = 2000
+PROFILE_CALIBRATION_MIN_FRACTION = 0.75
+# Three predeclared ABBA blocks keep each revision first in exactly six pairs.
+PROFILE_PAIR_ORDER = (
+    ("baseline", "candidate"),
+    ("candidate", "baseline"),
+    ("candidate", "baseline"),
+    ("baseline", "candidate"),
+    ("baseline", "candidate"),
+    ("candidate", "baseline"),
+    ("candidate", "baseline"),
+    ("baseline", "candidate"),
+    ("baseline", "candidate"),
+    ("candidate", "baseline"),
+    ("candidate", "baseline"),
+    ("baseline", "candidate"),
+)
 
 PROFILE_SCRIPT = r'''extends SceneTree
 
@@ -537,6 +557,22 @@ def _median_and_mad(samples: list[float]) -> tuple[float, float]:
     return median, mad
 
 
+def _sha256_json(value: object) -> str:
+    encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _host_load_observation() -> dict:
+    try:
+        load_average = list(os.getloadavg())
+    except OSError:
+        load_average = []
+    return {
+        "observed_unix_ns": time.time_ns(),
+        "load_average_1m_5m_15m": load_average,
+    }
+
+
 def _merge_profile_runs(runs: list[dict]) -> dict:
     sample_fields = {
         "samples_ms",
@@ -560,31 +596,60 @@ def command_profile(args: argparse.Namespace) -> dict:
     godot = _godot_path(args.godot)
     baseline_sha = _resolve_commit(project, args.baseline_sha)
     candidate_sha = _resolve_commit(project, args.candidate_sha)
+    effective_command = {
+        "tool": "python3 tools/crash_logger_profile.py profile",
+        "baseline_sha": baseline_sha,
+        "candidate_sha": candidate_sha,
+        "warmup_frames": args.warmup_frames,
+        "frames_per_sample": args.frames_per_sample,
+        "pair_order": [list(pair) for pair in PROFILE_PAIR_ORDER],
+        "calibration_usec": args.calibration_usec,
+        "calibration_min_fraction": args.calibration_min_fraction,
+        "scenario": {
+            "scene": "res://scenes/Main.tscn",
+            "resolution": "1280x720",
+            "vsync": "disabled",
+            "max_fps": 0,
+            "metric": "macOS process CPU user+system time per rendered main-menu frame",
+        },
+    }
     cache = (project / ".godot").resolve()
     with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project.parent) as temp_name:
         temp = Path(temp_name).resolve()
         baseline_runs: list[dict] = []
         candidate_runs: list[dict] = []
-        for trial in range(5):
-            revisions = (
-                (("baseline", baseline_sha, baseline_runs), ("candidate", candidate_sha, candidate_runs))
-                if trial % 2 == 0
-                else (("candidate", candidate_sha, candidate_runs), ("baseline", baseline_sha, baseline_runs))
-            )
-            for label, revision, runs in revisions:
-                runs.append(
-                    _profile_one(
-                        project,
-                        godot,
-                        revision,
-                        temp / f"{label}-{trial}",
-                        cache,
-                        args.warmup_frames,
-                        args.frames_per_sample,
-                        args.calibration_usec,
-                        1,
-                    )
+        runs_by_label = {"baseline": baseline_runs, "candidate": candidate_runs}
+        revisions_by_label = {"baseline": baseline_sha, "candidate": candidate_sha}
+        execution_order: list[dict] = []
+        for pair_index, pair_order in enumerate(PROFILE_PAIR_ORDER, start=1):
+            for within_pair_index, label in enumerate(pair_order, start=1):
+                revision = revisions_by_label[label]
+                load_before = _host_load_observation()
+                run = _profile_one(
+                    project,
+                    godot,
+                    revision,
+                    temp / f"pair-{pair_index:02d}-{within_pair_index}-{label}",
+                    cache,
+                    args.warmup_frames,
+                    args.frames_per_sample,
+                    args.calibration_usec,
+                    1,
                 )
+                load_after = _host_load_observation()
+                runs_by_label[label].append(run)
+                execution_order.append({
+                    "pair": pair_index,
+                    "within_pair": within_pair_index,
+                    "label": label,
+                    "sha": revision,
+                    "sample_ms": float(run["samples_ms"][0]),
+                    "calibration_sample_ms": float(run["calibration_samples_ms"][0]),
+                    "wall_sample_ms": float(run["wall_samples_ms"][0]),
+                    "calibration_wall_sample_ms": float(run["calibration_wall_samples_ms"][0]),
+                    "host_load_before": load_before,
+                    "host_load_after": load_after,
+                })
         baseline = _merge_profile_runs(baseline_runs)
         candidate = _merge_profile_runs(candidate_runs)
     baseline_median, baseline_mad = _median_and_mad(baseline["samples_ms"])
@@ -598,7 +663,7 @@ def command_profile(args: argparse.Namespace) -> dict:
     regression_percent, paired_mad = _median_and_mad(paired_regressions)
     # Pairing controls machine drift between neighboring exact-SHA trials.
     # 1.4826 scales MAD to sigma; 1.645 is the one-sided 95% bound.
-    bound = 1.645 * 1.4826 * paired_mad / math.sqrt(5)
+    bound = 1.645 * 1.4826 * paired_mad / math.sqrt(len(PROFILE_PAIR_ORDER))
     lower = regression_percent - bound
     upper = regression_percent + bound
     baseline_calibration_deltas = [
@@ -645,8 +710,17 @@ def command_profile(args: argparse.Namespace) -> dict:
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "median of five paired exact-SHA process-CPU ratios; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
-        "run_order": "five independent baseline/candidate pairs with alternating within-pair order; identical 1280x720 rendered main-menu configuration and shared import cache; phase-acknowledged process CPU excludes display pacing; each Godot process serialized exclusively by tools/godot_gate.py",
+        "confidence_rationale": "median of twelve paired exact-SHA process-CPU ratios; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
+        "protocol": effective_command,
+        "profile_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "effective_command_sha256": _sha256_json(effective_command),
+        "host": {
+            "platform": sys.platform,
+            "logical_cpu_count": os.cpu_count(),
+            "load_observations_are_diagnostic_only": True,
+        },
+        "execution_order": execution_order,
+        "run_order": "twelve independent baseline/candidate pairs in the predeclared BC-CB-CB-BC schedule repeated three times; each revision runs first in six pairs; identical 1280x720 rendered main-menu configuration and shared import cache; phase-acknowledged process CPU excludes display pacing; each Godot process serialized exclusively by tools/godot_gate.py",
         "cleanup": "complete",
     }
 
@@ -661,10 +735,14 @@ def _parser() -> argparse.ArgumentParser:
     profile = subparsers.add_parser("profile")
     profile.add_argument("--baseline-sha", required=True)
     profile.add_argument("--candidate-sha", required=True)
-    profile.add_argument("--warmup-frames", type=int, default=3000)
-    profile.add_argument("--frames-per-sample", type=int, default=12000)
-    profile.add_argument("--calibration-usec", type=int, default=2000)
-    profile.add_argument("--calibration-min-fraction", type=float, default=0.75)
+    profile.add_argument("--warmup-frames", type=int, default=PROFILE_WARMUP_FRAMES)
+    profile.add_argument("--frames-per-sample", type=int, default=PROFILE_SAMPLE_FRAMES)
+    profile.add_argument("--calibration-usec", type=int, default=PROFILE_CALIBRATION_USEC)
+    profile.add_argument(
+        "--calibration-min-fraction",
+        type=float,
+        default=PROFILE_CALIBRATION_MIN_FRACTION,
+    )
     return parser
 
 
@@ -677,10 +755,18 @@ def main() -> int:
         elif args.command == "export-probe":
             result = command_export_probe(args)
         else:
-            if args.warmup_frames < 60 or args.frames_per_sample < 300:
-                parser.error("profile requires at least 60 warmup and 300 measured frames")
-            if args.calibration_usec < 1000 or not 0.5 <= args.calibration_min_fraction <= 1.0:
-                parser.error("profile calibration requires >=1000 usec and a minimum fraction in [0.5, 1.0]")
+            fixed_values = (
+                args.warmup_frames == PROFILE_WARMUP_FRAMES
+                and args.frames_per_sample == PROFILE_SAMPLE_FRAMES
+                and args.calibration_usec == PROFILE_CALIBRATION_USEC
+                and args.calibration_min_fraction == PROFILE_CALIBRATION_MIN_FRACTION
+            )
+            if not fixed_values:
+                parser.error(
+                    "the declared FAN-3905 protocol is fixed at 6000 warmup frames, "
+                    "24000 measured frames, 12 predeclared pairs, 2000 calibration usec, "
+                    "and 0.75 calibration minimum fraction"
+                )
             result = command_profile(args)
     except (ProbeFailure, OSError, json.JSONDecodeError, zipfile.BadZipFile) as exc:
         print(json.dumps({"verdict": "FAIL", "error": str(exc)}, ensure_ascii=False, indent=2))
