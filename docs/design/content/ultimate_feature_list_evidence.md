@@ -83,6 +83,25 @@ truncation. Exit codes are preserved in the evidence. The checker performs no
 network access and writes only under `build/`; `--report` and `--log-dir`
 outside `build/` are refused.
 
+### Import cache pre-pass
+
+A cold checkout has no `.godot` import cache; the first Godot launch then
+imports the whole project and prints its import log (5.5 MB measured on this
+project), which is larger than a recipe's output budget. Before the first
+recipe executes, the standalone checker therefore warms the shared cache
+exactly once through the same gate (`python3 tools/godot_gate.py --headless
+--path . --ensure-import-cache`; on Windows `--import` first, as the quality
+gate does) under its own `--import-timeout` (default `FSD_GODOT_IMPORT_TIMEOUT`
+or 1200 s) and a 64 MB output budget. Its log is kept as
+`build/ultimate_feature_list/logs/import_prepass.log` and recorded in the
+report's `import_prepass` block; it is never recipe evidence. The pre-pass is
+diagnostic-tolerant like the gate's own: only a nonzero exit, a timeout or an
+overflow fails it, and then no recipe is launched at all: every active entry
+is `failed` with reason `not executed: Godot import cache pre-pass failed` and
+the error names the import, not the suite. Inside the quality gate the
+pre-pass never runs (`import_prepass: null`): the gate warms the cache in its
+own `godot-import-cache` step.
+
 ## Fresh evidence
 
 The checker executes each distinct recipe once per run (entries sharing a recipe
@@ -181,7 +200,7 @@ command set and never run the checker.
 
 ```
 python3 tools/ultimate_feature_list_check.py --validate-only
-python3 tools/ultimate_feature_list_check.py
+python3 tools/ultimate_feature_list_check.py            # cold or warm cache; warms once, then 17 recipes
 python3 tools/ultimate_feature_list_check.py --verify-report build/ultimate_feature_list/report.json
 python3 -m unittest tests.test_ultimate_feature_list
 ```
@@ -192,5 +211,6 @@ cardinality and key errors, fabricated and stale evidence, disallowed commands
 and paths, timeout, failure, output overflow, digest mismatch, recipe
 deduplication, in-process gate binding (missing or mismatching executed
 command, unexecuted recipes, failed or timed-out suites, ignored on-disk
-manifests), stale same-SHA reuse, fabricated execution records and the gate
-selection rules.
+manifests), the cold import cache (import log larger than the recipe budget,
+failed or hanging pre-pass), stale same-SHA reuse, fabricated execution
+records and the gate selection rules.

@@ -36,8 +36,30 @@ control = json.loads((root / "stub_control.json").read_text(encoding="utf-8"))
 with open(root / "stub_calls.log", "a", encoding="utf-8") as handle:
     handle.write(" ".join(sys.argv[1:]) + "\\n")
 mode = control.get("mode", "pass")
+cache_marker = root / "stub_import_cache"
+if "--ensure-import-cache" in sys.argv[1:]:
+    # The one-time import pre-pass: a cold project prints its whole import log.
+    import_mode = control.get("import_mode", "pass")
+    print("godot_gate: import cache missing, running headless import first")
+    sys.stdout.write("i" * int(control.get("import_bytes", 0)))
+    sys.stdout.flush()
+    if import_mode == "fail":
+        print("stub import failed")
+        sys.exit(3)
+    if import_mode == "sleep":
+        time.sleep(60)
+    cache_marker.write_text("warm", encoding="utf-8")
+    print("stub import cache ready")
+    sys.exit(0)
 print("Godot Engine v4.7.stable.official (stub)")
 print("argv:", sys.argv[1:])
+if control.get("cold") and not cache_marker.exists():
+    # QA-observed defect shape: a recipe on a cold cache imports first and the
+    # import log alone exceeds the recipe output budget.
+    print("godot_gate: import cache missing, running headless import first")
+    sys.stdout.write("i" * int(control.get("import_bytes", 0)))
+    sys.stdout.flush()
+    cache_marker.write_text("warm", encoding="utf-8")
 if mode == "fail":
     print("stub suite failed")
     sys.exit(1)
@@ -150,7 +172,7 @@ def build_fixture(root: Path, mode: str = "pass") -> None:
     # Mode switches and stub bookkeeping never dirty the fixture worktree: a
     # verified report requires the same clean commit it was generated on.
     (root / ".gitignore").write_text(
-        "build/\nstub_calls.log\nstub_child.pid\nstub_control.json\n", encoding="utf-8"
+        "build/\nstub_calls.log\nstub_child.pid\nstub_control.json\nstub_import_cache\n", encoding="utf-8"
     )
     write_feature_list(root, default_entries())
     _git(root, "init", "-q")
@@ -177,6 +199,15 @@ def stub_calls(root: Path) -> list:
     if not path.exists():
         return []
     return [line for line in path.read_text(encoding="utf-8").splitlines() if line]
+
+
+def recipe_calls(root: Path) -> list:
+    """Stub launches that were recipes (the one-time import pre-pass excluded)."""
+    return [line for line in stub_calls(root) if "--ensure-import-cache" not in line]
+
+
+def prepass_calls(root: Path) -> list:
+    return [line for line in stub_calls(root) if "--ensure-import-cache" in line]
 
 
 def run_checker(root: Path, *args: str, env: dict | None = None) -> subprocess.CompletedProcess:
@@ -422,7 +453,9 @@ class FreshEvidenceTests(FixtureCase):
     def test_run_binds_fresh_evidence_and_executes_each_recipe_once(self) -> None:
         completed = run_checker(self.root, "--timeout", "30")
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertEqual(len(stub_calls(self.root)), CLASS_COUNT, "51 entries share 17 recipes")
+        self.assertEqual(len(recipe_calls(self.root)), CLASS_COUNT, "51 entries share 17 recipes")
+        self.assertEqual(len(prepass_calls(self.root)), 1, "the import cache is warmed exactly once")
+        self.assertEqual(stub_calls(self.root)[0], prepass_calls(self.root)[0], "warmed before the first recipe")
         report = read_report(self.root)
         head = _git(self.root, "rev-parse", "HEAD")
         self.assertEqual(report["status"], "passed")
@@ -640,6 +673,66 @@ class FailureModeTests(FixtureCase):
         log = self.root / report["entries"][0]["evidence"]["log_path"]
         self.assertLessEqual(log.stat().st_size, 20000)
 
+    def test_cold_import_cache_is_warmed_once_outside_the_recipe_budget(self) -> None:
+        """QA defect on 0d1c58f: a cold import log (5.5 MB) was charged to the recipe's 4 MB limit."""
+        set_mode(self.root, "pass", cold=True, import_bytes=30000)
+        completed = run_checker(self.root, "--timeout", "30", "--output-limit", "20000")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("PASS  Godot import cache pre-pass", completed.stdout)
+        self.assertEqual(len(prepass_calls(self.root)), 1)
+        self.assertEqual(len(recipe_calls(self.root)), CLASS_COUNT)
+        self.assertIn("--ensure-import-cache", stub_calls(self.root)[0])
+        report = read_report(self.root)
+        self.assertEqual(report["summary"], {"passing": 51, "failed": 0, "blocked": 0, "not_started": 0})
+        prepass = report["import_prepass"]
+        self.assertTrue(prepass["passed"])
+        self.assertEqual(prepass["exit_code"], 0)
+        self.assertGreater(prepass["log_bytes_count"], 20000, "the import log exceeds a recipe budget")
+        prepass_log = self.root / prepass["log_path"]
+        self.assertEqual(hashlib.sha256(prepass_log.read_bytes()).hexdigest(), prepass["log_digest"])
+        self.assertIn("import cache missing", prepass_log.read_text(encoding="utf-8"))
+        for record in report["recipes"].values():
+            self.assertFalse(record["output_truncated"])
+            self.assertLessEqual((self.root / record["log_path"]).stat().st_size, 20000)
+            self.assertNotIn("import cache missing", (self.root / record["log_path"]).read_text(encoding="utf-8"))
+        self.assertEqual(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 0
+        )
+
+    def test_without_the_prepass_a_cold_import_would_overflow_the_recipe(self) -> None:
+        """Characterizes the defect shape the pre-pass prevents: import inside the recipe budget."""
+        checker = _load_module("ultimate_feature_list_check_cold", "tools/ultimate_feature_list_check.py")
+        set_mode(self.root, "pass", cold=True, import_bytes=30000)
+        outcome = checker.execute_recipe(recipe(0), self.root, 30.0, 20000)
+        self.assertFalse(outcome["passed"])
+        self.assertIn("output exceeded 20000 bytes", outcome["reasons"])
+        self.assertTrue(outcome["output_truncated"])
+
+    def test_import_prepass_failure_fails_closed_without_running_recipes(self) -> None:
+        set_mode(self.root, "pass", import_mode="fail")
+        completed = run_checker(self.root, "--timeout", "30")
+        self.assert_three_part_failure(completed, "Godot import cache pre-pass failed: exit 3", "not a suite or ultimate failure")
+        self.assertNotIn("fix the suite or the ultimate", completed.stderr)
+        self.assertEqual(len(prepass_calls(self.root)), 1)
+        self.assertEqual(recipe_calls(self.root), [], "no recipe may run on a failed import")
+        report = read_report(self.root)
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["summary"], {"passing": 0, "failed": 51, "blocked": 0, "not_started": 0})
+        self.assertFalse(report["import_prepass"]["passed"])
+        self.assertEqual(report["import_prepass"]["exit_code"], 3)
+        self.assertEqual(report["entries"][0]["reason"], "not executed: Godot import cache pre-pass failed")
+        self.assertEqual(report["entries"][0]["evidence"]["executed_by"], "none")
+        self.assertEqual(
+            run_checker(self.root, "--verify-report", "build/ultimate_feature_list/report.json").returncode, 1
+        )
+        # A hanging import is bounded by its own timeout, not a recipe's.
+        set_mode(self.root, "pass", import_mode="sleep")
+        completed = run_checker(self.root, "--timeout", "30", "--import-timeout", "2")
+        self.assert_three_part_failure(completed, "Godot import cache pre-pass failed: timeout after 2s")
+        self.assertEqual(recipe_calls(self.root), [])
+        self.assertEqual(read_report(self.root)["import_prepass"]["exit_code"], 124)
+        self.assertEqual(run_checker(self.root, "--import-timeout", "0").returncode, 2)
+
     def test_blocked_and_not_started_are_truthful_non_failures(self) -> None:
         entries = default_entries()
         entries[0].update(state="blocked", verification=None, blocked_reason="missing suite: class_00 live suite")
@@ -667,9 +760,10 @@ class DeduplicationAndSafetyTests(FixtureCase):
         self.assertEqual(step["status"], "passed", stderr)
         self.assertEqual(step["exit_code"], 0)
         self.assertEqual(step["summary"], {"passing": 51, "failed": 0, "blocked": 0, "not_started": 0})
-        self.assertEqual(stub_calls(self.root), [], "binding must never launch a recipe")
+        self.assertEqual(stub_calls(self.root), [], "binding must never launch a recipe or the import pre-pass")
         self.assertIn("ULTIMATE FEATURE LIST PASSED: 51 passing", stdout)
         report = read_report(self.root)
+        self.assertIsNone(report["import_prepass"], "the gate warms the cache itself")
         self.assertEqual(report["candidate_sha"], head)
         evidence = report["entries"][0]["evidence"]
         self.assertEqual(evidence["executed_by"], "quality_gate_profile")
@@ -756,7 +850,7 @@ class DeduplicationAndSafetyTests(FixtureCase):
         self.assertEqual(stub_calls(self.root), [])
         completed = run_checker(self.root, "--timeout", "30")
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertEqual(len(stub_calls(self.root)), CLASS_COUNT, "the standalone checker runs every recipe itself")
+        self.assertEqual(len(recipe_calls(self.root)), CLASS_COUNT, "the standalone checker runs every recipe itself")
         report = read_report(self.root)
         self.assertEqual({item["evidence"]["executed_by"] for item in report["entries"]}, {"ultimate_feature_list_check"})
         for digest, record in report["recipes"].items():

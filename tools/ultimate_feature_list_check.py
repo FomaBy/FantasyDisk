@@ -25,7 +25,11 @@ allowlisted shape is the repository-local Godot gate launching one suite from
 ``tests/``; escaping paths, other interpreters, other tools, extra options and
 shell metacharacters are refused before anything runs.  Every run is bounded
 by a timeout and an output limit, keeps ``user://`` in a scratch directory and
-writes only under the task-owned report directory.
+writes only under the task-owned report directory.  Before the first recipe
+executes, the shared Godot import cache is warmed once through the same gate
+(``--ensure-import-cache``) under its own timeout and output budget, so a cold
+checkout's multi-megabyte import output never counts against a recipe; a
+failed pre-pass fails every recipe closed without launching any suite.
 
 Exit status: 0 = every check passed (missing or blocked verification is a
 truthful non-failure); 1 = a validation, verification or recipe failure;
@@ -80,6 +84,11 @@ RECIPE_ARGV_LENGTH = len(RECIPE_PREFIX) + 1
 SCRIPT_PREFIX = "res://tests/"
 DEFAULT_TIMEOUT = 900.0
 DEFAULT_OUTPUT_LIMIT = 4_000_000
+DEFAULT_IMPORT_TIMEOUT = 1200.0
+# A cold import prints the whole project's import log (5.5 MB measured on the
+# 51-ultimate project); it is warmed once, outside every recipe's budget.
+IMPORT_PREPASS_OUTPUT_LIMIT = 64_000_000
+IMPORT_PREPASS_LOG_NAME = "import_prepass.log"
 _CLEANUP_TIMEOUT = 30.0
 NESTED_GUARD_ENV = "FSD_ULTIMATE_FEATURE_LIST_ACTIVE"
 LOG_TAIL_BYTES = 6000
@@ -611,15 +620,24 @@ def _terminate(process: subprocess.Popen) -> None:
         if process.poll() is None:
             process.kill()
         return
+    # The child may already have exited between the overflow/timeout decision
+    # and this call; macOS then answers killpg with EPERM (zombie group), not
+    # ESRCH.  Termination must never raise: fall through to the descendants
+    # and the direct kill, and let the caller's wait() collect the exit.
     try:
         os.killpg(process.pid, signal.SIGKILL)
-    except ProcessLookupError:
+    except OSError:
         pass
     for pid in descendants:
         try:
             os.kill(pid, signal.SIGKILL)
-        except (ProcessLookupError, OSError):
+        except OSError:
             continue
+    if process.poll() is None:
+        try:
+            process.kill()
+        except OSError:
+            pass
 
 
 def execution_environment(scratch: Path) -> dict[str, str]:
@@ -650,71 +668,137 @@ def execute_recipe(
     output_limit: int,
 ) -> dict:
     """Run one allowlisted recipe without a shell, bounded by time and output."""
-    started = time.monotonic()
     with tempfile.TemporaryDirectory(prefix="fsd-ultimate-feature-") as scratch_dir:
         scratch = Path(scratch_dir).resolve()
         command = [sys.executable, str(root / RECIPE_RUNNER), *argv[2:-1], argv[-1]]
         # Keep user:// out of the checkout; the suite path itself is untouched.
         command.append(f"--user-data-dir={scratch / 'user'}")
         command.insert(len(command) - 1, "--")
-        kwargs: dict = {
-            "cwd": root,
-            "env": execution_environment(scratch),
-            "stdin": subprocess.DEVNULL,
-            "stdout": subprocess.PIPE,
-            "stderr": subprocess.STDOUT,
-        }
-        if os.name == "nt":
-            kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
-        else:
-            kwargs["start_new_session"] = True
-        process = subprocess.Popen(command, **kwargs)
-        chunks: list[bytes] = []
-        size = [0]
-        overflow = threading.Event()
-        done = threading.Event()
+        return _run_bounded(command, root, scratch, timeout, output_limit)
 
-        def drain() -> None:
-            assert process.stdout is not None
-            try:
-                while True:
-                    chunk = process.stdout.read1(65536) if hasattr(process.stdout, "read1") \
-                        else process.stdout.read(65536)
-                    if not chunk:
-                        return
-                    if size[0] + len(chunk) > output_limit:
-                        chunks.append(chunk[: max(0, output_limit - size[0])])
-                        size[0] = output_limit
-                        overflow.set()
-                        return
-                    chunks.append(chunk)
-                    size[0] += len(chunk)
-            except (OSError, ValueError):
-                pass
-            finally:
-                done.set()
 
-        reader = threading.Thread(target=drain, name="ultimate-feature-reader", daemon=True)
-        reader.start()
-        timed_out = False
-        while process.poll() is None or not done.is_set():
-            if time.monotonic() - started >= timeout:
-                timed_out = True
+def import_prepass_commands(root: Path) -> list[list[str]]:
+    """Ordered gate commands that warm and then validate the import cache.
+
+    Mirrors ``tools/quality_gate.py``: on Windows ``--ensure-import-cache``
+    imports via ``--import --quit``, which crashes Godot 4.7 there, so the
+    import runs through the gate passthrough first and the ensure call then
+    only proves the cache is complete.
+    """
+    gate = [sys.executable, str(root / RECIPE_RUNNER), "--headless", "--path", "."]
+    ensure = [*gate, "--ensure-import-cache"]
+    if os.name != "nt":
+        return [ensure]
+    return [[*gate, "--import"], ensure]
+
+
+def execute_import_prepass(root: Path, timeout: float, output_limit: int) -> dict:
+    """Warm the shared import cache once, outside every recipe's budget.
+
+    The pre-pass is diagnostic-tolerant like the gate's own: only a nonzero
+    exit, a timeout or an output overflow fails it.  Its output is kept as its
+    own log; it never becomes recipe evidence.
+    """
+    started = time.monotonic()
+    commands = import_prepass_commands(root)
+    chunks: list[bytes] = []
+    outcome: dict = {}
+    with tempfile.TemporaryDirectory(prefix="fsd-ultimate-import-") as scratch_dir:
+        scratch = Path(scratch_dir).resolve()
+        for command in commands:
+            budget = max(timeout - (time.monotonic() - started), 0.0)
+            outcome = _run_bounded(command, root, scratch, budget, output_limit - sum(map(len, chunks)))
+            chunks.append(outcome["log_bytes"])
+            if outcome["exit_code"] != 0 or outcome["timed_out"] or outcome["output_truncated"]:
                 break
-            if overflow.is_set():
-                break
-            time.sleep(0.01)
-        if timed_out or overflow.is_set():
-            _terminate(process)
+    reasons: list[str] = []
+    if outcome.get("timed_out"):
+        reasons.append(f"timeout after {timeout:.0f}s")
+    if outcome.get("output_truncated"):
+        reasons.append(f"output exceeded {output_limit} bytes")
+    if outcome.get("exit_code") != 0 and not outcome.get("timed_out"):
+        reasons.append(f"exit {outcome.get('exit_code')}")
+    return {
+        "commands": commands,
+        "exit_code": outcome.get("exit_code"),
+        "timed_out": bool(outcome.get("timed_out")),
+        "output_truncated": bool(outcome.get("output_truncated")),
+        "duration_seconds": round(time.monotonic() - started, 3),
+        "log_bytes": b"".join(chunks),
+        "passed": not reasons,
+        "reasons": reasons,
+    }
+
+
+def _run_bounded(
+    command: Sequence[str],
+    root: Path,
+    scratch: Path,
+    timeout: float,
+    output_limit: int,
+) -> dict:
+    """Run one command without a shell, bounded by time and output."""
+    started = time.monotonic()
+    kwargs: dict = {
+        "cwd": root,
+        "env": execution_environment(scratch),
+        "stdin": subprocess.DEVNULL,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.STDOUT,
+    }
+    if os.name == "nt":
+        kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else:
+        kwargs["start_new_session"] = True
+    process = subprocess.Popen(command, **kwargs)
+    chunks: list[bytes] = []
+    size = [0]
+    overflow = threading.Event()
+    done = threading.Event()
+    if output_limit <= 0:
+        overflow.set()
+
+    def drain() -> None:
+        assert process.stdout is not None
         try:
-            process.wait(timeout=_CLEANUP_TIMEOUT)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=_CLEANUP_TIMEOUT)
-        reader.join(timeout=_CLEANUP_TIMEOUT)
-        if process.stdout is not None:
-            process.stdout.close()
-        reader.join(timeout=_CLEANUP_TIMEOUT)
+            while True:
+                chunk = process.stdout.read1(65536) if hasattr(process.stdout, "read1") \
+                    else process.stdout.read(65536)
+                if not chunk:
+                    return
+                if size[0] + len(chunk) > output_limit:
+                    chunks.append(chunk[: max(0, output_limit - size[0])])
+                    size[0] = output_limit
+                    overflow.set()
+                    return
+                chunks.append(chunk)
+                size[0] += len(chunk)
+        except (OSError, ValueError):
+            pass
+        finally:
+            done.set()
+
+    reader = threading.Thread(target=drain, name="ultimate-feature-reader", daemon=True)
+    reader.start()
+    timed_out = False
+    while process.poll() is None or not done.is_set():
+        if time.monotonic() - started >= timeout:
+            timed_out = True
+            break
+        if overflow.is_set():
+            break
+        time.sleep(0.01)
+    if timed_out or overflow.is_set():
+        _terminate(process)
+    try:
+        process.wait(timeout=_CLEANUP_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=_CLEANUP_TIMEOUT)
+    reader.join(timeout=_CLEANUP_TIMEOUT)
+    if process.stdout is not None:
+        process.stdout.close()
+    reader.join(timeout=_CLEANUP_TIMEOUT)
     output = b"".join(chunks)
     exit_code = 124 if timed_out else process.returncode
     text = output.decode("utf-8", errors="replace")
@@ -841,6 +925,7 @@ def generate_report(
     output_limit: int,
     profile_results: dict[str, dict] | None = None,
     execute: bool = True,
+    import_timeout: float = DEFAULT_IMPORT_TIMEOUT,
 ) -> tuple[dict, list[str]]:
     """Execute every distinct recipe once and bind its evidence to all covered entries.
 
@@ -870,6 +955,47 @@ def generate_report(
         flush=True,
     )
     results: dict[str, dict] = {}
+    prepass: dict | None = None
+    prepass_record: dict | None = None
+    to_execute = [
+        recipe["script"] for recipe in recipes.values()
+        if recipe["script"] not in (profile_results or {})
+    ]
+    if execute and to_execute:
+        print(f"IMPORT CACHE warming once before {len(to_execute)} recipe(s)", flush=True)
+        prepass = execute_import_prepass(root, import_timeout, IMPORT_PREPASS_OUTPUT_LIMIT)
+        prepass_log = log_dir / IMPORT_PREPASS_LOG_NAME
+        prepass_log.write_bytes(prepass["log_bytes"])
+        prepass_record = {
+            "commands": prepass["commands"],
+            "exit_code": prepass["exit_code"],
+            "timed_out": prepass["timed_out"],
+            "output_truncated": prepass["output_truncated"],
+            "duration_seconds": prepass["duration_seconds"],
+            "log_path": prepass_log.relative_to(root).as_posix(),
+            "log_digest": sha256_bytes(prepass["log_bytes"]),
+            "log_bytes_count": len(prepass["log_bytes"]),
+            "passed": prepass["passed"],
+            "reasons": prepass["reasons"],
+        }
+        verdict = "PASS" if prepass["passed"] else "FAIL"
+        print(
+            f"{verdict}  Godot import cache pre-pass ({prepass['duration_seconds']:.1f}s"
+            + (f"; {'; '.join(prepass['reasons'])}" if prepass["reasons"] else "")
+            + ")",
+            file=sys.stdout if prepass["passed"] else sys.stderr,
+            flush=True,
+        )
+        if not prepass["passed"]:
+            tail = prepass["log_bytes"][-LOG_TAIL_BYTES:].decode("utf-8", errors="replace")
+            print(tail, file=sys.stderr, flush=True)
+            errors.append(failure(
+                f"Godot import cache pre-pass failed: {'; '.join(prepass['reasons'])}",
+                f"no recipe was executed, so the {len(to_execute)} unexecuted recipe(s) cannot pass "
+                f"on candidate {sha}; the suites and ultimates themselves were not exercised",
+                f"fix the Godot import or environment (see {prepass_record['log_path']}) and rerun; "
+                "this is not a suite or ultimate failure",
+            ))
     for index, (digest, recipe) in enumerate(recipes.items(), start=1):
         script = recipe["script"]
         reused = (profile_results or {}).get(script)
@@ -879,7 +1005,7 @@ def generate_report(
         )
         if reused is not None:
             outcome = profile_outcome(reused)
-        elif not execute:
+        elif not execute or (prepass is not None and not prepass["passed"]):
             outcome = {
                 "executed_argv": [],
                 "exit_code": None,
@@ -889,7 +1015,10 @@ def generate_report(
                 "duration_seconds": 0.0,
                 "log_bytes": b"",
                 "passed": False,
-                "reasons": ["not executed by the invoking profile"],
+                "reasons": [
+                    "not executed by the invoking profile" if not execute
+                    else "not executed: Godot import cache pre-pass failed"
+                ],
                 "executed_by": "none",
             }
         else:
@@ -907,13 +1036,19 @@ def generate_report(
             file=sys.stdout if outcome["passed"] else sys.stderr,
             flush=True,
         )
-        if not outcome["passed"]:
+        if not outcome["passed"] and outcome["executed_by"] != "none":
             tail = outcome["log_bytes"][-LOG_TAIL_BYTES:].decode("utf-8", errors="replace")
             print(tail, file=sys.stderr, flush=True)
             errors.append(failure(
                 f"recipe {script} failed: {'; '.join(outcome['reasons'])}",
                 f"entries {recipe['entries']} cannot pass on candidate {sha}",
                 f"fix the suite or the ultimate it verifies; see {log_path.relative_to(root).as_posix()}",
+            ))
+        elif not outcome["passed"] and not execute:
+            errors.append(failure(
+                f"recipe {script} failed: {'; '.join(outcome['reasons'])}",
+                f"entries {recipe['entries']} cannot pass on candidate {sha}",
+                "let the invoking quality-gate profile execute the suite, or run the checker standalone",
             ))
         results[digest] = {
             "argv": recipe["argv"],
@@ -964,6 +1099,7 @@ def generate_report(
         "worktree_dirty": worktree_dirty_paths(root),
         "feature_list_digest": feature_list_digest,
         "canonical": {"classes": EXPECTED_CLASS_COUNT, "weapons": EXPECTED_WEAPON_COUNT},
+        "import_prepass": prepass_record,
         "recipes": results,
         "entries": records,
         "summary": summary,
@@ -1198,6 +1334,12 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--output-limit", type=int, default=DEFAULT_OUTPUT_LIMIT, help="per-recipe captured output limit in bytes"
     )
+    parser.add_argument(
+        "--import-timeout",
+        type=float,
+        default=float(os.getenv("FSD_GODOT_IMPORT_TIMEOUT", str(DEFAULT_IMPORT_TIMEOUT))),
+        help="timeout for the one-time Godot import cache pre-pass (outside recipe budgets)",
+    )
     return parser.parse_args(argv)
 
 
@@ -1298,8 +1440,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
-    if args.timeout <= 0 or args.output_limit <= 0:
-        print("ultimate_feature_list_check: timeout and output limit must be positive", file=sys.stderr)
+    if args.timeout <= 0 or args.output_limit <= 0 or args.import_timeout <= 0:
+        print("ultimate_feature_list_check: timeout, import timeout and output limit must be positive", file=sys.stderr)
         return 2
     root = args.root.resolve()
     report_path = root / args.report
@@ -1354,6 +1496,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_dir,
         args.timeout,
         args.output_limit,
+        import_timeout=args.import_timeout,
     )
     _print_errors(run_errors)
     _print_summary(report, report_path, root)
