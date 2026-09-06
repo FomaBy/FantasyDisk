@@ -18,6 +18,9 @@ const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_ru
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
+# FAN-3920 (FD13): incoming-damage collaborator — prevention gates,
+# dodge roll and mitigation math (state/signals stay with Player).
+const PLAYER_DAMAGE_POLICY := preload("res://scripts/player/player_damage_policy.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
@@ -1050,24 +1053,26 @@ func _current_dodge_chance() -> float:
 # передаёт self); снаряды/зоны/элитные страйки атакующего не передают (null).
 # Используется только trait'ом «Возмездие» — ответным отбросом атакующего.
 func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
-	if debug_godmode:
-		return false
-	if _damage_invulnerability_left > 0.0:
-		return false
-	if _shadow_invisible_left > 0.0:
-		_play_sfx("dodge")
-		return false
-	if _ultimate_active and character_id == "knight":
-		GUARD_PREVENTION_INGRESS.emit_measured(self, amount, 0.0, _source, attacker)
-		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
-		_play_sfx("dodge")
-		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
-		return true
+	# FAN-3920 (FD13): the incoming-damage decisions live in the
+	# PlayerDamagePolicy collaborator (prevention gates, dodge roll, mitigation
+	# math); Player owns the state, signals and effects.
+	match PLAYER_DAMAGE_POLICY.prevention_gate(self):
+		PLAYER_DAMAGE_POLICY.Prevention.GODMODE, PLAYER_DAMAGE_POLICY.Prevention.INVULNERABILITY:
+			return false
+		PLAYER_DAMAGE_POLICY.Prevention.INVISIBILITY:
+			_play_sfx("dodge")
+			return false
+		PLAYER_DAMAGE_POLICY.Prevention.KNIGHT_ULTIMATE:
+			GUARD_PREVENTION_INGRESS.emit_measured(self, amount, 0.0, _source, attacker)
+			_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
+			_play_sfx("dodge")
+			AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
+			return true
 
 	# SCRUM-897 + SCRUM-894: ролл уворота через _current_dodge_chance — базовый
 	# асимптота 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
 	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог < 0.55).
-	if randf() < _current_dodge_chance():
+	if PLAYER_DAMAGE_POLICY.roll_dodge(self):
 		_show_dodge_popup()
 		_play_sfx("dodge")
 		if _assassin_veil_engaged():
@@ -1090,54 +1095,26 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# события до этой строки не доходят и разогрев НЕ сбрасывают.
 	_warmup_no_hit_seconds = 0.0
 
-	var defended_amount := _try_knight_counter(amount)
-	if _reactor_heat_active and float(run_modifiers.get("reactor_heat_incoming_damage", 0.0)) > 0.0:
-		defended_amount *= 1.0 + float(run_modifiers.get("reactor_heat_incoming_damage", 0.0))
-	# SCRUM-1068 Censer final: a ward cast owns exactly one proportional absorb.
-	# It is consumed before generic flat absorb and carries its source through the
-	# owner-event bridge, so unrelated shields cannot trigger retaliation.
-	var constellation_ward := constellation_consume_single_hit_ward()
-	var constellation_ward_absorbed := 0.0
-	if not constellation_ward.is_empty():
-		constellation_ward_absorbed = defended_amount * clampf(float(constellation_ward.get("ratio", 0.0)), 0.0, 0.80)
-		defended_amount = maxf(defended_amount - constellation_ward_absorbed, 0.0)
-		if constellation_ward_absorbed > 0.0:
-			_dispatch_constellation_owner_event("damage_absorbed", {
-				"absorbed_amount": constellation_ward_absorbed,
-				"incoming_amount": amount,
-				"constellation_ward_source": str(constellation_ward.get("source_id", "")),
-			})
-	var raw_defense := DefensiveAttributeRuntime.raw_defense_rating(derived_parameters)
-	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
-		raw_defense += float(run_modifiers.get("bastion_defense_bonus", 0.0))
-	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше по общей diminishing curve.
-	if _low_hp_active and float(run_modifiers.get("lowhp_defense_bonus", 0.0)) > 0.0:
-		raw_defense += float(run_modifiers.get("lowhp_defense_bonus", 0.0))
-	var defense := ProgressionData.effective_defense(raw_defense)
-	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
-	# гарантированно пропускает заметную долю мелких ударов.
-	var absorb := float(derived_parameters.get("absorb", 0.0))
-	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
-	var actually_absorbed := maxf(defended_amount - absorbed_amount, 0.0)
+	var defended_amount := PLAYER_DAMAGE_POLICY.apply_reactor_heat(self, _try_knight_counter(amount))
+	# FAN-3920 (FD13): mitigation is computed step-by-step so each synchronous
+	# owner event fires exactly where the inline pipeline fired it — callbacks
+	# may mutate Player state that later steps read.
+	var ward := PLAYER_DAMAGE_POLICY.apply_ward(self, defended_amount)
+	defended_amount = ward["defended_amount"]
+	var constellation_ward_absorbed: float = ward["ward_absorbed"]
+	if constellation_ward_absorbed > 0.0:
+		_dispatch_constellation_owner_event("damage_absorbed", {
+			"absorbed_amount": constellation_ward_absorbed,
+			"incoming_amount": amount,
+			"constellation_ward_source": ward["ward_source"],
+		})
+	var absorb_result := PLAYER_DAMAGE_POLICY.apply_defense_and_absorb(self, defended_amount)
+	var actually_absorbed: float = absorb_result["actually_absorbed"]
 	if actually_absorbed > 0.0:
 		_dispatch_constellation_owner_event("damage_absorbed", {"absorbed_amount": actually_absorbed, "incoming_amount": amount})
 	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
-	_charge_repair_subroutine(constellation_ward_absorbed + defended_amount - absorbed_amount)
-	var final_damage := absorbed_amount * (1.0 - defense)
-	# SCRUM-914 «Бронекорпус»: классовый финальный игнор входящего урона —
-	# ПОСЛЕДНИЙ множитель пайплайна (после блока/absorb/defense; dodge отроллен
-	# выше). Data-driven из CLASS_TRAITS.robot (incoming_damage_multiplier 0.8:
-	# 100 post-mitigation → 80, 5 → 4); классы без trait'а получают 1.0 —
-	# утечки нет. Кламп-пол 0.5 страхует от стакинга будущих скидок в полный
-	# иммунитет; худший суммарный кап митигации Робота ≈ 94% < гейта 98%
-	# (tests/robot_kit_test.gd + global_survivability smoke).
-	final_damage *= clampf(class_trait_value("incoming_damage_multiplier", 1.0), 0.5, 1.0)
-	# SCRUM-925 «Молитва защиты»: −20% входящего финальным классовым множителем
-	# того же ранга, что «Бронекорпус» (взаимоисключимы по классам: молитва —
-	# только Священник и только пока активна). Порядок пайплайна:
-	# уворот → контр → reactor-heat → absorb → defense → финальные классовые скидки.
-	if _battle_prayer_protection > 0.0:
-		final_damage *= 1.0 - clampf(_battle_prayer_protection, 0.0, 0.9)
+	_charge_repair_subroutine(constellation_ward_absorbed + defended_amount - float(absorb_result["post_absorb_amount"]))
+	var final_damage: float = PLAYER_DAMAGE_POLICY.apply_final_multipliers(self, float(absorb_result["damage_after_defense"]))
 	GUARD_PREVENTION_INGRESS.emit_measured(self, amount, final_damage, _source, attacker)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
