@@ -13,6 +13,7 @@ static var _cells: Dictionary = {}
 # FAN-3918: test-only counter for comparable fixed-fixture visit counts.
 static var debug_candidate_visits_enabled := false
 static var debug_candidate_visits := 0
+static var debug_build_visits := 0
 
 
 static func candidates(source: Node, position: Vector2) -> Array[Node2D]:
@@ -41,6 +42,8 @@ static func _ensure_current(source: Node) -> void:
 	_cached_query_generation = generation
 	_cells.clear()
 	for node in enemies:
+		if debug_candidate_visits_enabled:
+			debug_build_visits += 1
 		if not is_instance_valid(node):
 			continue
 		var cell_key := _cell_for(node.global_position)
