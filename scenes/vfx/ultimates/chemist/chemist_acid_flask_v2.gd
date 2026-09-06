@@ -129,6 +129,9 @@ func present(_event_id: String, payload: Dictionary) -> void:
 		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
+		# The executor's deal_damage already drew each victim's ordinary hit
+		# flash (enemy.gd:_show_combat_feedback); the burst must not repeat it.
+		_impacts.extra_hit_flash = false
 		add_child(_impacts)
 		_impacts.play(VICTIM_FRAMES, victims, global_position)
 		return
