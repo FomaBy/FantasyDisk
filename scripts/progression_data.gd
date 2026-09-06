@@ -74,6 +74,7 @@ const COST_BY_TIER := BalanceData.COST_BY_TIER
 const TIER_WEIGHTS := BalanceData.TIER_WEIGHTS
 
 const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")  # FAN-2287: защита/уворот/поглощение/реген/вампиризм вынесены под line-ratchet, точки ниже — делегаторы
+const DerivedStats := preload("res://scripts/progression/derived_stats.gd")
 
 # FAN-3923 (FD16): pure weapon-budget formulas (estimate, auto-tuning,
 # crowd-clear, hit/dot/pool/summon/device models, EHP) live in
@@ -656,11 +657,7 @@ static func ultimate_config(character_id: String) -> Dictionary:
 # и стартовые числа не меняются — нерф строго «сверху базы». Понижение множителя
 # (<1.0, напр. замедление атаки оружием) проходит без сжатия.
 static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee: float) -> float:
-	if multiplier <= 1.0:
-		return multiplier
-	var excess := multiplier - 1.0
-	var softened := excess / (1.0 + excess * knee)
-	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
+	return DerivedStats._soft_capped_run_multiplier(multiplier, softcap, knee)
 
 
 # SCRUM-947 «Проводник стихий»: класс-trait Элементалиста, data-driven запись
@@ -684,76 +681,65 @@ static func _pickup_radius_trait_multiplier(character_id: String) -> float:
 # Усиливает БОНУСНУЮ часть множителя: 1.15 → 1.0 + 0.15*effectiveness. Штрафы
 # (multiplier <= 1.0) проходят без изменения — trait усиливает бонусы, не дебаффы.
 static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float) -> float:
-	if effectiveness == 1.0 or multiplier <= 1.0:
-		return multiplier
-	return 1.0 + (multiplier - 1.0) * effectiveness
+	return DerivedStats._amplified_bonus_multiplier(multiplier, effectiveness)
 
 
 static func effective_defense(raw_defense: float) -> float:
-	return DefensiveAttributeRuntime.effective_defense(raw_defense)
+	return DerivedStats.effective_defense(raw_defense)
 
 
 static func effective_dodge(raw_dodge: float) -> float:
-	return DefensiveAttributeRuntime.effective_dodge(raw_dodge)
+	return DerivedStats.effective_dodge(raw_dodge)
 
 
 static func raw_defense_for_effective(effective_defense_value: float) -> float:
-	return DefensiveAttributeRuntime.raw_defense_for_effective(effective_defense_value)
+	return DerivedStats.raw_defense_for_effective(effective_defense_value)
 
 
 static func raw_dodge_for_effective(effective_dodge_value: float) -> float:
-	return DefensiveAttributeRuntime.raw_dodge_for_effective(effective_dodge_value)
+	return DerivedStats.raw_dodge_for_effective(effective_dodge_value)
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	return DefensiveAttributeRuntime.effective_absorb(endurance, flat_absorb)
+	return DerivedStats.effective_absorb(endurance, flat_absorb)
 
 
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
-	return DefensiveAttributeRuntime.effective_regeneration(knowledge, flat_regeneration)
+	return DerivedStats.effective_regeneration(knowledge, flat_regeneration)
 
 
 # SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
 # только дельта от явно применённых flat'ов (base-константа+knowledge отрезаны).
 # Для остальных классов — прежняя формула без изменений.
 static func _class_gated_regeneration(character_id: String, knowledge: float, flat_regeneration: float) -> float:
-	if not class_blocks_generic_sustain(character_id):
-		return effective_regeneration(knowledge, flat_regeneration)
-	return maxf(effective_regeneration(knowledge, flat_regeneration) - effective_regeneration(knowledge, 0.0), 0.0)
+	return DerivedStats._class_gated_regeneration(class_blocks_generic_sustain(character_id), knowledge, flat_regeneration)
 
 
 static func effective_vampiric_chance(raw_chance: float) -> float:
-	return DefensiveAttributeRuntime.effective_vampiric_chance(raw_chance)
+	return DerivedStats.effective_vampiric_chance(raw_chance)
 
 
 static func effective_vampiric_amount(knowledge: float, flat_amount: float) -> float:
-	return DefensiveAttributeRuntime.effective_vampiric_amount(knowledge, flat_amount)
+	return DerivedStats.effective_vampiric_amount(knowledge, flat_amount)
 
 
 static func effective_vampiric_cap(raw_cap: float) -> float:
-	return DefensiveAttributeRuntime.effective_vampiric_cap(raw_cap)
+	return DerivedStats.effective_vampiric_cap(raw_cap)
 
 
 # SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»
 # (class_crit_profile). Дефолты — прежние глобальные константы, все старые
 # вызовы без аргументов тождественны.
 static func effective_crit_chance(raw_chance: float, cap := CRIT_CHANCE_CAP, diminish := CRIT_CHANCE_DIMINISH) -> float:
-	var raw := maxf(raw_chance, 0.0)
-	var softened := raw / (1.0 + raw * maxf(diminish, 0.0))
-	return clampf(softened, 0.0, clampf(cap, 0.0, 1.0))
+	return DerivedStats.effective_crit_chance(raw_chance, cap, diminish)
 
 
 static func ordinary_crit_chance_cap(agility: float) -> float:
-	return clampf(CRIT_CHANCE_CAP + maxf(agility, 0.0) * CRIT_CHANCE_CAP_AGILITY_SCALE, CRIT_CHANCE_CAP, CRIT_CHANCE_CAP_MAX)
+	return DerivedStats.ordinary_crit_chance_cap(agility)
 
 
 static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
-	var positive_flat := maxf(flat_bonus, 0.0) * CRIT_DAMAGE_FLAT_EFFECTIVENESS
-	var negative_flat := minf(flat_bonus, 0.0)
-	var raw := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
-	if raw <= CRIT_DAMAGE_CAP:
-		return maxf(raw, 1.0)
-	return CRIT_DAMAGE_CAP + sqrt(raw - CRIT_DAMAGE_CAP)
+	return DerivedStats.effective_crit_damage_multiplier(agility, flat_bonus)
 
 
 # SCRUM-524: архетип-множитель урона удалён. Он зависел от ВСЕХ атрибутов и
@@ -1189,227 +1175,34 @@ static func sanitize_run_modifiers(modifiers: Dictionary) -> Dictionary:
 
 
 static func _class_stat_growth_scalar(character_id: String, stat_id: String) -> float:
-	var class_scalars = CLASS_LEVEL_STAT_GROWTH_SCALARS.get(character_id, 1.0)
-	if class_scalars is Dictionary:
-		return float((class_scalars as Dictionary).get(stat_id, 1.0))
-	return float(class_scalars)
+	return DerivedStats._class_stat_growth_scalar(CLASS_LEVEL_STAT_GROWTH_SCALARS.get(character_id, 1.0), stat_id)
 
 
 static func _scaled_stat_growth(character_id: String, stat_id: String, value: float, base_stats_map: Dictionary) -> float:
-	var base_value := float(base_stats_map.get(stat_id, value))
-	var delta := value - base_value
-	if delta <= 0.0:
-		return value
-	return base_value + delta * _class_stat_growth_scalar(character_id, stat_id)
+	return DerivedStats._scaled_stat_growth(CLASS_LEVEL_STAT_GROWTH_SCALARS.get(character_id, 1.0), stat_id, value, base_stats_map)
+
+
+static func _derived_stats_context(character_id: String, stats: Dictionary) -> Dictionary:
+	var base_for_growth: Dictionary = base_stats(character_id) if character_id != "" else {}
+	var class_scalars: Variant = CLASS_LEVEL_STAT_GROWTH_SCALARS.get(character_id, 1.0)
+	var agility := float(stats.get("agility", 0.0))
+	if character_id != "":
+		agility = DerivedStats._scaled_stat_growth(class_scalars, "agility", agility, base_for_growth)
+	return {
+		"character_id": character_id,
+		"base_stats": base_for_growth,
+		"class_stat_growth_scalars": class_scalars,
+		"magic_bonus_effectiveness": _magic_bonus_effectiveness_for(character_id),
+		"pickup_radius_multiplier": _pickup_radius_trait_multiplier(character_id),
+		"generic_sustain_blocked": class_blocks_generic_sustain(character_id),
+		"crit_profile": class_crit_profile(character_id, DerivedStats.ordinary_crit_chance_cap(agility)),
+		"trait_config": CLASS_TRAITS.get(character_id, {}),
+	}
 
 
 static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, weapon_config := {}) -> Dictionary:
 	var character_id := str(weapon_config.get("character_id", ""))
-	var base_for_growth := base_stats(character_id) if character_id != "" else {}
-	var strength := float(stats.get("strength", 0.0))
-	var agility := float(stats.get("agility", 0.0))
-	var intelligence := float(stats.get("intelligence", 0.0))
-	var perception := float(stats.get("perception", 0.0))
-	var energy := float(stats.get("energy", 0.0))
-	var knowledge := float(stats.get("knowledge", 0.0))
-	var endurance := float(stats.get("endurance", 0.0))
-	var leadership := float(stats.get("leadership", 0.0))
-	if character_id != "":
-		strength = _scaled_stat_growth(character_id, "strength", strength, base_for_growth)
-		agility = _scaled_stat_growth(character_id, "agility", agility, base_for_growth)
-		intelligence = _scaled_stat_growth(character_id, "intelligence", intelligence, base_for_growth)
-		perception = _scaled_stat_growth(character_id, "perception", perception, base_for_growth)
-		energy = _scaled_stat_growth(character_id, "energy", energy, base_for_growth)
-		knowledge = _scaled_stat_growth(character_id, "knowledge", knowledge, base_for_growth)
-		endurance = _scaled_stat_growth(character_id, "endurance", endurance, base_for_growth)
-		leadership = _scaled_stat_growth(character_id, "leadership", leadership, base_for_growth)
-	var weapon_damage_multiplier := float(weapon_config.get("damage_multiplier", 1.0)) * float(weapon_config.get("budget_damage_multiplier", 1.0))
-	var passive_mods: Dictionary = weapon_config.get("passive_mods", {})
-
-	# upgrade_*_exponent (>1 у молота) усиливает рост именно от апгрейдов забега,
-	# не трогая пассивы оружия и стартовые значения.
-	var upgrade_damage_exponent := float(weapon_config.get("upgrade_damage_exponent", 1.0))
-	var upgrade_aoe_exponent := float(weapon_config.get("upgrade_aoe_exponent", 1.0))
-	# SCRUM-503: diminishing returns на ЗАБЕГОВУЮ часть боевых множителей (до экспоненты
-	# апгрейда и до пассивов оружия) — гасит мультипликативный runaway идеального билда.
-	# Тождественно при множителе 1.0 (пустые run_modifiers формульного гейта) → база и
-	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
-	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
-	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
-	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
-	# SCRUM-947 «Проводник стихий»: magic-tagged бонусы Элементалиста на 30%
-	# эффективнее (CLASS_TRAITS.elementalist.magic_bonus_effectiveness). Порядок
-	# и полный список источников — у _magic_bonus_effectiveness_for. Каждый
-	# источник усиливается ровно
-	# один раз ЗДЕСЬ (точка агрегации), до перемножения — двойного применения
-	# при нескольких магических множителях нет.
-	var magic_bonus_effectiveness := _magic_bonus_effectiveness_for(character_id)
-	run_magic_damage_multiplier = _amplified_bonus_multiplier(run_magic_damage_multiplier, magic_bonus_effectiveness)
-	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
-	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * _amplified_bonus_multiplier(float(passive_mods.get("magic_damage_multiplier", 1.0)), magic_bonus_effectiveness)
-	# SCRUM-961 «Четки молитвы»: открывающий бафф первых секунд боя усиливает
-	# магический канал (prayer_opening_active ставит player.on_battle_start).
-	# SCRUM-947: magic-tagged бафф — добавка усиливается trait'ом Элементалиста.
-	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0)) * magic_bonus_effectiveness
-	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
-	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
-	# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары — пишет player
-	# ._refresh_rage_hit_modifiers по образцу kill_momentum; капы = пик 5 стаков.
-	var rage_hit_damage_bonus := clampf(float(run_modifiers.get("rage_hit_damage_bonus", 0.0)), 0.0, 0.10)
-	var rage_hit_attack_speed_bonus := clampf(float(run_modifiers.get("rage_hit_attack_speed_bonus", 0.0)), 0.0, 0.075)
-	damage_multiplier *= 1.0 + rage_hit_damage_bonus
-	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
-	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
-	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
-	# (*_active 0/1, swarm_fraction 0..1) ставит player._update_conditional_keystones/
-	# _trigger_rush_window; неактивное условие даёт 0 (keystone «спит»).
-	damage_multiplier *= 1.0 \
-		+ float(run_modifiers.get("hurt_damage_bonus", 0.0)) * float(run_modifiers.get("hurt_active", 0.0)) \
-		+ float(run_modifiers.get("stance_damage_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0)) \
-		+ float(run_modifiers.get("rush_damage_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) \
-		+ float(run_modifiers.get("swarm_damage_bonus", 0.0)) * float(run_modifiers.get("swarm_fraction", 0.0))
-	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
-	attack_speed_multiplier *= 1.0 + kill_momentum_attack_speed_bonus
-	attack_speed_multiplier *= 1.0 + rage_hit_attack_speed_bonus
-	# SCRUM-834a: условный keystone «стойка → скорострельность» (soldier «Шквал»).
-	# Гейт stance_active ставит player._update_conditional_keystones; спит вне стойки.
-	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0))
-	# SCRUM-961 «Медиатор овердрайва»: темп-бонус активной рифф-серии (riff_streak_active
-	# ставит player._update_meta_keystone_runtime; урон-бонус серии — в meta_damage_multiplier).
-	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) * float(run_modifiers.get("riff_streak_active", 0.0))
-	# SCRUM-976: sandbox — final exact layer, intentionally outside release
-	# softcaps/exponents so 0.5/2.0 remain exact and do not retune canonical data.
-	var sandbox_damage_multiplier := clampf(float(run_modifiers.get("sandbox_player_damage_multiplier", 1.0)), 0.5, 2.0)
-	attack_speed_multiplier *= clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
-	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
-	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
-	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
-	# SCRUM-500 «Импульс Крита»: короткий рывок скорости по криту (crit_speed_burst_active ставит player).
-	move_speed_multiplier *= 1.0 + float(run_modifiers.get("crit_speed_burst", 0.0)) * float(run_modifiers.get("crit_speed_burst_active", 0.0))
-	# SCRUM-894 «Рывок темпа»: короткий бафф скорости+уворота после серии Теневых
-	# кинжалов (flurry_tempo_active ставит Player.trigger_flurry_tempo с внутренним
-	# кулдауном — перманентного аптайма нет; величины зажаты от runaway).
-	var flurry_tempo_active := clampf(float(run_modifiers.get("flurry_tempo_active", 0.0)), 0.0, 1.0)
-	move_speed_multiplier *= 1.0 + clampf(float(run_modifiers.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.25) * flurry_tempo_active
-	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
-	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
-	var knockback_multiplier := float(run_modifiers.get("knockback_multiplier", 1.0)) * float(passive_mods.get("knockback_multiplier", 1.0))
-	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
-	var absorb_flat := float(run_modifiers.get("absorb_flat", 0.0)) + float(passive_mods.get("absorb_flat", 0.0))
-	var regeneration_flat := float(run_modifiers.get("regeneration_flat", 0.0)) + float(passive_mods.get("regeneration_flat", 0.0))
-	var pickup_radius_flat := float(run_modifiers.get("pickup_radius_flat", 0.0)) + float(passive_mods.get("pickup_radius_flat", 0.0))
-	var max_health_flat := float(run_modifiers.get("max_health_flat", 0.0)) + float(passive_mods.get("max_health_flat", 0.0))
-	var run_dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0))
-	var dot_damage_flat := run_dot_damage_flat + float(passive_mods.get("dot_damage_flat", 0.0))
-	# SCRUM-834a: условный keystone «рывок → крит-шанс» (thief «Из тени»). Гейт
-	# rush_window_active ставит player._trigger_rush_window; 0 вне окна. Проходит
-	# ту же CRIT_FLAT_EFFECTIVENESS, что и базовый крит-шанс (тождество весов).
-	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(run_modifiers.get("rush_crit_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
-	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + kill_momentum_crit_damage_bonus + float(passive_mods.get("crit_damage_flat", 0.0))
-	if passive_mods.has("crit_damage_multiplier"):
-		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
-	# SCRUM-894 «Хладнокровие»: per-class крит-профиль (кап/diminish из
-	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
-	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
-	# с trait-ключом; выше raw 2.75 итог идёт в убывающий sqrt-tail без потолка).
-	var crit_profile := class_crit_profile(character_id, ordinary_crit_chance_cap(agility))
-	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
-	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))
-	if crit_overflow_ratio > 0.0:
-		crit_damage_flat += maxf(crit_chance_raw - float(crit_profile.get("cap", CRIT_CHANCE_CAP)), 0.0) * crit_overflow_ratio
-	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
-	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
-	var physical_base := 15.0 * strength / 10.0
-	# SCRUM-947: атрибутный источник магического бонуса — дельта интеллекта НАД
-	# базой класса (после growth-скаляра) на 30% эффективнее для Элементалиста.
-	# База класса не трогается (стартовые числа и формульные гейты неизменны),
-	# усиление действует ТОЛЬКО в канале magic_damage (изоляция типов SCRUM-524).
-	var magic_intelligence := intelligence
-	if magic_bonus_effectiveness != 1.0 and not base_for_growth.is_empty():
-		var base_intelligence := float(base_for_growth.get("intelligence", intelligence))
-		var intelligence_delta := intelligence - base_intelligence
-		# The trait amplifies only a positive bonus. A below-base value is a
-		# penalty and must pass through unchanged, just like multiplier penalties
-		# in _amplified_bonus_multiplier(). Clamping the delta to zero here would
-		# silently restore debuffed Intelligence to the class base (SCRUM-1019).
-		if intelligence_delta > 0.0:
-			magic_intelligence = base_intelligence + intelligence_delta * magic_bonus_effectiveness
-	var magic_base := 14.0 * magic_intelligence / 10.0
-	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
-	var attack_speed := maxf(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier)
-	var base_attack_stat := universal_attack_stat
-	if not base_for_growth.is_empty():
-		base_attack_stat = float(base_for_growth.get("agility", agility)) + float(base_for_growth.get("energy", energy)) * 0.18 + float(base_for_growth.get("perception", perception)) * 0.10 + float(base_for_growth.get("endurance", endurance)) * 0.04
-	var base_attack_speed := maxf(9.0 * 3.0 * base_attack_stat / 100.0, 0.1)
-	var attack_cadence_multiplier := maxf(attack_speed / base_attack_speed, 0.1)
-	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
-	var base_dot_speed := maxf(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010)
-	var radius_perception := perception
-	var radius_intelligence := intelligence
-	var radius_knowledge := knowledge
-	var radius_leadership := leadership
-	if bool(weapon_config.get("geometry_stat_growth_from_delta", false)) and not base_for_growth.is_empty():
-		radius_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
-		radius_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
-		radius_knowledge = maxf(0.0, knowledge - float(base_for_growth.get("knowledge", 0.0)))
-		radius_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
-	var aoe_intelligence_weight := float(weapon_config.get("aoe_radius_intelligence_weight", 0.45))
-	var base_area := maxf(float(weapon_config.get("aoe_radius", 190.0)), 1.0)
-	var attack_area_multiplier := (base_area + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier / base_area
-	var aura_radius := base_area * attack_area_multiplier
-	# Support effects derive at one aggregation point. Druid's existing summon
-	# support inputs live here too, so Player and summons cannot scale them twice.
-	var support_multiplier := maxf(run_damage_multiplier, 0.0)
-	if character_id == "druid":
-		support_multiplier = 1.0 + leadership * 0.025 + float(stats.get("knowledge", 0.0)) * 0.006 + float(stats.get("energy", 0.0)) * 0.004
-		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
-		# множитель области применяется ровно один раз — как и у остальной геометрии.
-		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
-	var raw_dodge := 0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active
-	var raw_defense := 0.04 + endurance * 0.018 + defense_flat
-
-	return {
-		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
-		"magic_damage": (magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
-		"attack_speed": attack_speed,
-		"attack_cadence_multiplier": attack_cadence_multiplier,
-		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
-		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
-		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"raw_dodge": raw_dodge,
-		"dodge": effective_dodge(raw_dodge),
-		"raw_defense": raw_defense,
-		"defense": effective_defense(raw_defense),
-		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
-		"attack_range": float(weapon_config.get("attack_range", 240.0)),
-		"attack_area_multiplier": attack_area_multiplier,
-		"aoe_radius": base_area * attack_area_multiplier,
-		# SCRUM-897 «Воровская хватка»: стартовая часть радиуса подбора усилена
-		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
-		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
-		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
-		"dot_speed": base_dot_speed * attack_cadence_multiplier,
-		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)),
-		"aura_radius": aura_radius,
-		"support_multiplier": support_multiplier,
-		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + strength * 4.0) * knockback_multiplier,
-		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,
-		# SCRUM-546: профильное (growth-масштабированное) Лидерство как драйвер силы
-		# саммонов — читается runtime deploy/sentry-пайплайном (class_weapon
-		# ._summon_role_damage_factor) и саммон-профилем (summoner_weapon).
-		"leadership": leadership,
-		# Подключение полного набора атрибутов (аудит 2026-06-11):
-		"absorb": effective_absorb(endurance, absorb_flat),
-		# SCRUM-900 «Клятва чумного доктора»: при generic_sustain_blocked базовый
-		# пассивный реген (константа 0.16 + скейл knowledge) отрезан — остаётся
-		# только вклад явно применённых flat'ов (их пускает лишь doctor_friendly
-		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
-		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
-		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
-		"vampiric_amount": effective_vampiric_amount(knowledge, float(run_modifiers.get("vampiric_amount_flat", 0.0))),
-		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
-		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
-	}
+	return DerivedStats.derived_parameters(stats, run_modifiers, weapon_config, _derived_stats_context(character_id, stats))
 
 
 static func reward_pool(character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
