@@ -69,6 +69,12 @@
     }
   ],
   "evidence": {
+    "contact_sheets": [
+      "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_2k.png"
+    ],
     "contact_sheet": {
       "path": "docs/design/references/weapon_ultimates/thief/contact_sheet_thief_ultimates.png",
       "sha256": "775b158817e5197311dfe7d48a8a592ceac97500ea3716b9bb50370474319512",
