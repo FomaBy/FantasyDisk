@@ -133,10 +133,10 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 		77,
 	)
 	service.capture_error_for_tests(
-		"{\"Authorization\": \"Basic TEST_JSON_AUTHORIZATION_CREDENTIAL\"} context=json-visible Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible /Users/example/private/file",
+		"{\"Authorization\": \"Basic TEST_JSON_AUTHORIZATION_CREDENTIAL\"} context=json-visible Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible Failed res://scenes/Main.tscn, user://saves/slot1.save and https://example.invalid/help; /Users/example/private/file,",
 		no_frames,
-		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast",
-		"{\"authorization\":\"Bearer TEST_JSON_COMPACT_CREDENTIAL\"} reason=json-compact-visible Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout",
+		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast resource='res://assets/test.png' save=\"user://logs/godot.log\" drive=\"C:\\Users\\Example\\WindowsProfileSecret.txt\"",
+		"{\"authorization\":\"Bearer TEST_JSON_COMPACT_CREDENTIAL\"} reason=json-compact-visible Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout drive=(D:/private/DriveProfileSecret.bin) home=/home/example/HomeProfileSecret.cfg;",
 	)
 	service.flush_pending_for_tests()
 	var paths: PackedStringArray = service.incident_paths_for_tests()
@@ -150,6 +150,12 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	if not parsed is Dictionary:
 		return
 	var record: Dictionary = parsed
+	var error: Dictionary = record.get("error", {})
+	var redacted_fields := " ".join([
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	])
 	var backtrace: Dictionary = record.get("script_backtrace", {})
 	_check(not bool(backtrace.get("available", true)), "missing engine stack was presented as available")
 	_check("unavailable" in str(backtrace.get("status", "")), "missing stack has no honest unavailable status")
@@ -183,6 +189,28 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	]:
 		_check(payload.find(benign_context) >= 0, "benign context was removed: %s" % benign_context)
 	_check(payload.find("/Users/example") == -1, "personal home path was not redacted")
+	for preserved_path in [
+		"res://scenes/Main.tscn",
+		"user://saves/slot1.save",
+		"https://example.invalid/help",
+		"res://assets/test.png",
+		"user://logs/godot.log",
+	]:
+		_check(redacted_fields.find(preserved_path) >= 0, "diagnostic path was over-redacted: %s" % preserved_path)
+	for hidden_path_marker in [
+		"/Users/example/private/file",
+		"WindowsProfileSecret",
+		"DriveProfileSecret",
+		"HomeProfileSecret",
+	]:
+		_check(redacted_fields.find(hidden_path_marker) == -1, "private path persisted: %s" % hidden_path_marker)
+	for preserved_delimiter in [
+		"<redacted-path>,",
+		"\"<redacted-path>\"",
+		"(<redacted-path>)",
+		"<redacted-path>;",
+	]:
+		_check(redacted_fields.find(preserved_delimiter) >= 0, "path redaction removed punctuation: %s" % preserved_delimiter)
 	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "incident exceeded the record byte limit")
 	_clean_incident_files(TEST_ROOT)
 

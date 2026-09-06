@@ -591,13 +591,56 @@ def _merge_profile_runs(runs: list[dict]) -> dict:
     return merged
 
 
-def command_profile(args: argparse.Namespace) -> dict:
+def _validate_null_evidence(path: Path, baseline_sha: str) -> str:
+    artifact = path.read_bytes()
+    evidence = json.loads(artifact)
+    if not isinstance(evidence, dict):
+        raise ProbeFailure("null evidence must be a JSON object")
+    expected_source = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    expected_order = [list(pair) for pair in PROFILE_PAIR_ORDER]
+    protocol = evidence.get("protocol", {})
+    calibration = evidence.get("calibration", {})
+    interval = evidence.get("one_sided_95_percent_interval", [])
+    valid = (
+        evidence.get("mode") == "baseline-only-null"
+        and evidence.get("verdict") == "PASS"
+        and evidence.get("cleanup") == "complete"
+        and evidence.get("profile_source_sha256") == expected_source
+        and evidence.get("baseline", {}).get("sha") == baseline_sha
+        and evidence.get("candidate", {}).get("sha") == baseline_sha
+        and protocol.get("warmup_frames") == PROFILE_WARMUP_FRAMES
+        and protocol.get("frames_per_sample") == PROFILE_SAMPLE_FRAMES
+        and protocol.get("pair_order") == expected_order
+        and protocol.get("calibration_usec") == PROFILE_CALIBRATION_USEC
+        and protocol.get("calibration_min_fraction") == PROFILE_CALIBRATION_MIN_FRACTION
+        and calibration.get("responsive") is True
+        and isinstance(interval, list)
+        and len(interval) == 2
+        and float(interval[0]) >= -1.0
+        and float(interval[1]) <= 1.0
+    )
+    if not valid:
+        raise ProbeFailure(
+            "candidate comparison requires PASS baseline-only null evidence for "
+            "the same baseline, current profiler source, fixed protocol, and +/-1% interval"
+        )
+    return hashlib.sha256(artifact).hexdigest()
+
+
+def command_profile(args: argparse.Namespace, *, baseline_only: bool = False) -> dict:
     project = _project_path(args.project)
     godot = _godot_path(args.godot)
     baseline_sha = _resolve_commit(project, args.baseline_sha)
-    candidate_sha = _resolve_commit(project, args.candidate_sha)
+    candidate_sha = baseline_sha if baseline_only else _resolve_commit(project, args.candidate_sha)
+    null_evidence_sha256 = None
+    if not baseline_only:
+        null_evidence_sha256 = _validate_null_evidence(Path(args.null_evidence), baseline_sha)
     effective_command = {
-        "tool": "python3 tools/crash_logger_profile.py profile",
+        "tool": (
+            "python3 tools/crash_logger_profile.py null-profile"
+            if baseline_only
+            else "python3 tools/crash_logger_profile.py profile"
+        ),
         "baseline_sha": baseline_sha,
         "candidate_sha": candidate_sha,
         "warmup_frames": args.warmup_frames,
@@ -613,6 +656,8 @@ def command_profile(args: argparse.Namespace) -> dict:
             "metric": "macOS process CPU user+system time per rendered main-menu frame",
         },
     }
+    if null_evidence_sha256 is not None:
+        effective_command["null_evidence_sha256"] = null_evidence_sha256
     cache = (project / ".godot").resolve()
     with tempfile.TemporaryDirectory(prefix=".fan3905-profile-", dir=project.parent) as temp_name:
         temp = Path(temp_name).resolve()
@@ -686,8 +731,16 @@ def command_profile(args: argparse.Namespace) -> dict:
         and min(candidate_calibration_deltas) >= calibration_floor_ms
     )
     statistical_verdict = "PASS" if upper <= 1.0 else "FAIL" if lower > 1.0 else "INCONCLUSIVE"
-    verdict = statistical_verdict if calibration_responsive else "INCONCLUSIVE"
+    if baseline_only:
+        verdict = (
+            "PASS"
+            if calibration_responsive and lower >= -1.0 and upper <= 1.0
+            else "INCONCLUSIVE"
+        )
+    else:
+        verdict = statistical_verdict if calibration_responsive else "INCONCLUSIVE"
     return {
+        "mode": "baseline-only-null" if baseline_only else "candidate-comparison",
         "verdict": verdict,
         "threshold_percent": 1.0,
         "baseline": baseline,
@@ -710,7 +763,12 @@ def command_profile(args: argparse.Namespace) -> dict:
             "responsive": calibration_responsive,
         },
         "statistical_verdict": statistical_verdict,
-        "confidence_rationale": "median of twelve paired exact-SHA process-CPU ratios; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load",
+        "confidence_rationale": (
+            "baseline-only positional-slot null; PASS requires the entire paired interval "
+            "inside +/-1% and responsive calibration"
+            if baseline_only
+            else "median of twelve paired exact-SHA process-CPU ratios; MAD-scaled paired standard error; one-sided z=1.645; every trial calibrated with deterministic per-frame CPU load"
+        ),
         "protocol": effective_command,
         "profile_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "effective_command_sha256": _sha256_json(effective_command),
@@ -720,9 +778,24 @@ def command_profile(args: argparse.Namespace) -> dict:
             "load_observations_are_diagnostic_only": True,
         },
         "execution_order": execution_order,
-        "run_order": "twelve independent baseline/candidate pairs in the predeclared BC-CB-CB-BC schedule repeated three times; each revision runs first in six pairs; identical 1280x720 rendered main-menu configuration and shared import cache; phase-acknowledged process CPU excludes display pacing; each Godot process serialized exclusively by tools/godot_gate.py",
+        "run_order": "twelve independent positional-slot pairs in the predeclared BC-CB-CB-BC schedule repeated three times; each slot runs first in six pairs; identical 1280x720 rendered main-menu configuration and shared import cache; phase-acknowledged process CPU excludes display pacing; each Godot process serialized exclusively by tools/godot_gate.py; all trials and host-load observations retained with no exclusions or retries",
         "cleanup": "complete",
     }
+
+
+def _add_profile_arguments(parser: argparse.ArgumentParser, *, candidate: bool) -> None:
+    parser.add_argument("--baseline-sha", required=True)
+    if candidate:
+        parser.add_argument("--candidate-sha", required=True)
+        parser.add_argument("--null-evidence", required=True)
+    parser.add_argument("--warmup-frames", type=int, default=PROFILE_WARMUP_FRAMES)
+    parser.add_argument("--frames-per-sample", type=int, default=PROFILE_SAMPLE_FRAMES)
+    parser.add_argument("--calibration-usec", type=int, default=PROFILE_CALIBRATION_USEC)
+    parser.add_argument(
+        "--calibration-min-fraction",
+        type=float,
+        default=PROFILE_CALIBRATION_MIN_FRACTION,
+    )
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -733,16 +806,9 @@ def _parser() -> argparse.ArgumentParser:
     subparsers.add_parser("probe")
     subparsers.add_parser("export-probe")
     profile = subparsers.add_parser("profile")
-    profile.add_argument("--baseline-sha", required=True)
-    profile.add_argument("--candidate-sha", required=True)
-    profile.add_argument("--warmup-frames", type=int, default=PROFILE_WARMUP_FRAMES)
-    profile.add_argument("--frames-per-sample", type=int, default=PROFILE_SAMPLE_FRAMES)
-    profile.add_argument("--calibration-usec", type=int, default=PROFILE_CALIBRATION_USEC)
-    profile.add_argument(
-        "--calibration-min-fraction",
-        type=float,
-        default=PROFILE_CALIBRATION_MIN_FRACTION,
-    )
+    _add_profile_arguments(profile, candidate=True)
+    null_profile = subparsers.add_parser("null-profile")
+    _add_profile_arguments(null_profile, candidate=False)
     return parser
 
 
@@ -767,8 +833,8 @@ def main() -> int:
                     "24000 measured frames, 12 predeclared pairs, 2000 calibration usec, "
                     "and 0.75 calibration minimum fraction"
                 )
-            result = command_profile(args)
-    except (ProbeFailure, OSError, json.JSONDecodeError, zipfile.BadZipFile) as exc:
+            result = command_profile(args, baseline_only=args.command == "null-profile")
+    except (ProbeFailure, OSError, ValueError, json.JSONDecodeError, zipfile.BadZipFile) as exc:
         print(json.dumps({"verdict": "FAIL", "error": str(exc)}, ensure_ascii=False, indent=2))
         return 1
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))

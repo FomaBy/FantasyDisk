@@ -47,7 +47,7 @@ class IncidentSink:
 			r"(?i)((?:^|[\s{,])[\"']?(?:password|passwd|token|(?:access|refresh)[_-]?token|secret|(?:x[_-]?)?api[_-]?key)[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
 		_home_path_pattern = RegEx.create_from_string(
-			r"(?i)([A-Z]:[\\/][^\s]+|/(Users|home)/[^\s]+)"
+			r"(?i)((?:^|[\s\"'(\[{:=,]))(?:[A-Z]:[\\/](?![\\/])|/(?:Users|home)/)[^\s\"')\]},;]+"
 		)
 
 
@@ -236,7 +236,7 @@ class IncidentSink:
 		if _credential_pattern != null:
 			result = _credential_pattern.sub(result, "$1<redacted>", true)
 		if _home_path_pattern != null:
-			result = _home_path_pattern.sub(result, "<redacted-path>", true)
+			result = _home_path_pattern.sub(result, "$1<redacted-path>", true)
 		_redaction_mutex.unlock()
 		return result
 

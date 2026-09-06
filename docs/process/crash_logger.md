@@ -31,8 +31,12 @@ Each record includes:
 
 Credential-shaped values, including quoted JSON `Authorization` fields, and
 personal home paths are redacted. External source paths are replaced with
-`<external>`. Do not add player names, save contents, free-form chat, access
-tokens, or other personal data to breadcrumbs.
+`<external>`. Godot `res://` and `user://` paths and ordinary URLs are retained
+because they are useful diagnostics and are not OS home paths. Redaction is a
+bounded safeguard, not a complete secret scanner: uncommon authorization
+schemes or names such as cookie sessions, `client_secret`, `private_key`, and
+`auth-token` may require manual sanitization. Do not add player names, save
+contents, free-form chat, access tokens, or other personal data to breadcrumbs.
 
 ## Combat breadcrumbs
 
@@ -74,15 +78,36 @@ then removes the export and test logs. Release exports ignore the flag because
 the self-test is guarded by `OS.is_debug_build()`; normal gameplay cannot invoke
 it.
 
-For the P1 main-menu frame-time comparison on immutable revisions, use:
+Before any further P1 main-menu candidate comparison, first run the predeclared
+baseline-only resolution check against the immutable baseline:
+
+```sh
+python3 tools/crash_logger_profile.py null-profile \
+  --baseline-sha <baseline> > null-profile.json
+```
+
+The same baseline occupies both positional slots. The check uses exactly twelve
+pairs, 6,000 warmup frames, 24,000 measured frames per trial, and a 2 ms
+calibration load. All trials and diagnostic host-load observations are retained;
+there are no exclusions, retries, early stops, or pauses of unrelated work. It
+passes only when calibration is responsive and the entire paired interval lies
+inside `-1%` to `+1%`. If it is inconclusive, do not run another candidate
+comparison: preserve that result and move the measurement to a dedicated,
+otherwise-idle macOS benchmark runtime before trying again.
+
+Only after a passing resolution check, run one candidate comparison on immutable
+revisions and bind it to that exact evidence:
 
 ```sh
 python3 tools/crash_logger_profile.py profile \
-  --baseline-sha <baseline> --candidate-sha <candidate>
+  --baseline-sha <baseline> --candidate-sha <candidate> \
+  --null-evidence null-profile.json
 ```
 
-This command is the fixed protocol; its measurement parameters cannot be
-overridden. The profiler resolves both revisions before execution, serializes
+These commands enforce the fixed protocol; their measurement parameters cannot
+be overridden. The candidate comparison refuses null evidence produced for a
+different baseline, profiler source, or protocol. The profiler resolves the
+revisions before execution, serializes
 each Godot process through `tools/godot_gate.py`, warms each process for 6,000
 frames, and reports one 24,000-frame sample per SHA in each of twelve pairs.
 The within-pair order is predeclared as three identical ABBA blocks:
@@ -100,8 +125,8 @@ baseline/candidate SHAs, the effective protocol and its SHA-256, the profiler
 source SHA-256, diagnostic host load averages before and after every run, and
 the cleanup result. Host load is observation evidence, not an input to the
 verdict. If calibration or noise cannot resolve that budget, treat the result as
-inconclusive and fix the measurement conditions or metric before rerunning; do
-not infer a pass from more paced wall-clock frames.
+inconclusive; do not infer a pass from more paced wall-clock frames or increase
+the sample count after seeing the result.
 
 ## Reading an incident
 
