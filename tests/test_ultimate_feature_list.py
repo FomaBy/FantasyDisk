@@ -908,7 +908,9 @@ class QualityGateIntegrationTests(unittest.TestCase):
                 self.assertLessEqual({Path(script).stem for script in self.recipe_scripts}, names)
 
     def test_unrelated_changes_and_other_profiles_do_not_select_checker(self) -> None:
-        unrelated = {"scripts/enemy.gd", "tests/enemy_test.gd", "tools/quality_gate.py"}
+        unrelated_suite = "tests/enemy_separation_behavior_test.gd"
+        self.assertTrue((ROOT / unrelated_suite).is_file())
+        unrelated = {"scripts/enemy.gd", unrelated_suite, "tools/quality_gate.py"}
         self.assertFalse(self._selected("changed", unrelated))
         with mock.patch.object(self.quality, "_git_changed_paths", return_value=unrelated):
             names = {path.stem for path in self.quality.select_godot_tests("changed", [], "base", False)}
@@ -916,6 +918,17 @@ class QualityGateIntegrationTests(unittest.TestCase):
         for profile in ("static", "full", "windows"):
             with self.subTest(profile=profile):
                 self.assertFalse(self._selected(profile, {"data/ultimates/feature_list.json"}))
+
+    def test_missing_suite_path_conservatively_selects_the_full_godot_fleet(self) -> None:
+        missing_suite = "tests/deleted_feature_contract_test.gd"
+        self.assertFalse((ROOT / missing_suite).exists())
+        self.assertFalse(self._selected("changed", {missing_suite}))
+        with mock.patch.object(
+            self.quality, "_git_changed_paths", return_value={missing_suite}
+        ):
+            selected = self.quality.select_godot_tests("changed", [], "base", False)
+        self.assertEqual(set(selected), set(self.quality.discover_godot_tests()))
+        self.assertIn("berserk_live_test", {path.stem for path in selected})
 
     def test_static_profile_command_set_is_unchanged(self) -> None:
         source = (ROOT / "tools" / "quality_gate.py").read_text(encoding="utf-8")

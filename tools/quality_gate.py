@@ -42,26 +42,43 @@ try:
 except ModuleNotFoundError:
     from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
 
+try:
+    from tools.quality import selection as selection_policy
+except ModuleNotFoundError:
+    from quality import selection as selection_policy
+
+# Keep these names on the stable runner facade. Existing callers and tests
+# monkeypatch/import them from quality_gate.py even though policy now lives in
+# a pure module.
+ANIMATION_REGISTRY_TESTS = selection_policy.ANIMATION_REGISTRY_TESTS
+BALANCE_CONTRACT_TESTS = selection_policy.BALANCE_CONTRACT_TESTS
+BALANCE_SENSITIVE_PATHS = selection_policy.BALANCE_SENSITIVE_PATHS
+CADENCE_STATUS_CONTRACT_TESTS = selection_policy.CADENCE_STATUS_CONTRACT_TESTS
+CONSUMABILITY_GATE_TEST = selection_policy.CONSUMABILITY_GATE_TEST
+CORE_CHANGED_TESTS = selection_policy.CORE_CHANGED_TESTS
+DEFENSIVE_CONTRACT_TESTS = selection_policy.DEFENSIVE_CONTRACT_TESTS
+OFFENSIVE_CONTRACT_TESTS = selection_policy.OFFENSIVE_CONTRACT_TESTS
+PATH_TEST_RULES = selection_policy.PATH_TEST_RULES
+RUNTIME_SMOKE = selection_policy.RUNTIME_SMOKE
+RUNTIME_SMOKE_HELPER_PATH = selection_policy.RUNTIME_SMOKE_HELPER_PATH
+SHARED_PRESENTATION_CONSUMER_TESTS = selection_policy.SHARED_PRESENTATION_CONSUMER_TESTS
+TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES = selection_policy.TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES
+TYPOGRAPHY_INVENTORY_SKIP = selection_policy.TYPOGRAPHY_INVENTORY_SKIP
+TYPOGRAPHY_INVENTORY_TEST = selection_policy.TYPOGRAPHY_INVENTORY_TEST
+ULTIMATE_CLASS_PACKAGE_TESTS = selection_policy.ULTIMATE_CLASS_PACKAGE_TESTS
+ULTIMATE_EXECUTOR_CONTRACT_TESTS = selection_policy.ULTIMATE_EXECUTOR_CONTRACT_TESTS
+ULTIMATE_FEATURE_LIST_TRIGGER_PATHS = selection_policy.ULTIMATE_FEATURE_LIST_TRIGGER_PATHS
+ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES = selection_policy.ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES
+ULTIMATE_PACKAGE_CONTRACT_TESTS = selection_policy.ULTIMATE_PACKAGE_CONTRACT_TESTS
+
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
 # FAN-3814 (ADR Фаза 2): пер-актёрные анимационные шарды; новая актёрная задача
 # добавляет свой файл, и рекурсивное discovery подбирает его без правок гейта.
 ACTOR_TEST_DIR = TEST_DIR / "actors"
-# FAN-3814 (ADR Фаза 2): пер-классовые балансовые сьюты. Раньше их проверки жили
-# внутри runtime_smoke_test.gd и исполнялись умбреллой на любом изменении
-# scripts/**; после выноса классовый флот пере-доказывается адресно — на путях,
-# которые определяют оружие/данные классов.
 BALANCE_TEST_DIR = TEST_DIR / "balance"
-BALANCE_SENSITIVE_PATHS = frozenset({
-    "scripts/class_weapon.gd",
-    "scripts/player.gd",
-    "scripts/progression_data.gd",
-    "scripts/progression_data_balance.gd",
-    "scripts/progression_data_weapons.gd",
-})
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
-RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
     "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
     "res://tests/live_balance_simulation_test.gd",
@@ -75,7 +92,6 @@ TEST_SCRIPT_EXTENDS_RE = re.compile(
     r'^\s*extends\s+["\'](?P<resource>res://tests/[^"\']+\.gd)["\']\s*(?:#.*)?$',
     re.MULTILINE,
 )
-RUNTIME_SMOKE_HELPER_PATH = "tests/support/runtime_smoke_helpers.gd"
 REAL_DISCORD_WEBHOOK_RE = re.compile(
     r"https://(?:discord(?:app)?\.com)/api/webhooks/[0-9]{15,}/[A-Za-z0-9_-]{20,}"
 )
@@ -101,78 +117,6 @@ _UNREADABLE_OUTPUT_NOTICE = (
     "the pipe after the timeout kill\n"
 )
 
-CORE_CHANGED_TESTS = {
-    "combat_target_query_cache_test",
-    "runtime_smoke_combat_test",
-    "runtime_smoke_ui_test",
-    "weapon_ultimate_contact_sheet_beats_test",
-    "weapon_ultimate_timing_distinctness_test",
-}
-TYPOGRAPHY_INVENTORY_TEST = "semantic_typography_scrum1061_test"
-TYPOGRAPHY_INVENTORY_SKIP = {
-    "scripts/dev_console.gd",
-    "scripts/ui/semantic_typography.gd",
-}
-TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES = {".tscn", ".tres", ".theme"}
-ULTIMATE_EXECUTOR_CONTRACT_TESTS = {
-    "controller_runtime_test",
-    "controller_player_integration_test",
-    "executor_contract_audit_test",
-    "executor_primitives_test",
-    "registry_package_discovery_test",
-}
-ULTIMATE_PACKAGE_CONTRACT_TESTS = {
-    "executor_primitives_test",
-    "registry_contract_test",
-    "registry_package_discovery_test",
-}
-# A class-package rollout changes Player-visible routing, so it must also
-# re-prove the Player integration regression and the tracked-tween wall-time
-# completion/recast/cancel regression, not just the package contracts.
-ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
-    "controller_player_integration_test",
-    "tracked_tween_natural_completion_test",
-}
-SHARED_PRESENTATION_CONSUMER_TESTS = {
-    "fan1541_activation_integration_test",
-    "presentation_contract_test",
-    "presentation_contract_validator_test",
-    "presentation_failure_contract_test",
-    "ultimate_player_host_presentation_constructor_test",
-    "ultimate_player_host_time_scale_test",
-}
-OFFENSIVE_CONTRACT_TESTS = {
-    "attribute_consumability_fan1887_test",
-    "attribute_ui_matrix_fan1927_test",
-    "damage_type_isolation_test",
-    "offensive_scaling_contract_test",
-    "stat_formulas_smoke_test",
-}
-CADENCE_STATUS_CONTRACT_TESTS = {
-    "chemist_kit_test",
-    "engineer_kit_test",
-    "persistent_hazard_contract_test",
-    "pool_dot_runaway_gate",
-}
-# FAN-3638: per-actor animation configs live in data/animation/<kind>/<id>.json;
-# the facade and every shard route to the registry contract suites.
-ANIMATION_REGISTRY_TESTS = {
-    "animation_smoke_test",
-    "full_frame_eight_direction_contract_test",
-    "full_frame_registry_integrity_test",
-    "full_frame_registry_shard_validation_test",
-}
-BALANCE_CONTRACT_TESTS = {
-    "balance_harness_test",
-    "class_damage_table_3variants_test",
-    "global_damage_balance_smoke_test",
-}
-DEFENSIVE_CONTRACT_TESTS = {
-    "assassin_kit_test",
-    "defensive_attribute_contract_fan1895_test",
-    "robot_kit_test",
-    "thief_kit_test",
-}
 # FAN-3818: attribute_consumability_fan1887_test читает сьюты из своего списка
 # DEFENSIVE_FIXTURES сырым FileAccess по литеральному res://-пути, поэтому
 # перенос/удаление такой фикстуры ломает только его — и до этого правила дыра
@@ -202,55 +146,6 @@ def defensive_fixture_paths() -> frozenset[str]:
             f"DEFENSIVE_FIXTURES in {CONSUMABILITY_GATE_SOURCE.name} parsed empty"
         )
     return paths
-PATH_TEST_RULES = {
-    "scripts/ultimates/classes/thief/thief_coin_pouch.gd": {
-        "thief_live_test",
-        "thief_balance_test",
-    },
-    "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
-    # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
-    # (progression_data.gd), данные CLASS_TRAITS (progression_data_characters.gd),
-    # runtime-множитель и ульта-эхо (player.gd), точку применения _rolled_damage
-    # (berserk_weapon.gd). До этого тест исполнялся только full-профилем.
-    "scripts/berserk_weapon.gd": {"berserk_rage_trait_test"},
-    "scripts/full_frame_animation_registry.gd": ANIMATION_REGISTRY_TESTS,
-    "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
-    "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
-    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
-    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
-    "scripts/progression_data_characters.gd": {"berserk_rage_trait_test"},
-    "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS,
-    "scripts/progression_data_content.gd": {"offensive_scaling_contract_test"},
-    "scripts/progression_data_weapons.gd": {"offensive_scaling_contract_test"} | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
-    "scripts/sentry_turret.gd": {"engineer_kit_test"},
-    "scripts/stat_formulas.gd": OFFENSIVE_CONTRACT_TESTS,
-    "scripts/status_effects.gd": {"chemist_kit_test", "persistent_hazard_contract_test", "pool_dot_runaway_gate"},
-    "scripts/enemy.gd": {"enemy_separation_behavior_test"},
-    "scripts/threat_indicators.gd": {"hot_path_cache_test"},
-    "scripts/feedback_reporter.gd": {
-        "feedback_request_lifecycle_test",
-        "feedback_relay_contract_test",
-        "feedback_privacy_contract_test",
-        "feedback_privacy_ui_test",
-        "feedback_retry_policy_test",
-        "feedback_webhook_config_test",
-    },
-    "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
-    "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
-    "scripts/ultimates/controller/ultimate_controller.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_activation.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_damage_result.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_player_host.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_control_executor.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_executor_library.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_targeting_primitives.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_package_discovery.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_registry.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_resolver.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/schema/weapon_ultimate_schema.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "data/ultimates/schema/v1/weapon_ultimate_profile.schema.json": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
-}
 # FAN-3904: the ultimate feature-list checker (17 classes / 51 weapons) joins
 # the changed profile only when its inputs move.  The gate itself selects and
 # runs the recipe suites once and then hands its own in-memory results (actual
@@ -261,11 +156,6 @@ ULTIMATE_FEATURE_LIST_CHECK = ROOT / "tools" / "ultimate_feature_list_check.py"
 ULTIMATE_FEATURE_LIST_PATH = "data/ultimates/feature_list.json"
 ULTIMATE_FEATURE_LIST_DIR = "build/ultimate_feature_list"
 ULTIMATE_FEATURE_LIST_REPORT = f"{ULTIMATE_FEATURE_LIST_DIR}/report.json"
-ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES = ("data/ultimates/", "tests/ultimates/")
-ULTIMATE_FEATURE_LIST_TRIGGER_PATHS = frozenset({
-    "tools/ultimate_feature_list_check.py",
-    "tests/test_ultimate_feature_list.py",
-})
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
@@ -302,51 +192,24 @@ def script_resource_path(path: Path) -> str:
 
 
 def _index_by_name(discovered: Sequence[Path]) -> dict[str, Path]:
-    # Selection is name-based (filters, changed-path rules), so two suites that
-    # share a stem across directories would silently shadow each other.  Refuse
-    # the run instead of guessing which one the caller meant.
-    by_name: dict[str, Path] = {}
-    collisions: dict[str, list[Path]] = {}
-    for path in discovered:
-        previous = by_name.get(path.stem)
-        if previous is None:
-            by_name[path.stem] = path
-            continue
-        collisions.setdefault(path.stem, [previous]).append(path)
-    if collisions:
-        details = "; ".join(
-            f"{stem} -> " + ", ".join(item.relative_to(ROOT).as_posix() for item in paths)
-            for stem, paths in sorted(collisions.items())
-        )
-        raise RuntimeError(f"ambiguous Godot test names across directories: {details}")
-    return by_name
+    relative = [path.relative_to(ROOT).as_posix() for path in discovered]
+    return {
+        name: ROOT / path
+        for name, path in selection_policy.index_suite_paths(relative).items()
+    }
 
 
 def _dependent_suite_names(
     discovered: Sequence[Path], dependency_resource: str
 ) -> set[str]:
     """Executable suites that inherit *dependency_resource*, transitively."""
-    parents: dict[Path, str] = {}
+    relative = [path.relative_to(ROOT).as_posix() for path in discovered]
+    parents: dict[str, str] = {}
     for path in discovered:
         match = TEST_SCRIPT_EXTENDS_RE.search(path.read_text(encoding="utf-8"))
         if match is not None:
-            parents[path] = match.group("resource")
-
-    affected_resources = {dependency_resource}
-    selected: set[str] = set()
-    pending = dict(parents)
-    while pending:
-        matched = [
-            path for path, parent in pending.items()
-            if parent in affected_resources
-        ]
-        if not matched:
-            break
-        for path in matched:
-            affected_resources.add(script_resource_path(path))
-            selected.add(path.stem)
-            del pending[path]
-    return selected
+            parents[path.relative_to(ROOT).as_posix()] = match.group("resource")
+    return selection_policy.dependent_suite_names(relative, parents, dependency_resource)
 
 
 def discover_python_tests() -> list[Path]:
@@ -410,7 +273,7 @@ def python_unit_commands() -> list[tuple[str, list[str]]]:
 
 def _git_changed_paths(ref: str) -> set[str]:
     result = subprocess.run(
-        ["git", "diff", "--name-only", ref, "--"],
+        ["git", "diff", "--name-status", "-z", "--find-renames", ref, "--"],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
@@ -419,7 +282,20 @@ def _git_changed_paths(ref: str) -> set[str]:
     )
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or f"git diff failed for {ref}")
-    changed = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    changed: set[str] = set()
+    fields = iter(result.stdout.split("\0"))
+    for status in fields:
+        if not status:
+            continue
+        path = next(fields, "")
+        if not path:
+            raise RuntimeError(f"malformed git diff entry for status {status}")
+        changed.add(path)
+        if status.startswith(("R", "C")):
+            destination = next(fields, "")
+            if not destination:
+                raise RuntimeError(f"malformed git diff entry for status {status}")
+            changed.add(destination)
     untracked = subprocess.run(
         ["git", "ls-files", "--others", "--exclude-standard"],
         cwd=ROOT,
@@ -449,18 +325,7 @@ def _resolved_commit(ref: str) -> str:
 
 
 def _affects_typography_inventory(path: str) -> bool:
-    path_parts = Path(path).parts
-    if path.startswith("scripts/"):
-        return (
-            path.endswith(".gd")
-            and path not in TYPOGRAPHY_INVENTORY_SKIP
-            and "/dev/" not in path
-        )
-    return (
-        Path(path).suffix in TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES
-        and ".godot" not in path_parts
-        and "build" not in path_parts
-    )
+    return selection_policy.affects_typography_inventory(path)
 
 
 def select_godot_tests(
@@ -471,103 +336,36 @@ def select_godot_tests(
 ) -> list[Path]:
     if profile == "static":
         return []
-    by_name = _index_by_name(discover_godot_tests())
-
-    if profile in {"full", "windows"}:
-        selected_names = set(by_name)
-    else:
-        selected_names = set(CORE_CHANGED_TESTS)
-        fixture_paths = defensive_fixture_paths()
-        changed_paths = _git_changed_paths(changed_ref)
-        if RUNTIME_SMOKE_HELPER_PATH in changed_paths:
-            selected_names.update(_dependent_suite_names(
-                list(by_name.values()),
-                f"res://{RUNTIME_SMOKE_HELPER_PATH}",
-            ))
-        if _touches_ultimate_feature_list(changed_paths):
-            # FAN-3904: the gate proves the feature-list recipe suites itself;
-            # the checker only binds evidence to these runs afterwards.
-            selected_names.update(
-                Path(script).stem
-                for script in feature_list_recipe_scripts()
-                if Path(script).stem in by_name
-            )
-        for changed_path in changed_paths:
-            selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
-            if changed_path in fixture_paths:
-                # FAN-3818: любое касание raw-фикстуры (включая удаление старого
-                # пути при переносе) пере-доказывает consumability-гейт, который
-                # её читает — full-профиля для этого больше ждать не нужно.
-                selected_names.add(CONSUMABILITY_GATE_TEST)
-            if changed_path.startswith((
-                "data/ultimates/classes/",
-                "scripts/ultimates/classes/",
-            )):
-                selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
-            if changed_path.startswith("data/animation/"):
-                selected_names.update(ANIMATION_REGISTRY_TESTS)
-                # FAN-3814: an actor's data shard re-proves its own smoke shard;
-                # a shard without a matching actor suite re-proves them all.
-                actor_stem = f"{Path(changed_path).stem}_smoke_test"
-                if actor_stem in by_name:
-                    selected_names.add(actor_stem)
-                else:
-                    selected_names.update(
-                        name
-                        for name, path in by_name.items()
-                        if ACTOR_TEST_DIR in path.parents
-                    )
-            if changed_path == "scripts/full_frame_animation_registry.gd":
-                # FAN-3814: the facade serves every actor shard, so a facade
-                # change re-proves the whole per-actor smoke fleet.
-                selected_names.update(
-                    name
-                    for name, path in by_name.items()
-                    if ACTOR_TEST_DIR in path.parents
+    discovered = discover_godot_tests()
+    discovered_paths = [path.relative_to(ROOT).as_posix() for path in discovered]
+    changed_paths = _git_changed_paths(changed_ref) if profile == "changed" else set()
+    parent_resources: dict[str, str] = {}
+    if RUNTIME_SMOKE_HELPER_PATH in changed_paths:
+        for path in discovered:
+            match = TEST_SCRIPT_EXTENDS_RE.search(path.read_text(encoding="utf-8"))
+            if match is not None:
+                parent_resources[path.relative_to(ROOT).as_posix()] = match.group(
+                    "resource"
                 )
-            if changed_path in BALANCE_SENSITIVE_PATHS or changed_path.startswith(
-                "scripts/classes/"
-            ):
-                # FAN-3814: class weapon/data changes re-prove every per-class
-                # balance suite (the coverage the umbrella carried before the
-                # Phase 2 extraction).
-                selected_names.update(
-                    name
-                    for name, path in by_name.items()
-                    if BALANCE_TEST_DIR in path.parents
-                )
-            if changed_path.startswith("scripts/ultimates/presentation/"):
-                selected_names.update(SHARED_PRESENTATION_CONSUMER_TESTS)
-                selected_names.update(
-                    name
-                    for name, path in by_name.items()
-                    if PRESENTATION_TEST_DIR in path.parents
-                )
-            if _affects_typography_inventory(changed_path):
-                selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
-            if changed_path.startswith("tests/") and changed_path.endswith(".gd"):
-                selected_names.add(Path(changed_path).stem)
-            if changed_path.startswith(("scripts/", "scenes/")) or changed_path in {
-                "project.godot", "export_presets.cfg"
-            }:
-                selected_names.add(RUNTIME_SMOKE)
-
-    if skip_umbrella:
-        selected_names.discard(RUNTIME_SMOKE)
-    if filters:
-        selected_names = {
-            name for name in selected_names
-            if any(pattern.lower() in name.lower() for pattern in filters)
-        }
-    return [by_name[name] for name in sorted(selected_names) if name in by_name]
+    result = selection_policy.select_suite_paths(
+        profile=profile,
+        filters=filters,
+        changed_paths=changed_paths,
+        discovered_paths=discovered_paths,
+        parent_resources=parent_resources,
+        defensive_fixture_paths=(
+            defensive_fixture_paths() if profile == "changed" else ()
+        ),
+        feature_list_recipe_scripts=(
+            feature_list_recipe_scripts() if profile == "changed" else ()
+        ),
+        skip_umbrella=skip_umbrella,
+    )
+    return [ROOT / path for path in result.suite_paths]
 
 
 def _touches_ultimate_feature_list(changed_paths: Iterable[str]) -> bool:
-    return any(
-        path.startswith(ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES)
-        or path in ULTIMATE_FEATURE_LIST_TRIGGER_PATHS
-        for path in changed_paths
-    )
+    return selection_policy.touches_ultimate_feature_list(changed_paths)
 
 
 def ultimate_feature_list_selected(profile: str, changed_ref: str) -> bool:
