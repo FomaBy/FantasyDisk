@@ -40,7 +40,11 @@ HEADING_RE = re.compile(r"^(#{2,6})\s+(.*\S)\s*$")
 INDEX_ROW_RE = re.compile(
     r"^\|\s*(?P<title>.+?)\s*\|\s*\[`(?P<label>[^`]+)`\]\((?P<target>[^)]+)\)\s*\|$"
 )
-ID_CELL_RE = re.compile(r"^`([a-z0-9_]+)`$")
+# Capture every code-formatted value in an opted-in ID column before enforcing
+# the canonical syntax. Filtering for valid syntax here would make malformed
+# values invisible to the later validation and duplicate checks.
+ID_CELL_RE = re.compile(r"^`(?P<identifier>[^`]+)`$")
+CANONICAL_ID_RE = re.compile(r"^[a-z0-9_]+$")
 ID_DOMAIN_RE = re.compile(r"^<!--\s*canonical-ids:\s*(?P<domain>[a-z_]+)\s*-->$")
 CLASS_DIR = "data/ultimates/classes"
 ACTOR_DIR = "data/animation"
@@ -102,7 +106,7 @@ def parse_blocks(relative: str, text: str) -> tuple[list[Block], list[str]]:
         cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
         identifier = ID_CELL_RE.match(cells[0]) if cells else None
         if identifier is not None:
-            current.ids.append(identifier.group(1))
+            current.ids.append(identifier.group("identifier"))
     return blocks, errors
 
 
@@ -219,6 +223,9 @@ def _id_errors(root: Path, blocks: list[Block]) -> list[str]:
             seen.add(identifier)
         if block.id_domain is None:
             continue
+        for identifier in seen:
+            if CANONICAL_ID_RE.fullmatch(identifier) is None:
+                errors.append(f"{block.label}: invalid canonical id {identifier!r}")
         domain = block.id_domain
         if domain not in registries:
             known, problems = canonical_ids(root, domain)

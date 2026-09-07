@@ -236,6 +236,33 @@ class CanonicalIdTest(ContentRegistryFixture):
         self.write(self.content / "characters.md", CHARACTERS + "| `paladin` | Паладин |\n")
         self.assertOneError("unknown class id 'paladin'")
 
+    def test_malformed_class_ids_are_rejected_in_canonical_columns(self) -> None:
+        for identifier in ("PALADIN", "paladin-x", "paladin.x"):
+            with self.subTest(identifier=identifier):
+                self.write(
+                    self.content / "characters.md",
+                    CHARACTERS + f"| `{identifier}` | Паладин |\n",
+                )
+                errors = self.errors()
+                self.assertTrue(
+                    any(f"invalid canonical id '{identifier}'" in error for error in errors),
+                    errors,
+                )
+                self.assertTrue(
+                    any(f"unknown class id '{identifier}'" in error for error in errors),
+                    errors,
+                )
+
+    def test_repeated_malformed_class_id_is_not_dropped(self) -> None:
+        self.write(
+            self.content / "characters.md",
+            CHARACTERS + "| `PALADIN` | Паладин |\n| `PALADIN` | Паладин |\n",
+        )
+        errors = self.errors()
+        self.assertTrue(any("invalid canonical id 'PALADIN'" in error for error in errors), errors)
+        self.assertTrue(any("duplicate canonical id 'PALADIN'" in error for error in errors), errors)
+        self.assertTrue(any("unknown class id 'PALADIN'" in error for error in errors), errors)
+
     def test_unknown_actor_id_is_reported(self) -> None:
         self.write(self.content / "enemies.md", ENEMIES + "| `rift_kutter` | Опечатка |\n")
         self.assertOneError("unknown actor id 'rift_kutter'")
