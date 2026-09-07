@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import importlib.util
 import json
 import os
 import re
@@ -245,6 +246,21 @@ PATH_TEST_RULES = {
     "data/ultimates/schema/v1/weapon_ultimate_profile.schema.json": ULTIMATE_PACKAGE_CONTRACT_TESTS,
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
+# FAN-3904: the ultimate feature-list checker (17 classes / 51 weapons) joins
+# the changed profile only when its inputs move.  The gate itself selects and
+# runs the recipe suites once and then hands its own in-memory results (actual
+# command, captured output, exit status) to the checker library inside this
+# process: no suite is launched twice, no manifest or log on disk is imported
+# as evidence, and the checker never launches Godot from inside the gate.
+ULTIMATE_FEATURE_LIST_CHECK = ROOT / "tools" / "ultimate_feature_list_check.py"
+ULTIMATE_FEATURE_LIST_PATH = "data/ultimates/feature_list.json"
+ULTIMATE_FEATURE_LIST_DIR = "build/ultimate_feature_list"
+ULTIMATE_FEATURE_LIST_REPORT = f"{ULTIMATE_FEATURE_LIST_DIR}/report.json"
+ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES = ("data/ultimates/", "tests/ultimates/")
+ULTIMATE_FEATURE_LIST_TRIGGER_PATHS = frozenset({
+    "tools/ultimate_feature_list_check.py",
+    "tests/test_ultimate_feature_list.py",
+})
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
@@ -425,7 +441,16 @@ def select_godot_tests(
     else:
         selected_names = set(CORE_CHANGED_TESTS)
         fixture_paths = defensive_fixture_paths()
-        for changed_path in _git_changed_paths(changed_ref):
+        changed_paths = _git_changed_paths(changed_ref)
+        if _touches_ultimate_feature_list(changed_paths):
+            # FAN-3904: the gate proves the feature-list recipe suites itself;
+            # the checker only binds evidence to these runs afterwards.
+            selected_names.update(
+                Path(script).stem
+                for script in feature_list_recipe_scripts()
+                if Path(script).stem in by_name
+            )
+        for changed_path in changed_paths:
             selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
             if changed_path in fixture_paths:
                 # FAN-3818: любое касание raw-фикстуры (включая удаление старого
@@ -493,6 +518,47 @@ def select_godot_tests(
             if any(pattern.lower() in name.lower() for pattern in filters)
         }
     return [by_name[name] for name in sorted(selected_names) if name in by_name]
+
+
+def _touches_ultimate_feature_list(changed_paths: Iterable[str]) -> bool:
+    return any(
+        path.startswith(ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES)
+        or path in ULTIMATE_FEATURE_LIST_TRIGGER_PATHS
+        for path in changed_paths
+    )
+
+
+def ultimate_feature_list_selected(profile: str, changed_ref: str) -> bool:
+    """Whether the changed profile owes the ultimate feature-list checker."""
+    if profile != "changed":
+        return False
+    return _touches_ultimate_feature_list(_git_changed_paths(changed_ref))
+
+
+def feature_list_recipe_scripts() -> set[str]:
+    """``res://`` suites the committed feature list maps as active recipes.
+
+    Read leniently: a malformed list selects nothing here and is then rejected
+    by the checker's own validation, which is the authoritative verdict.
+    """
+    try:
+        document = json.loads((ROOT / ULTIMATE_FEATURE_LIST_PATH).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    entries = document.get("entries") if isinstance(document, dict) else None
+    scripts: set[str] = set()
+    for entry in entries if isinstance(entries, list) else []:
+        if not isinstance(entry, dict) or entry.get("state") != "active":
+            continue
+        recipe = entry.get("verification")
+        if (
+            isinstance(recipe, list)
+            and recipe
+            and isinstance(recipe[-1], str)
+            and recipe[-1].startswith("res://tests/")
+        ):
+            scripts.add(recipe[-1])
+    return scripts
 
 
 def _run_command(
@@ -651,6 +717,7 @@ def _is_certifying(
     args: argparse.Namespace,
     worktree_status: Sequence[str],
     changed_ref_is_integration_base: bool,
+    feature_list_skipped: bool = False,
 ) -> bool:
     return not (
         args.filters
@@ -660,6 +727,7 @@ def _is_certifying(
         or args.shard_count != 1
         or worktree_status
         or not changed_ref_is_integration_base
+        or feature_list_skipped
     )
 
 
@@ -1220,7 +1288,60 @@ def run_godot_test(path: Path, timeout: float) -> dict:
         "timed_out": timed_out,
         "fatal_diagnostic": diagnostic,
         "duration_seconds": round(time.monotonic() - started, 3),
+        # Consumed by main(): the feature-list checker binds its evidence to
+        # the actual log of this run; the report itself never carries output.
+        "output": output,
+        "command": command,
     }
+
+
+def _load_feature_list_checker():
+    """Import the checker library lazily; it imports this module for shared helpers."""
+    module = sys.modules.get("ultimate_feature_list_check")
+    if module is None:
+        # The checker falls back to `import quality_gate`; point that name at the
+        # running module so both share one fatal_output_signal/EXTENDS_RE.
+        running = sys.modules.get(__name__)
+        if running is not None:
+            sys.modules.setdefault("quality_gate", running)
+        spec = importlib.util.spec_from_file_location(
+            "ultimate_feature_list_check", ULTIMATE_FEATURE_LIST_CHECK
+        )
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot load {ULTIMATE_FEATURE_LIST_CHECK}")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules["ultimate_feature_list_check"] = module
+    return module
+
+
+def run_ultimate_feature_list_check(profile_run: dict[str, dict]) -> dict:
+    """Bind the feature list to the suites this gate run executed, in this process.
+
+    ``profile_run`` maps each executed ``res://`` suite to the command this run
+    launched, the output it captured and the exit status it observed.  The
+    checker launches nothing and reads no manifest; the trust boundary is the
+    gate process that produced these results.
+    """
+    started = time.monotonic()
+    print("ULTIMATE FEATURE LIST binding evidence to this run's suites", flush=True)
+    try:
+        checker = _load_feature_list_checker()
+        result = checker.bind_profile_run(ROOT, profile_run, ULTIMATE_FEATURE_LIST_REPORT)
+    except Exception as exc:  # noqa: BLE001 - a crashed binding must fail the step closed
+        print(f"ULTIMATE FEATURE LIST FAIL: checker binding raised {exc!r}", file=sys.stderr, flush=True)
+        result = {
+            "name": "ultimate-feature-list",
+            "status": "failed",
+            "exit_code": 1,
+            "errors": [f"checker binding raised {exc!r}"],
+            "report": ULTIMATE_FEATURE_LIST_REPORT,
+        }
+    result.setdefault("name", "ultimate-feature-list")
+    result.setdefault("report", ULTIMATE_FEATURE_LIST_REPORT)
+    result["duration_seconds"] = round(time.monotonic() - started, 3)
+    result["executed_suites"] = sorted(profile_run)
+    return result
 
 
 def _write_report(path: Path, payload: dict) -> None:
@@ -1502,6 +1623,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
         selected = selected[args.shard_index::args.shard_count]
+        feature_list_selected = ultimate_feature_list_selected(args.profile, args.changed_ref)
+        # The checker can only bind to suites this run executes; anything the
+        # selection leaves out (filters, shards) makes the step skip and the
+        # run non-certifying rather than letting the checker launch Godot.
+        missing_recipe_suites = sorted(
+            feature_list_recipe_scripts() - {script_resource_path(path) for path in selected}
+        ) if feature_list_selected else []
         initial_worktree_status = _worktree_status()
     except RuntimeError as exc:
         print(f"quality_gate: {exc}", file=sys.stderr)
@@ -1529,6 +1657,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         for path in python_tests:
             print(path.relative_to(ROOT).as_posix())
         print(f"Discovered {len(python_tests)} Python test file(s).")
+        if feature_list_selected and missing_recipe_suites:
+            print(
+                "Ultimate feature-list checker: selected but "
+                f"{len(missing_recipe_suites)} recipe suite(s) are outside this selection"
+            )
+        else:
+            print(
+                "Ultimate feature-list checker: "
+                + ("selected" if feature_list_selected else "not selected")
+            )
         for error in discovery_errors:
             print(f"EMPTY TEST SET: {error}", file=sys.stderr)
         return 1 if discovery_errors else 0
@@ -1559,6 +1697,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     })
     failed = any(item["status"] == "failed" for item in static_results)
     godot_results: list[dict] = []
+    feature_list_result: dict | None = None
     if (
         args.profile != "static"
         and not args.skip_godot
@@ -1571,19 +1710,43 @@ def main(argv: Sequence[str] | None = None) -> int:
             failed = True
         else:
             print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
+            bind_feature_list = feature_list_selected and not missing_recipe_suites
+            recipe_scripts = feature_list_recipe_scripts() if bind_feature_list else set()
+            # FAN-3904: the checker binds only to results this process produced;
+            # they stay in memory and never pass through a file or the report.
+            profile_run: dict[str, dict] = {}
             for index, path in enumerate(selected, start=1):
                 print(
                     f"GODOT {index}/{len(selected)} {path.relative_to(ROOT).as_posix()}",
                     flush=True,
                 )
                 outcome = run_godot_test(path, args.test_timeout)
+                output = outcome.pop("output", "")
+                command = outcome.pop("command", [])
+                if bind_feature_list and outcome["script"] in recipe_scripts:
+                    profile_run[outcome["script"]] = {**outcome, "output": output, "command": command}
                 godot_results.append(outcome)
                 if outcome["status"] == "failed":
                     failed = True
                     if args.fail_fast:
                         break
+            if bind_feature_list and not (failed and args.fail_fast):
+                # Generated import sidecars would otherwise show up as a dirty
+                # worktree inside the checker's report and void its binding.
+                removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
+                feature_list_result = run_ultimate_feature_list_check(profile_run)
+                if feature_list_result["status"] == "failed":
+                    failed = True
     else:
         import_result = None
+    if feature_list_selected and feature_list_result is None:
+        reason = (
+            f"recipe suites outside this selection: {', '.join(missing_recipe_suites)}"
+            if missing_recipe_suites
+            else "Godot execution did not complete in this run"
+        )
+        print(f"ULTIMATE FEATURE LIST SKIPPED: {reason}", file=sys.stderr, flush=True)
+        feature_list_result = {"name": "ultimate-feature-list", "status": "skipped", "reason": reason}
 
     removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
     try:
@@ -1593,9 +1756,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     worktree_status = list(dict.fromkeys(initial_worktree_status + final_worktree_status))
     changed_ref_is_integration_base = args.changed_ref == INTEGRATION_CHANGED_REF
-    certifying = _is_certifying(
-        args, worktree_status, changed_ref_is_integration_base
+    feature_list_skipped = (
+        feature_list_result is not None and feature_list_result["status"] == "skipped"
     )
+    certifying = _is_certifying(
+        args, worktree_status, changed_ref_is_integration_base, feature_list_skipped
+    )
+    if feature_list_skipped:
+        print(
+            "QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped",
+            file=sys.stderr,
+        )
     if not changed_ref_is_integration_base:
         print(
             "QUALITY NON-CERTIFYING: changed ref "
@@ -1637,6 +1808,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         static_checks=static_results,
         godot_import_prepass=import_result,
         godot_tests=godot_results,
+        ultimate_feature_list_selected=feature_list_selected,
+        ultimate_feature_list=feature_list_result,
         generated_import_sidecars_removed=sorted(set(removed_import_sidecars)),
         shard={"index": args.shard_index, "count": args.shard_count},
     )
