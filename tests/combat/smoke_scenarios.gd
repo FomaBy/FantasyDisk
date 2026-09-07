@@ -192,6 +192,13 @@ func _run_projectile_scenario(fixture: Dictionary) -> bool:
 		_suite._fail("Expected combat projectile fixture dependencies.")
 		return false
 
+	var projectile_test_derived: Dictionary = player.get("derived_parameters")
+	projectile_test_derived["dodge"] = 0.0
+	projectile_test_derived["raw_dodge"] = 0.0
+	if not _suite._assert_raw_pair(projectile_test_derived, "dodge", "raw_dodge"):
+		return false
+	player.set("derived_parameters", projectile_test_derived)
+
 	player.set("_damage_invulnerability_left", 0.0)
 	var projectile := enemy_projectile_scene.instantiate()
 	_suite.root.add_child(projectile)
