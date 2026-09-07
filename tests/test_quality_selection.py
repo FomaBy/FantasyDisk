@@ -89,6 +89,34 @@ class QualitySelectionPolicyTests(unittest.TestCase):
                 self.assertTrue(result.used_full_fallback)
                 self.assertEqual(set(result.suite_paths), set(self.discovered_paths))
 
+    def test_other_unclassified_domains_fail_conservatively_to_full(self) -> None:
+        cases = (
+            "assets/new_runtime_contract.json",
+            "data/items/new_runtime_contract.json",
+            "changelog.d/FAN-9999.md",
+            "tests/support/new_runtime_helper.gd",
+            "tests/support/runtime_smoke_helpers.gd.uid",
+        )
+        for changed_path in cases:
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+                self.assertEqual(result.full_fallback_paths, (changed_path,))
+                self.assertEqual(set(result.suite_paths), set(self.discovered_paths))
+
+    def test_progression_weapons_keeps_the_accepted_additive_coverage(self) -> None:
+        result = self._select({"scripts/progression_data_weapons.gd"})
+        selected_names = {Path(path).stem for path in result.suite_paths}
+        self.assertFalse(result.used_full_fallback)
+        self.assertLessEqual(selection.OFFENSIVE_CONTRACT_TESTS, selected_names)
+        self.assertLessEqual(selection.CADENCE_STATUS_CONTRACT_TESTS, selected_names)
+        self.assertLessEqual(selection.BALANCE_CONTRACT_TESTS, selected_names)
+
+    def test_existing_suite_sidecar_selects_its_suite_without_full_fallback(self) -> None:
+        result = self._select({"tests/weapon_integrity_test.gd.uid"})
+        self.assertFalse(result.used_full_fallback)
+        self.assertIn("tests/weapon_integrity_test.gd", result.suite_paths)
+        self.assertNotEqual(set(result.suite_paths), set(self.discovered_paths))
+
     def test_shared_helper_keeps_transitive_umbrella_coverage(self) -> None:
         result = self._select({selection.RUNTIME_SMOKE_HELPER_PATH})
         selected = set(result.suite_paths)
