@@ -29,6 +29,7 @@ func _initialize() -> void:
 	var errors: Array = []
 	await process_frame
 	_check_final_event_payloads(errors)
+	_check_freed_equipped_weapon_falls_back(errors)
 	await _check_timed_effect_cancellation_and_reconfigure(errors)
 	await _check_death_cancels_owned_expiry(errors)
 	_finish(errors)
@@ -99,6 +100,29 @@ func _check_final_event_payloads(errors: Array) -> void:
 	player.free()
 	enemy.free()
 	collector.free()
+
+
+func _check_freed_equipped_weapon_falls_back(errors: Array) -> void:
+	var player = _make_player("berserk")
+	var stale_weapon := Node.new()
+	player.add_child(stale_weapon)
+	player.equipped_weapon = stale_weapon
+	stale_weapon.free()
+
+	var result: Dictionary = player.call("_dispatch_constellation_owner_event", "take_damage", {
+		"constellation_consumer_event": true,
+	})
+	var expected := {
+		"valid": true,
+		"triggered": false,
+		"damage_multiplier": 1.0,
+		"axis_gain": 1.0,
+	}
+	if result != expected:
+		errors.append("owner event: a freed equipped weapon did not use the Player fallback: %s" % str(result))
+
+	player.equipped_weapon = null
+	player.free()
 
 
 func _check_timed_effect_cancellation_and_reconfigure(errors: Array) -> void:

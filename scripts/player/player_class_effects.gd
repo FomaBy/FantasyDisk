@@ -195,7 +195,7 @@ static func constellation_weapon_event(player, weapon_id_value: String, event: S
 
 
 static func dispatch_constellation_owner_event(player, event: String, context := {}, enemy: Node2D = null) -> Dictionary:
-	var active_weapon: Node = player.equipped_weapon as Node
+	var active_weapon: Variant = player.equipped_weapon
 	if active_weapon != null and is_instance_valid(active_weapon) and active_weapon.has_method("constellation_owner_event"):
 		return active_weapon.call("constellation_owner_event", event, context, enemy)
 	return constellation_weapon_event(player, player.weapon_id, event, context, enemy)
