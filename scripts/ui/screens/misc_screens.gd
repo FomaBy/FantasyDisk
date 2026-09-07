@@ -10,97 +10,17 @@ extends "res://scripts/ui/screens/atlas_canvas.gd"
 
 
 
+# FAN-3925 (agent-ready-refactor FD18): экран «Что нового» собирает явный
+# контроллер scripts/ui/controllers/patch_notes_controller.gd. Фасад отдаёт ему
+# себя как контекст (общий кит стилей/оболочки, навигация) и не хранит ничего
+# лишнего: обработчики привязаны к методам фасада, а узлы живут в game.ui_layer.
+const PatchNotesController := preload("res://scripts/ui/controllers/patch_notes_controller.gd")
+
+
 func _show_patch_notes_screen() -> void:
-	# SCRUM-159: экран «Что нового» из главного меню — data-driven патч-ноуты
-	# по версиям (новейшая первой), только пользовательский русский текст.
-	# SCRUM-879: единый атлас-стиль — тихий фон-хроника COVERED, контент в
-	# safe-зоне рамы, кожаная панель _atlas_chip_style, полая рама поверх.
-	const PatchNotesData := preload("res://scripts/patch_notes_data.gd")
-	game._clear_ui()
-	game.ui_layer = CanvasLayer.new()
-	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.ui_layer)
-
-	var root := Control.new()
-	root.name = "PatchNotesScreen"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	game.ui_layer.add_child(root)
-	_prepare_global_tooltips(root)
-	_unified_add_background(root, "patch_notes")
-
-	var s := _atlas_ui_scale()
-	var safe := _unified_make_safe_area(root, "PatchNotes")
-	var layout := VBoxContainer.new()
-	layout.name = "PatchNotesLayout"
-	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
-	safe.add_child(layout)
-
-	var header := HBoxContainer.new()
-	header.name = "PatchNotesHeader"
-	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
-	layout.add_child(header)
-	header.add_child(_unified_header_chip("PatchNotes", "Что нового", "patch_notes", s))
-	var header_spacer := Control.new()
-	header_spacer.name = "PatchNotesHeaderSpacer"
-	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(header_spacer)
-	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите 260×h.
-	var back_button := _make_button("Назад")
-	back_button.name = "PatchNotesBackButton"
-	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
-	back_button.pressed.connect(_show_main_menu)
-	header.add_child(back_button)
-	game.ui_escape_action = _show_main_menu
-	# SCRUM-813: стартовый фокус — «Назад в меню»; A возвращает в меню, B/Esc тоже.
-	# Контент патч-ноутов read-only — прокрутка колесом/перетаскиванием (гео-скролл геймпадом
-	# на чисто-текстовых экранах — отдельная мелкая доработка).
-	_ensure_run_ui_gamepad_bindings()
-	back_button.call_deferred("grab_focus")
-
-	var panel := PanelContainer.new()
-	panel.name = "PatchNotesPanel"
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(18.0 * s)))
-	layout.add_child(panel)
-
-	var scroll := ScrollContainer.new()
-	scroll.name = "PatchNotesScroll"
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	panel.add_child(scroll)
-	var content := VBoxContainer.new()
-	content.name = "PatchNotesContent"
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", int(roundf(12.0 * s)))
-	scroll.add_child(content)
-
-	var entries := PatchNotesData.all_entries()
-	for i in entries.size():
-		var entry_data: Dictionary = entries[i]
-		var version := str(entry_data.get("version", ""))
-		var version_label := Label.new()
-		version_label.name = "PatchNotesVersion_%s" % version.replace(".", "_")
-		version_label.text = "Версия %s  (%s)" % [version, str(entry_data.get("date", ""))]
-		version_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_CAPTION,
-			_readable_font_size(SemanticTypography.ROLE_CAPTION, 24),
-			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
-			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
-		))
-		version_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
-		content.add_child(version_label)
-		for line in (entry_data.get("highlights", []) as Array):
-			var bullet := Label.new()
-			bullet.text = "•  %s" % str(line)
-			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			bullet.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 16))
-			bullet.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
-			content.add_child(bullet)
-		if i < entries.size() - 1:
-			_unified_add_divider(content, s, "_" + version)
-
-	# Рама — ПОСЛЕДНЕЙ: полый 9-slice поверх контента (контент в safe-зоне).
-	_unified_add_frame(root, "PatchNotes")
+	# SCRUM-159 / SCRUM-879 / SCRUM-813: содержимое, атлас-стиль и фокус —
+	# в контроллере, поведение экрана и имена узлов сохранены 1:1.
+	PatchNotesController.new(self).show()
 
 
 
