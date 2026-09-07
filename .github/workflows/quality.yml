@@ -57,6 +57,8 @@ jobs:
             build/qa/scrum434_soldier_pixellab
             docs/process
             docs/tasks
+            docs/design/content
+            docs/design/systems
             docs/design/data
             docs/design/templates/release_notes
             docs/design/mockups/release_0_2_4
