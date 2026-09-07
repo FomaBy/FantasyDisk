@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
-
+const CombatSpatialIndex := preload("res://scripts/combat_spatial_index.gd")
 # SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
@@ -218,6 +218,7 @@ const EPIC_SCALE_PROFILE_META := "epic_scale_profile"
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("enemies")
+	set_notify_local_transform(true)
 	_apply_collision_profile()
 	_apply_gameplay_sandbox_runtime()
 	health = max_health
@@ -232,10 +233,8 @@ func _ready() -> void:
 	if not _configure_full_frame_animation():
 		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
-	# Combat Feel Rework (этап B): пер-инстансные знаки орбиты/строба из чётности
-	# instance id (детерминированный разъезд пачек в обе стороны) + видимый радиус
-	# для сепарации (после fit/epic scale) + stagger рефреша кэша соседей, чтобы
-	# 48 мобов не сканировали группу в один и тот же кадр.
+	# Stable per-instance steering signs, fitted separation radius, and staggered
+	# refresh timing keep a 48-enemy group from refreshing in one physics tick.
 	_orbit_sign = 1.0 if get_instance_id() % 2 == 0 else -1.0
 	_strafe_sign = 1.0 if (get_instance_id() >> 1) % 2 == 0 else -1.0
 	_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
@@ -249,6 +248,9 @@ func _ready() -> void:
 		elite_attack_id = str(config.get("attack_id", ""))
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_LOCAL_TRANSFORM_CHANGED:
+		CombatSpatialIndex.track_moved(self)
 
 func _apply_unique_encounter_pattern_meta(entity_id: String) -> void:
 	var pattern := ProgressionData.unique_encounter_pattern(entity_id)
@@ -454,10 +456,7 @@ func _separation_rank_weight() -> float:
 		return SEPARATION_ELITE_WEIGHT
 	return 1.0
 
-
-# Кэш 3-4 ближайших соседей: общий snapshot группы строится максимум один раз
-# за кадр, каждый enemy фильтрует его раз в 0.2s (со stagger по id), а горячий
-# кадр работает только по 4 соседям.
+# Nearby cells come from the frame index; range and four-nearest ordering stay unchanged.
 func _refresh_separation_neighbors() -> void:
 	_separation_neighbors.clear()
 	_separation_scratch_dist.clear()
@@ -466,7 +465,7 @@ func _refresh_separation_neighbors() -> void:
 		return
 	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
 	var limit_sq := search_limit * search_limit
-	for node in TARGET_QUERY.enemies(self):
+	for node in CombatSpatialIndex.candidates(self, global_position):
 		if not is_instance_valid(node):
 			continue
 		var other := node as Node2D
@@ -477,7 +476,9 @@ func _refresh_separation_neighbors() -> void:
 			continue
 		var insert_at := _separation_scratch_dist.size()
 		for index in range(_separation_scratch_dist.size()):
-			if dist_sq < float(_separation_scratch_dist[index]):
+			var indexed_distance := float(_separation_scratch_dist[index])
+			var wins_tie := dist_sq == indexed_distance and CombatSpatialIndex.precedes(other, _separation_neighbors[index])
+			if dist_sq < indexed_distance or wins_tie:
 				insert_at = index
 				break
 		if insert_at >= SEPARATION_MAX_NEIGHBORS:
@@ -494,8 +495,7 @@ func _separation_velocity() -> Vector2:
 		return Vector2.ZERO
 	var push := Vector2.ZERO
 	for node in _separation_neighbors:
-		# A cached neighbor may die between 0.2 s refreshes. Casting a freed
-		# Variant raises before a post-cast is_instance_valid() guard can run.
+		# Cached neighbors may die; validate the Variant before casting it.
 		if not is_instance_valid(node):
 			continue
 		var other := node as Node2D

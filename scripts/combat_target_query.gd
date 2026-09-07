@@ -6,6 +6,11 @@ static var _cached_tree_id := 0
 static var _cached_enemies: Array[Node2D] = []
 static var _cache_generation := 0
 
+# FAN-3918: test-only counter for shared enemy snapshot construction. The
+# operation-count suite enables it explicitly; gameplay leaves it disabled.
+static var debug_snapshot_build_visits_enabled := false
+static var debug_snapshot_build_visits := 0
+
 
 static func enemies(source: Node) -> Array[Node2D]:
 	var tree := source.get_tree() if source != null and source.is_inside_tree() else null
@@ -19,6 +24,8 @@ static func enemies(source: Node) -> Array[Node2D]:
 		_cache_generation += 1
 		_cached_enemies.clear()
 		for enemy in tree.get_nodes_in_group("enemies"):
+			if debug_snapshot_build_visits_enabled:
+				debug_snapshot_build_visits += 1
 			var enemy_node := enemy as Node2D
 			if enemy_node == null or not is_instance_valid(enemy_node):
 				continue
