@@ -272,6 +272,42 @@ class QualityGateTests(unittest.TestCase):
             }
         self.assertEqual(discovered, {"visual_regression/real_visual_test.gd"})
 
+    def test_runtime_smoke_helper_is_not_an_executable_suite(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            discovered = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.discover_godot_tests()
+            }
+            full = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "full", [], "origin/dev", False
+                )
+            }
+        expected = {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+            "support/real_support_test.gd",
+            "unrelated_test.gd",
+        }
+        self.assertEqual(discovered, expected)
+        self.assertEqual(full, expected)
+
     def test_nested_suite_runs_from_its_own_resource_path(self) -> None:
         nested = ROOT / "tests" / "ultimates" / "registry_contract_test.gd"
         self.assertEqual(
@@ -792,6 +828,39 @@ class QualityGateTests(unittest.TestCase):
         self.assertLessEqual(self.quality.CORE_CHANGED_TESTS, names)
         self.assertIn("enemy_separation_behavior_test", names)
         self.assertIn(self.quality.RUNTIME_SMOKE, names)
+
+    def test_runtime_smoke_helper_change_selects_transitive_suites(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            stack.enter_context(mock.patch.object(
+                self.quality,
+                "_git_changed_paths",
+                return_value={"tests/support/runtime_smoke_helpers.gd"},
+            ))
+            selected = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "changed", [], "origin/dev", False
+                )
+            }
+        self.assertEqual(selected, {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+        })
 
     def test_changed_profile_selects_typography_inventory_suite_for_scanned_paths(self) -> None:
         cases = {
@@ -1496,21 +1565,65 @@ class QualityGateTests(unittest.TestCase):
         # The suite side of the same contract: the success exit re-asserts a
         # failure that `_fail()` already recorded, instead of letting the
         # deferred `quit(1)` be overwritten by the final `quit()`.
-        source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(encoding="utf-8")
-        fail_body = _gdscript_func_body(source, "_fail")
-        self.assertIn("_failure_reported = true", fail_body)
-        self.assertLess(
-            fail_body.index("_failure_reported = true"),
-            fail_body.index("push_error("),
-            "the failure flag must be set before anything that can itself fail",
+        umbrella_source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(
+            encoding="utf-8"
         )
-        finish_body = _gdscript_func_body(source, "_finish")
-        guard = finish_body.index("if _failure_reported:")
-        self.assertLess(guard, finish_body.index("print("))
-        self.assertLess(finish_body.index("quit(1)"), finish_body.index("print("))
-        # The success message may only leave the suite through that guard.
-        self.assertIn('_finish("Runtime smoke test passed.")', source)
-        self.assertNotIn('print("Runtime smoke test passed.")', source)
+        helper_source = (
+            ROOT / "tests" / "support" / "runtime_smoke_helpers.gd"
+        ).read_text(encoding="utf-8")
+
+        def assert_contract(umbrella: str, helper: str) -> None:
+            self.assertEqual(
+                umbrella.splitlines()[0],
+                'extends "res://tests/support/runtime_smoke_helpers.gd"',
+            )
+            self.assertNotRegex(umbrella, r"(?m)^func _(?:fail|finish)\(")
+
+            fail_body = _gdscript_func_body(helper, "_fail")
+            self.assertIn("_failure_reported = true", fail_body)
+            self.assertLess(
+                fail_body.index("_failure_reported = true"),
+                fail_body.index("push_error("),
+                "the failure flag must be set before anything that can itself fail",
+            )
+
+            finish_body = _gdscript_func_body(helper, "_finish")
+            ordered_exit = (
+                finish_body.index("if _failure_reported:"),
+                finish_body.index("quit(1)"),
+                finish_body.index("return"),
+                finish_body.index("print("),
+            )
+            self.assertEqual(ordered_exit, tuple(sorted(ordered_exit)))
+
+            # The success message may only leave the umbrella through the
+            # inherited guard; a local implementation could bypass it later.
+            self.assertIn('_finish("Runtime smoke test passed.")', umbrella)
+            self.assertNotIn('print("Runtime smoke test passed.")', umbrella)
+
+        assert_contract(umbrella_source, helper_source)
+
+        missing_sticky_state = helper_source.replace(
+            "\t_failure_reported = true\n", "", 1
+        )
+        success_before_failure = helper_source.replace(
+            "\tif _failure_reported:\n\t\tquit(1)\n\t\treturn\n\tprint(passed_message)",
+            "\tprint(passed_message)\n\tif _failure_reported:\n\t\tquit(1)\n\t\treturn",
+            1,
+        )
+        umbrella_bypass = umbrella_source.replace(
+            '_finish("Runtime smoke test passed.")',
+            'print("Runtime smoke test passed.")',
+            1,
+        )
+        for label, mutated_umbrella, mutated_helper in (
+            ("missing sticky failure state", umbrella_source, missing_sticky_state),
+            ("success before failure exit", umbrella_source, success_before_failure),
+            ("umbrella bypass", umbrella_bypass, helper_source),
+        ):
+            with self.subTest(rejects=label):
+                with self.assertRaises(AssertionError):
+                    assert_contract(mutated_umbrella, mutated_helper)
 
 
 class LiveEngineSignatureTests(unittest.TestCase):

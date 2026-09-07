@@ -71,6 +71,11 @@ EXTENDS_RE = re.compile(
     r'^\s*extends\s+(?:SceneTree|["\']res://tests/[^"\']+\.gd["\'])\s*(?:#.*)?$',
     re.MULTILINE,
 )
+TEST_SCRIPT_EXTENDS_RE = re.compile(
+    r'^\s*extends\s+["\'](?P<resource>res://tests/[^"\']+\.gd)["\']\s*(?:#.*)?$',
+    re.MULTILINE,
+)
+RUNTIME_SMOKE_HELPER_PATH = "tests/support/runtime_smoke_helpers.gd"
 REAL_DISCORD_WEBHOOK_RE = re.compile(
     r"https://(?:discord(?:app)?\.com)/api/webhooks/[0-9]{15,}/[A-Za-z0-9_-]{20,}"
 )
@@ -277,6 +282,11 @@ def discover_godot_tests() -> list[Path]:
         # `--out` and is invoked only by the visual-gate capture contract.
         if path == TEST_DIR / "visual_regression" / "capture.gd":
             continue
+        # This reusable SceneTree base owns lifecycle helpers but has no
+        # standalone completion path. Its executable descendants are selected
+        # when it changes; running the base itself can only time out.
+        if path == ROOT / RUNTIME_SMOKE_HELPER_PATH:
+            continue
         try:
             source = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
@@ -310,6 +320,33 @@ def _index_by_name(discovered: Sequence[Path]) -> dict[str, Path]:
         )
         raise RuntimeError(f"ambiguous Godot test names across directories: {details}")
     return by_name
+
+
+def _dependent_suite_names(
+    discovered: Sequence[Path], dependency_resource: str
+) -> set[str]:
+    """Executable suites that inherit *dependency_resource*, transitively."""
+    parents: dict[Path, str] = {}
+    for path in discovered:
+        match = TEST_SCRIPT_EXTENDS_RE.search(path.read_text(encoding="utf-8"))
+        if match is not None:
+            parents[path] = match.group("resource")
+
+    affected_resources = {dependency_resource}
+    selected: set[str] = set()
+    pending = dict(parents)
+    while pending:
+        matched = [
+            path for path, parent in pending.items()
+            if parent in affected_resources
+        ]
+        if not matched:
+            break
+        for path in matched:
+            affected_resources.add(script_resource_path(path))
+            selected.add(path.stem)
+            del pending[path]
+    return selected
 
 
 def discover_python_tests() -> list[Path]:
@@ -442,6 +479,11 @@ def select_godot_tests(
         selected_names = set(CORE_CHANGED_TESTS)
         fixture_paths = defensive_fixture_paths()
         changed_paths = _git_changed_paths(changed_ref)
+        if RUNTIME_SMOKE_HELPER_PATH in changed_paths:
+            selected_names.update(_dependent_suite_names(
+                list(by_name.values()),
+                f"res://{RUNTIME_SMOKE_HELPER_PATH}",
+            ))
         if _touches_ultimate_feature_list(changed_paths):
             # FAN-3904: the gate proves the feature-list recipe suites itself;
             # the checker only binds evidence to these runs afterwards.
