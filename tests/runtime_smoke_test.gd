@@ -1,4 +1,4 @@
-extends SceneTree
+extends "res://tests/support/runtime_smoke_helpers.gd"
 
 const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
@@ -7,7 +7,6 @@ const EXPECTED_ACT_COUNT := 2
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
-const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EnemyScript := preload("res://scripts/enemy.gd")
 const ThreatIndicatorsScript := preload("res://scripts/threat_indicators.gd")
@@ -118,12 +117,6 @@ const ULTIMATE_MALFORMED_FIXTURES := [
 		"params": {"radius": 600.0, "damage": 1.0, "target_limit": 0},
 	},
 ]
-
-# FAN-1700: липкий флаг провала. quit() в Godot отложенный (выполняется в конце
-# кадра), поэтому после _fail() код продолжает работать и успешный quit() затирает
-# уже запрошенный код 1. Флаг переживает любой порядок выполнения и проверяется
-# в _finish() до печати «passed».
-var _failure_reported := false
 
 func _initialize() -> void:
 	if not _test_no_space_number_duplicate_artifacts():
@@ -2000,18 +1993,6 @@ func _test_epic_elite_boss_scale_hitbox() -> void:
 	await process_frame
 
 
-func _find_player_weapon(player: Node) -> Node:
-	var socket := player.get_node_or_null("VisualRoot/WeaponSocket")
-	if socket != null:
-		for child in socket.get_children():
-			if child.is_in_group("player_weapons"):
-				return child
-	for child in player.get_children():
-		if child.is_in_group("player_weapons"):
-			return child
-	return null
-
-
 func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label: String) -> bool:
 	player.call("play_action_animation", "attack", expected_direction)
 	player.call("_apply_sprite_transform")
@@ -3342,22 +3323,6 @@ func _debug_child_tree(node: Node, depth: int = 0) -> String:
 		if nested != "":
 			names.append(nested)
 	return ", ".join(names)
-
-
-func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
-	if node == null or not is_instance_valid(node):
-		return ""
-	var sprite := node as Sprite2D
-	if sprite == null:
-		if sprite_name.is_empty():
-			var sprites := node.find_children("*", "Sprite2D", true, false)
-			if not sprites.is_empty():
-				sprite = sprites[0] as Sprite2D
-		else:
-			sprite = node.find_child(sprite_name, true, false) as Sprite2D
-	if sprite == null or sprite.texture == null:
-		return ""
-	return sprite.texture.resource_path
 
 
 func _button_uses_minimal_metal_type(button: Button, button_type: String) -> bool:
@@ -8686,38 +8651,6 @@ func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String
 		_fail("FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
 		return false
 	return true
-
-
-func _fail(message: String, evidence_path := "") -> void:
-	# SCRUM-722: единая точка отказа умбрелла-смоука и фокус-сьютов. Каждый провал
-	# называет сломанную систему/экран (message) и оставляет детерминированный артефакт-
-	# улику build/qa/runtime_smoke_last_failure.md с путём к доп. evidence (если передан).
-	# Вызывается ТОЛЬКО на провале — зелёный прогон сюда не заходит, поведение не меняет.
-	# FAN-1700: флаг ставится ПЕРВЫМ, до любых операций с диском, — заявленный провал
-	# не должен зависеть ни от порядка await, ни от того, стоит ли return после _fail().
-	_failure_reported = true
-	push_error(message)
-	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
-	if not DirAccess.dir_exists_absolute(qa_dir):
-		DirAccess.make_dir_recursive_absolute(qa_dir)
-	var crumb := FileAccess.open("%s/runtime_smoke_last_failure.md" % qa_dir, FileAccess.WRITE)
-	if crumb != null:
-		crumb.store_string("# Runtime smoke — последний провал\n\n- Проверка/система: %s\n- Evidence: %s\n" % [
-			message, evidence_path if evidence_path != "" else "(см. контекст push_error в логе выше)"])
-		crumb.close()
-	quit(1)
-
-
-func _finish(passed_message: String) -> void:
-	# FAN-1700: единственный успешный выход набора. Отложенный quit(1) из _fail()
-	# затирается успешным quit(), поэтому провал переспрашивается здесь по флагу:
-	# набор, который уже сообщил о провале, не может напечатать «passed» и выйти нулём.
-	# Наследники (tests/runtime_smoke_*.gd и др.) могут завершаться так же.
-	if _failure_reported:
-		quit(1)
-		return
-	print(passed_message)
-	quit()
 
 
 func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:

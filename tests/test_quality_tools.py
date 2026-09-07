@@ -1496,21 +1496,65 @@ class QualityGateTests(unittest.TestCase):
         # The suite side of the same contract: the success exit re-asserts a
         # failure that `_fail()` already recorded, instead of letting the
         # deferred `quit(1)` be overwritten by the final `quit()`.
-        source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(encoding="utf-8")
-        fail_body = _gdscript_func_body(source, "_fail")
-        self.assertIn("_failure_reported = true", fail_body)
-        self.assertLess(
-            fail_body.index("_failure_reported = true"),
-            fail_body.index("push_error("),
-            "the failure flag must be set before anything that can itself fail",
+        umbrella_source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(
+            encoding="utf-8"
         )
-        finish_body = _gdscript_func_body(source, "_finish")
-        guard = finish_body.index("if _failure_reported:")
-        self.assertLess(guard, finish_body.index("print("))
-        self.assertLess(finish_body.index("quit(1)"), finish_body.index("print("))
-        # The success message may only leave the suite through that guard.
-        self.assertIn('_finish("Runtime smoke test passed.")', source)
-        self.assertNotIn('print("Runtime smoke test passed.")', source)
+        helper_source = (
+            ROOT / "tests" / "support" / "runtime_smoke_helpers.gd"
+        ).read_text(encoding="utf-8")
+
+        def assert_contract(umbrella: str, helper: str) -> None:
+            self.assertEqual(
+                umbrella.splitlines()[0],
+                'extends "res://tests/support/runtime_smoke_helpers.gd"',
+            )
+            self.assertNotRegex(umbrella, r"(?m)^func _(?:fail|finish)\(")
+
+            fail_body = _gdscript_func_body(helper, "_fail")
+            self.assertIn("_failure_reported = true", fail_body)
+            self.assertLess(
+                fail_body.index("_failure_reported = true"),
+                fail_body.index("push_error("),
+                "the failure flag must be set before anything that can itself fail",
+            )
+
+            finish_body = _gdscript_func_body(helper, "_finish")
+            ordered_exit = (
+                finish_body.index("if _failure_reported:"),
+                finish_body.index("quit(1)"),
+                finish_body.index("return"),
+                finish_body.index("print("),
+            )
+            self.assertEqual(ordered_exit, tuple(sorted(ordered_exit)))
+
+            # The success message may only leave the umbrella through the
+            # inherited guard; a local implementation could bypass it later.
+            self.assertIn('_finish("Runtime smoke test passed.")', umbrella)
+            self.assertNotIn('print("Runtime smoke test passed.")', umbrella)
+
+        assert_contract(umbrella_source, helper_source)
+
+        missing_sticky_state = helper_source.replace(
+            "\t_failure_reported = true\n", "", 1
+        )
+        success_before_failure = helper_source.replace(
+            "\tif _failure_reported:\n\t\tquit(1)\n\t\treturn\n\tprint(passed_message)",
+            "\tprint(passed_message)\n\tif _failure_reported:\n\t\tquit(1)\n\t\treturn",
+            1,
+        )
+        umbrella_bypass = umbrella_source.replace(
+            '_finish("Runtime smoke test passed.")',
+            'print("Runtime smoke test passed.")',
+            1,
+        )
+        for label, mutated_umbrella, mutated_helper in (
+            ("missing sticky failure state", umbrella_source, missing_sticky_state),
+            ("success before failure exit", umbrella_source, success_before_failure),
+            ("umbrella bypass", umbrella_bypass, helper_source),
+        ):
+            with self.subTest(rejects=label):
+                with self.assertRaises(AssertionError):
+                    assert_contract(mutated_umbrella, mutated_helper)
 
 
 class LiveEngineSignatureTests(unittest.TestCase):
