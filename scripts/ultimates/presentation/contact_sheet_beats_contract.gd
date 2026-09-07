@@ -11,15 +11,27 @@ const REQUIRED_PHASES: Array[String] = ["release", "active", "recovery"]
 # This list only shrinks as class packages adopt FRAMES_BY_CLASS. The target is
 # an empty list; a complete declaration left here fails the shared invariant.
 const MIGRATION_ALLOWLIST: Array[String] = [
-	"chemist",
-	"knight",
-	"priest",
 	"ranger",
-	"robot",
-	"sniper",
-	"soldier",
 	"thief",
 ]
+
+# Source documents are immutable presentation evidence. Their paths let the
+# focused gate prove a declaration remains tied to the live visual timeline.
+const EVIDENCE_BY_CLASS := {
+	"chemist": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/chemist/manifest.json"},
+	"knight": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/knight/manifest.json"},
+	"priest": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/priest/manifest.json"},
+	"robot": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/robot/manifest.json"},
+	"sniper": {
+		"source_kind": "weapon_timelines",
+		"paths_by_weapon": {
+			"sniper_deadeye_rifle": "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
+			"sniper_spotter_scope": "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
+			"sniper_shatter_rounds": "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
+		},
+	},
+	"soldier": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/soldier/manifest.json"},
+}
 
 const FRAMES_BY_CLASS := {
 	"assassin": {
@@ -71,6 +83,23 @@ const FRAMES_BY_CLASS := {
 			{"phase": "release", "time": 0.80, "required_nodes": ["Matriarch"]},
 			{"phase": "active", "time": 1.90, "required_nodes": ["Matriarch"]},
 			{"phase": "recovery", "time": 3.10, "required_nodes": ["Matriarch"]},
+		],
+	},
+	"chemist": {
+		"blast_powder": [
+			{"phase": "release", "time": 0.95, "required_nodes": ["PhilosophersRitual"]},
+			{"phase": "active", "time": 1.30, "required_nodes": ["PhilosophersRitual"]},
+			{"phase": "recovery", "time": 2.90, "required_nodes": ["PhilosophersRitual"]},
+		],
+		"acid_flask": [
+			{"phase": "release", "time": 0.85, "required_nodes": ["TsarFlask", "LakeRing"]},
+			{"phase": "active", "time": 1.00, "required_nodes": ["TsarFlask", "LakeRing"]},
+			{"phase": "recovery", "time": 3.35, "required_nodes": ["TsarFlask", "LakeRing", "EvaporationSmoke"]},
+		],
+		"homunculus_vial": [
+			{"phase": "release", "time": 0.90, "required_nodes": ["AlchemicalCircle"]},
+			{"phase": "active", "time": 1.75, "required_nodes": ["AlchemicalCircle", "Avatar", "StompWave"]},
+			{"phase": "recovery", "time": 3.60, "required_nodes": ["AlchemicalCircle", "TauntHalo", "ToxicCascade"]},
 		],
 	},
 	"dark_mage": {
@@ -158,6 +187,91 @@ const FRAMES_BY_CLASS := {
 			{"phase": "recovery", "time": 4.90, "required_nodes": ["WallOfSound"]},
 		],
 	},
+	"knight": {
+		"long_spear": [
+			{"phase": "release", "time": 0.60, "required_nodes": ["SpearPlant", "CorridorGuide"]},
+			{"phase": "active", "time": 0.90, "required_nodes": ["CorridorGuide", "Phalanx/RankOne"]},
+			{"phase": "recovery", "time": 5.20, "required_nodes": ["CorridorGuide", "Phalanx/RankOne", "BannerLine"]},
+		],
+		"tower_shield": [
+			{"phase": "release", "time": 0.90, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
+			{"phase": "active", "time": 1.30, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
+			{"phase": "recovery", "time": 7.60, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
+		],
+		"holy_flail": [
+			{"phase": "release", "time": 1.20, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+			{"phase": "active", "time": 1.60, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+			{"phase": "recovery", "time": 6.60, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+		],
+	},
+	"priest": {
+		"priest_reliquary": [
+			{"phase": "release", "time": 0.90, "required_nodes": ["Shrine", "ShrineRays"]},
+			{"phase": "active", "time": 1.25, "required_nodes": ["Shrine", "ShrineRays", "RingJudgment"]},
+			{"phase": "recovery", "time": 7.80, "required_nodes": ["Shrine", "RingJudgment", "Pillar", "Halo"]},
+		],
+		"priest_censer": [
+			{"phase": "release", "time": 0.60, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
+			{"phase": "active", "time": 0.95, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
+			{"phase": "recovery", "time": 6.90, "required_nodes": ["Orbit/Censer", "Orbit/Chain", "SlamWave"]},
+		],
+		"priest_chime": [
+			{"phase": "release", "time": 0.50, "required_nodes": ["Bell", "TollSilver"]},
+			{"phase": "active", "time": 0.80, "required_nodes": ["Bell", "TollSilver"]},
+			{"phase": "recovery", "time": 5.60, "required_nodes": ["Bell", "TollDawn", "DawnGuard"]},
+		],
+	},
+	"robot": {
+		"robot_magnetic_anchor": [
+			{"phase": "release", "time": 0.45, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+			{"phase": "active", "time": 1.05, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+			{"phase": "recovery", "time": 4.25, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+		],
+		"robot_hydraulic_press": [
+			{"phase": "release", "time": 0.72, "required_nodes": ["RobotHydraulicPressProtocol"]},
+			{"phase": "active", "time": 1.32, "required_nodes": ["RobotHydraulicPressProtocol"]},
+			{"phase": "recovery", "time": 3.48, "required_nodes": ["RobotHydraulicPressProtocol"]},
+		],
+		"robot_reactor_core": [
+			{"phase": "release", "time": 0.56, "required_nodes": ["RobotReactorCoreRedZone"]},
+			{"phase": "active", "time": 1.08, "required_nodes": ["RobotReactorCoreRedZone"]},
+			{"phase": "recovery", "time": 5.42, "required_nodes": ["RobotReactorCoreRedZone"]},
+		],
+	},
+	"sniper": {
+		"sniper_deadeye_rifle": [
+			{"phase": "release", "time": 0.75, "required_nodes": ["PhaseNodes/Release/ArenaTracer", "PhaseNodes/Release/MuzzleTracer"]},
+			{"phase": "active", "time": 1.25, "required_nodes": ["PhaseNodes/Active/EndpointFlash", "PhaseNodes/Active/SonicCrack"]},
+			{"phase": "recovery", "time": 2.05, "required_nodes": ["PhaseNodes/Recovery/CasingDrop"]},
+		],
+		"sniper_spotter_scope": [
+			{"phase": "release", "time": 0.85, "required_nodes": ["PhaseNodes/Release/SkyGridCrown", "PhaseNodes/Release/SkyGridRelease"]},
+			{"phase": "active", "time": 1.55, "required_nodes": ["PhaseNodes/Active/BarrageColumnEast", "PhaseNodes/Active/ArenaImpactCore"]},
+			{"phase": "recovery", "time": 2.60, "required_nodes": ["PhaseNodes/Recovery/CollapsePoint"]},
+		],
+		"sniper_shatter_rounds": [
+			{"phase": "release", "time": 0.65, "required_nodes": ["PhaseNodes/Release/MuzzleFlash", "PhaseNodes/Release/FanTrajectory3"]},
+			{"phase": "active", "time": 1.30, "required_nodes": ["PhaseNodes/Active/WaveEchoCore", "PhaseNodes/Active/CrystalWaveCore"]},
+			{"phase": "recovery", "time": 2.20, "required_nodes": ["PhaseNodes/Recovery/CenterReturn"]},
+		],
+	},
+	"soldier": {
+		"soldier_rifle": [
+			{"phase": "release", "time": 0.60, "required_nodes": ["FiringLine", "VolleyLane"]},
+			{"phase": "active", "time": 0.90, "required_nodes": ["RifleGhostCenter", "VolleyLane", "MuzzleFlashWave"]},
+			{"phase": "recovery", "time": 2.60, "required_nodes": ["RifleGhostCenter", "VolleyLane", "MuzzleFlashWave"]},
+		],
+		"soldier_grenade": [
+			{"phase": "release", "time": 0.70, "required_nodes": ["LobArc", "GrenadeOne"]},
+			{"phase": "active", "time": 1.00, "required_nodes": ["FuseRing", "GrenadeOne", "GrenadeThree"]},
+			{"phase": "recovery", "time": 2.90, "required_nodes": ["FuseRing", "GrenadeOne", "GrenadeFive"]},
+		],
+		"soldier_bayonet": [
+			{"phase": "release", "time": 0.80, "required_nodes": ["ChargeCorridor", "RankOne", "FrontalGuard"]},
+			{"phase": "active", "time": 1.10, "required_nodes": ["ChargeCorridor", "RankOne", "FrontalGuard"]},
+			{"phase": "recovery", "time": 3.20, "required_nodes": ["ChargeCorridor", "RankOne", "RankThree"]},
+		],
+	},
 	"doctor": {
 		"restore_potion": [
 			{"phase": "release", "time": 1.10, "required_nodes": ["GiantFlask", "GlassImpact"]},
@@ -181,3 +295,8 @@ const FRAMES_BY_CLASS := {
 static func frames_for_class(class_id: String) -> Dictionary:
 	var frames = FRAMES_BY_CLASS.get(class_id, {})
 	return (frames as Dictionary).duplicate(true) if frames is Dictionary else {}
+
+
+static func evidence_for_class(class_id: String) -> Dictionary:
+	var evidence = EVIDENCE_BY_CLASS.get(class_id, {})
+	return (evidence as Dictionary).duplicate(true) if evidence is Dictionary else {}
