@@ -21,6 +21,7 @@ const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 # FAN-3920 (FD13): incoming-damage collaborator — prevention gates,
 # dodge roll and mitigation math (state/signals stay with Player).
 const PLAYER_DAMAGE_POLICY := preload("res://scripts/player/player_damage_policy.gd")
+const PLAYER_PROGRESSION_RUNTIME := preload("res://scripts/player/player_progression_runtime.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
@@ -288,41 +289,10 @@ var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
 var _movement_input_armed := false # FAN-1096/FAN-1107: all-action neutral rearm blocks held UI direction.
 
-# SCRUM-709: единый источник дефолтных run_modifiers. Раньше тот же 22-ключевой
-# литерал дублировался дословно в инициализаторе var и в configure_character — при
-# добавлении ключа в одно место второе тихо отставало (drift-баг по модификаторам).
+# SCRUM-709: single source of default run_modifiers (var initializer and
+# configure_character); the literal lives in PlayerProgressionRuntime.
 static func _default_run_modifiers() -> Dictionary:
-	return {
-		"damage_multiplier": 1.0,
-		"magic_damage_multiplier": 1.0,
-		"attack_speed_multiplier": 1.0,
-		# SCRUM-976: отдельный final-layer вне softcap release-баланса.
-		"sandbox_player_damage_multiplier": 1.0,
-		"sandbox_player_attack_speed_multiplier": 1.0,
-		"aoe_radius_multiplier": 1.0,
-		"move_speed_multiplier": 1.0,
-		"max_health_multiplier": 1.0,
-		"summon_bonus": 0.0,
-		"damage_flat": 0.0,
-		"max_health_flat": 0.0,
-		"pickup_radius_flat": 0.0,
-		"defense_flat": 0.0,
-		"crit_chance_flat": 0.0,
-		"crit_damage_flat": 0.0,
-		"kill_momentum_stacks": 0.0,
-		"kill_momentum_attack_speed_bonus": 0.0,
-		"kill_momentum_crit_damage_bonus": 0.0,
-		"dodge_flat": 0.0,
-		"xp_gain_multiplier": 1.0,
-		"money_gain_multiplier": 1.0,
-		"ult_charge_multiplier": 1.0,
-		"elite_boss_damage_multiplier": 1.0,
-		"healing_multiplier": 1.0,
-		"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
-		"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
-		"enemy_health_multiplier": 1.0,
-		"knockback_multiplier": 1.0,
-	}
+	return PLAYER_PROGRESSION_RUNTIME.default_run_modifiers()
 
 
 # SCRUM-935: generic data-driven хук class trait'ов. Числовые параметры trait'а
@@ -440,13 +410,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	weapon_config = {"character_id": character_id}
 	var config: Dictionary = CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"])
 
-	stats = PROGRESSION_DATA.base_stats(character_id)
-	artifacts.clear()
-	run_modifiers = _default_run_modifiers()
-	xp = 0
-	xp_to_next = 5
-	level = 1
-	money = 0
+	PLAYER_PROGRESSION_RUNTIME.reset_run_state(self)
 	_ultimate_charge_ledger.reset_for_new_run()
 	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
 	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
@@ -1821,244 +1785,20 @@ func _update_low_hp_state() -> void:
 	_apply_stat_scaling(false, max_health)
 
 
+# FAN-3921 (FD14): reward, cross-class roll and meta skill-tree transitions live
+# in PlayerProgressionRuntime; Player stays the state owner and public API. The
+# skill-tree key maps remain readable here for existing consumers.
+const META_SKILL_MULT_MAP := PLAYER_PROGRESSION_RUNTIME.META_SKILL_MULT_MAP
+const META_SKILL_FLAT_MAP := PLAYER_PROGRESSION_RUNTIME.META_SKILL_FLAT_MAP
+const META_SKILL_ATTRIBUTE_FLAT_MAP := PLAYER_PROGRESSION_RUNTIME.META_SKILL_ATTRIBUTE_FLAT_MAP
+
+
 func apply_reward(reward: Dictionary) -> void:
-	var old_max_health := max_health
-
-	if reward.has("stats"):
-		for stat_id in reward["stats"].keys():
-			stats[stat_id] = float(stats.get(stat_id, 0.0)) + float(reward["stats"][stat_id])
-
-	# SCRUM-900: явная пометка doctor_friendly пропускает sustain-моды предмета
-	# сквозь гейт «Клятвы чумного доктора» (см. _apply_reward_mods).
-	var reward_doctor_friendly := bool(reward.get("doctor_friendly", false))
-	if reward.has("mods"):
-		_apply_reward_mods(reward["mods"], reward_doctor_friendly)
-		# SCRUM-961 «Украденный герб» (§5): слоты роллят чужие классовые id забега.
-		if float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0)) > 0.0:
-			_roll_cross_class_artifacts(int(float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0))))
-	if reward.has("affinity_mods"):
-		# С 0.2 affinity_mods больше не пропадают у «чужого» класса: это
-		# универсальная интерпретация артефакта через текущий class kit.
-		_apply_reward_mods(reward["affinity_mods"], reward_doctor_friendly)
-
-	if reward.get("kind", "") == "artifact":
-		# Храним id и title: id нужен для иконок HUD/паузы, title — для текстов.
-		# SCRUM-960: + опциональный tier материализованного оффера (редкость для UI).
-		# Старые записи {id, title} без tier остаются валидными — читатели берут
-		# tier через .get("tier", 0), 0 = не показывать.
-		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", "")), "description": str(reward.get("description", ""))}
-		var reward_tier := int(reward.get("tier", 0))
-		if reward_tier > 0:
-			artifact_entry["tier"] = reward_tier
-		artifacts.append(artifact_entry)
-
-	_apply_stat_scaling(false, old_max_health)
-
-	if reward.has("heal_percent"):
-		# SCRUM-900: прямой heal-бонус награды — generic-сустейн, «Клятва чумного
-		# доктора» его гасит (кроме явно doctor_friendly предметов). Route/rest/
-		# shop-лечение вне apply_reward не трогаем (решение тикета).
-		if not blocks_generic_sustain() or reward_doctor_friendly:
-			heal_percent(float(reward["heal_percent"]))
-
-	for weapon in _equipped_weapons():
-		_apply_weapon_scaling(weapon)
-
-
-# SCRUM-900: allow_generic_sustain=true (пометка doctor_friendly на награде)
-# пропускает sustain-моды в обычные run-ключи — предмет работает штатными
-# формулами. Без пометки запрещённые ключи (ProgressionData.is_blocked_sustain_mod_key)
-# для класса с trait'ом plague_oath НЕ применяются: наградные регены/вампиризм/
-# триггерные хилы становятся задокументированным no-op (AC SCRUM-900).
-func _apply_reward_mods(mods: Dictionary, allow_generic_sustain := false) -> void:
-	var sustain_blocked := blocks_generic_sustain() and not allow_generic_sustain
-	for modifier_id in mods.keys():
-		if ProgressionData.is_removed_progression_modifier(str(modifier_id)):
-			continue
-		if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(str(modifier_id)):
-			continue
-		if modifier_id.ends_with("_multiplier"):
-			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 1.0)) * float(mods[modifier_id])
-		else:
-			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
-
-
-# SCRUM-961 «Украденный герб» (artifact_system_matrix §5): ролл N случайных ЧУЖИХ
-# классовых артефактов на этот забег — равновероятно, без дублей. Array кладётся в
-# run_modifiers НАПРЯМУЮ (не через _apply_reward_mods: там float-коэрция); живёт до
-# конца забега (run_modifiers пересоздаются в configure_character), сэмплеры читают
-# его параметром cross_class_ids (§1.4).
-func _roll_cross_class_artifacts(slots: int) -> void:
-	var existing_raw = run_modifiers.get("cross_class_artifact_ids", [])
-	var rolled: Array = (existing_raw as Array).duplicate() if existing_raw is Array else []
-	var candidates: Array = []
-	for artifact in ProgressionData.ARTIFACTS:
-		var affinity: Array = (artifact as Dictionary).get("class_affinity", []) as Array
-		if affinity.is_empty() or affinity.has(character_id):
-			continue
-		var artifact_id := str((artifact as Dictionary).get("id", ""))
-		if not rolled.has(artifact_id):
-			candidates.append(artifact_id)
-	candidates.shuffle()
-	for index in range(mini(slots, candidates.size())):
-		rolled.append(candidates[index])
-	run_modifiers["cross_class_artifact_ids"] = rolled
-
-
-# Боевое подмножество модификаторов мета-древа умений (SCRUM-150): суммарные
-# приросты из META_PROGRESSION.skill_modifiers складываются в run_modifiers как
-# постоянный бонус забега (поверх asc-наград). Экономические/мета-флаги дерева
-# (золото/цены/рероллы/death_save) применяются на уровне забега/UI, не здесь.
-const META_SKILL_MULT_MAP := {
-	"damage_mult": "damage_multiplier",
-	"attack_speed_mult": "attack_speed_multiplier",
-	"move_speed_mult": "move_speed_multiplier",
-	"max_health_mult": "max_health_multiplier",
-	"aoe_radius_mult": "aoe_radius_multiplier",
-	"knockback_mult": "knockback_multiplier",
-	"xp_gain_mult": "xp_gain_multiplier",
-	"money_gain_mult": "money_gain_multiplier",
-	"ult_charge_mult": "ult_charge_multiplier",
-	"elite_boss_damage_mult": "elite_boss_damage_multiplier",
-	# SCRUM-828 (Мета 4.0): лечение как рычаг keystone-трейдоффов созвездий
-	# (аптека Атласа +, «Кровавый танец» берсерка −). healing_multiplier уже
-	# консумится в _apply_regeneration/heal-потоках.
-	"healing_mult": "healing_multiplier",
-	# Прогрессия по классам (SCRUM-360): бонусы текущего класса (передаются только
-	# выбранному классу из main); множатся с аккаунтными на тот же run_modifier.
-	"class_damage_mult": "damage_multiplier",
-	"class_attack_speed_mult": "attack_speed_multiplier",
-	"class_max_health_mult": "max_health_multiplier",
-}
-const META_SKILL_FLAT_MAP := {
-	"defense_flat": "defense_flat",
-	"dodge_flat": "dodge_flat",
-	"regeneration_flat": "regeneration_flat",
-	"crit_chance_flat": "crit_chance_flat",
-	"crit_damage_flat": "crit_damage_flat",
-	"dot_damage_flat": "dot_damage_flat",
-	"vampiric_chance_flat": "vampiric_chance_flat",
-	"vampiric_amount_flat": "vampiric_amount_flat",
-	"summon_bonus": "summon_bonus",
-	"ultimate_flat": "ultimate_flat",
-	"low_hp_damage_bonus": "low_hp_damage_bonus",
-	"lowhp_regen_bonus": "lowhp_regen_bonus",
-	# SCRUM-807: разведены под классовые ветви Skill Tree 3.0 (те же run-ключи,
-	# что использует докачка уровней — progression_data.derived_parameters).
-	"pickup_radius_flat": "pickup_radius_flat",
-	"absorb_flat": "absorb_flat",
-	# SCRUM-828 (Мета 4.0): механики звёзд-техник и скрытых звёзд созвездий.
-	# Все ключи уже консумятся артефакт-триггерами player.gd (SCRUM-500):
-	# взрыв при убийстве, контр-волна, шипы, рывки по криту/уклонению.
-	"kill_explosion_chance": "kill_explosion_chance",
-	"take_hit_pulse_chance": "take_hit_pulse_chance",
-	"thorn_reflect_multiplier": "thorn_reflect_multiplier",
-	"crit_speed_burst": "crit_speed_burst",
-	"dodge_rush_bonus": "dodge_rush_bonus",
-	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона, активный лишь при
-	# выполнении условия. Хранятся как забеговый бонус; гейты (*_active/fraction)
-	# ставит _update_conditional_keystones/_trigger_rush_window, консумит их
-	# derived_parameters (damage_multiplier).
-	"hurt_damage_bonus": "hurt_damage_bonus",
-	"stance_damage_bonus": "stance_damage_bonus",
-	"rush_damage_bonus": "rush_damage_bonus",
-	"swarm_damage_bonus": "swarm_damage_bonus",
-	# SCRUM-834a: условные keystone на СУЩЕСТВУЮЩИХ гейтах, но с не-урон стат-целью
-	# (тот же флаг stance_active/rush_window_active). stance→скорострельность
-	# (soldier «Шквал»), rush→крит-шанс (thief «Из тени»). Консумит derived_parameters.
-	"stance_attack_speed_bonus": "stance_attack_speed_bonus",
-	"rush_crit_bonus": "rush_crit_bonus",
-	# SCRUM-835 (Мета 4.1b): semantic keystone keys. Их консумят meta_* helpers
-	# player.gd/class_weapon.gd, чтобы эффекты были привязаны к боевой подсистеме,
-	# а не к generic damage-gate.
-	"enemy_hit_damage_down": "enemy_hit_damage_down",
-	"gold_damage_per_50": "gold_damage_per_50",
-	"gold_damage_bonus_cap": "gold_damage_bonus_cap",
-	"elemental_resonance_bonus": "elemental_resonance_bonus",
-	"elemental_orb_extra_count": "elemental_orb_extra_count",
-	"prism_rift_radius_mult": "prism_rift_radius_mult",
-	"heal_to_holy_damage_ratio": "heal_to_holy_damage_ratio",
-	"ward_absorb_bonus": "ward_absorb_bonus",
-	"reactor_heat_damage_bonus": "reactor_heat_damage_bonus",
-	"reactor_heat_incoming_damage": "reactor_heat_incoming_damage",
-	"magnet_radius_mult": "magnet_radius_mult",
-	"device_attack_speed_bonus": "device_attack_speed_bonus",
-	"non_device_damage_mult": "non_device_damage_mult",
-	"mine_extra_count": "mine_extra_count",
-	"dot_death_spread_duration": "dot_death_spread_duration",
-	"direct_damage_mult": "direct_damage_mult",
-	"beam_duration_mult": "beam_duration_mult",
-	"explosion_radius_mult": "explosion_radius_mult",
-	"guitar_aura_radius_mult": "guitar_aura_radius_mult",
-	"riff_streak_damage_bonus": "riff_streak_damage_bonus",
-	"crit_execute_threshold": "crit_execute_threshold",
-	"shadow_burst_invisibility_time": "shadow_burst_invisibility_time",
-	"charged_shot_extra_pierce": "charged_shot_extra_pierce",
-	"charge_time_mult": "charge_time_mult",
-	"trap_extra_count": "trap_extra_count",
-	"non_trap_damage_mult": "non_trap_damage_mult",
-	"drain_extra_targets": "drain_extra_targets",
-	"medkit_healing_mult": "medkit_healing_mult",
-	"surgical_close_damage_bonus": "surgical_close_damage_bonus",
-	"ranged_damage_mult": "ranged_damage_mult",
-	"cloud_detonation_radius_mult": "cloud_detonation_radius_mult",
-	"pool_duration_mult": "pool_duration_mult",
-	"homunculus_power_mult": "homunculus_power_mult",
-	"pet_damage_mult": "pet_damage_mult",
-	"pet_personal_damage_mult": "pet_personal_damage_mult",
-	"briar_radius_mult": "briar_radius_mult",
-	"bastion_defense_bonus": "bastion_defense_bonus",
-	"bastion_taunt": "bastion_taunt",
-	# SCRUM-1069 Guild Atlas: bounded once-per-run recovery share.
-	"death_save_health_fraction": "death_save_health_fraction",
-}
-const META_SKILL_ATTRIBUTE_FLAT_MAP := {
-	"strength_flat": "strength",
-	"agility_flat": "agility",
-	"intelligence_flat": "intelligence",
-	"perception_flat": "perception",
-	"energy_flat": "energy",
-	"knowledge_flat": "knowledge",
-	"endurance_flat": "endurance",
-	"leadership_flat": "leadership",
-}
+	PLAYER_PROGRESSION_RUNTIME.apply_reward(self, reward)
 
 
 func apply_meta_skill_modifiers(mods: Dictionary) -> void:
-	var old_max_health := max_health
-	# SCRUM-900 «Клятва чумного доктора»: мета-дерево — тоже generic-источник;
-	# regen/vampirism/low-HP regen звёзды для класса с trait'ом не применяются
-	# (задокументированный no-op, как у наградного пула).
-	var sustain_blocked := blocks_generic_sustain()
-	for key in META_SKILL_ATTRIBUTE_FLAT_MAP:
-		if mods.has(key):
-			var stat_key: String = META_SKILL_ATTRIBUTE_FLAT_MAP[key]
-			stats[stat_key] = float(stats.get(stat_key, 0.0)) + float(mods[key])
-	for key in META_SKILL_MULT_MAP:
-		if mods.has(key):
-			var run_key: String = META_SKILL_MULT_MAP[key]
-			# Значения дерева — доли (+0.06), множитель = 1.0 + сумма.
-			run_modifiers[run_key] = float(run_modifiers.get(run_key, 1.0)) * (1.0 + float(mods[key]))
-	for key in META_SKILL_FLAT_MAP:
-		if mods.has(key):
-			var run_key: String = META_SKILL_FLAT_MAP[key]
-			if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(run_key):
-				continue
-			run_modifiers[run_key] = float(run_modifiers.get(run_key, 0.0)) + float(mods[key])
-	_apply_stat_scaling(false, old_max_health)
-	for weapon in _equipped_weapons():
-		_apply_weapon_scaling(weapon)
-	# Capstone «Боевой раж»: ульта стартует частично заряженной.
-	var start_charge := float(mods.get("ult_start_charge", 0.0))
-	if start_charge > 0.0:
-		ultimate_charge = clampf(ultimate_max_charge * start_charge, 0.0, ultimate_max_charge)
-	# Capstone «Вторая жизнь»: флаг спасения от смерти (логика — в take_damage).
-	if float(mods.get("death_save", 0.0)) > 0.0:
-		run_modifiers["death_save"] = 1.0
-	# SCRUM-828: скрытые звезды «щит-волна при низком HP» (та же механика, что
-	# артефакт «Рубеж Стража» — _trigger_lowhp_guard, перезаряд за порог).
-	if float(mods.get("lowhp_guard", 0.0)) > 0.0:
-		run_modifiers["lowhp_guard"] = 1.0
+	PLAYER_PROGRESSION_RUNTIME.apply_meta_skill_modifiers(self, mods)
 
 
 func apply_constellation_weapon_profiles(raw_profiles: Dictionary) -> void:
@@ -3459,29 +3199,15 @@ func _take_damage_accepts_feedback(target: Node) -> bool:
 
 
 func gain_xp(amount: int) -> void:
-	xp += maxi(1, int(round(float(amount) * float(run_modifiers.get("xp_gain_multiplier", 1.0)))))
-	while xp >= xp_to_next:
-		xp -= xp_to_next
-		level += 1
-		xp_to_next = ProgressionData.next_xp_requirement(xp_to_next)
-		leveled_up.emit()
+	PLAYER_PROGRESSION_RUNTIME.gain_xp(self, amount)
 
 
 func gain_money(amount: int) -> void:
-	var gained := maxi(1, int(round(float(amount) * float(run_modifiers.get("money_gain_multiplier", 1.0)))))
-	money += gained
-	# SCRUM-502: учёт собранного за забег золота для экрана итогов. Main = current_scene.
-	if is_inside_tree():
-		var game_node := get_tree().current_scene
-		if game_node != null and game_node.has_method("add_run_gold_collected"):
-			game_node.add_run_gold_collected(gained)
+	PLAYER_PROGRESSION_RUNTIME.gain_money(self, amount)
 
 
 func spend_money(amount: int) -> bool:
-	if money < amount:
-		return false
-	money -= amount
-	return true
+	return PLAYER_PROGRESSION_RUNTIME.spend_money(self, amount)
 
 
 func heal_percent(percent: float) -> void:
@@ -3537,118 +3263,11 @@ func _show_heal_vfx() -> void:
 
 
 func _apply_stat_scaling(full_heal := false, old_max_health := 0.0) -> void:
-	derived_parameters = PROGRESSION_DATA.derived_parameters(stats, run_modifiers, weapon_config)
-	speed = float(derived_parameters.get("move_speed", 235.0))
-	max_health = float(derived_parameters.get("health_point", 88.0))
-	pickup_radius = float(derived_parameters.get("pickup_radius", 115.0))
-
-	if full_heal or health <= 0.0:
-		health = max_health
-	else:
-		health = min(max_health, health + max(max_health - old_max_health, 0.0))
+	PLAYER_PROGRESSION_RUNTIME.apply_stat_scaling(self, full_heal, old_max_health)
 
 
 func _apply_weapon_scaling(weapon: Node) -> void:
-	_capture_weapon_base_values(weapon)
-	var meta_context := meta_context_for_weapon(weapon)
-	var weapon_id_value := str(meta_context.get("weapon_id", ""))
-	var constellation_attack_speed := constellation_weapon_multiplier(weapon_id_value, "weapon_attack_speed_mult")
-	var constellation_geometry := constellation_weapon_geometry_multiplier(weapon_id_value)
-	var geometry_capabilities: Array = weapon_config.get("geometry_capabilities", [])
-	var attack_area_multiplier := float(derived_parameters.get("attack_area_multiplier", 1.0)) * constellation_geometry
-
-	if weapon.get("damage") != null:
-		var damage_parameter := "damage"
-		if weapon.get("damage_parameter") != null:
-			damage_parameter = str(weapon.get("damage_parameter"))
-		var scaled_damage := float(derived_parameters.get(damage_parameter, weapon.get_meta("base_damage")))
-		scaled_damage += constellation_weapon_amount(weapon_id_value, "weapon_damage_flat")
-		weapon.set("damage", scaled_damage)
-
-	if weapon.get("fire_interval") != null:
-		var attack_speed := float(derived_parameters.get("attack_speed", 1.0))
-		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
-		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed * constellation_attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
-
-	var cadence := maxf(float(derived_parameters.get("attack_cadence_multiplier", 1.0)), 0.1)
-	AttributeContract.apply_weapon_cadence(weapon, cadence, meta_interval_multiplier(meta_context))
-	if weapon.has_method("refresh_persistent_status_cadence"):
-		weapon.call("refresh_persistent_status_cadence")
-
-	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
-	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
-	if weapon.get("summon_interval") != null:
-		var summon_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
-		var base_summon_interval := float(weapon.get_meta("base_summon_interval", weapon.get("summon_interval")))
-		weapon.set("summon_interval", maxf(0.18, base_summon_interval / maxf(summon_attack_speed * constellation_attack_speed, 0.1)))
-	if weapon.get("summon_attack_interval") != null:
-		var unit_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
-		var base_summon_attack_interval := float(weapon.get_meta("base_summon_attack_interval", weapon.get("summon_attack_interval")))
-		weapon.set("summon_attack_interval", maxf(0.18, base_summon_attack_interval / maxf(unit_attack_speed * constellation_attack_speed, 0.1)))
-
-	if weapon.get("attack_range") != null:
-		var base_attack_range := float(weapon.get_meta("base_attack_range"))
-		weapon.set("attack_range", base_attack_range * constellation_geometry)
-
-	if geometry_capabilities.has("aoe_radius"):
-		var radius_property := "aoe_radius" if weapon.get("aoe_radius") != null else "summon_aoe_radius"
-		if weapon.get(radius_property) != null:
-			var base_radius := float(weapon.get_meta("base_%s" % radius_property, 200.0))
-			weapon.set(radius_property, base_radius * attack_area_multiplier * meta_radius_multiplier(meta_context))
-	if geometry_capabilities.has("inner_width") and weapon.get("inner_width") != null:
-		weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * attack_area_multiplier)
-	if geometry_capabilities.has("outer_width") and weapon.get("outer_width") != null:
-		weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * attack_area_multiplier)
-
-	if geometry_capabilities.has("sweep_degrees") and weapon.get("sweep_degrees") != null:
-		var base_sweep_degrees := float(weapon.get_meta("base_sweep_degrees", weapon.get("sweep_degrees")))
-		weapon.set("sweep_degrees", clampf(base_sweep_degrees * attack_area_multiplier, 1.0, 360.0))
-	if geometry_capabilities.has("cone_degrees") and weapon.get("cone_degrees") != null:
-		weapon.set("cone_degrees", clampf(float(weapon.get_meta("base_cone_degrees")) * attack_area_multiplier, 1.0, 360.0))
-
-	if weapon.get("projectile_speed") != null:
-		weapon.set("projectile_speed", float(weapon.get_meta("base_projectile_speed", 520.0)))
-
-	if weapon.get("knockback") != null:
-		var control_multiplier := constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult") * constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
-		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context) * control_multiplier)
-
-	if weapon.get("pool_duration") != null and weapon.has_meta("base_pool_duration"):
-		weapon.set("pool_duration", maxf(0.2, float(weapon.get_meta("base_pool_duration")) * meta_duration_multiplier(meta_context)))
-
-	if weapon.get("orbit_duration") != null and weapon.has_meta("base_orbit_duration"):
-		weapon.set("orbit_duration", maxf(0.2, float(weapon.get_meta("base_orbit_duration")) * meta_duration_multiplier(meta_context)))
-
-	if weapon.get("charge_seconds") != null and weapon.has_meta("base_charge_seconds"):
-		var charge_context := meta_context.duplicate(true)
-		charge_context["charge_seconds"] = float(weapon.get_meta("base_charge_seconds"))
-		charge_context["is_charged"] = float(weapon.get_meta("base_charge_seconds")) > 0.0
-		weapon.set("charge_seconds", maxf(0.0, float(weapon.get_meta("base_charge_seconds")) * meta_charge_time_multiplier(charge_context)))
-
-	if geometry_capabilities.has("beam_width") and weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
-		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * attack_area_multiplier)
-
-	if geometry_capabilities.has("wave_width") and weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
-		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * attack_area_multiplier)
-
-	if geometry_capabilities.has("suppression_width") and weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
-		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * attack_area_multiplier)
-
-	if weapon.get("max_summons") != null:
-		# FAN-2249: ветку парка решает объявленная summon_semantics конфига, а не
-		# второй список attack_mode; счёт «обычной» ветки живёт единственной
-		# формулой AttributeContract.summon_runtime_count — рантайм и
-		# предъявление (карточки/досье/advisor) не могут разойтись.
-		if AttributeContract.weapon_summon_semantics(weapon_config) == "device":
-			# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
-			# summon_amount (ClassWeapon._engineer_turret_limit /
-			# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
-			# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
-			# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
-			# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
-			weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
-		else:
-			weapon.set("max_summons", int(AttributeContract.summon_runtime_count(weapon_config, stats, run_modifiers)))
+	PLAYER_PROGRESSION_RUNTIME.apply_weapon_scaling(self, weapon)
 
 
 func _equipped_weapons() -> Array:
@@ -3665,48 +3284,7 @@ func _equipped_weapons() -> Array:
 
 
 func _capture_weapon_base_values(weapon: Node) -> void:
-	if weapon.get("damage") != null and not weapon.has_meta("base_damage"):
-		weapon.set_meta("base_damage", weapon.get("damage"))
-	if weapon.get("fire_interval") != null and not weapon.has_meta("base_fire_interval"):
-		weapon.set_meta("base_fire_interval", weapon.get("fire_interval"))
-	if weapon.get("summon_interval") != null and not weapon.has_meta("base_summon_interval"):
-		weapon.set_meta("base_summon_interval", weapon.get("summon_interval"))
-	if weapon.get("summon_attack_interval") != null and not weapon.has_meta("base_summon_attack_interval"):
-		weapon.set_meta("base_summon_attack_interval", weapon.get("summon_attack_interval"))
-	if weapon.get("attack_range") != null and not weapon.has_meta("base_attack_range"):
-		weapon.set_meta("base_attack_range", weapon.get("attack_range"))
-	if weapon.get("aoe_radius") != null and not weapon.has_meta("base_aoe_radius"):
-		weapon.set_meta("base_aoe_radius", weapon.get("aoe_radius"))
-	if weapon.get("summon_aoe_radius") != null and not weapon.has_meta("base_summon_aoe_radius"):
-		weapon.set_meta("base_summon_aoe_radius", weapon.get("summon_aoe_radius"))
-	if weapon.get("sweep_degrees") != null and not weapon.has_meta("base_sweep_degrees"):
-		weapon.set_meta("base_sweep_degrees", weapon.get("sweep_degrees"))
-	if weapon.get("cone_degrees") != null and not weapon.has_meta("base_cone_degrees"):
-		weapon.set_meta("base_cone_degrees", weapon.get("cone_degrees"))
-	if weapon.get("inner_width") != null and not weapon.has_meta("base_inner_width"):
-		weapon.set_meta("base_inner_width", weapon.get("inner_width"))
-	if weapon.get("outer_width") != null and not weapon.has_meta("base_outer_width"):
-		weapon.set_meta("base_outer_width", weapon.get("outer_width"))
-	if weapon.get("max_summons") != null and not weapon.has_meta("base_max_summons"):
-		weapon.set_meta("base_max_summons", weapon.get("max_summons"))
-	if weapon.get("projectile_speed") != null and not weapon.has_meta("base_projectile_speed"):
-		weapon.set_meta("base_projectile_speed", weapon.get("projectile_speed"))
-	if weapon.get("beam_width") != null and not weapon.has_meta("base_beam_width"):
-		weapon.set_meta("base_beam_width", weapon.get("beam_width"))
-	if weapon.get("wave_width") != null and not weapon.has_meta("base_wave_width"):
-		weapon.set_meta("base_wave_width", weapon.get("wave_width"))
-	if weapon.get("knockback") != null and not weapon.has_meta("base_knockback"):
-		weapon.set_meta("base_knockback", weapon.get("knockback"))
-	if weapon.get("amp_pulse_interval") != null and not weapon.has_meta("base_amp_pulse_interval"):
-		weapon.set_meta("base_amp_pulse_interval", weapon.get("amp_pulse_interval"))
-	if weapon.get("pool_tick_interval") != null and not weapon.has_meta("base_pool_tick_interval"):
-		weapon.set_meta("base_pool_tick_interval", weapon.get("pool_tick_interval"))
-	if weapon.get("pool_duration") != null and not weapon.has_meta("base_pool_duration"):
-		weapon.set_meta("base_pool_duration", weapon.get("pool_duration"))
-	if weapon.get("orbit_duration") != null and not weapon.has_meta("base_orbit_duration"):
-		weapon.set_meta("base_orbit_duration", weapon.get("orbit_duration"))
-	if weapon.get("charge_seconds") != null and not weapon.has_meta("base_charge_seconds"):
-		weapon.set_meta("base_charge_seconds", weapon.get("charge_seconds"))
+	PLAYER_PROGRESSION_RUNTIME.capture_weapon_base_values(weapon)
 
 
 func _ensure_default_input_actions() -> void:
