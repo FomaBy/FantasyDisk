@@ -218,6 +218,7 @@ const EPIC_SCALE_PROFILE_META := "epic_scale_profile"
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("enemies")
+	set_notify_local_transform(true)
 	_apply_collision_profile()
 	_apply_gameplay_sandbox_runtime()
 	health = max_health
@@ -232,10 +233,8 @@ func _ready() -> void:
 	if not _configure_full_frame_animation():
 		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
-	# Combat Feel Rework (этап B): пер-инстансные знаки орбиты/строба из чётности
-	# instance id (детерминированный разъезд пачек в обе стороны) + видимый радиус
-	# для сепарации (после fit/epic scale) + stagger рефреша кэша соседей, чтобы
-	# 48 мобов не сканировали группу в один и тот же кадр.
+	# Stable per-instance steering signs, fitted separation radius, and staggered
+	# refresh timing keep a 48-enemy group from refreshing in one physics tick.
 	_orbit_sign = 1.0 if get_instance_id() % 2 == 0 else -1.0
 	_strafe_sign = 1.0 if (get_instance_id() >> 1) % 2 == 0 else -1.0
 	_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
@@ -249,6 +248,9 @@ func _ready() -> void:
 		elite_attack_id = str(config.get("attack_id", ""))
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_LOCAL_TRANSFORM_CHANGED:
+		CombatSpatialIndex.track_moved(self)
 
 func _apply_unique_encounter_pattern_meta(entity_id: String) -> void:
 	var pattern := ProgressionData.unique_encounter_pattern(entity_id)
@@ -454,10 +456,8 @@ func _separation_rank_weight() -> float:
 		return SEPARATION_ELITE_WEIGHT
 	return 1.0
 
-
-# The shared spatial index is rebuilt with CombatTargetQuery's frame snapshot.
-# It only returns nearby grid cells; exact range filtering and the four-nearest
-# ordering below remain the existing behavior.
+# The frame-scoped spatial index supplies nearby cells; current-position range
+# filtering and four-nearest ordering remain the existing behavior.
 func _refresh_separation_neighbors() -> void:
 	_separation_neighbors.clear()
 	_separation_scratch_dist.clear()

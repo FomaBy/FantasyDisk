@@ -84,6 +84,7 @@ func _initialize() -> void:
 	await _test_pair_separation(errors)
 	await _test_epic_separation_immunity(errors)
 	await _test_freed_cached_neighbor(errors)
+	await _test_same_frame_cell_boundary_movement(errors)
 	await _test_shooter_strafe(errors)
 	await _test_spawn_protection(errors)
 
@@ -214,6 +215,26 @@ func _test_freed_cached_neighbor(errors: Array[String]) -> void:
 		errors.append("(d) separation вернул non-finite velocity после freed neighbor.")
 
 	_cleanup([survivor, player])
+	await process_frame
+
+
+# A neighbour that crosses a spatial cell boundary after the frame index was
+# built must be found at its current position, matching the original scan.
+func _test_same_frame_cell_boundary_movement(errors: Array[String]) -> void:
+	var source := _make_enemy(Vector2(280.0, 0.0))
+	var mover := _make_enemy(Vector2(139.0, 0.0))
+	await process_frame
+
+	source.call("_refresh_separation_neighbors")
+	if (source.get("_separation_neighbors") as Array).has(mover):
+		errors.append("Same-frame fixture started with its 141px neighbour in range.")
+
+	mover.global_position = Vector2(141.0, 0.0)
+	source.call("_refresh_separation_neighbors")
+	if not (source.get("_separation_neighbors") as Array).has(mover):
+		errors.append("Same-frame cell crossing missed a neighbour now 139px away.")
+
+	_cleanup([mover, source])
 	await process_frame
 
 

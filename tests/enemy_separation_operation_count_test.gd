@@ -39,6 +39,7 @@ func _initialize() -> void:
 		await _measure_fixture("sparse", crowd_case, errors)
 		await _measure_fixture("dense", crowd_case, errors)
 	await _check_edge_fixture(errors)
+	await _check_same_frame_move_fixture(errors)
 	if not errors.is_empty():
 		for error in errors:
 			push_error("Enemy separation operation count: %s" % error)
@@ -130,6 +131,7 @@ func _measure_fixture(kind: String, crowd_case: Dictionary, errors: Array[String
 	SPATIAL_INDEX.debug_candidate_visits_enabled = true
 	SPATIAL_INDEX.debug_candidate_visits = 0
 	SPATIAL_INDEX.debug_build_visits = 0
+	SPATIAL_INDEX.debug_move_update_visits = 0
 	for enemy in enemies:
 		var expected := _expected_neighbors(enemy, enemies)
 		enemy.call("_refresh_separation_neighbors")
@@ -142,14 +144,17 @@ func _measure_fixture(kind: String, crowd_case: Dictionary, errors: Array[String
 
 	var snapshot_visits: int = TARGET_QUERY.debug_snapshot_build_visits
 	var index_build_visits: int = SPATIAL_INDEX.debug_build_visits
+	var index_update_visits: int = SPATIAL_INDEX.debug_move_update_visits
 	var query_visits: int = SPATIAL_INDEX.debug_candidate_visits
-	var total_work := snapshot_visits + index_build_visits + query_visits
+	var total_work := snapshot_visits + index_build_visits + index_update_visits + query_visits
 	var fixture_id := "%s/%s" % [kind, crowd_case["id"]]
 	var neighbor_signature := _neighbor_signature(enemies)
 	if snapshot_visits != count:
 		errors.append("%s/%s snapshot visits were %d, expected %d." % [kind, crowd_case["id"], snapshot_visits, count])
 	if index_build_visits != count:
 		errors.append("%s/%s index-build visits were %d, expected %d." % [kind, crowd_case["id"], index_build_visits, count])
+	if index_update_visits != 0:
+		errors.append("%s/%s unexpectedly moved %d indexed enemies." % [kind, crowd_case["id"], index_update_visits])
 	if kind == "dense" and query_visits != count * count:
 		errors.append("%s/%s must retain dense-cell query cost (%d != %d)." % [kind, crowd_case["id"], query_visits, count * count])
 	if kind == "sparse" and query_visits >= count * count:
@@ -169,6 +174,7 @@ func _measure_fixture(kind: String, crowd_case: Dictionary, errors: Array[String
 		"neighbor_signature_sha256": neighbor_signature,
 		"snapshot_build_visits": snapshot_visits,
 		"spatial_index_build_visits": index_build_visits,
+		"spatial_index_update_visits": index_update_visits,
 		"candidate_query_visits": query_visits,
 		"total_work": total_work,
 	}
@@ -188,5 +194,53 @@ func _check_edge_fixture(errors: Array[String]) -> void:
 	var actual: Array = source.get("_separation_neighbors")
 	if not actual.has(inside) or actual.has(edge):
 		errors.append("Range edge fixture did not preserve strict < 140px behavior.")
+	holder.queue_free()
+	await process_frame
+
+
+func _check_same_frame_move_fixture(errors: Array[String]) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var source := _make_enemy(holder, Vector2(280.0, 0.0), 0)
+	var mover := _make_enemy(holder, Vector2(139.0, 0.0), 1)
+	await process_frame
+
+	TARGET_QUERY.debug_snapshot_build_visits_enabled = true
+	TARGET_QUERY.debug_snapshot_build_visits = 0
+	SPATIAL_INDEX.debug_candidate_visits_enabled = true
+	SPATIAL_INDEX.debug_candidate_visits = 0
+	SPATIAL_INDEX.debug_build_visits = 0
+	SPATIAL_INDEX.debug_move_update_visits = 0
+	source.call("_refresh_separation_neighbors")
+	mover.global_position = Vector2(141.0, 0.0)
+	source.call("_refresh_separation_neighbors")
+	TARGET_QUERY.debug_snapshot_build_visits_enabled = false
+	SPATIAL_INDEX.debug_candidate_visits_enabled = false
+
+	var actual: Array = source.get("_separation_neighbors")
+	if not actual.has(mover):
+		errors.append("Same-frame move fixture missed the current-position neighbour.")
+	if SPATIAL_INDEX.debug_move_update_visits != 1:
+		errors.append("Same-frame move fixture recorded %d index-update visits, expected 1." % SPATIAL_INDEX.debug_move_update_visits)
+	var total_work := (
+		TARGET_QUERY.debug_snapshot_build_visits
+		+ SPATIAL_INDEX.debug_build_visits
+		+ SPATIAL_INDEX.debug_move_update_visits
+		+ SPATIAL_INDEX.debug_candidate_visits
+	)
+	var result := {
+		"revision": "candidate",
+		"fixture": "same_frame_cell_boundary_move",
+		"enemy_count": 2,
+		"baseline_snapshot_build_visits": 2,
+		"baseline_candidate_query_visits": 4,
+		"baseline_total_work": 6,
+		"snapshot_build_visits": TARGET_QUERY.debug_snapshot_build_visits,
+		"spatial_index_build_visits": SPATIAL_INDEX.debug_build_visits,
+		"spatial_index_update_visits": SPATIAL_INDEX.debug_move_update_visits,
+		"candidate_query_visits": SPATIAL_INDEX.debug_candidate_visits,
+		"total_work": total_work,
+	}
+	print("MEASUREMENT %s" % JSON.stringify(result))
 	holder.queue_free()
 	await process_frame
