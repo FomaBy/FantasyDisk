@@ -272,6 +272,42 @@ class QualityGateTests(unittest.TestCase):
             }
         self.assertEqual(discovered, {"visual_regression/real_visual_test.gd"})
 
+    def test_runtime_smoke_helper_is_not_an_executable_suite(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            discovered = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.discover_godot_tests()
+            }
+            full = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "full", [], "origin/dev", False
+                )
+            }
+        expected = {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+            "support/real_support_test.gd",
+            "unrelated_test.gd",
+        }
+        self.assertEqual(discovered, expected)
+        self.assertEqual(full, expected)
+
     def test_nested_suite_runs_from_its_own_resource_path(self) -> None:
         nested = ROOT / "tests" / "ultimates" / "registry_contract_test.gd"
         self.assertEqual(
@@ -792,6 +828,39 @@ class QualityGateTests(unittest.TestCase):
         self.assertLessEqual(self.quality.CORE_CHANGED_TESTS, names)
         self.assertIn("enemy_separation_behavior_test", names)
         self.assertIn(self.quality.RUNTIME_SMOKE, names)
+
+    def test_runtime_smoke_helper_change_selects_transitive_suites(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            stack.enter_context(mock.patch.object(
+                self.quality,
+                "_git_changed_paths",
+                return_value={"tests/support/runtime_smoke_helpers.gd"},
+            ))
+            selected = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "changed", [], "origin/dev", False
+                )
+            }
+        self.assertEqual(selected, {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+        })
 
     def test_changed_profile_selects_typography_inventory_suite_for_scanned_paths(self) -> None:
         cases = {
