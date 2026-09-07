@@ -11,6 +11,7 @@ static var _cached_query_generation := -1
 static var _cached_frame_key := -1
 static var _cells: Dictionary = {}
 static var _node_cells: Dictionary = {}
+static var _snapshot_orders: Dictionary = {}
 
 # FAN-3918: test-only counter for comparable fixed-fixture visit counts.
 static var debug_candidate_visits_enabled := false
@@ -65,6 +66,14 @@ static func track_moved(node: Node2D) -> void:
 	_node_cells[node_id] = current_cell
 
 
+static func snapshot_order(node: Node2D) -> int:
+	return int(_snapshot_orders.get(node.get_instance_id(), -1))
+
+
+static func precedes(first: Node2D, second: Node2D) -> bool:
+	return snapshot_order(first) < snapshot_order(second)
+
+
 static func _ensure_current(source: Node) -> void:
 	var enemies := CombatTargetQuery.enemies(source)
 	var tree := source.get_tree() if source != null and source.is_inside_tree() else null
@@ -77,7 +86,9 @@ static func _ensure_current(source: Node) -> void:
 	_cached_frame_key = _frame_key()
 	_cells.clear()
 	_node_cells.clear()
-	for node in enemies:
+	_snapshot_orders.clear()
+	for order in range(enemies.size()):
+		var node = enemies[order]
 		if debug_candidate_visits_enabled:
 			debug_build_visits += 1
 		if not is_instance_valid(node):
@@ -86,7 +97,9 @@ static func _ensure_current(source: Node) -> void:
 		var cell: Array = _cells.get(cell_key, [])
 		cell.append(node)
 		_cells[cell_key] = cell
-		_node_cells[node.get_instance_id()] = cell_key
+		var node_id := node.get_instance_id()
+		_node_cells[node_id] = cell_key
+		_snapshot_orders[node_id] = order
 
 
 static func _cell_for(position: Vector2) -> Vector2i:

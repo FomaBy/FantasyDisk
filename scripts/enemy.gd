@@ -456,8 +456,7 @@ func _separation_rank_weight() -> float:
 		return SEPARATION_ELITE_WEIGHT
 	return 1.0
 
-# The frame-scoped spatial index supplies nearby cells; current-position range
-# filtering and four-nearest ordering remain the existing behavior.
+# Nearby cells come from the frame index; range and four-nearest ordering stay unchanged.
 func _refresh_separation_neighbors() -> void:
 	_separation_neighbors.clear()
 	_separation_scratch_dist.clear()
@@ -477,7 +476,9 @@ func _refresh_separation_neighbors() -> void:
 			continue
 		var insert_at := _separation_scratch_dist.size()
 		for index in range(_separation_scratch_dist.size()):
-			if dist_sq < float(_separation_scratch_dist[index]):
+			var indexed_distance := float(_separation_scratch_dist[index])
+			var wins_tie := dist_sq == indexed_distance and CombatSpatialIndex.precedes(other, _separation_neighbors[index])
+			if dist_sq < indexed_distance or wins_tie:
 				insert_at = index
 				break
 		if insert_at >= SEPARATION_MAX_NEIGHBORS:
@@ -494,8 +495,7 @@ func _separation_velocity() -> Vector2:
 		return Vector2.ZERO
 	var push := Vector2.ZERO
 	for node in _separation_neighbors:
-		# A cached neighbor may die between 0.2 s refreshes. Casting a freed
-		# Variant raises before a post-cast is_instance_valid() guard can run.
+		# Cached neighbors may die; validate the Variant before casting it.
 		if not is_instance_valid(node):
 			continue
 		var other := node as Node2D

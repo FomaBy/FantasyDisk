@@ -85,6 +85,7 @@ func _initialize() -> void:
 	await _test_epic_separation_immunity(errors)
 	await _test_freed_cached_neighbor(errors)
 	await _test_same_frame_cell_boundary_movement(errors)
+	await _test_equal_distance_snapshot_order(errors)
 	await _test_shooter_strafe(errors)
 	await _test_spawn_protection(errors)
 
@@ -235,6 +236,39 @@ func _test_same_frame_cell_boundary_movement(errors: Array[String]) -> void:
 		errors.append("Same-frame cell crossing missed a neighbour now 139px away.")
 
 	_cleanup([mover, source])
+	await process_frame
+
+
+# Equal-distance ties retain the shared enemy snapshot order. The first four
+# cardinal neighbours cancel exactly; selecting later diagonal neighbours
+# changes both neighbour identities and separation force.
+func _test_equal_distance_snapshot_order(errors: Array[String]) -> void:
+	var source := _make_enemy(Vector2(280.0, 280.0))
+	var offsets: Array[Vector2] = [
+		Vector2(20.0, 0.0),
+		Vector2(-20.0, 0.0),
+		Vector2(0.0, 20.0),
+		Vector2(0.0, -20.0),
+		Vector2(12.0, 16.0),
+		Vector2(-12.0, 16.0),
+		Vector2(12.0, -16.0),
+		Vector2(-12.0, -16.0),
+	]
+	var neighbours: Array[Node2D] = []
+	for offset in offsets:
+		neighbours.append(_make_enemy(source.global_position + offset))
+	await process_frame
+
+	source.call("_refresh_separation_neighbors")
+	var selected: Array = source.get("_separation_neighbors")
+	var expected: Array[Node2D] = neighbours.slice(0, 4)
+	if selected != expected:
+		errors.append("Equal-distance ties changed snapshot-order identities: expected first four neighbours.")
+	var separation: Vector2 = source.call("_separation_velocity")
+	if not separation.is_equal_approx(Vector2.ZERO):
+		errors.append("Equal-distance cardinal ties did not cancel separation force: %s." % separation)
+
+	_cleanup(neighbours + [source])
 	await process_frame
 
 
