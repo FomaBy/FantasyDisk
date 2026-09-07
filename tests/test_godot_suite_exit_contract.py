@@ -29,6 +29,14 @@ EXPECTED_RUNTIME_SMOKE_DESCENDANTS = frozenset(
         "balance/sniper/sniper_weapon_mechanics_test.gd",
         "balance/soldier/soldier_weapon_mechanics_test.gd",
         "balance/thief/thief_weapon_mechanics_test.gd",
+        # FAN-3915: focused combat-smoke leaves retain the runtime smoke
+        # failure-aware exit contract while remaining independently executable.
+        "combat/smoke_bootstrap_test.gd",
+        "combat/smoke_contact_feedback_test.gd",
+        "combat/smoke_death_flow_test.gd",
+        "combat/smoke_hud_layout_test.gd",
+        "combat/smoke_projectile_test.gd",
+        "combat/smoke_wave_cap_test.gd",
         "dev_console_smoke_test.gd",
         "dev_console_win_flow_test.gd",
         "gamepad_combat_actions_test.gd",
