@@ -105,6 +105,7 @@ static func _corrode(activation: Activation, centre: Vector2, tick_index: int) -
 	var conversion := activation.param_float("charge_conversion", 0.0)
 	var cap := charge_cap(activation)
 	var owner_id := charge_owner_id(activation)
+	var struck: Array = []
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
@@ -117,6 +118,7 @@ static func _corrode(activation: Activation, centre: Vector2, tick_index: int) -
 		# a capped or overkilled swing buys neither.
 		if result.applied <= 0.0:
 			continue
+		struck.append(target)
 		if stacks < stack_cap:
 			activation.add_target_value(target, DISSOLVE_KEY, 1.0, "dissolve:%d" % tick_index)
 		activation.apply_owner_resource(
@@ -126,6 +128,9 @@ static func _corrode(activation: Activation, centre: Vector2, tick_index: int) -
 			cap,
 			"pour:%d:%d" % [tick_index, target.get_instance_id()]
 		)
+	# The tick beat carries the enemies it actually dissolved, so the authored
+	# scene plays one victim burst per hit enemy and none anywhere else.
+	activation.present(EXECUTOR_ID + ".corrode", {"position": centre, "victims": struck})
 
 
 ## The finale spends the whole capped charge once and shares it across the lake.
@@ -140,7 +145,9 @@ static func _pillars(activation: Activation, centre: Vector2, radius: float) -> 
 	var targets := activation.select_targets(centre, INF, 0, "nearest")
 	if targets.is_empty():
 		return
-	activation.present(EXECUTOR_ID, {"shape": "orb_burst", "position": centre, "radius": radius})
+	activation.present(EXECUTOR_ID, {
+		"shape": "orb_burst", "position": centre, "radius": radius, "victims": targets,
+	})
 	var share := stored / float(targets.size())
 	for raw_target in targets:
 		var target := raw_target as Node

@@ -144,12 +144,18 @@ static func _beat(activation: Activation, avatar: Node, beat_index: int) -> void
 		"position": centre,
 		"radius": activation.param_float("stomp_radius", 0.0),
 	})
+	var struck: Array = []
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stacks := float(activation.target_value(target, TOXIN_KEY, 0.0))
-		activation.deal_damage(target, stomp_damage * (1.0 + bonus * stacks))
+		var result := activation.deal_damage(target, stomp_damage * (1.0 + bonus * stacks))
+		if result.applied > 0.0:
+			struck.append(target)
+	# The stomp beat carries the enemies it actually damaged, so the authored
+	# scene plays one victim burst per hit enemy and none anywhere else.
+	activation.present(EXECUTOR_ID + ".stomp", {"position": centre, "victims": struck})
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
