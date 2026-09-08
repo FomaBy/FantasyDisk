@@ -34,9 +34,9 @@ extends "res://scripts/classes/thief_weapon.gd"
 #   19. scripts/classes/thief_weapon.gd — класс thief: исполнители режимов и приватные хелперы
 #
 # Как добавить класс/режим:
-#   1. Создай scripts/classes/<class_id>_weapon.gd c
-#      `extends "res://scripts/classes/<последний-модуль>.gd"` и перенаправь
-#      extends этого фасада на новый модуль (одна строка).
+#   1. Создай scripts/classes/<class_id>_weapon.gd, унаследуй его от
+#      последнего модуля цепочки и перенаправь extends этого фасада на новый
+#      модуль (одна строка).
 #   2. Зарегистрируй режим в ATTACK_MODE_EXECUTORS
 #      (scripts/classes/class_weapon_state.gd).
 #   3. Кросс-модульные методы объяви forward-стабом в

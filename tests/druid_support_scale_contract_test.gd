@@ -4,6 +4,7 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const MINION_SOURCE_PATH := "res://scripts/ally_minion.gd"
 const PLAYER_SOURCE_PATH := "res://scripts/player.gd"
+const PLAYER_CLASS_EFFECTS_SOURCE_PATH := "res://scripts/player/player_class_effects.gd"
 const FORBIDDEN_MINION_FRAGMENTS := [
 	"_druid_summon_support_multiplier",
 	"_druid_summon_aura_radius",
@@ -11,10 +12,19 @@ const FORBIDDEN_MINION_FRAGMENTS := [
 	"StatusEffects.apply_status(self, \"wild_force_aura\"",
 	"StatusEffects.apply_status(target, \"command_pressure\"",
 ]
-const REQUIRED_PLAYER_WRITERS := [
-	"StatusEffects.apply_status(ally_node, \"command_aura\"",
-	"StatusEffects.apply_status(enemy_node, \"command_pressure\"",
-	"StatusEffects.apply_status(ally_node, \"wild_force_aura\"",
+const REQUIRED_AURA_WRITERS := [
+	{
+		"fragment": "StatusEffects.apply_status(ally_node, \"command_aura\"",
+		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
+	},
+	{
+		"fragment": "StatusEffects.apply_status(enemy_node, \"command_pressure\"",
+		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
+	},
+	{
+		"fragment": "StatusEffects.apply_status(ally_node, \"wild_force_aura\"",
+		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
+	},
 ]
 
 
@@ -59,13 +69,15 @@ func _initialize() -> void:
 		errors.append("mutation oracle no longer distinguishes repeated local aura scaling")
 
 	var minion_source := FileAccess.get_file_as_string(MINION_SOURCE_PATH)
-	var player_source := FileAccess.get_file_as_string(PLAYER_SOURCE_PATH)
+	var player_sources := {
+		PLAYER_SOURCE_PATH: FileAccess.get_file_as_string(PLAYER_SOURCE_PATH),
+		PLAYER_CLASS_EFFECTS_SOURCE_PATH: FileAccess.get_file_as_string(PLAYER_CLASS_EFFECTS_SOURCE_PATH),
+	}
 	for fragment in FORBIDDEN_MINION_FRAGMENTS:
 		if minion_source.contains(fragment):
 			errors.append("AllyMinion retains forbidden aura writer '%s'" % fragment)
-	for writer in REQUIRED_PLAYER_WRITERS:
-		if player_source.count(writer) != 1:
-			errors.append("Player must be the sole writer for '%s'" % writer)
+	errors.append_array(_aura_writer_errors(player_sources))
+	_verify_aura_writer_mutations(player_sources, errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -74,3 +86,33 @@ func _initialize() -> void:
 		return
 	print("Druid support-scale contract passed: canonical derived values and one status writer per aura.")
 	quit(0)
+
+
+func _aura_writer_errors(sources: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	for requirement in REQUIRED_AURA_WRITERS:
+		var fragment := str(requirement["fragment"])
+		var owner := str(requirement["owner"])
+		var total := 0
+		for path in sources:
+			var count := str(sources[path]).count(fragment)
+			total += count
+			if path == owner and count != 1:
+				errors.append("Player-owned extracted implementation must contain exactly one writer for '%s'" % fragment)
+			elif path != owner and count != 0:
+				errors.append("Player ownership surface has a duplicate writer for '%s' in %s" % [fragment, path])
+		if total != 1:
+			errors.append("Player ownership surface must contain exactly one writer for '%s', found %d" % [fragment, total])
+	return errors
+
+
+func _verify_aura_writer_mutations(sources: Dictionary, errors: Array[String]) -> void:
+	var deleted := sources.duplicate()
+	var first_fragment := str(REQUIRED_AURA_WRITERS[0]["fragment"])
+	deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH] = str(deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH]).replace(first_fragment, "")
+	if _aura_writer_errors(deleted).is_empty():
+		errors.append("mutation oracle accepted deletion of the extracted command_aura writer")
+	var duplicated := sources.duplicate()
+	duplicated[PLAYER_SOURCE_PATH] = str(duplicated[PLAYER_SOURCE_PATH]) + "\n" + first_fragment
+	if _aura_writer_errors(duplicated).is_empty():
+		errors.append("mutation oracle accepted a duplicated command_aura writer")
