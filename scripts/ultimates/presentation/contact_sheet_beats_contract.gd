@@ -8,12 +8,14 @@ extends RefCounted
 
 const REQUIRED_PHASES: Array[String] = ["release", "active", "recovery"]
 
+## Ranger and Thief build their effect sprites at begin(), so Godot assigns
+## generated names. This semantic anchor requires a real visible CanvasItem
+## without coupling evidence to an engine-generated node name.
+const VISIBLE_EFFECT_NODE := "@visible_effect"
+
 # This list only shrinks as class packages adopt FRAMES_BY_CLASS. The target is
 # an empty list; a complete declaration left here fails the shared invariant.
-const MIGRATION_ALLOWLIST: Array[String] = [
-	"ranger",
-	"thief",
-]
+const MIGRATION_ALLOWLIST: Array[String] = []
 
 # Source documents are immutable presentation evidence. Their paths let the
 # focused gate prove a declaration remains tied to the live visual timeline.
@@ -21,6 +23,7 @@ const EVIDENCE_BY_CLASS := {
 	"chemist": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/chemist/manifest.json"},
 	"knight": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/knight/manifest.json"},
 	"priest": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/priest/manifest.json"},
+	"ranger": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/ranger/manifest.json", "frame_evidence": true},
 	"robot": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/robot/manifest.json"},
 	"sniper": {
 		"source_kind": "weapon_timelines",
@@ -31,6 +34,7 @@ const EVIDENCE_BY_CLASS := {
 		},
 	},
 	"soldier": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/soldier/manifest.json"},
+	"thief": {"source_kind": "class_manifest", "path": "res://docs/design/references/weapon_ultimates/thief/manifest.json", "frame_evidence": true},
 }
 
 const FRAMES_BY_CLASS := {
@@ -219,6 +223,23 @@ const FRAMES_BY_CLASS := {
 			{"phase": "release", "time": 0.50, "required_nodes": ["Bell", "TollSilver"]},
 			{"phase": "active", "time": 0.80, "required_nodes": ["Bell", "TollSilver"]},
 			{"phase": "recovery", "time": 5.60, "required_nodes": ["Bell", "TollDawn", "DawnGuard"]},
+			],
+		},
+	"ranger": {
+		"moon_crossbow": [
+			{"phase": "release", "time": 0.70, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 1.05, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.60, "required_nodes": [VISIBLE_EFFECT_NODE]},
+		],
+		"storm_longbow": [
+			{"phase": "release", "time": 0.60, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 0.95, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.85, "required_nodes": [VISIBLE_EFFECT_NODE]},
+		],
+		"hunter_trap": [
+			{"phase": "release", "time": 0.95, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 1.40, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.70, "required_nodes": [VISIBLE_EFFECT_NODE]},
 		],
 	},
 	"robot": {
@@ -270,6 +291,23 @@ const FRAMES_BY_CLASS := {
 			{"phase": "release", "time": 0.80, "required_nodes": ["ChargeCorridor", "RankOne", "FrontalGuard"]},
 			{"phase": "active", "time": 1.10, "required_nodes": ["ChargeCorridor", "RankOne", "FrontalGuard"]},
 			{"phase": "recovery", "time": 3.20, "required_nodes": ["ChargeCorridor", "RankOne", "RankThree"]},
+			],
+		},
+	"thief": {
+		"thief_coin_pouch": [
+			{"phase": "release", "time": 0.70, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 1.10, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.30, "required_nodes": [VISIBLE_EFFECT_NODE]},
+		],
+		"thief_shadow_cloak": [
+			{"phase": "release", "time": 0.82, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 1.22, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.57, "required_nodes": [VISIBLE_EFFECT_NODE]},
+		],
+		"thief_smoke_bomb": [
+			{"phase": "release", "time": 0.94, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "active", "time": 1.34, "required_nodes": [VISIBLE_EFFECT_NODE]},
+			{"phase": "recovery", "time": 2.84, "required_nodes": [VISIBLE_EFFECT_NODE]},
 		],
 	},
 	"doctor": {

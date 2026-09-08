@@ -81,6 +81,60 @@
       "layout": "15 columns x 3 rows; windup, release, active, recovery, cancel with 3 samples each; rows coin pouch, shadow cloak, smoke bomb",
       "rendered_by": "res://scenes/vfx/ultimates/thief/thief_ultimate_contact_sheet.gd"
     },
+    "frame_local_beats": {
+      "thief_coin_pouch": [
+        {"phase": "release", "time": 0.70, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 1.10, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.30, "required_nodes": ["@visible_effect"]}
+      ],
+      "thief_shadow_cloak": [
+        {"phase": "release", "time": 0.82, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 1.22, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.57, "required_nodes": ["@visible_effect"]}
+      ],
+      "thief_smoke_bomb": [
+        {"phase": "release", "time": 0.94, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 1.34, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.84, "required_nodes": ["@visible_effect"]}
+      ]
+    },
+    "live_capture": {
+      "issue": "FAN-3890",
+      "source_ref": "origin/dev",
+      "source_commit_sha": "612279e7ee83a5d60468cbae2e1d039f8715a91d",
+      "source_tree_sha": "8be184e13edd88d88da1e3aa0257e070c121d695",
+      "capture_script": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture.gd",
+      "focused_test": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture_test.gd",
+      "weapon_ids": [
+        "thief_coin_pouch",
+        "thief_shadow_cloak",
+        "thief_smoke_bomb"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "png_object_ids": {
+        "648p": "4ab53002237c9693fb804bd5e099183272d876a908c53dec2372c46b3593e5e3",
+        "720p": "72c99877b29c0ad53e2047893e4faa5fe432b86c673cbcba9aec9c6263606f0c",
+        "1080p": "5281ab6ebf77e17424d4913af8c551699b0f06086d43901ef8f63cb74facf782",
+        "2k": "8be0343543248af519a60b6a275d87391add5352fea9442c305df512f5b297db"
+      },
+      "panels_per_sheet": 12,
+      "victim_impact_source_candidate": {
+        "issue": "FAN-3886",
+        "sha": "245af1bd2390e0b82be4f596b53278ff7d9ee874",
+        "tree": "058d8d80a6cf60f59680c4deaf83b9202d201d1c"
+      }
+    },
     "focused_gate": {
       "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_ultimate_presentation_test.gd",
       "exit_code": 0

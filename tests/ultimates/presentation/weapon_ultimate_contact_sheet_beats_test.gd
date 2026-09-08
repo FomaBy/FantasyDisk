@@ -6,9 +6,9 @@ const WeaponRegistry := preload("res://scripts/ultimates/registry/weapon_ultimat
 const PROFILE_ROOT := "res://data/ultimates/schema/v1/classes"
 const CERTIFIED_CLASS_IDS: Array[String] = [
 	"berserk", "biologist", "chemist", "druid", "elementalist", "engineer", "guitarist",
-	"knight", "priest", "robot", "sniper", "soldier",
+	"knight", "priest", "ranger", "robot", "sniper", "soldier", "thief",
 ]
-const EVIDENCE_CLASS_IDS: Array[String] = ["chemist", "knight", "priest", "robot", "sniper", "soldier"]
+const EVIDENCE_CLASS_IDS: Array[String] = ["chemist", "knight", "priest", "ranger", "robot", "sniper", "soldier", "thief"]
 const VISIBILITY_ALPHA_EPSILON := 0.01
 
 var _robot_registry = WeaponRegistry.new(ProgressionData.WEAPONS_BY_CLASS)
@@ -219,6 +219,18 @@ func _load_class_manifest_evidence(
 	if not raw_entries is Array:
 		errors.append("class %s evidence manifest must contain weapons" % class_id)
 		return {}
+	var requires_frame_evidence := bool(evidence.get("frame_evidence", false))
+	var frame_evidence_by_weapon := {}
+	if requires_frame_evidence:
+		var manifest_evidence = manifest.get("evidence", null)
+		if not manifest_evidence is Dictionary:
+			errors.append("class %s evidence manifest must contain an evidence block" % class_id)
+		else:
+			var raw_frame_evidence = (manifest_evidence as Dictionary).get("frame_local_beats", null)
+			if not raw_frame_evidence is Dictionary:
+				errors.append("class %s evidence manifest must contain frame_local_beats" % class_id)
+			else:
+				frame_evidence_by_weapon = raw_frame_evidence as Dictionary
 	var by_weapon := {}
 	for raw_entry in raw_entries as Array:
 		if not raw_entry is Dictionary:
@@ -238,7 +250,13 @@ func _load_class_manifest_evidence(
 			errors.append("class %s weapon %s evidence is missing scene_path" % [class_id, weapon_id])
 		if not timing is Dictionary:
 			errors.append("class %s weapon %s evidence is missing timing_seconds" % [class_id, weapon_id])
-		by_weapon[weapon_id] = {"source_path": path, "scene_path": scene_path, "timing": timing}
+		by_weapon[weapon_id] = {
+			"source_path": path,
+			"scene_path": scene_path,
+			"timing": timing,
+			"frame_local_beats": frame_evidence_by_weapon.get(weapon_id, null),
+			"requires_frame_evidence": requires_frame_evidence,
+		}
 	for raw_weapon_id in weapons:
 		var weapon_id := str(raw_weapon_id)
 		if not by_weapon.has(weapon_id):
@@ -323,6 +341,14 @@ func _check_frame_evidence(
 		errors.append("class %s weapon %s evidence has no numeric cancel time" % [class_id, weapon_id])
 		return
 	var cancel_time := float(raw_cancel)
+	if bool(evidence.get("requires_frame_evidence", false)):
+		_check_frame_local_evidence(
+			class_id,
+			weapon_id,
+			raw_frames,
+			evidence.get("frame_local_beats", null),
+			errors
+		)
 	var scene_path := str(evidence.get("scene_path", ""))
 	var packed: PackedScene = load(scene_path) as PackedScene if not scene_path.is_empty() else null
 	if packed == null:
@@ -345,6 +371,58 @@ func _check_frame_evidence(
 			errors.append("class %s weapon %s %s frame time is outside evidence timeline" % [class_id, weapon_id, phase])
 		if packed != null and time > 0.0 and time < cancel_time:
 			_check_visible_evidence_nodes(class_id, weapon_id, phase, time, frame.get("required_nodes", []), packed, errors)
+
+
+func _check_frame_local_evidence(
+	class_id: String,
+	weapon_id: String,
+	raw_frames: Variant,
+	raw_manifest_frames: Variant,
+	errors: Array[String]
+) -> void:
+	if not raw_manifest_frames is Array:
+		errors.append("class %s weapon %s evidence is missing frame_local_beats" % [class_id, weapon_id])
+		return
+	var declared_by_phase := {}
+	for raw_declared in raw_manifest_frames as Array:
+		if not raw_declared is Dictionary:
+			errors.append("class %s weapon %s frame_local_beats has a non-dictionary frame" % [class_id, weapon_id])
+			continue
+		var declared := raw_declared as Dictionary
+		var phase := str(declared.get("phase", ""))
+		if not Contract.REQUIRED_PHASES.has(phase):
+			errors.append("class %s weapon %s frame_local_beats has unsupported phase %s" % [class_id, weapon_id, phase if not phase.is_empty() else "<empty>"])
+			continue
+		if declared_by_phase.has(phase):
+			errors.append("class %s weapon %s frame_local_beats has duplicate phase %s" % [class_id, weapon_id, phase])
+			continue
+		var time = declared.get("time", null)
+		if typeof(time) != TYPE_INT and typeof(time) != TYPE_FLOAT:
+			errors.append("class %s weapon %s %s frame_local_beats time must be numeric" % [class_id, weapon_id, phase])
+		var nodes = declared.get("required_nodes", null)
+		if not nodes is Array or (nodes as Array).is_empty():
+			errors.append("class %s weapon %s %s frame_local_beats must declare required_nodes" % [class_id, weapon_id, phase])
+		declared_by_phase[phase] = declared
+	if not raw_frames is Array:
+		return
+	for phase in Contract.REQUIRED_PHASES:
+		var declared = declared_by_phase.get(phase, null)
+		if declared == null:
+			errors.append("class %s weapon %s frame_local_beats is missing phase %s" % [class_id, weapon_id, phase])
+			continue
+		for raw_frame in raw_frames as Array:
+			if not raw_frame is Dictionary or str((raw_frame as Dictionary).get("phase", "")) != phase:
+				continue
+			var frame := raw_frame as Dictionary
+			var frame_time = frame.get("time", null)
+			var declared_time = declared.get("time", null)
+			if (typeof(frame_time) == TYPE_INT or typeof(frame_time) == TYPE_FLOAT) \
+					and (typeof(declared_time) == TYPE_INT or typeof(declared_time) == TYPE_FLOAT) \
+					and not is_equal_approx(float(frame_time), float(declared_time)):
+				errors.append("class %s weapon %s %s frame_local_beats time must match contract" % [class_id, weapon_id, phase])
+			if _node_list(frame.get("required_nodes", [])) != _node_list(declared.get("required_nodes", [])):
+				errors.append("class %s weapon %s %s frame_local_beats required_nodes must match contract" % [class_id, weapon_id, phase])
+			break
 
 
 func _check_visible_evidence_nodes(
@@ -378,7 +456,7 @@ func _check_visible_evidence_nodes(
 			continue
 		if not _is_evidence_node_visible(node as CanvasItem, scene):
 			errors.append("class %s weapon %s %s evidence node is not visible: %s" % [class_id, weapon_id, phase, node_path])
-	if class_id == "sniper" and scene.has_method("finish"):
+	if (class_id == "ranger" or class_id == "thief" or class_id == "sniper") and scene.has_method("finish"):
 		scene.call("finish", "node_end")
 	scene.free()
 
@@ -420,12 +498,42 @@ func _seek_evidence_scene(
 			errors.append("class %s weapon %s evidence scene cannot start a visual timeline" % [class_id, weapon_id])
 			return
 		scene.call("step", time)
+		return
+	if class_id == "ranger" or class_id == "thief":
+		if not scene.has_method("begin") or not scene.has_method("step"):
+			errors.append("class %s weapon %s evidence scene cannot seek phase %s" % [class_id, weapon_id, phase])
+			return
+		var snapshot = scene.call("begin", _robot_registry, {}, 0)
+		if not snapshot is Dictionary or str((snapshot as Dictionary).get("state", "")) != "active":
+			errors.append("class %s weapon %s evidence scene cannot start a visual timeline" % [class_id, weapon_id])
+			return
+		scene.call("step", time)
 
 
 static func _evidence_node(scene: Node2D, node_path: String) -> Node:
+	if node_path == Contract.VISIBLE_EFFECT_NODE:
+		return _find_visible_effect_node(scene, scene)
 	if node_path == "." or node_path == scene.name:
 		return scene
 	return scene.get_node_or_null(node_path)
+
+
+static func _node_list(raw_nodes: Variant) -> Array[String]:
+	var nodes: Array[String] = []
+	if raw_nodes is Array:
+		for raw_node in raw_nodes as Array:
+			nodes.append(str(raw_node))
+	return nodes
+
+
+static func _find_visible_effect_node(parent: Node, scene: Node2D) -> Node:
+	for child in parent.get_children():
+		if child is CanvasItem and _is_evidence_node_visible(child as CanvasItem, scene):
+			return child
+		var descendant := _find_visible_effect_node(child, scene)
+		if descendant != null:
+			return descendant
+	return null
 
 
 static func _is_evidence_node_visible(item: CanvasItem, scene: Node2D) -> bool:
