@@ -16,6 +16,30 @@ const MAX_BREADCRUMB_FIELD_CHARS := 96
 const DEBUG_SELF_TEST_FLAG := "--crash-logger-self-test"
 const DEBUG_OUTPUT_PREFIX := "--crash-logger-output="
 const SELF_TEST_ERROR := "FAN-3905 deterministic crash logger self-test"
+const REDACTED_VALUE := "<redacted>"
+# Final key words that identify a credential-bearing field in any casing or
+# separator form (client_secret, auth-token, Set-Cookie, clientSecret ...).
+const SENSITIVE_KEY_HEADS := {
+	"password": true, "passwd": true, "passphrase": true, "passcode": true, "pwd": true,
+	"secret": true, "token": true, "auth": true, "authorization": true,
+	"credential": true, "credentials": true, "cookie": true, "cookies": true,
+	"jwt": true, "bearer": true, "apikey": true, "privatekey": true, "secretkey": true,
+	"accesskey": true, "sessionid": true, "sessiontoken": true, "sessionkey": true,
+}
+# `<qualifier>_key` forms that are credentials; a bare `key` stays readable.
+const SENSITIVE_KEY_QUALIFIERS := {
+	"api": true, "private": true, "secret": true, "access": true, "signing": true,
+	"session": true, "auth": true, "encryption": true, "master": true, "ssh": true,
+	"client": true, "server": true, "license": true, "app": true, "consumer": true,
+	"shared": true, "security": true, "hmac": true, "aws": true,
+}
+const SENSITIVE_ID_QUALIFIERS := {"session": true, "sess": true}
+const HEADER_SCHEMES := {
+	"basic": true, "bearer": true, "token": true, "negotiate": true, "ntlm": true,
+	"hoba": true, "mutual": true, "apikey": true, "api-key": true, "oauth": true,
+	"aws4-hmac-sha256": true,
+}
+const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
 
 
 class IncidentSink:
@@ -29,22 +53,29 @@ class IncidentSink:
 	var _suppressed_thread_id := 0
 	var _dropped_pending := 0
 	var _flush_scheduled := false
-	var _authorization_pattern: RegEx
+	var _key_value_pattern: RegEx
 	var _bearer_pattern: RegEx
-	var _credential_pattern: RegEx
+	var _url_userinfo_pattern: RegEx
+	var _private_key_block_pattern: RegEx
 	var _home_path_pattern: RegEx
 
 
 	func _init(flush_owner: Node) -> void:
 		_flush_owner = flush_owner
-		_authorization_pattern = RegEx.create_from_string(
-			r"(?i)(\bauthorization[\"']?\s*[:=]\s*)(?:(?:bearer|basic)\s+)?(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+		# Any `key: value` / `key=value` pair, quoted or bare, escaped-JSON or
+		# plain. Sensitivity is decided per key by _is_sensitive_key so that the
+		# same rule covers text, headers and nested structured forms.
+		_key_value_pattern = RegEx.create_from_string(
+			r"(?<![A-Za-z0-9_.\-])(?:\\?[\"'])?([A-Za-z][A-Za-z0-9_.\-]*)(?:\\?[\"'])?[ \t]*[:=][ \t]*"
 		)
 		_bearer_pattern = RegEx.create_from_string(
 			r"(?i)(\bbearer\s+)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
 		)
-		_credential_pattern = RegEx.create_from_string(
-			r"(?i)((?:^|[\s{,])[\"']?(?:password|passwd|token|(?:access|refresh)[_-]?token|secret|(?:x[_-]?)?api[_-]?key)[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
+		_url_userinfo_pattern = RegEx.create_from_string(
+			r"(://[^/\s@:]+:)[^@/\s]+@"
+		)
+		_private_key_block_pattern = RegEx.create_from_string(
+			r"(?s)-----BEGIN [A-Z ]*PRIVATE KEY-----.*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)"
 		)
 		_home_path_pattern = RegEx.create_from_string(
 			r"(?i)((?:^|[\s\"'(\[{:=,]))(?:[A-Z]:[\\/](?![\\/])|/(?:Users|home)/)[^\s\"')\]},;]+"
@@ -229,16 +260,215 @@ class IncidentSink:
 	func _redact(value: String) -> String:
 		_redaction_mutex.lock()
 		var result := value
-		if _authorization_pattern != null:
-			result = _authorization_pattern.sub(result, "$1<redacted>", true)
+		if _private_key_block_pattern != null:
+			result = _private_key_block_pattern.sub(result, "<redacted-private-key>", true)
+		if _key_value_pattern != null:
+			result = _redact_key_values(result)
 		if _bearer_pattern != null:
 			result = _bearer_pattern.sub(result, "$1<redacted>", true)
-		if _credential_pattern != null:
-			result = _credential_pattern.sub(result, "$1<redacted>", true)
+		if _url_userinfo_pattern != null:
+			result = _url_userinfo_pattern.sub(result, "$1<redacted>@", true)
 		if _home_path_pattern != null:
 			result = _home_path_pattern.sub(result, "$1<redacted-path>", true)
 		_redaction_mutex.unlock()
 		return result
+
+
+	# Replaces the value of every sensitive `key: value` / `key=value` pair.
+	# Values may be bare tokens, quoted strings, escaped-JSON strings, balanced
+	# `{...}` / `[...]` structures, `scheme credential` header values or
+	# `;`-separated cookie pairs. Benign keys and their values are untouched.
+	func _redact_key_values(text: String) -> String:
+		var matches := _key_value_pattern.search_all(text)
+		if matches.is_empty():
+			return text
+		var pieces := PackedStringArray()
+		var cursor := 0
+		for found in matches:
+			if found.get_start() < cursor:
+				continue
+			var key := found.get_string(1)
+			if not _is_sensitive_key(key):
+				continue
+			var value_start := found.get_end()
+			var value_end := _sensitive_value_end(text, value_start, _key_family(key))
+			if value_end <= value_start:
+				continue
+			pieces.append(text.substr(cursor, value_start - cursor))
+			pieces.append(_redacted_value(text, value_start, value_end))
+			cursor = value_end
+		if cursor == 0:
+			return text
+		pieces.append(text.substr(cursor))
+		return "".join(pieces)
+
+
+	static func _redacted_value(text: String, start: int, end: int) -> String:
+		var quote := _quote_at(text, start)
+		var raw := text.substr(start, end - start)
+		if not quote.is_empty() and raw.length() >= quote.length() * 2 and raw.ends_with(quote):
+			return quote + REDACTED_VALUE + quote
+		return REDACTED_VALUE
+
+
+	# A key is sensitive when its final word names a credential (client_secret,
+	# auth-token, Set-Cookie, clientSecret, CLIENT.SECRET, x_api_key ...). Keys
+	# that merely contain such a word elsewhere (secret_boss_active,
+	# reroll_tokens, token_count) stay readable.
+	static func _is_sensitive_key(key: String) -> bool:
+		var segments := _key_segments(key)
+		if segments.is_empty():
+			return false
+		var head := segments[segments.size() - 1]
+		if SENSITIVE_KEY_HEADS.has(head):
+			return true
+		if segments.size() < 2:
+			return false
+		var qualifier := segments[segments.size() - 2]
+		if head == "key" and SENSITIVE_KEY_QUALIFIERS.has(qualifier):
+			return true
+		if head == "id" and SENSITIVE_ID_QUALIFIERS.has(qualifier):
+			return true
+		return false
+
+
+	static func _key_family(key: String) -> String:
+		var segments := _key_segments(key)
+		var head := segments[segments.size() - 1] if not segments.is_empty() else ""
+		if head == "authorization" or head == "auth":
+			return "header"
+		if head == "cookie" or head == "cookies":
+			return "cookie"
+		return "value"
+
+
+	static func _key_segments(key: String) -> PackedStringArray:
+		var spaced := ""
+		for index in range(key.length()):
+			var character := key[index]
+			if index > 0 and _is_upper(character):
+				var previous := key[index - 1]
+				var next_is_lower := index + 1 < key.length() and _is_lower(key[index + 1])
+				if _is_lower(previous) or previous.is_valid_int() or (_is_upper(previous) and next_is_lower):
+					spaced += "_"
+			spaced += character
+		spaced = spaced.replace("-", "_").replace(".", "_").to_lower()
+		return spaced.split("_", false)
+
+
+	static func _is_upper(character: String) -> bool:
+		return character != character.to_lower()
+
+
+	static func _is_lower(character: String) -> bool:
+		return character != character.to_upper()
+
+
+	static func _quote_at(text: String, position: int) -> String:
+		if position >= text.length():
+			return ""
+		var character := text[position]
+		if character == "\"" or character == "'":
+			return character
+		if character == "\\" and position + 1 < text.length():
+			var escaped := text[position + 1]
+			if escaped == "\"" or escaped == "'":
+				return "\\" + escaped
+		return ""
+
+
+	static func _sensitive_value_end(text: String, start: int, family: String) -> int:
+		if start >= text.length():
+			return start
+		var quote := _quote_at(text, start)
+		if not quote.is_empty():
+			var closing := text.find(quote, start + quote.length())
+			return text.length() if closing < 0 else closing + quote.length()
+		var opener := text[start]
+		if opener == "{" or opener == "[":
+			return _balanced_end(text, start)
+		match family:
+			"header":
+				return _header_value_end(text, start)
+			"cookie":
+				return _cookie_value_end(text, start)
+		return _bare_value_end(text, start)
+
+
+	static func _bare_value_end(text: String, start: int) -> int:
+		var position := start
+		while position < text.length() and not BARE_VALUE_TERMINATORS.contains(text[position]):
+			position += 1
+		return position
+
+
+	static func _skip_inline_space(text: String, start: int) -> int:
+		var position := start
+		while position < text.length() and (text[position] == " " or text[position] == "\t"):
+			position += 1
+		return position
+
+
+	# `Authorization: <scheme> <credential>`: known schemes carry one more
+	# token; Digest carries a comma list, so the remainder of the line goes.
+	static func _header_value_end(text: String, start: int) -> int:
+		var first_end := _bare_value_end(text, start)
+		var scheme := text.substr(start, first_end - start).to_lower()
+		if scheme == "digest":
+			var line_end := text.find("\n", start)
+			return text.length() if line_end < 0 else line_end
+		if not HEADER_SCHEMES.has(scheme):
+			return first_end
+		var next_start := _skip_inline_space(text, first_end)
+		if next_start >= text.length() or next_start == first_end:
+			return first_end
+		var next_end := _bare_value_end(text, next_start)
+		return next_end if next_end > next_start else first_end
+
+
+	# `Cookie: a=1; b=2`: every `;`-separated pair belongs to the cookie value.
+	static func _cookie_value_end(text: String, start: int) -> int:
+		var position := _bare_value_end(text, start)
+		while position < text.length() and text[position] == ";":
+			var pair_start := _skip_inline_space(text, position + 1)
+			var name_end := pair_start
+			while name_end < text.length() and _is_key_character(text[name_end]):
+				name_end += 1
+			if name_end == pair_start or name_end >= text.length() or text[name_end] != "=":
+				break
+			position = _bare_value_end(text, name_end + 1)
+		return position
+
+
+	static func _is_key_character(character: String) -> bool:
+		return character.is_valid_identifier() or character.is_valid_int() \
+			or character == "-" or character == "."
+
+
+	static func _balanced_end(text: String, start: int) -> int:
+		var depth := 0
+		var position := start
+		while position < text.length():
+			var character := text[position]
+			if character == "\\":
+				position += 2
+				continue
+			if character == "\"" or character == "'":
+				var closing := text.find(character, position + 1)
+				while closing > 0 and text[closing - 1] == "\\":
+					closing = text.find(character, closing + 1)
+				if closing < 0:
+					return text.length()
+				position = closing + 1
+				continue
+			if character == "{" or character == "[":
+				depth += 1
+			elif character == "}" or character == "]":
+				depth -= 1
+				if depth <= 0:
+					return position + 1
+			position += 1
+		return text.length()
 
 
 	static func _safe_source_path(value: String) -> String:

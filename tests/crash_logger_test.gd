@@ -61,11 +61,12 @@ func _run_tests(service: Node) -> void:
 	_test_real_player_signal_path(service)
 	_check(service.incident_paths_for_tests().is_empty(), "breadcrumb-only activity created an incident file")
 	_test_unavailable_stack_and_redaction(service)
+	_test_credential_field_families(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -212,6 +213,138 @@ func _test_unavailable_stack_and_redaction(service: Node) -> void:
 	]:
 		_check(redacted_fields.find(preserved_delimiter) >= 0, "path redaction removed punctuation: %s" % preserved_delimiter)
 	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "incident exceeded the record byte limit")
+	_clean_incident_files(TEST_ROOT)
+
+
+const CREDENTIAL_FAMILY_TEXT := "client_secret=TEST_CLIENT_SECRET_CREDENTIAL context=text-visible " \
+	+ "Client-Secret: TEST_CLIENT_SECRET_HEADER_CREDENTIAL clientSecret='TEST_CAMEL_SECRET_CREDENTIAL' " \
+	+ "CLIENT.SECRET=\"TEST_DOTTED_SECRET_CREDENTIAL\" {\"CLIENT_SECRET\": \"TEST_JSON_UPPER_SECRET_CREDENTIAL\", \"scene\": \"res://scenes/Main.tscn\"} " \
+	+ "reroll_tokens=3 author=studio key=ui_accept secret_boss_active=true token_count=2 " \
+	+ "password: TEST_PASSWORD_CREDENTIAL passwd=TEST_PASSWD_CREDENTIAL api_key=TEST_API_KEY_CREDENTIAL " \
+	+ "X-API-KEY: TEST_X_API_KEY_HEADER_CREDENTIAL private_key=TEST_PRIVATE_KEY_CREDENTIAL " \
+	+ "-----BEGIN RSA PRIVATE KEY-----\nTEST_PEM_PRIVATE_KEY_CREDENTIAL\n-----END RSA PRIVATE KEY-----\n" \
+	+ "Failed to load res://assets/test.png after user://saves/slot1.save"
+const CREDENTIAL_FAMILY_CODE := "Cookie: session=TEST_COOKIE_SESSION_CREDENTIAL; theme=TEST_COOKIE_THEME_CREDENTIAL context=cookie-visible " \
+	+ "cookie=TEST_COOKIE_BARE_CREDENTIAL operation=cast Set-Cookie: sid=TEST_SET_COOKIE_CREDENTIAL; Path=/; HttpOnly " \
+	+ "{\"cookies\": {\"session\": \"TEST_NESTED_COOKIE_CREDENTIAL\"}, \"scene\": \"res://scenes/Main.tscn\"} " \
+	+ "{\\\"cookie\\\": \\\"TEST_ESCAPED_COOKIE_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"} " \
+	+ "COOKIES=\"TEST_UPPER_COOKIE_CREDENTIAL\" session=3 relay_session=alpha"
+const CREDENTIAL_FAMILY_RATIONALE := "auth-token=TEST_AUTH_TOKEN_CREDENTIAL X-Auth-Token: TEST_X_AUTH_TOKEN_CREDENTIAL " \
+	+ "authToken: 'TEST_CAMEL_AUTH_TOKEN_CREDENTIAL' AUTH_TOKEN=TEST_UPPER_AUTH_TOKEN_CREDENTIAL " \
+	+ "{\"auth_token\":\"TEST_JSON_AUTH_TOKEN_CREDENTIAL\",\"reason\":\"json-auth-visible\"} " \
+	+ "{\"auth\": {\"client_secret\": \"TEST_NESTED_SECRET_CREDENTIAL\", \"nested\": [{\"cookie\": \"TEST_DEEP_COOKIE_CREDENTIAL\"}]}, " \
+	+ "\"level\": 3, \"config\": {\"inner\": {\"private_key\": \"TEST_INNER_PRIVATE_KEY_CREDENTIAL\"}, \"seed\": 42}} " \
+	+ "auth=TEST_BARE_AUTH_CREDENTIAL credentials: [\"TEST_LIST_CREDENTIAL_A\", \"TEST_LIST_CREDENTIAL_B\"] session_id=TEST_SESSION_ID_CREDENTIAL " \
+	+ "Authorization: Digest username=\"tester\", response=\"TEST_DIGEST_CREDENTIAL\"\n" \
+	+ "https://tester:TEST_URL_PASSWORD_CREDENTIAL@example.invalid/help reason=timeout token_expires=3600"
+const CREDENTIAL_FAMILY_MARKERS: Array[String] = [
+	"TEST_CLIENT_SECRET_CREDENTIAL",
+	"TEST_CLIENT_SECRET_HEADER_CREDENTIAL",
+	"TEST_CAMEL_SECRET_CREDENTIAL",
+	"TEST_DOTTED_SECRET_CREDENTIAL",
+	"TEST_JSON_UPPER_SECRET_CREDENTIAL",
+	"TEST_PASSWORD_CREDENTIAL",
+	"TEST_PASSWD_CREDENTIAL",
+	"TEST_API_KEY_CREDENTIAL",
+	"TEST_X_API_KEY_HEADER_CREDENTIAL",
+	"TEST_PRIVATE_KEY_CREDENTIAL",
+	"TEST_PEM_PRIVATE_KEY_CREDENTIAL",
+	"TEST_COOKIE_SESSION_CREDENTIAL",
+	"TEST_COOKIE_THEME_CREDENTIAL",
+	"TEST_COOKIE_BARE_CREDENTIAL",
+	"TEST_SET_COOKIE_CREDENTIAL",
+	"TEST_NESTED_COOKIE_CREDENTIAL",
+	"TEST_ESCAPED_COOKIE_CREDENTIAL",
+	"TEST_UPPER_COOKIE_CREDENTIAL",
+	"TEST_AUTH_TOKEN_CREDENTIAL",
+	"TEST_X_AUTH_TOKEN_CREDENTIAL",
+	"TEST_CAMEL_AUTH_TOKEN_CREDENTIAL",
+	"TEST_UPPER_AUTH_TOKEN_CREDENTIAL",
+	"TEST_JSON_AUTH_TOKEN_CREDENTIAL",
+	"TEST_NESTED_SECRET_CREDENTIAL",
+	"TEST_DEEP_COOKIE_CREDENTIAL",
+	"TEST_INNER_PRIVATE_KEY_CREDENTIAL",
+	"TEST_BARE_AUTH_CREDENTIAL",
+	"TEST_LIST_CREDENTIAL_A",
+	"TEST_LIST_CREDENTIAL_B",
+	"TEST_SESSION_ID_CREDENTIAL",
+	"TEST_DIGEST_CREDENTIAL",
+	"TEST_URL_PASSWORD_CREDENTIAL",
+	"TEST_BREADCRUMB_SECRET_CREDENTIAL",
+	"TEST_BREADCRUMB_COOKIE_CREDENTIAL",
+	"TEST_BREADCRUMB_TOKEN_CREDENTIAL",
+]
+const CREDENTIAL_FAMILY_BENIGN: Array[String] = [
+	"context=text-visible",
+	"\"scene\": \"res://scenes/Main.tscn\"",
+	"reroll_tokens=3",
+	"author=studio",
+	"key=ui_accept",
+	"secret_boss_active=true",
+	"token_count=2",
+	"Failed to load res://assets/test.png after user://saves/slot1.save",
+	"context=cookie-visible",
+	"operation=cast",
+	"HttpOnly",
+	"\\\"context\\\": \\\"escaped-visible\\\"",
+	"session=3",
+	"relay_session=alpha",
+	"\"reason\":\"json-auth-visible\"",
+	"\"level\": 3",
+	"\"seed\": 42",
+	"https://tester:<redacted>@example.invalid/help",
+	"reason=timeout",
+	"token_expires=3600",
+	"<redacted-private-key>",
+	"clientSecret='<redacted>'",
+	"CLIENT.SECRET=\"<redacted>\"",
+]
+
+
+func _test_credential_field_families(service: Node) -> void:
+	var no_frames: Array[Dictionary] = []
+	service.clear_breadcrumbs_for_tests()
+	service.record_breadcrumb_for_tests(
+		"client_secret=TEST_BREADCRUMB_SECRET_CREDENTIAL class=berserk",
+		"Cookie: token=TEST_BREADCRUMB_COOKIE_CREDENTIAL weapon=axe",
+		"x_auth_token=TEST_BREADCRUMB_TOKEN_CREDENTIAL event=activation",
+		78,
+	)
+	service.capture_error_for_tests(
+		CREDENTIAL_FAMILY_TEXT,
+		no_frames,
+		CREDENTIAL_FAMILY_CODE,
+		CREDENTIAL_FAMILY_RATIONALE,
+	)
+	service.flush_pending_for_tests()
+	var paths: PackedStringArray = service.incident_paths_for_tests()
+	_check(paths.size() == 1, "credential-family capture produced %d files" % paths.size())
+	if paths.is_empty():
+		return
+	var payload := FileAccess.get_file_as_string(str(paths[0]))
+	var parsed = JSON.parse_string(payload)
+	_check(parsed is Dictionary, "credential-family incident is not complete JSON")
+	if not parsed is Dictionary:
+		return
+	for marker in CREDENTIAL_FAMILY_MARKERS:
+		_check(payload.find(marker) == -1, "credential marker reached the incident: %s" % marker)
+	var record: Dictionary = parsed
+	var error: Dictionary = record.get("error", {})
+	var fields := "\n".join([
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	])
+	for benign in CREDENTIAL_FAMILY_BENIGN:
+		_check(fields.find(benign) >= 0, "benign diagnostic context was removed: %s" % benign)
+	var breadcrumbs: Array = record.get("breadcrumbs", [])
+	_check(breadcrumbs.size() == 1, "credential-family record carried %d breadcrumbs instead of 1" % breadcrumbs.size())
+	if breadcrumbs.size() == 1:
+		var breadcrumb: Dictionary = breadcrumbs[0]
+		_check(str(breadcrumb.get("class", "")).ends_with("class=berserk"), "breadcrumb class context was removed")
+		_check(str(breadcrumb.get("weapon", "")).ends_with("weapon=axe"), "breadcrumb weapon context was removed")
+		_check(str(breadcrumb.get("event", "")).ends_with("event=activation"), "breadcrumb event context was removed")
+	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "credential-family incident exceeded the record byte limit")
 	_clean_incident_files(TEST_ROOT)
 
 

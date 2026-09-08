@@ -29,14 +29,42 @@ Each record includes:
 - the newest 50 combat breadcrumbs, in chronological order, containing only
   class ID, weapon ID, event phase, and process-frame number.
 
-Credential-shaped values, including quoted JSON `Authorization` fields, and
-personal home paths are redacted. External source paths are replaced with
-`<external>`. Godot `res://` and `user://` paths and ordinary URLs are retained
-because they are useful diagnostics and are not OS home paths. Redaction is a
-bounded safeguard, not a complete secret scanner: uncommon authorization
-schemes or names such as cookie sessions, `client_secret`, `private_key`, and
-`auth-token` may require manual sanitization. Do not add player names, save
-contents, free-form chat, access tokens, or other personal data to breadcrumbs.
+Every text field of a record (`error.text`, `error.code`, `error.rationale`,
+function names and breadcrumb fields) passes through the same redactor before
+it is queued. Redaction is decided per `key: value` / `key=value` pair by the
+key's final word, so one rule covers plain text, HTTP-style headers and nested
+JSON in any casing or separator form (`client_secret`, `Client-Secret`,
+`clientSecret`, `CLIENT.SECRET`, `{"client_secret": ...}`):
+
+- credential heads: `password`, `passwd`, `passphrase`, `passcode`, `pwd`,
+  `secret`, `token`, `auth`, `authorization`, `credential(s)`, `cookie(s)`,
+  `jwt`, `bearer`, plus fused forms such as `apikey`, `privatekey`,
+  `secretkey`, `accesskey`, `sessionid`, `sessiontoken`;
+- qualified keys: `session_id` and `<qualifier>_key` where the qualifier is
+  one of api, private, secret, access, signing, session, auth, encryption,
+  master, ssh, client, server, license, app, consumer, shared, security, hmac
+  or aws; a bare `key` (for example `key=ui_accept`) is kept.
+
+The whole value is replaced with `<redacted>` whether it is a bare token, a
+quoted or JSON-escaped string, a balanced `{...}` / `[...]` structure (so a
+nested `auth` or `cookies` object disappears as one unit), an
+`Authorization: <scheme> <credential>` header (Digest removes the remainder of
+its line) or a `;`-separated cookie list. Independently of keys, `Bearer ...`
+tokens, `scheme://user:password@host` URL credentials, PEM private-key blocks
+and personal Unix/Windows home paths are redacted; external source paths are
+replaced with `<external>`.
+
+Keys whose final word is not a credential head stay readable
+(`secret_boss_active`, `reroll_tokens`, `token_count`, `token_expires`,
+`author`, `session`), as do Godot `res://` and `user://` paths and ordinary
+URLs, because they are useful diagnostics. `tests/crash_logger_test.gd` proves
+that synthetic markers for every family above never reach incident output while
+those benign fields survive. Redaction is defence in depth for engine error
+text, not a complete secret scanner: an English phrase such as
+`Unexpected token: x` loses its value, and a secret that appears without any
+key, scheme or recognisable envelope is not detected. Do not add player names,
+save contents, free-form chat, access tokens, or other personal data to
+breadcrumbs.
 
 ## Combat breadcrumbs
 
