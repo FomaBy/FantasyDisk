@@ -57,34 +57,58 @@ def main() -> int:
             if not validator.validate(DEFAULT_SOURCE, temp_path):
                 failures.append(f"mutation unexpectedly passed: {name}")
 
-    # Live-route mutation: removing the delayed Bayonet brace dispatch from its
-    # exact bound resolver must fail even though the firing method still arms
-    # the tween and other ClassWeapon finals emit events elsewhere.
+    # Live-route mutations stay bound to each Soldier executor method. Deleting
+    # the event or changing it to another valid Soldier event must fail even
+    # though the other executor method still emits that event elsewhere.
+    route_mutations = {
+        "deleted_bound_grenade_route": (
+            "scripts/classes/executors/soldier_executor.gd",
+            'var shrapnel_result := _context.constellation_event("explosion", null, explosion_damage)',
+            "var shrapnel_result := {}",
+        ),
+        "incorrect_bound_grenade_route": (
+            "scripts/classes/executors/soldier_executor.gd",
+            'var shrapnel_result := _context.constellation_event("explosion", null, explosion_damage)',
+            'var shrapnel_result := _context.constellation_event("brace_hit", null, explosion_damage)',
+        ),
+        "deleted_bound_bayonet_delayed_route": (
+            "scripts/classes/executors/soldier_executor.gd",
+            'var counter_result := _context.constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})',
+            "var counter_result := {}",
+        ),
+        "incorrect_bound_bayonet_delayed_route": (
+            "scripts/classes/executors/soldier_executor.gd",
+            'var counter_result := _context.constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})',
+            'var counter_result := _context.constellation_event("explosion", target, 0.0, {"brace_until_msec": brace_until_msec})',
+        ),
+    }
     with tempfile.TemporaryDirectory(prefix="scrum1068-route-validator-") as temp_dir:
         temp_root = Path(temp_dir)
         shutil.copytree(validator.ROOT / "scripts", temp_root / "scripts")
-        # FAN-3840: соло-удаление маршрута выполняется в модуле Солдата —
-        # class_weapon.gd теперь фасад extends-цепочки scripts/classes/**.
-        weapon_path = temp_root / "scripts/classes/soldier_weapon.gd"
-        weapon_source = weapon_path.read_text(encoding="utf-8")
-        route_line = 'var counter_result := _constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})'
-        if route_line not in weapon_source:
-            failures.append("route mutation fixture could not find delayed Bayonet brace dispatch")
-        else:
-            weapon_path.write_text(weapon_source.replace(route_line, "var counter_result := {}", 1), encoding="utf-8")
-            original_root = validator.ROOT
-            try:
-                validator.ROOT = temp_root
+        original_root = validator.ROOT
+        try:
+            validator.ROOT = temp_root
+            for name, (relative_path, route_line, replacement) in route_mutations.items():
+                route_path = temp_root / relative_path
+                route_source = route_path.read_text(encoding="utf-8")
+                if route_line not in route_source:
+                    failures.append(f"route mutation fixture could not find live route: {name}")
+                    continue
+                route_path.write_text(route_source.replace(route_line, replacement, 1), encoding="utf-8")
                 if not validator.validate(DEFAULT_SOURCE, DEFAULT_OUTPUT):
-                    failures.append("mutation unexpectedly passed: deleted_bound_bayonet_delayed_route")
-            finally:
-                validator.ROOT = original_root
+                    failures.append(f"mutation unexpectedly passed: {name}")
+                route_path.write_text(route_source, encoding="utf-8")
+        finally:
+            validator.ROOT = original_root
 
     if failures:
         for failure in failures:
             print(f"ERROR: {failure}")
         return 1
-    print(f"SCRUM-1068 validator mutation gate passed ({len(mutations) + 1} corruptions rejected).")
+    print(
+        "SCRUM-1068 validator mutation gate passed "
+        f"({len(mutations) + len(route_mutations)} corruptions rejected)."
+    )
     return 0
 
 

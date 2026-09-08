@@ -65,8 +65,14 @@ HIDDEN_EFFECT_KEYS = {
 # an explicitly tagged payoff for the mechanic.
 FINAL_ROUTE_METHODS: dict[str, tuple[str, str]] = {
     "rifle_suppression_mark": ("scripts/player.gd", "meta_damage_multiplier"),
-    "grenade_shrapnel_second_wave": ("scripts/classes/soldier_weapon.gd", "_explode_grenade_fuse"),
-    "bayonet_brace_countershot": ("scripts/classes/soldier_weapon.gd", "_resolve_bayonet_brace_countershot"),
+    "grenade_shrapnel_second_wave": (
+        "scripts/classes/executors/soldier_executor.gd",
+        "explode_grenade_fuse",
+    ),
+    "bayonet_brace_countershot": (
+        "scripts/classes/executors/soldier_executor.gd",
+        "resolve_bayonet_brace_countershot",
+    ),
     "coin_unique_target_return": ("scripts/classes/thief_weapon.gd", "_fire_coin_ricochet"),
     "dagger_backstab_execute_mark": ("scripts/classes/thief_weapon.gd", "_fire_shadow_backstab"),
     "smoke_dodge_triggered_burst": ("scripts/classes/class_weapon_combat.gd", "constellation_owner_event"),
@@ -364,7 +370,7 @@ def _validate_final_route(node: dict[str, Any], routes: dict[str, str], errors: 
     # evidence. The declared consumer must dispatch its exact event, or a
     # concrete bridge must emit damage explicitly tagged with this mechanic.
     explicit_call = bool(
-        re.search(rf'_constellation_event\([^\n]*"{re.escape(event)}"', route_source)
+        re.search(rf'(?:_context\.|_)constellation_event\([^\n]*"{re.escape(event)}"', route_source)
         or re.search(rf'constellation_weapon_event[^\n]*"{re.escape(event)}"', route_source)
     )
     payoff_marker = re.compile(
