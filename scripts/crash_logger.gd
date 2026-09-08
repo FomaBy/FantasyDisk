@@ -34,12 +34,11 @@ const SENSITIVE_KEY_QUALIFIERS := {
 	"shared": true, "security": true, "hmac": true, "aws": true,
 }
 const SENSITIVE_ID_QUALIFIERS := {"session": true, "sess": true}
-const HEADER_SCHEMES := {
-	"basic": true, "bearer": true, "token": true, "negotiate": true, "ntlm": true,
-	"hoba": true, "mutual": true, "apikey": true, "api-key": true, "oauth": true,
-	"aws4-hmac-sha256": true,
-}
 const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
+# RFC 7235 auth-scheme: a short name such as Basic, DPoP, SCRAM-SHA-256 or an
+# unknown extension scheme. Longer or underscore-bearing first tokens are the
+# credential itself.
+const MAX_AUTH_SCHEME_CHARS := 32
 
 
 class IncidentSink:
@@ -377,13 +376,27 @@ class IncidentSink:
 		return ""
 
 
+	# End of a quoted value that starts at `start`; a backslash-escaped inner
+	# quote does not close it. An unterminated quote consumes the remainder.
+	static func _quoted_end(text: String, start: int, quote: String) -> int:
+		var search_from := start + quote.length()
+		while true:
+			var closing := text.find(quote, search_from)
+			if closing < 0:
+				return text.length()
+			if quote.length() == 1 and closing > 0 and text[closing - 1] == "\\":
+				search_from = closing + 1
+				continue
+			return closing + quote.length()
+		return text.length()
+
+
 	static func _sensitive_value_end(text: String, start: int, family: String) -> int:
 		if start >= text.length():
 			return start
 		var quote := _quote_at(text, start)
 		if not quote.is_empty():
-			var closing := text.find(quote, start + quote.length())
-			return text.length() if closing < 0 else closing + quote.length()
+			return _quoted_end(text, start, quote)
 		var opener := text[start]
 		if opener == "{" or opener == "[":
 			return _balanced_end(text, start)
@@ -409,21 +422,69 @@ class IncidentSink:
 		return position
 
 
-	# `Authorization: <scheme> <credential>`: known schemes carry one more
-	# token; Digest carries a comma list, so the remainder of the line goes.
+	# Authorization-family value, RFC 7235 shape and scheme-agnostic:
+	# `<scheme> <token68>` or `<scheme> name=value, name="value", ...`.
+	# The scheme name is never trusted to be known: whatever follows it, and
+	# every comma-continued auth-param, is the credential. A first token that
+	# does not look like a scheme is the credential itself. Whitespace without a
+	# comma ends the value so trailing benign context survives.
 	static func _header_value_end(text: String, start: int) -> int:
-		var first_end := _bare_value_end(text, start)
-		var scheme := text.substr(start, first_end - start).to_lower()
-		if scheme == "digest":
-			var line_end := text.find("\n", start)
-			return text.length() if line_end < 0 else line_end
-		if not HEADER_SCHEMES.has(scheme):
-			return first_end
-		var next_start := _skip_inline_space(text, first_end)
-		if next_start >= text.length() or next_start == first_end:
-			return first_end
-		var next_end := _bare_value_end(text, next_start)
-		return next_end if next_end > next_start else first_end
+		var scheme_end := _bare_value_end(text, start)
+		if scheme_end == start:
+			return start
+		if not _looks_like_auth_scheme(text.substr(start, scheme_end - start)):
+			return scheme_end
+		var element_start := _skip_inline_space(text, scheme_end)
+		if element_start == scheme_end:
+			return scheme_end
+		var position := _auth_element_end(text, element_start)
+		if position == element_start:
+			return scheme_end
+		while true:
+			var comma := _skip_inline_space(text, position)
+			if comma >= text.length() or text[comma] != ",":
+				break
+			var next_start := _skip_inline_space(text, comma + 1)
+			var next_end := _auth_element_end(text, next_start)
+			if next_end == next_start:
+				break
+			position = next_end
+		return position
+
+
+	static func _looks_like_auth_scheme(token: String) -> bool:
+		if token.is_empty() or token.length() > MAX_AUTH_SCHEME_CHARS:
+			return false
+		if not _is_lower(token[0]) and not _is_upper(token[0]):
+			return false
+		for index in range(token.length()):
+			var character := token[index]
+			if not (_is_lower(character) or _is_upper(character) or character.is_valid_int() or character == "-"):
+				return false
+		return true
+
+
+	# One credential element: a token68 (`abc/def+ghi==`) or an auth-param
+	# (`name=value`, `name="quoted value"`).
+	static func _auth_element_end(text: String, start: int) -> int:
+		var position := start
+		while position < text.length() and _is_token68_character(text[position]):
+			position += 1
+		if position == start:
+			return start
+		if position >= text.length() or text[position] != "=":
+			return position
+		var value_start := position + 1
+		var quote := _quote_at(text, value_start)
+		if not quote.is_empty():
+			return _quoted_end(text, value_start, quote)
+		return maxi(_bare_value_end(text, value_start), value_start)
+
+
+	static func _is_token68_character(character: String) -> bool:
+		return character.is_valid_identifier() or character.is_valid_int() \
+			or character == "-" or character == "." or character == "~" \
+			or character == "+" or character == "/"
 
 
 	# `Cookie: a=1; b=2`: every `;`-separated pair belongs to the cookie value.

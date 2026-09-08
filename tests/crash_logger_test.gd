@@ -237,6 +237,19 @@ const CREDENTIAL_FAMILY_RATIONALE := "auth-token=TEST_AUTH_TOKEN_CREDENTIAL X-Au
 	+ "auth=TEST_BARE_AUTH_CREDENTIAL credentials: [\"TEST_LIST_CREDENTIAL_A\", \"TEST_LIST_CREDENTIAL_B\"] session_id=TEST_SESSION_ID_CREDENTIAL " \
 	+ "Authorization: Digest username=\"tester\", response=\"TEST_DIGEST_CREDENTIAL\"\n" \
 	+ "https://tester:TEST_URL_PASSWORD_CREDENTIAL@example.invalid/help reason=timeout token_expires=3600"
+const AUTHORIZATION_SCHEME_TEXT := "Authorization: DPoP TEST_DPOP_CREDENTIAL context=dpop-visible " \
+	+ "Proxy-Authorization: Signature keyId=\"tester\", algorithm=\"hs2019\", signature=\"TEST_SIGNATURE_CREDENTIAL\" context=signature-visible " \
+	+ "Authorization: X-Custom-Scheme TEST_EXTENSION_CREDENTIAL context=extension-visible " \
+	+ "Authorization: Mutual user=\"tester\", realm=\"game\", proof=TEST_MUTUAL_CREDENTIAL context=mutual-visible " \
+	+ "Authorization: TEST_SCHEMELESS_CREDENTIAL context=schemeless-visible " \
+	+ "PROXY-AUTHORIZATION: SCRAM-SHA-256 TEST_SCRAM_CREDENTIAL== context=scram-visible " \
+	+ "proxy_authorization=Concealed TEST_CONCEALED_CREDENTIAL operation=cast " \
+	+ "proxyAuthorization: 'HOBA TEST_HOBA_CREDENTIAL' reason=hoba-visible " \
+	+ "Authorization: Negotiate TEST_NEGOTIATE_CREDENTIAL, extra=TEST_NEGOTIATE_PARAM_CREDENTIAL Failed to load res://scenes/Main.tscn"
+const AUTHORIZATION_SCHEME_CODE := "{\"Authorization\": \"DPoP TEST_JSON_DPOP_CREDENTIAL\", \"reason\": \"json-dpop-visible\"} " \
+	+ "{\"headers\": {\"Proxy-Authorization\": \"Signature keyId=\\\"k\\\", signature=\\\"TEST_NESTED_SIGNATURE_CREDENTIAL\\\"\", \"Accept\": \"application/json\"}, \"level\": 7} " \
+	+ "{\\\"Proxy-Authorization\\\": \\\"Negotiate TEST_ESCAPED_NEGOTIATE_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-auth-visible\\\"} " \
+	+ "Authorization: Bearer TEST_KNOWN_BEARER_CREDENTIAL weapon=axe Authorization: Basic TEST_KNOWN_BASIC_CREDENTIAL event=activation"
 const CREDENTIAL_FAMILY_MARKERS: Array[String] = [
 	"TEST_CLIENT_SECRET_CREDENTIAL",
 	"TEST_CLIENT_SECRET_HEADER_CREDENTIAL",
@@ -273,8 +286,39 @@ const CREDENTIAL_FAMILY_MARKERS: Array[String] = [
 	"TEST_BREADCRUMB_SECRET_CREDENTIAL",
 	"TEST_BREADCRUMB_COOKIE_CREDENTIAL",
 	"TEST_BREADCRUMB_TOKEN_CREDENTIAL",
+	"TEST_DPOP_CREDENTIAL",
+	"TEST_SIGNATURE_CREDENTIAL",
+	"TEST_EXTENSION_CREDENTIAL",
+	"TEST_MUTUAL_CREDENTIAL",
+	"TEST_SCHEMELESS_CREDENTIAL",
+	"TEST_SCRAM_CREDENTIAL",
+	"TEST_CONCEALED_CREDENTIAL",
+	"TEST_HOBA_CREDENTIAL",
+	"TEST_NEGOTIATE_CREDENTIAL",
+	"TEST_NEGOTIATE_PARAM_CREDENTIAL",
+	"TEST_JSON_DPOP_CREDENTIAL",
+	"TEST_NESTED_SIGNATURE_CREDENTIAL",
+	"TEST_ESCAPED_NEGOTIATE_CREDENTIAL",
+	"TEST_KNOWN_BEARER_CREDENTIAL",
+	"TEST_KNOWN_BASIC_CREDENTIAL",
+	"TEST_BREADCRUMB_DPOP_CREDENTIAL",
 ]
 const CREDENTIAL_FAMILY_BENIGN: Array[String] = [
+	"context=dpop-visible",
+	"context=signature-visible",
+	"context=extension-visible",
+	"context=mutual-visible",
+	"context=schemeless-visible",
+	"context=scram-visible",
+	"proxy_authorization=<redacted> operation=cast",
+	"proxyAuthorization: '<redacted>' reason=hoba-visible",
+	"Failed to load res://scenes/Main.tscn",
+	"\"reason\": \"json-dpop-visible\"",
+	"\"Accept\": \"application/json\"",
+	"\"level\": 7",
+	"\\\"context\\\": \\\"escaped-auth-visible\\\"",
+	"weapon=axe",
+	"event=activation",
 	"context=text-visible",
 	"\"scene\": \"res://scenes/Main.tscn\"",
 	"reroll_tokens=3",
@@ -310,10 +354,16 @@ func _test_credential_field_families(service: Node) -> void:
 		"x_auth_token=TEST_BREADCRUMB_TOKEN_CREDENTIAL event=activation",
 		78,
 	)
+	service.record_breadcrumb_for_tests(
+		"Authorization: DPoP TEST_BREADCRUMB_DPOP_CREDENTIAL class=berserk",
+		"weapon=axe",
+		"event=activation",
+		79,
+	)
 	service.capture_error_for_tests(
-		CREDENTIAL_FAMILY_TEXT,
+		CREDENTIAL_FAMILY_TEXT + "\n" + AUTHORIZATION_SCHEME_TEXT,
 		no_frames,
-		CREDENTIAL_FAMILY_CODE,
+		CREDENTIAL_FAMILY_CODE + "\n" + AUTHORIZATION_SCHEME_CODE,
 		CREDENTIAL_FAMILY_RATIONALE,
 	)
 	service.flush_pending_for_tests()
@@ -338,9 +388,9 @@ func _test_credential_field_families(service: Node) -> void:
 	for benign in CREDENTIAL_FAMILY_BENIGN:
 		_check(fields.find(benign) >= 0, "benign diagnostic context was removed: %s" % benign)
 	var breadcrumbs: Array = record.get("breadcrumbs", [])
-	_check(breadcrumbs.size() == 1, "credential-family record carried %d breadcrumbs instead of 1" % breadcrumbs.size())
-	if breadcrumbs.size() == 1:
-		var breadcrumb: Dictionary = breadcrumbs[0]
+	_check(breadcrumbs.size() == 2, "credential-family record carried %d breadcrumbs instead of 2" % breadcrumbs.size())
+	for breadcrumb_value in breadcrumbs:
+		var breadcrumb: Dictionary = breadcrumb_value
 		_check(str(breadcrumb.get("class", "")).ends_with("class=berserk"), "breadcrumb class context was removed")
 		_check(str(breadcrumb.get("weapon", "")).ends_with("weapon=axe"), "breadcrumb weapon context was removed")
 		_check(str(breadcrumb.get("event", "")).ends_with("event=activation"), "breadcrumb event context was removed")

@@ -48,11 +48,21 @@ JSON in any casing or separator form (`client_secret`, `Client-Secret`,
 The whole value is replaced with `<redacted>` whether it is a bare token, a
 quoted or JSON-escaped string, a balanced `{...}` / `[...]` structure (so a
 nested `auth` or `cookies` object disappears as one unit), an
-`Authorization: <scheme> <credential>` header (Digest removes the remainder of
-its line) or a `;`-separated cookie list. Independently of keys, `Bearer ...`
-tokens, `scheme://user:password@host` URL credentials, PEM private-key blocks
-and personal Unix/Windows home paths are redacted; external source paths are
-replaced with `<external>`.
+Authorization-family header or a `;`-separated cookie list. Independently of
+keys, `Bearer ...` tokens, `scheme://user:password@host` URL credentials, PEM
+private-key blocks and personal Unix/Windows home paths are redacted; external
+source paths are replaced with `<external>`.
+
+`Authorization`, `Proxy-Authorization` and `auth` values follow the RFC 7235
+shape `<scheme> <token68>` or `<scheme> name=value, name="value", ...` and are
+redacted without any list of known schemes: the first token is treated as the
+scheme when it looks like one (letters, digits and hyphens, at most 32
+characters), and whatever follows it, plus every comma-continued auth-param, is
+the credential. Basic, Bearer, Digest, DPoP, HOBA, Mutual, Negotiate,
+SCRAM-SHA-256, Signature and any unknown extension scheme are therefore treated
+alike. A first token that does not look like a scheme is the credential itself.
+Whitespace without a comma ends the value, so trailing context such as
+`context=visible` survives.
 
 Keys whose final word is not a credential head stay readable
 (`secret_boss_active`, `reroll_tokens`, `token_count`, `token_expires`,
