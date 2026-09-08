@@ -439,7 +439,11 @@ class IncidentSink:
 			return scheme_end
 		var position := _auth_element_end(text, element_start)
 		if position == element_start:
-			return scheme_end
+			# Not a token68, auth-param or quoted element: still never leave a
+			# non-blank credential candidate behind the scheme name.
+			position = _bare_value_end(text, element_start)
+			if position == element_start:
+				return scheme_end
 		while true:
 			var comma := _skip_inline_space(text, position)
 			if comma >= text.length() or text[comma] != ",":
@@ -464,9 +468,13 @@ class IncidentSink:
 		return true
 
 
-	# One credential element: a token68 (`abc/def+ghi==`) or an auth-param
-	# (`name=value`, `name="quoted value"`).
+	# One credential element: a quoted credential (`"abc"`, `'abc'`, `\"abc\"`),
+	# a token68 (`abc/def+ghi==`) or an auth-param (`name=value`,
+	# `name="quoted value"`).
 	static func _auth_element_end(text: String, start: int) -> int:
+		var leading_quote := _quote_at(text, start)
+		if not leading_quote.is_empty():
+			return _quoted_end(text, start, leading_quote)
 		var position := start
 		while position < text.length() and _is_token68_character(text[position]):
 			position += 1

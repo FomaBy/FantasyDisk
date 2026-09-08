@@ -62,11 +62,12 @@ func _run_tests(service: Node) -> void:
 	_check(service.incident_paths_for_tests().is_empty(), "breadcrumb-only activity created an incident file")
 	_test_unavailable_stack_and_redaction(service)
 	_test_credential_field_families(service)
+	_test_quoted_authorization_batches(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -396,6 +397,106 @@ func _test_credential_field_families(service: Node) -> void:
 		_check(str(breadcrumb.get("event", "")).ends_with("event=activation"), "breadcrumb event context was removed")
 	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "credential-family incident exceeded the record byte limit")
 	_clean_incident_files(TEST_ROOT)
+
+
+# Each case is captured as its own isolated incident (one file, checked, then
+# removed) so normal rotation can never hide a leak. `field` selects which
+# _redact path carries the input: error text/code/rationale, a backtrace frame
+# function name, or a breadcrumb class/weapon/event field.
+const QUOTED_AUTHORIZATION_CASES: Array[Dictionary] = [
+	{"field": "text", "input": "Authorization: Bearer \"TEST_QB_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QB_DQ_CREDENTIAL"], "benign": ["Authorization: <redacted> context=visible"]},
+	{"field": "text", "input": "Authorization: Basic \"TEST_QBASIC_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QBASIC_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \"TEST_QEXT_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QEXT_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: HOBA \"TEST_QHOBA_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QHOBA_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: DPoP \"TEST_QDPOP_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QDPOP_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: Bearer \"TEST_QB_PROXY_CREDENTIAL\" context=visible", "markers": ["TEST_QB_PROXY_CREDENTIAL"], "benign": ["Proxy-Authorization: <redacted> context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: Basic 'TEST_QBASIC_PROXY_SQ_CREDENTIAL' context=visible", "markers": ["TEST_QBASIC_PROXY_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: X-Ext-Scheme \"TEST_QEXT_PROXY_CREDENTIAL\" context=visible", "markers": ["TEST_QEXT_PROXY_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer 'TEST_QB_SQ_CREDENTIAL' context=visible", "markers": ["TEST_QB_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Basic \\\"TEST_QBASIC_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_QBASIC_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \\\"TEST_QEXT_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_QEXT_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: \"Bearer TEST_WHOLE_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_WHOLE_DQ_CREDENTIAL"], "benign": ["Authorization: \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: 'Basic TEST_WHOLE_SQ_CREDENTIAL' context=visible", "markers": ["TEST_WHOLE_SQ_CREDENTIAL"], "benign": ["Proxy-Authorization: '<redacted>' context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer TEST_T68_CREDENTIAL== context=visible", "markers": ["TEST_T68_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme keyId=\"k\", proof=\"TEST_PARAM_DQ_CREDENTIAL\", nonce=TEST_PARAM_BARE_CREDENTIAL context=visible", "markers": ["TEST_PARAM_DQ_CREDENTIAL", "TEST_PARAM_BARE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \"TEST_LIST_Q1_CREDENTIAL\", \"TEST_LIST_Q2_CREDENTIAL\" context=visible", "markers": ["TEST_LIST_Q1_CREDENTIAL", "TEST_LIST_Q2_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_LINE_CREDENTIAL\"\nnext_line=visible res://scenes/Main.tscn", "markers": ["TEST_LINE_CREDENTIAL"], "benign": ["next_line=visible res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Failed to load user://saves/slot1.save Authorization: Basic \"TEST_END_CREDENTIAL\"", "markers": ["TEST_END_CREDENTIAL"], "benign": ["Failed to load user://saves/slot1.save Authorization: <redacted>"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_UNTERMINATED_CREDENTIAL context=lost", "markers": ["TEST_UNTERMINATED_CREDENTIAL"], "benign": ["Authorization: <redacted>"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_SPACED_QUOTE_CREDENTIAL with space\" context=visible", "markers": ["TEST_SPACED_QUOTE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "{\"headers\": {\"Authorization\": \"Bearer \\\"TEST_NESTED_Q_CREDENTIAL\\\"\", \"Accept\": \"text/plain\"}, \"level\": 5}", "markers": ["TEST_NESTED_Q_CREDENTIAL"], "benign": ["\"Accept\": \"text/plain\"", "\"level\": 5"]},
+	{"field": "text", "input": "{\\\"Authorization\\\": \\\"Bearer TEST_ESCJSON_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"}", "markers": ["TEST_ESCJSON_CREDENTIAL"], "benign": ["\\\"context\\\": \\\"escaped-visible\\\""]},
+	{"field": "text", "input": "auth: Bearer \"TEST_AUTHKEY_Q_CREDENTIAL\" context=visible https://example.invalid/help", "markers": ["TEST_AUTHKEY_Q_CREDENTIAL"], "benign": ["context=visible https://example.invalid/help"]},
+	{"field": "text", "input": "proxy_authorization=Basic \"TEST_SNAKE_Q_CREDENTIAL\" operation=cast", "markers": ["TEST_SNAKE_Q_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "code", "input": "Authorization: Bearer \"TEST_CODE_Q_CREDENTIAL\" operation=cast", "markers": ["TEST_CODE_Q_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "rationale", "input": "Proxy-Authorization: Basic 'TEST_RATIONALE_Q_CREDENTIAL' reason=timeout", "markers": ["TEST_RATIONALE_Q_CREDENTIAL"], "benign": ["reason=timeout"]},
+	{"field": "function", "input": "Authorization: Bearer \"TEST_FRAME_Q_CREDENTIAL\" fn=visible", "markers": ["TEST_FRAME_Q_CREDENTIAL"], "benign": ["fn=visible"]},
+	{"field": "class", "input": "Authorization: Basic \"TEST_CLASS_Q_CREDENTIAL\" class=berserk", "markers": ["TEST_CLASS_Q_CREDENTIAL"], "benign": ["class=berserk"]},
+	{"field": "weapon", "input": "Proxy-Authorization: X-Ext-Scheme 'TEST_WEAPON_Q_CREDENTIAL' weapon=axe", "markers": ["TEST_WEAPON_Q_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "event", "input": "Authorization: Bearer \\\"TEST_EVENT_Q_CREDENTIAL\\\" event=activation", "markers": ["TEST_EVENT_Q_CREDENTIAL"], "benign": ["event=activation"]},
+]
+
+
+func _test_quoted_authorization_batches(service: Node) -> void:
+	for entry_value in QUOTED_AUTHORIZATION_CASES:
+		var entry: Dictionary = entry_value
+		var field := str(entry.get("field", "text"))
+		var sample := str(entry.get("input", ""))
+		var label := str((entry.get("markers", []) as Array)[0])
+		service.clear_breadcrumbs_for_tests()
+		_clean_incident_files(TEST_ROOT)
+		var frames: Array[Dictionary] = []
+		if field == "function":
+			frames.append({"file": "res://tests/crash_logger_test.gd", "function": sample, "line": 1})
+		if field == "class" or field == "weapon" or field == "event":
+			service.record_breadcrumb_for_tests(
+				sample if field == "class" else "class=berserk",
+				sample if field == "weapon" else "weapon=axe",
+				sample if field == "event" else "event=activation",
+				80,
+			)
+		service.capture_error_for_tests(
+			sample if field == "text" else "isolated quoted authorization case",
+			frames,
+			sample if field == "code" else "",
+			sample if field == "rationale" else "",
+		)
+		service.flush_pending_for_tests()
+		var paths: PackedStringArray = service.incident_paths_for_tests()
+		_check(paths.size() == 1, "%s: isolated case produced %d files" % [label, paths.size()])
+		if paths.size() != 1:
+			continue
+		var payload := FileAccess.get_file_as_string(str(paths[0]))
+		var parsed = JSON.parse_string(payload)
+		_check(parsed is Dictionary, "%s: incident is not complete JSON" % label)
+		for marker in entry.get("markers", []):
+			_check(payload.find(str(marker)) == -1, "%s: quoted credential reached the incident" % str(marker))
+		if parsed is Dictionary:
+			var redacted := _redacted_fields_text(parsed)
+			for benign in entry.get("benign", []):
+				_check(redacted.find(str(benign)) >= 0, "%s: benign context was removed: %s" % [label, str(benign)])
+	_clean_incident_files(TEST_ROOT)
+
+
+func _redacted_fields_text(record: Dictionary) -> String:
+	var error: Dictionary = record.get("error", {})
+	var parts: Array[String] = [
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	]
+	var backtrace: Dictionary = record.get("script_backtrace", {})
+	for trace_value in backtrace.get("traces", []):
+		var trace: Dictionary = trace_value
+		for frame_value in trace.get("frames", []):
+			var frame: Dictionary = frame_value
+			parts.append(str(frame.get("function", "")))
+	for breadcrumb_value in record.get("breadcrumbs", []):
+		var breadcrumb: Dictionary = breadcrumb_value
+		parts.append(str(breadcrumb.get("class", "")))
+		parts.append(str(breadcrumb.get("weapon", "")))
+		parts.append(str(breadcrumb.get("event", "")))
+	return "\n".join(parts)
 
 
 func _test_concurrent_records_and_rotation(service: Node) -> void:

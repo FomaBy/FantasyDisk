@@ -60,9 +60,13 @@ scheme when it looks like one (letters, digits and hyphens, at most 32
 characters), and whatever follows it, plus every comma-continued auth-param, is
 the credential. Basic, Bearer, Digest, DPoP, HOBA, Mutual, Negotiate,
 SCRAM-SHA-256, Signature and any unknown extension scheme are therefore treated
-alike. A first token that does not look like a scheme is the credential itself.
-Whitespace without a comma ends the value, so trailing context such as
-`context=visible` survives.
+alike. The credential element itself may be a bare token68, an auth-param, or a
+quoted string in double, single or backslash-escaped quotes
+(`Authorization: Bearer "..."`, `Basic '...'`, `\"...\"`), and it is removed
+whether the whole header value is quoted or only the credential is. A first
+token that does not look like a scheme is the credential itself. Whitespace
+without a comma ends the value, so trailing context such as `context=visible`
+survives; an unterminated quote is removed to the end of the field.
 
 Keys whose final word is not a credential head stay readable
 (`secret_boss_active`, `reroll_tokens`, `token_count`, `token_expires`,
