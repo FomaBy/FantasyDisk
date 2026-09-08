@@ -45,6 +45,19 @@ class ChangelogFragmentTests(unittest.TestCase):
         self.assertIn("FAN-3912", assembled)
         self.assertNotIn("FAN-3905", assembled)
 
+    def test_static_quality_checkout_materializes_shipped_fragments(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "quality.yml").read_text(encoding="utf-8")
+        static_quality_start = workflow.index("\n  static-quality:\n")
+        checkout_end = workflow.index(
+            "\n      - name: Fetch pinned legacy commits for shallow candidates",
+            static_quality_start,
+        )
+        checkout = workflow[static_quality_start:checkout_end]
+
+        self.assertIn("            changelog.d\n", checkout)
+        fragment_ids = {fragment.identifier for fragment in assembler.load_fragments(ROOT / "changelog.d")}
+        self.assertIn("FAN-3912", fragment_ids)
+
     def test_repeated_assembly_is_byte_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             fragments = Path(tmp) / "fragments"

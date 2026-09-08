@@ -45,6 +45,7 @@ jobs:
             .claude
             .github
             assets
+            changelog.d
             data
             references
             scenes
