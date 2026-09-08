@@ -61,6 +61,26 @@ class QualityWorkflowContractTests(unittest.TestCase):
         ):
             self.assertIn(f"          {required_path}\n", checkout)
 
+    def test_candidate_checkout_materializes_selected_static_report_inputs(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        required_paths = (
+            "docs/design/reports/fan1455_seeded_combat_variety_slice_metrics.json",
+            "docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json",
+            "docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json",
+            "docs/design/references/unified_master_frame/unified_master_frame_metadata.json",
+            "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json",
+            "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json",
+            "docs/design/reports/fan1438_a5_balance/raw.json.gz",
+            "docs/design/mockups/scrum1088_priest_prayer_attribute_picker/layout.json",
+            "docs/design/references/SCRUM-1065_player_projectiles/manifest.json",
+        )
+
+        for required_path in required_paths:
+            with self.subTest(required_path=required_path):
+                self.assertTrue((ROOT / required_path).is_file())
+                self.assertIn(f"          {required_path}\n", checkout)
+
     def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
         checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
         checkout = self.candidate_job[:checkout_end]

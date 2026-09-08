@@ -8,6 +8,7 @@ surfaces retain their broader inheritance, class-wide, or umbrella coverage.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import PurePosixPath
 from typing import Iterable, Mapping, Sequence
@@ -183,6 +184,7 @@ _STATIC_ROOT_PATHS = frozenset({
     "README.md",
     "requirements-ci.txt",
 })
+_CANONICAL_CHANGELOG_FRAGMENT_RE = re.compile(r"^changelog\.d/FAN-[1-9][0-9]*\.md$")
 
 
 @dataclass(frozen=True)
@@ -265,7 +267,9 @@ def touches_ultimate_feature_list(changed_paths: Iterable[str]) -> bool:
 def _is_static_domain(path: str) -> bool:
     return (
         path in _STATIC_ROOT_PATHS
+        or path == "CHANGELOG.md"
         or path.startswith(_STATIC_DOMAIN_PREFIXES)
+        or _CANONICAL_CHANGELOG_FRAGMENT_RE.fullmatch(path) is not None
         or (path.startswith("tests/") and path.endswith(".py"))
     )
 
