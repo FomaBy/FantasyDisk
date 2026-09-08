@@ -35,6 +35,7 @@ const SENSITIVE_KEY_QUALIFIERS := {
 }
 const SENSITIVE_ID_QUALIFIERS := {"session": true, "sess": true}
 const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
+const TERMINAL_PUNCTUATION := ".,;:!?-/"
 # RFC 7235 auth-scheme: a short name such as Basic, DPoP, SCRAM-SHA-256 or an
 # unknown extension scheme. Longer or underscore-bearing first tokens are the
 # credential itself.
@@ -327,25 +328,51 @@ class IncidentSink:
 			var value_end := _header_value_end(text, scheme_start)
 			if value_end <= element_start:
 				continue
-			if _is_ordinary_word(text, element_start, value_end):
+			if _is_prose_element(text, element_start, value_end):
 				continue
+			var redact_end := _without_terminal_punctuation(text, element_start, value_end)
 			pieces.append(text.substr(cursor, element_start - cursor))
-			pieces.append(_redacted_value(text, element_start, value_end))
-			cursor = value_end
+			pieces.append(_redacted_value(text, element_start, redact_end))
+			cursor = redact_end
 		if cursor == 0:
 			return text
 		pieces.append(text.substr(cursor))
 		return "".join(pieces)
 
 
-	# A lowercase or Capitalised word made of letters only, or a plain number:
-	# prose, not a credential. Anything quoted, mixed-case, ALL-CAPS beyond the
-	# first letter, or containing digits with letters, `_`, `.`, `+`, `/`, `=`
-	# is treated as a credential element.
-	static func _is_ordinary_word(text: String, start: int, end: int) -> bool:
+	# Prose-versus-credential classification for the element after a bare
+	# scheme name. Prose is one or more ordinary words joined by single `-` or
+	# `/` separators (`attack`, `phase-change`, `attack/heavy`), optionally
+	# followed by terminal punctuation (`.`, `...`, `,`, `;`, `:`, `!`, `?`).
+	# An ordinary word is letters only in lowercase or Capitalised form, or a
+	# plain number. Anything else (quoted, ALL-CAPS beyond the first letter,
+	# mixed case, letters with digits, `_`, `+`, `=`, inner `.`) is a
+	# credential element. A quoted element is never prose.
+	static func _is_prose_element(text: String, start: int, end: int) -> bool:
 		if end <= start:
 			return false
-		var word := text.substr(start, end - start)
+		if not _quote_at(text, start).is_empty():
+			return false
+		var trimmed_end := _without_terminal_punctuation(text, start, end)
+		if trimmed_end <= start:
+			return true
+		var element := text.substr(start, trimmed_end - start)
+		for part in element.replace("/", "-").split("-", false):
+			if not _is_ordinary_word(part):
+				return false
+		return true
+
+
+	static func _without_terminal_punctuation(text: String, start: int, end: int) -> int:
+		var position := end
+		while position > start and TERMINAL_PUNCTUATION.contains(text[position - 1]):
+			position -= 1
+		return position
+
+
+	static func _is_ordinary_word(word: String) -> bool:
+		if word.is_empty():
+			return false
 		if word.is_valid_int() or word.is_valid_float():
 			return true
 		if not _is_lower(word[0]) and not _is_upper(word[0]):
@@ -504,10 +531,18 @@ class IncidentSink:
 				break
 			var next_start := _skip_inline_space(text, comma + 1)
 			var next_end := _auth_element_end(text, next_start)
-			if next_end == next_start:
+			if next_end == next_start or not _is_auth_param_or_quoted(text, next_start, next_end):
+				# A comma followed by a bare word (`attack, then`) is prose, not
+				# an auth-param list; only `name=value` or quoted items continue.
 				break
 			position = next_end
 		return position
+
+
+	static func _is_auth_param_or_quoted(text: String, start: int, end: int) -> bool:
+		if not _quote_at(text, start).is_empty():
+			return true
+		return text.substr(start, end - start).find("=") >= 0
 
 
 	static func _looks_like_auth_scheme(token: String) -> bool:

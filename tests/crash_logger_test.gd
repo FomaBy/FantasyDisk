@@ -65,11 +65,12 @@ func _run_tests(service: Node) -> void:
 	_test_quoted_authorization_batches(service)
 	_test_bare_scheme_batches(service)
 	_test_bare_scheme_case_matrix(service)
+	_test_bare_scheme_prose_matrix(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, bare scheme prose matrix, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -552,6 +553,92 @@ static func _build_bare_scheme_matrix() -> Array[Dictionary]:
 				"benign": ["%s Stone visible %s 42 visible" % [variant, variant]],
 			})
 	return cases
+
+
+# Prose-versus-credential boundary matrix: for every scheme family and case
+# variant, ordinary phrases with terminal punctuation and `-`/`/` separators
+# must survive byte-for-byte in every _redact field, while credential-positive
+# elements carrying the same separators and punctuation stay redacted.
+const PROSE_PHRASES: Array[String] = [
+	"attack.",
+	"attack...",
+	"ready.",
+	"mismatch.",
+	"flow.",
+	"respect.",
+	"phase-change.",
+	"attack/heavy.",
+	"attack, then heavy!",
+	"Stone-Bruiser/elite; retry: 3.",
+]
+const EXACT_PROSE_CONTROLS: Array[String] = [
+	"Basic attack.",
+	"basic attack...",
+	"Digest ready.",
+	"SIGNATURE mismatch.",
+	"OAuth flow.",
+	"Mutual respect.",
+	"Negotiate phase-change.",
+	"Basic attack/heavy.",
+	"Basic attack, heavy!",
+	"Bearer of news, visible.",
+]
+
+
+static func _build_bare_scheme_prose_matrix() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for scheme in MATRIX_SCHEMES:
+		var family := scheme.to_upper().replace("-", "")
+		for variant in _case_variants(scheme):
+			for phrase in PROSE_PHRASES:
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var sentence := "%s %s Failed to load res://scenes/Main.tscn from user://saves/slot1.save uid://c8ab12xyz https://example.invalid/help" % [variant, phrase]
+				if field != "text" and field != "code" and field != "rationale":
+					sentence = "%s %s" % [variant, phrase]
+				cases.append({"field": field, "input": sentence, "markers": [], "benign": [sentence]})
+				counter += 1
+			for form_index in range(6):
+				var marker := "TEST_PX_%s_%02d_CREDENTIAL" % [family, counter]
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var element := ""
+				match form_index:
+					0:
+						element = marker + "."
+					1:
+						element = marker + "..."
+					2:
+						element = marker.replace("_", "-") + "/part."
+					3:
+						element = "'" + marker + "'."
+					4:
+						element = "\\\"" + marker + "\\\"..."
+					5:
+						element = "keyId=\"k\", proof=" + marker + "."
+				var tail := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+				cases.append({
+					"field": field,
+					"input": "%s %s%s" % [variant, element, tail],
+					"markers": [marker.replace("_", "-") if form_index == 2 else marker],
+					"benign": ["context=visible"] if not tail.is_empty() else [],
+				})
+				counter += 1
+	return cases
+
+
+func _test_bare_scheme_prose_matrix(service: Node) -> void:
+	var cases := _build_bare_scheme_prose_matrix()
+	_check(cases.size() == MATRIX_SCHEMES.size() * 4 * (PROSE_PHRASES.size() + 6), "bare scheme prose matrix built %d cases" % cases.size())
+	var exact: Array[Dictionary] = []
+	for control in EXACT_PROSE_CONTROLS:
+		for field in MATRIX_FIELDS:
+			exact.append({"field": field, "input": control, "markers": [], "benign": [control]})
+	exact.append({"field": "text", "input": "Authorization: Basic TEST_PX_HEADER_CREDENTIAL. context=visible", "markers": ["TEST_PX_HEADER_CREDENTIAL"], "benign": ["context=visible"]})
+	exact.append({"field": "text", "input": "auth=Basic TEST_PX_KEY_CREDENTIAL... context=visible", "markers": ["TEST_PX_KEY_CREDENTIAL"], "benign": ["context=visible"]})
+	exact.append({"field": "text", "input": "Basic Zm9vOmJhcg==. context=visible", "markers": ["Zm9vOmJhcg=="], "benign": ["Basic <redacted>. context=visible"]})
+	exact.append({"field": "text", "input": "DPoP eyJhbGciOi.eyJzdWIi.SflKxw. context=visible", "markers": ["eyJhbGciOi"], "benign": ["DPoP <redacted>. context=visible"]})
+	exact.append({"field": "text", "input": "Basic TEST_PX_TRAIL_CREDENTIAL... context=visible", "markers": ["TEST_PX_TRAIL_CREDENTIAL"], "benign": ["Basic <redacted>... context=visible"]})
+	_run_isolated_cases(service, cases + exact, "bare scheme prose")
 
 
 func _test_bare_scheme_case_matrix(service: Node) -> void:

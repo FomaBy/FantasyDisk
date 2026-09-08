@@ -75,17 +75,30 @@ HTTP authentication scheme name (Basic, Bearer, Digest, DPoP, HOBA, Mutual,
 Negotiate, NTLM, OAuth, SCRAM-SHA-1, SCRAM-SHA-256, Signature, GNAP,
 PrivateToken, Concealed, AWS4-HMAC-SHA256) or an `X-` extension name, matched
 in any letter case (canonical, lowercase, uppercase or mixed). Because several
-of those names are ordinary English words, the element after the scheme
-decides: a quoted element, an auth-param, or a token containing digits with
-letters, `_`, `.`, `+`, `/`, `=`, mixed case or capitals beyond the first
-letter is a credential and is removed; a lowercase or Capitalised word made of
-letters only, or a plain number, is prose and is kept (`Basic attack`,
-`basic Stone`, `Digest ready`, `signature mismatch`, `digest 3`). This is a
-deliberate, documented boundary rather than a guess. Consequently a bare
-credential after an unregistered scheme without the `X-` prefix, or a bare
-secret shaped like an ordinary word (letters only in lowercase or Capitalised
-form, or digits only) after a scheme name, is not detected unless a header
-name or credential key accompanies it.
+of those names are ordinary English words, the element after the scheme is
+classified as prose or credential by shape, not by a phrase list:
+
+- **prose** (kept byte-for-byte): one or more ordinary words joined by single
+  `-` or `/` separators, optionally followed by terminal punctuation
+  (`.`, `...`, `,`, `;`, `:`, `!`, `?`). An ordinary word is letters only in
+  lowercase or Capitalised form, or a plain number. Examples: `Basic attack.`,
+  `basic attack...`, `Digest ready.`, `SIGNATURE mismatch.`, `OAuth flow.`,
+  `Mutual respect.`, `Negotiate phase-change.`, `Basic attack/heavy.`,
+  `basic Stone`, `digest 3`.
+- **credential** (removed, terminal punctuation preserved): a quoted element,
+  an auth-param, or a token with digits mixed with letters, `_`, `+`, `=`, an
+  inner `.`, mixed case or capitals beyond the first letter, such as
+  `Basic Zm9vOmJhcg==`, `Basic "..."`, `DPoP eyJhbGciOi.eyJzdWIi.SflKxw`,
+  `X-Ext keyId="k", proof="..."`. A comma continues the credential only
+  when the next item is `name=value` or quoted; `Basic attack, then heavy!`
+  is prose.
+
+This is a deliberate, documented boundary rather than a guess. Its residual
+ambiguity: a bare credential after an unregistered scheme without the `X-`
+prefix, or a bare secret shaped exactly like prose (letters only in lowercase
+or Capitalised form, digits only, or such words joined by `-`/`/`), is not
+detected unless a header name or credential key accompanies it; in header
+and key forms every element is removed.
 
 Keys whose final word is not a credential head stay readable
 (`secret_boss_active`, `reroll_tokens`, `token_count`, `token_expires`,
