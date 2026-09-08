@@ -7,6 +7,7 @@ const PLAYER_SOURCE_PATH := "res://scripts/player.gd"
 const PLAYER_COLLABORATOR_DIRECTORY_PATH := "res://scripts/player"
 const PLAYER_CLASS_EFFECTS_SOURCE_PATH := "res://scripts/player/player_class_effects.gd"
 const SIBLING_MUTATION_PATH := "res://scripts/player/player_damage_policy.gd"
+const STATUS_WRITER_ENTRY_POINTS := ["apply_status", "apply_status_from"]
 const FORBIDDEN_MINION_FRAGMENTS := [
 	"_druid_summon_support_multiplier",
 	"_druid_summon_aura_radius",
@@ -123,6 +124,22 @@ func _verify_aura_writer_mutations(sources: Dictionary, errors: Array[String]) -
 		alias_duplicate[PLAYER_CLASS_EFFECTS_SOURCE_PATH] = str(alias_duplicate[PLAYER_CLASS_EFFECTS_SOURCE_PATH]) + "\nStatusEffects.apply_status(owner_alias, \"%s\", {})" % aura_id
 		if _aura_writer_errors(alias_duplicate).is_empty():
 			errors.append("mutation oracle accepted alias duplication of %s" % aura_id)
+		var sourced_duplicate := sources.duplicate()
+		sourced_duplicate[SIBLING_MUTATION_PATH] = str(sourced_duplicate[SIBLING_MUTATION_PATH]) + "\nStatusEffects.apply_status_from(source_alias, sibling_alias, \"%s\", {})" % aura_id
+		if _aura_writer_errors(sourced_duplicate).is_empty():
+			errors.append("mutation oracle accepted sourced duplication of %s" % aura_id)
+		var multiline_duplicate := sources.duplicate()
+		multiline_duplicate[SIBLING_MUTATION_PATH] = str(multiline_duplicate[SIBLING_MUTATION_PATH]) + "\nStatusEffects.apply_status(\n\tmultiline_alias,\n\t\"%s\",\n\t{}\n)" % aura_id
+		if _aura_writer_errors(multiline_duplicate).is_empty():
+			errors.append("mutation oracle accepted multiline duplication of %s" % aura_id)
+		var multiline_sourced_duplicate := sources.duplicate()
+		multiline_sourced_duplicate[SIBLING_MUTATION_PATH] = str(multiline_sourced_duplicate[SIBLING_MUTATION_PATH]) + "\nStatusEffects.apply_status_from(\n\tsource_alias,\n\tmultiline_alias,\n\t\"%s\",\n\t{}\n)" % aura_id
+		if _aura_writer_errors(multiline_sourced_duplicate).is_empty():
+			errors.append("mutation oracle accepted multiline sourced duplication of %s" % aura_id)
+		var commented_duplicate := sources.duplicate()
+		commented_duplicate[SIBLING_MUTATION_PATH] = str(commented_duplicate[SIBLING_MUTATION_PATH]) + "\n# StatusEffects.apply_status(alias, \"%s\", {})" % aura_id
+		if not _aura_writer_errors(commented_duplicate).is_empty():
+			errors.append("writer scanner stopped stripping comments for %s" % aura_id)
 
 
 func _collect_player_ownership_sources(errors: Array[String]) -> Dictionary:
@@ -159,9 +176,18 @@ func _read_source(path: String, sources: Dictionary, errors: Array[String]) -> v
 
 
 func _writer_count(source: String, aura_id: String) -> int:
-	var writer_regex := RegEx.new()
-	writer_regex.compile("StatusEffects\\.apply_status\\s*\\(\\s*[^,\\n]+,\\s*\\\"%s\\\"" % aura_id)
+	var comment_free_source := _without_comments(source)
 	var count := 0
-	for line in source.split("\n"):
-		count += writer_regex.search_all(line.get_slice("#", 0)).size()
+	for entry_point in STATUS_WRITER_ENTRY_POINTS:
+		var writer_regex := RegEx.new()
+		var leading_arguments := "[^,]+,\\s*" if entry_point == "apply_status" else "[^,]+,\\s*[^,]+,\\s*"
+		writer_regex.compile("StatusEffects\\.%s\\s*\\(\\s*%s\\\"%s\\\"" % [entry_point, leading_arguments, aura_id])
+		count += writer_regex.search_all(comment_free_source).size()
 	return count
+
+
+func _without_comments(source: String) -> String:
+	var comment_free_lines: Array[String] = []
+	for line in source.split("\n"):
+		comment_free_lines.append(line.get_slice("#", 0))
+	return " ".join(comment_free_lines)
