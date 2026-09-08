@@ -158,6 +158,23 @@
       "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_1080p.png",
       "docs/design/reference-assets-lfs/ranger-ultimate-timelines-fan3889/ranger_ultimate_timelines_2k.png"
     ],
+    "frame_local_beats": {
+      "moon_crossbow": [
+        {"phase": "release", "time": 0.70, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 1.05, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.60, "required_nodes": ["@visible_effect"]}
+      ],
+      "storm_longbow": [
+        {"phase": "release", "time": 0.60, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 0.95, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.85, "required_nodes": ["@visible_effect"]}
+      ],
+      "hunter_trap": [
+        {"phase": "release", "time": 0.95, "required_nodes": ["@visible_effect"]},
+        {"phase": "active", "time": 1.40, "required_nodes": ["@visible_effect"]},
+        {"phase": "recovery", "time": 2.70, "required_nodes": ["@visible_effect"]}
+      ]
+    },
     "live_capture": {
       "issue": "FAN-3889",
       "source_ref": "dev",
