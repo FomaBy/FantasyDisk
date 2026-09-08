@@ -81,7 +81,6 @@ const ADOPTION_GAPS := {
 		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
 	},
 	"capture": {
-		"ranger": "single 4680x594 strip instead of the four live-capture viewports",
 		"thief": "single 3600x552 strip instead of the four live-capture viewports",
 	},
 	"provenance": {
