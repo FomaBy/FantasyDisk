@@ -66,11 +66,12 @@ func _run_tests(service: Node) -> void:
 	_test_bare_scheme_batches(service)
 	_test_bare_scheme_case_matrix(service)
 	_test_bare_scheme_prose_matrix(service)
+	_test_header_tails_and_separator_shapes(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, bare scheme prose matrix, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, bare scheme prose matrix, header tails and separator shapes, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -624,6 +625,84 @@ static func _build_bare_scheme_prose_matrix() -> Array[Dictionary]:
 				})
 				counter += 1
 	return cases
+
+
+# Two parser contexts, both across every _redact field, recognized and
+# X-extension schemes and case variants:
+# 1. sensitive header/key values remove every comma-separated element, so an
+#    unquoted credential after a comma never survives;
+# 2. bare `<scheme> ...` prose keeps `word, word` but a leading, trailing,
+#    repeated or word-less separator is outside the prose grammar and stays a
+#    credential element (exact expected output asserted byte for byte).
+const SENSITIVE_HEADER_PREFIXES: Array[String] = [
+	"Authorization: Basic",
+	"Proxy-Authorization: Bearer",
+	"auth=DPoP",
+	"authorization=Negotiate",
+	"proxy_authorization=X-Probe",
+	"proxyAuthorization: Mutual",
+	"AUTHORIZATION: SCRAM-SHA-256",
+	"Authorization: bAsIc",
+	"PROXY-AUTHORIZATION: x-probe",
+]
+const SEPARATOR_SHAPE_CASES: Array[Dictionary] = [
+	{"input": "Bearer /Secret context=visible", "expected": "Bearer <redacted> context=visible", "marker": "Secret"},
+	{"input": "Basic -secret context=visible", "expected": "Basic <redacted> context=visible", "marker": "secret"},
+	{"input": "DPoP secret//value. context=visible", "expected": "DPoP <redacted>. context=visible", "marker": "secret//value"},
+	{"input": "X-Ext secret-/value. context=visible", "expected": "X-Ext <redacted>. context=visible", "marker": "secret-/value"},
+	{"input": "Basic //// context=visible", "expected": "Basic <redacted> context=visible", "marker": "////"},
+	{"input": "basic TEST_SEP_LEAD_CREDENTIAL- context=visible", "expected": "basic <redacted> context=visible", "marker": "TEST_SEP_LEAD_CREDENTIAL"},
+	{"input": "bEaReR -TEST_SEP_DASH_CREDENTIAL/part. context=visible", "expected": "bEaReR <redacted>. context=visible", "marker": "TEST_SEP_DASH_CREDENTIAL"},
+	{"input": "x-ext attack--heavy. context=visible", "expected": "x-ext <redacted>. context=visible", "marker": "attack--heavy"},
+	{"input": "sCrAm-ShA-256 attack/-heavy! context=visible", "expected": "sCrAm-ShA-256 <redacted>! context=visible", "marker": "attack/-heavy"},
+	{"input": "Digest -- context=visible", "expected": "Digest <redacted> context=visible", "marker": "--"},
+	{"input": "Basic ... context=visible", "expected": "Basic ... context=visible", "marker": ""},
+	{"input": "Basic attack. context=visible", "expected": "Basic attack. context=visible", "marker": ""},
+	{"input": "Basic attack, then heavy! context=visible", "expected": "Basic attack, then heavy! context=visible", "marker": ""},
+	{"input": "Negotiate phase-change/retry... context=visible", "expected": "Negotiate phase-change/retry... context=visible", "marker": ""},
+	{"input": "Digest 3.14. context=visible", "expected": "Digest 3.14. context=visible", "marker": ""},
+]
+
+
+static func _build_header_tail_cases() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for prefix in SENSITIVE_HEADER_PREFIXES:
+		for field in MATRIX_FIELDS:
+			var first := "TEST_HT_FIRST_%02d_CREDENTIAL" % counter
+			var tail := "TEST_HT_TAIL_%02d_CREDENTIAL" % counter
+			var quoted_tail := "TEST_HT_QTAIL_%02d_CREDENTIAL" % counter
+			var suffix := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+			cases.append({
+				"field": field,
+				"input": "%s %s, %s%s" % [prefix, first, tail, suffix],
+				"markers": [first, tail],
+				"benign": ["context=visible"] if not suffix.is_empty() else [],
+			})
+			cases.append({
+				"field": field,
+				"input": "%s %s, \"%s\", extra=%s%s" % [prefix, first, quoted_tail, tail, suffix],
+				"markers": [first, quoted_tail, tail],
+				"benign": ["context=visible"] if not suffix.is_empty() else [],
+			})
+			counter += 1
+	return cases
+
+
+func _test_header_tails_and_separator_shapes(service: Node) -> void:
+	var cases := _build_header_tail_cases()
+	_check(cases.size() == SENSITIVE_HEADER_PREFIXES.size() * MATRIX_FIELDS.size() * 2, "header tail cases built %d" % cases.size())
+	for shape_value in SEPARATOR_SHAPE_CASES:
+		var shape: Dictionary = shape_value
+		var marker := str(shape.get("marker", ""))
+		for field in MATRIX_FIELDS:
+			cases.append({
+				"field": field,
+				"input": str(shape["input"]),
+				"markers": [marker] if not marker.is_empty() else [],
+				"benign": [str(shape["expected"])],
+			})
+	_run_isolated_cases(service, cases, "header tails and separator shapes")
 
 
 func _test_bare_scheme_prose_matrix(service: Node) -> void:

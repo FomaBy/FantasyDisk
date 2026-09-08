@@ -35,7 +35,10 @@ const SENSITIVE_KEY_QUALIFIERS := {
 }
 const SENSITIVE_ID_QUALIFIERS := {"session": true, "sess": true}
 const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
-const TERMINAL_PUNCTUATION := ".,;:!?-/"
+# Sentence punctuation that may follow a prose element or a credential; word
+# separators `-` and `/` are never trimmed, so `-secret`, `////` or
+# `secret//value` keep their separator structure and fail the prose grammar.
+const TERMINAL_PUNCTUATION := ".,;:!?"
 # RFC 7235 auth-scheme: a short name such as Basic, DPoP, SCRAM-SHA-256 or an
 # unknown extension scheme. Longer or underscore-bearing first tokens are the
 # credential itself.
@@ -325,12 +328,15 @@ class IncidentSink:
 				continue
 			var scheme_end := found.get_end()
 			var element_start := _skip_inline_space(text, scheme_end)
-			var value_end := _header_value_end(text, scheme_start)
+			var value_end := _header_value_end(text, scheme_start, true)
 			if value_end <= element_start:
 				continue
 			if _is_prose_element(text, element_start, value_end):
 				continue
 			var redact_end := _without_terminal_punctuation(text, element_start, value_end)
+			if redact_end <= element_start:
+				# Only sentence punctuation after the scheme word: nothing to hide.
+				continue
 			pieces.append(text.substr(cursor, element_start - cursor))
 			pieces.append(_redacted_value(text, element_start, redact_end))
 			cursor = redact_end
@@ -340,14 +346,14 @@ class IncidentSink:
 		return "".join(pieces)
 
 
-	# Prose-versus-credential classification for the element after a bare
-	# scheme name. Prose is one or more ordinary words joined by single `-` or
-	# `/` separators (`attack`, `phase-change`, `attack/heavy`), optionally
-	# followed by terminal punctuation (`.`, `...`, `,`, `;`, `:`, `!`, `?`).
-	# An ordinary word is letters only in lowercase or Capitalised form, or a
-	# plain number. Anything else (quoted, ALL-CAPS beyond the first letter,
-	# mixed case, letters with digits, `_`, `+`, `=`, inner `.`) is a
-	# credential element. A quoted element is never prose.
+	# Prose-versus-credential grammar for the element after a bare scheme name:
+	#   prose := word ( ("-" | "/") word )*  [ terminal-punctuation ]
+	#   word  := letters only, lowercase or Capitalised | plain number
+	# Exactly one separator between two words; a leading, trailing, repeated
+	# or word-less separator (`-secret`, `secret//value`, `secret-/value`,
+	# `////`) is outside the grammar and stays a credential element, as does
+	# anything quoted, ALL-CAPS beyond the first letter, mixed case, or with
+	# digits among letters, `_`, `+`, `=` or an inner `.`.
 	static func _is_prose_element(text: String, start: int, end: int) -> bool:
 		if end <= start:
 			return false
@@ -355,9 +361,9 @@ class IncidentSink:
 			return false
 		var trimmed_end := _without_terminal_punctuation(text, start, end)
 		if trimmed_end <= start:
-			return true
+			return false
 		var element := text.substr(start, trimmed_end - start)
-		for part in element.replace("/", "-").split("-", false):
+		for part in element.replace("/", "-").split("-", true):
 			if not _is_ordinary_word(part):
 				return false
 		return true
@@ -509,7 +515,11 @@ class IncidentSink:
 	# every comma-continued auth-param, is the credential. A first token that
 	# does not look like a scheme is the credential itself. Whitespace without a
 	# comma ends the value so trailing benign context survives.
-	static func _header_value_end(text: String, start: int) -> int:
+	# `bare_prose` selects the bare `<scheme> ...` context, where a comma
+	# continues the credential only with `name=value` or a quoted item so that
+	# `attack, then heavy!` stays prose. In the sensitive header/key context
+	# every comma-separated element is part of the credential and is removed.
+	static func _header_value_end(text: String, start: int, bare_prose := false) -> int:
 		var scheme_end := _bare_value_end(text, start)
 		if scheme_end == start:
 			return start
@@ -531,9 +541,9 @@ class IncidentSink:
 				break
 			var next_start := _skip_inline_space(text, comma + 1)
 			var next_end := _auth_element_end(text, next_start)
-			if next_end == next_start or not _is_auth_param_or_quoted(text, next_start, next_end):
-				# A comma followed by a bare word (`attack, then`) is prose, not
-				# an auth-param list; only `name=value` or quoted items continue.
+			if next_end == next_start:
+				break
+			if bare_prose and not _is_auth_param_or_quoted(text, next_start, next_end):
 				break
 			position = next_end
 		return position

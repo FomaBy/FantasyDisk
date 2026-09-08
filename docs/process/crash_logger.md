@@ -78,20 +78,32 @@ in any letter case (canonical, lowercase, uppercase or mixed). Because several
 of those names are ordinary English words, the element after the scheme is
 classified as prose or credential by shape, not by a phrase list:
 
-- **prose** (kept byte-for-byte): one or more ordinary words joined by single
-  `-` or `/` separators, optionally followed by terminal punctuation
-  (`.`, `...`, `,`, `;`, `:`, `!`, `?`). An ordinary word is letters only in
-  lowercase or Capitalised form, or a plain number. Examples: `Basic attack.`,
+- **prose** (kept byte-for-byte), by the grammar
+  `prose := word (("-" | "/") word)* [terminal-punctuation]` where `word` is
+  letters only in lowercase or Capitalised form, or a plain number, exactly
+  one separator stands between two words, and terminal punctuation is one or
+  more of `.`, `,`, `;`, `:`, `!`, `?`. Examples: `Basic attack.`,
   `basic attack...`, `Digest ready.`, `SIGNATURE mismatch.`, `OAuth flow.`,
   `Mutual respect.`, `Negotiate phase-change.`, `Basic attack/heavy.`,
-  `basic Stone`, `digest 3`.
-- **credential** (removed, terminal punctuation preserved): a quoted element,
-  an auth-param, or a token with digits mixed with letters, `_`, `+`, `=`, an
-  inner `.`, mixed case or capitals beyond the first letter, such as
-  `Basic Zm9vOmJhcg==`, `Basic "..."`, `DPoP eyJhbGciOi.eyJzdWIi.SflKxw`,
-  `X-Ext keyId="k", proof="..."`. A comma continues the credential only
-  when the next item is `name=value` or quoted; `Basic attack, then heavy!`
-  is prose.
+  `basic Stone`, `digest 3`, `Digest 3.14.`. In this bare context a comma
+  continues the credential only with `name=value` or a quoted item, so
+  `Basic attack, then heavy!` is prose.
+- **credential** (removed; terminal punctuation is preserved outside the
+  `<redacted>` marker): anything outside that grammar. That includes a quoted
+  element, an auth-param, a token with digits among letters, `_`, `+`, `=`,
+  an inner `.`, mixed case or capitals beyond the first letter, and any
+  leading, trailing, repeated or word-less separator: `Basic Zm9vOmJhcg==`,
+  `Basic "..."`, `DPoP eyJhbGciOi.eyJzdWIi.SflKxw`,
+  `X-Ext keyId="k", proof="..."`, `Bearer /Secret`, `Basic -secret`,
+  `DPoP secret//value.`, `X-Ext secret-/value.`, `Basic ////`. An element made
+  only of terminal punctuation (`Basic ...`) has nothing to hide and is left
+  unchanged.
+
+The bare-scheme prose grammar never applies to a sensitive header or key
+value: after `Authorization`, `Proxy-Authorization`, `auth` and the credential
+keys above, every element is removed, and a comma continues the value with any
+following element, quoted or not (`Authorization: Basic first, second` loses
+both).
 
 This is a deliberate, documented boundary rather than a guess. Its residual
 ambiguity: a bare credential after an unregistered scheme without the `X-`
