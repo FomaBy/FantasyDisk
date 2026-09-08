@@ -285,6 +285,24 @@ pathlib.Path(path).write_text(
 PY
 fi
 
+# Assemble only inside the detached source snapshot. The caller checkout and
+# published source objects remain untouched, while downstream guards consume
+# the same canonical notes that will be packaged.
+if [[ -d "${WORKTREE_DIR}/changelog.d" ]]; then
+  if [[ ! -f "${WORKTREE_DIR}/tools/assemble_changelog.py" ]]; then
+    echo "ERROR: source-pinned snapshot has changelog fragments but no assembler"
+    exit 2
+  fi
+  echo "==> Assembling canonical release notes from source-pinned fragments"
+  if ! python3 "${WORKTREE_DIR}/tools/assemble_changelog.py" \
+    --fragments "${WORKTREE_DIR}/changelog.d" \
+    --changelog "${WORKTREE_DIR}/CHANGELOG.md" \
+    --write; then
+    echo "ERROR: canonical release-note assembly failed"
+    exit 2
+  fi
+fi
+
 echo "==> Проверка версии ${SOURCE_LABEL} и export presets"
 if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" \
   --version "${VERSION}" \

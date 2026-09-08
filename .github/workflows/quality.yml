@@ -45,6 +45,7 @@ jobs:
             .claude
             .github
             assets
+            changelog.d
             data
             references
             scenes
@@ -60,9 +61,18 @@ jobs:
             docs/design/content
             docs/design/systems
             docs/design/data
+            docs/design/reports/fan1455_seeded_combat_variety_slice_metrics.json
+            docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json
+            docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json
+            docs/design/reports/fan1438_a5_balance/raw.json.gz
             docs/design/templates/release_notes
             docs/design/mockups/release_0_2_4
             docs/design/mockups/scrum1061_semantic_typography
+            docs/design/mockups/scrum1088_priest_prayer_attribute_picker/layout.json
+            docs/design/references/SCRUM-1065_player_projectiles/manifest.json
+            docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json
+            docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json
+            docs/design/references/unified_master_frame/unified_master_frame_metadata.json
             docs/design/references/weapon_attack_animations
             docs/design/references/weapon_ultimates
             docs/design/reference-assets-lfs
