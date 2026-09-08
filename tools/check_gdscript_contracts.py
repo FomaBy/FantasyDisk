@@ -60,6 +60,13 @@ class ChainSpec:
     forward_api: str
     terminal_base: str
     facade_class_name: str | None
+    # FAN-3926: collaborators composed behind the facade (context/executor
+    # objects) live in this subdirectory of ``module_directory``.  They are
+    # parsed like every other script but must extend ``composed_base`` directly;
+    # a script there that inherits a chain member is still an accidental
+    # sibling.  ``None`` keeps the strict "everything is on the chain" rule.
+    composed_directory: str | None = None
+    composed_base: str = "RefCounted"
 
 
 CHAIN_SPECS = (
@@ -78,6 +85,7 @@ CHAIN_SPECS = (
         forward_api="scripts/classes/class_weapon_shared_api.gd",
         terminal_base="Node2D",
         facade_class_name="ClassWeapon",
+        composed_directory="scripts/classes/executors",
     ),
 )
 
@@ -394,6 +402,45 @@ def _resolve_chain(spec: ChainSpec, scripts: dict[str, Script]) -> list[str]:
         raise GDScriptContractError(f"{script.path}: unresolved base {target!r}")
 
 
+def _is_composed(spec: ChainSpec, relative: str) -> bool:
+    if spec.composed_directory is None:
+        return False
+    return relative.startswith(spec.composed_directory.rstrip("/") + "/")
+
+
+def _composed_collaborator_errors(
+    spec: ChainSpec, scripts: dict[str, Script], composed: set[str]
+) -> list[str]:
+    """Composed collaborators must extend ``composed_base`` directly.
+
+    Anything that reaches a chain member by path or by ``class_name`` is an
+    accidental sibling exactly like a stray module elsewhere; a missing,
+    unknown or foreign base fails closed as well.  Parse errors, duplicate
+    function names and ``class_name`` collisions were already raised while
+    collecting and resolving the scripts.
+    """
+    declared_class_names = {
+        script.class_name for script in scripts.values() if script.class_name is not None
+    }
+    errors: list[str] = []
+    for path in sorted(composed):
+        target = scripts[path].extends
+        if target is None:
+            errors.append(f"{spec.name}: {path} is a composed collaborator without an extends declaration")
+        elif target.startswith("res://") or target in declared_class_names:
+            errors.append(f"{spec.name}: {path} is an accidental sibling, not on the facade chain")
+        elif target == spec.composed_base:
+            continue
+        elif target in EXTERNAL_BASES:
+            errors.append(
+                f"{spec.name}: {path} is a composed collaborator and must extend "
+                f"{spec.composed_base}, found {target}"
+            )
+        else:
+            errors.append(f"{path}: unresolved base {target!r}")
+    return errors
+
+
 def signatures_compatible(base: Function, override: Function) -> bool:
     """Compare the GDScript override surface, ignoring parameter spelling only."""
     return (
@@ -418,12 +465,16 @@ def _contract_errors_for_spec(root: Path, spec: ChainSpec) -> list[str]:
             f"{spec.name}: facade class_name must be {spec.facade_class_name!r}, "
             f"found {facade.class_name!r}"
         )
-    expected_modules = set(scripts) - {spec.facade}
+    composed = {path for path in scripts if _is_composed(spec, path)}
+    expected_modules = set(scripts) - {spec.facade} - composed
     actual_modules = set(chain) - {spec.facade}
     for path in sorted(expected_modules - actual_modules):
         errors.append(f"{spec.name}: {path} is an accidental sibling, not on the facade chain")
-    for path in sorted(actual_modules - expected_modules):
+    for path in sorted(composed & actual_modules):
+        errors.append(f"{spec.name}: {path} is a composed collaborator but sits on the facade chain")
+    for path in sorted(actual_modules - expected_modules - composed):
         errors.append(f"{spec.name}: {path} is outside the controlled module directory")
+    errors.extend(_composed_collaborator_errors(spec, scripts, composed - actual_modules))
     if spec.forward_api not in chain:
         errors.append(f"{spec.name}: forward API {spec.forward_api} is absent from the facade chain")
         return errors
