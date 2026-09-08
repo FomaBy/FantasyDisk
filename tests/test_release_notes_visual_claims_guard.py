@@ -122,6 +122,14 @@ class ReleaseNotesVisualClaimsGuardTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0)
 
+    def test_build_assembles_source_pinned_notes_before_the_visual_claim_guard(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        assembly_call = 'python3 "${WORKTREE_DIR}/tools/assemble_changelog.py"'
+        visual_guard_call = 'python3 "${WORKTREE_DIR}/tools/release_notes_visual_claims_guard.py"'
+        self.assertIn(assembly_call, script)
+        self.assertIn('"${WORKTREE_DIR}/changelog.d"', script)
+        self.assertLess(script.index(assembly_call), script.index(visual_guard_call))
+
 
 if __name__ == "__main__":
     unittest.main()
