@@ -69,37 +69,49 @@ const MAX_REPEAT_FLASH_COVERAGE_RATIO := 0.25
 ## Free-text direction fields that must exist and stay distinct inside a trio.
 const DIRECTION_FIELDS: Array[String] = ["silhouette", "motion_path", "impact_language"]
 
-## Classes that do not satisfy a gate yet. This map is a ratchet like
-## ContactSheetBeatsContract.MIGRATION_ALLOWLIST: it only shrinks, and an entry
-## whose class already passes its gate fails as stale. Roster-wide adoption
-## belongs to the per-class animation cards, not to this contract.
-const ADOPTION_GAPS := {
-	"phases": {
-		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
-	},
-	"direction": {
-		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
-	},
-	"capture": {
-		"thief": "single 3600x552 strip instead of the four live-capture viewports",
-	},
-	"provenance": {
-		"thief": "legacy asset-pipeline manifest: no generator_provenance block",
-	},
-	"quality": {
-		"assassin": "awaiting the readability/accessibility declaration",
-		"druid": "awaiting the readability/accessibility declaration",
-		"elementalist": "awaiting the readability/accessibility declaration",
-		"guitarist": "awaiting the readability/accessibility declaration",
-		"knight": "awaiting the readability/accessibility declaration",
-		"priest": "awaiting the readability/accessibility declaration",
-		"ranger": "awaiting the readability/accessibility declaration",
-		"robot": "awaiting the readability/accessibility declaration",
-		"soldier": "awaiting the readability/accessibility declaration",
-		"thief": "awaiting the readability/accessibility declaration",
-	},
-	"victim_impact": {},
+## Where the class-owned adoption shards live: one
+## `presentation_adoption.json` per class directory, read by
+## load_adoption_shards(). A class adopts a gate by dropping the entry from
+## its own shard; the shared contract is not edited for that.
+const ADOPTION_SHARD_ROOT := "res://data/ultimates/classes"
+const ADOPTION_SHARD_FILE := "presentation_adoption.json"
+const ADOPTION_SHARD_SCHEMA_VERSION := 1
+
+## The exact shard shape. Any other key is rejected, so a shard cannot carry a
+## ceiling, a budget or anything else the shared contract owns.
+const ADOPTION_SHARD_FIELDS: Array[String] = ["schema_version", "class_id", "adoption_gaps"]
+
+## The ratchet ceiling: per gate, the widest set of classes whose shard may
+## still claim an exemption. Like ContactSheetBeatsContract.MIGRATION_ALLOWLIST
+## it only shrinks. A shard may drop an admitted pair once the class adopted
+## the gate, but it can never add one, so class data cannot exempt itself from
+## a shared ceiling. Trimming a pair here after the class adopted its gate is
+## housekeeping, never a requirement.
+const ADMITTED_ADOPTION_GAPS := {
+	"phases": ["thief"],
+	"direction": ["thief"],
+	"capture": ["thief"],
+	"provenance": ["thief"],
+	"quality": [
+		"assassin",
+		"druid",
+		"elementalist",
+		"guitarist",
+		"knight",
+		"priest",
+		"ranger",
+		"robot",
+		"soldier",
+		"thief",
+	],
 }
+
+## Classes that do not satisfy a gate yet, aggregated from the class-owned
+## shards as gate → {class_id → reason}, every gate present. This is the map
+## the roster gate and the per-class suites read; an entry whose class already
+## passes its gate fails as stale through adoption_violations(). Roster-wide
+## adoption belongs to the per-class animation cards, not to this contract.
+static var ADOPTION_GAPS: Dictionary = load_adoption_gaps()
 
 ## Area telegraphs are flavour, never the read (FAN-3008). A blinking area
 ## rectangle used to be how an ultimate showed its reach; the read now belongs
@@ -129,6 +141,134 @@ static func load_manifest(class_id: String) -> Dictionary:
 		return {}
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+## The aggregated class-owned adoption state; see load_adoption_shards().
+static func load_adoption_gaps(root: String = ADOPTION_SHARD_ROOT) -> Dictionary:
+	return load_adoption_shards(root)["gaps"]
+
+
+## Shard validation as "adoption.<code>: <detail>" entries; empty when every
+## class directory under root carries exactly one well-formed shard.
+static func adoption_shard_violations(root: String = ADOPTION_SHARD_ROOT) -> Array[String]:
+	return load_adoption_shards(root)["errors"]
+
+
+## Reads the shard of every class directory under root once and returns
+## {"gaps": gate → {class_id → reason}, "errors": Array[String]}. A shard that
+## fails validation contributes nothing, so broken class data can never exempt
+## a class: its real failures surface as unlisted through adoption_violations().
+static func load_adoption_shards(root: String = ADOPTION_SHARD_ROOT) -> Dictionary:
+	var gaps := {}
+	for gate in GATES:
+		gaps[gate] = {}
+	var errors: Array[String] = []
+	var access := DirAccess.open(root)
+	if access == null:
+		errors.append("adoption.root_missing: %s" % root)
+		return {"gaps": gaps, "errors": errors}
+	var directories := access.get_directories()
+	directories.sort()
+	var seen := {}
+	for directory in directories:
+		var expected_class := str(directory)
+		var path := "%s/%s/%s" % [root, expected_class, ADOPTION_SHARD_FILE]
+		if not FileAccess.file_exists(path):
+			errors.append("adoption.shard_missing: %s" % expected_class)
+			continue
+		var json := JSON.new()
+		if json.parse(FileAccess.get_file_as_string(path)) != OK or not json.data is Dictionary:
+			errors.append("adoption.shard_parse: %s" % expected_class)
+			continue
+		var shard := json.data as Dictionary
+		var class_id := str(shard.get("class_id", ""))
+		var owned := true
+		if class_id != expected_class:
+			errors.append("adoption.shard_class_mismatch: %s declares %s" % [expected_class, class_id])
+			owned = false
+		if seen.has(class_id):
+			errors.append(
+				"adoption.shard_duplicate: %s is declared by %s and %s"
+				% [class_id, seen[class_id], expected_class]
+			)
+			owned = false
+		seen[class_id] = expected_class
+		if not owned or not _check_shard_shape(shard, expected_class, errors):
+			continue
+		_merge_shard_gaps(shard["adoption_gaps"] as Dictionary, expected_class, gaps, errors)
+	return {"gaps": gaps, "errors": errors}
+
+
+## The ratchet for one class against an aggregated map: every exemption the
+## map carries for it must still be needed, and every gate it fails must be
+## exempted. Reported as "adoption.stale: ..." and "adoption.unlisted: ...".
+static func adoption_violations(class_id: String, manifest: Dictionary, gaps: Dictionary) -> Array[String]:
+	var failing := {}
+	for violation in violations(class_id, manifest):
+		var gate := gate_of(violation)
+		if not failing.has(gate):
+			failing[gate] = violation
+	var errors: Array[String] = []
+	for gate in GATES:
+		var exempted := (gaps.get(gate, {}) as Dictionary).has(class_id)
+		if exempted and not failing.has(gate):
+			errors.append("adoption.stale: %s already satisfies the %s gate" % [class_id, gate])
+		elif failing.has(gate) and not exempted:
+			errors.append("adoption.unlisted: %s fails the %s gate: %s" % [class_id, gate, failing[gate]])
+	return errors
+
+
+## Exactly the declared fields, the current schema version and a Dictionary of
+## gaps. A foreign key fails the whole shard: the shared ceilings are not
+## something a class may restate, let alone widen.
+static func _check_shard_shape(shard: Dictionary, class_id: String, errors: Array[String]) -> bool:
+	var valid := true
+	for key in shard:
+		if not ADOPTION_SHARD_FIELDS.has(str(key)):
+			errors.append("adoption.shard_field: %s declares %s" % [class_id, str(key)])
+			valid = false
+	for field in ADOPTION_SHARD_FIELDS:
+		if not shard.has(field):
+			errors.append("adoption.shard_field_missing: %s/%s" % [class_id, field])
+			valid = false
+	if shard.has("schema_version"):
+		var version: Variant = shard["schema_version"]
+		if not _is_whole_number(version) or int(version) != ADOPTION_SHARD_SCHEMA_VERSION:
+			errors.append("adoption.shard_schema_version: %s declares %s" % [class_id, str(version)])
+			valid = false
+	if shard.has("adoption_gaps") and not shard["adoption_gaps"] is Dictionary:
+		errors.append("adoption.gaps_type: %s must declare a Dictionary" % class_id)
+		valid = false
+	return valid
+
+
+## One shard's gate → reason entries into the aggregate. Each gate must exist,
+## carry a non-empty reason and be admitted for this class by the ratchet
+## ceiling; anything else is reported and left out.
+static func _merge_shard_gaps(
+	declared: Dictionary,
+	class_id: String,
+	gaps: Dictionary,
+	errors: Array[String]
+) -> void:
+	var gates: Array = declared.keys()
+	gates.sort()
+	for raw_gate in gates:
+		var gate := str(raw_gate)
+		var reason: Variant = declared[raw_gate]
+		if not GATES.has(gate):
+			errors.append("adoption.gate_unknown: %s/%s" % [class_id, gate])
+			continue
+		if not reason is String or str(reason).strip_edges().is_empty():
+			errors.append("adoption.reason_missing: %s/%s" % [class_id, gate])
+			continue
+		if not (ADMITTED_ADOPTION_GAPS.get(gate, []) as Array).has(class_id):
+			errors.append(
+				"adoption.gap_not_admitted: %s/%s is outside the shared ratchet ceiling"
+				% [class_id, gate]
+			)
+			continue
+		(gaps[gate] as Dictionary)[class_id] = str(reason)
 
 
 ## Every gate for one class, as "<gate>.<code>: <detail>" entries.

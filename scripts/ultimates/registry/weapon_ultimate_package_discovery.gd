@@ -28,6 +28,10 @@ const DOCUMENT_FIELDS := [
 ]
 const BINDING_FIELDS := ["strategy_id", "params"]
 const BINDING_NAMES := ["targeting", "charge", "executor", "cleanup_policy"]
+## Class-owned data files that live beside the weapon overlays but are not
+## packages. Only these exact names are skipped; any other JSON without an
+## executor is still an orphan (FAN-3910).
+const RESERVED_DATA_FILES: Array[String] = ["presentation_adoption.json"]
 
 var _data_root: String
 var _executor_root: String
@@ -47,7 +51,10 @@ func discover(base_profiles: Dictionary) -> void:
 	_executors_by_key.clear()
 	_pair_keys.clear()
 	_errors.clear()
-	var data_files := _relative_files(_data_root, ".json")
+	var data_files: Array[String] = []
+	for relative_path in _relative_files(_data_root, ".json"):
+		if not is_reserved_data_file(relative_path):
+			data_files.append(relative_path)
 	var executor_files := _relative_files(_executor_root, ".gd")
 	var executor_set := {}
 	for relative_path in executor_files:
@@ -247,6 +254,11 @@ static func _validate_executor_method(
 			errors.append("package.executor.%s.return" % method_name)
 		return
 	errors.append("package.executor.%s" % method_name)
+
+
+## True for a class-owned data file that never pairs with an executor.
+static func is_reserved_data_file(relative_path: String) -> bool:
+	return RESERVED_DATA_FILES.has(relative_path.get_file())
 
 
 static func _relative_files(root: String, extension: String) -> Array[String]:
