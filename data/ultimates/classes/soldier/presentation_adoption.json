@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "class_id": "soldier",
+  "adoption_gaps": {
+    "quality": "awaiting the readability/accessibility declaration"
+  }
+}

@@ -96,6 +96,7 @@ func _initialize() -> void:
 	_test_valid_pair(discovery, base_profile)
 	_test_invalid_pair_admission(discovery, base_profile)
 	_test_invalid_discovery_set(base_profile)
+	_test_reserved_data_file_is_not_a_package(base_profile)
 	await _test_controller_executes_discovered_pair(discovery)
 	_holder.queue_free()
 	await process_frame
@@ -153,6 +154,60 @@ func _test_invalid_discovery_set(base_profile: Dictionary) -> void:
 	_check(invalid.pair_keys().is_empty(), "duplicated package key must admit no executor pair")
 	for prefix in ["package.pair.duplicate", "package.pair.executor_missing", "package.pair.data_missing"]:
 		_check(_has_error(errors, prefix), "%s must fail closed: %s" % [prefix, errors])
+
+
+## The class-owned presentation adoption shard (FAN-3910) sits beside the
+## weapon overlays but is not a package: exactly that name is skipped, while a
+## missing weapon overlay or any other unpaired JSON still fails closed.
+func _test_reserved_data_file_is_not_a_package(base_profile: Dictionary) -> void:
+	var reserved := "presentation_adoption.json"
+	_check(Discovery.is_reserved_data_file("%s/%s" % [CLASS_ID, reserved]),
+		"the presentation adoption shard must be reserved")
+	_check(not Discovery.is_reserved_data_file("%s/%s.json" % [CLASS_ID, WEAPON_ID]),
+		"a weapon overlay must never be reserved")
+	var overlay := FileAccess.get_file_as_string(DOCUMENT_PATH)
+	var shard := JSON.stringify({"schema_version": 1, "class_id": CLASS_ID, "adoption_gaps": {}}, "  ")
+
+	var beside := _scratch_data_root("beside")
+	_write_fixture_file("%s/%s/%s.json" % [beside, CLASS_ID, WEAPON_ID], overlay)
+	_write_fixture_file("%s/%s/%s" % [beside, CLASS_ID, reserved], shard)
+	var admitted := Discovery.new(beside, SCRIPT_ROOT)
+	admitted.discover({KEY: base_profile})
+	_check(admitted.validation_errors().is_empty(),
+		"a reserved shard beside a valid overlay must not be an orphan: %s" % [admitted.validation_errors()])
+	_check(admitted.pair_keys() == {KEY: true}, "the reserved shard must not change the admitted pairs")
+
+	var stray := _scratch_data_root("stray")
+	_write_fixture_file("%s/%s/%s.json" % [stray, CLASS_ID, WEAPON_ID], overlay)
+	_write_fixture_file("%s/%s/%s" % [stray, CLASS_ID, reserved], shard)
+	_write_fixture_file("%s/%s/stray_weapon.json" % [stray, CLASS_ID], overlay)
+	var with_stray := Discovery.new(stray, SCRIPT_ROOT)
+	with_stray.discover({KEY: base_profile})
+	_check(_has_error(with_stray.validation_errors(), "package.pair.executor_missing: %s/stray_weapon.json" % CLASS_ID),
+		"an unpaired non-reserved JSON must still be an orphan: %s" % [with_stray.validation_errors()])
+	_check(not _has_error(with_stray.validation_errors(), reserved),
+		"the reserved shard must never be reported: %s" % [with_stray.validation_errors()])
+
+	var only_shard := _scratch_data_root("only_shard")
+	_write_fixture_file("%s/%s/%s" % [only_shard, CLASS_ID, reserved], shard)
+	var without_overlay := Discovery.new(only_shard, SCRIPT_ROOT)
+	without_overlay.discover({KEY: base_profile})
+	_check(_has_error(without_overlay.validation_errors(), "package.pair.data_missing: %s/%s.gd" % [CLASS_ID, WEAPON_ID]),
+		"a reserved shard must not stand in for a missing weapon overlay: %s" % [without_overlay.validation_errors()])
+	_check(without_overlay.pair_keys().is_empty(), "no pair may be admitted from a shard alone")
+
+
+func _scratch_data_root(name: String) -> String:
+	var root := "user://fan3910_reserved_discovery/%s/data" % name
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
+	return root
+
+
+func _write_fixture_file(path: String, text: String) -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path).get_base_dir())
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(text)
+	file.close()
 
 
 func _test_controller_executes_discovered_pair(discovery: Discovery) -> void:
