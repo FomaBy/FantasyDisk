@@ -21,7 +21,13 @@ class GDScriptContractTest(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(source, encoding="utf-8")
 
-    def spec(self, *, facade: str = "facade.gd", module_directory: str = "modules") -> contracts.ChainSpec:
+    def spec(
+        self,
+        *,
+        facade: str = "facade.gd",
+        module_directory: str = "modules",
+        composed_directory: str | None = None,
+    ) -> contracts.ChainSpec:
         return contracts.ChainSpec(
             name="fixture",
             facade=facade,
@@ -29,7 +35,22 @@ class GDScriptContractTest(unittest.TestCase):
             forward_api=f"{module_directory}/shared_api.gd",
             terminal_base="RefCounted",
             facade_class_name="Facade",
+            composed_directory=composed_directory,
         )
+
+    def composed_spec(self) -> contracts.ChainSpec:
+        return self.spec(composed_directory="modules/executors")
+
+    # A composed helper that reuses a forward-API method name: legitimate on a
+    # separate object, so it must count neither as an override nor as a duplicate.
+    HELPER = (
+        "extends RefCounted\n"
+        "var _context\n"
+        "func _init(context) -> void:\n"
+        "\t_context = context\n"
+        "func required(value: Dictionary = {}) -> Dictionary:\n"
+        "\treturn value\n"
+    )
 
     def errors(self, root: Path, spec: contracts.ChainSpec | None = None) -> list[str]:
         return contracts._contract_errors_for_spec(root, spec or self.spec())
@@ -149,6 +170,122 @@ class GDScriptContractTest(unittest.TestCase):
             )
 
             self.assertTrue(any("accidental sibling" in error for error in self.errors(root)))
+
+    # --- FAN-3926: composed collaborators under <module_directory>/executors ---
+
+    def test_composed_refcounted_collaborator_is_accepted_and_stays_off_the_chain(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root)
+            self.write(root, "modules/executors/helper.gd", self.HELPER)
+            self.write(root, "modules/executors/nested/context.gd", "extends RefCounted\nvar _weapon\n")
+
+            self.assertEqual(self.errors(root, self.composed_spec()), [])
+            scripts = contracts._scripts_for_spec(root, self.composed_spec())
+            chain = contracts._resolve_chain(self.composed_spec(), scripts)
+            self.assertEqual(
+                chain,
+                ["facade.gd", "modules/implementation.gd", "modules/shared_api.gd", "modules/base.gd"],
+            )
+            # A spec without a composed directory keeps the strict rule: the same
+            # helper is an accidental sibling for it.
+            self.assertTrue(
+                any("modules/executors/helper.gd is an accidental sibling" in error for error in self.errors(root))
+            )
+
+    def test_inherited_sibling_is_rejected_inside_and_outside_the_composed_directory(self):
+        for extends in (
+            "extends \"res://modules/shared_api.gd\"",
+            "extends \"res://facade.gd\"",
+            "extends Base",
+        ):
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_valid_chain(root)
+                self.write(root, "modules/executors/helper.gd", f"{extends}\nfunc helper() -> void:\n\tpass\n")
+                errors = self.errors(root, self.composed_spec())
+                self.assertTrue(
+                    any("modules/executors/helper.gd is an accidental sibling" in error for error in errors),
+                    (extends, errors),
+                )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root)
+            self.write(root, "modules/executors/helper.gd", self.HELPER)
+            self.write(root, "modules/stray.gd", "extends \"res://modules/shared_api.gd\"\n")
+            errors = self.errors(root, self.composed_spec())
+            self.assertTrue(any("modules/stray.gd is an accidental sibling" in error for error in errors), errors)
+            self.assertFalse(any("helper.gd" in error for error in errors), errors)
+
+    def test_composed_collaborator_pulled_onto_the_chain_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root)
+            self.write(root, "modules/executors/helper.gd", "extends RefCounted\n")
+            self.write(root, "modules/base.gd", "class_name Base\nextends \"res://modules/executors/helper.gd\"\n")
+            errors = self.errors(root, self.composed_spec())
+            self.assertTrue(
+                any("modules/executors/helper.gd is a composed collaborator but sits on the facade chain" in error for error in errors),
+                errors,
+            )
+
+    def test_composed_collaborator_with_missing_wrong_or_malformed_base_fails_closed(self):
+        cases = {
+            "func helper() -> void:\n\tpass\n": "composed collaborator without an extends declaration",
+            "extends Node\n": "must extend RefCounted, found Node",
+            "extends UnknownBase\n": "unresolved base 'UnknownBase'",
+            "extends preload(\"res://modules/base.gd\")\n": "unsupported extends target",
+            "extends \"res://modules/executors/missing.gd\"\n": "accidental sibling",
+        }
+        for source, expected in cases.items():
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_valid_chain(root)
+                self.write(root, "modules/executors/helper.gd", source)
+                errors = self.errors(root, self.composed_spec())
+                self.assertTrue(any(expected in error for error in errors), (source, errors))
+
+    def test_composed_collaborator_parse_errors_and_class_name_collisions_fail_closed(self):
+        cases = {
+            "extends RefCounted\nfunc broken[T]() -> void:\n\tpass\n": "unsupported function declaration",
+            "extends RefCounted\nfunc twice() -> void:\n\tpass\nfunc twice() -> void:\n\tpass\n": "duplicate function declaration",
+            "class_name Base\nextends RefCounted\n": "class_name 'Base' is declared by both",
+        }
+        for source, expected in cases.items():
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_valid_chain(root)
+                self.write(root, "modules/executors/helper.gd", source)
+                errors = self.errors(root, self.composed_spec())
+                self.assertTrue(any(expected in error for error in errors), (source, errors))
+
+    def test_chain_checks_survive_a_composed_collaborator(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root, override="func unrelated() -> void:\n\tpass\n")
+            self.write(root, "modules/executors/helper.gd", self.HELPER)
+            errors = self.errors(root, self.composed_spec())
+            self.assertTrue(
+                any("forward API method required has no required downstream override" in error for error in errors),
+                errors,
+            )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root, override="func required(value: String) -> Dictionary:\n\treturn {}\n")
+            self.write(root, "modules/executors/helper.gd", self.HELPER)
+            self.assertTrue(any("incompatible signature for required" in error for error in self.errors(root, self.composed_spec())))
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_valid_chain(root)
+            self.write(root, "modules/executors/helper.gd", self.HELPER)
+            self.write(root, "modules/base.gd", "class_name Base\nextends \"res://modules/implementation.gd\"\n")
+            self.assertTrue(any("inheritance cycle" in error for error in self.errors(root, self.composed_spec())))
+
+    def test_class_weapon_spec_composes_executors_and_ui_spec_stays_strict(self):
+        by_name = {spec.name: spec for spec in contracts.CHAIN_SPECS}
+        self.assertEqual(by_name["class_weapon"].composed_directory, "scripts/classes/executors")
+        self.assertEqual(by_name["class_weapon"].composed_base, "RefCounted")
+        self.assertIsNone(by_name["ui_screens"].composed_directory)
 
 
 if __name__ == "__main__":
