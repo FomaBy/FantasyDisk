@@ -374,6 +374,52 @@ class CardinalityAndKeyTests(FixtureCase):
         )
 
 
+class ReservedOverlayFileTests(FixtureCase):
+    """FAN-3910: the class-owned presentation adoption shard is not an overlay."""
+
+    RESERVED = "presentation_adoption.json"
+
+    def overlay_dir(self, index: int) -> Path:
+        return self.root / "data" / "ultimates" / "classes" / class_id(index)
+
+    def write_shard(self, index: int) -> None:
+        (self.overlay_dir(index) / self.RESERVED).write_text(
+            json.dumps({"schema_version": 1, "class_id": class_id(index), "adoption_gaps": {}}),
+            encoding="utf-8",
+        )
+
+    def test_reserved_shard_beside_every_overlay_passes(self) -> None:
+        for index in range(CLASS_COUNT):
+            self.write_shard(index)
+        completed = run_checker(self.root, "--validate-only")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("17 classes / 51 weapons validated", completed.stdout)
+
+    def test_reserved_shard_does_not_hide_a_missing_overlay(self) -> None:
+        self.write_shard(5)
+        (self.overlay_dir(5) / f"{weapon_id(5, 1)}.json").unlink()
+        completed = run_checker(self.root, "--validate-only")
+        self.assert_three_part_failure(completed, "disagree", f"overlay missing ['{class_id(5)}/{weapon_id(5, 1)}']")
+        self.assertNotIn(self.RESERVED.removesuffix(".json"), completed.stderr)
+
+    def test_reserved_shard_does_not_admit_other_extra_overlays(self) -> None:
+        self.write_shard(5)
+        (self.overlay_dir(5) / "ghost.json").write_text(
+            json.dumps({"class_id": class_id(5), "weapon_id": "ghost"}), encoding="utf-8"
+        )
+        completed = run_checker(self.root, "--validate-only")
+        self.assert_three_part_failure(completed, "disagree", f"overlay extra ['{class_id(5)}/ghost']")
+        self.assertNotIn(self.RESERVED.removesuffix(".json"), completed.stderr)
+
+    def test_reserved_name_is_only_skipped_by_exact_file_name(self) -> None:
+        self.write_shard(5)
+        (self.overlay_dir(5) / "presentation_adoption_v2.json").write_text("{}", encoding="utf-8")
+        completed = run_checker(self.root, "--validate-only")
+        self.assert_three_part_failure(
+            completed, "disagree", f"overlay extra ['{class_id(5)}/presentation_adoption_v2']"
+        )
+
+
 class FabricatedEvidenceTests(FixtureCase):
     def test_committed_passing_state_fails(self) -> None:
         entries = default_entries()

@@ -62,10 +62,16 @@ const SCRIPT_ALLOWLIST := {
 	"res://scripts/encounters/features/captains/captain_feature.gd": 1,
 	"res://scripts/encounters/features/marked_target_feature.gd": 1,
 	"res://scripts/enemy.gd": 1,
-	"res://scripts/player.gd": 4,
+	# FAN-3922 relocated the two aura-ring draw calls into the Player-owned
+	# collaborator. The two player grounding-node constructions remain here.
+	# Keep the historical four-site aggregate unchanged while each source stays
+	# exact; a future retrofit must shrink both the entry and this ceiling.
+	"res://scripts/player.gd": 2,
+	"res://scripts/player/player_class_effects.gd": 2,
 	"res://scripts/projectile.gd": 1,
 	"res://scripts/threat_indicators.gd": 1,
 }
+const SCRIPT_ALLOWLIST_CEILING := 12
 
 var _errors: Array[String] = []
 var _construction_regex := RegEx.new()
@@ -94,8 +100,9 @@ func _init() -> void:
 		if count > 0:
 			script_found[path] = count
 
-	_check_ratchet("scene", SCENE_ALLOWLIST, scene_found)
-	_check_ratchet("script", SCRIPT_ALLOWLIST, script_found)
+	_errors.append_array(_ratchet_errors("scene", SCENE_ALLOWLIST, scene_found))
+	_errors.append_array(_ratchet_errors("script", SCRIPT_ALLOWLIST, script_found))
+	_verify_script_ratchet_mutations(script_found)
 
 	if _errors.is_empty():
 		print("Combat primitive ratchet passed: %d allowlisted scenes (%d primitive nodes), %d allowlisted scripts (%d construction sites), 0 violations outside the ratchet." % [
@@ -108,17 +115,38 @@ func _init() -> void:
 		quit(1)
 
 
-func _check_ratchet(kind: String, allowlist: Dictionary, found: Dictionary) -> void:
+func _ratchet_errors(kind: String, allowlist: Dictionary, found: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
 	for path in found:
 		if not allowlist.has(path):
-			_errors.append("new combat primitive %s outside the ratchet: %s (%d). The standard requires a PixelLab flipbook; the allowlist never grows." % [kind, path, found[path]])
+			errors.append("new combat primitive %s outside the ratchet: %s (%d). The standard requires a PixelLab flipbook; the allowlist never grows." % [kind, path, found[path]])
 		elif found[path] > allowlist[path]:
-			_errors.append("%s %s grew from %d to %d allowlisted primitives; new combat primitives are banned." % [kind, path, allowlist[path], found[path]])
+			errors.append("%s %s grew from %d to %d allowlisted primitives; new combat primitives are banned." % [kind, path, allowlist[path], found[path]])
 		elif found[path] < allowlist[path]:
-			_errors.append("stale ratchet entry: %s %s now has %d violations, entry says %d. Shrink the entry with the fix that removed them." % [kind, path, found[path], allowlist[path]])
+			errors.append("stale ratchet entry: %s %s now has %d violations, entry says %d. Shrink the entry with the fix that removed them." % [kind, path, found[path], allowlist[path]])
 	for path in allowlist:
 		if not found.has(path):
-			_errors.append("stale ratchet entry: %s %s has no violations left (or no longer exists). Remove its allowlist entry." % [kind, path])
+			errors.append("stale ratchet entry: %s %s has no violations left (or no longer exists). Remove its allowlist entry." % [kind, path])
+	return errors
+
+
+func _verify_script_ratchet_mutations(found: Dictionary) -> void:
+	if _sum(SCRIPT_ALLOWLIST) > SCRIPT_ALLOWLIST_CEILING:
+		_errors.append("script allowlist grew above the preserved %d-site ceiling" % SCRIPT_ALLOWLIST_CEILING)
+	if _sum(SCRIPT_ALLOWLIST) != SCRIPT_ALLOWLIST_CEILING:
+		_errors.append("script allowlist no longer accounts for the preserved %d-site aggregate" % SCRIPT_ALLOWLIST_CEILING)
+	var extra_at_known_site := found.duplicate()
+	extra_at_known_site["res://scripts/player/player_class_effects.gd"] = int(extra_at_known_site.get("res://scripts/player/player_class_effects.gd", 0)) + 1
+	if _ratchet_errors("script", SCRIPT_ALLOWLIST, extra_at_known_site).is_empty():
+		_errors.append("mutation oracle accepted an extra Player-owned combat primitive")
+	var unlisted_site := found.duplicate()
+	unlisted_site["res://scripts/player/player_class_effects_unlisted.gd"] = 1
+	if _ratchet_errors("script", SCRIPT_ALLOWLIST, unlisted_site).is_empty():
+		_errors.append("mutation oracle accepted an unlisted combat primitive")
+	var stale_count := found.duplicate()
+	stale_count["res://scripts/player.gd"] = int(stale_count.get("res://scripts/player.gd", 0)) - 1
+	if _ratchet_errors("script", SCRIPT_ALLOWLIST, stale_count).is_empty():
+		_errors.append("mutation oracle accepted a stale Player primitive count")
 
 
 func _scene_primitive_count(path: String) -> int:

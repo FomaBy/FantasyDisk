@@ -141,27 +141,61 @@ the same declared numbers and fails closed.
 
 ## Adoption
 
-`ADOPTION_GAPS` in the contract names, per gate, the classes that do not satisfy
-it yet, with the reason. It is a ratchet like
-`ContactSheetBeatsContract.MIGRATION_ALLOWLIST`: it only shrinks, a class that
-starts passing a gate it is listed under fails the test as a stale entry, and an
-unlisted class that fails any gate fails the test. Roster-wide adoption belongs
-to the per-class animation cards, not to this contract.
+Adoption state is class-owned data. Each class commits one shard at
+`data/ultimates/classes/<class_id>/presentation_adoption.json`:
 
-Current state — the gate prints this every run:
+```json
+{"schema_version": 1, "class_id": "thief", "adoption_gaps": {"quality": "reason"}}
+```
+
+`adoption_gaps` maps a gate to the reason the class does not satisfy it yet; a
+fully adopted class commits `{}`. The contract reads every class directory
+under `ADOPTION_SHARD_ROOT` through `load_adoption_shards()` and exposes the
+aggregate as `ADOPTION_GAPS`, gate → `{class_id → reason}` with every gate
+present, which is what the roster gate and the per-class suites read. A class
+adopts a gate by deleting the entry from its own shard; the shared contract is
+not edited for that.
+
+The loader fails closed and reports `adoption.<code>` violations: a class
+directory without a shard (`shard_missing`), an unparsable shard
+(`shard_parse`), a shard whose `class_id` is not its directory
+(`shard_class_mismatch`) or names a class another shard already declared
+(`shard_duplicate`), any key outside `schema_version` / `class_id` /
+`adoption_gaps` (`shard_field`, so a shard cannot restate a ceiling or a
+budget), a wrong `schema_version`, an unknown gate, an empty reason, and an
+exemption outside the shared ceiling (`gap_not_admitted`). A rejected shard or
+entry contributes nothing, so broken class data can never exempt a class; its
+real failures then surface as `adoption.unlisted`.
+
+`ADMITTED_ADOPTION_GAPS` in the contract is the ratchet ceiling: per gate, the
+widest set of classes whose shard may still claim an exemption. Like
+`ContactSheetBeatsContract.MIGRATION_ALLOWLIST` it only shrinks. A shard may
+drop an admitted pair once the class adopted the gate, but it can never add
+one, so class data cannot widen the shared budget, coverage or flash ceilings
+by exempting itself. `adoption_violations()` keeps the ratchet honest in both
+directions: an exemption for a gate the class already passes is `adoption.stale`,
+a failing gate without an exemption is `adoption.unlisted`. The focused gate is
+`tests/ultimates/presentation/adoption_shards_test.gd`; the roster gate in
+`visual_direction_contract_test.gd` still checks the aggregate against every
+manifest. The shard name is reserved in `WeaponUltimatePackageDiscovery` and
+`tools/ultimate_feature_list_check.py`, which pair every other JSON in a class
+directory with a weapon executor and a catalog identity. Roster-wide adoption
+belongs to the per-class animation cards, not to this contract.
+
+Current state — the roster gate prints this every run:
 
 | Gate | Conforming | Pending |
 | --- | --- | --- |
-| `phases` | 14/17 | engineer, sniper, thief |
-| `cleanup` | 16/17 | soldier |
+| `phases` | 16/17 | thief |
+| `cleanup` | 17/17 | — |
 | `budget` | 17/17 | — |
-| `direction` | 14/17 | engineer, sniper, thief |
-| `capture` | 13/17 | engineer, ranger, sniper, thief |
-| `provenance` | 14/17 | engineer, sniper, thief |
-| `quality` | 1/17 | every class except the `doctor` reference |
+| `direction` | 16/17 | thief |
+| `capture` | 16/17 | thief |
+| `provenance` | 16/17 | thief |
+| `quality` | 7/17 | assassin, druid, elementalist, guitarist, knight, priest, ranger, robot, soldier, thief |
+| `victim_impact` | 17/17 | — |
+| `telegraph` | 17/17 | — |
 
-engineer, sniper and thief still ship the legacy asset-pipeline manifest shape
-(no per-weapon `phase_ids`, direction fields or `generator_provenance`); they and
-ranger commit a single wide contact strip instead of the four viewport captures.
-soldier's `soldier_grenade` declares `cancel` and `recovery` at the same 8.40 s,
-which is the zero-length cleanup window described above.
+thief still ships the legacy asset-pipeline manifest shape (no per-weapon
+`phase_ids`, direction fields or `generator_provenance`) and a single wide
+contact strip instead of the four viewport captures.

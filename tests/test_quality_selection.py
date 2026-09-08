@@ -93,7 +93,6 @@ class QualitySelectionPolicyTests(unittest.TestCase):
         cases = (
             "assets/new_runtime_contract.json",
             "data/items/new_runtime_contract.json",
-            "changelog.d/FAN-9999.md",
             "tests/support/new_runtime_helper.gd",
             "tests/support/runtime_smoke_helpers.gd.uid",
         )
@@ -102,6 +101,45 @@ class QualitySelectionPolicyTests(unittest.TestCase):
                 result = self._select({changed_path})
                 self.assertEqual(result.full_fallback_paths, (changed_path,))
                 self.assertEqual(set(result.suite_paths), set(self.discovered_paths))
+
+    def test_canonical_release_note_inputs_keep_core_without_full_fallback(self) -> None:
+        for changed_path in (
+            "CHANGELOG.md",
+            "changelog.d/FAN-1.md",
+            "changelog.d/FAN-3912.md",
+        ):
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+
+                self.assertEqual(result.full_fallback_paths, ())
+                self.assertEqual(
+                    {Path(path).stem for path in result.suite_paths},
+                    selection.CORE_CHANGED_TESTS,
+                )
+
+    def test_malformed_or_unexpected_release_note_paths_fall_back_to_full(self) -> None:
+        cases = (
+            "changelog.d/FAN-0.md",
+            "changelog.d/FAN-01.md",
+            "changelog.d/FAN-3912.txt",
+            "changelog.d/FAN-3912.md.bak",
+            "changelog.d/FAN-example.md",
+            "changelog.d/archive/FAN-3912.md",
+        )
+        for changed_path in cases:
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+
+                self.assertEqual(result.full_fallback_paths, (changed_path,))
+                self.assertEqual(set(result.suite_paths), set(self.discovered_paths))
+
+    def test_release_note_with_unknown_runtime_change_retains_full_fallback(self) -> None:
+        unknown_runtime_path = "addons/unknown_runtime/component.gd"
+
+        result = self._select({"changelog.d/FAN-3912.md", unknown_runtime_path})
+
+        self.assertEqual(result.full_fallback_paths, (unknown_runtime_path,))
+        self.assertEqual(set(result.suite_paths), set(self.discovered_paths))
 
     def test_progression_weapons_keeps_the_accepted_additive_coverage(self) -> None:
         result = self._select({"scripts/progression_data_weapons.gd"})
