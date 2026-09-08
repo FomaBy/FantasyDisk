@@ -4,7 +4,9 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const MINION_SOURCE_PATH := "res://scripts/ally_minion.gd"
 const PLAYER_SOURCE_PATH := "res://scripts/player.gd"
+const PLAYER_COLLABORATOR_DIRECTORY_PATH := "res://scripts/player"
 const PLAYER_CLASS_EFFECTS_SOURCE_PATH := "res://scripts/player/player_class_effects.gd"
+const SIBLING_MUTATION_PATH := "res://scripts/player/player_damage_policy.gd"
 const FORBIDDEN_MINION_FRAGMENTS := [
 	"_druid_summon_support_multiplier",
 	"_druid_summon_aura_radius",
@@ -14,15 +16,15 @@ const FORBIDDEN_MINION_FRAGMENTS := [
 ]
 const REQUIRED_AURA_WRITERS := [
 	{
-		"fragment": "StatusEffects.apply_status(ally_node, \"command_aura\"",
+		"aura_id": "command_aura",
 		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
 	},
 	{
-		"fragment": "StatusEffects.apply_status(enemy_node, \"command_pressure\"",
+		"aura_id": "command_pressure",
 		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
 	},
 	{
-		"fragment": "StatusEffects.apply_status(ally_node, \"wild_force_aura\"",
+		"aura_id": "wild_force_aura",
 		"owner": PLAYER_CLASS_EFFECTS_SOURCE_PATH,
 	},
 ]
@@ -69,10 +71,7 @@ func _initialize() -> void:
 		errors.append("mutation oracle no longer distinguishes repeated local aura scaling")
 
 	var minion_source := FileAccess.get_file_as_string(MINION_SOURCE_PATH)
-	var player_sources := {
-		PLAYER_SOURCE_PATH: FileAccess.get_file_as_string(PLAYER_SOURCE_PATH),
-		PLAYER_CLASS_EFFECTS_SOURCE_PATH: FileAccess.get_file_as_string(PLAYER_CLASS_EFFECTS_SOURCE_PATH),
-	}
+	var player_sources := _collect_player_ownership_sources(errors)
 	for fragment in FORBIDDEN_MINION_FRAGMENTS:
 		if minion_source.contains(fragment):
 			errors.append("AllyMinion retains forbidden aura writer '%s'" % fragment)
@@ -91,28 +90,78 @@ func _initialize() -> void:
 func _aura_writer_errors(sources: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	for requirement in REQUIRED_AURA_WRITERS:
-		var fragment := str(requirement["fragment"])
+		var aura_id := str(requirement["aura_id"])
 		var owner := str(requirement["owner"])
 		var total := 0
 		for path in sources:
-			var count := str(sources[path]).count(fragment)
+			var count := _writer_count(str(sources[path]), aura_id)
 			total += count
 			if path == owner and count != 1:
-				errors.append("Player-owned extracted implementation must contain exactly one writer for '%s'" % fragment)
+				errors.append("Player-owned extracted implementation must contain exactly one writer for '%s'" % aura_id)
 			elif path != owner and count != 0:
-				errors.append("Player ownership surface has a duplicate writer for '%s' in %s" % [fragment, path])
+				errors.append("Player ownership surface has a duplicate writer for '%s' in %s" % [aura_id, path])
 		if total != 1:
-			errors.append("Player ownership surface must contain exactly one writer for '%s', found %d" % [fragment, total])
+			errors.append("Player ownership surface must contain exactly one writer for '%s', found %d" % [aura_id, total])
 	return errors
 
 
 func _verify_aura_writer_mutations(sources: Dictionary, errors: Array[String]) -> void:
-	var deleted := sources.duplicate()
-	var first_fragment := str(REQUIRED_AURA_WRITERS[0]["fragment"])
-	deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH] = str(deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH]).replace(first_fragment, "")
-	if _aura_writer_errors(deleted).is_empty():
-		errors.append("mutation oracle accepted deletion of the extracted command_aura writer")
-	var duplicated := sources.duplicate()
-	duplicated[PLAYER_SOURCE_PATH] = str(duplicated[PLAYER_SOURCE_PATH]) + "\n" + first_fragment
-	if _aura_writer_errors(duplicated).is_empty():
-		errors.append("mutation oracle accepted a duplicated command_aura writer")
+	if not sources.has(SIBLING_MUTATION_PATH):
+		errors.append("Player ownership scanner did not discover sibling collaborator: %s" % SIBLING_MUTATION_PATH)
+		return
+	for requirement in REQUIRED_AURA_WRITERS:
+		var aura_id := str(requirement["aura_id"])
+		var deleted := sources.duplicate()
+		deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH] = str(deleted[PLAYER_CLASS_EFFECTS_SOURCE_PATH]).replace("\"%s\"" % aura_id, "\"removed_%s\"" % aura_id)
+		if _aura_writer_errors(deleted).is_empty():
+			errors.append("mutation oracle accepted deletion of the extracted %s writer" % aura_id)
+		var sibling_duplicate := sources.duplicate()
+		sibling_duplicate[SIBLING_MUTATION_PATH] = str(sibling_duplicate[SIBLING_MUTATION_PATH]) + "\nStatusEffects.apply_status(sibling_alias, \"%s\", {})" % aura_id
+		if _aura_writer_errors(sibling_duplicate).is_empty():
+			errors.append("mutation oracle accepted sibling duplication of %s" % aura_id)
+		var alias_duplicate := sources.duplicate()
+		alias_duplicate[PLAYER_CLASS_EFFECTS_SOURCE_PATH] = str(alias_duplicate[PLAYER_CLASS_EFFECTS_SOURCE_PATH]) + "\nStatusEffects.apply_status(owner_alias, \"%s\", {})" % aura_id
+		if _aura_writer_errors(alias_duplicate).is_empty():
+			errors.append("mutation oracle accepted alias duplication of %s" % aura_id)
+
+
+func _collect_player_ownership_sources(errors: Array[String]) -> Dictionary:
+	var sources := {}
+	_read_source(PLAYER_SOURCE_PATH, sources, errors)
+	_collect_collaborator_sources(PLAYER_COLLABORATOR_DIRECTORY_PATH, sources, errors)
+	return sources
+
+
+func _collect_collaborator_sources(path: String, sources: Dictionary, errors: Array[String]) -> void:
+	var directory := DirAccess.open(path)
+	if directory == null:
+		errors.append("Player ownership directory cannot be opened (fail closed): %s" % path)
+		return
+	directory.list_dir_begin()
+	var entry := directory.get_next()
+	while entry != "":
+		if not entry.begins_with("."):
+			var child_path := path.path_join(entry)
+			if directory.current_is_dir():
+				_collect_collaborator_sources(child_path, sources, errors)
+			elif entry.get_extension() == "gd":
+				_read_source(child_path, sources, errors)
+		entry = directory.get_next()
+	directory.list_dir_end()
+
+
+func _read_source(path: String, sources: Dictionary, errors: Array[String]) -> void:
+	var source := FileAccess.get_file_as_string(path)
+	if source.is_empty():
+		errors.append("Player ownership source cannot be read (fail closed): %s" % path)
+		return
+	sources[path] = source
+
+
+func _writer_count(source: String, aura_id: String) -> int:
+	var writer_regex := RegEx.new()
+	writer_regex.compile("StatusEffects\\.apply_status\\s*\\(\\s*[^,\\n]+,\\s*\\\"%s\\\"" % aura_id)
+	var count := 0
+	for line in source.split("\n"):
+		count += writer_regex.search_all(line.get_slice("#", 0)).size()
+	return count
