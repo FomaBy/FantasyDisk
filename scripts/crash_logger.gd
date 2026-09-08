@@ -39,6 +39,12 @@ const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
 # unknown extension scheme. Longer or underscore-bearing first tokens are the
 # credential itself.
 const MAX_AUTH_SCHEME_CHARS := 32
+# Bare `<scheme> <credential>` without a header name or credential key is
+# detected only for registered HTTP authentication schemes and the `X-`
+# extension convention, written with a capital first letter as in headers.
+# An arbitrary capitalised word followed by another word is ordinary
+# diagnostic text and is never treated as a credential.
+const BARE_AUTH_SCHEME_PATTERN := r"(?<![A-Za-z0-9_.\-])(Basic|Bearer|Digest|DPoP|HOBA|Mutual|Negotiate|NTLM|OAuth|SCRAM-SHA-1|SCRAM-SHA-256|Signature|GNAP|PrivateToken|Concealed|AWS4-HMAC-SHA256|X-[A-Za-z0-9-]+)(?=[ \t])"
 
 
 class IncidentSink:
@@ -53,7 +59,7 @@ class IncidentSink:
 	var _dropped_pending := 0
 	var _flush_scheduled := false
 	var _key_value_pattern: RegEx
-	var _bearer_pattern: RegEx
+	var _bare_scheme_pattern: RegEx
 	var _url_userinfo_pattern: RegEx
 	var _private_key_block_pattern: RegEx
 	var _home_path_pattern: RegEx
@@ -67,9 +73,7 @@ class IncidentSink:
 		_key_value_pattern = RegEx.create_from_string(
 			r"(?<![A-Za-z0-9_.\-])(?:\\?[\"'])?([A-Za-z][A-Za-z0-9_.\-]*)(?:\\?[\"'])?[ \t]*[:=][ \t]*"
 		)
-		_bearer_pattern = RegEx.create_from_string(
-			r"(?i)(\bbearer\s+)(?:\"[^\"]*\"|'[^']*'|[^\s,;}\]]+)"
-		)
+		_bare_scheme_pattern = RegEx.create_from_string(BARE_AUTH_SCHEME_PATTERN)
 		_url_userinfo_pattern = RegEx.create_from_string(
 			r"(://[^/\s@:]+:)[^@/\s]+@"
 		)
@@ -263,8 +267,8 @@ class IncidentSink:
 			result = _private_key_block_pattern.sub(result, "<redacted-private-key>", true)
 		if _key_value_pattern != null:
 			result = _redact_key_values(result)
-		if _bearer_pattern != null:
-			result = _bearer_pattern.sub(result, "$1<redacted>", true)
+		if _bare_scheme_pattern != null:
+			result = _redact_bare_schemes(result)
 		if _url_userinfo_pattern != null:
 			result = _url_userinfo_pattern.sub(result, "$1<redacted>@", true)
 		if _home_path_pattern != null:
@@ -300,6 +304,45 @@ class IncidentSink:
 			return text
 		pieces.append(text.substr(cursor))
 		return "".join(pieces)
+
+
+	# `Basic dXNlcjpwYXNz`, `DPoP "..."`, `X-Ext '...'` with no header name or
+	# credential key: the same credential-element parser as headers, applied
+	# after a registered or `X-` scheme name. A plain lowercase word after the
+	# scheme (`Basic attack`) is ordinary text and is kept.
+	func _redact_bare_schemes(text: String) -> String:
+		var matches := _bare_scheme_pattern.search_all(text)
+		if matches.is_empty():
+			return text
+		var pieces := PackedStringArray()
+		var cursor := 0
+		for found in matches:
+			var scheme_start := found.get_start()
+			if scheme_start < cursor:
+				continue
+			var scheme_end := found.get_end()
+			var element_start := _skip_inline_space(text, scheme_end)
+			var value_end := _header_value_end(text, scheme_start)
+			if value_end <= element_start:
+				continue
+			if _is_plain_word(text, element_start, value_end):
+				continue
+			pieces.append(text.substr(cursor, element_start - cursor))
+			pieces.append(_redacted_value(text, element_start, value_end))
+			cursor = value_end
+		if cursor == 0:
+			return text
+		pieces.append(text.substr(cursor))
+		return "".join(pieces)
+
+
+	static func _is_plain_word(text: String, start: int, end: int) -> bool:
+		if end <= start:
+			return false
+		for position in range(start, end):
+			if not _is_lower(text[position]):
+				return false
+		return true
 
 
 	static func _redacted_value(text: String, start: int, end: int) -> String:

@@ -63,11 +63,12 @@ func _run_tests(service: Node) -> void:
 	_test_unavailable_stack_and_redaction(service)
 	_test_credential_field_families(service)
 	_test_quoted_authorization_batches(service)
+	_test_bare_scheme_batches(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -437,12 +438,67 @@ const QUOTED_AUTHORIZATION_CASES: Array[Dictionary] = [
 ]
 
 
+# Bare `<scheme> <credential>` forms with no header name or credential key,
+# plus the benign matrix that must survive: ordinary capitalised words, plain
+# lowercase words after a scheme name, header-like keys that are not schemes,
+# and diagnostic URIs. Same isolated-incident discipline as the quoted table.
+const BARE_SCHEME_CASES: Array[Dictionary] = [
+	{"field": "text", "input": "Basic TEST_BARE_BASIC_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_BASIC_PLAIN_CREDENTIAL"], "benign": ["Basic <redacted> context=visible"]},
+	{"field": "text", "input": "Basic \"TEST_BARE_BASIC_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_BASIC_DQ_CREDENTIAL"], "benign": ["Basic \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "Basic 'TEST_BARE_BASIC_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_BASIC_SQ_CREDENTIAL"], "benign": ["Basic '<redacted>' context=visible"]},
+	{"field": "text", "input": "Basic \\\"TEST_BARE_BASIC_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_BASIC_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP TEST_BARE_DPOP_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_DPOP_PLAIN_CREDENTIAL"], "benign": ["DPoP <redacted> context=visible"]},
+	{"field": "text", "input": "DPoP \"TEST_BARE_DPOP_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_DPOP_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP 'TEST_BARE_DPOP_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_DPOP_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP \\\"TEST_BARE_DPOP_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_DPOP_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Ext TEST_BARE_EXT_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_EXT_PLAIN_CREDENTIAL"], "benign": ["X-Ext <redacted> context=visible"]},
+	{"field": "text", "input": "X-Ext \"TEST_BARE_EXT_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_EXT_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Ext 'TEST_BARE_EXT_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_EXT_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Custom-Scheme \\\"TEST_BARE_EXT_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_EXT_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Bearer TEST_BARE_BEARER_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_BEARER_PLAIN_CREDENTIAL"], "benign": ["Bearer <redacted> context=visible"]},
+	{"field": "text", "input": "Bearer 'TEST_BARE_BEARER_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_BEARER_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Digest username=\"tester\", response=\"TEST_BARE_DIGEST_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_DIGEST_CREDENTIAL"], "benign": ["Digest <redacted> context=visible"]},
+	{"field": "text", "input": "SCRAM-SHA-256 TEST_BARE_SCRAM_CREDENTIAL== context=visible", "markers": ["TEST_BARE_SCRAM_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Signature keyId=\"k\", signature=\"TEST_BARE_SIGNATURE_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_SIGNATURE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Basic \"TEST_BARE_UNTERMINATED_CREDENTIAL context=lost", "markers": ["TEST_BARE_UNTERMINATED_CREDENTIAL"], "benign": ["Basic <redacted>"]},
+	{"field": "text", "input": "Basic\tTEST_BARE_TAB_CREDENTIAL context=visible", "markers": ["TEST_BARE_TAB_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Basic TEST_BARE_LINE_CREDENTIAL\nFailed to load res://scenes/Main.tscn", "markers": ["TEST_BARE_LINE_CREDENTIAL"], "benign": ["Failed to load res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Cannot open user://saves/slot1.save after uid://c8ab12xyz with Basic TEST_BARE_AFTER_URI_CREDENTIAL", "markers": ["TEST_BARE_AFTER_URI_CREDENTIAL"], "benign": ["Cannot open user://saves/slot1.save after uid://c8ab12xyz with Basic <redacted>"]},
+	{"field": "text", "input": "{\"h\": \"Basic TEST_BARE_JSON_CREDENTIAL\", \"scene\": \"res://scenes/Main.tscn\"}", "markers": ["TEST_BARE_JSON_CREDENTIAL"], "benign": ["\"scene\": \"res://scenes/Main.tscn\""]},
+	{"field": "text", "input": "{\\\"h\\\": \\\"DPoP TEST_BARE_ESCJSON_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"}", "markers": ["TEST_BARE_ESCJSON_CREDENTIAL"], "benign": ["\\\"context\\\": \\\"escaped-visible\\\""]},
+	{"field": "code", "input": "Basic 'TEST_BARE_CODE_CREDENTIAL' operation=cast", "markers": ["TEST_BARE_CODE_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "rationale", "input": "DPoP \"TEST_BARE_RATIONALE_CREDENTIAL\" reason=timeout", "markers": ["TEST_BARE_RATIONALE_CREDENTIAL"], "benign": ["reason=timeout"]},
+	{"field": "function", "input": "X-Ext \"TEST_BARE_FRAME_CREDENTIAL\" fn=visible", "markers": ["TEST_BARE_FRAME_CREDENTIAL"], "benign": ["fn=visible"]},
+	{"field": "class", "input": "Basic TEST_BARE_CLASS_CREDENTIAL class=berserk", "markers": ["TEST_BARE_CLASS_CREDENTIAL"], "benign": ["class=berserk"]},
+	{"field": "weapon", "input": "Basic 'TEST_BARE_WEAPON_CREDENTIAL' weapon=axe", "markers": ["TEST_BARE_WEAPON_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "event", "input": "X-Ext \"TEST_BARE_EVENT_CREDENTIAL\" event=activation", "markers": ["TEST_BARE_EVENT_CREDENTIAL"], "benign": ["event=activation"]},
+	{"field": "weapon", "input": "DPoP \\\"TEST_BARE_WEAPON_ESC_CREDENTIAL\\\" weapon=axe", "markers": ["TEST_BARE_WEAPON_ESC_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "text", "input": "Basic attack missed the Stone Bruiser near res://scenes/Main.tscn", "markers": [], "benign": ["Basic attack missed the Stone Bruiser near res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Invalid signature for user://saves/slot1.save: Signature mismatch", "markers": [], "benign": ["Invalid signature for user://saves/slot1.save: Signature mismatch"]},
+	{"field": "text", "input": "Node not found: /root/Main/HUD/HealthBar Digest ready", "markers": [], "benign": ["Node not found: /root/Main/HUD/HealthBar Digest ready"]},
+	{"field": "text", "input": "Failed to load res://assets/test.png dependency Basic material", "markers": [], "benign": ["Failed to load res://assets/test.png dependency Basic material"]},
+	{"field": "text", "input": "Manifest fetch failed for https://github.com/FomaBy/FantasyDisk X-Request-Id: req-visible-1", "markers": [], "benign": ["https://github.com/FomaBy/FantasyDisk X-Request-Id: req-visible-1"]},
+	{"field": "text", "input": "basic attack visible bearer of news visible mutual visible", "markers": [], "benign": ["basic attack visible bearer of news visible mutual visible"]},
+	{"field": "text", "input": "Parameter \"t\" is null. Basic", "markers": [], "benign": ["Parameter \"t\" is null. Basic"]},
+	{"field": "weapon", "input": "Basic sword", "markers": [], "benign": ["Basic sword"]},
+]
+
+
+func _test_bare_scheme_batches(service: Node) -> void:
+	_run_isolated_cases(service, BARE_SCHEME_CASES, "bare scheme")
+
+
 func _test_quoted_authorization_batches(service: Node) -> void:
-	for entry_value in QUOTED_AUTHORIZATION_CASES:
+	_run_isolated_cases(service, QUOTED_AUTHORIZATION_CASES, "quoted authorization")
+
+
+func _run_isolated_cases(service: Node, cases: Array[Dictionary], suite: String) -> void:
+	for entry_value in cases:
 		var entry: Dictionary = entry_value
 		var field := str(entry.get("field", "text"))
 		var sample := str(entry.get("input", ""))
-		var label := str((entry.get("markers", []) as Array)[0])
+		var markers: Array = entry.get("markers", [])
+		var label := "%s: %s" % [suite, str(markers[0]) if not markers.is_empty() else sample.substr(0, 40)]
 		service.clear_breadcrumbs_for_tests()
 		_clean_incident_files(TEST_ROOT)
 		var frames: Array[Dictionary] = []
@@ -456,7 +512,7 @@ func _test_quoted_authorization_batches(service: Node) -> void:
 				80,
 			)
 		service.capture_error_for_tests(
-			sample if field == "text" else "isolated quoted authorization case",
+			sample if field == "text" else "isolated %s case" % suite,
 			frames,
 			sample if field == "code" else "",
 			sample if field == "rationale" else "",
@@ -469,8 +525,8 @@ func _test_quoted_authorization_batches(service: Node) -> void:
 		var payload := FileAccess.get_file_as_string(str(paths[0]))
 		var parsed = JSON.parse_string(payload)
 		_check(parsed is Dictionary, "%s: incident is not complete JSON" % label)
-		for marker in entry.get("markers", []):
-			_check(payload.find(str(marker)) == -1, "%s: quoted credential reached the incident" % str(marker))
+		for marker in markers:
+			_check(payload.find(str(marker)) == -1, "%s: credential marker reached the incident" % str(marker))
 		if parsed is Dictionary:
 			var redacted := _redacted_fields_text(parsed)
 			for benign in entry.get("benign", []):

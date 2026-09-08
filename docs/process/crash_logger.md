@@ -68,6 +68,19 @@ token that does not look like a scheme is the credential itself. Whitespace
 without a comma ends the value, so trailing context such as `context=visible`
 survives; an unterminated quote is removed to the end of the field.
 
+A bare `<scheme> <credential>` with no header name and no credential key
+(`Basic dXNlcjpwYXNz`, `DPoP "..."`, `X-Ext '...'`) is parsed with the same
+credential-element rules, but only after a registered HTTP authentication
+scheme name (Basic, Bearer, Digest, DPoP, HOBA, Mutual, Negotiate, NTLM,
+OAuth, SCRAM-SHA-1, SCRAM-SHA-256, Signature, GNAP, PrivateToken, Concealed,
+AWS4-HMAC-SHA256) or an `X-` extension name written with a capital first
+letter as in headers. This is a deliberate, documented boundary rather than a
+guess: an arbitrary capitalised word followed by another word is ordinary
+diagnostic text, and a plain lowercase word after a scheme name (`Basic
+attack`) is kept. Consequently a bare credential after an unregistered scheme
+without the `X-` prefix, or a bare all-lowercase secret after a scheme name,
+is not detected unless a header name or credential key accompanies it.
+
 Keys whose final word is not a credential head stay readable
 (`secret_boss_active`, `reroll_tokens`, `token_count`, `token_expires`,
 `author`, `session`), as do Godot `res://` and `user://` paths and ordinary
