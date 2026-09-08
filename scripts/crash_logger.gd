@@ -41,10 +41,11 @@ const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
 const MAX_AUTH_SCHEME_CHARS := 32
 # Bare `<scheme> <credential>` without a header name or credential key is
 # detected only for registered HTTP authentication schemes and the `X-`
-# extension convention, written with a capital first letter as in headers.
-# An arbitrary capitalised word followed by another word is ordinary
-# diagnostic text and is never treated as a credential.
-const BARE_AUTH_SCHEME_PATTERN := r"(?<![A-Za-z0-9_.\-])(Basic|Bearer|Digest|DPoP|HOBA|Mutual|Negotiate|NTLM|OAuth|SCRAM-SHA-1|SCRAM-SHA-256|Signature|GNAP|PrivateToken|Concealed|AWS4-HMAC-SHA256|X-[A-Za-z0-9-]+)(?=[ \t])"
+# extension convention, in any letter case (Basic, basic, BASIC, bAsIc).
+# The element after the scheme is then judged by _is_ordinary_word: an
+# arbitrary word followed by an ordinary word or number is diagnostic prose
+# and is never treated as a credential.
+const BARE_AUTH_SCHEME_PATTERN := r"(?i)(?<![A-Za-z0-9_.\-])(Basic|Bearer|Digest|DPoP|HOBA|Mutual|Negotiate|NTLM|OAuth|SCRAM-SHA-1|SCRAM-SHA-256|Signature|GNAP|PrivateToken|Concealed|AWS4-HMAC-SHA256|X-[A-Za-z0-9-]+)(?=[ \t])"
 
 
 class IncidentSink:
@@ -308,8 +309,9 @@ class IncidentSink:
 
 	# `Basic dXNlcjpwYXNz`, `DPoP "..."`, `X-Ext '...'` with no header name or
 	# credential key: the same credential-element parser as headers, applied
-	# after a registered or `X-` scheme name. A plain lowercase word after the
-	# scheme (`Basic attack`) is ordinary text and is kept.
+	# after a registered or `X-` scheme name in any case. An ordinary word or
+	# plain number after the scheme (`Basic attack`, `basic Stone`, `digest 3`)
+	# is diagnostic text and is kept; quoted elements are always credentials.
 	func _redact_bare_schemes(text: String) -> String:
 		var matches := _bare_scheme_pattern.search_all(text)
 		if matches.is_empty():
@@ -325,7 +327,7 @@ class IncidentSink:
 			var value_end := _header_value_end(text, scheme_start)
 			if value_end <= element_start:
 				continue
-			if _is_plain_word(text, element_start, value_end):
+			if _is_ordinary_word(text, element_start, value_end):
 				continue
 			pieces.append(text.substr(cursor, element_start - cursor))
 			pieces.append(_redacted_value(text, element_start, value_end))
@@ -336,11 +338,20 @@ class IncidentSink:
 		return "".join(pieces)
 
 
-	static func _is_plain_word(text: String, start: int, end: int) -> bool:
+	# A lowercase or Capitalised word made of letters only, or a plain number:
+	# prose, not a credential. Anything quoted, mixed-case, ALL-CAPS beyond the
+	# first letter, or containing digits with letters, `_`, `.`, `+`, `/`, `=`
+	# is treated as a credential element.
+	static func _is_ordinary_word(text: String, start: int, end: int) -> bool:
 		if end <= start:
 			return false
-		for position in range(start, end):
-			if not _is_lower(text[position]):
+		var word := text.substr(start, end - start)
+		if word.is_valid_int() or word.is_valid_float():
+			return true
+		if not _is_lower(word[0]) and not _is_upper(word[0]):
+			return false
+		for index in range(1, word.length()):
+			if not _is_lower(word[index]):
 				return false
 		return true
 

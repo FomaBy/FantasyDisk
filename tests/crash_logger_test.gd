@@ -64,11 +64,12 @@ func _run_tests(service: Node) -> void:
 	_test_credential_field_families(service)
 	_test_quoted_authorization_batches(service)
 	_test_bare_scheme_batches(service)
+	_test_bare_scheme_case_matrix(service)
 	_test_concurrent_records_and_rotation(service)
 
 	_clean_directory(TEST_ROOT)
 	if _errors.is_empty():
-		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, concurrency, rotation)")
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, concurrency, rotation)")
 		quit(0)
 		return
 	for error in _errors:
@@ -481,7 +482,82 @@ const BARE_SCHEME_CASES: Array[Dictionary] = [
 	{"field": "text", "input": "basic attack visible bearer of news visible mutual visible", "markers": [], "benign": ["basic attack visible bearer of news visible mutual visible"]},
 	{"field": "text", "input": "Parameter \"t\" is null. Basic", "markers": [], "benign": ["Parameter \"t\" is null. Basic"]},
 	{"field": "weapon", "input": "Basic sword", "markers": [], "benign": ["Basic sword"]},
+	{"field": "text", "input": "basic TEST_BARE_LOWER_BASIC_CREDENTIAL context=visible", "markers": ["TEST_BARE_LOWER_BASIC_CREDENTIAL"], "benign": ["basic <redacted> context=visible"]},
+	{"field": "text", "input": "BEARER \"TEST_BARE_UPPER_BEARER_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_UPPER_BEARER_CREDENTIAL"], "benign": ["BEARER \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "dPoP 'TEST_BARE_MIXED_DPOP_CREDENTIAL' context=visible", "markers": ["TEST_BARE_MIXED_DPOP_CREDENTIAL"], "benign": ["dPoP '<redacted>' context=visible"]},
+	{"field": "text", "input": "x-ext \\\"TEST_BARE_LOWER_EXT_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_LOWER_EXT_CREDENTIAL"], "benign": ["x-ext \\\"<redacted>\\\" context=visible"]},
+	{"field": "weapon", "input": "basic 'TEST_BARE_LOWER_WEAPON_CREDENTIAL' weapon=axe", "markers": ["TEST_BARE_LOWER_WEAPON_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "text", "input": "Digest Zm9vOmJhcg== context=visible", "markers": ["Zm9vOmJhcg=="], "benign": ["Digest <redacted> context=visible"]},
+	{"field": "text", "input": "The basic idea: negotiate a mutual digest of the Signature Stone near res://scenes/Main.tscn", "markers": [], "benign": ["The basic idea: negotiate a mutual digest of the Signature Stone near res://scenes/Main.tscn"]},
+	{"field": "text", "input": "basic Attack missed; BASIC damage 12; Digest 3 entries; x-axis offset", "markers": [], "benign": ["basic Attack missed; BASIC damage 12; Digest 3 entries; x-axis offset"]},
+	{"field": "text", "input": "bearer of news visible NTLM handshake visible oauth flow visible", "markers": [], "benign": ["bearer of news visible NTLM handshake visible oauth flow visible"]},
+	{"field": "event", "input": "negotiate phase:release", "markers": [], "benign": ["negotiate phase:release"]},
 ]
+
+
+# Table-driven matrix: scheme families x letter-case variants x credential
+# forms, each as an isolated incident, rotating through every _redact field.
+# Every positive cell is paired with benign prose and diagnostic URIs after
+# the same case variant of the scheme word, which must survive untouched.
+const MATRIX_SCHEMES: Array[String] = ["Basic", "Bearer", "Digest", "DPoP", "Negotiate", "SCRAM-SHA-256", "X-Ext"]
+const MATRIX_FIELDS: Array[String] = ["text", "code", "rationale", "function", "class", "weapon", "event"]
+const MATRIX_BENIGN_TAIL := " attack near res://scenes/Main.tscn and user://saves/slot1.save uid://c8ab12xyz https://example.invalid/help"
+
+
+static func _case_variants(scheme: String) -> Array[String]:
+	var mixed := ""
+	for index in range(scheme.length()):
+		var character := scheme[index]
+		mixed += character.to_upper() if index % 2 == 1 else character.to_lower()
+	return [scheme, scheme.to_lower(), scheme.to_upper(), mixed]
+
+
+static func _credential_forms(marker: String) -> Array[Array]:
+	return [
+		["plain", marker],
+		["single", "'" + marker + "'"],
+		["double", "\"" + marker + "\""],
+		["escaped", "\\\"" + marker + "\\\""],
+	]
+
+
+static func _build_bare_scheme_matrix() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for scheme in MATRIX_SCHEMES:
+		var family := scheme.to_upper().replace("-", "")
+		for variant in _case_variants(scheme):
+			for form_index in range(4):
+				var marker := "TEST_MX_%s_%02d_CREDENTIAL" % [family, counter]
+				var form: Array = _credential_forms(marker)[form_index]
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var tail := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+				cases.append({
+					"field": field,
+					"input": "%s %s%s" % [variant, form[1], tail],
+					"markers": [marker],
+					"benign": ["context=visible"] if not tail.is_empty() else [],
+				})
+				counter += 1
+			cases.append({
+				"field": "text",
+				"input": variant + MATRIX_BENIGN_TAIL,
+				"markers": [],
+				"benign": [variant + MATRIX_BENIGN_TAIL],
+			})
+			cases.append({
+				"field": "text",
+				"input": "%s Stone visible %s 42 visible" % [variant, variant],
+				"markers": [],
+				"benign": ["%s Stone visible %s 42 visible" % [variant, variant]],
+			})
+	return cases
+
+
+func _test_bare_scheme_case_matrix(service: Node) -> void:
+	var cases := _build_bare_scheme_matrix()
+	_check(cases.size() == MATRIX_SCHEMES.size() * 4 * 6, "bare scheme matrix built %d cases" % cases.size())
+	_run_isolated_cases(service, cases, "bare scheme matrix")
 
 
 func _test_bare_scheme_batches(service: Node) -> void:
