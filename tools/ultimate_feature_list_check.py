@@ -63,9 +63,13 @@ FEATURE_LIST_PATH = "data/ultimates/feature_list.json"
 CATALOG_DIR = "data/ultimates/schema/v1/classes"
 OVERLAY_DIR = "data/ultimates/classes"
 # Class-owned data files that live beside the weapon overlays but are not
-# overlays. Only these exact names are skipped; any other JSON in a class
-# directory must still match a canonical identity (FAN-3910).
-RESERVED_OVERLAY_FILES = frozenset({"presentation_adoption.json"})
+# overlays: the presentation adoption shard (FAN-3910) and the presentation-v2
+# migration shard (FAN-3933). Only these exact names are skipped; any other
+# JSON in a class directory must still match a canonical identity.
+RESERVED_OVERLAY_FILES = frozenset({
+    "presentation_adoption.json",
+    "presentation_v2_migration.json",
+})
 DEFAULT_REPORT_PATH = "build/ultimate_feature_list/report.json"
 DEFAULT_LOG_DIR = "build/ultimate_feature_list/logs"
 TASK_OUTPUT_DIR = "build"

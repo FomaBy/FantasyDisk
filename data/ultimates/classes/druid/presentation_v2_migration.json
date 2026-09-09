@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "class_id": "druid",
+  "migration_exemptions": {
+    "druid/summon_amulet": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "druid/briar_staff": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "druid/raven_totem": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
+  }
+}
