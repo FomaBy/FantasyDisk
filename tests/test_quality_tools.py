@@ -345,6 +345,14 @@ class QualityGateTests(unittest.TestCase):
             "python3 tools/quality_gate.py --list-manifest-lfs-evidence", source
         )
 
+    def test_candidate_workflow_keeps_all_contact_sheets_validated(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            'for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):',
+            source,
+        )
+        self.assertIn("missing manifest contact sheet", source)
+
     def test_runtime_smoke_helper_is_not_an_executable_suite(self) -> None:
         with contextlib.ExitStack() as stack:
             self._use_synthetic_tree(stack, {

@@ -113,6 +113,7 @@ jobs:
           # status caused solely by the pointer/payload size change.
           git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true
           python3 - "$evidence_paths_file" <<'PY'
+          import json
           import sys
           from pathlib import Path
 
@@ -140,6 +141,24 @@ jobs:
               if size[0] <= 0 or size[1] <= 0:
                   raise SystemExit(f"invalid manifest LFS evidence dimensions: {raw_path}")
           print(f"validated {len(evidence_paths)} manifest-declared LFS evidence images")
+
+          contact_sheets = []
+          for manifest_path in Path("docs/design/references/weapon_ultimates").glob("*/manifest.json"):
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):
+                  path = Path(raw_path)
+                  if not path.is_file():
+                      raise SystemExit(f"missing manifest contact sheet: {raw_path}")
+                  try:
+                      with Image.open(path) as image:
+                          size = image.size
+                          image.verify()
+                  except Exception as error:
+                      raise SystemExit(f"invalid manifest contact sheet: {raw_path}: {error}") from error
+                  if size[0] <= 0 or size[1] <= 0:
+                      raise SystemExit(f"invalid manifest contact sheet dimensions: {raw_path}")
+                  contact_sheets.append(raw_path)
+          print(f"validated {len(contact_sheets)} manifest contact sheets as images")
           PY
       - name: Assert exact candidate SHA
         run: |
