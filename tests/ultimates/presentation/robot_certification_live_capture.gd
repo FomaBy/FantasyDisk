@@ -131,7 +131,12 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	var player := PlayerScene.instantiate() as Node2D
 	if player == null:
 		return _failed_viewport(viewport, "Player.tscn did not instantiate")
-	player.position = Spec.player_rect(arena_size).get_center()
+	var capture_player_position := Spec.player_rect(arena_size).get_center()
+	## Magnetic Anchor rejects an aim point at global zero when its owner is
+	## elsewhere. A SubViewport has no native mouse location, so begin that one
+	## production cast at the same deterministic origin and restore the visible
+	## player lane immediately after activation.
+	player.position = Vector2.ZERO if str(pack["weapon_id"]) == "robot_magnetic_anchor" else capture_player_position
 	world.add_child(player)
 	await process_frame
 	_disable_player_camera(player)
@@ -142,7 +147,11 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	if enemies.is_empty():
 		return _failed_viewport(viewport, "EnemySpitter.tscn did not instantiate")
 	for enemy in enemies:
-		_freeze_actor(enemy)
+		## Keep targets eligible for Robot's production query. Full subtree
+		## disabling makes `can_process()` false and the target selector correctly
+		## finds no live victims, which completes the controller immediately.
+		enemy.set_process(false)
+		enemy.set_physics_process(false)
 	var hazard := _spawn_real_hazard(viewport, enemies[0], arena_size)
 	if hazard == null:
 		return _failed_viewport(viewport, "real ElitePoisonZone hazard did not spawn")
@@ -156,6 +165,7 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	var activation = host.controller().active_activation()
 	if activation == null:
 		return _failed_viewport(viewport, "%s did not retain a live Player activation" % pack["weapon_id"])
+	player.position = capture_player_position
 	_pause_activation(activation)
 	## Let the just-created production AnimationPlayer consume its one deferred
 	## autoplay frame. Fixed seeking before this point was the 648p drift race.
