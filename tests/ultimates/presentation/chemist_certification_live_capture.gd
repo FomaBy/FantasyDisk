@@ -350,6 +350,12 @@ func _freeze_actor(actor: Node) -> void:
 		var sprite := raw_child as AnimatedSprite2D
 		if sprite != null:
 			sprite.pause()
+			## The real Player idle flipbook starts during the readiness frames that
+			## precede the live ultimate activation. Pausing alone preserves a
+			## renderer-paced in-frame phase, so normalize that capture-only visual
+			## clock only after the real execution path has completed.
+			sprite.frame = 0
+			sprite.frame_progress = 0.0
 
 
 func _freeze_hazard(hazard: Node2D) -> void:
