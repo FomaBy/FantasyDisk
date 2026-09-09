@@ -66,6 +66,7 @@ const WEAPONS := [
 	{
 		"weapon_id": "biologist_spore_lens",
 		"scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
+		"visual_node": "Mycelium",
 		"active_seconds": 1.55,
 		"release_seconds": 0.80,
 		"recovery_seconds": 2.80,
@@ -74,6 +75,7 @@ const WEAPONS := [
 	{
 		"weapon_id": "biologist_sample_injector",
 		"scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+		"visual_node": "PerfectSample",
 		"active_seconds": 1.45,
 		"release_seconds": 0.70,
 		"recovery_seconds": 2.50,
@@ -82,6 +84,7 @@ const WEAPONS := [
 	{
 		"weapon_id": "biologist_symbiote_seed",
 		"scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
+		"visual_node": "Matriarch",
 		"active_seconds": 1.85,
 		"release_seconds": 0.90,
 		"recovery_seconds": 3.20,
@@ -350,7 +353,7 @@ func _observe_beat(
 	var weapon_id := str(weapon["weapon_id"])
 	var mode_id := str(mode["id"])
 	var presentation := _find_authored_presentation(arena, weapon_id)
-	var presentation_visible := _has_visible_authored_visual(presentation)
+	var presentation_visible := _has_visible_authored_visual(presentation, str(weapon["visual_node"]))
 	var widget := hud_root.get_node_or_null("UltimateHudWidget") as Control
 	var hud_visible := widget != null and widget.visible
 	var hazard_visible := _has_visible_hazard(hazards)
@@ -395,24 +398,14 @@ func _find_authored_presentation(arena: Node, weapon_id: String) -> Node:
 	return null
 
 
-func _has_visible_authored_visual(presentation: Node) -> bool:
-	if presentation == null:
+func _has_visible_authored_visual(presentation: Node, visual_node_name: String) -> bool:
+	if presentation == null or visual_node_name.is_empty():
 		return false
-	# The root Node2D is a structural mount and is always visible. Require a
-	# rendered descendant so a retained-but-transparent presentation cannot pass
-	# a beat merely because its container still exists.
-	var pending: Array[Node] = []
-	for child in presentation.get_children():
-		pending.append(child)
-	while not pending.is_empty():
-		var current := pending.pop_back() as Node
-		if current is CanvasItem:
-			var canvas_item := current as CanvasItem
-			if canvas_item.visible and canvas_item.modulate.a > 0.05 and canvas_item.self_modulate.a > 0.05:
-				return true
-		for child in current.get_children():
-			pending.append(child)
-	return false
+	# The root Node2D is a structural mount and impact helpers are transient
+	# descendants. Require the exact authored sprite declared for this weapon so
+	# a retained-but-transparent scene cannot pass a beat on helper visibility.
+	var visual := presentation.get_node_or_null(visual_node_name) as CanvasItem
+	return visual != null and visual.visible and visual.modulate.a > 0.05 and visual.self_modulate.a > 0.05
 
 
 func _advance_seconds(seconds: float) -> void:
