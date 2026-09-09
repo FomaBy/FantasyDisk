@@ -26,6 +26,41 @@
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_1080p.png",
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_2k.png"
     ],
+    "certification_capture": {
+      "issue": "FAN-3940",
+      "manifest": "docs/design/references/weapon_ultimates/sniper/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/sniper/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/sniper_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/sniper_certification_capture_test.gd",
+      "capture_mode": "windowed Godot render at --fixed-fps 60; a headless run owns no render target and is skipped, never substituted",
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": ["release", "active", "recovery"],
+      "viewports": ["648p", "720p", "1080p", "2k"],
+      "sheets": [
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_648p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_720p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_1080p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_2k.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_crowded_648p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_crowded_720p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_crowded_1080p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_crowded_2k.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_reduced_motion_648p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_reduced_motion_720p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_reduced_motion_1080p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_reduced_motion_2k.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_648p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_720p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_1080p.png",
+        "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_2k.png"
+      ],
+      "note": "One sheet per presentation mode and viewport. Each sheet is three canonical weapons by the release, active and recovery beats, and every cell is a native-resolution render of the shipped presentation scene downscaled by one third. The four legacy viewport contact sheets above stay as they are; this block adds the four-mode live evidence FAN-3877 found missing."
+    },
     "focused_test": "tests/ultimates/presentation/sniper_runtime_presentation_test.gd"
   },
   "weapons": [
