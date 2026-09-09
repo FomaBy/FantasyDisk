@@ -164,6 +164,8 @@ GENERATED_IMPORT_SIDECARS = (
     "after_berserk_648p.png.import",
 )
 LFS_EVIDENCE_PREFIX = "docs/design/reference-assets-lfs/"
+GODOT_RESOURCE_PREFIX = "res://"
+_URI_SCHEME_PREFIX_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
 def _weapon_ultimate_manifest_paths() -> list[Path]:
@@ -187,13 +189,19 @@ def _load_json_object(path: Path, description: str) -> dict:
 def _repository_relative_path(raw_path: object, description: str) -> str:
     if not isinstance(raw_path, str) or not raw_path:
         raise RuntimeError(f"{description} must be a non-empty repository-relative path")
+    if "\\" in raw_path:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    if _URI_SCHEME_PREFIX_RE.match(raw_path):
+        raise RuntimeError(f"{description} must not use an unsupported URI scheme: {raw_path!r}")
     path = Path(raw_path)
-    if path.is_absolute() or ".." in path.parts or "\\" in raw_path:
+    if path.is_absolute() or ".." in path.parts:
         raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
     return path.as_posix()
 
 
 def _lfs_evidence_path(raw_path: object, description: str) -> str:
+    if isinstance(raw_path, str):
+        raw_path = raw_path.removeprefix(GODOT_RESOURCE_PREFIX)
     path = _repository_relative_path(raw_path, description)
     if not path.startswith(LFS_EVIDENCE_PREFIX):
         raise RuntimeError(
@@ -217,11 +225,12 @@ def _certification_capture_declarations(
     if certification is not None:
         if not isinstance(certification, dict):
             raise RuntimeError(f"{description}.certification_capture must be an object")
+        runner_key = "runner" if "runner" in certification else "capture_script"
         declarations.append((
             "certification_capture",
             certification,
             "manifest",
-            "runner",
+            runner_key,
         ))
     live_capture = evidence.get("live_capture")
     if live_capture is not None:
