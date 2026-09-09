@@ -127,10 +127,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.025, 0.012, 0.045, 0.42)
+color = Color(0.025, 0.012, 0.045, 0.28)
 
 [node name="LocalDesaturation" type="Polygon2D" parent="."]
-color = Color(0.04, 0.03, 0.07, 0.62)
+color = Color(0.04, 0.03, 0.07, 0.34)
 polygon = PackedVector2Array(-218, -118, 218, -118, 218, 118, -218, 118)
 
 [node name="FreezeMarks" type="Line2D" parent="."]

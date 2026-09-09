@@ -35,7 +35,7 @@ const POOL_ACTIVE_PLAYS := 4.0
 ## rides the cumulative turn count for the same reason the orbit does: a
 ## phase-local spin resets at every boundary and snaps the blades back.
 const SAW_SPIN_PER_TURN := 3.5
-const REDUCED_PHASE_HOLD := 0.5
+const REDUCED_PHASE_HOLD := 0.75
 const PHOTO_SPRITE_ALPHA := 0.68
 
 static var _duck_refs := 0
@@ -546,7 +546,7 @@ func _build_backdrop() -> void:
 	_backdrop.name = "BackdropVeil"
 	_backdrop.set_meta("fullscreen_layer", true)
 	_backdrop_layer.add_child(_backdrop)
-	_backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_backdrop.color = Color(0.025, 0.06, 0.035, 0.38)
 	_apply_backdrop_safety()

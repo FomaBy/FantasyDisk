@@ -118,7 +118,7 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.18,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the flask, pool and shield hold the midpoint of each phase while the exact phase envelope continues",
+        "reduced_motion_substitute": "the flask, pool and shield hold one representative pose in each phase while the exact phase envelope continues",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
@@ -171,7 +171,7 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.32,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the syringe and infection waves hold the midpoint of each phase instead of rapidly expanding across the arena",
+        "reduced_motion_substitute": "the syringe and infection waves hold one representative pose in each phase instead of rapidly expanding across the arena",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
@@ -224,7 +224,7 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.16,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "the surgical orbit holds its phase midpoint instead of spinning while the phase envelope continues unchanged",
+        "reduced_motion_substitute": "the surgical orbit holds one representative phase pose instead of spinning while the phase envelope continues unchanged",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
