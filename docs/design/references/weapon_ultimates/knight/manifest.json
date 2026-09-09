@@ -46,10 +46,10 @@
       "impact_language": "sequential pierce-pin beats along the corridor end in a banner-line recovery",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.6,
-        "active": 0.9,
-        "recovery": 5.2,
-        "cancel": 6.2
+        "release": 0.65,
+        "active": 0.95,
+        "recovery": 2.8,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.knight.long_spear.windup",
@@ -59,10 +59,19 @@
         "cancel": "weapon_ultimate.phase.knight.long_spear.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 7,
+        "max_visual_nodes": 8,
         "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "pin_stagger_and_boss_exemption_owner": "mechanics FAN-1489"
+      },
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady heraldic veil is alpha-damped while the phalanx cadence stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; the spear corridor remains directional and clear of HUD bands"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.knight.oath_raised",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_long_spear.png",
+        "class_palette_id": "palette.knight.sunsteel"
       }
     },
     {
@@ -75,9 +84,9 @@
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.9,
-        "active": 1.3,
-        "recovery": 7.6,
-        "cancel": 8.6
+        "active": 1.2,
+        "recovery": 3.15,
+        "cancel": 3.8
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.knight.tower_shield.windup",
@@ -89,8 +98,17 @@
       "performance": {
         "max_visual_nodes": 6,
         "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "stored_damage_counter_owner": "mechanics FAN-1489"
+      },
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady rampart veil is alpha-damped while guard and counter beats stay unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; the shield wall stays frontal and leaves HUD bands clear"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 130, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.knight.oath_raised",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_tower_shield.png",
+        "class_palette_id": "palette.knight.sunsteel"
       }
     },
     {
@@ -102,10 +120,10 @@
       "impact_language": "inward pull glints on early loops end in a sunburst launch ring",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 1.2,
-        "active": 1.6,
-        "recovery": 6.6,
-        "cancel": 7.6
+        "release": 0.85,
+        "active": 1.1,
+        "recovery": 3.2,
+        "cancel": 3.7
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.knight.holy_flail.windup",
@@ -117,8 +135,17 @@
       "performance": {
         "max_visual_nodes": 8,
         "crowd_cap": 20,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "pull_and_launch_owner": "mechanics FAN-1489"
+      },
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady solar veil is alpha-damped while the spiral timing stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; the flail spiral stays centered and readable among hazards"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 120, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.knight.oath_raised",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_holy_flail.png",
+        "class_palette_id": "palette.knight.sunsteel"
       }
     }
   ],

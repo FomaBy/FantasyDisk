@@ -56,7 +56,7 @@
           "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
         }
       },
-      "timing_seconds": {"windup": 0.0, "release": 0.52, "active": 1.3, "recovery": 4.7, "cancel": 5.4},
+      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 0.9, "recovery": 2.8, "cancel": 3.4},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.electric_guitar.windup",
         "release": "weapon_ultimate.phase.guitarist.electric_guitar.execute",
@@ -65,7 +65,10 @@
         "cancel": "weapon_ultimate.phase.guitarist.electric_guitar.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady blue stage veil is alpha-damped while riff timing stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; diagonal riff strips remain centered below the HUD"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 90, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     },
     {
       "weapon_id": "bass_guitar",
@@ -83,7 +86,7 @@
           "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
         }
       },
-      "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 2.3, "recovery": 5.0, "cancel": 5.8},
+      "timing_seconds": {"windup": 0.0, "release": 0.75, "active": 1.05, "recovery": 3.05, "cancel": 3.7},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.bass_guitar.windup",
         "release": "weapon_ultimate.phase.guitarist.bass_guitar.execute",
@@ -92,7 +95,10 @@
         "cancel": "weapon_ultimate.phase.guitarist.bass_guitar.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 6, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 6, "crowd_cap": 12, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady bass-stage veil is alpha-damped while compression-wave timing stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; concentric bass waves retain a readable center under crowd load"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 130, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     },
     {
       "weapon_id": "sound_amp",
@@ -110,7 +116,7 @@
           "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
         }
       },
-      "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.6, "recovery": 5.25, "cancel": 6.0},
+      "timing_seconds": {"windup": 0.0, "release": 0.8, "active": 1.1, "recovery": 3.3, "cancel": 3.8},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.sound_amp.windup",
         "release": "weapon_ultimate.phase.guitarist.sound_amp.execute",
@@ -119,7 +125,10 @@
         "cancel": "weapon_ultimate.phase.guitarist.sound_amp.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady amber stage veil is alpha-damped while the four-way speaker beat stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; speaker pylons retain cardinal readability with HUD visible"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 110, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     }
   ],
   "evidence": {
