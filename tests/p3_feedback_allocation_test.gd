@@ -230,6 +230,56 @@ func _run() -> void:
 		if timeline_orphans != 0:
 			failures.append("orphans appeared after scene/timeline cleanup: %d" % timeline_orphans)
 
+	# F (round-5 admission): feedback parity — the pooled timeline reproduces
+	# the exact curves/timings the previous per-item tween trees used.
+	# Closed forms of the original tweens:
+	#   number: pos = start + (0,-44)*cubic_out(t/0.62); a = 1 until 0.20s,
+	#           then 1-(t-0.20)/0.42; gone at 0.62s;
+	#   tick:   a = 0.40*(1-quad_out(t/0.16)); gone at 0.16s.
+	var parity_root := Node2D.new()
+	root.add_child(parity_root)
+	await process_frame
+	var parity_timeline: Node = CombatFeedbackTimeline.for_scene(parity_root)
+	var parity_start := Vector2(300.0, 200.0)
+	var parity_setup := func(label: Label) -> void:
+		label.text = "7"
+		label.z_index = 3000
+	parity_timeline.spawn_number(parity_setup, parity_start, 44.0, 0.62, 0.20, 0.42, false)
+	parity_timeline.spawn_tick(parity_start, Vector2.ONE, Color(1.0, 0.46, 0.36, 0.40), "combat_feedback_flashes")
+	var number_label: Label = null
+	for child in parity_timeline.get_children():
+		if child is Label:
+			number_label = child
+			break
+	var tick_sprite: Sprite2D = null
+	for child in parity_timeline.get_children():
+		if child is Sprite2D:
+			tick_sprite = child
+			break
+	if number_label == null or tick_sprite == null:
+		failures.append("parity items were not created")
+	else:
+		await create_timer(0.31).timeout
+		var sample_t := 0.31
+		var expected_rise: float = 44.0 * (1.0 - pow(1.0 - sample_t / 0.62, 3.0))
+		var expected_pos := parity_start + Vector2(0.0, -expected_rise)
+		if number_label.global_position.distance_to(expected_pos) > 2.0:
+			failures.append("number position at 0.31s is %s, expected %s (cubic-out parity)" % [str(number_label.global_position), str(expected_pos)])
+		var expected_alpha: float = 1.0 - (sample_t - 0.20) / 0.42
+		if absf(number_label.modulate.a - expected_alpha) > 0.06:
+			failures.append("number alpha at 0.31s is %.3f, expected %.3f (delayed linear fade parity)" % [number_label.modulate.a, expected_alpha])
+		var tick_alpha_at: float = 0.40 * (1.0 - (1.0 - pow(1.0 - minf(sample_t, 0.16) / 0.16, 2.0)))
+		if not tick_sprite.visible and sample_t < 0.16:
+			failures.append("tick disappeared before its 0.16s lifetime")
+		await create_timer(0.35).timeout
+		if tick_sprite.visible:
+			failures.append("tick still visible after its 0.16s lifetime")
+		await create_timer(0.2).timeout
+		if number_label.visible:
+			failures.append("number still visible after its 0.62s lifetime")
+	parity_root.queue_free()
+	await process_frame
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

@@ -159,7 +159,7 @@ func _step_numbers(delta: float) -> void:
 			_active_numbers.remove_at(index)
 			continue
 		var progress: float = _ease_out_back(elapsed / lifetime) if bool(record["back_ease"]) else _ease_out_cubic(elapsed / lifetime)
-		label.global_position = (record["start"] as Vector2) + Vector2(0.0, float(record["rise"]) * progress)
+		label.global_position = (record["start"] as Vector2) + Vector2(0.0, -float(record["rise"]) * progress)
 		var fade_elapsed := elapsed - float(record["fade_delay"])
 		if fade_elapsed <= 0.0:
 			label.modulate.a = 1.0
