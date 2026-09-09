@@ -133,12 +133,42 @@
   ],
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/guitarist_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/guitarist_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/guitarist_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/guitarist_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3943",
+      "source_ref": "agent/codex-dev-sol-5-6/7c21cbb1a757",
+      "source_commit_sha": "e120e4cdeef54b7229529afcc3524aac3f6ea156",
+      "source_tree_sha": "5368a38320e1fa43f298e01bdd1f90652758eeeb",
+      "capture_manifest": "docs/design/references/weapon_ultimates/guitarist/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/guitarist/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/guitarist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/guitarist_certification_capture_test.gd",
+      "weapon_ids": ["electric_guitar", "bass_guitar", "sound_amp"],
+      "modes": ["normal", "crowded", "reduced_motion", "photosensitivity_safe"],
+      "beats": ["release", "active", "recovery"],
+      "viewports": {"648p": "1152x648", "720p": "1280x720", "1080p": "1920x1080", "2k": "2560x1440"},
+      "sheet_sha256": {
+        "648p": "e3487d63670d43803a5c7b204e525a4f1115dc29bda2f8090cce7059638b30af",
+        "720p": "2177575976fcc001bf3e8a7b3abdcbf7764274f5698a2eb281316ab0efdbe5f1",
+        "1080p": "3361803df774a156a6a286658dff66f1d0b4c60680ef5a4f80e7afee87cac004",
+        "2k": "cbe993ddc9606840734d19a3e598cb7803d471eca5bf8643f9618f59fa805a59"
+      },
+      "live_samples": 144,
+      "note": "Each native-size sheet carries all twelve weapon x mode cells at the active beat from a real Main scene, player, combat HUD and shipped Enemy hazards. The manifest records release, active and recovery measurements for all 48 combinations and keeps the older authored timeline sheets only as provenance."
+    }
   }
 }
