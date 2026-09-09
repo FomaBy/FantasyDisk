@@ -148,10 +148,11 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 		return _failed_viewport(viewport, "real ElitePoisonZone hazard did not spawn")
 	_freeze_hazard(hazard)
 
+	var host := PlayerHost.for_player(player)
+	host.set("_presentation_headless_mode", 0)
 	player.set("ultimate_charge", player.get("ultimate_max_charge"))
 	if not bool(player.call("activate_ultimate")):
 		return _failed_viewport(viewport, "%s did not activate through Player.activate_ultimate" % pack["weapon_id"])
-	var host := PlayerHost.for_player(player)
 	var activation = host.controller().active_activation()
 	if activation == null:
 		return _failed_viewport(viewport, "%s did not retain a live Player activation" % pack["weapon_id"])
