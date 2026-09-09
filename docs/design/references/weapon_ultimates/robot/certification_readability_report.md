@@ -8,7 +8,7 @@ This package certifies the shipped Robot ultimate trio after full presentation-v
 
 | Field | Value |
 | --- | --- |
-| Source ref / commit / tree | `agent/codex-dev-sol-5-6/3fbc2f531de0` / `0000000000000000000000000000000000000000` / `0000000000000000000000000000000000000000` |
+| Source ref / commit / tree | `agent/codex-dev-sol-5-6/3fbc2f531de0` / `fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2` / `61e18a3744066df4ef34fd5611b3e3dcaddb3c8c` |
 | Engine / renderer | Godot `4.7.stable.official.5b4e0cb0f` / GL Compatibility (OpenGL API 4.1 Metal, Apple M4 Pro) |
 | Controlled seed | `394402`, reseeded per phase/weapon/mode cell |
 | Workload exclusion | `FSD_GODOT_EXCLUSIVE=1` machine-wide Godot lease |
@@ -23,7 +23,7 @@ Twelve native 3 × 4 matrices cover release, active, and recovery at 1152×648, 
 | --- | --- |
 | `robot_magnetic_anchor` | 0.80s release, 1.25s active, 3.15s recovery: cyan debris implosion, outward EMP rhythm, player, targets, hazard telegraph, and HUD remain independently legible. |
 | `robot_hydraulic_press` | 0.85s release, 1.30s active, 3.20s recovery: opposing press walls preserve a clear danger corridor and do not obscure the player or hazard bands. |
-| `robot_reactor_core` | 0.90s release, 1.35s active, 3.25s recovery: eight red-orange vents retain the circular reactor identity and readable recovery spacing at every viewport. |
+| `robot_reactor_core` | 0.90s release, 1.35s active, 3.45s recovery: eight red-orange vents retain the circular reactor identity and readable recovery spacing at every viewport. |
 
 Reduced-motion cells read the shipped `screen_shake` setting as off, keeping the camera still and clamping the darkening veil to a calm fade without moving any beat. Photosensitivity-safe cells suppress the fullscreen veil while keeping authored foreground identity and real runtime fixtures. The evidence is spatial still-image proof at named beats; the focused gate separately validates runtime ownership, mode state, executor advancement, timing, and cleanup.
 

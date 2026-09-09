@@ -21,8 +21,8 @@ const LIVE_CAPTURE_SCRIPT := "tests/ultimates/presentation/robot_certification_l
 
 const CAPTURE_ROOT := "res://docs/design/reference-assets-lfs/ultimate-certification/robot"
 const CAPTURE_BASE_REF := "dev"
-const CAPTURE_BASE_SHA := "0000000000000000000000000000000000000000"
-const CAPTURE_BASE_TREE := "0000000000000000000000000000000000000000"
+const CAPTURE_BASE_SHA := "fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2"
+const CAPTURE_BASE_TREE := "61e18a3744066df4ef34fd5611b3e3dcaddb3c8c"
 const CAPTURE_SEED := 394402
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const CAPTURE_STEP := 0.01
@@ -83,7 +83,7 @@ const PACKS := [
 		"scene": preload("res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn"),
 		"crowd_cap": 9,
 		"color": Color(1.0, 0.36, 0.18),
-		"beats": {"release": 0.90, "active": 1.35, "recovery": 3.25},
+		"beats": {"release": 0.90, "active": 1.35, "recovery": 3.45},
 		"required_nodes": ["BackdropVeil"],
 	},
 ]
