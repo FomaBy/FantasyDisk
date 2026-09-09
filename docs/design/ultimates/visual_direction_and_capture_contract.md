@@ -199,3 +199,77 @@ Current state — the roster gate prints this every run:
 thief still ships the legacy asset-pipeline manifest shape (no per-weapon
 `phase_ids`, direction fields or `generator_provenance`) and a single wide
 contact strip instead of the four viewport captures.
+
+## Presentation-v2 migration
+
+The v2 migration ratchet (`WeaponUltimatePresentationSchema.PRESENTATION_V2_MIGRATION_ALLOWLIST`,
+the pairs still validated under the v1 envelope) is class-owned data too.
+Each class commits one shard at
+`data/ultimates/classes/<class_id>/presentation_v2_migration.json`:
+
+```json
+{"schema_version": 1, "class_id": "doctor", "migration_exemptions": {"doctor/bone_saw": "reason"}}
+```
+
+`migration_exemptions` maps a `<class_id>/<weapon_id>` pair of that very
+class to the reason it is still on the v1 envelope; a fully migrated class
+commits `{}`, and every canonical class commits a shard so an empty file is
+an explicit statement, never an omission. `PresentationV2MigrationShards`
+(`scripts/ultimates/presentation/presentation_v2_migration_shards.gd`) reads
+every shard through `load_shards()` and exposes the aggregate as the schema's
+`PRESENTATION_V2_MIGRATION_ALLOWLIST`, a read-only pair → reason map that
+every default allowlist argument in the schema, the visual-direction contract
+and the presentation runtime reads at call time. Passing an explicit allowlist
+(including `{}`) keeps its meaning: it replaces the aggregate for that call.
+The loader is a leaf of the import graph: it preloads nothing and knows
+neither the schema nor this contract, so the schema can import it without a
+cycle.
+
+The loader fails closed and reports `v2_migration.<code>` violations: a
+canonical class without a shard (`shard_missing`), a shard in a directory
+outside the canonical roster (`class_unknown`), an unparsable shard
+(`shard_parse`), a shard whose `class_id` is not its directory
+(`shard_class_mismatch`) or names a class another shard already declared
+(`shard_duplicate`), any key outside `schema_version` / `class_id` /
+`migration_exemptions` (`shard_field`, so a shard cannot restate a timing
+range, a presence rule, a budget or an accessibility threshold), a wrong
+`schema_version`, a non-object exemptions block, a key that is not a
+`<class_id>/<weapon_id>` pair (`pair_malformed`), a pair of another class
+(`pair_cross_class`), an empty reason (`reason_missing`), a pair the frozen
+ceiling never admitted (`pair_not_admitted`) and a pair aggregated twice
+(`pair_duplicate`). A rejected shard or entry contributes nothing, so broken
+class data only ever shrinks the allowlist: the dropped pair is asserted
+against the full v2 contract by the schema and fails closed there. A stale
+entry, one for a pair that already satisfies v2, still fails as
+`presentation.v2_allowlist.stale` in catalog scope, and the runtime
+single-manifest path still never rejects a live activation over the ratchet.
+
+`PresentationV2MigrationShards.ADMITTED_EXEMPTIONS` is the frozen ceiling:
+the exact 23 pairs the shared schema exempted when the map was split out.
+Like `ContactSheetBeatsContract.MIGRATION_ALLOWLIST` and
+`ADMITTED_ADOPTION_GAPS` it only shrinks. A class removes its own pairs from
+its own shard when they reach v2; it can never add one, so class data cannot
+put a pair back under the v1 envelope or weaken any timing, presence, budget
+or accessibility requirement. The focused gate is
+`tests/ultimates/presentation/presentation_v2_migration_shards_test.gd`: it
+proves the live shards equal the legacy map, that the catalog, single-manifest
+and contract outcomes are identical to the legacy map's, that the loader is
+dependency-free and that every rejection is reachable.
+`presentation_contract_test.gd` asserts the live shards validate and the
+aggregate names live registry pairs with reasons. The shard name is reserved,
+exactly like `presentation_adoption.json`, in `WeaponUltimatePackageDiscovery`
+and `tools/ultimate_feature_list_check.py`; any other JSON in a class
+directory still has to pair with a weapon executor and a catalog identity.
+
+Ownership: FAN-3933 alone owns the seventeen migration shards until its
+independent QA and `dev` integration complete. After that, a class migration
+card edits only its own class shard (removing entries), never another class's
+shard, the shared schema, the loader, the ceiling or the shared suites. The
+budget suite proves the legacy path on an isolated fixture pair through
+`WeaponUltimatePresentationSchema.use_migration_allowlist_for_tests()`, so no
+class has to remain on the v1 envelope for that negative coverage to exist.
+
+Current state, the shared contract test prints it every run: 23 of 51 pairs
+still on the v1 envelope, owned by assassin (2), doctor (3), druid (3),
+elementalist (3), guitarist (3), knight (3), priest (3) and robot (3); the
+other nine class shards are empty.
