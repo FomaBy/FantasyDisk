@@ -47,6 +47,9 @@ metadata/max_visual_nodes = 12
 metadata/crowd_cap = 16
 metadata/max_unique_materials = 4
 metadata/max_fullscreen_materials = 1
+metadata/accessibility_sprite = NodePath("SentryNest")
+metadata/accessibility_hold_frame = 3
+metadata/accessibility_steady_scale = Vector2(1.08, 1.08)
 
 [node name="SentryNest" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_flipbook")
