@@ -1,0 +1,3 @@
+observed_utc=2026-09-09T19:46:17Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+89415  43.5   0:00.27 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
