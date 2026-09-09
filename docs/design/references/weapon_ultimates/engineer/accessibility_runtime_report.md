@@ -87,7 +87,7 @@ FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --windowed --fixed-fps 60 --pa
 
 Both runs pass. The windowed run reports 423 samples and the values above. The
 existing Engineer timeline, presentation, mechanics, live activation and
-balance suites also pass unchanged. The shared visual-direction suite reaches
-the Engineer victim-impact wiring check successfully, but this checkout lacks
-several pre-existing LFS capture PNGs (including Engineer, Doctor and Ranger),
-so its repository-wide capture-presence portion cannot pass locally.
+balance suites also pass unchanged. After normal Git LFS materialization, the
+shared visual-direction contract passes, including 17/17 victim-impact wiring
+and the Engineer phase, cleanup, budget, direction, capture, provenance,
+quality and telegraph gates.
