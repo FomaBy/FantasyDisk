@@ -670,6 +670,14 @@ static func seek_scene(scene: Node2D, seconds: float) -> void:
 	timeline.play(&"ultimate")
 	timeline.seek(seconds, true)
 	timeline.pause()
+	## The timeline assigns the authored frame, but the V2 scenes also use
+	## AnimatedSprite2D for that frame. Pause those clocks explicitly after the
+	## seek: otherwise they continue on real frame time while the parent driver
+	## is held, making the saved pixels depend on renderer pacing.
+	for raw_sprite in scene.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
 	scene.set_process(false)
 
 
@@ -823,6 +831,12 @@ static func is_content_item(item: CanvasItem, scene: Node2D) -> bool:
 		return false
 	var cursor: Node = item
 	while cursor != null and cursor != scene:
+		## Victim impacts are real runtime feedback, but their top-level sprites
+		## are positioned on live enemies rather than authored V2 scene content.
+		## They must remain visible in a capture, not participate in the bounds
+		## used to scale and place that authored scene.
+		if cursor is ImpactPlayer:
+			return false
 		if cursor is CanvasItem:
 			var canvas_item := cursor as CanvasItem
 			if not canvas_item.visible or canvas_item.modulate.a * canvas_item.self_modulate.a <= 0.01:

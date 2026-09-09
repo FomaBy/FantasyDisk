@@ -21,6 +21,7 @@ const STATE_BAND_COLOR := Color(0.045, 0.065, 0.050, 0.96)
 const STATE_TEXT_COLOR := Color(0.78, 0.92, 0.78, 1.0)
 const CAPTURE_STEP := 0.01
 const ENEMY_CAPTURE_HEALTH := 100000.0
+const CAPTURE_SETTLE_FRAMES := 3
 
 
 func _initialize() -> void:
@@ -78,8 +79,7 @@ func _capture_sheet(_registry, capture: Dictionary) -> int:
 				await process_frame
 				push_error("FAN-3937 Chemist certification live cell failed: %s" % reason)
 				return ERR_CANT_CREATE
-			await process_frame
-			await RenderingServer.frame_post_draw
+			await _settle_capture_frame()
 			var image := _read_viewport(viewport, "%s/%s/%s" % [
 				Spec.WEAPON_IDS[weapon_index], Spec.MODE_IDS[mode_index], phase,
 			])
@@ -91,8 +91,7 @@ func _capture_sheet(_registry, capture: Dictionary) -> int:
 			sheet.blit_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), arena.position)
 
 	var chrome := _chrome_viewport(size, phase)
-	await process_frame
-	await RenderingServer.frame_post_draw
+	await _settle_capture_frame()
 	var chrome_image := _read_viewport(chrome, "chrome/%s" % phase)
 	chrome.queue_free()
 	await process_frame
@@ -163,7 +162,19 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	var scene := presentation.get("_scene") as Node2D if presentation != null else null
 	if scene == null:
 		return _failed_viewport(viewport, "%s did not create its shipped V2 scene" % pack["weapon_id"])
+	## Enemy damage labels and hit flashes are short real-time tweens. They are
+	## not the ultimate presentation (the shipped V2 impact player is), and
+	## leaving them enabled makes a fixed visual seek depend on the frame that
+	## happens to follow the executor step. Keep the real damage/impact path,
+	## but suppress only those transient capture-time combat-feedback overlays.
+	root.set_meta("combat_feedback", false)
 	_advance_activation(activation, Spec.runtime_execution_seconds(pack, phase))
+	## `take_damage()` can ask an Enemy's visual rig to play a hit state even
+	## when ordinary combat-feedback overlays are disabled. Reapply the fixture
+	## freeze after the real executor has fired so no actor-side clock advances
+	## during the subsequent renderer frame.
+	for enemy in enemies:
+		_freeze_actor(enemy)
 	host.set_process(false)
 	Spec.seek_scene(scene, float((pack["beats"] as Dictionary)[phase]))
 	if scene.has_method("_fit_backdrop_to_viewport"):
@@ -178,6 +189,13 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	## the active production cast and owns this presentation scene.
 	player.z_index = 50
 	_attach_shipped_hud(viewport, player, arena_size)
+	if bool(viewport.get_meta("fan3937_capture_failed", false)):
+		return viewport
+	## A node-local pause does not catch every Tween owned by a real hazard or
+	## actor subtree. Explicitly pause all capture-process tweens immediately
+	## before readback; unlike a global SceneTree pause, this keeps the windowed
+	## renderer presenting its bounded settle frames on macOS.
+	_pause_capture_tweens()
 	return viewport
 
 
@@ -312,6 +330,11 @@ func _disable_player_camera(player: Node2D) -> void:
 func _freeze_actor(actor: Node) -> void:
 	if actor == null:
 		return
+	## A disabled process mode propagates through the real actor subtree. This is
+	## stronger than stopping the root's callbacks alone: hit-state animation
+	## children and their bound tweens must not advance between a fixed seek and
+	## the viewport readback.
+	actor.process_mode = Node.PROCESS_MODE_DISABLED
 	actor.set_process(false)
 	actor.set_physics_process(false)
 	for raw_child in actor.find_children("*", "AnimationPlayer", true, false):
@@ -337,6 +360,16 @@ func _freeze_hazard(hazard: Node2D) -> void:
 		if node != null:
 			node.process_mode = Node.PROCESS_MODE_DISABLED
 	hazard.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _pause_capture_tweens() -> void:
+	## `SceneTree.paused` follows a Tween's bound-node pause policy. Explicitly
+	## pause the isolated renderer's processed tweens as well: runtime hazards
+	## own pulse tweens beneath helper nodes, and a pixel certification snapshot
+	## must not rely on those helpers' next idle tick.
+	for tween in get_processed_tweens():
+		if tween != null and tween.is_valid():
+			tween.pause()
 
 
 func _failed_viewport(viewport: SubViewport, reason: String) -> SubViewport:
@@ -400,6 +433,15 @@ func _read_viewport(viewport: SubViewport, label: String) -> Image:
 		return null
 	image.convert(Image.FORMAT_RGBA8)
 	return image
+
+
+func _settle_capture_frame() -> void:
+	## The renderer has already frozen all runtime clocks. Give the SubViewport a
+	## fixed number of post-freeze draws before readback so a first-frame texture
+	## upload cannot become capture-order-dependent pixels.
+	for _frame in CAPTURE_SETTLE_FRAMES:
+		await process_frame
+		await RenderingServer.frame_post_draw
 
 
 func _rect_node(rect: Rect2, color: Color, z_index := 0) -> Polygon2D:
