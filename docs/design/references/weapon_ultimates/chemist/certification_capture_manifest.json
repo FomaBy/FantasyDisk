@@ -6,75 +6,34 @@
   "focused_test": "tests/ultimates/presentation/chemist_certification_capture_test.gd",
   "readability_report": "docs/design/references/weapon_ultimates/chemist/certification_readability_report.md",
   "capture_source": {
-    "source_ref": "dev",
-    "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
-    "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "source_ref": "agent/codex-dev-terra-b/d54103bd6266",
+    "source_commit_sha": "0dbce8a9a46502d26bbc122c0b765db8b13c00fc",
+    "source_tree_sha": "edeba6ffdbd603d8c7494c79f3402c42b8f351af",
     "controlled_seed": 3937,
     "godot_version": "4.7.stable.official.5b4e0cb0f",
     "renderer": "gl_compatibility (OpenGL 3 compatibility)",
-    "capture_method": "macOS windowed SubViewport render; one shipped Chemist presentation scene per cell, held after a deterministic active seek",
-    "command": "FSD_GODOT_RUN_TIMEOUT=600 python3 tools/godot_gate.py --quiet --path . --windowed --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd"
+    "capture_method": "macOS windowed SubViewport render; Player.activate_ultimate -> UltimateHost -> shipped Chemist V2 scene, actual EnemySpitter targets and ElitePoisonZone hazard; one deferred-autoplay settle frame followed by fixed custom_step executor advancement and fixed V2 seek",
+    "workload_exclusion": "FSD_GODOT_EXCLUSIVE=1 acquires the machine-wide Godot lease before final PNG generation",
+    "headless_policy": "The renderer exits 0 without creating PNGs when headless. That structural skip is not image evidence; hydrated windowed verification remains fail-closed.",
+    "command": "env -u FSD_GODOT_MAXWAIT FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=600 python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd"
   },
-  "canonical_weapon_ids": [
-    "blast_powder",
-    "acid_flask",
-    "homunculus_vial"
-  ],
+  "canonical_weapon_ids": ["blast_powder", "acid_flask", "homunculus_vial"],
   "presentation_modes": [
-    {
-      "id": "normal",
-      "screen_shake": true,
-      "photosafe": false,
-      "crowd": "3 representative live enemy targets"
-    },
-    {
-      "id": "crowded",
-      "screen_shake": true,
-      "photosafe": false,
-      "crowd": "the per-weapon declared crowd cap (18 / 16 / 14)"
-    },
-    {
-      "id": "reduced_motion",
-      "screen_shake": false,
-      "photosafe": false,
-      "crowd": "3 representative live enemy targets"
-    },
-    {
-      "id": "photosensitivity_safe",
-      "screen_shake": false,
-      "photosafe": true,
-      "crowd": "3 representative live enemy targets with the instantiated backdrop veil suppressed"
-    }
+    {"id": "normal", "screen_shake": true, "photosafe": false, "crowd": "3 representative real EnemySpitter targets"},
+    {"id": "crowded", "screen_shake": true, "photosafe": false, "crowd": "the per-weapon declared crowd cap (18 / 16 / 14) using real EnemySpitter targets"},
+    {"id": "reduced_motion", "screen_shake": false, "photosafe": false, "crowd": "3 representative real EnemySpitter targets"},
+    {"id": "photosensitivity_safe", "screen_shake": false, "photosafe": true, "crowd": "3 representative real EnemySpitter targets with the shipped backdrop veil suppressed"}
   ],
   "coverage_matrix": {
-    "rows": [
-      "blast_powder",
-      "acid_flask",
-      "homunculus_vial"
-    ],
-    "columns": [
-      "normal",
-      "crowded",
-      "reduced_motion",
-      "photosensitivity_safe"
-    ],
+    "rows": ["blast_powder", "acid_flask", "homunculus_vial"],
+    "columns": ["normal", "crowded", "reduced_motion", "photosensitivity_safe"],
+    "phases": ["release", "active", "recovery"],
     "cells_per_viewport": 12,
+    "captures_per_viewport": 3,
     "readability_beats": {
-      "blast_powder": {
-        "release": 0.95,
-        "active": 1.45,
-        "recovery": 3.15
-      },
-      "acid_flask": {
-        "release": 0.85,
-        "active": 1.2,
-        "recovery": 3.55
-      },
-      "homunculus_vial": {
-        "release": 0.9,
-        "active": 2.85,
-        "recovery": 3.65
-      }
+      "blast_powder": {"release": 0.95, "active": 1.45, "recovery": 3.15},
+      "acid_flask": {"release": 0.85, "active": 1.2, "recovery": 3.55},
+      "homunculus_vial": {"release": 0.9, "active": 2.85, "recovery": 3.65}
     }
   },
   "runtime_configuration": {
@@ -83,42 +42,26 @@
       "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
       "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn"
     ],
-    "player_visual": "res://assets/sprites/characters/chemist.png",
-    "hazard_visual": "res://assets/sprites/effects/hazard_zone.png",
-    "enemy_visual": "res://assets/sprites/enemies/enemy_venom_spitter.png",
+    "player_scene": "res://scenes/Player.tscn",
+    "enemy_scene": "res://scenes/EnemySpitter.tscn",
+    "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
+    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
     "hud_scene": "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
-    "hud_state": "WeaponUltimateRegistry plus UltimateHudViewModel; active Chemist Blast Powder with full charge",
-    "fixture_note": "Only shipped project assets are used. Capture-side positioning reserves distinct player, effect, hazard, and HUD bands."
+    "fixture_note": "Each isolated cell runs the real Player activation and Player-owned controller, has real EnemySpitter group targets and an actual Enemy elite poison hazard, and mounts the shipped HUD through UltimateHudRuntimeAdapter. Capture-only placement and freezing do not alter production behavior."
   },
   "viewports": [
-    {
-      "id": "648p",
-      "width": 1152,
-      "height": 648,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p.png",
-      "sha256": "e905865252e3e1fd6e1a59b39979b4ee61ab3e798e38a3aea620793c754c707a"
-    },
-    {
-      "id": "720p",
-      "width": 1280,
-      "height": 720,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p.png",
-      "sha256": "a12b7d13f8ae36afda937861a6901949ba04e6c225c07bd24c5fecd90b1a0afc"
-    },
-    {
-      "id": "1080p",
-      "width": 1920,
-      "height": 1080,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p.png",
-      "sha256": "59b8b0097d26b97bab31fd4a456c301902c9a27d7ea111ff4148ba26113fb000"
-    },
-    {
-      "id": "2k",
-      "width": 2560,
-      "height": 1440,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k.png",
-      "sha256": "406236f888a51bff72de1520f1a890298ff3ba6bdfb297bc12860dc0ddb8102b"
-    }
+    {"id": "648p-release", "viewport_id": "648p", "phase": "release", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "648p-active", "viewport_id": "648p", "phase": "active", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "648p-recovery", "viewport_id": "648p", "phase": "recovery", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "720p-release", "viewport_id": "720p", "phase": "release", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "720p-active", "viewport_id": "720p", "phase": "active", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "720p-recovery", "viewport_id": "720p", "phase": "recovery", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "1080p-release", "viewport_id": "1080p", "phase": "release", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "1080p-active", "viewport_id": "1080p", "phase": "active", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "1080p-recovery", "viewport_id": "1080p", "phase": "recovery", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "2k-release", "viewport_id": "2k", "phase": "release", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "2k-active", "viewport_id": "2k", "phase": "active", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"id": "2k-recovery", "viewport_id": "2k", "phase": "recovery", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
   ],
   "scope_boundary": "FAN-3937 adds capture and certification evidence only. It does not change production scenes, runtime behavior, gameplay, balance, overlays, or adoption paths."
 }

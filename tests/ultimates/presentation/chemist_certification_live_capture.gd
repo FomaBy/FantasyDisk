@@ -2,37 +2,43 @@ extends SceneTree
 
 ## Windowed runtime renderer for FAN-3937's Chemist certification package.
 ##
-## The four output sheets are evidence, not a replacement scene: every cell
-## instantiates a shipped Chemist V2 presentation scene, samples a fixed live
-## beat, and freezes it after the actual mode setup has run. The player, enemy,
-## hazard, and ultimate-HUD resources are existing project resources arranged
-## only to make the readability reviewable in one deterministic frame.
+## Each output sheet is evidence, not a replacement scene. Every cell begins
+## through the real Player/UltimateHost/Enemy execution path, then advances the
+## production activation by fixed tween steps to a named beat before the
+## authored V2 timeline is frozen. The only capture-specific work is arranging
+## that real runtime state into a reviewable viewport.
 
 const Spec := preload("res://tests/ultimates/presentation/chemist_certification_capture_test.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const PD := preload("res://scripts/progression_data.gd")
-const HudWidgetScene := preload("res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn")
+const PlayerScene := preload("res://scenes/Player.tscn")
+const EnemySpitterScene := preload("res://scenes/EnemySpitter.tscn")
+const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const HudAdapter := preload("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 
-const HAZARD_COLOR := Color(1.0, 0.48, 0.18, 0.92)
-const ENEMY_COLOR := Color(0.90, 0.54, 0.62, 0.96)
-const PLAYER_BACKPLATE := Color(0.07, 0.10, 0.08, 0.88)
 const STATE_BAND_COLOR := Color(0.045, 0.065, 0.050, 0.96)
 const STATE_TEXT_COLOR := Color(0.78, 0.92, 0.78, 1.0)
+const CAPTURE_STEP := 0.01
+const ENEMY_CAPTURE_HEALTH := 100000.0
 
 
 func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
-		push_error("FAN-3937 Chemist certification capture requires a windowed renderer; headless output is not evidence.")
-		quit(2)
+		## The changed-profile runner discovers every SceneTree script headlessly.
+		## Do not claim or create PNG evidence there: a successful skip is only a
+		## structural runner result, while the manifest's windowed method remains
+		## the fail-closed proof requirement.
+		print("FAN-3937 Chemist certification capture skipped: headless runs never create certification PNG evidence.")
+		quit(0)
 		return
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	if not registry.is_valid():
 		push_error("FAN-3937 Chemist certification capture cannot start: weapon registry is invalid")
 		quit(1)
 		return
-	if HudWidgetScene == null:
-		push_error("FAN-3937 Chemist certification capture cannot load the shipped ultimate HUD widget")
+	if PlayerScene == null or EnemySpitterScene == null:
+		push_error("FAN-3937 Chemist certification capture cannot load the shipped Player/Enemy runtime scenes")
 		quit(1)
 		return
 	seed(Spec.CAPTURE_SEED)
@@ -47,110 +53,152 @@ func _initialize() -> void:
 	quit(0)
 
 
-func _capture_sheet(registry, capture: Dictionary) -> int:
+func _capture_sheet(_registry, capture: Dictionary) -> int:
 	var size := capture.get("size", Vector2i.ZERO) as Vector2i
 	var output := str(capture.get("path", ""))
-	if size == Vector2i.ZERO or output.is_empty():
+	var phase := str(capture.get("phase", ""))
+	if size == Vector2i.ZERO or output.is_empty() or phase.is_empty():
 		return ERR_INVALID_PARAMETER
 	var directory_result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output).get_base_dir())
 	if directory_result != OK:
 		return directory_result
-	var entries := _build_sheet(registry, size)
-	for _frame in 3:
-		await process_frame
-	await RenderingServer.frame_post_draw
-
 	var sheet := Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
 	sheet.fill(Spec.BACKGROUND_COLOR)
-	var failed := false
-	for entry in entries:
-		var image := _read_viewport(entry["viewport"] as SubViewport, str(entry["label"]))
-		if image == null:
-			failed = true
-			break
-		var target := entry["target"] as Vector2i
-		if bool(entry["blend"]):
-			sheet.blend_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), target)
-		else:
-			sheet.blit_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), target)
-	for entry in entries:
-		(entry["viewport"] as SubViewport).queue_free()
-	await process_frame
-	if failed:
-		return ERR_CANT_CREATE
-	var result := sheet.save_png(ProjectSettings.globalize_path(output))
-	if result == OK:
-		print("FAN-3937 Chemist certification capture saved: %s (%dx%d)" % [output, size.x, size.y])
-	return result
-
-
-## Each ultimate receives its own live arena viewport. Chemist's backdrop veil
-## is world-sized, so a single shared viewport would make one effect's veil
-## obscure unrelated cells and would no longer be a faithful scene capture.
-func _build_sheet(registry, size: Vector2i) -> Array[Dictionary]:
-	var viewports: Array[Dictionary] = []
+	var capture_index := Spec.CAPTURES.find(capture)
 	for weapon_index in Spec.PACKS.size():
 		for mode_index in Spec.MODES.size():
 			var arena := Spec.arena_rect(size, weapon_index, mode_index)
-			viewports.append({
-				"viewport": _arena_viewport(registry, arena.size, weapon_index, mode_index),
-				"target": arena.position,
-				"label": "%s/%s" % [Spec.WEAPON_IDS[weapon_index], Spec.MODE_IDS[mode_index]],
-				"blend": false,
-			})
-	viewports.append({
-		"viewport": _chrome_viewport(registry, size),
-		"target": Vector2i.ZERO,
-		"label": "chrome",
-		"blend": true,
-	})
-	return viewports
+			## Re-seeding per cell makes the Player/Enemy setup and all fixed tween
+			## steps independent of the order in which Godot draws SubViewports.
+			seed(Spec.CAPTURE_SEED + capture_index * 100 + weapon_index * 10 + mode_index)
+			var viewport := await _arena_viewport(arena.size, weapon_index, mode_index, phase)
+			if bool(viewport.get_meta("fan3937_capture_failed", false)):
+				var reason := str(viewport.get_meta("fan3937_capture_failure", "unknown live runtime failure"))
+				viewport.queue_free()
+				await process_frame
+				push_error("FAN-3937 Chemist certification live cell failed: %s" % reason)
+				return ERR_CANT_CREATE
+			await process_frame
+			await RenderingServer.frame_post_draw
+			var image := _read_viewport(viewport, "%s/%s/%s" % [
+				Spec.WEAPON_IDS[weapon_index], Spec.MODE_IDS[mode_index], phase,
+			])
+			viewport.queue_free()
+			current_scene = null
+			await process_frame
+			if image == null:
+				return ERR_CANT_CREATE
+			sheet.blit_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), arena.position)
+
+	var chrome := _chrome_viewport(size, phase)
+	await process_frame
+	await RenderingServer.frame_post_draw
+	var chrome_image := _read_viewport(chrome, "chrome/%s" % phase)
+	chrome.queue_free()
+	await process_frame
+	if chrome_image == null:
+		return ERR_CANT_CREATE
+	sheet.blend_rect(chrome_image, Rect2i(Vector2i.ZERO, chrome_image.get_size()), Vector2i.ZERO)
+	var result := sheet.save_png(ProjectSettings.globalize_path(output))
+	if result == OK:
+		print("FAN-3937 Chemist certification capture saved: %s (%dx%d, %s)" % [output, size.x, size.y, phase])
+	return result
 
 
-func _arena_viewport(registry, arena_size: Vector2i, weapon_index: int, mode_index: int) -> SubViewport:
+## Every arena is built and read back in isolation. The production target query
+## is global to the SceneTree, so this prevents one cell's actual enemies from
+## becoming another cell's capture targets.
+func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, phase: String) -> SubViewport:
 	var pack := Spec.PACKS[weapon_index] as Dictionary
 	var mode := Spec.MODES[mode_index] as Dictionary
 	var viewport := _viewport(arena_size, false)
-	var host := Node2D.new()
-	viewport.add_child(host)
-	host.add_child(_rect_node(Rect2(Vector2.ZERO, Vector2(arena_size)), Spec.FLOOR_COLOR))
-
-	var victims := _visual_victims(arena_size, Spec.victim_count(pack, mode))
-	for victim in victims:
-		host.add_child(victim)
-	host.add_child(_player_node(arena_size))
-	for hazard in _hazard_nodes(arena_size):
-		host.add_child(hazard)
-
-	## The exact setting read by the V2 scene's `_ready()` is published before the
-	## scene joins the tree. After a fixed seek it is held, avoiding frame-pacing
-	## drift in the saved proof.
+	var background := ColorRect.new()
+	background.color = Spec.FLOOR_COLOR
+	background.size = Vector2(arena_size)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(background)
+	var world := Node2D.new()
+	world.name = "ChemistCertificationWorld"
+	viewport.add_child(world)
+	## SceneTree.current_scene must be a root child. Point it at the SubViewport:
+	## Player._vfx_parent then correctly falls back to the real Player's world
+	## parent, while Enemy._spawn_elite_hazard adds its production hazard inside
+	## this same isolated render target.
+	current_scene = viewport
 	root.set_meta("screen_shake", bool(mode["screen_shake"]))
-	var scene := Spec.instantiate_scene(pack)
-	host.add_child(scene)
-	Spec.seek_scene(scene, float((pack["beats"] as Dictionary)["active"]))
+	root.set_meta("combat_feedback", true)
+
+	var player := PlayerScene.instantiate() as Node2D
+	if player == null:
+		return _failed_viewport(viewport, "Player.tscn did not instantiate")
+	player.position = Spec.player_rect(arena_size).get_center()
+	world.add_child(player)
+	await process_frame
+	_disable_player_camera(player)
+	player.call("configure_character", "chemist", str(pack["weapon_id"]))
+	await process_frame
+
+	var enemies := _spawn_real_enemies(world, arena_size, Spec.victim_count(pack, mode))
+	if enemies.is_empty():
+		return _failed_viewport(viewport, "EnemySpitter.tscn did not instantiate")
+	for enemy in enemies:
+		_freeze_actor(enemy)
+	var hazard := _spawn_real_hazard(viewport, enemies[0], arena_size)
+	if hazard == null:
+		return _failed_viewport(viewport, "real ElitePoisonZone hazard did not spawn")
+	_freeze_hazard(hazard)
+
+	player.set("ultimate_charge", player.get("ultimate_max_charge"))
+	if not bool(player.call("activate_ultimate")):
+		return _failed_viewport(viewport, "%s did not activate through Player.activate_ultimate" % pack["weapon_id"])
+	var host := PlayerHost.for_player(player)
+	var activation = host.controller().active_activation()
+	if activation == null:
+		return _failed_viewport(viewport, "%s did not retain a live Player activation" % pack["weapon_id"])
+	_pause_activation(activation)
+	## Let the just-created production AnimationPlayer consume its one deferred
+	## autoplay frame. Fixed seeking before this point was the 648p drift race.
+	await process_frame
+	var presentation = host.get("_presentation")
+	var scene := presentation.get("_scene") as Node2D if presentation != null else null
+	if scene == null:
+		return _failed_viewport(viewport, "%s did not create its shipped V2 scene" % pack["weapon_id"])
+	_advance_activation(activation, Spec.runtime_execution_seconds(pack, phase))
+	host.set_process(false)
+	Spec.seek_scene(scene, float((pack["beats"] as Dictionary)[phase]))
 	if scene.has_method("_fit_backdrop_to_viewport"):
 		scene.call("_fit_backdrop_to_viewport")
 	if bool(mode["photosafe"]):
 		Spec.apply_photosafe(scene)
 	Spec.layout_scene(scene, arena_size)
-	scene.present("fan3937.capture", {"victims": victims})
 	_hold_victim_impacts(scene)
+	_freeze_actor(player)
+	## Keep the actual Player.tscn actor readable above the fullscreen V2 veil.
+	## This is capture framing only; the Player is still the one that initiated
+	## the active production cast and owns this presentation scene.
+	player.z_index = 50
+	_attach_shipped_hud(viewport, player, arena_size)
 	return viewport
 
 
-func _chrome_viewport(registry, size: Vector2i) -> SubViewport:
+func _chrome_viewport(size: Vector2i, phase: String) -> SubViewport:
 	var viewport := _viewport(size, true)
 	var host := Node2D.new()
 	viewport.add_child(host)
 	var title := Label.new()
-	title.text = "CHEMIST ULTIMATES — WINDOWED CERTIFICATION MATRIX"
+	title.text = "CHEMIST ULTIMATES — %s LIVE RUNTIME MATRIX" % phase.to_upper()
 	title.position = Vector2(size.x * 0.022, size.y * 0.020)
 	title.add_theme_font_size_override("font_size", maxi(16, roundi(size.y * 0.032)))
 	title.add_theme_color_override("font_color", Color(0.82, 1.0, 0.56))
 	title.z_index = 300
 	host.add_child(title)
-	_add_shipped_hud(host, registry, size)
+	var subtitle := Label.new()
+	subtitle.text = "REAL PLAYER ACTIVATION · ENEMY SPITTERS · ELITE POISON HAZARD · SHIPPED ULTIMATE HUD · FIXED TWEEN BEAT"
+	subtitle.position = Vector2(size.x * 0.022, size.y * 0.072)
+	subtitle.add_theme_font_size_override("font_size", maxi(8, roundi(size.y * 0.015)))
+	subtitle.add_theme_color_override("font_color", Color(0.74, 0.88, 0.76))
+	subtitle.z_index = 300
+	host.add_child(subtitle)
 	for weapon_index in Spec.PACKS.size():
 		for mode_index in Spec.MODES.size():
 			var pack := Spec.PACKS[weapon_index] as Dictionary
@@ -170,82 +218,135 @@ func _chrome_viewport(registry, size: Vector2i) -> SubViewport:
 			label.add_theme_color_override("font_color", pack["color"] as Color)
 			label.z_index = 310
 			host.add_child(label)
-			host.add_child(_sheet_state_caption(size, weapon_index, mode_index, pack, mode))
+			host.add_child(_sheet_state_caption(size, weapon_index, mode_index, pack, mode, phase))
 	return viewport
 
 
-func _add_shipped_hud(host: Node2D, registry, size: Vector2i) -> void:
-	## This is the actual reusable ultimate HUD scene, fed by its production view
-	## model and registry state. It sits in a CanvasLayer above world VFX just as
-	## it does in combat; the nearby caption only identifies the capture purpose.
-	var layer := CanvasLayer.new()
-	layer.layer = 20
-	host.add_child(layer)
-	var hud := HudWidgetScene.instantiate() as PanelContainer
-	hud.position = Vector2(size.x * 0.022, size.y * 0.072)
-	hud.size = Vector2(size.x * 0.52, size.y * 0.105)
-	## The widget's allocated size is already proportional to the sheet. Scaling
-	## it again at 1080p/2k would spill into the first matrix row and obscure
-	## its mode evidence.
-	hud.scale = Vector2.ONE
-	hud.apply_state(Spec.hud_state(registry, "blast_powder"))
-	layer.add_child(hud)
-	var caption := Label.new()
-	caption.text = "SHIPPED ULTIMATE HUD • ACTIVE CHEMIST STATE • HUD ABOVE WORLD VFX"
-	caption.position = Vector2(size.x * 0.585, size.y * 0.105)
-	caption.add_theme_font_size_override("font_size", maxi(9, roundi(size.y * 0.016)))
-	caption.add_theme_color_override("font_color", Color(0.74, 0.88, 0.76))
-	layer.add_child(caption)
+func _attach_shipped_hud(viewport: SubViewport, player: Node2D, arena_size: Vector2i) -> void:
+	var hud_root := Control.new()
+	hud_root.name = "ChemistCertificationHudRoot"
+	hud_root.size = Vector2(arena_size)
+	hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(hud_root)
+	var adapter := HudAdapter.new()
+	hud_root.add_child(adapter)
+	if not adapter.mount(hud_root, player):
+		_mark_failed(viewport, "shipped UltimateHudRuntimeAdapter could not mount")
+		return
+	var widget := hud_root.get_node_or_null("UltimateHudWidget") as Control
+	if widget == null:
+		_mark_failed(viewport, "shipped UltimateHudWidget is missing after adapter mount")
+		return
+	widget.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	widget.position = Vector2(2.0, 2.0)
+	widget.scale = Vector2.ONE * clampf(float(arena_size.y) / 440.0, 0.27, 0.58)
+	widget.z_index = 100
+	adapter.refresh()
 
 
-func _player_node(arena_size: Vector2i) -> Node2D:
-	var host := Node2D.new()
-	var rect := Spec.player_rect(arena_size)
-	host.add_child(_rect_node(rect, PLAYER_BACKPLATE))
-	var texture: Texture2D = load(Spec.PLAYER_VISUAL_PATH)
-	if texture != null:
-		var sprite := Sprite2D.new()
-		sprite.texture = texture
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		sprite.position = rect.get_center()
-		var scale := minf(rect.size.x / float(texture.get_width()), rect.size.y / float(texture.get_height()))
-		sprite.scale = Vector2.ONE * scale * 0.90
-		sprite.z_index = 8
-		host.add_child(sprite)
-	return host
-
-
-func _hazard_nodes(arena_size: Vector2i) -> Array[Node2D]:
-	var nodes: Array[Node2D] = []
-	var texture: Texture2D = load(Spec.HAZARD_TEXTURE_PATH)
-	for rect in Spec.hazard_rects(arena_size):
-		var holder := Node2D.new()
-		if texture != null:
-			var sprite := Sprite2D.new()
-			sprite.texture = texture
-			sprite.position = rect.get_center()
-			sprite.scale = Vector2.ONE * minf(rect.size.x / float(texture.get_width()), rect.size.y / float(texture.get_height()))
-			sprite.modulate = HAZARD_COLOR
-			sprite.z_index = 7
-			holder.add_child(sprite)
-		nodes.append(holder)
-	return nodes
-
-
-func _visual_victims(arena_size: Vector2i, count: int) -> Array:
-	var victims := Spec.make_victim_probes(arena_size, count)
-	var texture: Texture2D = load(Spec.ENEMY_VISUAL_PATH)
-	for victim in victims:
-		if texture == null:
+func _spawn_real_enemies(world: Node2D, arena_size: Vector2i, count: int) -> Array[Node2D]:
+	var enemies: Array[Node2D] = []
+	var zone := Spec.effect_zone(arena_size)
+	var columns := mini(6, maxi(1, count))
+	var rows := ceili(float(count) / float(columns))
+	for index in count:
+		var enemy := EnemySpitterScene.instantiate() as Node2D
+		if enemy == null:
 			continue
-		var sprite := Sprite2D.new()
-		sprite.texture = texture
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		sprite.scale = Vector2.ONE * maxf(0.045, float(arena_size.y) / 2200.0)
-		sprite.modulate = ENEMY_COLOR
-		sprite.z_index = 2
-		victim.add_child(sprite)
-	return victims
+		var column := index % columns
+		var row := index / columns
+		enemy.position = zone.position + Vector2(
+			zone.size.x * (float(column) + 0.5) / float(columns),
+			zone.size.y * (float(row) + 0.5) / float(rows)
+		)
+		enemy.set("max_health", ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", ENEMY_CAPTURE_HEALTH)
+		world.add_child(enemy)
+		## `_ready()` initializes `health` from `max_health`; repeat the explicit
+		## value after it enters the real scene so ultimate ticks cannot delete a
+		## capture target at any phase.
+		enemy.set("max_health", ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", ENEMY_CAPTURE_HEALTH)
+		enemies.append(enemy)
+	return enemies
+
+
+func _spawn_real_hazard(parent: Node, source_enemy: Node2D, arena_size: Vector2i) -> Node2D:
+	if source_enemy == null or not source_enemy.has_method("_spawn_elite_hazard"):
+		return null
+	var hazard_rects := Spec.hazard_rects(arena_size)
+	if hazard_rects.is_empty():
+		return null
+	source_enemy.call("_spawn_elite_hazard", hazard_rects[0].get_center())
+	return parent.get_node_or_null("ElitePoisonZone") as Node2D
+
+
+func _pause_activation(activation) -> void:
+	for tween in activation.tweens_for_tests():
+		if tween != null and tween.is_valid():
+			tween.pause()
+
+
+func _advance_activation(activation, seconds: float) -> void:
+	var tweens: Array = activation.tweens_for_tests()
+	for tween in tweens:
+		if tween != null and tween.is_valid():
+			tween.play()
+	var elapsed := 0.0
+	while elapsed < seconds:
+		var step := minf(CAPTURE_STEP, seconds - elapsed)
+		for tween in tweens:
+			if tween != null and tween.is_valid():
+				tween.custom_step(step)
+		elapsed += step
+	_pause_activation(activation)
+
+
+func _disable_player_camera(player: Node2D) -> void:
+	for raw_camera in player.find_children("*", "Camera2D", true, false):
+		var camera := raw_camera as Camera2D
+		if camera != null:
+			camera.enabled = false
+
+
+func _freeze_actor(actor: Node) -> void:
+	if actor == null:
+		return
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for raw_child in actor.find_children("*", "AnimationPlayer", true, false):
+		var timeline := raw_child as AnimationPlayer
+		if timeline != null:
+			timeline.pause()
+	for raw_child in actor.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_child as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+
+
+func _freeze_hazard(hazard: Node2D) -> void:
+	if hazard == null:
+		return
+	for raw_item in hazard.find_children("*", "CanvasItem", true, false):
+		var item := raw_item as CanvasItem
+		if item != null:
+			item.visible = true
+			item.modulate = Color(item.modulate.r, item.modulate.g, item.modulate.b, 0.82)
+	for raw_node in hazard.find_children("*", "Node", true, false):
+		var node := raw_node as Node
+		if node != null:
+			node.process_mode = Node.PROCESS_MODE_DISABLED
+	hazard.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _failed_viewport(viewport: SubViewport, reason: String) -> SubViewport:
+	_mark_failed(viewport, reason)
+	return viewport
+
+
+func _mark_failed(viewport: SubViewport, reason: String) -> void:
+	viewport.set_meta("fan3937_capture_failed", true)
+	viewport.set_meta("fan3937_capture_failure", reason)
 
 
 func _hold_victim_impacts(scene: Node2D) -> void:
@@ -260,15 +361,16 @@ func _hold_victim_impacts(scene: Node2D) -> void:
 ## every target receives readable feedback. The capture caption instead lives
 ## in this final chrome pass, which is blended after every arena viewport, so
 ## the evidence labels remain readable even at the declared crowd caps.
-func _sheet_state_caption(size: Vector2i, weapon_index: int, mode_index: int, pack: Dictionary, mode: Dictionary) -> Node2D:
+func _sheet_state_caption(size: Vector2i, weapon_index: int, mode_index: int, pack: Dictionary, mode: Dictionary, phase: String) -> Node2D:
 	var arena := Spec.arena_rect(size, weapon_index, mode_index)
 	var local_band := Spec.state_band_rect(arena.size)
 	var band := Rect2(Vector2(arena.position) + local_band.position, local_band.size)
 	var host := Node2D.new()
 	host.z_index = 320
 	host.add_child(_rect_node(band, STATE_BAND_COLOR))
-	var text := "ACTIVE %.2fs · SHAKE %s · TARGETS %d · VEIL %s" % [
-		float((pack["beats"] as Dictionary)["active"]),
+	var text := "%s %.2fs · SHAKE %s · REAL TARGETS %d · VEIL %s" % [
+		phase.to_upper(),
+		float((pack["beats"] as Dictionary)[phase]),
 		"ON" if bool(mode["screen_shake"]) else "OFF",
 		Spec.victim_count(pack, mode),
 		"OFF" if bool(mode["photosafe"]) else "SHIPPED",
