@@ -24,6 +24,8 @@ const DEFAULTS := {
 	"low_hp_warning_enabled": true,
 	"screen_shake": true,
 	"combat_feedback": true,
+	"ultimate_reduced_motion": false,
+	"ultimate_photosensitivity_safe": false,
 	"debug_mode": false,
 	"aim_mode": "nearest",
 	"last_seen_version": "0.0.0",
@@ -67,6 +69,8 @@ static func load_settings() -> Dictionary:
 	settings["low_hp_warning_enabled"] = bool(settings["low_hp_warning_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
 	settings["combat_feedback"] = bool(settings["combat_feedback"])
+	settings["ultimate_reduced_motion"] = bool(settings["ultimate_reduced_motion"])
+	settings["ultimate_photosensitivity_safe"] = bool(settings["ultimate_photosensitivity_safe"])
 	settings["debug_mode"] = bool(settings["debug_mode"])
 	settings["aim_mode"] = str(settings["aim_mode"])
 	if not ["nearest", "cursor"].has(settings["aim_mode"]):
