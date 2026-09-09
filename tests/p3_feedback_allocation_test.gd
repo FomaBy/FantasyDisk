@@ -280,6 +280,149 @@ func _run() -> void:
 	parity_root.queue_free()
 	await process_frame
 
+	# G (14:50 UTC continuation): pause/resume and time-scale transitions.
+	var pause_root := Node2D.new()
+	root.add_child(pause_root)
+	await process_frame
+	var pause_timeline: Node = CombatFeedbackTimeline.for_scene(pause_root)
+	Engine.time_scale = 0.5
+	var pause_setup := func(label: Label) -> void:
+		label.text = "t"
+		label.z_index = 3000
+	pause_timeline.spawn_number(pause_setup, Vector2(500.0, 300.0), 44.0, 0.62, 0.20, 0.42, false)
+	# ignore_time_scale gives a real-time 0.2 s wait = 0.1 s of item time at 0.5x
+	await create_timer(0.2, true, false, true).timeout
+	var slowed_rise: float = 44.0 * (1.0 - pow(1.0 - 0.1 / 0.62, 3.0))
+	var pause_label: Label = null
+	for child in pause_timeline.get_children():
+		if child is Label:
+			pause_label = child
+			break
+	if pause_label == null:
+		failures.append("time-scale parity item missing")
+	else:
+		if absf((300.0 - pause_label.global_position.y) - slowed_rise) > 2.0:
+			failures.append("number rise does not follow Engine.time_scale (expected %.1f, got %.1f)" % [slowed_rise, 300.0 - pause_label.global_position.y])
+	paused = true
+	# process_always timers still fire while the tree is paused; the feedback
+	# item itself must NOT advance.
+	await create_timer(0.3, true).timeout
+	var paused_y: float = pause_label.global_position.y
+	paused = false
+	Engine.time_scale = 1.0
+	await create_timer(0.2).timeout
+	if absf(pause_label.global_position.y - paused_y) < 1.0:
+		failures.append("number did not resume advancing after unpause")
+	pause_root.queue_free()
+	await process_frame
+
+	# H (14:50 UTC continuation): production path — real enemies, real damage
+	# feedback, originating-owner deletion mid-flight, seeded random parity.
+	const ENEMY_SCENE := preload("res://scenes/EnemyBiter.tscn")
+	var combat_root := Node2D.new()
+	combat_root.name = "CurrentScene"
+	root.add_child(combat_root)
+	current_scene = combat_root
+	await process_frame
+	var victims: Array[Node2D] = []
+	for i in range(3):
+		var enemy: CharacterBody2D = ENEMY_SCENE.instantiate()
+		combat_root.add_child(enemy)
+		enemy.global_position = Vector2(200.0 + i * 120.0, 300.0)
+		victims.append(enemy)
+	await process_frame
+	# Deterministic random parity: same seed produces the same jitter sequence
+	# through the production path as the reference randf_range draws.
+	seed(20260909)
+	var reference_jitter: Array[float] = []
+	for i in range(6):
+		reference_jitter.append(randf_range(-18.0, 18.0))
+		reference_jitter.append(randf_range(-6.0, 6.0))
+	seed(20260909)
+	for victim in victims:
+		victim.set("max_health", 100.0)
+		victim.set("health", 100.0)
+		victim.call("take_damage", 7.0, {})
+	await process_frame
+	var production_timeline: Node = combat_root.get_node_or_null("CombatFeedbackTimeline")
+	if production_timeline == null:
+		failures.append("production damage did not create the feedback timeline")
+	else:
+		var labels: Array[Label] = []
+		for child in production_timeline.get_children():
+			if child is Label and child.visible:
+				labels.append(child)
+		if labels.size() != 3:
+			failures.append("production damage on 3 enemies produced %d visible numbers, expected 3" % labels.size())
+		# Seeded parity: the first number's start offset must match the seeded
+		# reference sequence computed from the same randf_range calls.
+		if labels.size() == 3:
+			var expected_x: float = victims[0].global_position.x - 48.0 + reference_jitter[0]
+			if absf(labels[0].global_position.x - expected_x) > 0.5:
+				failures.append("seeded random parity broken: first number x %.1f, expected %.1f" % [labels[0].global_position.x, expected_x])
+		# Originating-owner deletion mid-flight: numbers must survive (pooled,
+		# scene-owned) and orphans must stay zero after the owner is freed.
+		victims[1].queue_free()
+		victims[1] = null
+		await process_frame
+		await process_frame
+		var still_visible := 0
+		for child in production_timeline.get_children():
+			if child is Label and child.visible:
+				still_visible += 1
+		if still_visible < 2:
+			failures.append("feedback numbers died with their originating enemy (owner lifetime broken)")
+	# Tick curve asserted in-flight, before expiry (complements F's end checks).
+	var tick_root := Node2D.new()
+	root.add_child(tick_root)
+	await process_frame
+	var tick_timeline: Node = CombatFeedbackTimeline.for_scene(tick_root)
+	tick_timeline.spawn_tick(Vector2(100.0, 100.0), Vector2.ONE, Color(1.0, 0.46, 0.36, 0.40), "combat_feedback_flashes")
+	var flight_tick: Sprite2D = null
+	for child in tick_timeline.get_children():
+		if child is Sprite2D:
+			flight_tick = child
+			break
+	if flight_tick == null:
+		failures.append("in-flight tick missing")
+	else:
+		await create_timer(0.08).timeout
+		var expected: float = 0.40 * (1.0 - (1.0 - pow(1.0 - 0.08 / 0.16, 2.0)))
+		if absf(flight_tick.modulate.a - expected) > 0.05:
+			failures.append("tick alpha in flight is %.3f, expected %.3f (quad-out parity)" % [flight_tick.modulate.a, expected])
+	# Overlapping flash trajectory: first flash partially restored, second flash
+	# blends from the CURRENT modulate and restarts the restore toward its own
+	# target — trajectory must be continuous, never jump to the endpoint.
+	var overlap_root := Node2D.new()
+	root.add_child(overlap_root)
+	await process_frame
+	var overlap_timeline: Node = CombatFeedbackTimeline.for_scene(overlap_root)
+	var overlap_body := Sprite2D.new()
+	overlap_root.add_child(overlap_body)
+	await process_frame
+	var white := Color(1.0, 1.0, 1.0, 1.0)
+	overlap_body.modulate = white.lerp(Color(1.0, 0.42, 0.34, 1.0), 0.4)
+	overlap_timeline.flash_body(overlap_body, white)
+	await create_timer(0.08).timeout
+	var mid_flash: Color = overlap_body.modulate
+	if absf(mid_flash.g - white.g) < 0.02:
+		failures.append("overlapping flash trajectory: body already at restore endpoint mid-flight")
+	overlap_body.modulate = mid_flash.lerp(Color(0.4, 0.8, 1.0, 1.0), 0.4)
+	overlap_timeline.flash_body(overlap_body, white)
+	await create_timer(0.05).timeout
+	if overlap_body.modulate.g < mid_flash.g:
+		failures.append("second overlapping flash did not restart restore from the current blend")
+	await create_timer(0.25).timeout
+	if absf(overlap_body.modulate.g - 1.0) > 0.01:
+		failures.append("overlapping flashes did not converge to the restore target")
+	for cleanup_root in [combat_root, pause_root, tick_root, overlap_root]:
+		if cleanup_root != null and is_instance_valid(cleanup_root):
+			cleanup_root.queue_free()
+	await process_frame
+	var final_orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	if final_orphans != 0:
+		failures.append("orphans after teardown: %d" % final_orphans)
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

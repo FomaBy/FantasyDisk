@@ -150,8 +150,11 @@ func _step_numbers(delta: float) -> void:
 		record["elapsed"] = float(record["elapsed"]) + delta
 		var elapsed := float(record["elapsed"])
 		var lifetime := float(record["lifetime"])
+		if not is_instance_valid(record["label"]):
+			_active_numbers.remove_at(index)
+			continue
 		var label := record["label"] as Label
-		if label == null or not is_instance_valid(label):
+		if label == null:
 			_active_numbers.remove_at(index)
 			continue
 		if elapsed >= lifetime:
@@ -174,8 +177,11 @@ func _step_ticks(delta: float) -> void:
 		var record: Dictionary = _active_ticks[index]
 		record["elapsed"] = float(record["elapsed"]) + delta
 		var elapsed := float(record["elapsed"])
+		if not is_instance_valid(record["tick"]):
+			_active_ticks.remove_at(index)
+			continue
 		var tick := record["tick"] as Sprite2D
-		if tick == null or not is_instance_valid(tick):
+		if tick == null:
 			_active_ticks.remove_at(index)
 			continue
 		if elapsed >= TICK_LIFETIME:
@@ -192,8 +198,11 @@ func _step_bodies(delta: float) -> void:
 		var record: Dictionary = _active_bodies[index]
 		record["elapsed"] = float(record["elapsed"]) + delta
 		var elapsed := float(record["elapsed"])
+		if not is_instance_valid(record["body"]) or elapsed >= BODY_RESTORE_TIME:
+			_active_bodies.remove_at(index)
+			continue
 		var body := record["body"] as CanvasItem
-		if body == null or not is_instance_valid(body) or elapsed >= BODY_RESTORE_TIME:
+		if body == null:
 			_active_bodies.remove_at(index)
 			continue
 		var restore: Color = record["restore"]
