@@ -2,6 +2,9 @@ extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const ACCESSIBILITY := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+## Photosensitivity-safe victim burst luminance cap (see _apply_victim_presentation_modes).
+const PHOTOSAFE_IMPACT_ALPHA := 0.6
 const VICTIM_FRAMES := preload("res://assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.dark_mage.cursed_skull"
@@ -211,6 +214,7 @@ func _play_impacts(victims: Array) -> void:
 		return
 	if _impacts == null:
 		_impacts = ImpactPlayer.new()
+		_apply_victim_presentation_modes(_impacts)
 		add_child(_impacts)
 	if _impacts_started:
 		_impacts.enqueue(victims, global_position)
@@ -222,6 +226,30 @@ func _play_impacts(victims: Array) -> void:
 func _alive(target: Node2D) -> bool:
 	return target != null and is_instance_valid(target) \
 		and (target.get("health") == null or float(target.get("health")) > 0.0)
+
+
+## Production accessibility snapshot, published on the scene-tree root by Main
+## (`scripts/settings/ultimate_accessibility_settings.gd`). Photosensitivity-
+## safe bounds the victim read: this executor's own damage path already draws
+## each victim's ordinary hit flash, so the burst must not repeat it, and the
+## flipbook plays dimmed. Reduced motion changes nothing here — the burst is a
+## victim-local cue, not travel.
+func _apply_victim_presentation_modes(impacts: Node2D) -> void:
+	var snapshot := ACCESSIBILITY.read_snapshot(get_tree().root if is_inside_tree() else null)
+	if not bool(snapshot[ACCESSIBILITY.PHOTOSENSITIVITY_SAFE_KEY]):
+		return
+	impacts.set("extra_hit_flash", false)
+	impacts.modulate = Color(1.0, 1.0, 1.0, PHOTOSAFE_IMPACT_ALPHA)
+
+
+func victim_presentation_state_for_tests() -> Dictionary:
+	if _impacts == null or not is_instance_valid(_impacts):
+		return {}
+	return {
+		"extra_hit_flash": bool(_impacts.get("extra_hit_flash")),
+		"impact_alpha": _impacts.modulate.a,
+		"snapshot": _impacts.call("snapshot"),
+	}
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
