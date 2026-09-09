@@ -233,11 +233,15 @@ outside the canonical roster (`class_unknown`), an unparsable shard
 (`shard_duplicate`), any key outside `schema_version` / `class_id` /
 `migration_exemptions` (`shard_field`, so a shard cannot restate a timing
 range, a presence rule, a budget or an accessibility threshold), a wrong
-`schema_version`, a non-object exemptions block, a key that is not a
+`schema_version`, a top-level member written twice in the raw text
+(`shard_field_duplicate`, so a second `class_id` or exemptions block cannot
+override the first), a non-object exemptions block, a key that is not a
 `<class_id>/<weapon_id>` pair (`pair_malformed`), a pair of another class
-(`pair_cross_class`), an empty reason (`reason_missing`), a pair the frozen
-ceiling never admitted (`pair_not_admitted`) and a pair aggregated twice
-(`pair_duplicate`). A rejected shard or entry contributes nothing, so broken
+(`pair_cross_class`), a pair written twice in the raw text, with or without
+JSON escapes (`pair_duplicate`: the loader reads the raw members before the
+parser collapses them, reports the pair and omits it while its siblings stay),
+an empty reason (`reason_missing`) and a pair the frozen ceiling never admitted
+(`pair_not_admitted`). A rejected shard or entry contributes nothing, so broken
 class data only ever shrinks the allowlist: the dropped pair is asserted
 against the full v2 contract by the schema and fails closed there. A stale
 entry, one for a pair that already satisfies v2, still fails as

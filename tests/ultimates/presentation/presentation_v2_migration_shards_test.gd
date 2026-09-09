@@ -9,8 +9,9 @@ extends SceneTree
 ## contract) is identical whether it reads the shards or the legacy map, the
 ## loader is a leaf of the import graph, and the loader rejects what class data
 ## must never be able to do: go missing, claim another class or an unknown one,
-## name a pair of another class or one the frozen ceiling never admitted, leave
-## a reason empty, restate a shared envelope value, or keep a stale entry.
+## name a pair of another class or one the frozen ceiling never admitted, write
+## the same pair or the same member twice in its raw text, leave a reason
+## empty, restate a shared envelope value, or keep a stale entry.
 
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
@@ -235,6 +236,62 @@ func _check_loader_goes_red(errors: Array[String]) -> void:
 	_expect_error(duplicate_result, "v2_migration.shard_class_mismatch: ranger declares doctor", errors)
 	_expect_error(duplicate_result, "v2_migration.shard_duplicate: doctor is declared by doctor and ranger", errors)
 	_expect_pair(duplicate_result, "doctor/bone_saw", true, "the owning shard", errors)
+
+	# FAN-3933-QA-1: a pair written twice in the raw shard text. JSON.parse
+	# keeps only the last member, so the loader reads the raw members before
+	# the collapse: the pair is reported and omitted, its siblings survive, and
+	# the surviving reason is not silently the second one.
+	var duplicate_pair := _case("duplicate_pair")
+	_write_text(
+		"%s/%s/%s" % [duplicate_pair, REFERENCE_CLASS, Shards.SHARD_FILE],
+		"""{
+  "schema_version": 1,
+  "class_id": "doctor",
+  "migration_exemptions": {
+    "doctor/restore_potion": "%s",
+    "doctor/bone_saw": "first reason",
+    "doctor/plague_syringe": "%s",
+    "doctor/bone_saw": "second reason"
+  }
+}""" % [LEGACY_REASON, LEGACY_REASON]
+	)
+	var duplicate_pair_result := Shards.load_shards(duplicate_pair)
+	_expect_error(duplicate_pair_result, "v2_migration.pair_duplicate: doctor/bone_saw", errors)
+	_expect_pair(duplicate_pair_result, "doctor/bone_saw", false, "a pair written twice", errors)
+	_expect_pair(duplicate_pair_result, "doctor/restore_potion", true, "a sibling of a pair written twice", errors)
+	_expect_pair(duplicate_pair_result, "doctor/plague_syringe", true, "a sibling of a pair written twice", errors)
+
+	# The same pair spelled with a JSON escape is still the same key.
+	var escaped_pair := _case("escaped_pair")
+	_write_text(
+		"%s/%s/%s" % [escaped_pair, REFERENCE_CLASS, Shards.SHARD_FILE],
+		'{"schema_version": 1, "class_id": "doctor", "migration_exemptions": {"doctor/bone_saw": "a", "doctor\\/bone_saw": "b"}}'
+	)
+	var escaped_pair_result := Shards.load_shards(escaped_pair)
+	_expect_error(escaped_pair_result, "v2_migration.pair_duplicate: doctor/bone_saw", errors)
+	_expect_pair(escaped_pair_result, "doctor/bone_saw", false, "an escaped duplicate pair", errors)
+
+	# A pair key quoted inside a reason, or a member of a nested value, is not
+	# a member: the raw scan must not over-report.
+	var quoted_reason := _case("quoted_reason")
+	_write_text(
+		"%s/%s/%s" % [quoted_reason, REFERENCE_CLASS, Shards.SHARD_FILE],
+		'{"schema_version": 1, "class_id": "doctor", "migration_exemptions": {"doctor/bone_saw": "see \\"doctor/bone_saw\\": {\\"doctor/bone_saw\\": 1} }"}}'
+	)
+	var quoted_reason_result := Shards.load_shards(quoted_reason)
+	_expect_no_error_for(quoted_reason_result, REFERENCE_CLASS, errors)
+	_expect_pair(quoted_reason_result, "doctor/bone_saw", true, "a reason quoting the pair key", errors)
+
+	# A top-level member written twice is rejected with the whole shard, so a
+	# second class_id or a second exemptions block cannot override the first.
+	var duplicate_member := _case("duplicate_member")
+	_write_text(
+		"%s/%s/%s" % [duplicate_member, REFERENCE_CLASS, Shards.SHARD_FILE],
+		'{"schema_version": 1, "class_id": "doctor", "migration_exemptions": {}, "migration_exemptions": {"doctor/bone_saw": "late"}}'
+	)
+	var duplicate_member_result := Shards.load_shards(duplicate_member)
+	_expect_error(duplicate_member_result, "v2_migration.shard_field_duplicate: doctor declares migration_exemptions twice", errors)
+	_expect_pair(duplicate_member_result, "doctor/bone_saw", false, "a member written twice", errors)
 
 	var unknown_class := _case("unknown_class")
 	_write_shard(unknown_class, "necromancer", _shard("necromancer", {"necromancer/skull": "not a class"}))

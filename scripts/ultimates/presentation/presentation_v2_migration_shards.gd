@@ -121,11 +121,16 @@ static func load_shards(root: String = SHARD_ROOT) -> Dictionary:
 		if not CLASS_IDS.has(expected_class):
 			errors.append("v2_migration.class_unknown: %s" % expected_class)
 			continue
+		var text := FileAccess.get_file_as_string(path)
 		var json := JSON.new()
-		if json.parse(FileAccess.get_file_as_string(path)) != OK or not json.data is Dictionary:
+		if json.parse(text) != OK or not json.data is Dictionary:
 			errors.append("v2_migration.shard_parse: %s" % expected_class)
 			continue
 		var shard := json.data as Dictionary
+		# The parser keeps the last of two identical members, so repeated raw
+		# keys have to be read off the text before they are collapsed.
+		var raw := _raw_member_keys(text)
+		var duplicate_pairs := _duplicates(raw["exemptions"] as Array)
 		var class_id := str(shard.get("class_id", ""))
 		var owned := true
 		if class_id != expected_class:
@@ -138,9 +143,14 @@ static func load_shards(root: String = SHARD_ROOT) -> Dictionary:
 			)
 			owned = false
 		seen[class_id] = expected_class
+		for field in _duplicates(raw["top"] as Array):
+			errors.append("v2_migration.shard_field_duplicate: %s declares %s twice" % [expected_class, str(field)])
+			owned = false
 		if not owned or not _check_shard_shape(shard, expected_class, errors):
 			continue
-		_merge_exemptions(shard["migration_exemptions"] as Dictionary, expected_class, allowlist, errors)
+		_merge_exemptions(
+			shard["migration_exemptions"] as Dictionary, expected_class, duplicate_pairs, allowlist, errors
+		)
 	return {"allowlist": allowlist, "errors": errors}
 
 
@@ -169,12 +179,13 @@ static func _check_shard_shape(shard: Dictionary, class_id: String, errors: Arra
 
 
 ## One shard's pair → reason entries into the aggregate. Each key must be a
-## "<class_id>/<weapon_id>" pair of this very class, carry a non-empty reason,
-## be admitted by the frozen ceiling and not already be aggregated; anything
-## else is reported and left out.
+## "<class_id>/<weapon_id>" pair of this very class, be written once in the raw
+## shard, carry a non-empty reason, be admitted by the frozen ceiling and not
+## already be aggregated; anything else is reported and left out.
 static func _merge_exemptions(
 	declared: Dictionary,
 	class_id: String,
+	duplicate_pairs: Array,
 	allowlist: Dictionary,
 	errors: Array[String]
 ) -> void:
@@ -183,6 +194,9 @@ static func _merge_exemptions(
 	for raw_key in keys:
 		var key := str(raw_key)
 		var reason: Variant = declared[raw_key]
+		if duplicate_pairs.has(key):
+			errors.append("v2_migration.pair_duplicate: %s is written twice in the %s shard" % [key, class_id])
+			continue
 		var parts := key.split("/")
 		if parts.size() != 2 or str(parts[0]).is_empty() or str(parts[1]).is_empty():
 			errors.append("v2_migration.pair_malformed: %s/%s" % [class_id, key])
@@ -200,6 +214,94 @@ static func _merge_exemptions(
 			errors.append("v2_migration.pair_duplicate: %s" % key)
 			continue
 		allowlist[key] = str(reason)
+
+
+## The member keys of the shard text as written: {"top": top-level keys,
+## "exemptions": keys of the `migration_exemptions` object}, each in source
+## order and repeated as often as the text repeats them. Only called on text
+## JSON.parse already accepted, so the walk needs no error recovery: it tracks
+## string literals (with escapes), object/array depth, and which string is a
+## key (the next non-blank character is a colon).
+static func _raw_member_keys(text: String) -> Dictionary:
+	var top: Array[String] = []
+	var exemptions: Array[String] = []
+	var depth := 0
+	var exemptions_depth := -1
+	var opening_exemptions := false
+	var index := 0
+	var length := text.length()
+	while index < length:
+		var character := text[index]
+		if character == "\"":
+			var closing := _string_end(text, index)
+			var literal := text.substr(index, closing - index + 1)
+			index = closing + 1
+			var lookahead := index
+			while lookahead < length and _is_blank(text[lookahead]):
+				lookahead += 1
+			if lookahead < length and text[lookahead] == ":":
+				var key := _decode_literal(literal)
+				if depth == 1:
+					top.append(key)
+					opening_exemptions = key == "migration_exemptions"
+				elif depth == exemptions_depth:
+					exemptions.append(key)
+				index = lookahead + 1
+			else:
+				opening_exemptions = false
+			continue
+		if not _is_blank(character):
+			if character == "{":
+				depth += 1
+				if opening_exemptions:
+					exemptions_depth = depth
+			elif character == "[":
+				depth += 1
+			elif character == "}" or character == "]":
+				if depth == exemptions_depth:
+					exemptions_depth = -1
+				depth -= 1
+			opening_exemptions = false
+		index += 1
+	return {"top": top, "exemptions": exemptions}
+
+
+## Index of the quote closing the string literal that opens at `start`.
+static func _string_end(text: String, start: int) -> int:
+	var index := start + 1
+	var length := text.length()
+	while index < length:
+		var character := text[index]
+		if character == "\\":
+			index += 2
+			continue
+		if character == "\"":
+			return index
+		index += 1
+	return length - 1
+
+
+## A raw string literal (quotes and escapes included) as the String the
+## parser produces for it, so "a\/b" and "a/b" compare as the same key.
+static func _decode_literal(literal: String) -> String:
+	var decoded: Variant = JSON.parse_string(literal)
+	return str(decoded) if decoded is String else literal
+
+
+static func _duplicates(keys: Array) -> Array[String]:
+	var seen := {}
+	var repeated: Array[String] = []
+	for raw_key in keys:
+		var key := str(raw_key)
+		if seen.has(key):
+			if not repeated.has(key):
+				repeated.append(key)
+		seen[key] = true
+	return repeated
+
+
+static func _is_blank(character: String) -> bool:
+	return character == " " or character == "\t" or character == "\n" or character == "\r"
 
 
 static func _is_whole_number(value: Variant) -> bool:
