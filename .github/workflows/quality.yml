@@ -95,23 +95,11 @@ jobs:
         run: |
           set -euo pipefail
           evidence_paths=()
+          evidence_paths_file="$RUNNER_TEMP/manifest-lfs-evidence-paths"
+          python3 tools/quality_gate.py --list-manifest-lfs-evidence > "$evidence_paths_file"
           while IFS= read -r path; do
             evidence_paths+=("$path")
-          done < <(python3 - <<'PY'
-          import json
-          from pathlib import Path
-
-          lfs_prefix = "docs/design/reference-assets-lfs/"
-          paths = set()
-          for manifest_path in Path("docs/design/references/weapon_ultimates").glob("*/manifest.json"):
-              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-              for path in manifest.get("evidence", {}).get("contact_sheets", []):
-                  if path.startswith(lfs_prefix):
-                      paths.add(path)
-          for path in sorted(paths):
-              print(path)
-          PY
-          )
+          done < "$evidence_paths_file"
           test "${#evidence_paths[@]}" -gt 0
           git lfs install --local --skip-smudge
           for path in "${evidence_paths[@]}"; do
@@ -124,29 +112,34 @@ jobs:
           # LFS clean filter still verifies content; this avoids a false dirty
           # status caused solely by the pointer/payload size change.
           git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true
-          python3 - <<'PY'
-          import json
+          python3 - "$evidence_paths_file" <<'PY'
+          import sys
           from pathlib import Path
 
           from PIL import Image
 
-          contact_sheets = []
-          for manifest_path in Path("docs/design/references/weapon_ultimates").glob("*/manifest.json"):
-              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-              for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):
-                  path = Path(raw_path)
-                  if not path.is_file():
-                      raise SystemExit(f"missing manifest contact sheet: {raw_path}")
-                  try:
-                      with Image.open(path) as image:
-                          size = image.size
-                          image.verify()
-                  except Exception as error:
-                      raise SystemExit(f"invalid manifest contact sheet: {raw_path}: {error}") from error
-                  if size[0] <= 0 or size[1] <= 0:
-                      raise SystemExit(f"invalid manifest contact sheet dimensions: {raw_path}")
-                  contact_sheets.append(raw_path)
-          print(f"validated {len(contact_sheets)} manifest contact sheets as images")
+          lfs_prefix = "docs/design/reference-assets-lfs/"
+          evidence_paths = [
+              path for path in Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
+              if path
+          ]
+          if not evidence_paths:
+              raise SystemExit("no manifest-declared LFS evidence paths were selected")
+          for raw_path in evidence_paths:
+              if not raw_path.startswith(lfs_prefix):
+                  raise SystemExit(f"manifest evidence escaped the LFS boundary: {raw_path}")
+              path = Path(raw_path)
+              if not path.is_file():
+                  raise SystemExit(f"missing manifest LFS evidence: {raw_path}")
+              try:
+                  with Image.open(path) as image:
+                      size = image.size
+                      image.verify()
+              except Exception as error:
+                  raise SystemExit(f"invalid manifest LFS evidence: {raw_path}: {error}") from error
+              if size[0] <= 0 or size[1] <= 0:
+                  raise SystemExit(f"invalid manifest LFS evidence dimensions: {raw_path}")
+          print(f"validated {len(evidence_paths)} manifest-declared LFS evidence images")
           PY
       - name: Assert exact candidate SHA
         run: |
