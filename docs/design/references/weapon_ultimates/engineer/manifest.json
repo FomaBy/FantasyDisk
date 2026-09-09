@@ -352,6 +352,17 @@
       "docs/design/reference-assets-lfs/engineer-ultimate-timelines-fan3749/engineer_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/engineer_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/engineer_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/engineer_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3939",
+      "certification_manifest": "docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json",
+      "capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/engineer_certification_capture_test.gd",
+      "mode_count": 4,
+      "viewport_count": 4,
+      "weapon_count": 3,
+      "base_ref": "dev",
+      "base_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f"
+    }
   }
 }
