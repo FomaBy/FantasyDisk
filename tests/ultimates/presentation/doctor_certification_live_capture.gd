@@ -97,7 +97,11 @@ const FIXED_STEP := 1.0 / 60.0
 const SETTLE_FRAMES := 8
 const CHANGED_PIXEL_EPSILON := 0.08
 const FLASH_LUMINANCE := 0.92
-const MEASURE_STRIDE := 2
+## A deterministic 8 px grid still probes 11,664 pixels at the smallest
+## supported viewport and 57,600 at 2K for every sample. Denser GDScript byte
+## iteration made one 720p sheet take more than ten minutes without improving
+## the contract's area-ratio precision.
+const MEASURE_STRIDE := 8
 
 var _weapon_manifest := {}
 var _records: Array[Dictionary] = []
