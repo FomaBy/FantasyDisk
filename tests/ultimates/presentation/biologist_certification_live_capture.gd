@@ -20,6 +20,11 @@ const OUTPUT_ARGUMENT := "--output-dir="
 const FRAME_SECONDS := 1.0 / 60.0
 const BACKGROUND_PATH := "res://assets/backgrounds/field_misty_marsh.png"
 const ARENA_CENTER := Vector2(2048.0, 1152.0)
+const AUTHORED_DELTA_CHANNEL_THRESHOLD := 0.10
+const AUTHORED_DELTA_SAMPLE_STRIDE := 2
+const SAMPLE_INJECTOR_MIN_CAPTURED_FRAME := 6
+const SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT := 1500
+const SAMPLE_INJECTOR_MIN_DELTA_BOUNDS := Vector2i(80, 220)
 
 ## The individual images are native viewport renders, not downscaled panels in
 ## a contact sheet. The ID is intentionally part of the artifact filename and
@@ -76,7 +81,7 @@ const WEAPONS := [
 		"weapon_id": "biologist_sample_injector",
 		"scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
 		"visual_node": "PerfectSample",
-		"active_seconds": 1.45,
+		"active_seconds": 2.20,
 		"release_seconds": 0.70,
 		"recovery_seconds": 2.50,
 		"crowd_cap": 16,
@@ -213,9 +218,28 @@ func _capture_one(viewport_spec: Dictionary, mode: Dictionary, weapon: Dictionar
 		_cleanup(arena)
 		return false
 
-	await RenderingServer.frame_post_draw
-	await RenderingServer.frame_post_draw
-	var image := _viewport.get_texture().get_image()
+	var visual_probe := {}
+	var image: Image = null
+	if weapon_id == "biologist_sample_injector":
+		var visual := presentation.get_node_or_null(str(weapon["visual_node"])) as CanvasItem
+		var rendered_probe := await _render_authored_visual_probe(visual)
+		image = rendered_probe.get("visible_image") as Image
+		visual_probe = rendered_probe.duplicate(false)
+		visual_probe.erase("visible_image")
+		visual_probe["authored_frame"] = int(visual.get("frame")) if visual != null else -1
+		if not _sample_injector_probe_is_readable(visual_probe):
+			_fail("%s/%s/%s rejected an empty or pre-beam Sample Injector frame: %s" % [
+				CAPTURE_ID,
+				weapon_id,
+				mode_id,
+				JSON.stringify(visual_probe),
+			])
+			_cleanup(arena)
+			return false
+	else:
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		image = _viewport.get_texture().get_image()
 	if image == null or image.get_size() != viewport_size:
 		var actual := Vector2i.ZERO if image == null else image.get_size()
 		_fail("%s/%s/%s native viewport mismatch: expected %s, got %s" % [CAPTURE_ID, weapon_id, mode_id, viewport_size, actual])
@@ -246,6 +270,7 @@ func _capture_one(viewport_spec: Dictionary, mode: Dictionary, weapon: Dictionar
 		"photosensitivity_strategy": str(mode["photosensitivity_strategy"]),
 		"scene_path": str(weapon["scene_path"]),
 		"impacted_targets": impacted_targets,
+		"authored_visual_probe": visual_probe,
 		"file": output_path,
 	}))
 	await _advance_seconds(maxf(float(weapon["recovery_seconds"]) - float(weapon["active_seconds"]), 0.0))
@@ -406,6 +431,79 @@ func _has_visible_authored_visual(presentation: Node, visual_node_name: String) 
 	# a retained-but-transparent scene cannot pass a beat on helper visibility.
 	var visual := presentation.get_node_or_null(visual_node_name) as CanvasItem
 	return visual != null and visual.visible and visual.modulate.a > 0.05 and visual.self_modulate.a > 0.05
+
+
+## The injector's authored sprite is mounted directly over the player, so node
+## visibility cannot prove that it survives the composited native frame. Freeze
+## the real active scene, then compare its pixels with a one-frame hidden-sprite
+## baseline. This is an observation-only capture probe: the saved PNG is the
+## visible live frame and no production scene or output frame is substituted.
+func _render_authored_visual_probe(visual: CanvasItem) -> Dictionary:
+	if visual == null or _viewport == null:
+		return {}
+	var was_paused := paused
+	paused = true
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var visible_image := _viewport.get_texture().get_image()
+	var was_visible := visual.visible
+	visual.visible = false
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var hidden_image := _viewport.get_texture().get_image()
+	visual.visible = was_visible
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	paused = was_paused
+	if visible_image == null or hidden_image == null or visible_image.get_size() != hidden_image.get_size():
+		return {}
+	var metrics := _image_delta_metrics(visible_image, hidden_image)
+	metrics["visible_image"] = visible_image
+	return metrics
+
+
+func _image_delta_metrics(visible_image: Image, hidden_image: Image) -> Dictionary:
+	var size := visible_image.get_size()
+	var changed_samples := 0
+	var min_x := size.x
+	var min_y := size.y
+	var max_x := -1
+	var max_y := -1
+	for y in range(0, size.y, AUTHORED_DELTA_SAMPLE_STRIDE):
+		for x in range(0, size.x, AUTHORED_DELTA_SAMPLE_STRIDE):
+			var visible_pixel := visible_image.get_pixel(x, y)
+			var hidden_pixel := hidden_image.get_pixel(x, y)
+			var channel_delta := maxf(
+				absf(visible_pixel.r - hidden_pixel.r),
+				maxf(absf(visible_pixel.g - hidden_pixel.g), absf(visible_pixel.b - hidden_pixel.b))
+			)
+			if channel_delta < AUTHORED_DELTA_CHANNEL_THRESHOLD:
+				continue
+			changed_samples += 1
+			min_x = mini(min_x, x)
+			min_y = mini(min_y, y)
+			max_x = maxi(max_x, x)
+			max_y = maxi(max_y, y)
+	var bounds := Vector2i.ZERO
+	if changed_samples > 0:
+		bounds = Vector2i(
+			max_x - min_x + AUTHORED_DELTA_SAMPLE_STRIDE,
+			max_y - min_y + AUTHORED_DELTA_SAMPLE_STRIDE
+		)
+	return {
+		"delta_sample_count": changed_samples,
+		"delta_bounds": bounds,
+		"sample_stride": AUTHORED_DELTA_SAMPLE_STRIDE,
+		"channel_threshold": AUTHORED_DELTA_CHANNEL_THRESHOLD,
+	}
+
+
+func _sample_injector_probe_is_readable(probe: Dictionary) -> bool:
+	var bounds := probe.get("delta_bounds", Vector2i.ZERO) as Vector2i
+	return int(probe.get("authored_frame", -1)) >= SAMPLE_INJECTOR_MIN_CAPTURED_FRAME \
+		and int(probe.get("delta_sample_count", 0)) >= SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT \
+		and bounds.x >= SAMPLE_INJECTOR_MIN_DELTA_BOUNDS.x \
+		and bounds.y >= SAMPLE_INJECTOR_MIN_DELTA_BOUNDS.y
 
 
 func _advance_seconds(seconds: float) -> void:
