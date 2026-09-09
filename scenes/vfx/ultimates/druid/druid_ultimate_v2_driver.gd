@@ -20,6 +20,7 @@ const Accessibility := preload("res://scripts/settings/ultimate_accessibility_se
 const BACKDROP_PATH := NodePath("BackdropLayer/BackdropVeil")
 const REDUCED_BACKDROP_ALPHA := 0.70
 const PHOTO_BACKDROP_ALPHA := 0.56
+const REDUCED_SPRITE_ALPHA := 0.60
 const PHOTO_SPRITE_ALPHA := 0.68
 
 static var _duck_refs := 0
@@ -185,11 +186,16 @@ func _apply_frame_safety() -> void:
 		var item := get_node_or_null(NodePath(path)) as CanvasItem
 		if item != null:
 			item.visible = not _photosensitivity_safe
-	if _photosensitivity_safe:
+	if _reduced_motion or _photosensitivity_safe:
 		for node in find_children("*", "AnimatedSprite2D", true, false):
 			var sprite := node as AnimatedSprite2D
 			if sprite != null:
-				sprite.modulate.a = minf(sprite.modulate.a, PHOTO_SPRITE_ALPHA)
+				var cap := 1.0
+				if _reduced_motion:
+					cap = minf(cap, REDUCED_SPRITE_ALPHA)
+				if _photosensitivity_safe:
+					cap = minf(cap, PHOTO_SPRITE_ALPHA)
+				sprite.modulate.a = minf(sprite.modulate.a, cap)
 
 
 func _timeline() -> AnimationPlayer:
