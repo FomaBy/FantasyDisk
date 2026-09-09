@@ -58,7 +58,7 @@ func _initialize() -> void:
 	errors.append_array(readability_violations(manifest, class_manifest))
 	errors.append_array(_sheet_violations(manifest))
 	_check_class_manifest_registration(class_manifest, manifest, errors)
-	_check_accessibility_modes(class_manifest, errors)
+	await _check_accessibility_modes(class_manifest, errors)
 	_check_negative_probes(manifest, profile, class_manifest, errors)
 	_finish(errors)
 
@@ -400,6 +400,7 @@ func _check_accessibility_modes(class_manifest: Dictionary, errors: Array[String
 			var weapon := raw_weapon as Dictionary
 			var scene := (load("res://%s" % str(weapon.get("scene_path", ""))) as PackedScene).instantiate() as Node2D
 			root.add_child(scene)
+			await process_frame
 			if scene.has_method("begin"):
 				scene.call("begin", registry, {}, 0)
 			var state := scene.call("presence_snapshot") as Dictionary if scene.has_method("presence_snapshot") else {}
@@ -414,7 +415,8 @@ func _check_accessibility_modes(class_manifest: Dictionary, errors: Array[String
 			_expect(backdrop != null and backdrop.get_meta("fullscreen_layer", false) == true, "%s must ship the screen-space darken backdrop" % key, errors)
 			if scene.has_method("finish"):
 				scene.call("finish", "cancel")
-			scene.free()
+			scene.queue_free()
+			await process_frame
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
 
 

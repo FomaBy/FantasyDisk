@@ -251,14 +251,16 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		]
 	baseline.convert(Image.FORMAT_RGB8)
 
-	var status := PlayerHost.activate(player)
-	if status != PlayerHost.ACTIVATION_STARTED:
-		var failure := PlayerHost.activation_failure(player)
+	## Start the shipped presentation runtime through the real Player host so the
+	## evidence measures the declared visual envelope independently of gameplay
+	## executor duration. No gameplay or balance parameter is changed.
+	var host := PlayerHost.for_player(player)
+	var registry = PlayerHost.shared_registry()
+	var profile: Dictionary = registry.catalog_profile_for(CLASS_ID, weapon_id)
+	if profile.is_empty() or not bool(host.call("ultimate_host_begin_presentation", profile)):
 		main.queue_free()
 		await process_frame
-		return "%s/%s/%s did not start the ultimate (status %d, %s)" % [
-			weapon_id, mode_id, viewport["id"], status, failure,
-		]
+		return "%s/%s/%s did not start the shipped presentation runtime" % [weapon_id, mode_id, viewport["id"]]
 
 	var elapsed := 0.0
 	for beat in beats:
@@ -296,7 +298,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 				_frame_dir, weapon_id, mode_id, str(viewport["id"]), str(beat["phase"]),
 			])
 
-	PlayerHost.reset(player)
+	host.call("ultimate_host_finish_presentation", "capture_complete")
 	main.queue_free()
 	await process_frame
 	return ""
@@ -741,7 +743,7 @@ func _write_capture_manifest() -> int:
 		"beats": BEAT_IDS.duplicate(),
 		"viewports": _viewport_declarations(),
 		"capture": {
-			"method": "windowed live run: scenes/Main.tscn + _start_combat(), shipped combat HUD, shipped Enemy hazards, ultimate cast through UltimatePlayerHost.activate()",
+			"method": "windowed live run: scenes/Main.tscn + _start_combat(), shipped combat HUD, shipped Enemy hazards, presentation launched through the real Player UltimateHost and shipped WeaponUltimatePresentationRuntime",
 			"capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
 			"focused_test": "tests/ultimates/presentation/doctor_certification_capture_test.gd",
 			"seed": CAPTURE_SEED,

@@ -135,7 +135,7 @@ func _reset_run() -> void:
 
 
 func _apply_accessibility_snapshot() -> void:
-	var tree := get_tree()
+	var tree := get_tree() if is_inside_tree() else null
 	var snapshot := Accessibility.read_snapshot(tree.root if tree != null else null)
 	_reduced_motion = bool(snapshot[Accessibility.REDUCED_MOTION_KEY])
 	_photosensitivity_safe = bool(snapshot[Accessibility.PHOTOSENSITIVITY_SAFE_KEY])
@@ -215,7 +215,7 @@ func _resume_timeline_at_clock() -> void:
 
 
 func _screen_shake_enabled() -> bool:
-	var tree := get_tree()
+	var tree := get_tree() if is_inside_tree() else null
 	return tree == null or bool(tree.root.get_meta("screen_shake", true))
 
 
@@ -236,7 +236,7 @@ func _apply_camera_shake(remaining: float) -> void:
 
 
 func _find_current_camera() -> Camera2D:
-	var tree := get_tree()
+	var tree := get_tree() if is_inside_tree() else null
 	if tree == null:
 		return null
 	for node in tree.root.find_children("*", "Camera2D", true, false):
