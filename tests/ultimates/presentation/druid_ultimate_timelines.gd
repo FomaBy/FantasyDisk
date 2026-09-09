@@ -20,26 +20,26 @@ const FLIPBOOKS := {
 		"node": "WildHunt",
 		"path": "res://assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
 		"animation": &"druid_summon_amulet_ultimate",
-		"times": [0.0, 0.85, 1.6, 2.35, 3.1, 3.85, 4.6, 5.35, 6.6],
+		"times": [0.0, 0.425, 0.85, 1.15, 1.55, 1.95, 2.35, 2.7, 2.85],
 	},
 	"briar_staff": {
 		"node": "BriarLattice",
 		"path": "res://assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
 		"animation": &"druid_briar_staff_ultimate",
-		"times": [0.0, 0.55, 1.1, 1.55, 2.9, 3.8, 4.7, 6.2, 7.9],
+		"times": [0.0, 0.475, 0.95, 1.45, 1.75, 2.05, 2.35, 2.7, 3.0],
 	},
 	"raven_totem": {
 		"node": "RavenVortex",
 		"path": "res://assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
 		"animation": &"druid_raven_totem_ultimate",
-		"times": [0.0, 0.6, 0.95, 1.85, 3.1, 4.35, 5.6, 7.1, 8.4],
+		"times": [0.0, 0.3, 0.6, 1.25, 1.5, 1.75, 2.0, 2.35, 2.65],
 	},
 }
 const PACKS := [
 	{
 		"weapon_id": "summon_amulet",
 		"scene": preload("res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"),
-		"time": 3.2,
+		"time": 1.95,
 		"title": "SUMMON AMULET — WILD HUNT / radial pack",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.72, 1.0, 0.6),
@@ -48,7 +48,7 @@ const PACKS := [
 	{
 		"weapon_id": "briar_staff",
 		"scene": preload("res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn"),
-		"time": 4.6,
+		"time": 2.0,
 		"title": "BRIAR STAFF — ONE-BREATH FOREST / lattice",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.62, 0.88, 0.45),
@@ -57,7 +57,7 @@ const PACKS := [
 	{
 		"weapon_id": "raven_totem",
 		"scene": preload("res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn"),
-		"time": 5.4,
+		"time": 1.65,
 		"title": "RAVEN TOTEM — THOUSAND WINGS / vortex",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.75, 0.7, 1.0),
@@ -245,7 +245,8 @@ func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Nod
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
+			var is_certified_backdrop := child is ColorRect and bool(child.get_meta("fullscreen_layer", false))
+			_expect(is_certified_backdrop or not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
 	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
 	_expect("res://%s" % str(flipbook.get("spriteframes", "")) == str(expected["path"]), "%s manifest must pin its SpriteFrames path" % weapon_id, errors)
 	_expect(StringName(str(flipbook.get("animation", ""))) == animation, "%s manifest must pin its animation identity" % weapon_id, errors)

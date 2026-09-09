@@ -14,6 +14,7 @@ extends Node2D
 const Pack := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
 ## Beat payload key naming the enemies a beat actually damaged. The Doctor
@@ -34,6 +35,11 @@ const POOL_ACTIVE_PLAYS := 4.0
 ## rides the cumulative turn count for the same reason the orbit does: a
 ## phase-local spin resets at every boundary and snaps the blades back.
 const SAW_SPIN_PER_TURN := 3.5
+const REDUCED_PHASE_HOLD := 0.5
+const PHOTO_SPRITE_ALPHA := 0.68
+
+static var _duck_refs := 0
+static var _duck_volume_before_db := 0.0
 
 @export var weapon_id: String = Pack.RESTORE_POTION
 
@@ -48,19 +54,34 @@ signal timeline_finished(reason: String)
 var _timeline = null
 var _visuals := {}
 var _impacts: Node2D = null
+var _backdrop_layer: CanvasLayer = null
+var _backdrop: ColorRect = null
+var _presence := {}
+var _reduced_motion := false
+var _photosensitivity_safe := false
+var _impact_fired := false
+var _hitstop_remaining := 0.0
+var _shake_remaining := 0.0
+var _camera: Camera2D = null
+var _camera_offset_before_shake := Vector2.ZERO
+var _duck_active := false
+var _sfx_bus_index := -1
 
 
 func _ready() -> void:
 	_apply_metadata()
+	_apply_accessibility_snapshot()
 	set_process(false)
 
 
 func begin(registry, handles: Dictionary = {}, headless_mode := -1) -> Dictionary:
 	finish("node_end")
+	_apply_accessibility_snapshot()
 	var manifest := Pack.manifest_for(registry, weapon_id)
 	if manifest.is_empty():
 		push_error("DoctorUltimateTimelineScene: no manifest for %s" % weapon_id)
 		return {}
+	_presence = (manifest.get("presence", {}) as Dictionary).duplicate(true)
 	_timeline = Timeline.new(manifest, headless_mode)
 	var snapshot: Dictionary = _timeline.begin(handles)
 	if str(snapshot.get("state", "")) == Timeline.ACTIVE_STATE:
@@ -84,9 +105,27 @@ func is_active() -> bool:
 func step(delta: float) -> void:
 	if _timeline == null:
 		return
+	var before: float = _timeline.elapsed_seconds()
 	for event in _timeline.advance(delta):
 		phase_entered.emit(event)
-	preview_at(_timeline.elapsed_seconds())
+	var elapsed: float = _timeline.elapsed_seconds()
+	var active_at := float((Pack.weapon_config(weapon_id).get("timing", {}) as Dictionary).get("active", INF))
+	if not _impact_fired and before < active_at and elapsed >= active_at:
+		_impact_fired = true
+		_hitstop_remaining = float(_presence.get("hitstop_ms", 0.0)) / 1000.0
+		_shake_remaining = 0.48
+	if _hitstop_remaining > 0.0:
+		_hitstop_remaining = maxf(_hitstop_remaining - delta, 0.0)
+	else:
+		preview_at(elapsed)
+	var timing := Pack.weapon_config(weapon_id).get("timing", {}) as Dictionary
+	if elapsed >= float(timing.get("release", INF)) and elapsed < float(timing.get("recovery", -INF)):
+		_begin_sfx_ducking()
+	else:
+		_end_sfx_ducking()
+	if _shake_remaining > 0.0:
+		_shake_remaining = maxf(_shake_remaining - delta, 0.0)
+		_apply_camera_shake(_shake_remaining)
 	if _timeline != null and _timeline.elapsed_seconds() >= Pack.timeline_seconds(weapon_id):
 		finish("node_end")
 
@@ -95,13 +134,18 @@ func preview_at(elapsed: float) -> void:
 	if _visuals.is_empty():
 		_build_visuals()
 	var phase := Pack.phase_at(weapon_id, elapsed)
+	var phase_name := str(phase["name"])
+	var progress := float(phase["progress"])
+	if _reduced_motion and phase_name in ["windup", "release", "active", "recovery"]:
+		progress = REDUCED_PHASE_HOLD
 	match weapon_id:
 		Pack.RESTORE_POTION:
-			_preview_restore(str(phase["name"]), float(phase["progress"]))
+			_preview_restore(phase_name, progress)
 		Pack.PLAGUE_SYRINGE:
-			_preview_plague(str(phase["name"]), float(phase["progress"]))
+			_preview_plague(phase_name, progress)
 		Pack.BONE_SAW:
-			_preview_saw(str(phase["name"]), float(phase["progress"]))
+			_preview_saw(phase_name, progress)
+	_apply_photo_safe_visuals()
 
 
 ## One executor beat. A beat that names the enemies it actually damaged gets the
@@ -131,7 +175,13 @@ func finish(reason: String) -> Dictionary:
 	# already gone: `begin()` finishes the previous run before it builds the new
 	# one, so a repeat activation can never inherit live bursts.
 	_clear_impacts()
+	_end_sfx_ducking()
+	_end_camera_shake()
+	_hitstop_remaining = 0.0
+	_shake_remaining = 0.0
+	_impact_fired = false
 	if _timeline == null:
+		_clear_visuals()
 		return {}
 	var snapshot: Dictionary = _timeline.finish(reason)
 	_timeline = null
@@ -163,11 +213,14 @@ func _apply_metadata() -> void:
 	set_meta("impact_language", str(config.get("impact", "")))
 	set_meta("max_visual_nodes", int(config.get("max_visual_nodes", 0)))
 	set_meta("crowd_cap", Pack.MAX_VISUAL_NODES)
+	set_meta("max_unique_materials", int(config.get("max_unique_materials", 0)))
+	set_meta("max_fullscreen_materials", int(config.get("max_fullscreen_materials", 0)))
 
 
 func _build_visuals() -> void:
 	_clear_visuals()
 	_apply_metadata()
+	_build_backdrop()
 	match weapon_id:
 		Pack.RESTORE_POTION:
 			_build_restore()
@@ -478,6 +531,153 @@ func _clear_visuals() -> void:
 		if is_instance_valid(visual):
 			(visual as Node).free()
 	_visuals.clear()
+	if _backdrop_layer != null and is_instance_valid(_backdrop_layer):
+		_backdrop_layer.free()
+	_backdrop_layer = null
+	_backdrop = null
+
+
+func _build_backdrop() -> void:
+	_backdrop_layer = CanvasLayer.new()
+	_backdrop_layer.name = "BackdropLayer"
+	_backdrop_layer.layer = 0
+	add_child(_backdrop_layer)
+	_backdrop = ColorRect.new()
+	_backdrop.name = "BackdropVeil"
+	_backdrop.set_meta("fullscreen_layer", true)
+	_backdrop_layer.add_child(_backdrop)
+	_backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_backdrop.color = Color(0.025, 0.06, 0.035, 0.38)
+	_apply_backdrop_safety()
+
+
+func _apply_accessibility_snapshot() -> void:
+	var tree := get_tree() if is_inside_tree() else null
+	var snapshot := Accessibility.read_snapshot(tree.root if tree != null else null)
+	_reduced_motion = bool(snapshot[Accessibility.REDUCED_MOTION_KEY])
+	_photosensitivity_safe = bool(snapshot[Accessibility.PHOTOSENSITIVITY_SAFE_KEY])
+	set_meta(Accessibility.REDUCED_MOTION_KEY, _reduced_motion)
+	set_meta(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, _photosensitivity_safe)
+	_apply_backdrop_safety()
+
+
+func _apply_backdrop_safety() -> void:
+	if _backdrop == null or not is_instance_valid(_backdrop):
+		return
+	var alpha := 1.0
+	if _reduced_motion:
+		alpha = minf(alpha, 0.72)
+	if _photosensitivity_safe:
+		alpha = minf(alpha, 0.58)
+	_backdrop.modulate.a = alpha
+
+
+func _apply_photo_safe_visuals() -> void:
+	_apply_backdrop_safety()
+	if not _photosensitivity_safe:
+		return
+	for raw_visual in _visuals.values():
+		var visual := raw_visual as CanvasItem
+		if visual is AnimatedSprite2D:
+			visual.modulate.a = minf(visual.modulate.a, PHOTO_SPRITE_ALPHA)
+	for node_name in _photosensitive_names():
+		var visual := _find_visual(node_name)
+		if visual != null and visual.visible:
+			visual.modulate.a = minf(visual.modulate.a, 0.12)
+
+
+func _photosensitive_names() -> PackedStringArray:
+	match weapon_id:
+		Pack.RESTORE_POTION:
+			return PackedStringArray(["GlassImpact"])
+		Pack.PLAGUE_SYRINGE:
+			return PackedStringArray(["MaskVaporBurst"])
+		Pack.BONE_SAW:
+			return PackedStringArray(["MetalSparks"])
+	return PackedStringArray()
+
+
+func _find_visual(node_name: String) -> CanvasItem:
+	for raw_visual in _visuals.values():
+		var visual := raw_visual as CanvasItem
+		if visual != null and visual.name == node_name:
+			return visual
+	return null
+
+
+func presence_snapshot() -> Dictionary:
+	return {
+		"reduced_motion": _reduced_motion,
+		"photosensitivity_safe": _photosensitivity_safe,
+		"motion_tracks_disabled": 1 if _reduced_motion else 0,
+		"hitstop_ms": float(_presence.get("hitstop_ms", 0.0)),
+		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
+		"sfx_ducking": bool(_presence.get("sfx_ducking", false)),
+		"photosensitive_nodes": _photosensitive_names().size(),
+	}
+
+
+func _screen_shake_enabled() -> bool:
+	var tree := get_tree() if is_inside_tree() else null
+	return tree == null or bool(tree.root.get_meta("screen_shake", true))
+
+
+func _apply_camera_shake(remaining: float) -> void:
+	if _reduced_motion or not bool(_presence.get("camera_shake", false)) or not _screen_shake_enabled():
+		return
+	if _camera == null or not is_instance_valid(_camera):
+		_camera = _find_current_camera()
+		if _camera == null:
+			return
+		_camera_offset_before_shake = _camera.offset
+	var strength := 7.0 * remaining / 0.48
+	_camera.offset = _camera_offset_before_shake + Vector2(
+		randf_range(-strength, strength), randf_range(-strength, strength)
+	)
+	if remaining <= 0.0:
+		_end_camera_shake()
+
+
+func _find_current_camera() -> Camera2D:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree == null:
+		return null
+	for node in tree.root.find_children("*", "Camera2D", true, false):
+		var camera := node as Camera2D
+		if camera != null and camera.enabled and camera.is_current():
+			return camera
+	return null
+
+
+func _end_camera_shake() -> void:
+	if _camera != null and is_instance_valid(_camera):
+		_camera.offset = _camera_offset_before_shake
+	_camera = null
+
+
+func _begin_sfx_ducking() -> void:
+	if _duck_active or not bool(_presence.get("sfx_ducking", false)):
+		return
+	_sfx_bus_index = AudioServer.get_bus_index("SFX")
+	if _sfx_bus_index < 0:
+		return
+	_duck_active = true
+	if _duck_refs == 0:
+		_duck_volume_before_db = AudioServer.get_bus_volume_db(_sfx_bus_index)
+		AudioServer.set_bus_volume_db(_sfx_bus_index, _duck_volume_before_db - 8.0)
+	_duck_refs += 1
+
+
+func _end_sfx_ducking() -> void:
+	if not _duck_active:
+		return
+	_duck_active = false
+	_duck_refs = maxi(_duck_refs - 1, 0)
+	if _duck_refs == 0 and _sfx_bus_index >= 0:
+		if is_equal_approx(AudioServer.get_bus_volume_db(_sfx_bus_index), _duck_volume_before_db - 8.0):
+			AudioServer.set_bus_volume_db(_sfx_bus_index, _duck_volume_before_db)
+	_sfx_bus_index = -1
 
 
 ## The impact service pools its own bursts, so releasing it is what returns the

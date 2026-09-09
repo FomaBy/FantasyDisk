@@ -28,7 +28,12 @@ const WEAPONS := {
 		"silhouette": "giant overhead flask, wide poison pool, tight white healing spiral, and offset shield crystal",
 		"motion": "the flask follows a high aimed arc, shatters at range, then the outer and inner zones counter-rotate",
 		"impact": "green glass blast and poison ring resolve inward as a white healing spiral and crystallized absorb shield",
-		"max_visual_nodes": 5,
+		"max_visual_nodes": 6,
+		"max_unique_materials": 1,
+		"max_fullscreen_materials": 1,
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.doctor.clinical_focus", "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png", "class_palette_id": "palette.doctor.viridian_ivory"},
+		"quality": {"max_viewport_coverage_ratio": 0.18, "hud_bands_clear": true, "reduced_motion_substitute": "the flask, pool and shield hold the midpoint of each phase while the exact phase envelope continues", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0},
 	},
 	PLAGUE_SYRINGE: {
 		"title": "Чёрная Эпидемия",
@@ -43,7 +48,12 @@ const WEAPONS := {
 		"silhouette": "oversized diagonal syringe, pinned patient-zero mark, branching veins, three arena waves, and mask vapor",
 		"motion": "the syringe pierces one target before staggered infection waves expand through the arena",
 		"impact": "black-green vascular bloom ticks outward and ends in a sharp plague-mask vapor burst",
-		"max_visual_nodes": 8,
+		"max_visual_nodes": 9,
+		"max_unique_materials": 1,
+		"max_fullscreen_materials": 1,
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 120, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.doctor.clinical_focus", "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png", "class_palette_id": "palette.doctor.viridian_ivory"},
+		"quality": {"max_viewport_coverage_ratio": 0.32, "hud_bands_clear": true, "reduced_motion_substitute": "the syringe and infection waves hold the midpoint of each phase instead of rapidly expanding across the arena", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0},
 	},
 	BONE_SAW: {
 		"title": "Экстренная Операция",
@@ -58,7 +68,12 @@ const WEAPONS := {
 		"silhouette": "three close-orbit saws, bright surgical arc, metal sparks, paired drain ribbons, and stitched shield seam",
 		"motion": "the saws snap from a surgical stance into a fast close orbit while vitality ribbons pull inward",
 		"impact": "bone-white serration and sparks cut repeatedly before red drain ribbons turn green and stitch shut",
-		"max_visual_nodes": 8,
+		"max_visual_nodes": 9,
+		"max_unique_materials": 1,
+		"max_fullscreen_materials": 1,
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 140, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.doctor.clinical_focus", "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png", "class_palette_id": "palette.doctor.viridian_ivory"},
+		"quality": {"max_viewport_coverage_ratio": 0.16, "hud_bands_clear": true, "reduced_motion_substitute": "the surgical orbit holds its phase midpoint instead of spinning while the phase envelope continues unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0},
 	},
 }
 
@@ -127,7 +142,28 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 		"pivot": (config.get("pivot", {}) as Dictionary).duplicate(),
 		"timing": (config.get("timing", {}) as Dictionary).duplicate(),
 		"headless_fallback": "no_op",
+		"runtime": {
+			"scene_path": "res://scenes/vfx/ultimates/doctor/%s" % _scene_name(weapon_id),
+			"max_visual_nodes": int(config.get("max_visual_nodes", 0)),
+			"crowd_cap": MAX_VISUAL_NODES,
+			"max_unique_materials": int(config.get("max_unique_materials", 0)),
+			"max_fullscreen_materials": int(config.get("max_fullscreen_materials", 0)),
+		},
+		"presence": (config.get("presence", {}) as Dictionary).duplicate(true),
+		"identity": (config.get("identity", {}) as Dictionary).duplicate(true),
+		"quality": (config.get("quality", {}) as Dictionary).duplicate(true),
 	}
+
+
+static func _scene_name(weapon_id: String) -> String:
+	match weapon_id:
+		RESTORE_POTION:
+			return "DoctorRestorePotionElixir.tscn"
+		PLAGUE_SYRINGE:
+			return "DoctorPlagueSyringeBlackEpidemic.tscn"
+		BONE_SAW:
+			return "DoctorBoneSawEmergencySurgery.tscn"
+	return ""
 
 
 static func manifests(registry) -> Dictionary:
