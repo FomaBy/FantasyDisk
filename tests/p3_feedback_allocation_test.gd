@@ -22,6 +22,7 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/p3_feedback_allocation_test.gd
 
 const HazardVfx := preload("res://scripts/hazard_vfx.gd")
+const AttackVfx := preload("res://scripts/attack_vfx.gd")
 
 const SAMPLES := 24
 const TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
@@ -45,6 +46,59 @@ func _run() -> void:
 			if HazardVfx.additive_material() != first:
 				failures.append("additive_material() returned a new instance on call %d" % i)
 				break
+
+	# A (player weapon VFX surface, FAN-3934 second grant): AttackVfx shares the
+	# same single immutable additive material across figures.
+	var attack_first := AttackVfx.additive_material()
+	if attack_first == null:
+		failures.append("AttackVfx.additive_material() returned null")
+	else:
+		if attack_first.blend_mode != CanvasItemMaterial.BLEND_MODE_ADD:
+			failures.append("AttackVfx shared material blend mode is %d, expected BLEND_MODE_ADD" % attack_first.blend_mode)
+		for i in range(SAMPLES):
+			if AttackVfx.additive_material() != attack_first:
+				failures.append("AttackVfx.additive_material() returned a new instance on call %d" % i)
+				break
+		var vfx_parent := Node2D.new()
+		root.add_child(vfx_parent)
+		await process_frame
+		var slash_count := 0
+		for i in range(4):
+			var slash := AttackVfx.slash(vfx_parent, Vector2.RIGHT, 140.0, Color(0.9, 0.5, 0.2), PI, 1.0, 90.0)
+			if slash == null:
+				failures.append("AttackVfx.slash returned null — gate did not exercise the surface")
+				break
+			slash_count += 1
+			await process_frame
+			for sprite in _sprites_under(slash):
+				var mat = sprite.material
+				if mat is CanvasItemMaterial and (mat as CanvasItemMaterial).blend_mode == CanvasItemMaterial.BLEND_MODE_ADD:
+					if mat != attack_first:
+						failures.append("AttackVfx additive sprite does not use the shared material")
+		if slash_count == 0 and failures.is_empty():
+			failures.append("no AttackVfx slash figures produced")
+		vfx_parent.queue_free()
+		await process_frame
+
+	# B (cleave reuse): a configured BerserkAxeCleaveVfx must NOT queue itself for
+	# deletion when its swing finishes — it goes hidden/idle for bounded reuse.
+	var cleave: BerserkAxeCleaveVfx = preload("res://scenes/vfx/BerserkAxeCleaveVfx.tscn").instantiate()
+	root.add_child(cleave)
+	await process_frame
+	cleave.configure(Vector2.ZERO, Vector2.RIGHT, 120.0, 90.0, 0.2, Color.WHITE)
+	await process_frame
+	if not cleave.is_busy():
+		failures.append("cleave VFX is not busy right after configure")
+	await create_timer(0.5).timeout
+	if cleave.is_busy():
+		failures.append("cleave VFX is still busy after its swing duration")
+	if not is_instance_valid(cleave) or cleave.is_queued_for_deletion():
+		failures.append("cleave VFX freed itself instead of entering idle reuse state")
+	elif cleave.visible:
+		failures.append("idle cleave VFX remains visible")
+	if is_instance_valid(cleave):
+		cleave.queue_free()
+	await process_frame
 
 	# A via public surface: every additive-driven helper reuses the instance.
 	var holder := Node2D.new()

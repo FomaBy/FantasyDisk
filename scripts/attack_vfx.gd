@@ -101,10 +101,23 @@ static func owner_class_id(owner_node: Node) -> String:
 	return str(raw) if raw != null else ""
 
 
+# FAN-3934: один неизменяемый аддитивный материал на все боевые VFX (цвет всегда
+# задаётся через modulate, материал после создания никто не мутирует) и один
+# общий RNG для косметического разброса — раньше каждая фигура/взрыв создавала
+# собственные CanvasItemMaterial и RandomNumberGenerator.
+static var _shared_additive_material: CanvasItemMaterial
+static var _shared_rng := RandomNumberGenerator.new()
+
+
+static func additive_material() -> CanvasItemMaterial:
+	if _shared_additive_material == null:
+		_shared_additive_material = CanvasItemMaterial.new()
+		_shared_additive_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	return _shared_additive_material
+
+
 static func _additive_material() -> CanvasItemMaterial:
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	return material
+	return additive_material()
 
 
 # FAN-3010: одна фигура на обе ветки. Без пака это в точности прежний Sprite2D.
@@ -342,7 +355,7 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 	ring.z_index = 1
 	holder.add_child(ring)
 
-	var rng := RandomNumberGenerator.new()
+	var rng := _shared_rng
 	var dust_count := maxi(4, int(round(8.0 * PARTICLE_DENSITY_MULT)))
 	for index in range(dust_count):
 		var dust := Sprite2D.new()
@@ -466,7 +479,7 @@ static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Co
 	ring.scale = Vector2.ONE * (radius * 0.3 / RING_RADIUS)
 	holder.add_child(ring)
 
-	var rng := RandomNumberGenerator.new()
+	var rng := _shared_rng
 	for index in range(5):
 		var wisp := Sprite2D.new()
 		wisp.texture = DUST_TEXTURES[index % DUST_TEXTURES.size()]
@@ -535,7 +548,7 @@ static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, re
 	var wave_scale: float = max(reach, 120.0) / 150.0
 	holder.scale = Vector2.ONE * 0.4
 
-	var rng := RandomNumberGenerator.new()
+	var rng := _shared_rng
 	for index in range(1):
 		var note := Sprite2D.new()
 		note.texture = NOTE_TEXTURE
@@ -574,7 +587,7 @@ static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: C
 	holder.add_child(flash)
 
 	if with_notes:
-		var rng := RandomNumberGenerator.new()
+		var rng := _shared_rng
 		for index in range(2):
 			var note := Sprite2D.new()
 			note.texture = NOTE_TEXTURE
