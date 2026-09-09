@@ -163,9 +163,218 @@ GENERATED_IMPORT_SIDECARS = (
     "before_berserk_648p.png.import",
     "after_berserk_648p.png.import",
 )
+LFS_EVIDENCE_PREFIX = "docs/design/reference-assets-lfs/"
+GODOT_RESOURCE_PREFIX = "res://"
+_URI_SCHEME_PREFIX_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+
+
+def _weapon_ultimate_manifest_paths() -> list[Path]:
+    """Class-local ultimate manifests, in stable order."""
+    directory = ROOT / "docs" / "design" / "references" / "weapon_ultimates"
+    if not directory.is_dir():
+        return []
+    return sorted(directory.glob("*/manifest.json"))
+
+
+def _load_json_object(path: Path, description: str) -> dict:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"cannot read {description}: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"{description} must be a JSON object: {path}")
+    return payload
+
+
+def _repository_relative_path(raw_path: object, description: str) -> str:
+    if not isinstance(raw_path, str) or not raw_path:
+        raise RuntimeError(f"{description} must be a non-empty repository-relative path")
+    if "\\" in raw_path:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    if _URI_SCHEME_PREFIX_RE.match(raw_path):
+        raise RuntimeError(f"{description} must not use an unsupported URI scheme: {raw_path!r}")
+    path = Path(raw_path)
+    if path.is_absolute() or ".." in path.parts:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    return path.as_posix()
+
+
+def _lfs_evidence_path(raw_path: object, description: str) -> str:
+    if isinstance(raw_path, str):
+        raw_path = raw_path.removeprefix(GODOT_RESOURCE_PREFIX)
+    path = _repository_relative_path(raw_path, description)
+    if not path.startswith(LFS_EVIDENCE_PREFIX):
+        raise RuntimeError(
+            f"{description} must be under {LFS_EVIDENCE_PREFIX}: {path!r}"
+        )
+    return path
+
+
+def _certification_capture_declarations(
+    evidence: dict, description: str
+) -> list[tuple[str, dict, str, str]]:
+    """Linked capture manifests and their live/headless script fields.
+
+    The two shapes are already published by separate class packages.  Keeping
+    them explicit prevents an ordinary contact-sheet renderer from being
+    reclassified as a certification runner just because it has similarly named
+    fields.
+    """
+    declarations: list[tuple[str, dict, str, str]] = []
+    certification = evidence.get("certification_capture")
+    if certification is not None:
+        if not isinstance(certification, dict):
+            raise RuntimeError(f"{description}.certification_capture must be an object")
+        runner_key = "runner" if "runner" in certification else "capture_script"
+        declarations.append((
+            "certification_capture",
+            certification,
+            "manifest",
+            runner_key,
+        ))
+    live_capture = evidence.get("live_capture")
+    if live_capture is not None:
+        if not isinstance(live_capture, dict):
+            raise RuntimeError(f"{description}.live_capture must be an object")
+        if "capture_manifest" in live_capture:
+            declarations.append((
+                "live_capture",
+                live_capture,
+                "capture_manifest",
+                "capture_script",
+            ))
+    return declarations
+
+
+def _linked_certification_manifest_path(
+    declaration: tuple[str, dict, str, str], description: str
+) -> Path:
+    kind, payload, manifest_key, _runner_key = declaration
+    relative = _repository_relative_path(
+        payload.get(manifest_key), f"{description}.{kind}.{manifest_key}"
+    )
+    path = ROOT / relative
+    if not path.is_file():
+        raise RuntimeError(
+            f"{description}.{kind}.{manifest_key} does not exist: {relative}"
+        )
+    return path
+
+
+def _certification_artifact_paths(payload: dict, description: str) -> list[str]:
+    """Every LFS artifact declared by a linked certification manifest."""
+    records: object | None = None
+    record_key = ""
+    for key in ("captures", "sheets", "viewports"):
+        if key in payload:
+            records = payload[key]
+            record_key = key
+            break
+    if not isinstance(records, list) or not records:
+        raise RuntimeError(
+            f"{description} must declare a non-empty captures, sheets, or viewports list"
+        )
+    paths: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, dict):
+            raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
+        paths.append(_lfs_evidence_path(
+            record.get("path"), f"{description}.{record_key}[{index}].path"
+        ))
+    return paths
+
+
+def manifest_declared_lfs_evidence_paths() -> list[str]:
+    """LFS evidence reachable from class manifests, including certifications.
+
+    Candidate CI checks out LFS pointers deliberately.  This list is the narrow
+    hydration boundary: every returned path is declared by a class manifest or
+    its explicitly linked certification manifest, and malformed declarations
+    fail the candidate before a pointer could be mistaken for evidence.
+    """
+    manifest_paths = _weapon_ultimate_manifest_paths()
+    if not manifest_paths:
+        raise RuntimeError("no ultimate manifests found for LFS evidence")
+    paths: set[str] = set()
+    for manifest_path in manifest_paths:
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        contact_sheets = evidence.get("contact_sheets", [])
+        if not isinstance(contact_sheets, list):
+            raise RuntimeError(f"{description}.evidence.contact_sheets must be a list")
+        for index, raw_path in enumerate(contact_sheets):
+            if not isinstance(raw_path, str):
+                raise RuntimeError(
+                    f"{description}.evidence.contact_sheets[{index}] must be a path string"
+                )
+            if raw_path.startswith(LFS_EVIDENCE_PREFIX):
+                paths.add(_lfs_evidence_path(
+                    raw_path, f"{description}.evidence.contact_sheets[{index}]"
+                ))
+        for declaration in _certification_capture_declarations(evidence, description):
+            nested_path = _linked_certification_manifest_path(declaration, description)
+            nested_description = nested_path.relative_to(ROOT).as_posix()
+            nested = _load_json_object(nested_path, "certification capture manifest")
+            paths.update(_certification_artifact_paths(nested, nested_description))
+    if not paths:
+        raise RuntimeError("no manifest-declared LFS evidence found")
+    return sorted(paths)
+
+
+def _certification_test_script_path(raw_path: object, description: str) -> str:
+    path = _repository_relative_path(raw_path, description)
+    if not path.startswith("tests/") or not path.endswith(".gd"):
+        raise RuntimeError(f"{description} must name a test GDScript: {path!r}")
+    if not (ROOT / path).is_file():
+        raise RuntimeError(f"{description} does not exist: {path}")
+    return path
+
+
+def certification_capture_pairs() -> dict[str, str]:
+    """Map windowed certification runners to their headless integrity suites."""
+    pairs: dict[str, str] = {}
+    for manifest_path in _weapon_ultimate_manifest_paths():
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        for kind, payload, _manifest_key, runner_key in _certification_capture_declarations(
+            evidence, description
+        ):
+            runner = _certification_test_script_path(
+                payload.get(runner_key), f"{description}.{kind}.{runner_key}"
+            )
+            focused_test = _certification_test_script_path(
+                payload.get("focused_test"), f"{description}.{kind}.focused_test"
+            )
+            previous = pairs.setdefault(runner, focused_test)
+            if previous != focused_test:
+                raise RuntimeError(
+                    f"certification runner {runner} maps to both {previous} and {focused_test}"
+                )
+    return pairs
+
+
+def _translate_certification_capture_paths(changed_paths: Iterable[str]) -> set[str]:
+    """Route live-only runner changes through their executable verifier."""
+    translated = set(changed_paths)
+    for runner, focused_test in certification_capture_pairs().items():
+        for suffix in ("", ".uid"):
+            runner_path = f"{runner}{suffix}"
+            if runner_path in translated:
+                translated.remove(runner_path)
+                translated.add(f"{focused_test}{suffix}")
+    return translated
 
 
 def discover_godot_tests() -> list[Path]:
+    non_headless_capture_runners = {
+        ROOT / runner for runner in certification_capture_pairs()
+    }
     tests: list[Path] = []
     for path in sorted(TEST_DIR.rglob("*.gd")):
         # This is a CLI renderer, not a self-contained test. It requires
@@ -176,6 +385,11 @@ def discover_godot_tests() -> list[Path]:
         # standalone completion path. Its executable descendants are selected
         # when it changes; running the base itself can only time out.
         if path == ROOT / RUNTIME_SMOKE_HELPER_PATH:
+            continue
+        # Certification runners require a windowed renderer to produce their
+        # evidence. Their paired integrity suite validates the committed LFS
+        # artifacts headlessly, and is selected when the runner changes.
+        if path in non_headless_capture_runners:
             continue
         try:
             source = path.read_text(encoding="utf-8")
@@ -339,6 +553,7 @@ def select_godot_tests(
     discovered = discover_godot_tests()
     discovered_paths = [path.relative_to(ROOT).as_posix() for path in discovered]
     changed_paths = _git_changed_paths(changed_ref) if profile == "changed" else set()
+    changed_paths = _translate_certification_capture_paths(changed_paths)
     parent_resources: dict[str, str] = {}
     if RUNTIME_SMOKE_HELPER_PATH in changed_paths:
         for path in discovered:
@@ -1411,6 +1626,11 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="maximum silent interval for verbose Python discovery (default: 60)",
     )
     parser.add_argument("--list", action="store_true", help="list selected Godot tests and exit")
+    parser.add_argument(
+        "--list-manifest-lfs-evidence",
+        action="store_true",
+        help="list fail-closed manifest-declared LFS evidence paths and exit",
+    )
     parser.add_argument("--report", default="build/quality_gate_report.json")
     parser.add_argument(
         "--combine-reports",
@@ -1427,6 +1647,14 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
+    if args.list_manifest_lfs_evidence:
+        try:
+            for path in manifest_declared_lfs_evidence_paths():
+                print(path)
+        except RuntimeError as exc:
+            print(f"quality_gate: {exc}", file=sys.stderr)
+            return 2
+        return 0
     if args.combine_reports:
         if args.expected_shard_count is not None and args.expected_shard_count < 1:
             print("quality_gate: expected shard count must be positive", file=sys.stderr)

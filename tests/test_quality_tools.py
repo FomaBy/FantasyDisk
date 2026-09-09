@@ -272,6 +272,149 @@ class QualityGateTests(unittest.TestCase):
             }
         self.assertEqual(discovered, {"visual_regression/real_visual_test.gd"})
 
+    def test_certification_capture_evidence_includes_nested_manifests(self) -> None:
+        paths = set(self.quality.manifest_declared_lfs_evidence_paths())
+        biologist_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/biologist/"
+            )
+        }
+        berserk_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/berserk/"
+            )
+        }
+        chemist_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            )
+        }
+        self.assertEqual(len(biologist_paths), 48)
+        self.assertEqual(len(berserk_paths), 4)
+        # FAN-3954: Chemist capture manifests use Godot's res:// form.  The
+        # selector must expose canonical repository paths for CI hydration.
+        self.assertEqual(len(chemist_paths), 12)
+        self.assertTrue(all(not path.startswith("res:") for path in chemist_paths))
+
+    def test_certification_capture_evidence_canonicalizes_godot_resource_paths(self) -> None:
+        chemist_viewport = (
+            "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            "chemist_certification_648p_release.png"
+        )
+        chemist_active_viewport = (
+            "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            "chemist_certification_648p.png"
+        )
+        root_manifest = {
+            "evidence": {
+                "certification_capture": {
+                    "manifest": "docs/design/references/weapon_ultimates/test/capture.json"
+                }
+            }
+        }
+        capture_manifest = {
+            "viewports": [
+                {"path": f"res://{chemist_viewport}"},
+                {"path": chemist_viewport},
+                {"path": f"res://{chemist_active_viewport}"},
+            ]
+        }
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                "docs/design/references/weapon_ultimates/test/capture.json": json.dumps(capture_manifest),
+            })
+            paths = self.quality.manifest_declared_lfs_evidence_paths()
+        self.assertEqual(paths, [chemist_active_viewport, chemist_viewport])
+
+    def test_lfs_evidence_path_rejects_unsafe_or_unsupported_paths(self) -> None:
+        unsafe_paths = (
+            ("", "non-empty repository-relative path"),
+            (None, "non-empty repository-relative path"),
+            ("/docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("docs/design/reference-assets-lfs/../escape.png", "stay within the repository"),
+            ("docs\\design\\reference-assets-lfs\\escape.png", "stay within the repository"),
+            ("file:///docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("user://docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("res:/docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("res:///docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("res://../docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("res://docs/design/references/not-lfs.png", "must be under"),
+        )
+        for raw_path, message in unsafe_paths:
+            with self.subTest(raw_path=raw_path):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    self.quality._lfs_evidence_path(raw_path, "capture.path")
+
+    def test_certification_capture_evidence_rejects_invalid_nested_artifact(self) -> None:
+        root_manifest = {
+            "evidence": {
+                "certification_capture": {
+                    "manifest": "docs/design/references/weapon_ultimates/test/capture.json",
+                    "runner": "tests/ultimates/presentation/test_live_capture.gd",
+                    "focused_test": "tests/ultimates/presentation/test_capture_test.gd",
+                }
+            }
+        }
+        capture_manifest = {"captures": [{"path": "docs/design/references/not-lfs.png"}]}
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                "docs/design/references/weapon_ultimates/test/capture.json": json.dumps(capture_manifest),
+            })
+            with self.assertRaisesRegex(RuntimeError, "must be under"):
+                self.quality.manifest_declared_lfs_evidence_paths()
+
+    def test_certification_live_capture_routes_to_headless_verification_suite(self) -> None:
+        pairs = self.quality.certification_capture_pairs()
+        expected = {
+            "tests/ultimates/presentation/biologist_certification_live_capture.gd":
+                "tests/ultimates/presentation/biologist_certification_capture_test.gd",
+            "tests/ultimates/presentation/berserk_certification_live_capture.gd":
+                "tests/ultimates/presentation/berserk_certification_capture_test.gd",
+            "tests/ultimates/presentation/chemist_certification_live_capture.gd":
+                "tests/ultimates/presentation/chemist_certification_capture_test.gd",
+        }
+        self.assertEqual({path: pairs[path] for path in expected}, expected)
+
+        discovered = {
+            path.relative_to(self.quality.ROOT).as_posix()
+            for path in self.quality.discover_godot_tests()
+        }
+        for runner, focused_test in expected.items():
+            with self.subTest(runner=runner):
+                self.assertNotIn(runner, discovered)
+                self.assertIn(focused_test, discovered)
+            for changed_path in (runner, f"{runner}.uid"):
+                with self.subTest(changed_path=changed_path), mock.patch.object(
+                    self.quality, "_git_changed_paths", return_value={changed_path}
+                ):
+                    selected = {
+                        path.relative_to(self.quality.ROOT).as_posix()
+                        for path in self.quality.select_godot_tests(
+                            "changed", [], "base", False
+                        )
+                    }
+                self.assertIn(focused_test, selected)
+                self.assertNotIn(runner, selected)
+
+    def test_candidate_workflow_uses_the_fail_closed_lfs_evidence_list(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            "python3 tools/quality_gate.py --list-manifest-lfs-evidence", source
+        )
+
+    def test_candidate_workflow_keeps_all_contact_sheets_validated(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            'for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):',
+            source,
+        )
+        self.assertIn("missing manifest contact sheet", source)
+
     def test_runtime_smoke_helper_is_not_an_executable_suite(self) -> None:
         with contextlib.ExitStack() as stack:
             self._use_synthetic_tree(stack, {
