@@ -260,6 +260,11 @@ func _attach_shipped_hud(viewport: SubViewport, player: Node2D, arena_size: Vect
 	widget.scale = Vector2.ONE * clampf(float(arena_size.y) / 440.0, 0.27, 0.58)
 	widget.z_index = 100
 	adapter.refresh()
+	## The mounted production adapter normally refreshes every idle frame. Its
+	## selected Player state has now been read into the shipped widget, so stop
+	## that clock before the frozen viewport readback just as we stop actor and
+	## presentation clocks above.
+	adapter.set_process(false)
 
 
 func _spawn_real_enemies(world: Node2D, arena_size: Vector2i, count: int) -> Array[Node2D]:
