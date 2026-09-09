@@ -31,6 +31,17 @@ const VIEWPORTS := {
 	"1920x1080": Vector2i(1920, 1080),
 	"2560x1440": Vector2i(2560, 1440),
 }
+const ACTIVE_CAPTURE_SECONDS := {
+	"biologist_spore_lens": 1.55,
+	"biologist_sample_injector": 2.20,
+	"biologist_symbiote_seed": 1.85,
+}
+const SAMPLE_INJECTOR_PROBE_METHOD := "frozen visible-vs-hidden native-frame pixel delta"
+const SAMPLE_INJECTOR_MIN_CAPTURED_FRAME := 6
+const SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT := 1500
+const SAMPLE_INJECTOR_MIN_DELTA_BOUNDS := Vector2i(80, 220)
+const SAMPLE_INJECTOR_DELTA_CHANNEL_THRESHOLD := 0.10
+const SAMPLE_INJECTOR_DELTA_SAMPLE_STRIDE := 2
 
 
 func _initialize() -> void:
@@ -62,6 +73,12 @@ func _check_manifest_shape(manifest: Dictionary, errors: Array[String]) -> void:
 	var report := FileAccess.get_file_as_string(REPORT_PATH)
 	_expect(report.contains(str(source.get("commit", ""))), "readability report must repeat the capture source commit", errors)
 	_expect(report.contains("No capture-only visual override"), "readability report must disclose the native photosensitivity strategy", errors)
+	_check_sample_injector_readability_contract(manifest, errors)
+
+
+func _check_sample_injector_readability_contract(manifest: Dictionary, errors: Array[String]) -> void:
+	var violations := _sample_injector_readability_violations(manifest)
+	_expect(violations.is_empty(), "Sample Injector capture readability contract must be complete: %s" % "; ".join(violations), errors)
 
 
 func _check_capture_harness(manifest: Dictionary, class_manifest: Dictionary, errors: Array[String]) -> void:
@@ -73,6 +90,11 @@ func _check_capture_harness(manifest: Dictionary, class_manifest: Dictionary, er
 		"UltimateHudRuntimeAdapter",
 		"HazardVfx.telegraph",
 		"_has_visible_authored_visual",
+		"_render_authored_visual_probe",
+		"_sample_injector_probe_is_readable",
+		"SAMPLE_INJECTOR_MIN_CAPTURED_FRAME",
+		"SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT",
+		"SAMPLE_INJECTOR_MIN_DELTA_BOUNDS",
 		"Mycelium",
 		"PerfectSample",
 		"Matriarch",
@@ -163,6 +185,16 @@ func _check_negative_probes(manifest: Dictionary, errors: Array[String]) -> void
 	if not captures.is_empty():
 		captures.remove_at(0)
 	_expect(not _manifest_violations(missing_capture).is_empty(), "missing capture combination must fail closed", errors)
+	var pre_beam_frame := manifest.duplicate(true)
+	var pre_beam_method := pre_beam_frame.get("capture_method", {}) as Dictionary
+	var pre_beam_probe := pre_beam_method.get("sample_injector_readability_probe", {}) as Dictionary
+	pre_beam_probe["required_minimum_authored_frame"] = SAMPLE_INJECTOR_MIN_CAPTURED_FRAME - 1
+	_expect(not _manifest_violations(pre_beam_frame).is_empty(), "pre-beam Sample Injector frame must fail closed", errors)
+	var weak_delta := manifest.duplicate(true)
+	var weak_delta_method := weak_delta.get("capture_method", {}) as Dictionary
+	var weak_delta_probe := weak_delta_method.get("sample_injector_readability_probe", {}) as Dictionary
+	weak_delta_probe["minimum_delta_sample_count"] = SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT - 1
+	_expect(not _manifest_violations(weak_delta).is_empty(), "weakened Sample Injector pixel delta must fail closed", errors)
 
 
 func _manifest_violations(manifest: Dictionary) -> Array[String]:
@@ -175,6 +207,8 @@ func _manifest_violations(manifest: Dictionary) -> Array[String]:
 		violations.append("canonical_weapon_ids")
 	if _mode_ids(manifest.get("presentation_modes", [])) != MODE_IDS:
 		violations.append("presentation_modes")
+	for readability_violation in _sample_injector_readability_violations(manifest):
+		violations.append(readability_violation)
 	var declared_viewports := _viewports_by_id(manifest.get("viewports", []))
 	if declared_viewports.size() != VIEWPORTS.size():
 		violations.append("viewport_count")
@@ -219,6 +253,30 @@ func _manifest_violations(manifest: Dictionary) -> Array[String]:
 			violations.append("capture_photosensitivity:%s" % key)
 	if seen.size() != expected_keys.size():
 		violations.append("capture_matrix")
+	return violations
+
+
+func _sample_injector_readability_violations(manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var capture_method := manifest.get("capture_method", {}) as Dictionary
+	var active_seconds := capture_method.get("active_capture_elapsed_seconds", {}) as Dictionary
+	for weapon_id in ACTIVE_CAPTURE_SECONDS:
+		if not is_equal_approx(float(active_seconds.get(weapon_id, -1.0)), float(ACTIVE_CAPTURE_SECONDS[weapon_id])):
+			violations.append("active_capture_elapsed_seconds:%s" % weapon_id)
+	var probe := capture_method.get("sample_injector_readability_probe", {}) as Dictionary
+	if str(probe.get("method", "")) != SAMPLE_INJECTOR_PROBE_METHOD:
+		violations.append("sample_injector_probe_method")
+	if int(probe.get("required_minimum_authored_frame", -1)) != SAMPLE_INJECTOR_MIN_CAPTURED_FRAME:
+		violations.append("sample_injector_probe_frame")
+	if int(probe.get("minimum_delta_sample_count", -1)) != SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT:
+		violations.append("sample_injector_probe_sample_count")
+	var bounds := _int_array(probe.get("minimum_delta_bounds", []))
+	if bounds.size() != 2 or bounds[0] != SAMPLE_INJECTOR_MIN_DELTA_BOUNDS.x or bounds[1] != SAMPLE_INJECTOR_MIN_DELTA_BOUNDS.y:
+		violations.append("sample_injector_probe_bounds")
+	if not is_equal_approx(float(probe.get("channel_delta_threshold", -1.0)), SAMPLE_INJECTOR_DELTA_CHANNEL_THRESHOLD):
+		violations.append("sample_injector_probe_channel_threshold")
+	if int(probe.get("sample_stride", -1)) != SAMPLE_INJECTOR_DELTA_SAMPLE_STRIDE:
+		violations.append("sample_injector_probe_sample_stride")
 	return violations
 
 
@@ -298,6 +356,14 @@ func _string_array(raw_values: Variant) -> Array[String]:
 	if raw_values is Array:
 		for value in raw_values as Array:
 			values.append(str(value))
+	return values
+
+
+func _int_array(raw_values: Variant) -> Array[int]:
+	var values: Array[int] = []
+	if raw_values is Array:
+		for value in raw_values as Array:
+			values.append(int(value))
 	return values
 
 
