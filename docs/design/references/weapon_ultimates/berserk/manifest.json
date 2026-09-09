@@ -234,12 +234,60 @@
   ],
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/berserk/berserk_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/berserk/berserk_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/berserk/berserk_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/berserk/berserk_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/berserk_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/berserk_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/berserk_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/berserk_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/berserk_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/berserk_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3935",
+      "source_ref": "origin/dev",
+      "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+      "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+      "capture_manifest": "docs/design/references/weapon_ultimates/berserk/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/berserk/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/berserk_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/berserk_certification_capture_test.gd",
+      "weapon_ids": [
+        "sword",
+        "axe",
+        "hammer"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "sheet_sha256": {
+        "648p": "7ae15fb4bcdb8bc9d6468c4ecf6efc1790f2c2f889dc304e93b6a1c61a0e1750",
+        "720p": "b3a6045ec133e6537962e414a28f0fe1fbfa665a8dc224827fff1cbedf960dbb",
+        "1080p": "e4b1da4507dadf45009fa2447272464b523c26845ff727defdde313c422bed68",
+        "2k": "34cc65a7ea45718ba0f340e99fa8212442ec2c7cb98251ad6e2812eeb27199b0"
+      },
+      "live_samples": 144,
+      "note": "Each committed sheet is one viewport at its native size and carries all twelve weapon x mode cells at the active beat. Every cell is a frame of a real run: scenes/Main.tscn with the shipped combat HUD, a real Player configured for berserk/<weapon>, and shipped Enemy instances as hazards. The modes use only switches the game already publishes on the scene-tree root — `screen_shake` for reduced motion and `combat_feedback` for flash reduction — plus the weapon's own declared crowd cap for `crowded`. No production scene, VFX, gameplay or balance value is changed. Release, active and recovery are measured for all 48 weapon/mode/viewport combinations: 144 samples in the capture manifest, reproducible at full size through BERSERK_CERT_FRAME_DIR. The four authored timeline sheets stay under authored_timeline_sheets; they are one presentation at four sizes and never established four-mode coverage (FAN-3877)."
+    }
   }
 }
