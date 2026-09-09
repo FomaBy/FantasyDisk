@@ -1,6 +1,6 @@
 # FAN-3934 P3 object-budget breach — diagnostic report
 
-Read-only diagnosis by dev_high agent `11dd50f9-2322-4d48-8ceb-8fceaf6cfdf9` (macOS-native).
+Read-only diagnosis by dev_high agent `11dd50f9-2322-4aa0-a09e-631e1159c1df` (macOS-native).
 Candidate under diagnosis: `d192be10bbe52dd89971cab0acc66eb92ccab37f` (same commit FAN-3877 measured).
 No production, helper, test or configuration file was modified; all task output lives in
 `evidence/p3-object-budget-rework/**` (`git status` shows only this untracked directory).

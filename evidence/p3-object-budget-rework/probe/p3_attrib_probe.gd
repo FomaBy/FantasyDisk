@@ -31,7 +31,7 @@ func _run() -> void:
 		_fail("missing variant argument")
 		return
 	_variant = String(args[0])
-	var known := ["full", "no_volley", "no_rift", "no_summon", "no_unique", "no_attacks", "no_enemies", "no_enemies_no_attacks"]
+	var known := ["full", "no_volley", "no_rift", "no_summon", "no_unique", "no_attacks", "no_enemies", "no_enemies_no_attacks", "no_player", "no_feedback", "no_player_no_feedback"]
 	if _variant not in known:
 		_fail("unknown variant %s" % _variant)
 		return
@@ -60,6 +60,15 @@ func _run() -> void:
 		_fail("no live boss after setup")
 		return
 	_apply_variant(boss)
+	if _variant in ["no_player", "no_player_no_feedback"]:
+		var player = main.get("current_player")
+		if player != null and is_instance_valid(player):
+			for node in _nodes_under(player):
+				if node.get("fire_interval") != null:
+					node.set("fire_interval", 1.0e9)
+					node.set("_cooldown", 1.0e9)
+	if _variant in ["no_feedback", "no_player_no_feedback"]:
+		root.set_meta("combat_feedback", false)
 
 	var result := await _sample(main)
 	result["variant"] = _variant
@@ -187,6 +196,17 @@ func _sample(main: Node) -> Dictionary:
 		"population": {"enemy_per_second": second_enemies, "boss_per_second": second_bosses},
 		"frames": object_counts.size(),
 	}
+
+
+func _nodes_under(node: Node) -> Array[Node]:
+	var found: Array[Node] = []
+	var stack: Array[Node] = [node]
+	while not stack.is_empty():
+		var current: Node = stack.pop_back()
+		found.append(current)
+		for child in current.get_children():
+			stack.append(child)
+	return found
 
 
 func _node_census() -> Dictionary:

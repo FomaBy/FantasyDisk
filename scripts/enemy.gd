@@ -715,9 +715,9 @@ func _show_hit_flash() -> void:
 	tick.name = "CombatHitTick"
 	tick.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
 	tick.texture = HIT_FLASH_TEXTURE
-	var tick_material := CanvasItemMaterial.new()
-	tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	tick.material = tick_material
+	# FAN-3934: общий неизменяемый аддитивный материал вместо копии на каждый тик
+	# (цвет по-прежнему через modulate — визуал идентичен).
+	tick.material = HazardVfx.additive_material()
 	tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
 	# impact_flash 128px; масштабируем под видимый размер цели (мягкое покрытие).
 	var tick_reach := maxf(maxf(sprite_size.x, sprite_size.y) * 0.95, 48.0)
