@@ -263,12 +263,42 @@
   },
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/elementalist_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/elementalist_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/elementalist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/elementalist_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3943",
+      "source_ref": "agent/codex-dev-sol-5-6/7c21cbb1a757",
+      "source_commit_sha": "e120e4cdeef54b7229529afcc3524aac3f6ea156",
+      "source_tree_sha": "5368a38320e1fa43f298e01bdd1f90652758eeeb",
+      "capture_manifest": "docs/design/references/weapon_ultimates/elementalist/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/elementalist/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/elementalist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/elementalist_certification_capture_test.gd",
+      "weapon_ids": ["elementalist_orb_ring", "elementalist_prism_focus", "elementalist_meteor_core"],
+      "modes": ["normal", "crowded", "reduced_motion", "photosensitivity_safe"],
+      "beats": ["release", "active", "recovery"],
+      "viewports": {"648p": "1152x648", "720p": "1280x720", "1080p": "1920x1080", "2k": "2560x1440"},
+      "sheet_sha256": {
+        "648p": "dd865ef6340de804a64c2a741d899b244661a2f68340ba6f0a2b4bea8322dd26",
+        "720p": "6a9c11f7d322c6c1967e877262ad8801bffceffa499faf401a2a98494c5b38a3",
+        "1080p": "95334c192b955ad8446ac9992b492ac7ad864ab35eef745ac63db5482ac81fb1",
+        "2k": "34192762c176e9f96680e3a053551a90a924962c91e9f4829de094703810d47f"
+      },
+      "live_samples": 144,
+      "note": "Each native-size sheet carries all twelve weapon x mode cells at the active beat from a real Main scene, player, combat HUD and shipped Enemy hazards. The manifest records release, active and recovery measurements for all 48 combinations and keeps the older authored timeline sheets only as provenance."
+    }
   }
 }
