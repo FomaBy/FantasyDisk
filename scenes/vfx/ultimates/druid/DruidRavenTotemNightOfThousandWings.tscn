@@ -65,7 +65,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.025, 0.018, 0.055, 0.4)
+color = Color(0.025, 0.018, 0.055, 0.25)
 
 [node name="RavenVortex" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_flipbook")
