@@ -169,6 +169,7 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	## but suppress only those transient capture-time combat-feedback overlays.
 	root.set_meta("combat_feedback", false)
 	_advance_activation(activation, Spec.runtime_execution_seconds(pack, phase))
+	_remove_standard_weapon_feedback(viewport)
 	## `take_damage()` can ask an Enemy's visual rig to play a hit state even
 	## when ordinary combat-feedback overlays are disabled. Reapply the fixture
 	## freeze after the real executor has fired so no actor-side clock advances
@@ -371,6 +372,25 @@ func _freeze_hazard(hazard: Node2D) -> void:
 		if node != null:
 			node.process_mode = Node.PROCESS_MODE_DISABLED
 	hazard.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _remove_standard_weapon_feedback(viewport: SubViewport) -> void:
+	## The real Player action and its executor have already run. Its ordinary
+	## weapon-release/projectile FX are renderer-clocked and are not part of the
+	## shipped ultimate scene; retain the real gameplay outcome while excluding
+	## only these short-lived feedback nodes from a fixed certification still.
+	for raw_effect in get_nodes_in_group("player_weapon_effects"):
+		var effect := raw_effect as Node
+		if effect != null and viewport.is_ancestor_of(effect):
+			effect.free()
+	## Projectile trails are intentionally detached from their holder by
+	## AttackVfx. In this isolated viewport, top-level Sprite2D nodes are those
+	## feedback trails (the real actor, hazard, HUD, and ultimate all use their
+	## own roots), so remove them rather than freezing a variable in-flight frame.
+	for raw_child in viewport.get_children():
+		var child := raw_child as Node
+		if child is Sprite2D:
+			child.free()
 
 
 func _pause_capture_tweens() -> void:
