@@ -1,129 +1,127 @@
 # Sniper ultimate certification — four-mode readability report
 
-FAN-3940. FAN-3877's independent certification of `d192be10bbe52dd89971cab0acc66eb92ccab37f`
-recorded Sniper as one of fifteen classes whose evidence was four *resolution*
-variants of one legacy timeline sheet rather than declared live captures of the
-normal, crowded, reduced-motion and photosensitivity-safe presentation. This
-package supplies the missing evidence. It adds no production behaviour: the
-Sniper scenes, VFX, gameplay values, adoption shard and the four legacy contact
-sheets are untouched.
+FAN-3940. FAN-3877's certification found Sniper's evidence to be four resolution
+variants of one legacy timeline sheet rather than live captures of the normal,
+crowded, reduced-motion and photosensitivity-safe presentation. This package
+supplies the missing evidence from real runs. It adds no production behaviour:
+the Sniper scenes, VFX, gameplay values and adoption shard are untouched, and
+the four authored timeline sheets stay committed as `authored_timeline_sheets`.
 
 ## What was captured
 
 | | |
 | --- | --- |
-| Source rendered from | `d192be10bbe52dd89971cab0acc66eb92ccab37f`, tree `e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf` (`origin/dev`) |
-| Engine | Godot 4.7-stable (official), `gl_compatibility`, macOS display driver, Apple M4 Pro |
+| Source rendered from | `68c1d74aa749b00a4c55827af27c06455ee3e658`, tree `740683f960a1d9f8da454240b68e55aca994eed9` (`agent/claude-opus-5/382672c5cdf7`, production code equal to `origin/dev`) |
+| Engine | Godot 4.7-stable (official) `5b4e0cb0f`, `gl_compatibility`, macOS, Apple M4 Pro |
 | Renderer | `tests/ultimates/presentation/sniper_certification_live_capture.gd` |
 | Gate | `tests/ultimates/presentation/sniper_certification_capture_test.gd` |
-| Machine-readable data | `certification_capture_manifest.json` (144 measured frames, 16 file hashes) |
-| Matrix | 3 weapons x 4 modes x 4 viewports x 3 beats = 144 native frames in 16 sheets |
+| Machine-readable data | `certification_capture_manifest.json` — 144 measured samples, 4 file hashes |
+| Matrix | 3 weapons x 4 modes x 4 viewports x 3 beats = 144 live samples |
 
-Every cell of every sheet is a native-resolution render of the shipped
-`*_ultimate.tscn` presentation scene, advanced through `begin()`/`advance()` to a
-declared beat, with the shipped weapon effect scene (`scripts/ultimates/classes/sniper/*.tscn`)
-configured against live hazard nodes so the production victim-impact flipbook
-plays on real victims. The player marker, the hazards and both HUD bands stay on
-screen. A sheet cell is that native frame downscaled by one third — never a
-separately rendered miniature — so the 648p sheet the shared contract judges
-readability on is a true contact sheet of 1152x648 frames.
+Every sample is a frame of a real run. `scenes/Main.tscn` is instantiated,
+`_start_combat()` builds the shipped arena with the shipped combat HUD and a real
+`Player` configured for `sniper/<weapon>`, shipped `Enemy` instances stand in the
+frame as hazards, and the ultimate is cast through
+`UltimatePlayerHost.activate()`. The window is resized to the viewport under test
+and the framebuffer is read back at that native size; nothing about the
+presentation is redrawn, substituted or annotated.
 
-Headless runs are skipped rather than substituted: a headless display owns no
-render target, so the readback would be empty. The gate, not the renderer, is
-what fails closed on missing or fake evidence.
+The four committed sheets are one per viewport, twelve weapon x mode cells at the
+active beat. They are the human index; the per-beat record lives in the capture
+manifest. The shared visual-direction contract admits exactly one contact sheet
+per viewport and CI materialises only the LFS paths a class manifest lists under
+`evidence.contact_sheets`, so a fifth sheet would reach the gate as an unsmudged
+pointer. `SNIPER_CERT_FRAME_DIR` re-renders every one of the 144 frames at full
+size for anyone who wants to inspect a single combination.
 
 ## What each mode actually changes
 
-The four modes are configurations of the shipped runtime, and the manifest
-records what each one measurably did.
+The four modes are driven only by switches the shipped game already publishes on
+the scene-tree root from `GameSettings`. The manifest records what each one
+measurably did across its 36 samples.
 
-| Mode | Configuration | Measured effect |
+| Mode | Shipped switches | Measured effect |
 | --- | --- | --- |
-| `normal` | `screen_shake` on, three live hazards | `camera_shake_applied: true` in all 36 frames, camera offset up to 6.38 px |
-| `crowded` | `screen_shake` on, hazards at the weapon's declared `crowd_cap` (24/24/26) | 24-26 live victims per frame, impact pool peak 6-7, `degraded: false` throughout |
-| `reduced_motion` | `screen_shake` off — the shipped accessibility toggle `SniperUltimatePresentationScene` reads off the tree root | `camera_shake_applied: false` and camera offset exactly `(0.0, 0.0)` in all 36 frames |
-| `photosensitivity_safe` | `screen_shake` off **and** `combat_feedback` off — both switches `main.gd` publishes on the tree root from `GameSettings` — plus a full-cast veil-alpha series sampled every 0.05 s | `flashes: 0` in all 36 frames against 2 in `reduced_motion`, and one rising veil edge per cast: 0.34 Hz / 0.29 Hz / 0.32 Hz, peak alpha 0.42 / 0.34 / 0.34 |
+| `normal` | `screen_shake` on, `combat_feedback` on, 6 hazards | `camera_shake_applied: true` in all 36 samples |
+| `crowded` | same switches, hazards at the weapon's declared `crowd_cap` | 24 / 24 / 26 shipped enemies held in frame, matching each weapon's cap |
+| `reduced_motion` | `screen_shake` off | `camera_shake_applied: false` in all 36 samples — the presentation never binds a camera |
+| `photosensitivity_safe` | `screen_shake` off and `combat_feedback` off | the shipped per-hit flashes are gone; near-white share stays at or below 0.0036 |
 
-Both root switches are read by shipped code, not by the capture: the presentation
-scene gates its camera shake on `screen_shake`, and `UltimateVictimImpactPlayer`
-asks every victim for `_combat_feedback_enabled()` before flashing it, exactly as
-`enemy.gd` answers it. The hazard nodes in these captures answer the same way and
-draw the same additive `impact_flash` tick, so turning the switch off removes a
-real flash rather than a drawn annotation.
+`camera_shake_applied` is the runtime's own answer, not a label: the presentation
+only assigns its camera after its `screen_shake` check passes, so a
+reduced-motion sample that still shook would fail the gate.
 
 ## Readability at the beats
 
-Measurements are taken on the HUD-free render of the same frame, with the tree
-paused between the two reads so the live shake tween cannot move the picture
-between what was measured and what was delivered. Probe positions are corrected
-by the live camera offset. Markers are judged by luminance contrast against
-their own immediate surroundings, because the shipped backdrop is a deliberate
-translucent tint that would otherwise read as a lost marker.
+Measurements are taken on the framebuffer at native size, against real geometry —
+the union of the boxes the presentation actually draws, and the live HUD control
+rects read from `CombatHudRoot` rather than assumed bands.
 
-| Weapon | Declared `max_viewport_coverage_ratio` | Measured opaque coverage (max) | HUD band intrusion (max) | Declared `full_screen_flash_hz` | Measured veil rate |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `sniper_deadeye_rifle` | 0.28 | 0.024 | 0.0000 | 0.0 | 0.34 Hz, one rising edge |
-| `sniper_spotter_scope` | 0.30 | 0.079 | 0.0517 | 0.0 | 0.29 Hz, one rising edge |
-| `sniper_shatter_rounds` | 0.30 | 0.077 | 0.0487 | 0.0 | 0.32 Hz, one rising edge |
+| Weapon | Declared coverage cap | Measured `effect_box_ratio` (max) | Declared node budget | Nodes drawn (max) | Declared flash ceiling | Near-white share (max) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `sniper_deadeye_rifle` | 0.28 | 0.0731 | 11 | 7 | 0.12 | 0.0036 |
+| `sniper_spotter_scope` | 0.30 | 0.0603 | 24 | 9 | 0.16 | 0.0035 |
+| `sniper_shatter_rounds` | 0.30 | 0.0607 | 26 | 11 | 0.15 | 0.0050 |
 
-All three stay far inside their declared opaque-coverage caps. None of the three
-produces a repeating full-screen flash: the veil is a single monotone step per
-phase, one rising edge across a whole cast, three orders of magnitude below the
-WCAG 2.3.1 general flash threshold of 3 Hz.
+Across all 144 samples:
 
-139 of 144 frames keep the player marker readable and every frame keeps the cast
-pose and weapon silhouette bound.
+- the live presentation scene was alive, showing its own phase, and drawing the
+  beat's required nodes — 144 of 144;
+- four live HUD bands were in frame every time, none was ever overlapped by the
+  presentation box, and the worst band contrast was 0.787;
+- the worst player contrast was 0.617, at 2560x1440;
+- the declared full-screen backdrop reached the viewport in every sample.
+
+By beat, the effect resolves as declared: `effect_box_ratio` falls from
+0.0366-0.0731 at release, to 0.0332-0.0603 at active, to 0.0143-0.0172 at
+recovery, and the drawn node count falls from 7-11 to 6.
 
 ## Observed limitations
 
-These are recorded, not repaired. This card authorises no production scene,
-runtime, executor or overlay change, so each item below is evidence for a
-separate scope decision rather than a defect fixed here.
+These are recorded, not repaired. This card authorises no production change, so
+each item is evidence for a separate decision rather than a defect fixed here.
 
-1. **The photosensitivity-safe difference is real but small.** With
-   `combat_feedback` off the per-victim additive tick disappears — `flashes: 0`
-   against 2 — and 2.223 % of the 648p sheet's pixels change. That is the whole
-   of it: `SniperUltimatePresentationScene` has no photosensitivity branch of its
-   own, so the backdrop veil is unchanged between the two shake-off modes. The
-   veil series is what carries the rest of the claim, and it shows there is
-   nothing left to suppress: one 0.29-0.34 Hz rising edge per cast against a
-   3 Hz threshold. At the sheet's one-third scale the two modes look alike; the
-   measurements, not the thumbnails, are where they separate.
+1. **The Sniper presentation has no photosensitivity-specific branch of its own.**
+   What `combat_feedback` removes is the shipped per-hit flash on the victims,
+   which is real and visible in the sheets; the backdrop treatment is identical
+   between the two shake-off modes. The measurement that carries the rest of the
+   claim is the near-white share, which never exceeds 0.005 of the frame against
+   declared ceilings of 0.12-0.16.
 2. **The reduced-motion variant is narrower than the manifest describes.** Each
    weapon declares a `reduced_motion_substitute` — a steady dim, a held pose, a
    static glint. `SniperUltimatePresentationScene` implements none of that; it
    only skips the camera shake. Classes that already adopted the gate (Berserk,
-   Chemist) additionally damp the backdrop veil through `_apply_reduced_motion()`.
-   Sniper's declared substitute is therefore ahead of its runtime.
-3. **`sniper_shatter_rounds` loses the player marker at 648p.** In 5 frames — the
-   release and active beats of the three-hazard modes at 1152x648 only — the
-   marker's contrast against its surroundings falls to 0.033-0.108, below the
-   0.12 threshold. The crystal fan shares the class's pale-blue palette, and the
-   flat pale-blue marker is the worst case for it; a differently coloured player
-   sprite would separate better. Every 720p, 1080p and 2560x1440 frame passes, as
-   does every crowded frame. Recorded for visual review, not asserted as a
-   contract failure.
-4. **`sniper_spotter_scope` flattens hazard luminance.** Under its crimson field
-   only 1 of 3 hazard markers keeps a 0.12 luminance separation, although all
-   three keep their red hue. The crowded frames read better (18-24 of 24), because
-   the denser field supplies its own contrast.
-5. **Both flash-backdrop weapons reach the HUD review bands.** Up to 5.17 % of
-   the band area carries an opaque body behind the HUD. The bands are the review
-   convention shared with the Engineer capture spec (top and bottom 9 % of the
-   frame), not shipped HUD geometry, so this is a number for the visual reviewer
-   rather than a measurement of the declared `hud_bands_clear`.
-6. **Hitstop is not tied to the accessibility toggle.** The shipped scene applies
+   Chemist) additionally damp the backdrop veil in `_apply_reduced_motion()`.
+3. **`backdrop_box_ratio` is 1.166, not 1.0.** The backdrop treatment is fitted
+   to the viewport with the shipped 1.08 overscan on each axis so no gap appears
+   when the camera reaches an arena limit. The number is the declared behaviour,
+   not an overrun.
+4. **`changed_pixel_ratio` is not an effect footprint.** It is the share of the
+   frame that differs from the pre-cast baseline, so it also carries ordinary
+   scene motion — enemies walking, animation, camera drift — and runs 0.36-0.93.
+   The footprint bounded by `max_viewport_coverage_ratio` is `effect_box_ratio`.
+5. **Hitstop is not tied to the accessibility toggle.** The shipped scene applies
    its declared 90-120 ms hitstop in every mode, reduced motion included.
-7. **A still frame cannot show shake amplitude.** What it can show is that the
-   frame is displaced in `normal`/`crowded` and exactly centred in the two
-   shake-off modes, which is what the recorded camera offsets prove.
+6. **A still frame cannot show shake amplitude.** What it can show is that the
+   shipped code did or did not take the shake path, which is what
+   `camera_shake_applied` records for all 144 samples.
+7. **Earlier fixture-based contrast results are diagnostic only.** The previous
+   candidate measured a flat marker instead of the shipped player sprite and
+   reported the marker falling into the Shatter Rounds fan at 1152x648. Against
+   the real player the worst contrast in this package is 0.617, so that result
+   describes the fixture, not the game.
 
 ## Reproducing this
 
 ```bash
-# Re-render the sixteen sheets and rewrite the capture manifest (windowed).
-FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --fixed-fps 60 \
+# Re-capture the 144 live samples and the four sheets (windowed; a headless
+# display server owns no framebuffer to read back).
+SNIPER_CERT_SOURCE_REF=<ref> SNIPER_CERT_SOURCE_SHA=<sha> SNIPER_CERT_SOURCE_TREE=<tree> \
+FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 \
     --script res://tests/ultimates/presentation/sniper_certification_live_capture.gd
+
+# Optional: every frame at full size, for inspecting one combination.
+SNIPER_CERT_FRAME_DIR=/tmp/sniper-frames ...
 
 # Gate the committed evidence, including the fail-closed negatives.
 python3 tools/godot_gate.py --headless --path . \
@@ -135,6 +133,7 @@ python3 tools/godot_gate.py --headless --path . \
 git lfs fsck
 ```
 
-The renderer seeds the RNG per frame and the run is pinned to `--fixed-fps 60`,
-so the shipped camera-shake tween is sampled at a fixed delta and a re-render
-reproduces the committed sheets rather than a differently shaken frame.
+The run pins its generator seed and `--fixed-fps 60`, so the wave, the hazard
+ring and the sampled beats are the same on a re-run. A live game frame is not
+promised byte-for-byte across machines: the gate checks the committed bytes by
+hash and re-derives every readability claim from the recorded measurements.
