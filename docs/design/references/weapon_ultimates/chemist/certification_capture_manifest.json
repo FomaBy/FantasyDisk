@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3937",
+  "class_id": "chemist",
+  "capture_script": "tests/ultimates/presentation/chemist_certification_live_capture.gd",
+  "focused_test": "tests/ultimates/presentation/chemist_certification_capture_test.gd",
+  "readability_report": "docs/design/references/weapon_ultimates/chemist/certification_readability_report.md",
+  "capture_source": {
+    "source_ref": "dev",
+    "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "controlled_seed": 3937,
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "renderer": "gl_compatibility (OpenGL 3 compatibility)",
+    "capture_method": "macOS windowed SubViewport render; one shipped Chemist presentation scene per cell, held after a deterministic active seek",
+    "command": "FSD_GODOT_RUN_TIMEOUT=600 python3 tools/godot_gate.py --quiet --path . --windowed --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd"
+  },
+  "canonical_weapon_ids": [
+    "blast_powder",
+    "acid_flask",
+    "homunculus_vial"
+  ],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "3 representative live enemy targets"
+    },
+    {
+      "id": "crowded",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "the per-weapon declared crowd cap (18 / 16 / 14)"
+    },
+    {
+      "id": "reduced_motion",
+      "screen_shake": false,
+      "photosafe": false,
+      "crowd": "3 representative live enemy targets"
+    },
+    {
+      "id": "photosensitivity_safe",
+      "screen_shake": false,
+      "photosafe": true,
+      "crowd": "3 representative live enemy targets with the instantiated backdrop veil suppressed"
+    }
+  ],
+  "coverage_matrix": {
+    "rows": [
+      "blast_powder",
+      "acid_flask",
+      "homunculus_vial"
+    ],
+    "columns": [
+      "normal",
+      "crowded",
+      "reduced_motion",
+      "photosensitivity_safe"
+    ],
+    "cells_per_viewport": 12,
+    "readability_beats": {
+      "blast_powder": {
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 3.15
+      },
+      "acid_flask": {
+        "release": 0.85,
+        "active": 1.2,
+        "recovery": 3.55
+      },
+      "homunculus_vial": {
+        "release": 0.9,
+        "active": 2.85,
+        "recovery": 3.65
+      }
+    }
+  },
+  "runtime_configuration": {
+    "scene_paths": [
+      "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+      "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+      "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn"
+    ],
+    "player_visual": "res://assets/sprites/characters/chemist.png",
+    "hazard_visual": "res://assets/sprites/effects/hazard_zone.png",
+    "enemy_visual": "res://assets/sprites/enemies/enemy_venom_spitter.png",
+    "hud_scene": "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "hud_state": "WeaponUltimateRegistry plus UltimateHudViewModel; active Chemist Blast Powder with full charge",
+    "fixture_note": "Only shipped project assets are used. Capture-side positioning reserves distinct player, effect, hazard, and HUD bands."
+  },
+  "viewports": [
+    {
+      "id": "648p",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p.png",
+      "sha256": "e905865252e3e1fd6e1a59b39979b4ee61ab3e798e38a3aea620793c754c707a"
+    },
+    {
+      "id": "720p",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p.png",
+      "sha256": "a12b7d13f8ae36afda937861a6901949ba04e6c225c07bd24c5fecd90b1a0afc"
+    },
+    {
+      "id": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p.png",
+      "sha256": "59b8b0097d26b97bab31fd4a456c301902c9a27d7ea111ff4148ba26113fb000"
+    },
+    {
+      "id": "2k",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k.png",
+      "sha256": "406236f888a51bff72de1520f1a890298ff3ba6bdfb297bc12860dc0ddb8102b"
+    }
+  ],
+  "scope_boundary": "FAN-3937 adds capture and certification evidence only. It does not change production scenes, runtime behavior, gameplay, balance, overlays, or adoption paths."
+}
