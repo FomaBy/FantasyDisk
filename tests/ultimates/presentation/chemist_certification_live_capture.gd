@@ -170,6 +170,7 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	root.set_meta("combat_feedback", false)
 	_advance_activation(activation, Spec.runtime_execution_seconds(pack, phase))
 	_suppress_standard_weapon_feedback(viewport)
+	_suppress_runtime_sibling_effects(world, scene, player, enemies)
 	## `take_damage()` can ask an Enemy's visual rig to play a hit state even
 	## when ordinary combat-feedback overlays are disabled. Reapply the fixture
 	## freeze after the real executor has fired so no actor-side clock advances
@@ -357,6 +358,13 @@ func _freeze_actor(actor: Node) -> void:
 			## clock only after the real execution path has completed.
 			sprite.frame = 0
 			sprite.frame_progress = 0.0
+	if actor.name == "Player":
+		var body := actor.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
+		if body != null and body.visible:
+			for rig_path in ["VisualRoot/RigRoot", "VisualRoot/SkeletalRigRoot"]:
+				var rig := actor.get_node_or_null(rig_path) as CanvasItem
+				if rig != null:
+					rig.visible = false
 
 
 func _freeze_hazard(hazard: Node2D) -> void:
@@ -372,6 +380,28 @@ func _freeze_hazard(hazard: Node2D) -> void:
 		if node != null:
 			node.process_mode = Node.PROCESS_MODE_DISABLED
 	hazard.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _suppress_runtime_sibling_effects(world: Node2D, presentation_scene: Node2D, player: Node2D, enemies: Array[Node2D]) -> void:
+	## The Player activation has already created and exercised these runtime
+	## nodes. Keep the actual Player, EnemySpitter targets, and named shipped V2
+	## scene as the review surface, but suppress other world siblings (base-weapon
+	## summons, executor avatar echoes, and pulses) whose renderer-paced clocks
+	## otherwise overlap that fixed seek.
+	var retained_ids := {
+		player.get_instance_id(): true,
+		presentation_scene.get_instance_id(): true,
+	}
+	for enemy in enemies:
+		if enemy != null:
+			retained_ids[enemy.get_instance_id()] = true
+	for raw_child in world.get_children():
+		var child := raw_child as Node
+		if child == null or retained_ids.has(child.get_instance_id()):
+			continue
+		child.process_mode = Node.PROCESS_MODE_DISABLED
+		if child is CanvasItem:
+			(child as CanvasItem).visible = false
 
 
 func _suppress_standard_weapon_feedback(viewport: SubViewport) -> void:
