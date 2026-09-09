@@ -7,15 +7,15 @@
   "readability_report": "docs/design/references/weapon_ultimates/chemist/certification_readability_report.md",
   "capture_source": {
     "source_ref": "agent/codex-dev-terra-b/d54103bd6266",
-    "source_commit_sha": "0dbce8a9a46502d26bbc122c0b765db8b13c00fc",
-    "source_tree_sha": "edeba6ffdbd603d8c7494c79f3402c42b8f351af",
+    "source_commit_sha": "6792ca7d538607d602c09b880ad6428d41ba8d08",
+    "source_tree_sha": "795107f6118bd2683c43f731f0b4de53408b255c",
     "controlled_seed": 3937,
     "godot_version": "4.7.stable.official.5b4e0cb0f",
-    "renderer": "gl_compatibility (OpenGL 3 compatibility)",
-    "capture_method": "macOS windowed SubViewport render; Player.activate_ultimate -> UltimateHost -> shipped Chemist V2 scene, actual EnemySpitter targets and ElitePoisonZone hazard; one deferred-autoplay settle frame followed by fixed custom_step executor advancement and fixed V2 seek",
+    "renderer": "gl_compatibility (OpenGL API 4.1 Metal compatibility, Apple M4 Pro)",
+    "capture_method": "macOS windowed SubViewport render; Player.activate_ultimate -> UltimateHost -> shipped Chemist V2 scene, actual EnemySpitter targets and ElitePoisonZone hazard; one deferred-autoplay settle frame followed by fixed custom_step executor advancement and fixed V2 seek; three explicit frozen UPDATE_ONCE readback frames before the target is disabled",
     "workload_exclusion": "FSD_GODOT_EXCLUSIVE=1 acquires the machine-wide Godot lease before final PNG generation",
     "headless_policy": "The renderer exits 0 without creating PNGs when headless. That structural skip is not image evidence; hydrated windowed verification remains fail-closed.",
-    "command": "env -u FSD_GODOT_MAXWAIT FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=600 python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd"
+    "command": "env FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=1800 python3 tools/godot_gate.py --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd"
   },
   "canonical_weapon_ids": ["blast_powder", "acid_flask", "homunculus_vial"],
   "presentation_modes": [
@@ -47,21 +47,21 @@
     "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
     "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
     "hud_scene": "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
-    "fixture_note": "Each isolated cell runs the real Player activation and Player-owned controller, has real EnemySpitter group targets and an actual Enemy elite poison hazard, and mounts the shipped HUD through UltimateHudRuntimeAdapter. Capture-only placement and freezing do not alter production behavior."
+    "fixture_note": "Each isolated cell runs the real Player activation and Player-owned controller, has real EnemySpitter group targets and an actual Enemy elite poison hazard, and mounts the shipped HUD through UltimateHudRuntimeAdapter. Capture-only placement, freezing, and suppression of detached post-executor feedback do not alter production behavior."
   },
   "viewports": [
-    {"id": "648p-release", "viewport_id": "648p", "phase": "release", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "648p-active", "viewport_id": "648p", "phase": "active", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "648p-recovery", "viewport_id": "648p", "phase": "recovery", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "720p-release", "viewport_id": "720p", "phase": "release", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "720p-active", "viewport_id": "720p", "phase": "active", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "720p-recovery", "viewport_id": "720p", "phase": "recovery", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "1080p-release", "viewport_id": "1080p", "phase": "release", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "1080p-active", "viewport_id": "1080p", "phase": "active", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "1080p-recovery", "viewport_id": "1080p", "phase": "recovery", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "2k-release", "viewport_id": "2k", "phase": "release", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_release.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "2k-active", "viewport_id": "2k", "phase": "active", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    {"id": "2k-recovery", "viewport_id": "2k", "phase": "recovery", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_recovery.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+    {"id": "648p-release", "viewport_id": "648p", "phase": "release", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_release.png", "sha256": "a2b287b730e540043d7adf7f6d897c7c3bef63840be14e225569f00202d66734"},
+    {"id": "648p-active", "viewport_id": "648p", "phase": "active", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p.png", "sha256": "fda33aa08cdea47c4092cc01961190c8a0760a8c86c8770754ea3192abab6017"},
+    {"id": "648p-recovery", "viewport_id": "648p", "phase": "recovery", "width": 1152, "height": 648, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_648p_recovery.png", "sha256": "4e1d5ed607a4b01a4255a980961f08de62ccf28a4ad0ac2a832a6b35b983875c"},
+    {"id": "720p-release", "viewport_id": "720p", "phase": "release", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_release.png", "sha256": "4c86356ab2b538a3330fb7f4e40eb8f769eb701f1b5d032b4ca2d58f6ad478b8"},
+    {"id": "720p-active", "viewport_id": "720p", "phase": "active", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p.png", "sha256": "a5ba7d7d7aedae06e40dbf8a518db949e27e5b23d17751163503dba2cc1fbec3"},
+    {"id": "720p-recovery", "viewport_id": "720p", "phase": "recovery", "width": 1280, "height": 720, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_720p_recovery.png", "sha256": "c8e985da38c0e180a8fcadd6f6afd7ca139d6e89061f948ace390544b38b5b61"},
+    {"id": "1080p-release", "viewport_id": "1080p", "phase": "release", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_release.png", "sha256": "75a71ecf83728232739b07b32f04d3df6347ae4e8d9743dc2535eacf7e9c0497"},
+    {"id": "1080p-active", "viewport_id": "1080p", "phase": "active", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p.png", "sha256": "8931f26c1e662f574fb7e2d57a3133ea9cb9949f1d3638ecf373e0195653e0f9"},
+    {"id": "1080p-recovery", "viewport_id": "1080p", "phase": "recovery", "width": 1920, "height": 1080, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_1080p_recovery.png", "sha256": "2c98e2ab505cb97ab9bd566f33df02c8e6b30d08f45da1868a60e62f01dc2cf4"},
+    {"id": "2k-release", "viewport_id": "2k", "phase": "release", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_release.png", "sha256": "1855a942f94cc3017588d0bebb496dec97e4534126343f00a6375f76535870c8"},
+    {"id": "2k-active", "viewport_id": "2k", "phase": "active", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k.png", "sha256": "bd8f30b3bcb500843d6568a77bac56896430114cdfb96c8b722871323fe7b238"},
+    {"id": "2k-recovery", "viewport_id": "2k", "phase": "recovery", "width": 2560, "height": 1440, "path": "res://docs/design/reference-assets-lfs/ultimate-certification/chemist/chemist_certification_2k_recovery.png", "sha256": "603319814af20eb86d89f82f82a9abaddeb7bd44f5dbc94dddf47c6fd1510dc0"}
   ],
   "scope_boundary": "FAN-3937 adds capture and certification evidence only. It does not change production scenes, runtime behavior, gameplay, balance, overlays, or adoption paths."
 }

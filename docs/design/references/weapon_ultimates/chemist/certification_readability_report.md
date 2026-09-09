@@ -1,95 +1,57 @@
 ## FAN-3937 Chemist ultimate certification
 
-This package certifies the three canonical Chemist ultimates in the shipped
-presentation scenes. It is a capture-and-review artifact only: it does not
-change production scenes, gameplay, balance, HUD behavior, overlays, or
-adoption paths.
+This is capture-and-review evidence for the shipped Chemist ultimate trio. It does not change production scenes, gameplay, balance, HUD behavior, overlays, or adoption paths.
 
-The certification renderer is
-`tests/ultimates/presentation/chemist_certification_live_capture.gd`. It
-fails if started headless and creates its PNGs only from a windowed Godot
-render. Every matrix cell contains a shipped Chemist V2 presentation scene,
-the shipped ultimate-HUD widget with a production view-model state, the
-Chemist player visual, live victim-impact targets, and project hazard art.
+`tests/ultimates/presentation/chemist_certification_live_capture.gd` creates every visual cell through `Player.activate_ultimate` and the Player-owned `UltimateHost`. Each cell mounts the shipped Chemist V2 scene, real `EnemySpitter` targets, an `ElitePoisonZone` created by `EnemySpitter._spawn_elite_hazard`, and the shipped ultimate HUD through `UltimateHudRuntimeAdapter`. A headless renderer invocation exits without PNG creation; it is a structural-runner skip, never image evidence.
 
 ## Capture provenance
 
 | Field | Value |
 | --- | --- |
-| Source ref / commit / tree | `dev` / `d192be10bbe52dd89971cab0acc66eb92ccab37f` / `e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf` |
-| Engine / renderer | Godot `4.7.stable.official.5b4e0cb0f` / `gl_compatibility` |
-| Deterministic seed | `3937` |
-| Windowed capture command | `FSD_GODOT_RUN_TIMEOUT=600 python3 tools/godot_gate.py --quiet --path . --windowed --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd` |
-| Output root | `docs/design/reference-assets-lfs/ultimate-certification/chemist` |
+| Source ref / commit / tree | `agent/codex-dev-terra-b/d54103bd6266` / `6792ca7d538607d602c09b880ad6428d41ba8d08` / `795107f6118bd2683c43f731f0b4de53408b255c` |
+| Engine / renderer | Godot `4.7.stable.official.5b4e0cb0f` / GL Compatibility (`OpenGL API 4.1 Metal`, Apple M4 Pro) |
+| Controlled seed | `3937`, reseeded per phase/weapon/mode cell |
+| Workload exclusion | `FSD_GODOT_EXCLUSIVE=1` acquires the machine-wide Godot lease before PNG generation |
+| Windowed command | `env FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=1800 python3 tools/godot_gate.py --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/chemist_certification_live_capture.gd` |
+| Output root | `docs/design/reference-assets-lfs/ultimate-certification/chemist` (Git LFS) |
 
-The initial checkout's import cache was warmed through `tools/godot_gate.py`.
-The final renderer ran in a normal gated windowed slot because an unrelated
-workspace probe held the machine-wide exclusive lane; no headless output was
-used as image evidence.
+After consuming V2 deferred autoplay, the renderer advances the production executor with fixed `custom_step` increments and seeks the shipped timeline to the named beat. It freezes Player, Enemy, hazard, V2 timeline/sprites, victim impact, and HUD refresh; detached post-executor feedback is suppressed after the real action has run. It then draws exactly three final `UPDATE_ONCE` frames and disables the SubViewport for texture readback. These are capture-only stabilizers; all retained visible combat state remains production runtime state.
 
-## Coverage and assessment
+## Coverage and readability assessment
 
-Each output is a 3×4 matrix: rows are `blast_powder`, `acid_flask`, and
-`homunculus_vial`; columns are `normal`, `crowded`, `reduced_motion`, and
-`photosensitivity_safe`. Normal, reduced-motion, and photosensitivity-safe
-cells contain three real victim probes. Crowded cells use the declaration's
-actual cap: 18, 16, and 14 respectively.
+The package has twelve native 3 × 4 PNG matrices: three phase sheets (release, active, recovery) at 1152×648, 1280×720, 1920×1080, and 2560×1440. Rows are `blast_powder`, `acid_flask`, and `homunculus_vial`; columns are `normal`, `crowded`, `reduced_motion`, and `photosensitivity_safe`.
 
-| Weapon | Release / active / recovery checks | Normal and crowded read | Reduced motion / photosensitivity-safe read |
+Ordinary modes use three real targets. Crowded cells use the declaration's real caps: 18 Blast Powder targets, 16 Acid Flask targets, and 14 Homunculus Vial targets. Each header and state caption identifies the fixed phase beat, shake setting, target count, and veil state. The Player lane, V2 effect zone, right-side hazard lane, caption band, and shipped HUD are non-overlapping.
+
+| Weapon | Named observations |
+| --- | --- |
+| `blast_powder` | 0.95s release, 1.45s active, 3.15s recovery: ritual/pentagram, real Player, targets, and poison telegraph remain distinguishable. |
+| `acid_flask` | 0.85s release, 1.20s active, 3.55s recovery: flask, lake, impact field, player lane, and elite telegraph remain separated at the crowd cap. |
+| `homunculus_vial` | 0.90s release, 2.85s active, 3.65s recovery: fusion silhouette and stomp/cascade remain independently readable with the real fixtures. |
+
+Reduced-motion reads the shipped `screen_shake` setting as off and retains the V2 damped fade. Photosensitivity-safe hides the shipped backdrop veil while retaining the authored foreground and real runtime fixtures.
+
+## Native output integrity
+
+`certification_capture_manifest.json` records a required path, native dimensions, phase, and SHA-256 for every sheet. The focused gate fails closed for a missing mode, provenance key, PNG, hydrated LFS content, PNG structure, dimensions, marker, or hash.
+
+| ID | Dimensions | Phase | SHA-256 |
 | --- | --- | --- | --- |
-| `blast_powder` | 0.95s / 1.45s / 3.15s | Gold pentagram remains distinct; the 18-target cell visibly shows the denser live-impact field. | `screen_shake` is off for reduced motion; the safe cell removes the instantiated veil and identifies that state in its persistent caption. |
-| `acid_flask` | 0.85s / 1.20s / 3.55s | Flask, acid lake, player lane, and hazard lane remain separated; the 16-target cell visibly carries additional impact feedback. | The reduced variant keeps the damped shipped fade without shake; the safe cell has the veil disabled. |
-| `homunculus_vial` | 0.90s / 2.85s / 3.65s | Fusion silhouette stays centered and distinct; the 14-target cell visibly has the largest target-feedback cluster. | The reduced state turns shake off; the safe state removes the veil while retaining the readable fusion silhouette. |
+| `648p-release` | 1152×648 | release | Final manifest record |
+| `648p-active` | 1152×648 | active | Final manifest record |
+| `648p-recovery` | 1152×648 | recovery | Final manifest record |
+| `720p-release` | 1280×720 | release | Final manifest record |
+| `720p-active` | 1280×720 | active | Final manifest record |
+| `720p-recovery` | 1280×720 | recovery | Final manifest record |
+| `1080p-release` | 1920×1080 | release | Final manifest record |
+| `1080p-active` | 1920×1080 | active | Final manifest record |
+| `1080p-recovery` | 1920×1080 | recovery | Final manifest record |
+| `2k-release` | 2560×1440 | release | Final manifest record |
+| `2k-active` | 2560×1440 | active | Final manifest record |
+| `2k-recovery` | 2560×1440 | recovery | Final manifest record |
 
-The focused gate runs all 144 release/active/recovery combinations
-(4 viewports × 3 weapons × 4 modes × 3 beats). It verifies that each cell uses
-the actual animation timeline and required scene nodes; contains visible
-non-backdrop content in the reserved effect zone; keeps player, hazard, and
-caption bands outside that zone; reads the shipped `screen_shake` setting; and
-uses the real victim-impact player. It also fail-closes for a missing mode,
-provenance field, image file, LFS pointer, wrong dimension, or wrong SHA-256.
+## Verification scope
 
-The final chrome pass deliberately draws the mode/state captions after each
-arena viewport. Shipped victim-impact sprites are top-level so their crowded
-feedback is visible; the chrome pass keeps the evidence caption readable above
-that feedback instead of hiding it.
+The focused certification gate covers all 144 phase/weapon/mode/viewport combinations. It proves actual Player activation, real EnemySpitter targets, the actual elite hazard, shipped HUD selection/active state, V2 victim impacts, named V2 seeks, and non-overlapping readability zones. In windowed mode it also checks every hydrated LFS PNG's dimensions, markers, and SHA-256.
 
-## Native outputs
-
-| ID | Native dimensions | SHA-256 |
-| --- | --- | --- |
-| `648p` | 1152×648 | `e905865252e3e1fd6e1a59b39979b4ee61ab3e798e38a3aea620793c754c707a` |
-| `720p` | 1280×720 | `a12b7d13f8ae36afda937861a6901949ba04e6c225c07bd24c5fecd90b1a0afc` |
-| `1080p` | 1920×1080 | `59b8b0097d26b97bab31fd4a456c301902c9a27d7ea111ff4148ba26113fb000` |
-| `2k` | 2560×1440 | `406236f888a51bff72de1520f1a890298ff3ba6bdfb297bc12860dc0ddb8102b` |
-
-Native visual inspection covered the 1152×648 and 2560×1440 sheets. At the
-smallest sheet, all twelve panel headers, colored mode markers, HUD, player
-lane, hazard lane, and persistent state captions remain visible; at 2K the
-same labels and fixture bands have clear separation. The four native images
-and their hashes are recorded in
-`certification_capture_manifest.json` and are Git LFS assets.
-
-## Verification performed
-
-```text
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/chemist_certification_capture_test.gd
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
-python3 tools/godot_gate.py --headless --quiet --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd
-```
-
-All commands above passed after Git LFS hydration. The headless commands are
-integrity and runtime gates only; the certification images themselves come
-from the separate windowed renderer.
-
-## Review limits
-
-The contact sheets are deterministic active-beat stills. They show spatial
-readability and the declared mode state; they do not attempt to show temporal
-camera shake or audio ducking in a single frame. The focused runtime gate
-covers release, active, and recovery timing and verifies the production mode
-settings independently. Reviewers should use the windowed sheets for visual
-readability and the gate output for phase and mode behavior.
+The stills show spatial readability at named release, active, and recovery beats; the gate verifies temporal executor and mode behavior. Blast Powder's visual recovery outlasts its executor, so the capture retains the real cast at its last meaningful execution state while seeking the authored recovery beat.
