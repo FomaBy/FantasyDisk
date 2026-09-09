@@ -350,6 +350,7 @@ func _observe_beat(
 	var weapon_id := str(weapon["weapon_id"])
 	var mode_id := str(mode["id"])
 	var presentation := _find_authored_presentation(arena, weapon_id)
+	var presentation_visible := _has_visible_authored_visual(presentation)
 	var widget := hud_root.get_node_or_null("UltimateHudWidget") as Control
 	var hud_visible := widget != null and widget.visible
 	var hazard_visible := _has_visible_hazard(hazards)
@@ -359,11 +360,12 @@ func _observe_beat(
 		"viewport_id": str(viewport_spec["id"]),
 		"beat": beat_id,
 		"presentation_mounted": presentation != null,
+		"presentation_visible": presentation_visible,
 		"hud_visible": hud_visible,
 		"hazard_visible": hazard_visible,
 	}))
-	if presentation == null or not hud_visible or not hazard_visible:
-		_fail("%s/%s/%s must retain authored presentation, HUD, and HazardVfx at %s" % [
+	if presentation == null or not presentation_visible or not hud_visible or not hazard_visible:
+		_fail("%s/%s/%s must retain visible authored presentation, HUD, and HazardVfx at %s" % [
 			CAPTURE_ID,
 			weapon_id,
 			mode_id,
@@ -391,6 +393,26 @@ func _find_authored_presentation(arena: Node, weapon_id: String) -> Node:
 		for child in current.get_children():
 			pending.append(child)
 	return null
+
+
+func _has_visible_authored_visual(presentation: Node) -> bool:
+	if presentation == null:
+		return false
+	# The root Node2D is a structural mount and is always visible. Require a
+	# rendered descendant so a retained-but-transparent presentation cannot pass
+	# a beat merely because its container still exists.
+	var pending: Array[Node] = []
+	for child in presentation.get_children():
+		pending.append(child)
+	while not pending.is_empty():
+		var current := pending.pop_back() as Node
+		if current is CanvasItem:
+			var canvas_item := current as CanvasItem
+			if canvas_item.visible and canvas_item.modulate.a > 0.05 and canvas_item.self_modulate.a > 0.05:
+				return true
+		for child in current.get_children():
+			pending.append(child)
+	return false
 
 
 func _advance_seconds(seconds: float) -> void:
