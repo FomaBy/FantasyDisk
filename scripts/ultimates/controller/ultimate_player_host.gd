@@ -149,6 +149,11 @@ func _on_player_died() -> void:
 func _process(delta: float) -> void:
 	if _presentation != null:
 		_presentation.advance(delta / Engine.time_scale)
+		# A drained presentation ends at its declared cancel; the frame it is
+		# reached the scene handle is released exactly as an explicit finish
+		# would release it.
+		if _presentation != null and _presentation.drain_complete():
+			ultimate_host_finish_presentation("node_end")
 
 
 func _notification(what: int) -> void:
@@ -268,11 +273,39 @@ func ultimate_host_set_presentation_paused(value: bool) -> void:
 		_presentation.set_paused(value)
 
 
+## Explicit ending (cancel, death, reset, node end, a failed or replacing
+## activation, or the drain reaching its bound): releases the scene at once.
 func ultimate_host_finish_presentation(reason: String) -> void:
 	if _presentation != null:
 		_presentation.finish(reason)
 		_presentation = null
 	_presentation_profile = {}
+
+
+## FAN-3941: natural gameplay completion. Gameplay teardown happens at the
+## same instant as before (the controller clears its activation and the
+## active flag); the authored presentation alone keeps running — advanced by
+## `_process` under the same pause and time-scale rules, still receiving
+## beats — until its declared cancel, unless that bound has already passed,
+## in which case it is released immediately as before. Any later explicit
+## ending (`cancel`, death, reset, node end, a new activation) releases it.
+func ultimate_host_drain_presentation() -> void:
+	if _presentation == null:
+		return
+	if not _presentation.begin_drain():
+		ultimate_host_finish_presentation("node_end")
+
+
+func ultimate_host_presentation_draining() -> bool:
+	return _presentation != null and _presentation.is_draining()
+
+
+## Releases a presentation a completed cast left draining — and only that: a
+## runtime that is not draining (none, one a test injected before its cast,
+## one still owned by a live activation) is left to its owner.
+func ultimate_host_release_drained_presentation(reason: String) -> void:
+	if ultimate_host_presentation_draining():
+		ultimate_host_finish_presentation(reason)
 
 
 ## The authored presentation is the cast's live visual channel whenever it is
