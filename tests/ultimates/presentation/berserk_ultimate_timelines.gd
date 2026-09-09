@@ -68,6 +68,9 @@ const GENERATED_SPRITE_PATHS := {
 ## Axe and hammer record their measured quality with FAN-2545 and FAN-2546;
 ## this card owns the sword record only.
 const QUALITY_WEAPON_IDS := ["sword"]
+## FAN-3935 live certification package.
+const LIVE_CAPTURE_MODES := ["normal", "crowded", "reduced_motion", "photosensitivity_safe"]
+const LIVE_CAPTURE_SHEET_PREFIX := "docs/design/reference-assets-lfs/ultimate-certification/berserk/"
 
 
 class HandleProbe extends RefCounted:
@@ -98,6 +101,7 @@ func _initialize() -> void:
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
+	_check_live_capture_declaration(manifest, errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
@@ -427,6 +431,54 @@ func _check_capture_evidence(errors: Array[String]) -> void:
 		_expect(image != null and not image.is_empty(), "contact evidence must decode: %s" % path, errors)
 		if image != null:
 			_expect(image.get_size() == capture.get("size", Vector2i.ZERO), "contact evidence resolution mismatch: %s" % path, errors)
+
+
+## FAN-3935: the four authored contact sheets are one presentation at four sizes.
+## They cannot stand in for the four presentation modes, so the class also has to
+## keep declaring its live capture package. Depth is owned by
+## `berserk_certification_capture_test.gd`; this gate holds the declaration.
+func _check_live_capture_declaration(manifest: Dictionary, errors: Array[String]) -> void:
+	var evidence := manifest.get("evidence", {}) as Dictionary
+	var live := evidence.get("live_capture", {}) as Dictionary
+	_expect(not live.is_empty(), "the class must declare evidence.live_capture", errors)
+	if live.is_empty():
+		return
+	var modes: Array = live.get("modes", [])
+	_expect(modes == LIVE_CAPTURE_MODES, "live capture must declare exactly %s, found %s" % [str(LIVE_CAPTURE_MODES), str(modes)], errors)
+	var viewports := live.get("viewports", {}) as Dictionary
+	for raw_capture in CAPTURES:
+		var capture := raw_capture as Dictionary
+		var size := capture.get("size", Vector2i.ZERO) as Vector2i
+		_expect(
+			str(viewports.get(str(capture.get("name", "")), "")) == "%dx%d" % [size.x, size.y],
+			"live capture must declare viewport %s as %dx%d" % [str(capture.get("name", "")), size.x, size.y],
+			errors
+		)
+	var weapon_ids: Array = live.get("weapon_ids", [])
+	_expect(weapon_ids == ["sword", "axe", "hammer"], "live capture must cover the canonical weapon trio", errors)
+	for field in ["capture_manifest", "readability_report", "capture_script", "focused_test"]:
+		var path := str(live.get(field, ""))
+		_expect(FileAccess.file_exists("res://%s" % path), "live capture %s must exist: %s" % [field, path], errors)
+	var declared := evidence.get("contact_sheets", []) as Array
+	for sheet in live.get("sheet_sha256", {}) as Dictionary:
+		_expect(
+			_live_sheet_declared(declared, str(sheet)),
+			"the %s mode-coverage sheet must stay listed in evidence.contact_sheets" % str(sheet),
+			errors
+		)
+	## The authored timeline sheets stay in the package as provenance, but they
+	## are one presentation at four sizes and no longer stand as the class's
+	## live capture evidence.
+	var authored := evidence.get("authored_timeline_sheets", []) as Array
+	_expect(authored.size() == CAPTURES.size(), "the authored timeline sheets must stay declared", errors)
+
+
+func _live_sheet_declared(declared: Array, viewport_id: String) -> bool:
+	for raw_path in declared:
+		var path := str(raw_path)
+		if path.begins_with(LIVE_CAPTURE_SHEET_PREFIX) and path.ends_with("_%s.png" % viewport_id):
+			return FileAccess.file_exists("res://%s" % path)
+	return false
 
 
 static func panel_center(size: Vector2i, pack: Dictionary) -> Vector2:
