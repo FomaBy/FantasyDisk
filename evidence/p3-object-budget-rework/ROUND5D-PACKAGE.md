@@ -1,10 +1,23 @@
-# FAN-3934 round-5d — evidence-bearing review package (supersedes round-5c for admission)
+# FAN-3934 round-5d — evidence-bearing review package
 
-Measured production source: `1b548ee4c25458d804c1812697bbf0aa3433615f`, tree
-`fa05f171008f18d552d8e0ead97bfc1e16cadf42` (unchanged since round-5c; the PM-accepted
-freed-origin validity checks are part of it). This review/evidence branch tip carries
-only test and evidence changes on top of that production commit:
-`git diff 1b548ee4c254..HEAD -- scripts/` is empty — production bytes identical.
+**Review candidate:** the branch successor of `d65f7cc206e1be86dd3454f7d673b622cdacc721`
+(tree `5b63bbb1d9aa52feffacd9ed4d6cfeada596874c`) that contains this report correction.
+Its exact SHA/tree/base are recorded in the issue metadata keys `candidate_sha`,
+`candidate_tree_sha`, `candidate_base_sha` and in the single final publication comment —
+not restated here, so this file cannot drift out of coherence with them.
+
+**Measured production source (label: measured source, not the review pin):**
+`1b548ee4c25458d804c1812697bbf0aa3433615f`, tree
+`fa05f171008f18d552d8e0ead97bfc1e16cadf42`. Every matrix/suite measurement below was
+executed with this source content; `git diff 1b548ee4c254..REVIEW_CANDIDATE -- scripts/`
+is empty, and the candidate adds only `tests/p3_feedback_allocation_test.gd` and
+`evidence/p3-object-budget-rework/**` changes on top of it. Raw JSON files retain their
+recorded `candidate_sha` of the measuring checkout (`f889eeeb…`, test/evidence-only
+successor of `1b548ee4`); these are historical measured-source fields, labeled as such
+by this manifest, not review pins.
+
+**Sole contributing author / reviewer exclusion ID:** dev_high agent
+`11dd50f9-2322-4aa0-a09e-631e1159c1df`.
 
 ## What this round added
 
@@ -39,7 +52,3 @@ only test and evidence changes on top of that production commit:
 
 Six focused suites exit 0: p3_feedback_allocation, p3_executor_residency,
 boss_summon_cap, boss_hazard_cap_gate, hazard_vfx_smoke, ultimates/berserk_balance.
-
-Author: dev_high `11dd50f9-2322-4aa0-a09e-631e1159c1df` (sole contributor).
-candidate_sha = dispatch_candidate_sha = qa_candidate_sha = `1b548ee4c25458d804c1812697bbf0aa3433615f`;
-candidate_tree_sha = `fa05f171008f18d552d8e0ead97bfc1e16cadf42`.
