@@ -39,6 +39,14 @@ var _profiles_by_key: Dictionary = {}
 var _executors_by_key: Dictionary = {}
 var _pair_keys: Dictionary = {}
 var _errors: Array[String] = []
+# FAN-3934 lazy residency: in lazy mode discovery defers ONLY the executor
+# script load/admission; documents, pairing and orphan detection stay eager.
+var _lazy_executors := false
+var _documents_by_key: Dictionary = {}
+var _document_paths_by_key: Dictionary = {}
+var _base_profiles := {}
+var _admitted_executors: Dictionary = {}
+var _admission_errors_by_key: Dictionary = {}
 
 
 func _init(data_root := DATA_ROOT, executor_root := EXECUTOR_ROOT) -> void:
@@ -46,7 +54,12 @@ func _init(data_root := DATA_ROOT, executor_root := EXECUTOR_ROOT) -> void:
 	_executor_root = executor_root
 
 
-func discover(base_profiles: Dictionary) -> void:
+func discover(base_profiles: Dictionary, lazy_executors := false) -> void:
+	_lazy_executors = lazy_executors
+	_base_profiles = base_profiles
+	_documents_by_key.clear()
+	_document_paths_by_key.clear()
+	_admitted_executors.clear()
 	_profiles_by_key.clear()
 	_executors_by_key.clear()
 	_pair_keys.clear()
@@ -86,6 +99,20 @@ func discover(base_profiles: Dictionary) -> void:
 			continue
 		seen_keys[key] = true
 		var executor_path := "%s/%s" % [_executor_root, executor_relative]
+		if lazy_executors:
+			# Script-free admission: identical document/pair validation, script
+			# checks and param normalization deferred to admit_executor().
+			var document_result := validate_document(document, data_relative, base_profiles.get(key, {}))
+			var document_errors := document_result.get("errors", []) as Array
+			if not document_errors.is_empty():
+				for error in document_errors:
+					_errors.append("%s: %s" % [data_relative, str(error)])
+				continue
+			_documents_by_key[key] = document
+			_document_paths_by_key[key] = {"path": executor_path, "relative": executor_relative, "data_relative": data_relative}
+			_profiles_by_key[key] = (document_result["profile"] as Dictionary).duplicate(true)
+			_pair_keys[key] = true
+			continue
 		var executor_script = load(executor_path)
 		var result := validate_pair(
 			document, data_relative, executor_script, base_profiles.get(key, {})
@@ -108,12 +135,58 @@ func discover(base_profiles: Dictionary) -> void:
 		_pair_keys.erase(key)
 
 
+## FAN-3934 lazy residency: resolve, validate and cache ONE executor script on
+## first demand. Runs the exact same script-content admission as eager
+## validate_pair (constants, method signatures, param normalization) and is
+## stable: a failed admission is remembered and returns the same result on
+## every later call. Returns the admitted GDScript or null.
+func admit_executor(key: String):
+	if not _lazy_executors:
+		return _executors_by_key.get(key)
+	if _admitted_executors.has(key):
+		return _admitted_executors[key]
+	if not _document_paths_by_key.has(key):
+		return null
+	var record: Dictionary = _document_paths_by_key[key]
+	var executor_script = load(str(record["path"]))
+	var result := validate_pair(
+		_documents_by_key[key], str(record["data_relative"]), executor_script, _base_profiles.get(key, {})
+	)
+	var pair_errors := result.get("errors", []) as Array
+	if not pair_errors.is_empty():
+		var errors: Array[String] = []
+		for error in pair_errors:
+			errors.append("%s: %s" % [str(record["data_relative"]), str(error)])
+		_admission_errors_by_key[key] = errors
+		_admitted_executors[key] = null
+		return null
+	_admission_errors_by_key.erase(key)
+	_profiles_by_key[key] = (result["profile"] as Dictionary).duplicate(true)
+	_executors_by_key[key] = executor_script
+	_admitted_executors[key] = executor_script
+	return executor_script
+
+
+## Errors from the failed lazy admit_executor() for a key (empty when the key
+## was never admitted or admitted successfully). Stable across calls.
+func admission_errors_for(key: String) -> Array[String]:
+	var stored = _admission_errors_by_key.get(key)
+	return (stored as Array[String]).duplicate() if stored is Array[String] else []
+
+
+## True while discovery runs in lazy-executor mode (FAN-3934).
+func is_lazy() -> bool:
+	return _lazy_executors
+
+
 ## Public validation seam keeps tooling and fixture tests on the exact same
 ## admission path used by recursive discovery.
-func validate_pair(
+## FAN-3934 lazy residency: the script-free stage of validate_pair — every
+## document/base/binding check with identical error strings. validate_pair
+## delegates to this stage so eager and lazy admission share one code path.
+func validate_document(
 	document: Dictionary,
 	relative_path: String,
-	executor_script,
 	base_profile: Dictionary
 ) -> Dictionary:
 	var errors: Array[String] = []
@@ -161,6 +234,21 @@ func validate_pair(
 		if not base_executor is Dictionary \
 				or str((base_executor as Dictionary).get("executor_id", "")) != str(document.get("executor_id", "")):
 			errors.append("package.executor_id")
+	if not errors.is_empty():
+		return {"profile": {}, "errors": errors}
+	return {"profile": _merge_profile(base_profile, document), "errors": errors}
+
+
+func validate_pair(
+	document: Dictionary,
+	relative_path: String,
+	executor_script,
+	base_profile: Dictionary
+) -> Dictionary:
+	var stage := validate_document(document, relative_path, base_profile)
+	var errors: Array[String] = stage["errors"]
+	if not errors.is_empty():
+		return {"profile": {}, "errors": errors}
 	if executor_script == null or not executor_script is GDScript:
 		errors.append("package.executor.script")
 	else:
@@ -175,7 +263,7 @@ func validate_pair(
 		_validate_executor_method(executor_script as GDScript, "execute", 1, TYPE_FLOAT, errors)
 	if not errors.is_empty():
 		return {"profile": {}, "errors": errors}
-	var profile := _merge_profile(base_profile, document)
+	var profile: Dictionary = stage["profile"]
 	var contract = executor_script.call("parameter_contract")
 	var normalized := Library.normalize_custom_params(
 		(profile["executor"] as Dictionary).get("params", {}), contract

@@ -44,6 +44,10 @@ func _run() -> void:
 	}
 	# Keep a strong reference so nothing is collected before we measure.
 	result["reference_held"] = scripts.size()
+	DirAccess.make_dir_recursive_absolute("res://evidence/p3-object-budget-rework/round3")
+	var f := FileAccess.open("res://evidence/p3-object-budget-rework/round3/executor_residency_eager.json", FileAccess.WRITE)
+	f.store_string(JSON.stringify(result, "  ") + "\n")
+	f.close()
 	print("FAN3934_RESIDENCY_RESULT " + JSON.stringify(result))
 	quit(0)
 
