@@ -43,6 +43,7 @@ const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/guitarist/
 const CAPTURE_MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/guitarist/certification_capture_manifest.json"
 const OUTPUT_DIR := "res://docs/design/reference-assets-lfs/ultimate-certification/guitarist"
 const DRIVER_SCRIPT_PATH := "res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd"
+const VICTIM_IMPACT_SCRIPT_PATH := "res://scripts/ultimates/presentation/victim_impact_player.gd"
 const BACKDROP_NODE_NAME := "BackdropVeil"
 
 const WEAPON_IDS: Array[String] = ["electric_guitar", "bass_guitar", "sound_amp"]
@@ -463,7 +464,9 @@ func _effect_screen_box(effect_root: Node2D, backdrop_only: bool) -> Rect2:
 		return Rect2()
 	var box := Rect2()
 	var seeded := false
-	for node in _drawn_nodes(effect_root):
+	## Victim-side impact bursts have their own bounded pool contract and are not
+	## part of the activation scene's declared footprint or visual-node budget.
+	for node in _drawn_nodes(effect_root, false):
 		if (node.name == BACKDROP_NODE_NAME) != backdrop_only:
 			continue
 		var rect := _screen_rect(node)
@@ -477,13 +480,17 @@ func _effect_screen_box(effect_root: Node2D, backdrop_only: bool) -> Rect2:
 	return box
 
 
-func _drawn_nodes(effect_root: Node2D) -> Array[CanvasItem]:
+func _drawn_nodes(effect_root: Node2D, include_victim_impacts := true) -> Array[CanvasItem]:
 	var found: Array[CanvasItem] = []
 	if effect_root == null:
 		return found
 	var pending: Array[Node] = [effect_root]
 	while not pending.is_empty():
 		var node: Node = pending.pop_back()
+		if not include_victim_impacts and node != effect_root:
+			var script := node.get_script() as Script
+			if script != null and script.resource_path == VICTIM_IMPACT_SCRIPT_PATH:
+				continue
 		for child in node.get_children():
 			pending.append(child)
 		var item := node as CanvasItem
