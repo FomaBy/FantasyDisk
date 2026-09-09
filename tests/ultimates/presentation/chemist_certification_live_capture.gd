@@ -79,7 +79,7 @@ func _capture_sheet(_registry, capture: Dictionary) -> int:
 				await process_frame
 				push_error("FAN-3937 Chemist certification live cell failed: %s" % reason)
 				return ERR_CANT_CREATE
-			await _settle_capture_frame()
+			await _finalize_viewport_for_readback(viewport)
 			var image := _read_viewport(viewport, "%s/%s/%s" % [
 				Spec.WEAPON_IDS[weapon_index], Spec.MODE_IDS[mode_index], phase,
 			])
@@ -91,7 +91,7 @@ func _capture_sheet(_registry, capture: Dictionary) -> int:
 			sheet.blit_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), arena.position)
 
 	var chrome := _chrome_viewport(size, phase)
-	await _settle_capture_frame()
+	await _finalize_viewport_for_readback(chrome)
 	var chrome_image := _read_viewport(chrome, "chrome/%s" % phase)
 	chrome.queue_free()
 	await process_frame
@@ -435,13 +435,17 @@ func _read_viewport(viewport: SubViewport, label: String) -> Image:
 	return image
 
 
-func _settle_capture_frame() -> void:
-	## The renderer has already frozen all runtime clocks. Give the SubViewport a
-	## fixed number of post-freeze draws before readback so a first-frame texture
-	## upload cannot become capture-order-dependent pixels.
+func _finalize_viewport_for_readback(viewport: SubViewport) -> void:
+	## The runtime clocks are frozen before this point. Render an explicit, fixed
+	## number of final frames and then disable the target rather than leaving an
+	## UPDATE_ALWAYS SubViewport alive while its texture is read. On macOS that
+	## prevents a variable subsequent presentation frame from becoming part of a
+	## certification PNG, while preserving the real windowed renderer path.
 	for _frame in CAPTURE_SETTLE_FRAMES:
+		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		await process_frame
 		await RenderingServer.frame_post_draw
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 
 
 func _rect_node(rect: Rect2, color: Color, z_index := 0) -> Polygon2D:
