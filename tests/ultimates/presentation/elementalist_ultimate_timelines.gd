@@ -20,26 +20,26 @@ const FLIPBOOKS := {
 		"node": "Conclave",
 		"path": "res://assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
 		"animation": &"elementalist_orb_ring_ultimate",
-		"times": [0.0, 0.7, 1.0, 2.2, 3.4, 4.6, 6.0, 6.8, 7.6],
+		"times": [0.0, 0.7, 1.0, 1.35, 1.7, 2.05, 2.4, 2.7, 3.05],
 	},
 	"elementalist_prism_focus": {
 		"node": "PrismLattice",
 		"path": "res://assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
 		"animation": &"elementalist_prism_focus_ultimate",
-		"times": [0.0, 0.55, 0.85, 1.75, 2.65, 3.55, 4.45, 5.35, 6.4],
+		"times": [0.0, 0.65, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 2.75],
 	},
 	"elementalist_meteor_core": {
 		"node": "Starfall",
 		"path": "res://assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
 		"animation": &"elementalist_meteor_core_ultimate",
-		"times": [0.0, 2.45, 2.75, 3.6, 4.45, 5.3, 6.15, 7.0, 8.1],
+		"times": [0.0, 0.95, 1.2, 1.55, 1.9, 2.25, 2.6, 3.05, 3.4],
 	},
 }
 const PACKS := [
 	{
 		"weapon_id": "elementalist_orb_ring",
 		"scene": preload("res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn"),
-		"time": 4.2,
+		"time": 1.7,
 		"title": "ORB RING — GRAND CONCLAVE / square orbit",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.82, 0.45),
@@ -48,7 +48,7 @@ const PACKS := [
 	{
 		"weapon_id": "elementalist_prism_focus",
 		"scene": preload("res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn"),
-		"time": 3.4,
+		"time": 1.5,
 		"title": "PRISM FOCUS — PRISMATIC VERDICT / lattice",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.65, 0.9, 1.0),
@@ -57,7 +57,7 @@ const PACKS := [
 	{
 		"weapon_id": "elementalist_meteor_core",
 		"scene": preload("res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn"),
-		"time": 2.9,
+		"time": 1.9,
 		"title": "METEOR CORE — STARFALL / meteor impact",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.5, 0.25),
@@ -260,7 +260,7 @@ func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Nod
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
+			_expect(child.name == &"BackdropVeil" or not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
 	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
 	_expect("res://%s" % str(flipbook.get("spriteframes", "")) == str(expected["path"]), "%s manifest must pin its SpriteFrames path" % weapon_id, errors)
 	_expect(StringName(str(flipbook.get("animation", ""))) == animation, "%s manifest must pin its animation identity" % weapon_id, errors)
@@ -471,6 +471,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
+			if child.name == &"BackdropVeil":
+				continue
 			if not child is CanvasItem:
 				continue
 			var item := child as CanvasItem

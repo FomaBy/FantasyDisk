@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_tower_shield.png" id="1_shield"]
+[ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -8,7 +9,7 @@ light_mode = 1
 
 [sub_resource type="Animation" id="Animation_impassable_line"]
 resource_name = "ultimate"
-length = 8.6
+length = 3.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -16,7 +17,7 @@ tracks/0/path = NodePath("GuardStance:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 7.6, 8.6),
+"times": PackedFloat32Array(0, 0.5, 3.15, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.45, 0.45, 0.0]
@@ -28,7 +29,7 @@ tracks/1/path = NodePath("ShieldWall:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.3, 7.6, 8.6),
+"times": PackedFloat32Array(0, 1.2, 3.15, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(-20, 0), Vector2(-16, 0), Vector2(70, 0), Vector2(70, 0)]
@@ -40,7 +41,7 @@ tracks/2/path = NodePath("ShieldWall/WallCore:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.9, 8.6),
+"times": PackedFloat32Array(0, 0.9, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0.42, 0.18), Vector2(0.42, 0.95), Vector2(0.42, 0.95)]
@@ -52,7 +53,7 @@ tracks/3/path = NodePath("ShieldWall/WallCore:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.9, 7.6, 8.6),
+"times": PackedFloat32Array(0, 0.25, 0.9, 3.15, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.6, 1.0, 1.0, 0.0]
@@ -64,7 +65,7 @@ tracks/4/path = NodePath("ShieldWall/Rampart:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.6, 0.9, 7.6, 8.6),
+"times": PackedFloat32Array(0, 0.6, 0.9, 3.15, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.35, 1.0, 1.0, 0.0]
@@ -76,7 +77,7 @@ tracks/5/path = NodePath("ShieldWall/SparkField:modulate:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 1.6, 4.5, 7.0, 7.7, 8.6),
+"times": PackedFloat32Array(0, 1.4, 2.25, 2.9, 3.25, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.15, 0.55, 0.95, 0.2, 0.0]
@@ -88,7 +89,7 @@ tracks/6/path = NodePath("CounterCrescent:modulate:a")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 7.5, 7.7, 8.2, 8.6),
+"times": PackedFloat32Array(0, 3.05, 3.25, 3.55, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.8, 0.0]
@@ -100,7 +101,7 @@ tracks/7/path = NodePath("CounterCrescent:scale")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 7.6, 8.1, 8.6),
+"times": PackedFloat32Array(0, 3.15, 3.45, 3.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(1.3, 1.3), Vector2(1.35, 1.35)]
@@ -116,6 +117,10 @@ metadata/motion_path = "slow_forward_wall_push_with_accumulating_guard"
 metadata/impact_language = "stored_spark_accumulation_released_as_counter_crescent"
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 16
+
+[node name="BackdropVeil" type="Polygon2D" parent="."]
+color = Color(0.04, 0.035, 0.018, 0.62)
+z_index = -20
 
 [node name="GuardStance" type="Polygon2D" parent="."]
 z_index = -15
@@ -162,3 +167,13 @@ modulate = Color(1, 1, 1, 0)
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_impassable_line")}
 autoplay = "ultimate"
+
+[node name="PresenceDriver" type="Node" parent="."]
+script = ExtResource("2_presence")
+release_at = 0.9
+impact_at = 1.2
+recovery_at = 3.15
+cancel_at = 3.8
+hitstop_ms = 130.0
+shake_seconds = 0.45
+shake_amplitude = 8.0

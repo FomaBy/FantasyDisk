@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_holy_flail.png" id="1_flail"]
+[ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -8,7 +9,7 @@ light_mode = 1
 
 [sub_resource type="Animation" id="Animation_heavenly_spiral"]
 resource_name = "ultimate"
-length = 7.6
+length = 3.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -16,7 +17,7 @@ tracks/0/path = NodePath("ChainRise:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1.2, 6.6, 7.6),
+"times": PackedFloat32Array(0, 0.85, 3.2, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.9, 0.6, 0.0]
@@ -28,7 +29,7 @@ tracks/1/path = NodePath("FlailHead:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.2, 1.6, 2.4, 3.2, 4.0, 4.4, 4.8, 5.6, 6.2, 6.8, 7.6),
+"times": PackedFloat32Array(0, 0.85, 1.1, 1.55, 1.9, 2.2, 2.35, 2.5, 2.75, 2.9, 3.1, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 60), Vector2(0, -150), Vector2(30, 0), Vector2(-52, -19), Vector2(61, 51), Vector2(-50, -87), Vector2(103, -38), Vector2(21, 118), Vector2(24, -136), Vector2(-75, 130), Vector2(0, -40), Vector2(0, 60)]
@@ -40,7 +41,7 @@ tracks/2/path = NodePath("FlailHead:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 1.2, 6.2, 7.6),
+"times": PackedFloat32Array(0, 0.85, 2.9, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, -0.4, 12.0, 12.6]
@@ -52,7 +53,7 @@ tracks/3/path = NodePath("FlailHead:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3, 6.9, 7.6),
+"times": PackedFloat32Array(0, 0.3, 3.15, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0, 0.0]
@@ -64,7 +65,7 @@ tracks/4/path = NodePath("SpiralPath:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 1.2, 1.6, 6.6, 7.6),
+"times": PackedFloat32Array(0, 0.85, 1.1, 3.2, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.2, 0.85, 0.85, 0.0]
@@ -76,7 +77,7 @@ tracks/5/path = NodePath("SpiralPath:scale")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 1.6, 6.2, 7.6),
+"times": PackedFloat32Array(0, 1.1, 2.9, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.15, 0.15), Vector2(0.2, 0.2), Vector2(1, 1), Vector2(1, 1)]
@@ -88,7 +89,7 @@ tracks/6/path = NodePath("SpiralPath:rotation")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 1.6, 6.2, 7.6),
+"times": PackedFloat32Array(0, 1.1, 2.9, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 2.4, 2.8]
@@ -100,7 +101,7 @@ tracks/7/path = NodePath("PullGlints:modulate:a")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 2.2, 2.5, 5.2, 5.6, 7.6),
+"times": PackedFloat32Array(0, 1.4, 1.6, 2.65, 2.75, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.85, 0.85, 0.0, 0.0]
@@ -112,7 +113,7 @@ tracks/8/path = NodePath("LaunchRing:modulate:a")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 6.0, 6.2, 6.9, 7.4, 7.6),
+"times": PackedFloat32Array(0, 2.85, 2.9, 3.15, 3.5, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 0.7, 0.0, 0.0]
@@ -124,7 +125,7 @@ tracks/9/path = NodePath("LaunchRing:scale")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 6.2, 7.0, 7.6),
+"times": PackedFloat32Array(0, 2.9, 3.2, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.55, 0.55), Vector2(0.6, 0.6), Vector2(1.2, 1.2), Vector2(1.25, 1.25)]
@@ -140,6 +141,10 @@ metadata/motion_path = "upward_chain_climb_then_expanding_rotating_spiral"
 metadata/impact_language = "inward_pull_loops_ending_in_sunburst_launch_ring"
 metadata/max_visual_nodes = 8
 metadata/crowd_cap = 20
+
+[node name="BackdropVeil" type="Polygon2D" parent="."]
+color = Color(0.055, 0.04, 0.012, 0.58)
+z_index = -20
 
 [node name="SpiralPath" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
@@ -207,3 +212,13 @@ modulate = Color(1, 1, 1, 0)
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_heavenly_spiral")}
 autoplay = "ultimate"
+
+[node name="PresenceDriver" type="Node" parent="."]
+script = ExtResource("2_presence")
+release_at = 0.85
+impact_at = 1.1
+recovery_at = 3.2
+cancel_at = 3.7
+hitstop_ms = 120.0
+shake_seconds = 0.5
+shake_amplitude = 9.0

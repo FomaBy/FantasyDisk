@@ -1,16 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/ultimates/classes/guitarist/electric_guitar.gd" id="1_executor"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres" id="2_flipbook"]
+[ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="3_presence"]
 
 [sub_resource type="Animation" id="Animation_last_chord"]
 resource_name = "ultimate"
-length = 5.4
+length = 3.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("LastChord:frame")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.52, 0.68, 0.84, 1.0, 1.16, 1.4, 2.6, 4.7),
+"times": PackedFloat32Array(0, 0.65, 0.78, 0.9, 1.05, 1.2, 1.45, 2.15, 2.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -19,7 +20,7 @@ tracks/1/type = "value"
 tracks/1/path = NodePath("LastChord:scale")
 tracks/1/interp = 1
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.52, 1.16, 1.4, 4.7, 5.4),
+"times": PackedFloat32Array(0, 0.65, 1.2, 1.45, 2.8, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.3, 0.3), Vector2(0.66, 0.66), Vector2(1, 1), Vector2(1.42, 1.42), Vector2(1.1, 1.1), Vector2(0.08, 0.08)]
@@ -28,7 +29,7 @@ tracks/2/type = "value"
 tracks/2/path = NodePath("LastChord:modulate:a")
 tracks/2/interp = 1
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.26, 0.52, 1.4, 4.7, 5.4),
+"times": PackedFloat32Array(0, 0.3, 0.65, 1.45, 2.8, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.55, 0.9, 1.0, 0.85, 0.0]
@@ -46,6 +47,10 @@ metadata/impact_language = "bright chord intersections mark normal-enemy stun be
 metadata/max_visual_nodes = 12
 metadata/crowd_cap = 14
 
+[node name="BackdropVeil" type="Polygon2D" parent="."]
+color = Color(0.018, 0.025, 0.085, 0.6)
+z_index = -20
+
 [node name="LastChord" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_flipbook")
 animation = &"electric_guitar_last_chord"
@@ -56,3 +61,13 @@ z_index = 2
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_last_chord")}
 autoplay = "ultimate"
+
+[node name="PresenceDriver" type="Node" parent="."]
+script = ExtResource("3_presence")
+release_at = 0.65
+impact_at = 0.9
+recovery_at = 2.8
+cancel_at = 3.4
+hitstop_ms = 90.0
+shake_seconds = 0.3
+shake_amplitude = 6.5

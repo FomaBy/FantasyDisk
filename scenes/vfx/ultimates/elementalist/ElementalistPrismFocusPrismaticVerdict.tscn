@@ -1,15 +1,16 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres" id="1_flipbook"]
+[ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
 
 [sub_resource type="Animation" id="Animation_prismatic_verdict"]
 resource_name = "ultimate"
-length = 7.2
+length = 3.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("PrismLattice:frame")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.85, 1.75, 2.65, 3.55, 4.45, 5.35, 6.4),
+"times": PackedFloat32Array(0, 0.65, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 2.75),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -18,7 +19,7 @@ tracks/1/type = "value"
 tracks/1/path = NodePath("PrismLattice:scale")
 tracks/1/interp = 1
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.55, 0.85, 5.35, 6.4, 7.2),
+"times": PackedFloat32Array(0, 0.65, 0.9, 2.4, 2.75, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.12, 0.12), Vector2(0.42, 0.42), Vector2(0.95, 0.95), Vector2(1.12, 1.12), Vector2(1.45, 1.45), Vector2(0.08, 0.08)]
@@ -27,7 +28,7 @@ tracks/2/type = "value"
 tracks/2/path = NodePath("PrismLattice:modulate:a")
 tracks/2/interp = 1
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.55, 6.4, 7.2),
+"times": PackedFloat32Array(0, 0.325, 0.65, 2.75, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.7, 1.0, 0.95, 0.0]
@@ -44,6 +45,10 @@ metadata/impact_language = "staggered_triple_focus_hits_then_rainbow_fracture"
 metadata/max_visual_nodes = 9
 metadata/crowd_cap = 18
 
+[node name="BackdropVeil" type="Polygon2D" parent="."]
+color = Color(0.045, 0.025, 0.12, 0.56)
+z_index = -20
+
 [node name="PrismLattice" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_flipbook")
 animation = &"elementalist_prism_focus_ultimate"
@@ -54,3 +59,13 @@ z_index = 2
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_prismatic_verdict")}
 autoplay = "ultimate"
+
+[node name="PresenceDriver" type="Node" parent="."]
+script = ExtResource("2_presence")
+release_at = 0.65
+impact_at = 0.9
+recovery_at = 2.75
+cancel_at = 3.4
+hitstop_ms = 90.0
+shake_seconds = 0.32
+shake_amplitude = 6.0

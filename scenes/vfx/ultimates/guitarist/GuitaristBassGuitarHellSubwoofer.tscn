@@ -1,16 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/ultimates/classes/guitarist/bass_guitar.gd" id="1_executor"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres" id="2_flipbook"]
+[ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="3_presence"]
 
 [sub_resource type="Animation" id="Animation_hell_subwoofer"]
 resource_name = "ultimate"
-length = 5.8
+length = 3.7
 tracks/0/type = "value"
 tracks/0/path = NodePath("Subwoofer:frame")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.35, 0.7, 1.23, 1.76, 2.29, 3.3, 4.2, 5.0),
+"times": PackedFloat32Array(0, 0.4, 0.75, 1.05, 1.35, 1.65, 2.15, 2.6, 3.05),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -19,7 +20,7 @@ tracks/1/type = "value"
 tracks/1/path = NodePath("Subwoofer:scale")
 tracks/1/interp = 1
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.7, 1.23, 2.29, 3.3, 5.0, 5.8),
+"times": PackedFloat32Array(0, 0.75, 1.05, 1.65, 2.15, 3.05, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.36, 0.36), Vector2(0.62, 0.62), Vector2(0.5, 0.5), Vector2(1.35, 1.35), Vector2(1.5, 1.5), Vector2(1.15, 1.15), Vector2(0.07, 0.07)]
@@ -28,7 +29,7 @@ tracks/2/type = "value"
 tracks/2/path = NodePath("Subwoofer:modulate:a")
 tracks/2/interp = 1
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.35, 0.7, 2.29, 5.0, 5.8),
+"times": PackedFloat32Array(0, 0.4, 0.75, 1.65, 3.05, 3.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.6, 1.0, 1.0, 0.8, 0.0]
@@ -46,6 +47,10 @@ metadata/impact_language = "sequential pull, heavy compression, launch ripple, a
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 12
 
+[node name="BackdropVeil" type="Polygon2D" parent="."]
+color = Color(0.028, 0.015, 0.07, 0.64)
+z_index = -20
+
 [node name="Subwoofer" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_flipbook")
 animation = &"bass_guitar_hell_subwoofer"
@@ -56,3 +61,13 @@ z_index = 2
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_hell_subwoofer")}
 autoplay = "ultimate"
+
+[node name="PresenceDriver" type="Node" parent="."]
+script = ExtResource("3_presence")
+release_at = 0.75
+impact_at = 1.05
+recovery_at = 3.05
+cancel_at = 3.7
+hitstop_ms = 130.0
+shake_seconds = 0.48
+shake_amplitude = 8.5

@@ -35,7 +35,7 @@ const PACKS := [
 	{
 		"weapon_id": "long_spear",
 		"scene": preload("res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"),
-		"time": 2.4,
+		"time": 2.0,
 		"title": "LONG SPEAR — SPEAR WALL / phalanx corridor",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.72, 0.82, 0.95),
@@ -44,7 +44,7 @@ const PACKS := [
 	{
 		"weapon_id": "tower_shield",
 		"scene": preload("res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn"),
-		"time": 5.6,
+		"time": 2.25,
 		"title": "TOWER SHIELD — IMPASSABLE LINE / wall push",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(1.0, 0.84, 0.5),
@@ -53,7 +53,7 @@ const PACKS := [
 	{
 		"weapon_id": "holy_flail",
 		"scene": preload("res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn"),
-		"time": 4.4,
+		"time": 2.35,
 		"title": "HOLY FLAIL — HEAVENLY SPIRAL / pull-launch",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.93, 0.7),
@@ -454,6 +454,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
+			if child.name == &"BackdropVeil":
+				continue
 			if not child is CanvasItem:
 				continue
 			var item := child as CanvasItem

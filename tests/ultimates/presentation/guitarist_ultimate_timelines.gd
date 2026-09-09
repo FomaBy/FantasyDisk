@@ -15,7 +15,7 @@ const FLIPBOOKS := {
 		"node": "LastChord",
 		"path": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
 		"animation": &"electric_guitar_last_chord",
-		"times": [0.0, 0.52, 0.68, 0.84, 1.0, 1.16, 1.4, 2.6, 4.7],
+		"times": [0.0, 0.65, 0.78, 0.9, 1.05, 1.2, 1.45, 2.15, 2.8],
 		"beats": [
 			"weapon_ultimate.executor.guitarist.electric_guitar.riff:0",
 			"weapon_ultimate.executor.guitarist.electric_guitar.final",
@@ -25,7 +25,7 @@ const FLIPBOOKS := {
 		"node": "Subwoofer",
 		"path": "res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
 		"animation": &"bass_guitar_hell_subwoofer",
-		"times": [0.0, 0.35, 0.7, 1.23, 1.76, 2.29, 3.3, 4.2, 5.0],
+		"times": [0.0, 0.4, 0.75, 1.05, 1.35, 1.65, 2.15, 2.6, 3.05],
 		"beats": [
 			"weapon_ultimate.executor.guitarist.bass_guitar.pull",
 			"weapon_ultimate.executor.guitarist.bass_guitar.shock",
@@ -35,7 +35,7 @@ const FLIPBOOKS := {
 		"node": "WallOfSound",
 		"path": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
 		"animation": &"guitarist_sound_amp_wall_of_sound",
-		"times": [0.0, 0.68, 0.95, 1.22, 1.49, 1.94, 3.1, 4.3, 5.25],
+		"times": [0.0, 0.8, 1.0, 1.1, 1.35, 1.65, 2.15, 2.75, 3.3],
 		"beats": [
 			"weapon_ultimate.executor.guitarist.sound_amp.feedback:0",
 			"weapon_ultimate.executor.guitarist.sound_amp.overload",
@@ -43,9 +43,9 @@ const FLIPBOOKS := {
 	},
 }
 const PACKS := [
-	{"weapon_id": "electric_guitar", "scene": SCENES["electric_guitar"], "time": 1.72, "position": Vector2(0.18, 0.55), "title": "ELECTRIC GUITAR — LAST CHORD", "color": Color(0.36, 0.86, 1.0), "required_nodes": ["LastChord"]},
-	{"weapon_id": "bass_guitar", "scene": SCENES["bass_guitar"], "time": 2.85, "position": Vector2(0.50, 0.55), "title": "BASS GUITAR — HELL SUBWOOFER", "color": Color(0.84, 0.44, 1.0), "required_nodes": ["Subwoofer"]},
-	{"weapon_id": "sound_amp", "scene": SCENES["sound_amp"], "time": 3.64, "position": Vector2(0.82, 0.55), "title": "SOUND AMP — WALL OF SOUND", "color": Color(1.0, 0.76, 0.34), "required_nodes": ["WallOfSound"]},
+	{"weapon_id": "electric_guitar", "scene": SCENES["electric_guitar"], "time": 1.45, "position": Vector2(0.18, 0.55), "title": "ELECTRIC GUITAR — LAST CHORD", "color": Color(0.36, 0.86, 1.0), "required_nodes": ["LastChord"]},
+	{"weapon_id": "bass_guitar", "scene": SCENES["bass_guitar"], "time": 1.65, "position": Vector2(0.50, 0.55), "title": "BASS GUITAR — HELL SUBWOOFER", "color": Color(0.84, 0.44, 1.0), "required_nodes": ["Subwoofer"]},
+	{"weapon_id": "sound_amp", "scene": SCENES["sound_amp"], "time": 2.15, "position": Vector2(0.82, 0.55), "title": "SOUND AMP — WALL OF SOUND", "color": Color(1.0, 0.76, 0.34), "required_nodes": ["WallOfSound"]},
 ]
 const CAPTURES := [
 	{"name": "648p", "file": "guitarist_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
@@ -204,7 +204,7 @@ func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Nod
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
+			_expect(child.name == &"BackdropVeil" or not (child is ColorRect or child is Polygon2D or child is Line2D), "%s must not retain flat-geometry stand-in %s" % [weapon_id, child.name], errors)
 	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
 	_expect("res://%s" % str(flipbook.get("spriteframes", "")) == str(expected["path"]), "%s manifest must pin its SpriteFrames path" % weapon_id, errors)
 	_expect(StringName(str(flipbook.get("animation", ""))) == animation, "%s manifest must pin its animation identity" % weapon_id, errors)

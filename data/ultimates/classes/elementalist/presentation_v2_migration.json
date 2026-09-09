@@ -1,9 +1,5 @@
 {
   "schema_version": 1,
   "class_id": "elementalist",
-  "migration_exemptions": {
-    "elementalist/elementalist_orb_ring": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "elementalist/elementalist_prism_focus": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "elementalist/elementalist_meteor_core": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
-  }
+  "migration_exemptions": {}
 }

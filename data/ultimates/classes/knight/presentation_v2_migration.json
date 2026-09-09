@@ -1,9 +1,5 @@
 {
   "schema_version": 1,
   "class_id": "knight",
-  "migration_exemptions": {
-    "knight/long_spear": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "knight/tower_shield": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "knight/holy_flail": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
-  }
+  "migration_exemptions": {}
 }
