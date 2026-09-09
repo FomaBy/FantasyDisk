@@ -1,0 +1,3624 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3941",
+  "class_id": "thief",
+  "canonical_keys": [
+    "thief/thief_coin_pouch",
+    "thief/thief_shadow_cloak",
+    "thief/thief_smoke_bomb"
+  ],
+  "source": {
+    "ref": "dev",
+    "commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "note": "Integrated origin/dev revision whose shipped Thief scenes, pack and assets were rendered; the capture tooling, frames and this manifest are added by FAN-3941 on top of it and change no production scene."
+  },
+  "engine": {
+    "godot": "4.7-stable (official)",
+    "rendering_method": "gl_compatibility",
+    "rendering_driver": "opengl3",
+    "video_adapter": "Apple M4 Pro",
+    "os": "macOS 26.5.1",
+    "display_server": "macOS",
+    "captured_at_utc": "2026-09-09 03:02:13"
+  },
+  "capture": {
+    "script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/thief_certification_capture_test.gd",
+    "capture_command": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/thief_certification_live_capture.gd",
+    "test_command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_certification_capture_test.gd",
+    "exclusive_gate": false,
+    "headless_skipped": false,
+    "seed": 3941,
+    "seed_note": "seed() is set for completeness; the capture path draws no random value (no camera exists for the shake device, the crowd is a fixed grid and the impact ripple is distance-ordered).",
+    "method": "Each frame is a SubViewport at the exact viewport size: floor, two striped hazards, the hero full frame at the Player combat scale, a crowd grid at the declared crowd cap (crowded), the shipped scene instantiated and driven with begin()/step() in fixed 1/120 s steps to the beat and held, the weapon's victim-impact flipbook on the crowd (crowded), the real UltimateHudWidget fed a registry snapshot, and a caption band with mode/weapon swatches. The scene is placed at the game's on-screen scale (viewport_height / 1440 * combat camera zoom 1.12) and never fitted. Opaque coverage is measured on a scene-only transparent render of the same composition (alpha >= 0.5, stride 2). The Thief scenes author no arena-wide surface, so the photosensitivity-safe variant is the shipped scene with the screen_shake toggle off (the gate counts full-screen surfaces and requires zero); reduced motion applies the shipped screen_shake toggle on the tree root.",
+    "logical_canvas": "2560x1440",
+    "stretch_mode": "canvas_items",
+    "combat_camera_zoom": 1.12,
+    "player_visual_scale": 0.64,
+    "player_sprite": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
+    "hud_widget": "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "hud_state": "ultimate_hud_view_model.gd build() of tests/ultimates/hud_fixture_library.gd weapon_profile_snapshot(class, weapon) with charge fraction 1.0, active true and keyboard input",
+    "seek_step_seconds": 0.0083,
+    "coverage_alpha_min": 0.5,
+    "coverage_stride": 2
+  },
+  "arena": {
+    "hud_band_height_ratio": 0.12,
+    "state_band_height_ratio": 0.07,
+    "player_column_width_ratio": 0.16,
+    "hazard_column_width_ratio": 0.12,
+    "hazard_logical_size": 128.0,
+    "crowd_logical_radius": 28.0
+  },
+  "modes": [
+    "normal",
+    "crowded",
+    "reduced_motion",
+    "photosensitivity_safe"
+  ],
+  "mode_details": [
+    {
+      "id": "normal",
+      "label": "NORMAL",
+      "crowd": "none",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "crowded",
+      "label": "CROWDED",
+      "crowd": "declared crowd_cap per weapon",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": true
+    },
+    {
+      "id": "reduced_motion",
+      "label": "REDUCED MOTION",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "photosensitivity_safe",
+      "label": "PHOTOSENSITIVITY-SAFE",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": false,
+      "victim_impacts": false
+    }
+  ],
+  "beats": [
+    "release",
+    "active",
+    "recovery"
+  ],
+  "beat_rule": "midpoint of the declared phase window; the active beat is committed at every viewport, release and recovery at 648p",
+  "viewports": {
+    "648p": {
+      "width": 1152,
+      "height": 648,
+      "on_screen_scale": 0.504,
+      "ui_scale": 0.45
+    },
+    "720p": {
+      "width": 1280,
+      "height": 720,
+      "on_screen_scale": 0.56,
+      "ui_scale": 0.5
+    },
+    "1080p": {
+      "width": 1920,
+      "height": 1080,
+      "on_screen_scale": 0.84,
+      "ui_scale": 0.75
+    },
+    "2k": {
+      "width": 2560,
+      "height": 1440,
+      "on_screen_scale": 1.12,
+      "ui_scale": 1.0
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+      "crowd_cap": 13,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.1,
+        "recovery": 2.3,
+        "cancel": 3.05
+      },
+      "beats_seconds": {
+        "release": 0.9,
+        "active": 1.7,
+        "recovery": 2.68
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "max_element_rise_hz": 0.0,
+        "duration": 3.05
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 92,
+        "duration_seconds": 3.05,
+        "peak_opaque_coverage_ratio": 0.0043,
+        "peak_at_seconds": 2.57
+      },
+      "max_opaque_coverage_ratio": 0.0043
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+      "crowd_cap": 13,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.82,
+        "active": 1.22,
+        "recovery": 2.57,
+        "cancel": 3.2
+      },
+      "beats_seconds": {
+        "release": 1.02,
+        "active": 1.9,
+        "recovery": 2.89
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "max_element_rise_hz": 0.0,
+        "duration": 3.2
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 97,
+        "duration_seconds": 3.2,
+        "peak_opaque_coverage_ratio": 0.0033,
+        "peak_at_seconds": 2.6
+      },
+      "max_opaque_coverage_ratio": 0.0033
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+      "crowd_cap": 13,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.94,
+        "active": 1.34,
+        "recovery": 2.84,
+        "cancel": 3.42
+      },
+      "beats_seconds": {
+        "release": 1.14,
+        "active": 2.09,
+        "recovery": 3.13
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "max_element_rise_hz": 0.0,
+        "duration": 3.42
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 103,
+        "duration_seconds": 3.42,
+        "peak_opaque_coverage_ratio": 0.0014,
+        "peak_at_seconds": 2.13
+      },
+      "max_opaque_coverage_ratio": 0.0014
+    }
+  ],
+  "coverage": {
+    "combinations": 48,
+    "expected_frames": 72,
+    "written_frames": 72
+  },
+  "captures": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__release__648p.png",
+      "sha256": "451260051d17769be539db339e6db2d57895a0e4727a08d9d8d9b03046a05675",
+      "bytes": 31581,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0015,
+        "effect_bounds": [
+          566.5,
+          307.2,
+          68.4,
+          66.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__648p.png",
+      "sha256": "ec9a5e9d1532b27f7e6fcf5fd493cba36ea06636644c40e945a273a16f2f0a7b",
+      "bytes": 37839,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          536.0,
+          292.9,
+          120.8,
+          100.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__recovery__648p.png",
+      "sha256": "6745a3682f16fa0338863ab85d3d81a0302594fed239ea7db6d483c7bae74cfa",
+      "bytes": 38940,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0041,
+        "effect_bounds": [
+          545.7,
+          272.6,
+          106.5,
+          104.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__720p.png",
+      "sha256": "94dd707f929fc0fd12bab850d287e04c7d972f84a4c03e7e019aa1e119e665f5",
+      "bytes": 43046,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          595.6,
+          325.4,
+          134.3,
+          112.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0164,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__1080p.png",
+      "sha256": "e87cb9d0a0ae2024b2064925a22ee06bc1d667f61e60d291bf99dd0ad7734d99",
+      "bytes": 78257,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          893.4,
+          488.2,
+          201.4,
+          168.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__2k.png",
+      "sha256": "d0ee463f70ef77adfb30069333c338ffea568b487ea94406474702664733fa45",
+      "bytes": 116105,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1191.2,
+          650.9,
+          268.5,
+          224.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__release__648p.png",
+      "sha256": "d1366f2f5fb42138e6d7dd1c19d84085c64cf21b2a43cc8195b1f5c4ef0fdc0a",
+      "bytes": 95837,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0015,
+        "effect_bounds": [
+          566.5,
+          307.2,
+          68.4,
+          66.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__648p.png",
+      "sha256": "fdb7c30244bc65e5179fc8997d36dd35c0e047fa0c21300a90fbdd2b32d8a695",
+      "bytes": 99368,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          536.0,
+          292.9,
+          120.8,
+          100.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__recovery__648p.png",
+      "sha256": "24dc30ffbae0349a073d6f8d77a100f371c244980e0c4c8ed6923e82b7dd1f9a",
+      "bytes": 101227,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0041,
+        "effect_bounds": [
+          545.7,
+          272.6,
+          106.5,
+          104.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__720p.png",
+      "sha256": "55af6cb4a6bfcd42f924338ff9a3e938fa85cb7a830673d876341ce39870cb47",
+      "bytes": 118213,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          595.6,
+          325.4,
+          134.3,
+          112.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0164,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__1080p.png",
+      "sha256": "dd9a6d35d82387d94e58699da03bcd50432d26d7569eab72d74711595c89b465",
+      "bytes": 228372,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          893.4,
+          488.2,
+          201.4,
+          168.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__2k.png",
+      "sha256": "716f1375b0f23cc3e0c10af22d444d80b0b423e37c3e4d7a84a82b761f8f633f",
+      "bytes": 351646,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1191.2,
+          650.9,
+          268.5,
+          224.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__release__648p.png",
+      "sha256": "758c60f849ed73168ca19923092967bf6bdba5f3c2d596d850fac541269ccf2b",
+      "bytes": 32117,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0015,
+        "effect_bounds": [
+          566.5,
+          307.2,
+          68.4,
+          66.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__648p.png",
+      "sha256": "7cfecddc96b5be9d41d346128a1265643903498fb37d6e360549539c1bad4a21",
+      "bytes": 38973,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          536.0,
+          292.9,
+          120.8,
+          100.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__recovery__648p.png",
+      "sha256": "bc6dc6efaee619b6adb88f1d1df0c836dd55a1a0e4252dc6fefa0e495e2382ba",
+      "bytes": 39447,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0041,
+        "effect_bounds": [
+          545.7,
+          272.6,
+          106.5,
+          104.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__720p.png",
+      "sha256": "08c4d5158fdbc189a293ed70eb8a1d4a9ced9a8b5d8a9df6c2ffebab2eed0b00",
+      "bytes": 42214,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          595.6,
+          325.4,
+          134.3,
+          112.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0164,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__1080p.png",
+      "sha256": "b978cd31f41178bb90987313fb9109cf924fcd35ee0a7971d2d06c4266841ee0",
+      "bytes": 76436,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          893.4,
+          488.2,
+          201.4,
+          168.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__2k.png",
+      "sha256": "9639c425f420ffcbd6ba4de0d260e4d07e8da79aaf0bac765b9add2f38a26e32",
+      "bytes": 114146,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1191.2,
+          650.9,
+          268.5,
+          224.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__release__648p.png",
+      "sha256": "67d2f4c08a9747076c4ff63c0114e7b510a9a45709ca09522f744eb5a58b12c1",
+      "bytes": 32826,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0015,
+        "effect_bounds": [
+          566.5,
+          307.2,
+          68.4,
+          66.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__648p.png",
+      "sha256": "70ed87cd3801254084e7d243d78ca67d9b2460fb3f312649b89034675e32ee6d",
+      "bytes": 38781,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          536.0,
+          292.9,
+          120.8,
+          100.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__recovery__648p.png",
+      "sha256": "c6234876de6d89f54120fed67ccef8f1dd91ed86f9938ccf8e9c07358daaa30a",
+      "bytes": 40071,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0041,
+        "effect_bounds": [
+          545.7,
+          272.6,
+          106.5,
+          104.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__720p.png",
+      "sha256": "44653b3f716791214cd2af68c63af13593f3f470d660a1a54b434da807a81d87",
+      "bytes": 41982,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          595.6,
+          325.4,
+          134.3,
+          112.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0164,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__1080p.png",
+      "sha256": "9203e6794f1bf1dacdca2df466ddd60257ab5770627ced23cbce0b489ec43712",
+      "bytes": 75805,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          893.4,
+          488.2,
+          201.4,
+          168.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__2k.png",
+      "sha256": "8610b8592fae31f1032e2859059935b6688c3d52d2677db4d735fe430f4b19fd",
+      "bytes": 113396,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1191.2,
+          650.9,
+          268.5,
+          224.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.02,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__release__648p.png",
+      "sha256": "c1edbff3d2d474845956150be08e6eaaac71ebf44071b66afe0615d7061a9e1d",
+      "bytes": 34125,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          568.0,
+          294.1,
+          85.5,
+          81.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__648p.png",
+      "sha256": "e35043c8395115d56718b52267e4772eff63e19d1035547f45272a2dac5b1cd9",
+      "bytes": 48553,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          510.9,
+          280.6,
+          172.2,
+          127.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.89,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__recovery__648p.png",
+      "sha256": "8d678cbf6e6193ed439806b1fdd85d2f42214081ebf6058c0cc37eb1a5724731",
+      "bytes": 33457,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.9,
+          309.7,
+          78.4,
+          66.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__720p.png",
+      "sha256": "144b22391734628e23ec544d200bdd6b58f99d7b3ad3fcbf1ede75857c7f9d41",
+      "bytes": 55424,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          567.6,
+          311.8,
+          191.4,
+          141.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__1080p.png",
+      "sha256": "9aed3f18d78b1c93c8dd6d8111fb8b5ddaf154599f03126a1a610955fbc005eb",
+      "bytes": 100369,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          851.4,
+          467.7,
+          287.0,
+          212.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__2k.png",
+      "sha256": "09c2f5694742032646e397abdfb77fc1077aeb57b10968ef54e6ae735ad21239",
+      "bytes": 151782,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0025,
+        "effect_bounds": [
+          1135.2,
+          623.6,
+          382.7,
+          283.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0143,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.02,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__release__648p.png",
+      "sha256": "f85a69abe5d07e377e9f699bcf205dd6dfb12988474a858b9208158f4d2d0b9b",
+      "bytes": 56343,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          568.0,
+          294.1,
+          85.5,
+          81.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__648p.png",
+      "sha256": "3149893bdd365bd448638dbdbbfcd3dec1a4b1f3b1ba3ecefd4a2045d96ca5ce",
+      "bytes": 63281,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          510.9,
+          280.6,
+          172.2,
+          127.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.89,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__recovery__648p.png",
+      "sha256": "d0d788aace8a7a2980030e0e238259e2f8b30a46a4ecee958661bbc00ff14240",
+      "bytes": 55748,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.9,
+          309.7,
+          78.4,
+          66.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__720p.png",
+      "sha256": "85b7ef8352a907055093477e56571a28c91269b13fbd7ef90bc069dc0a7c3f5e",
+      "bytes": 73570,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          567.6,
+          311.8,
+          191.4,
+          141.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__1080p.png",
+      "sha256": "4d4bbe30864e19a691375151dcb244f479d77f51d4a88648b44770460673c518",
+      "bytes": 132348,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          851.4,
+          467.7,
+          287.0,
+          212.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__2k.png",
+      "sha256": "acb2a9af7c8e630c147396600fb497b53e99deb3a7052cb817740f123f2da7c8",
+      "bytes": 199638,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0025,
+        "effect_bounds": [
+          1135.2,
+          623.6,
+          382.7,
+          283.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0143,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.02,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__release__648p.png",
+      "sha256": "37cdc4dd201c83a1fb40cba826d313c8069ad9e79fdede7feb41ee96e5d879c6",
+      "bytes": 35939,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          568.0,
+          294.1,
+          85.5,
+          81.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__648p.png",
+      "sha256": "445c0f4c12be46bc60c1235f42705092383ebbbc019897540e3316ddf8cb4947",
+      "bytes": 50011,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          510.9,
+          280.6,
+          172.2,
+          127.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.89,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__recovery__648p.png",
+      "sha256": "3c56f3654e8c8e8bd64dbc0c80ea7fae64fd0f829cf61fb73cd428071ca6a3e6",
+      "bytes": 34981,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.9,
+          309.7,
+          78.4,
+          66.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__720p.png",
+      "sha256": "711149c2a1e2e36fdece71de18fbe809e791c54af3ca66872bdfa6ba372bfcc3",
+      "bytes": 55015,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          567.6,
+          311.8,
+          191.4,
+          141.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__1080p.png",
+      "sha256": "8969719bd16a16c46fdd608ad9fe74a3eecfed84f6e779cf5c53dddc4263ee4c",
+      "bytes": 99863,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          851.4,
+          467.7,
+          287.0,
+          212.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__2k.png",
+      "sha256": "6db8d8168fccc48efbdf9799bc5c4cf8f9e1f41d7a7dc422fcb80160ddcd9986",
+      "bytes": 150963,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0025,
+        "effect_bounds": [
+          1135.2,
+          623.6,
+          382.7,
+          283.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0143,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.02,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__release__648p.png",
+      "sha256": "df227c99d15480d1618665948307781844226a7b87d3d2c8fd7ab43cd03a032a",
+      "bytes": 35717,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          568.0,
+          294.1,
+          85.5,
+          81.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__648p.png",
+      "sha256": "04f7ab0770c93c0439b48e23e6b77798beb391633012739cb97cf981063a7e37",
+      "bytes": 49968,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          510.9,
+          280.6,
+          172.2,
+          127.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.89,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__recovery__648p.png",
+      "sha256": "5fc71ca443fd681f4ab6277fc820ce39fa20d0fde1621f0bc2984864b0452f0b",
+      "bytes": 34542,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.9,
+          309.7,
+          78.4,
+          66.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0159,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__720p.png",
+      "sha256": "3174dcea21410ee3a79afc5c91729d9e42c5a427c4e2594b3f40bc7eceaae412",
+      "bytes": 56449,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          567.6,
+          311.8,
+          191.4,
+          141.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__1080p.png",
+      "sha256": "70cc3cf3e50ced0bc8de6b128f0eb9e052d53c5045ca6b2fe79309df40dd318a",
+      "bytes": 99226,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          851.4,
+          467.7,
+          287.0,
+          212.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "key": "thief/thief_shadow_cloak",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__2k.png",
+      "sha256": "e9608ff230b83596c3e0195a83f1a27b03ebfcd8cb84ee8b4e92d21430f7dbe5",
+      "bytes": 150471,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0025,
+        "effect_bounds": [
+          1135.2,
+          623.6,
+          382.7,
+          283.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0143,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.14,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__release__648p.png",
+      "sha256": "592c9585540a757c66ce71d4b1ba10bceeffdb108c1ee08296bca6bc8b616c0b",
+      "bytes": 35414,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          543.2,
+          300.4,
+          111.8,
+          79.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__active__648p.png",
+      "sha256": "92e40fad58cceaa155da4f1cc16d24f6cd832c2d52d674077c4f42f3709cf94f",
+      "bytes": 44188,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          531.9,
+          273.1,
+          136.7,
+          134.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.13,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__recovery__648p.png",
+      "sha256": "0c7294d332eb3c150f549d8a7b0feeeff1e38e6a7a9d73abe3d9547bd6229a1e",
+      "bytes": 40248,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          519.0,
+          260.2,
+          160.0,
+          160.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__active__720p.png",
+      "sha256": "c4336c17450e652437c2c368c94ae2335c140c2d458802f655dc8f9ac921cde8",
+      "bytes": 49911,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          591.1,
+          303.5,
+          151.8,
+          149.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0167,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__active__1080p.png",
+      "sha256": "0583cd79a3ed3e63e542b4a4d0add861643ae12ad39770242e3417ab514d4f4a",
+      "bytes": 88397,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          886.6,
+          455.2,
+          227.8,
+          223.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__active__2k.png",
+      "sha256": "33603702c9f91188761195e3ca79414a25fcf65f08fa2d7872e59afa0af7ed17",
+      "bytes": 123750,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          1182.1,
+          606.9,
+          303.7,
+          298.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.14,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__release__648p.png",
+      "sha256": "898be155362c0e48d5ebb4cf675c223ce23d9004eacc6cb6505308a02ff0f204",
+      "bytes": 58266,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          543.2,
+          300.4,
+          111.8,
+          79.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__active__648p.png",
+      "sha256": "53b3d1d241824f1f4157ff1799121c4f93ff6fd220d10d046c4046e2de54d147",
+      "bytes": 65819,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          531.9,
+          273.1,
+          136.7,
+          134.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.13,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__recovery__648p.png",
+      "sha256": "1fcab55d639b0143b2e69d3e36efc49e02fe4a23fb5756391a9fe298d6cd1f41",
+      "bytes": 61466,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          519.0,
+          260.2,
+          160.0,
+          160.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__active__720p.png",
+      "sha256": "ef11b94fc3d27dc6aad9996a2caca8711808dd8c76a4fc492df66e1b06ef34e8",
+      "bytes": 75752,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          591.1,
+          303.5,
+          151.8,
+          149.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0167,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__active__1080p.png",
+      "sha256": "4f5646109f87bc144a1835216d9a65e937f300910f94cc2fcf4a95871a15d8c8",
+      "bytes": 135446,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          886.6,
+          455.2,
+          227.8,
+          223.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__active__2k.png",
+      "sha256": "f3f602c2a08f9ef9d59255017609af5803344ce53faf644d9df59e6c06e6da18",
+      "bytes": 197660,
+      "screen_shake": true,
+      "crowd": 13,
+      "victim_impacts": 13,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          1182.1,
+          606.9,
+          303.7,
+          298.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.14,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__release__648p.png",
+      "sha256": "45670110bf5af8a3a88d67f6a8e255e0f2fe6444ab3083b138858319f12d4104",
+      "bytes": 35632,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          543.2,
+          300.4,
+          111.8,
+          79.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__active__648p.png",
+      "sha256": "3b17c32d76cd5ecdd08a8eca303c74aec978313cf3070f4094bc59c94a89ebf8",
+      "bytes": 46245,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          531.9,
+          273.1,
+          136.7,
+          134.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.13,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__recovery__648p.png",
+      "sha256": "a1d3fe03e7e9be53b0ca17eba20a5cdb7aa70630b75a2b3a38f357d8ea994521",
+      "bytes": 40048,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          519.0,
+          260.2,
+          160.0,
+          160.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__active__720p.png",
+      "sha256": "eae6d5097447d771f2c8fd69b777de3a0dd8905af195226c1ec0a77526d6ba2a",
+      "bytes": 49673,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          591.1,
+          303.5,
+          151.8,
+          149.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0167,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__active__1080p.png",
+      "sha256": "e93e7b74714701b50984cfc92156dfc859b6f7ddacd840cd50f40217dfc9cc9c",
+      "bytes": 87269,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          886.6,
+          455.2,
+          227.8,
+          223.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__active__2k.png",
+      "sha256": "60896aa7a37ae5cc70bf6ecfccaa159bba0e64b321ef09e9dcf1fe8c373d7bab",
+      "bytes": 121972,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          1182.1,
+          606.9,
+          303.7,
+          298.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.14,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__release__648p.png",
+      "sha256": "9e2a4cd729b198922fab0f05b599aba239894e3563d9e2b5b25fd6c6a8d9ce28",
+      "bytes": 36201,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          543.2,
+          300.4,
+          111.8,
+          79.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__active__648p.png",
+      "sha256": "fb4ead78bde2222f2c4ef8ed4a41732d46886f1f7b4e1a18aee5ff15cd961bb8",
+      "bytes": 44998,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          531.9,
+          273.1,
+          136.7,
+          134.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.13,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__recovery__648p.png",
+      "sha256": "504736607356e77285a5a239168b62c54cfb0d88bd0cdb8af4496c4e0db91820",
+      "bytes": 41410,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          519.0,
+          260.2,
+          160.0,
+          160.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.2723,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__active__720p.png",
+      "sha256": "f0774544ba673638d8313d5b78b49e0838865760099b6f85a1d65fc9c05f3ede",
+      "bytes": 49835,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          591.1,
+          303.5,
+          151.8,
+          149.1
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0167,
+        "player_contrast_ratio": 0.2713,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__active__1080p.png",
+      "sha256": "a853b322dab28b3cd82218fe77a7ad82875f41c975356c0a865121a28b0022c7",
+      "bytes": 87206,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          886.6,
+          455.2,
+          227.8,
+          223.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0128,
+        "player_contrast_ratio": 0.2757,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "key": "thief/thief_smoke_bomb",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.09,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__active__2k.png",
+      "sha256": "f33710d874e516ca1e68ef04a29fadd6a385b218c77ecc391e8b219d54f061d4",
+      "bytes": 121799,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0014,
+        "effect_bounds": [
+          1182.1,
+          606.9,
+          303.7,
+          298.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2774,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    }
+  ]
+}

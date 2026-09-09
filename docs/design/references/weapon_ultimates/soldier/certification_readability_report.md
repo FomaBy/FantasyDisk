@@ -1,0 +1,162 @@
+# Soldier weapon-ultimate certification readability report (FAN-3941)
+
+Independent-review evidence for the Soldier ultimate trio (`soldier/soldier_rifle`, `soldier/soldier_grenade`, `soldier/soldier_bayonet`) in the four presentation modes at the four supported viewports. Every frame is a real render of the shipped `scenes/vfx/ultimates/soldier/*.tscn` scene with its authored AnimationPlayer timeline sought to the beat, composed with the hero, hazards, a crowd and the real ultimate HUD widget at the on-screen scale the game uses; the crowded variant routes the crowd through the scene's own `present()` so the weapon's victim-impact flipbook plays exactly as the executor drives it.
+
+## Provenance
+
+- Source ref/commit/tree the shipped scenes were rendered from: `dev` / `d192be10bbe52dd89971cab0acc66eb92ccab37f` / `e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf`. Integrated origin/dev revision whose shipped Soldier scenes and assets were rendered; the capture tooling, frames and this manifest are added by FAN-3941 on top of it and change no production scene.
+- Engine: Godot 4.7-stable (official) (gl_compatibility, opengl3, Apple M4 Pro), macOS 26.5.1, display server macOS, captured 2026-09-09 03:04:27 UTC.
+- Renderer: `tests/ultimates/presentation/soldier_certification_live_capture.gd`; gate: `tests/ultimates/presentation/soldier_certification_capture_test.gd`; capture manifest: `docs/design/references/weapon_ultimates/soldier/certification_capture_manifest.json` (every frame path, size, byte count and sha256).
+- Capture command: `FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/soldier_certification_live_capture.gd`
+- Gate command: `python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/soldier_certification_capture_test.gd`
+- Seed: 3941 (seed() is set for completeness; the capture path draws no random value (no camera exists for the shake device, the crowd is a fixed grid and the impact ripple is distance-ordered).)
+- Exclusive process admission during the committed run: no. Exclusive admission (`FSD_GODOT_EXCLUSIVE=1`) waited behind another agent's live P3 measurement run on this host; a frame here is a deterministic seek of an authored animation with no time-dependent quantity, so the committed run used the shared slot admission of `tools/godot_gate.py` and the manifest records `exclusive_gate: false` truthfully.
+- On-screen scale: logical canvas 2560x1440 with `canvas_items` stretch and combat camera zoom 1.12; hero at Player visual scale 0.64; HUD widget `res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn` at the UI scale of each viewport with state from ultimate_hud_view_model.gd build() of tests/ultimates/hud_fixture_library.gd weapon_profile_snapshot(class, weapon) with charge fraction 1.0, active true and keyboard input.
+- Method: Each frame is a SubViewport at the exact viewport size: floor, two striped hazards, the hero full frame at the Player combat scale, a crowd grid at the declared crowd cap (crowded), the shipped scene instantiated with its authored AnimationPlayer timeline played, sought to the beat with update and paused, the weapon's victim-impact flipbook played on the crowd through the scene's own present() route (crowded), the real UltimateHudWidget fed a registry snapshot, and a caption band with mode/weapon swatches. The scene is placed at the game's on-screen scale (viewport_height / 1440 * combat camera zoom 1.12) and never fitted. Opaque coverage is measured on a scene-only transparent render of the same composition (alpha >= 0.5, stride 2). The Soldier scenes author no arena-wide surface, so the photosensitivity-safe variant is the shipped scene with the screen_shake toggle off (the gate counts full-screen surfaces and requires zero); reduced motion applies the shipped screen_shake toggle on the tree root.
+
+## Coverage
+
+- Weapon x mode x viewport combinations: 48 (3 canonical weapons x 4 modes x 4 viewports), every one committed as a native-size frame at the active beat.
+- Frames committed: 72 of 72 expected (midpoint of the declared phase window; the active beat is committed at every viewport, release and recovery at 648p).
+- Modes: `normal` (crowd none, screen_shake on, backdrop veil kept, victim impacts off); `crowded` (crowd declared crowd_cap per weapon, screen_shake on, backdrop veil kept, victim impacts on); `reduced_motion` (crowd none, screen_shake off, backdrop veil kept, victim impacts off); `photosensitivity_safe` (crowd none, screen_shake off, backdrop veil suppressed/none, victim impacts off).
+- Viewports: `648p` 1152x648 (scene scale 0.504, UI scale 0.45), `720p` 1280x720 (scene scale 0.56, UI scale 0.5), `1080p` 1920x1080 (scene scale 0.84, UI scale 0.75), `2k` 2560x1440 (scene scale 1.12, UI scale 1.0).
+
+## Measurements
+
+| Weapon | Declared max_viewport_coverage_ratio | Measured peak opaque coverage (frames + full-envelope sweep) | Sweep | Full-screen surface / flash | Declared flash (Hz / coverage) |
+|---|---|---|---|---|---|
+| `soldier/soldier_rifle` | 0.01 | 0.0032 (peak at 1.07 s) | 97 samples every 0.0333 s over 3.2 s at 648p normal | none authored (zero full-screen surfaces); fastest alpha track MuzzleFlashWave 0.94 Hz (three volleys), lane-sized | 0.0 / 0.0 |
+| `soldier/soldier_grenade` | 0.01 | 0.0054 (peak at 3.37 s) | 106 samples every 0.0333 s over 3.5 s at 648p normal | none authored (zero full-screen surfaces) although presence declares `flash`; fastest alpha track FuseRing 1.14 Hz, ring-sized | 0.0 / 0.0 |
+| `soldier/soldier_bayonet` | 0.01 | 0.0026 (peak at 2.7 s) | 115 samples every 0.0333 s over 3.8 s at 648p normal | none authored (zero full-screen surfaces); fastest alpha track 0.26 Hz (one rise per cast) | 0.0 / 0.0 |
+
+Opaque coverage counts pixels at alpha >= 0.5 on a scene-only render sampled at stride 2 at the game's on-screen scale. The Soldier scenes author no backdrop, no camera-shake device and no hero pose; the gate proves the zero full-screen surface count on every driven scene and reads every authored `modulate:a` track of the shipped `ultimate` animation at 240 Hz for its rise rate through half its peak, so the declared 0.0 Hz / 0.0 flash values and the per-node flicker table in the capture manifest are the scenes' own numbers.
+
+## Observed readability at release, active and recovery
+
+### `soldier/soldier_rifle`
+
+Beats sampled: release 0.75 s, active 1.75 s, recovery 2.9 s (declared timing {"windup": 0.0, "release": 0.6, "active": 0.9, "recovery": 2.6, "cancel": 3.2}).
+
+- **release** — The war banner is up at ~0.8 alpha and the three spectral rifles have swung to aim; the first volley lane is fading in; at 648p the rank is ~155 px wide and legible as three rifles under a banner.
+- **active** — The mid-active beat (1.75 s) falls between the second and third volleys, so the frame shows the volley lane (~0.55 alpha), the aimed rifle rank and no muzzle-flash wave; the lane is a dim grey column (~100x300 px at 2K) that reads as the fire corridor.
+- **recovery** — The rank holds its aim at 2.9 s with the lane still lit; the smoke recall has not started (4.6 s is past the 3.2 s cancel), so the recovery read is the held rank.
+- **crowded** — Twenty-two crowd members at the declared crowd cap; `present()` enqueues the crowd and the rifle impact flipbook lands on the nearest members in the committed first wave; the rank and lane stay inside the zone.
+- **reduced motion** — Identical animation state and timing to the normal frame (the gate proves node-signature equality); the shipped `screen_shake` toggle is off and the scene authors no shake device.
+- **photosensitivity-safe** — Motion off; the scene authors no full-screen surface (the gate counts zero), so there is nothing to suppress and the frame equals the reduced-motion frame by construction.
+
+### `soldier/soldier_grenade`
+
+Beats sampled: release 0.85 s, active 1.95 s, recovery 3.2 s (declared timing {"windup": 0.0, "release": 0.7, "active": 1.0, "recovery": 2.9, "cancel": 3.5}).
+
+- **release** — The lob arc is fading out and the seven grenades have appeared at their seeded positions (~220 px across at 648p) with the fuse ring at full size; the read is a scattered grenade formation.
+- **active** — The fuse ring pulses (1.14 Hz) while shrinking, the seven grenades hold; at 648p the formation is ~225 px across and every grenade plate is readable.
+- **recovery** — Same formation at 3.2 s with the ring smaller; the chain detonation and fire column are keyed at 5.95-8.4 s and never play inside the 3.5 s animation, so no detonation is visible in the shipped cast (see limitations).
+- **crowded** — Twenty-six crowd members at the declared crowd cap; the grenade impact flipbook lands on the nearest members; the seeded grenades sit among the crowd rows and no crowd disc is hidden.
+- **reduced motion** — Identical animation state and timing to the normal frame; the toggle is off and no shake device exists in the scene.
+- **photosensitivity-safe** — Motion off; zero full-screen surfaces despite the declared `flash` presence backdrop; frame equals the reduced-motion frame by construction.
+
+### `soldier/soldier_bayonet`
+
+Beats sampled: release 0.95 s, active 2.15 s, recovery 3.5 s (declared timing {"windup": 0.0, "release": 0.8, "active": 1.1, "recovery": 3.2, "cancel": 3.8}).
+
+- **release** — The whistle brace has faded, the charge corridor is at ~0.9 alpha and the frontal guard is up; rank one has just appeared at the corridor base (~80x200 px at 648p).
+- **active** — Ranks one and two are charging up the corridor with rank three appearing; the corridor and guard frame them; the read is a narrow vertical column (~107x200 px at 648p).
+- **recovery** — The crossed-bayonet pin is up at ~0.5 alpha with the ranks holding at the corridor top; the read is a dim cross and guard, intentionally fading.
+- **crowded** — Eighteen crowd members at the declared crowd cap; the bayonet impact flipbook lands on the nearest members; the narrow corridor leaves the crowd rows readable.
+- **reduced motion** — Identical animation state and timing to the normal frame; the toggle is off and no shake device exists in the scene.
+- **photosensitivity-safe** — Motion off; zero full-screen surfaces; frame equals the reduced-motion frame by construction.
+
+## Probe results recorded on every frame
+
+- HUD band contrast ratio (share of band samples at luma delta >= 0.25 against the band background; floor 0.004): min 0.0125, max 0.0165.
+- Hero contrast ratio (share of the drawn hero pixels at luma delta >= 0.15 against the floor; floor 0.15): min 0.3450, max 0.3535.
+- Hazard stripe contrast against the floor (floor 0.15, warm hue required): min 0.613, max 0.613.
+- Effect inside the effect zone on every frame: True; mode and weapon swatches verified on every frame: True.
+- The gate recomputes every one of these numbers from the committed PNGs and fails closed on a missing, pointer-only, wrong-size, wrong-hash, unreadable or off-spec frame.
+
+## Limitations
+
+- The Soldier class manifest declares `presence` devices (darken/flash backdrop, camera shake, 100-140 ms hitstop, time-scale dip) and a raised-banner cast pose, but the shipped scenes author none of them and no shared runtime consumer of those presence fields exists outside the schema; the accessibility variants are therefore identical to the normal frame by construction. `soldier_grenade` in particular declares a `flash` backdrop that no surface renders, so its quality block declares the flash that actually exists (none). Recorded, not repaired: adding those devices is new presentation behaviour beyond this card's smallest-correction scope and is left to the PM.
+- `SoldierGrenadeSevenSeconds.tscn` keys its ChainBlast and FireColumn tracks at 5.95-8.4 s while the `ultimate` animation length is the 3.5 s cancel the v2 envelope requires, so the chain detonation and fire column never play in the shipped cast; the frames show the seeded grenades and fuse ring only. Recorded as an authored-scene limitation for the PM; no scene was changed.
+- `SoldierRifleSuppressiveOrder.tscn` fires its muzzle-flash waves at 0.8, 1.9 and 3.0 s; the mid-active beat at 1.75 s lands between waves, so the active frame carries the lane and rank without a flash. The smoke recall keyed at 4.6 s is outside the 3.2 s cancel and never plays.
+- At the game's true on-screen scale the Soldier formations are small at 1152x648 (rifle rank ~155 px, grenade field ~225 px, bayonet column ~107 px); the plates stay above the 6 px readability floor.
+- The release and recovery beats are committed at 1152x648 and the active beat at all four viewports; the manifest records coverage and readability probes for every committed frame and the full-envelope sweep for the peak.
+- Victim impacts are the weapon's flipbook played through the scene's own present() route on the crowd, advanced 0.12 s, so only the first ripple wave is visible in a still frame.
+- The hero is the Soldier idle full frame at the Player combat scale with the real ultimate HUD widget fed a registry snapshot; the live Player node, combat damage and enemy AI are not exercised by a still capture.
+
+## Committed frames
+
+| Weapon | Mode | Beat | Viewport | Path | Bytes | sha256 |
+|---|---|---|---|---|---|---|
+| soldier_rifle | normal | release 0.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__release__648p.png` | 33754 | `2d20927b321a72c1f1f8e1062103f3b47aee2f04c20e2be8f64afb14524a0ba4` |
+| soldier_rifle | normal | active 1.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__648p.png` | 33945 | `b946466446aa85235264ad355161bb04402b9691c928ad44c72e3f3606f5f524` |
+| soldier_rifle | normal | recovery 2.9 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__recovery__648p.png` | 34053 | `5d0cd88ee955061fec7c9179dbf8d8a9283c9a3bff63913924073aeb6def1730` |
+| soldier_rifle | normal | active 1.75 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__720p.png` | 38171 | `f2b163f4597717f41d8015e887c83f766e14a2a95bf373093318114da9afa201` |
+| soldier_rifle | normal | active 1.75 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__1080p.png` | 68042 | `f33c956448a2e0aae20fa3c3ea016f5f5471a4042bba45344f471d8500e91c7f` |
+| soldier_rifle | normal | active 1.75 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__2k.png` | 92866 | `dc1064de50ebd872cd9c9d5c26cf4d05f2533258162ba06bb73e30a82757c77b` |
+| soldier_rifle | crowded | release 0.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__release__648p.png` | 53982 | `62c65f251edd31efb9d6dd7dacb95b0155748bc4f31c3258dc2489b0fe7af209` |
+| soldier_rifle | crowded | active 1.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__648p.png` | 53562 | `d30b579c09fa07e807aaf41276244173034d839b62ef3c877b40a146e3d23b60` |
+| soldier_rifle | crowded | recovery 2.9 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__recovery__648p.png` | 54295 | `b97c492c36a0e275d6c5bddff069fbd8933e39fa49601d005147e4bd650515d3` |
+| soldier_rifle | crowded | active 1.75 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__720p.png` | 62794 | `854752263c7b835de16286b04fc971b3a344a4bf53f5b798d29b6eefe2c02b7f` |
+| soldier_rifle | crowded | active 1.75 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__1080p.png` | 115017 | `2a6de2c61a5665955df710743e9c92894eb3820e3de2c275833374e77c872d46` |
+| soldier_rifle | crowded | active 1.75 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__2k.png` | 167868 | `947b12dcc5561e6deaf9081cbd951d77fdf8fbec7e905cb6df76da18718532f9` |
+| soldier_rifle | reduced_motion | release 0.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__release__648p.png` | 34823 | `2856d5e5f4b5861fbe119bb9bdbee4649e83af8e79990fbf2ab522d2839cbb49` |
+| soldier_rifle | reduced_motion | active 1.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__648p.png` | 34505 | `167eba89f02404c2d358e51936837b2461eb9546a9249a1318744e61fb8eed2a` |
+| soldier_rifle | reduced_motion | recovery 2.9 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__recovery__648p.png` | 35389 | `e0896a6a27891107997e48956524e453dea5ed5e5a1b27f41ce57158a6716554` |
+| soldier_rifle | reduced_motion | active 1.75 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__720p.png` | 37800 | `183680afdc2497aacfad5d7475f6ea5f5e6e935d2f9a1d9b8620021800b7a57a` |
+| soldier_rifle | reduced_motion | active 1.75 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__1080p.png` | 67172 | `eb7b0341cc911235c0ee9f9c2441b1087bd5e3b34d0b57f155765e72d6519d24` |
+| soldier_rifle | reduced_motion | active 1.75 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__2k.png` | 91180 | `0da375389d682bcb60b93ebf265ce63aa7b77e22a58044575744a0ea92da4b14` |
+| soldier_rifle | photosensitivity_safe | release 0.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__release__648p.png` | 34876 | `1729f0dc5d7251a9f4a8106eb168d3aff0109fb621cbe4f3e5280967adfcd675` |
+| soldier_rifle | photosensitivity_safe | active 1.75 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__648p.png` | 34745 | `fb567dd3b87665264477ce74bf77c6c03c1f26a2baca4809c5776f9bf739739c` |
+| soldier_rifle | photosensitivity_safe | recovery 2.9 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__recovery__648p.png` | 35500 | `8d65dae9652e8580911e28bcbdc6dea4b0e4203476d567a1be8fc664e52f44c9` |
+| soldier_rifle | photosensitivity_safe | active 1.75 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__720p.png` | 37255 | `2244571a6067864fc9d5d5d78076fe296ddeb3b4b71a4ad06828081523f49f76` |
+| soldier_rifle | photosensitivity_safe | active 1.75 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__1080p.png` | 66343 | `1f9a519265bae210523333327abf795353145965e859a1aed6ce94b6b92198a8` |
+| soldier_rifle | photosensitivity_safe | active 1.75 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__2k.png` | 90332 | `6aaad519b6f5e2f7ae7c88ffd70997c1d556ed7ee5e9878f33c87cac0afcfbb5` |
+| soldier_grenade | normal | release 0.85 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__release__648p.png` | 43950 | `df8b5d9ce825e2b0a1409d7b9b9b5424e945e7a2de941e86c35c1ac7821a0350` |
+| soldier_grenade | normal | active 1.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__648p.png` | 46368 | `70fc71e2314c8e50bf274cd7b115f2ae34c592c9ff26eba4eef177f9a54dfdd0` |
+| soldier_grenade | normal | recovery 3.2 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__recovery__648p.png` | 46419 | `126ca8d40d3e7744c563125a81b427c77518f0c4726975a0f47994ae135c85a2` |
+| soldier_grenade | normal | active 1.95 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__720p.png` | 53704 | `9442d35f45f3e1dd45a84544dcd6d7ef5fc2079fca5352ace5958ddde49a5eef` |
+| soldier_grenade | normal | active 1.95 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__1080p.png` | 98716 | `d90e4de06aaa0c154eb2a73e09636710572fa933b5cd28d930435994e92fb2ef` |
+| soldier_grenade | normal | active 1.95 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__2k.png` | 146692 | `1140ade9d72754d53f69d38497cabc6908653d0775bec89d0199fcb9663698b1` |
+| soldier_grenade | crowded | release 0.85 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__release__648p.png` | 161990 | `90d4f628b19c6a3768a57219c701711145f25c92130b7b5465ef088cfc115a2a` |
+| soldier_grenade | crowded | active 1.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__648p.png` | 163308 | `6576e0636d2e84c310ebac22ffb67ae82b881f7c72f9dbc527d8b157cc2fecae` |
+| soldier_grenade | crowded | recovery 3.2 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__recovery__648p.png` | 165693 | `6393947075fe576f80d5c63f0e8d510239ec5b08e20eca8696c172116ae62f77` |
+| soldier_grenade | crowded | active 1.95 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__720p.png` | 194515 | `633a039061f11798e526e425c5904c48c773a0619bfae9940dfc4354b95c1150` |
+| soldier_grenade | crowded | active 1.95 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__1080p.png` | 373736 | `5b7bc78fc29cb718a72e6a6c14717f635e56a6a74aefb53ad413f2dde28f0f06` |
+| soldier_grenade | crowded | active 1.95 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__2k.png` | 575684 | `1dc8559ff53cc91dc448cdff8dd5dfd23d2f7ac6e1d9a0e0f5e35ab83733a0de` |
+| soldier_grenade | reduced_motion | release 0.85 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__release__648p.png` | 45433 | `3cd66c6949eb1c35cce67f709180d8689e5fa0ed7cb6a52bb0647bfd086c6655` |
+| soldier_grenade | reduced_motion | active 1.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__648p.png` | 47982 | `02e3467a4f7a2020f805b87ac3ecf3f8d49ee666f4cf64235ec03433dcb8f959` |
+| soldier_grenade | reduced_motion | recovery 3.2 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__recovery__648p.png` | 47391 | `70fede63b5d2e6d82e23e5ba804ae3d812988ad32e79998512dfe360ecefae65` |
+| soldier_grenade | reduced_motion | active 1.95 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__720p.png` | 53458 | `edd288920922288e8ec0758be0ab4e4134e9f6d214533ef5e74b8635c232b986` |
+| soldier_grenade | reduced_motion | active 1.95 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__1080p.png` | 97713 | `b370e9edb88f52eb32a8265b65882a2e4ebe3e67a150c4f2327cfaf09868d2d1` |
+| soldier_grenade | reduced_motion | active 1.95 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__2k.png` | 145224 | `7d19b822d44ff7e86aa03d94ff5e1065ca98568bad87f97ace3c8ef00d46f417` |
+| soldier_grenade | photosensitivity_safe | release 0.85 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__release__648p.png` | 44846 | `d026bb6d213b771efdcfc7c333123e9e9bf8f9de80d707a48172c54a0e337416` |
+| soldier_grenade | photosensitivity_safe | active 1.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__648p.png` | 47971 | `18e77f9ec2a6f1368762ff0cea3de8278fdf93214f1f733a3b913d282a020142` |
+| soldier_grenade | photosensitivity_safe | recovery 3.2 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__recovery__648p.png` | 47370 | `ee12b45076f9bccf3ea82064fd78a00ef75bffc9269a3fea7cb2d27944b7ab71` |
+| soldier_grenade | photosensitivity_safe | active 1.95 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__720p.png` | 53262 | `08f3934878cbb8072a2023380930b5d39a44174ee7356de7dbd23ab2e0f3cdd2` |
+| soldier_grenade | photosensitivity_safe | active 1.95 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__1080p.png` | 97149 | `43278499bce1eee01b05ec88f5ffd995ab07a3b605ed355c24008216646ff1fc` |
+| soldier_grenade | photosensitivity_safe | active 1.95 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__2k.png` | 144323 | `30b260f14a5854dae82b340ebe1ba69ac627b003a820e6a379ee780911bd3bdf` |
+| soldier_bayonet | normal | release 0.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__release__648p.png` | 30969 | `bdf98fe683f4c55ffee81a7118794998cec00318d20a33cf35935ad575ada44b` |
+| soldier_bayonet | normal | active 2.15 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__648p.png` | 32384 | `effc0160f0ce1e9daecfa5129817541acf2dc1476da4acb61dba72aaf019cc2a` |
+| soldier_bayonet | normal | recovery 3.5 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__recovery__648p.png` | 33172 | `09add47c12a9fbcede288fff5e886af49ac7f5e9ae1aa6c405a521304ff8a5b8` |
+| soldier_bayonet | normal | active 2.15 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__720p.png` | 36041 | `4d158214c0906b7b163cb93174168dd66108b0d0f4721b8d4a73778c5cd967a5` |
+| soldier_bayonet | normal | active 2.15 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__1080p.png` | 62390 | `a0df562b6c2974f128f48ed26f7b32be06d37571f7e0ed25a694caa3f9bfbe5b` |
+| soldier_bayonet | normal | active 2.15 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__2k.png` | 85455 | `19804ad2df0e529523b45401202dbaf5ed3f3489f3988f4e2f92e355e61ae8fd` |
+| soldier_bayonet | crowded | release 0.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__release__648p.png` | 76547 | `002c58502ded447b192bbe3b8b27efe92d5210b9a4135367fd238130649e90b6` |
+| soldier_bayonet | crowded | active 2.15 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__648p.png` | 77168 | `51dc10c0749b6d68e121725653735c49e32fba455da26621b6727eba86c2fc69` |
+| soldier_bayonet | crowded | recovery 3.5 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__recovery__648p.png` | 80688 | `f19ce01653dfaa9f0d951f76d31e200821b85284716fbd290faa3fc45e7988d5` |
+| soldier_bayonet | crowded | active 2.15 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__720p.png` | 91360 | `d1498b716c3da7e458b0b9073621cc1fa2ffd5fa546e0f9a8b820a4de02efc76` |
+| soldier_bayonet | crowded | active 2.15 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__1080p.png` | 165408 | `a1cdd12cf42685b320d916479ac54bd9b4721d9c64fc80fda7c87f47f015d2d7` |
+| soldier_bayonet | crowded | active 2.15 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__2k.png` | 243127 | `3ce543f2031b9f372ee76ca53da2b7968c7ac8d59fabd6559330c05777bb6681` |
+| soldier_bayonet | reduced_motion | release 0.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__release__648p.png` | 32327 | `3c7af1ca3fca5c631a9cc58f5123d5989bec46c49d81d7c324ae3928e64fb0e1` |
+| soldier_bayonet | reduced_motion | active 2.15 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__648p.png` | 34326 | `d4a580eb48c6243825bb7bcd2af44edf0f7104bd7e1870158f35d26e0307fbc5` |
+| soldier_bayonet | reduced_motion | recovery 3.5 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__recovery__648p.png` | 34731 | `a016484086e7bc4302fb8b9382bf9b2dc3980a8f14d80aaacfc67c7338a00a5e` |
+| soldier_bayonet | reduced_motion | active 2.15 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__720p.png` | 35872 | `b7939cdbec8413929bb17f07d9611075c65c8e9fa7ee677dbd17e7d1d5318d80` |
+| soldier_bayonet | reduced_motion | active 2.15 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__1080p.png` | 61461 | `f1839c62eed291aa8926f018d55f1b9f423817967a80de029bd9e27b9b404435` |
+| soldier_bayonet | reduced_motion | active 2.15 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__2k.png` | 83997 | `c9cfd9a1532e5c386b59404550e1e084f8628537115d77478ed4f42c0a2960ed` |
+| soldier_bayonet | photosensitivity_safe | release 0.95 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__release__648p.png` | 31246 | `9b8d68ada3457c3ace4d7f2ed0838770efe5c972f07b5d37b29bf6685c6faeeb` |
+| soldier_bayonet | photosensitivity_safe | active 2.15 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__648p.png` | 34006 | `b91250179eff2fbc6216fff941c9716e12a34a3dd65bf40b89a1b0d4a501663d` |
+| soldier_bayonet | photosensitivity_safe | recovery 3.5 s | 1152x648 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__recovery__648p.png` | 33823 | `7e01ae6858db2c8f779d440b491d64499b5dec1e72dc492d1ad582906f8e7c72` |
+| soldier_bayonet | photosensitivity_safe | active 2.15 s | 1280x720 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__720p.png` | 35507 | `976bf3e7f103e600d59be7941228a2126ff2adc2a858cd8a7653cf95c1dbb29c` |
+| soldier_bayonet | photosensitivity_safe | active 2.15 s | 1920x1080 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__1080p.png` | 60471 | `06052aef72fcec2bac60131feaa88bb0443bb50835f4d67afb9bf6bcd711865f` |
+| soldier_bayonet | photosensitivity_safe | active 2.15 s | 2560x1440 | `docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__2k.png` | 82800 | `2ab667c136e8799a1a099e149c848e4f656f2c326b87990541e5672692cd3b14` |

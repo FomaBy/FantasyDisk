@@ -1,0 +1,3618 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3941",
+  "class_id": "ranger",
+  "canonical_keys": [
+    "ranger/moon_crossbow",
+    "ranger/storm_longbow",
+    "ranger/hunter_trap"
+  ],
+  "source": {
+    "ref": "dev",
+    "commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "note": "Integrated origin/dev revision whose shipped Ranger scenes, pack and assets were rendered; the capture tooling, frames and this manifest are added by FAN-3941 on top of it and change no production scene."
+  },
+  "engine": {
+    "godot": "4.7-stable (official)",
+    "rendering_method": "gl_compatibility",
+    "rendering_driver": "opengl3",
+    "video_adapter": "Apple M4 Pro",
+    "os": "macOS 26.5.1",
+    "display_server": "macOS",
+    "captured_at_utc": "2026-09-09 02:59:29"
+  },
+  "capture": {
+    "script": "tests/ultimates/presentation/ranger_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/ranger_certification_capture_test.gd",
+    "capture_command": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/ranger_certification_live_capture.gd",
+    "test_command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/ranger_certification_capture_test.gd",
+    "exclusive_gate": false,
+    "headless_skipped": false,
+    "seed": 3941,
+    "seed_note": "seed() is set for completeness; the capture path draws no random value (no camera exists for the shake device, the crowd is a fixed grid and the impact ripple is distance-ordered).",
+    "method": "Each frame is a SubViewport at the exact viewport size: floor, two striped hazards, the hero full frame at the Player combat scale, a crowd grid at the declared crowd cap (crowded), the shipped scene instantiated and driven with begin()/step() in fixed 1/120 s steps to the beat and held, the weapon's victim-impact flipbook on the crowd (crowded), the real UltimateHudWidget fed a registry snapshot, and a caption band with mode/weapon swatches. The scene is placed at the game's on-screen scale (viewport_height / 1440 * combat camera zoom 1.12) and never fitted. Opaque coverage is measured on a scene-only transparent render of the same composition with the veil hidden (alpha >= 0.5, stride 2). The photosensitivity-safe variant hides the authored backdrop veil after the beat is drawn; reduced motion applies the shipped screen_shake toggle on the tree root.",
+    "logical_canvas": "2560x1440",
+    "stretch_mode": "canvas_items",
+    "combat_camera_zoom": 1.12,
+    "player_visual_scale": 0.64,
+    "player_sprite": "res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png",
+    "hud_widget": "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "hud_state": "ultimate_hud_view_model.gd build() of tests/ultimates/hud_fixture_library.gd weapon_profile_snapshot(class, weapon) with charge fraction 1.0, active true and keyboard input",
+    "seek_step_seconds": 0.0083,
+    "coverage_alpha_min": 0.5,
+    "coverage_stride": 2
+  },
+  "arena": {
+    "hud_band_height_ratio": 0.12,
+    "state_band_height_ratio": 0.07,
+    "player_column_width_ratio": 0.16,
+    "hazard_column_width_ratio": 0.12,
+    "hazard_logical_size": 128.0,
+    "crowd_logical_radius": 28.0
+  },
+  "modes": [
+    "normal",
+    "crowded",
+    "reduced_motion",
+    "photosensitivity_safe"
+  ],
+  "mode_details": [
+    {
+      "id": "normal",
+      "label": "NORMAL",
+      "crowd": "none",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "crowded",
+      "label": "CROWDED",
+      "crowd": "declared crowd_cap per weapon",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": true
+    },
+    {
+      "id": "reduced_motion",
+      "label": "REDUCED MOTION",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "photosensitivity_safe",
+      "label": "PHOTOSENSITIVITY-SAFE",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": false,
+      "victim_impacts": false
+    }
+  ],
+  "beats": [
+    "release",
+    "active",
+    "recovery"
+  ],
+  "beat_rule": "midpoint of the declared phase window; the active beat is committed at every viewport, release and recovery at 648p",
+  "viewports": {
+    "648p": {
+      "width": 1152,
+      "height": 648,
+      "on_screen_scale": 0.504,
+      "ui_scale": 0.45
+    },
+    "720p": {
+      "width": 1280,
+      "height": 720,
+      "on_screen_scale": 0.56,
+      "ui_scale": 0.5
+    },
+    "1080p": {
+      "width": 1920,
+      "height": 1080,
+      "on_screen_scale": 0.84,
+      "ui_scale": 0.75
+    },
+    "2k": {
+      "width": 2560,
+      "height": 1440,
+      "on_screen_scale": 1.12,
+      "ui_scale": 1.0
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
+      "crowd_cap": 12,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.05,
+        "recovery": 2.6,
+        "cancel": 3.1
+      },
+      "beats_seconds": {
+        "release": 0.88,
+        "active": 1.83,
+        "recovery": 2.85
+      },
+      "backdrop": {
+        "peak": 0.3,
+        "rises": 1,
+        "duration": 3.1
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 94,
+        "duration_seconds": 3.1,
+        "peak_opaque_coverage_ratio": 0.0039,
+        "peak_at_seconds": 0.67
+      },
+      "max_opaque_coverage_ratio": 0.0039
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
+      "crowd_cap": 12,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.95,
+        "recovery": 2.85,
+        "cancel": 3.45
+      },
+      "beats_seconds": {
+        "release": 0.77,
+        "active": 1.9,
+        "recovery": 3.15
+      },
+      "backdrop": {
+        "peak": 0.278189655172415,
+        "rises": 1,
+        "duration": 3.45
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 104,
+        "duration_seconds": 3.45,
+        "peak_opaque_coverage_ratio": 0.0042,
+        "peak_at_seconds": 0.73
+      },
+      "max_opaque_coverage_ratio": 0.0042
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
+      "crowd_cap": 12,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.4,
+        "recovery": 2.7,
+        "cancel": 3.8
+      },
+      "beats_seconds": {
+        "release": 1.17,
+        "active": 2.05,
+        "recovery": 3.25
+      },
+      "backdrop": {
+        "peak": 0.34,
+        "rises": 1,
+        "duration": 3.8
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 115,
+        "duration_seconds": 3.8,
+        "peak_opaque_coverage_ratio": 0.0112,
+        "peak_at_seconds": 1.8
+      },
+      "max_opaque_coverage_ratio": 0.0112
+    }
+  ],
+  "coverage": {
+    "combinations": 48,
+    "expected_frames": 72,
+    "written_frames": 72
+  },
+  "captures": [
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.88,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__release__648p.png",
+      "sha256": "7898991ae9c44922a52dfb650b2b6ea749b567d1b44fad516b0b639318a0e8b0",
+      "bytes": 31574,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          553.3,
+          315.4,
+          57.0,
+          57.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.251
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__active__648p.png",
+      "sha256": "f281be11dcebb33c807cccebcc6b81afea022a09259a9207b8d16baa666dad1f",
+      "bytes": 52352,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          581.7,
+          253.3,
+          127.5,
+          127.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.85,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__recovery__648p.png",
+      "sha256": "2e6a75dce7f3e4a1f9142549dfe9aa7635db1fd074221f06835619e692fcd550",
+      "bytes": 35934,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          613.2,
+          284.8,
+          64.5,
+          64.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.15
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.605,
+            "hue_spread": 0.765,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__active__720p.png",
+      "sha256": "59733b653b637581f80c9602f4b87e60495269925fc062d692c6cfb30e4b6997",
+      "bytes": 60164,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          646.3,
+          281.4,
+          141.7,
+          141.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0169,
+        "player_contrast_ratio": 0.2083,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__active__1080p.png",
+      "sha256": "3d70c0f9760d9ab45ba74ec656717a4432f8eb161c52fc18633fedb1c2104976",
+      "bytes": 107699,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          969.4,
+          422.1,
+          212.5,
+          212.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0133,
+        "player_contrast_ratio": 0.2198,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__normal__active__2k.png",
+      "sha256": "a5c9e040b9f58b11f88eacfb9ecc874c2d3d91a14ffd63c026fe24467665bde7",
+      "bytes": 154824,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          1292.6,
+          562.8,
+          283.3,
+          283.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2225,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.88,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__release__648p.png",
+      "sha256": "eb813b3acae1993726ca74db004196c36e11a8d6b96a419070013907fffb18b1",
+      "bytes": 90966,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          553.3,
+          315.4,
+          57.0,
+          57.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.251
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.6,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__active__648p.png",
+      "sha256": "2e726f95beb6181487b7b34124b893168da1ebc254487f636922e5d3329e962e",
+      "bytes": 98970,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          581.7,
+          253.3,
+          127.5,
+          127.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.85,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__recovery__648p.png",
+      "sha256": "061e12ba3f3d31cdf681a6b846aa658d65e497dbeb04f432af9ee1d6a99c641d",
+      "bytes": 82533,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          613.2,
+          284.8,
+          64.5,
+          64.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.15
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.605,
+            "hue_spread": 0.765,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__active__720p.png",
+      "sha256": "c4143a91216b979d9fb52a234b531433739354770a7250ebb203be9cc34f5e93",
+      "bytes": 116487,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          646.3,
+          281.4,
+          141.7,
+          141.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0169,
+        "player_contrast_ratio": 0.2083,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__active__1080p.png",
+      "sha256": "6e2614658c56875d9b806981e7069052775451f957486f8e4e06813a821db51a",
+      "bytes": 223210,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          969.4,
+          422.1,
+          212.5,
+          212.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0133,
+        "player_contrast_ratio": 0.2198,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__crowded__active__2k.png",
+      "sha256": "93677e95b7ee7287229167f73266548e269ea704d7f9efdd9bb99066a72a2da1",
+      "bytes": 343501,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          1292.6,
+          562.8,
+          283.3,
+          283.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2225,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.88,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__release__648p.png",
+      "sha256": "44d016c2e6812f4ca2c54b0931039503506758ad7ca948aec35f24f90ad7ebb6",
+      "bytes": 46705,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          553.3,
+          315.4,
+          57.0,
+          57.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.251
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.6,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__active__648p.png",
+      "sha256": "43beccd3fddc52a3475a924e1a4291e5106a38e84d837af34760df283bbec469",
+      "bytes": 54585,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          581.7,
+          253.3,
+          127.5,
+          127.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.85,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__recovery__648p.png",
+      "sha256": "fdaabe1a6aa4f402873cc5a8a7d29f6f1750a41394bdffeba8e8fe903e13b4c5",
+      "bytes": 38126,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          613.2,
+          284.8,
+          64.5,
+          64.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.15
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.605,
+            "hue_spread": 0.765,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__active__720p.png",
+      "sha256": "95674c547bacee0ef84a83ead7d6321e806e97ca3943ea1b3149695962b9842a",
+      "bytes": 59246,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          646.3,
+          281.4,
+          141.7,
+          141.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0169,
+        "player_contrast_ratio": 0.2083,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__active__1080p.png",
+      "sha256": "fed53aeeb4ce2dc989303ebd8294b398a17ca8b65641a1baad268318b6234d90",
+      "bytes": 105784,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          969.4,
+          422.1,
+          212.5,
+          212.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0133,
+        "player_contrast_ratio": 0.2198,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__reduced_motion__active__2k.png",
+      "sha256": "3a1247438dbeff179051bb47c613ad5db0101d574ef6683ba385b82f075626ca",
+      "bytes": 152893,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          1292.6,
+          562.8,
+          283.3,
+          283.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.3
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2225,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.599,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.88,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__release__648p.png",
+      "sha256": "322eb48d632c9b16bba7980efa7f3d4551cc142b305de95e821726c5fcad81c1",
+      "bytes": 38230,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          553.3,
+          315.4,
+          57.0,
+          57.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__active__648p.png",
+      "sha256": "70ddfb2e9df76953a6e3fcbc1e70d35fce3387962d7de4acdd8c16a097a87f49",
+      "bytes": 45044,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          581.7,
+          253.3,
+          127.5,
+          127.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.85,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__recovery__648p.png",
+      "sha256": "aa4df974d4b034280a6f0c50095ee756ae6c648e74f6ce966da7928d12510c03",
+      "bytes": 33938,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          613.2,
+          284.8,
+          64.5,
+          64.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0162,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__active__720p.png",
+      "sha256": "4947d18d1f860c5a0f06e94d7b0055271edbb85f8edb6fb38f649ac95f5d450d",
+      "bytes": 49188,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          646.3,
+          281.4,
+          141.7,
+          141.7
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0169,
+        "player_contrast_ratio": 0.2109,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__active__1080p.png",
+      "sha256": "cb123f195faa4100b99486d7d6cf626c8c05a3276dd9052731e051bd8bb67108",
+      "bytes": 90747,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0026,
+        "effect_bounds": [
+          969.4,
+          422.1,
+          212.5,
+          212.5
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0133,
+        "player_contrast_ratio": 0.223,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "moon_crossbow",
+      "key": "ranger/moon_crossbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.83,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/moon_crossbow__photosensitivity_safe__active__2k.png",
+      "sha256": "051710ab1ed68178071c2e0ac53adc01eaffca558fa127a2742bd550d7b894c3",
+      "bytes": 133225,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0027,
+        "effect_bounds": [
+          1292.6,
+          562.8,
+          283.3,
+          283.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.226,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.77,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__release__648p.png",
+      "sha256": "ebe68a9ac662e5b6acbb050b8af49604e31b5377ff22cf84ca21d8be1c344cb9",
+      "bytes": 111965,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0022,
+        "effect_bounds": [
+          538.7,
+          285.3,
+          171.5,
+          91.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.2
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.232,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.616,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__active__648p.png",
+      "sha256": "c6f010d47b0f4146f168333880205ccccd58985fb7d0fd11638a12cf7fd3b3fb",
+      "bytes": 60469,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          497.3,
+          300.1,
+          244.0,
+          80.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2219,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.15,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__recovery__648p.png",
+      "sha256": "f7cfbe27c5c760a5a5a9385df730787ba2aaa3b957ed0f2cd416bd711733cf4a",
+      "bytes": 39329,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          506.7,
+          305.3,
+          240.9,
+          69.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.008
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__active__720p.png",
+      "sha256": "d89df7d08aaf09f30febfbd4b89385956e6020f7f0f1466c96bfa89f098900cd",
+      "bytes": 69262,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          552.6,
+          333.4,
+          271.1,
+          89.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.2134,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__active__1080p.png",
+      "sha256": "fbf8c42eab3a407f968794ddafb8ddce37036cd7e78d064a6f84d0040b1d4a91",
+      "bytes": 119578,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          828.9,
+          500.1,
+          406.6,
+          133.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2258,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__normal__active__2k.png",
+      "sha256": "00c497ca2cd00e1f70227b2be65fc537a79fceb106d1c416c6ba2c46b5d0ddfe",
+      "bytes": 166551,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          1105.2,
+          666.8,
+          542.2,
+          178.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2279,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.77,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__release__648p.png",
+      "sha256": "cb08fc4ff214af1c545b342f67004d251a3d8719c9ef7adb2949c6fbbee6c6b7",
+      "bytes": 157699,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0022,
+        "effect_bounds": [
+          538.7,
+          285.3,
+          171.5,
+          91.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.2
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.232,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.616,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__active__648p.png",
+      "sha256": "a5c3f730e1e8b5fe197b2680c8d8be583723d52ccfdf19bb73a3a4ab5857c201",
+      "bytes": 101004,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          497.3,
+          300.1,
+          244.0,
+          80.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2219,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.15,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__recovery__648p.png",
+      "sha256": "c4538928f56ed3ac69c9e22dda9367fb5ebedd872fd4d2b0d65269d085f2b540",
+      "bytes": 79119,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          506.7,
+          305.3,
+          240.9,
+          69.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.008
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__active__720p.png",
+      "sha256": "0c2f67cb0c80c6ded3d33081b16de65db804e4fbd65f7947e7e68e48a7ea8b78",
+      "bytes": 117467,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          552.6,
+          333.4,
+          271.1,
+          89.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.2134,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__active__1080p.png",
+      "sha256": "a64f9439ccdc80e5b7bf1e03843b3beb7cbe5bd07c5317baeccc1106bbcf826c",
+      "bytes": 216645,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          828.9,
+          500.1,
+          406.6,
+          133.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2258,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__crowded__active__2k.png",
+      "sha256": "aa5f03bf0b3ec089a787c3facc2404b848277709891f625daf9821d66e1be200",
+      "bytes": 325015,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          1105.2,
+          666.8,
+          542.2,
+          178.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2279,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.77,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__release__648p.png",
+      "sha256": "caa946d6bf07f0146b4d7752a844c7aefcb8a25d1e91e5e1d713aa9f97e34d2f",
+      "bytes": 113743,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0022,
+        "effect_bounds": [
+          538.7,
+          285.3,
+          171.5,
+          91.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.2
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.232,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.616,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__active__648p.png",
+      "sha256": "c7d3614fddbbf66f068bc8fb58a289e639c52b32dbf030ebde12ab79049a5ef0",
+      "bytes": 62004,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          497.3,
+          300.1,
+          244.0,
+          80.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2219,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.15,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__recovery__648p.png",
+      "sha256": "8e5b5a3b2a677535a1a565d6cc24c18abdc69602d809be0cd48678a9be96e82c",
+      "bytes": 40556,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          506.7,
+          305.3,
+          240.9,
+          69.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.008
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__active__720p.png",
+      "sha256": "74a94554ac50672a57a9294620fa27b71db2f895d99af8d583445df0d82a54ed",
+      "bytes": 68458,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          552.6,
+          333.4,
+          271.1,
+          89.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.2134,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__active__1080p.png",
+      "sha256": "f8c48e1763567449aefeec5bd9e6a4fc028e07b4938e73d43b127b62d0261e2f",
+      "bytes": 117774,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          828.9,
+          500.1,
+          406.6,
+          133.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.2258,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__reduced_motion__active__2k.png",
+      "sha256": "69d823ffa76197bb6c7ad260f3cd45e404e11eab094553cb004f44476cf65d54",
+      "bytes": 165720,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          1105.2,
+          666.8,
+          542.2,
+          178.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.043
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.2279,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.773,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.77,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__release__648p.png",
+      "sha256": "deceaaf6361277f6ab410c7774ce7cd1b685298789630c20156b24ffdd0e92ea",
+      "bytes": 42870,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0022,
+        "effect_bounds": [
+          538.7,
+          285.3,
+          171.5,
+          91.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__active__648p.png",
+      "sha256": "38941fc6ba60e5f328dad9d2378dd7fa679a08c23e318f494e5fcc32a985b259",
+      "bytes": 38119,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          497.3,
+          300.1,
+          244.0,
+          80.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.15,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__recovery__648p.png",
+      "sha256": "39d68578de96adcfb311683a5c54a3b7a5101f8ae57017d1bf64d9c113aad30f",
+      "bytes": 37051,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          506.7,
+          305.3,
+          240.9,
+          69.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__active__720p.png",
+      "sha256": "1ac47ab7c22256161338be8fccc7759247e79d47dea490b6aaf014a5a7a42248",
+      "bytes": 41553,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          552.6,
+          333.4,
+          271.1,
+          89.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.2109,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__active__1080p.png",
+      "sha256": "5ddda1e79c279dde4ba7b19dbf9068a63bb5f7694b775bfa4770a77c1db5ecae",
+      "bytes": 72779,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          828.9,
+          500.1,
+          406.6,
+          133.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.223,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "key": "ranger/storm_longbow",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.9,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/storm_longbow__photosensitivity_safe__active__2k.png",
+      "sha256": "0e2b81e6f1fcbf078d161659d5f3281151e54f544b70edf4527073160d5e451e",
+      "bytes": 102825,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0005,
+        "effect_bounds": [
+          1105.2,
+          666.8,
+          542.2,
+          178.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.226,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.17,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__release__648p.png",
+      "sha256": "6bad1272ab2ae11ca392f3a2c3aa89ec8607eeb1c44c5232abdd8a1428b1e91d",
+      "bytes": 60036,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0052,
+        "effect_bounds": [
+          505.0,
+          248.0,
+          188.0,
+          162.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.284
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.6,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__active__648p.png",
+      "sha256": "717ff57938a925de999b9ecbc93c93dbff90d7486eac3d15b5cc5efedf9394b2",
+      "bytes": 70130,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          514.2,
+          267.6,
+          169.6,
+          146.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__recovery__648p.png",
+      "sha256": "924530eb18b839706b58f8d61ee66ec97f8421b17c16f4b0e7543d7155ac4d4f",
+      "bytes": 46365,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          543.3,
+          291.1,
+          111.5,
+          96.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.17
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.604,
+            "hue_spread": 0.769,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__active__720p.png",
+      "sha256": "147b4f6a29f69c4df37ca94bccf24a287aa1a2ffc08472fc3344273ee2ea1f6b",
+      "bytes": 81775,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          571.4,
+          297.3,
+          188.5,
+          163.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.209,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__active__1080p.png",
+      "sha256": "20897363f258763426ebfc6ae76b24e7e3517d8c33c6ea1687f4d6da8ce5857f",
+      "bytes": 155157,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          857.1,
+          446.0,
+          282.7,
+          244.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0131,
+        "player_contrast_ratio": 0.2204,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__normal__active__2k.png",
+      "sha256": "54725917d2184ce55857be145d66d7e73d20ee745a20280515868835be167e1d",
+      "bytes": 233372,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          1142.7,
+          594.7,
+          376.9,
+          326.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2223,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.17,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__release__648p.png",
+      "sha256": "b7b598da238cdb2e642e1dcc4ca1f23362988c1fdc12235b987aac3ef3550c1d",
+      "bytes": 119323,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0052,
+        "effect_bounds": [
+          505.0,
+          248.0,
+          188.0,
+          162.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.284
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.6,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__active__648p.png",
+      "sha256": "c750ffb40495b8b37b014e80c1a4468bdb4dae0369a0083a65854c907ec51654",
+      "bytes": 130099,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          514.2,
+          267.6,
+          169.6,
+          146.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__recovery__648p.png",
+      "sha256": "594c06552b28b57903002d3d3d885aab64aa9bb72e7f020e8a087034cf1f5c95",
+      "bytes": 105853,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          543.3,
+          291.1,
+          111.5,
+          96.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.17
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.604,
+            "hue_spread": 0.769,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__active__720p.png",
+      "sha256": "baf089759227f8081040c936f542a4421494ab8cea226ff1f4c2df9cf8c2a053",
+      "bytes": 154545,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          571.4,
+          297.3,
+          188.5,
+          163.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.209,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__active__1080p.png",
+      "sha256": "6de2a8a83c778eb4daf48a8eafd3f057740534d537a9d143d9b15b5eb581894c",
+      "bytes": 292368,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          857.1,
+          446.0,
+          282.7,
+          244.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0131,
+        "player_contrast_ratio": 0.2204,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__crowded__active__2k.png",
+      "sha256": "26602b8eb3ecb72ccb4304686d33a96452a88a582c1bcf27c33260206a7b289a",
+      "bytes": 452033,
+      "screen_shake": true,
+      "crowd": 12,
+      "victim_impacts": 12,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          1142.7,
+          594.7,
+          376.9,
+          326.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2223,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.17,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__release__648p.png",
+      "sha256": "80b1167280193a8277118bc4d86c270b6bc345461b9541754df209d0a6719c50",
+      "bytes": 59525,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0052,
+        "effect_bounds": [
+          505.0,
+          248.0,
+          188.0,
+          162.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.284
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.6,
+            "hue_spread": 0.761,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__active__648p.png",
+      "sha256": "61007910ca6a57c4110ecc25eb9ae9a25bd016eb163cf83ef490170845a2049b",
+      "bytes": 69674,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          514.2,
+          267.6,
+          169.6,
+          146.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2188,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__recovery__648p.png",
+      "sha256": "716ee7934cd822792f18a89af807a7ae0a80f858a462bd25aacbf05b29049408",
+      "bytes": 47544,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          543.3,
+          291.1,
+          111.5,
+          96.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.17
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2195,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.604,
+            "hue_spread": 0.769,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__active__720p.png",
+      "sha256": "e3f3839c7762e709220f21f9634a24fb652789985993b5ac5c17e47330cb475c",
+      "bytes": 81112,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          571.4,
+          297.3,
+          188.5,
+          163.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.209,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.596,
+            "hue_spread": 0.757,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__active__1080p.png",
+      "sha256": "9658878e1ab9edb4ef65192c6f71589061fe3bbb133a19cab09923199eddcd31",
+      "bytes": 153049,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          857.1,
+          446.0,
+          282.7,
+          244.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0131,
+        "player_contrast_ratio": 0.2204,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__reduced_motion__active__2k.png",
+      "sha256": "a6e74ce1a044198271fd1efbd2af9073c14cc505036d2e8dc802829edab9892e",
+      "bytes": 231800,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          1142.7,
+          594.7,
+          376.9,
+          326.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.34
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.2223,
+        "hazards": [
+          {
+            "contrast": 0.612,
+            "hue_spread": 0.773,
+            "warm": true
+          },
+          {
+            "contrast": 0.595,
+            "hue_spread": 0.753,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 1.17,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__release__648p.png",
+      "sha256": "1daa3059555377c2e4084345a417559a3d72b1ff70d2f5ec9fa77581ed022012",
+      "bytes": 53481,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0052,
+        "effect_bounds": [
+          505.0,
+          248.0,
+          188.0,
+          162.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__active__648p.png",
+      "sha256": "d65163e874ac4a56a97834062cfa911e0a075df2b8764aa7fb822628d97a25b6",
+      "bytes": 62556,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          514.2,
+          267.6,
+          169.6,
+          146.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__recovery__648p.png",
+      "sha256": "5aa79831db33f6381f533d18c1136ca93bbb56f74eafff3fe2566436a1494c9a",
+      "bytes": 42766,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0001,
+        "effect_bounds": [
+          543.3,
+          291.1,
+          111.5,
+          96.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0163,
+        "player_contrast_ratio": 0.2203,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__active__720p.png",
+      "sha256": "1c7a451f7ba1d01520ba0d2736a1b2d6bd2031c13b664d2748ba60411ffb0131",
+      "bytes": 71638,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          571.4,
+          297.3,
+          188.5,
+          163.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.2109,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__active__1080p.png",
+      "sha256": "3d82f8e4984ceb44cae044d13e8d8917dcfe8d94635d7e89c3847717fb630dc0",
+      "bytes": 138687,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0107,
+        "effect_bounds": [
+          857.1,
+          446.0,
+          282.7,
+          244.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0131,
+        "player_contrast_ratio": 0.223,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "key": "ranger/hunter_trap",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/ranger/hunter_trap__photosensitivity_safe__active__2k.png",
+      "sha256": "975633bac20e92e5d8181d1ebcd51ce1b960e0f165a1b146f7dcb6397ccc0cf8",
+      "bytes": 216813,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0106,
+        "effect_bounds": [
+          1142.7,
+          594.7,
+          376.9,
+          326.4
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0149,
+        "player_contrast_ratio": 0.226,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    }
+  ]
+}

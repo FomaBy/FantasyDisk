@@ -1,0 +1,3751 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3941",
+  "class_id": "soldier",
+  "canonical_keys": [
+    "soldier/soldier_rifle",
+    "soldier/soldier_grenade",
+    "soldier/soldier_bayonet"
+  ],
+  "source": {
+    "ref": "dev",
+    "commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "note": "Integrated origin/dev revision whose shipped Soldier scenes and assets were rendered; the capture tooling, frames and this manifest are added by FAN-3941 on top of it and change no production scene."
+  },
+  "engine": {
+    "godot": "4.7-stable (official)",
+    "rendering_method": "gl_compatibility",
+    "rendering_driver": "opengl3",
+    "video_adapter": "Apple M4 Pro",
+    "os": "macOS 26.5.1",
+    "display_server": "macOS",
+    "captured_at_utc": "2026-09-09 03:04:27"
+  },
+  "capture": {
+    "script": "tests/ultimates/presentation/soldier_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/soldier_certification_capture_test.gd",
+    "capture_command": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/soldier_certification_live_capture.gd",
+    "test_command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/soldier_certification_capture_test.gd",
+    "exclusive_gate": false,
+    "headless_skipped": false,
+    "seed": 3941,
+    "seed_note": "seed() is set for completeness; the capture path draws no random value (no camera exists for the shake device, the crowd is a fixed grid and the impact ripple is distance-ordered).",
+    "method": "Each frame is a SubViewport at the exact viewport size: floor, two striped hazards, the hero full frame at the Player combat scale, a crowd grid at the declared crowd cap (crowded), the shipped scene instantiated with its authored AnimationPlayer timeline played, sought to the beat with update and paused, the weapon's victim-impact flipbook played on the crowd through the scene's own present() route (crowded), the real UltimateHudWidget fed a registry snapshot, and a caption band with mode/weapon swatches. The scene is placed at the game's on-screen scale (viewport_height / 1440 * combat camera zoom 1.12) and never fitted. Opaque coverage is measured on a scene-only transparent render of the same composition (alpha >= 0.5, stride 2). The Soldier scenes author no arena-wide surface, so the photosensitivity-safe variant is the shipped scene with the screen_shake toggle off (the gate counts full-screen surfaces and requires zero); reduced motion applies the shipped screen_shake toggle on the tree root.",
+    "logical_canvas": "2560x1440",
+    "stretch_mode": "canvas_items",
+    "combat_camera_zoom": 1.12,
+    "player_visual_scale": 0.64,
+    "player_sprite": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
+    "hud_widget": "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "hud_state": "ultimate_hud_view_model.gd build() of tests/ultimates/hud_fixture_library.gd weapon_profile_snapshot(class, weapon) with charge fraction 1.0, active true and keyboard input",
+    "seek_method": "AnimationPlayer.play(ultimate) + seek(beat, true) + pause()",
+    "coverage_alpha_min": 0.5,
+    "coverage_stride": 2
+  },
+  "arena": {
+    "hud_band_height_ratio": 0.12,
+    "state_band_height_ratio": 0.07,
+    "player_column_width_ratio": 0.16,
+    "hazard_column_width_ratio": 0.12,
+    "hazard_logical_size": 128.0,
+    "crowd_logical_radius": 28.0
+  },
+  "modes": [
+    "normal",
+    "crowded",
+    "reduced_motion",
+    "photosensitivity_safe"
+  ],
+  "mode_details": [
+    {
+      "id": "normal",
+      "label": "NORMAL",
+      "crowd": "none",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "crowded",
+      "label": "CROWDED",
+      "crowd": "declared crowd_cap per weapon",
+      "screen_shake": true,
+      "backdrop_veil": true,
+      "victim_impacts": true
+    },
+    {
+      "id": "reduced_motion",
+      "label": "REDUCED MOTION",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": true,
+      "victim_impacts": false
+    },
+    {
+      "id": "photosensitivity_safe",
+      "label": "PHOTOSENSITIVITY-SAFE",
+      "crowd": "none",
+      "screen_shake": false,
+      "backdrop_veil": false,
+      "victim_impacts": false
+    }
+  ],
+  "beats": [
+    "release",
+    "active",
+    "recovery"
+  ],
+  "beat_rule": "midpoint of the declared phase window; the active beat is committed at every viewport, release and recovery at 648p",
+  "viewports": {
+    "648p": {
+      "width": 1152,
+      "height": 648,
+      "on_screen_scale": 0.504,
+      "ui_scale": 0.45
+    },
+    "720p": {
+      "width": 1280,
+      "height": 720,
+      "on_screen_scale": 0.56,
+      "ui_scale": 0.5
+    },
+    "1080p": {
+      "width": 1920,
+      "height": 1080,
+      "on_screen_scale": 0.84,
+      "ui_scale": 0.75
+    },
+    "2k": {
+      "width": 2560,
+      "height": 1440,
+      "on_screen_scale": 1.12,
+      "ui_scale": 1.0
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+      "crowd_cap": 22,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.9,
+        "recovery": 2.6,
+        "cancel": 3.2
+      },
+      "beats_seconds": {
+        "release": 0.75,
+        "active": 1.75,
+        "recovery": 2.9
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "tracks": 4,
+        "animation_length": 3.2,
+        "max_element_rise_hz": 0.94,
+        "fastest_node": "MuzzleFlashWave",
+        "element_flicker": {
+          "WarBanner": {
+            "rises": 1,
+            "hz": 0.31,
+            "peak_alpha": 0.85
+          },
+          "VolleyLane": {
+            "rises": 1,
+            "hz": 0.31,
+            "peak_alpha": 0.55
+          },
+          "MuzzleFlashWave": {
+            "rises": 3,
+            "hz": 0.94,
+            "peak_alpha": 1.0
+          },
+          "SmokeRecall": {
+            "rises": 0,
+            "hz": 0.0,
+            "peak_alpha": 0.0
+          }
+        }
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 97,
+        "duration_seconds": 3.2,
+        "peak_opaque_coverage_ratio": 0.0032,
+        "peak_at_seconds": 1.07
+      },
+      "max_opaque_coverage_ratio": 0.0032
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+      "crowd_cap": 26,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 2.9,
+        "cancel": 3.5
+      },
+      "beats_seconds": {
+        "release": 0.85,
+        "active": 1.95,
+        "recovery": 3.2
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "tracks": 11,
+        "animation_length": 3.5,
+        "max_element_rise_hz": 1.14,
+        "fastest_node": "FuseRing",
+        "element_flicker": {
+          "LobArc": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 0.9
+          },
+          "FuseRing": {
+            "rises": 4,
+            "hz": 1.14,
+            "peak_alpha": 1.0
+          },
+          "GrenadeOne": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeTwo": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeThree": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeFour": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeFive": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeSix": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "GrenadeSeven": {
+            "rises": 1,
+            "hz": 0.29,
+            "peak_alpha": 1.0
+          },
+          "ChainBlast": {
+            "rises": 0,
+            "hz": 0.0,
+            "peak_alpha": 0.0
+          },
+          "FireColumn": {
+            "rises": 0,
+            "hz": 0.0,
+            "peak_alpha": 0.0
+          }
+        }
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 106,
+        "duration_seconds": 3.5,
+        "peak_opaque_coverage_ratio": 0.0054,
+        "peak_at_seconds": 3.37
+      },
+      "max_opaque_coverage_ratio": 0.0054
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+      "crowd_cap": 18,
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.1,
+        "recovery": 3.2,
+        "cancel": 3.8
+      },
+      "beats_seconds": {
+        "release": 0.95,
+        "active": 2.15,
+        "recovery": 3.5
+      },
+      "backdrop": {
+        "peak": 0.0,
+        "rises": 0,
+        "surfaces": 0,
+        "tracks": 8,
+        "animation_length": 3.8,
+        "max_element_rise_hz": 0.26,
+        "fastest_node": "WhistleBrace",
+        "element_flicker": {
+          "WhistleBrace": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 0.9
+          },
+          "ChargeCorridor": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 1.0
+          },
+          "RankOne": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 1.0
+          },
+          "RankTwo": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 1.0
+          },
+          "RankThree": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 1.0
+          },
+          "CrossedBayonetImpact": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 1.0
+          },
+          "FrontalGuard": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 0.85
+          },
+          "RallySalute": {
+            "rises": 1,
+            "hz": 0.26,
+            "peak_alpha": 0.9
+          }
+        }
+      },
+      "envelope_sweep": {
+        "viewport": "648p",
+        "mode": "normal",
+        "step_seconds": 0.0333,
+        "samples": 115,
+        "duration_seconds": 3.8,
+        "peak_opaque_coverage_ratio": 0.0026,
+        "peak_at_seconds": 2.7
+      },
+      "max_opaque_coverage_ratio": 0.0026
+    }
+  ],
+  "coverage": {
+    "combinations": 48,
+    "expected_frames": 72,
+    "written_frames": 72
+  },
+  "captures": [
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.75,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__release__648p.png",
+      "sha256": "2d20927b321a72c1f1f8e1062103f3b47aee2f04c20e2be8f64afb14524a0ba4",
+      "bytes": 33754,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          189.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__648p.png",
+      "sha256": "b946466446aa85235264ad355161bb04402b9691c928ad44c72e3f3606f5f524",
+      "bytes": 33945,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.9,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__recovery__648p.png",
+      "sha256": "5d0cd88ee955061fec7c9179dbf8d8a9283c9a3bff63913924073aeb6def1730",
+      "bytes": 34053,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__720p.png",
+      "sha256": "f2b163f4597717f41d8015e887c83f766e14a2a95bf373093318114da9afa201",
+      "bytes": 38171,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          579.4,
+          210.0,
+          172.5,
+          209.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__1080p.png",
+      "sha256": "f33c956448a2e0aae20fa3c3ea016f5f5471a4042bba45344f471d8500e91c7f",
+      "bytes": 68042,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          869.0,
+          315.0,
+          258.7,
+          314.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__2k.png",
+      "sha256": "dc1064de50ebd872cd9c9d5c26cf4d05f2533258162ba06bb73e30a82757c77b",
+      "bytes": 92866,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          1158.7,
+          420.0,
+          345.0,
+          419.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.75,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__release__648p.png",
+      "sha256": "62c65f251edd31efb9d6dd7dacb95b0155748bc4f31c3258dc2489b0fe7af209",
+      "bytes": 53982,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          189.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__648p.png",
+      "sha256": "d30b579c09fa07e807aaf41276244173034d839b62ef3c877b40a146e3d23b60",
+      "bytes": 53562,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.9,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__recovery__648p.png",
+      "sha256": "b97c492c36a0e275d6c5bddff069fbd8933e39fa49601d005147e4bd650515d3",
+      "bytes": 54295,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__720p.png",
+      "sha256": "854752263c7b835de16286b04fc971b3a344a4bf53f5b798d29b6eefe2c02b7f",
+      "bytes": 62794,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          579.4,
+          210.0,
+          172.5,
+          209.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__1080p.png",
+      "sha256": "2a6de2c61a5665955df710743e9c92894eb3820e3de2c275833374e77c872d46",
+      "bytes": 115017,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          869.0,
+          315.0,
+          258.7,
+          314.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__2k.png",
+      "sha256": "947b12dcc5561e6deaf9081cbd951d77fdf8fbec7e905cb6df76da18718532f9",
+      "bytes": 167868,
+      "screen_shake": true,
+      "crowd": 22,
+      "victim_impacts": 22,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          1158.7,
+          420.0,
+          345.0,
+          419.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.75,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__release__648p.png",
+      "sha256": "2856d5e5f4b5861fbe119bb9bdbee4649e83af8e79990fbf2ab522d2839cbb49",
+      "bytes": 34823,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          189.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__648p.png",
+      "sha256": "167eba89f02404c2d358e51936837b2461eb9546a9249a1318744e61fb8eed2a",
+      "bytes": 34505,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.9,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__recovery__648p.png",
+      "sha256": "e0896a6a27891107997e48956524e453dea5ed5e5a1b27f41ce57158a6716554",
+      "bytes": 35389,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__720p.png",
+      "sha256": "183680afdc2497aacfad5d7475f6ea5f5e6e935d2f9a1d9b8620021800b7a57a",
+      "bytes": 37800,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          579.4,
+          210.0,
+          172.5,
+          209.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__1080p.png",
+      "sha256": "eb7b0341cc911235c0ee9f9c2441b1087bd5e3b34d0b57f155765e72d6519d24",
+      "bytes": 67172,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          869.0,
+          315.0,
+          258.7,
+          314.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__2k.png",
+      "sha256": "0da375389d682bcb60b93ebf265ce63aa7b77e22a58044575744a0ea92da4b14",
+      "bytes": 91180,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          1158.7,
+          420.0,
+          345.0,
+          419.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.75,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__release__648p.png",
+      "sha256": "1729f0dc5d7251a9f4a8106eb168d3aff0109fb621cbe4f3e5280967adfcd675",
+      "bytes": 34876,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          189.2
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__648p.png",
+      "sha256": "fb567dd3b87665264477ce74bf77c6c03c1f26a2baca4809c5776f9bf739739c",
+      "bytes": 34745,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.9,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__recovery__648p.png",
+      "sha256": "8d65dae9652e8580911e28bcbdc6dea4b0e4203476d567a1be8fc664e52f44c9",
+      "bytes": 35500,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          521.4,
+          189.0,
+          155.2,
+          188.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__720p.png",
+      "sha256": "2244571a6067864fc9d5d5d78076fe296ddeb3b4b71a4ad06828081523f49f76",
+      "bytes": 37255,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          579.4,
+          210.0,
+          172.5,
+          209.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0165,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__1080p.png",
+      "sha256": "1f9a519265bae210523333327abf795353145965e859a1aed6ce94b6b92198a8",
+      "bytes": 66343,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          869.0,
+          315.0,
+          258.7,
+          314.9
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0127,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_rifle",
+      "key": "soldier/soldier_rifle",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.75,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__2k.png",
+      "sha256": "6aaad519b6f5e2f7ae7c88ffd70997c1d556ed7ee5e9878f33c87cac0afcfbb5",
+      "bytes": 90332,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0019,
+        "effect_bounds": [
+          1158.7,
+          420.0,
+          345.0,
+          419.8
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.85,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__release__648p.png",
+      "sha256": "df8b5d9ce825e2b0a1409d7b9b9b5424e945e7a2de941e86c35c1ac7821a0350",
+      "bytes": 43950,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          492.8,
+          250.1,
+          219.8,
+          204.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__648p.png",
+      "sha256": "70fc71e2314c8e50bf274cd7b115f2ae34c592c9ff26eba4eef177f9a54dfdd0",
+      "bytes": 46368,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__recovery__648p.png",
+      "sha256": "126ca8d40d3e7744c563125a81b427c77518f0c4726975a0f47994ae135c85a2",
+      "bytes": 46419,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__720p.png",
+      "sha256": "9442d35f45f3e1dd45a84544dcd6d7ef5fc2079fca5352ace5958ddde49a5eef",
+      "bytes": 53704,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          541.6,
+          254.0,
+          250.3,
+          250.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__1080p.png",
+      "sha256": "d90e4de06aaa0c154eb2a73e09636710572fa933b5cd28d930435994e92fb2ef",
+      "bytes": 98716,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          812.3,
+          380.9,
+          375.5,
+          376.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0126,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__2k.png",
+      "sha256": "1140ade9d72754d53f69d38497cabc6908653d0775bec89d0199fcb9663698b1",
+      "bytes": 146692,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          1083.1,
+          507.9,
+          500.6,
+          501.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.85,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__release__648p.png",
+      "sha256": "90d4f628b19c6a3768a57219c701711145f25c92130b7b5465ef088cfc115a2a",
+      "bytes": 161990,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          492.8,
+          250.1,
+          219.8,
+          204.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__648p.png",
+      "sha256": "6576e0636d2e84c310ebac22ffb67ae82b881f7c72f9dbc527d8b157cc2fecae",
+      "bytes": 163308,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__recovery__648p.png",
+      "sha256": "6393947075fe576f80d5c63f0e8d510239ec5b08e20eca8696c172116ae62f77",
+      "bytes": 165693,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__720p.png",
+      "sha256": "633a039061f11798e526e425c5904c48c773a0619bfae9940dfc4354b95c1150",
+      "bytes": 194515,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          541.6,
+          254.0,
+          250.3,
+          250.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__1080p.png",
+      "sha256": "5b7bc78fc29cb718a72e6a6c14717f635e56a6a74aefb53ad413f2dde28f0f06",
+      "bytes": 373736,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          812.3,
+          380.9,
+          375.5,
+          376.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0126,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__2k.png",
+      "sha256": "1dc8559ff53cc91dc448cdff8dd5dfd23d2f7ac6e1d9a0e0f5e35ab83733a0de",
+      "bytes": 575684,
+      "screen_shake": true,
+      "crowd": 26,
+      "victim_impacts": 26,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          1083.1,
+          507.9,
+          500.6,
+          501.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.85,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__release__648p.png",
+      "sha256": "3cd66c6949eb1c35cce67f709180d8689e5fa0ed7cb6a52bb0647bfd086c6655",
+      "bytes": 45433,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          492.8,
+          250.1,
+          219.8,
+          204.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__648p.png",
+      "sha256": "02e3467a4f7a2020f805b87ac3ecf3f8d49ee666f4cf64235ec03433dcb8f959",
+      "bytes": 47982,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__recovery__648p.png",
+      "sha256": "70fede63b5d2e6d82e23e5ba804ae3d812988ad32e79998512dfe360ecefae65",
+      "bytes": 47391,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__720p.png",
+      "sha256": "edd288920922288e8ec0758be0ab4e4134e9f6d214533ef5e74b8635c232b986",
+      "bytes": 53458,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          541.6,
+          254.0,
+          250.3,
+          250.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__1080p.png",
+      "sha256": "b370e9edb88f52eb32a8265b65882a2e4ebe3e67a150c4f2327cfaf09868d2d1",
+      "bytes": 97713,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          812.3,
+          380.9,
+          375.5,
+          376.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0126,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__2k.png",
+      "sha256": "7d19b822d44ff7e86aa03d94ff5e1065ca98568bad87f97ace3c8ef00d46f417",
+      "bytes": 145224,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          1083.1,
+          507.9,
+          500.6,
+          501.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.85,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__release__648p.png",
+      "sha256": "d026bb6d213b771efdcfc7c333123e9e9bf8f9de80d707a48172c54a0e337416",
+      "bytes": 44846,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          492.8,
+          250.1,
+          219.8,
+          204.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__648p.png",
+      "sha256": "18e77f9ec2a6f1368762ff0cea3de8278fdf93214f1f733a3b913d282a020142",
+      "bytes": 47971,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__recovery__648p.png",
+      "sha256": "ee12b45076f9bccf3ea82064fd78a00ef75bffc9269a3fea7cb2d27944b7ab71",
+      "bytes": 47370,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          487.4,
+          228.6,
+          225.3,
+          225.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__720p.png",
+      "sha256": "08f3934878cbb8072a2023380930b5d39a44174ee7356de7dbd23ab2e0f3cdd2",
+      "bytes": 53262,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          541.6,
+          254.0,
+          250.3,
+          250.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.016,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__1080p.png",
+      "sha256": "43278499bce1eee01b05ec88f5ffd995ab07a3b605ed355c24008216646ff1fc",
+      "bytes": 97149,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          812.3,
+          380.9,
+          375.5,
+          376.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0126,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__2k.png",
+      "sha256": "30b260f14a5854dae82b340ebe1ba69ac627b003a820e6a379ee780911bd3bdf",
+      "bytes": 144323,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          1083.1,
+          507.9,
+          500.6,
+          501.3
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.95,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__release__648p.png",
+      "sha256": "bdf98fe683f4c55ffee81a7118794998cec00318d20a33cf35935ad575ada44b",
+      "bytes": 30969,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.0,
+          189.0,
+          80.1,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__648p.png",
+      "sha256": "effc0160f0ce1e9daecfa5129817541acf2dc1476da4acb61dba72aaf019cc2a",
+      "bytes": 32384,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.5,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__recovery__648p.png",
+      "sha256": "09add47c12a9fbcede288fff5e886af49ac7f5e9ae1aa6c405a521304ff8a5b8",
+      "bytes": 33172,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__720p.png",
+      "sha256": "4d158214c0906b7b163cb93174168dd66108b0d0f4721b8d4a73778c5cd967a5",
+      "bytes": 36041,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          606.0,
+          210.0,
+          119.1,
+          224.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__1080p.png",
+      "sha256": "a0df562b6c2974f128f48ed26f7b32be06d37571f7e0ed25a694caa3f9bfbe5b",
+      "bytes": 62390,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          909.1,
+          315.0,
+          178.7,
+          336.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0125,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "normal",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__2k.png",
+      "sha256": "19804ad2df0e529523b45401202dbaf5ed3f3489f3988f4e2f92e355e61ae8fd",
+      "bytes": 85455,
+      "screen_shake": true,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          1212.1,
+          420.0,
+          238.2,
+          448.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.95,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__release__648p.png",
+      "sha256": "002c58502ded447b192bbe3b8b27efe92d5210b9a4135367fd238130649e90b6",
+      "bytes": 76547,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.0,
+          189.0,
+          80.1,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__648p.png",
+      "sha256": "51dc10c0749b6d68e121725653735c49e32fba455da26621b6727eba86c2fc69",
+      "bytes": 77168,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.5,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__recovery__648p.png",
+      "sha256": "f19ce01653dfaa9f0d951f76d31e200821b85284716fbd290faa3fc45e7988d5",
+      "bytes": 80688,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__720p.png",
+      "sha256": "d1498b716c3da7e458b0b9073621cc1fa2ffd5fa546e0f9a8b820a4de02efc76",
+      "bytes": 91360,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          606.0,
+          210.0,
+          119.1,
+          224.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__1080p.png",
+      "sha256": "a1cdd12cf42685b320d916479ac54bd9b4721d9c64fc80fda7c87f47f015d2d7",
+      "bytes": 165408,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          909.1,
+          315.0,
+          178.7,
+          336.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0125,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__2k.png",
+      "sha256": "3ce543f2031b9f372ee76ca53da2b7968c7ac8d59fabd6559330c05777bb6681",
+      "bytes": 243127,
+      "screen_shake": true,
+      "crowd": 18,
+      "victim_impacts": 18,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          1212.1,
+          420.0,
+          238.2,
+          448.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.95,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__release__648p.png",
+      "sha256": "3c7af1ca3fca5c631a9cc58f5123d5989bec46c49d81d7c324ae3928e64fb0e1",
+      "bytes": 32327,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.0,
+          189.0,
+          80.1,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__648p.png",
+      "sha256": "d4a580eb48c6243825bb7bcd2af44edf0f7104bd7e1870158f35d26e0307fbc5",
+      "bytes": 34326,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.5,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__recovery__648p.png",
+      "sha256": "a016484086e7bc4302fb8b9382bf9b2dc3980a8f14d80aaacfc67c7338a00a5e",
+      "bytes": 34731,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__720p.png",
+      "sha256": "b7939cdbec8413929bb17f07d9611075c65c8e9fa7ee677dbd17e7d1d5318d80",
+      "bytes": 35872,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          606.0,
+          210.0,
+          119.1,
+          224.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__1080p.png",
+      "sha256": "f1839c62eed291aa8926f018d55f1b9f423817967a80de029bd9e27b9b404435",
+      "bytes": 61461,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          909.1,
+          315.0,
+          178.7,
+          336.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0125,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__2k.png",
+      "sha256": "c9cfd9a1532e5c386b59404550e1e084f8628537115d77478ed4f42c0a2960ed",
+      "bytes": 83997,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          1212.1,
+          420.0,
+          238.2,
+          448.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.95,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__release__648p.png",
+      "sha256": "9b8d68ada3457c3ace4d7f2ed0838770efe5c972f07b5d37b29bf6685c6faeeb",
+      "bytes": 31246,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0002,
+        "effect_bounds": [
+          559.0,
+          189.0,
+          80.1,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__648p.png",
+      "sha256": "b91250179eff2fbc6216fff941c9716e12a34a3dd65bf40b89a1b0d4a501663d",
+      "bytes": 34006,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.5,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__recovery__648p.png",
+      "sha256": "7e01ae6858db2c8f779d440b491d64499b5dec1e72dc492d1ad582906f8e7c72",
+      "bytes": 33823,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.504,
+      "measured": {
+        "opaque_coverage_ratio": 0.0,
+        "effect_bounds": [
+          545.4,
+          189.0,
+          107.2,
+          201.6
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0158,
+        "player_contrast_ratio": 0.345,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__720p.png",
+      "sha256": "976bf3e7f103e600d59be7941228a2126ff2adc2a858cd8a7653cf95c1dbb29c",
+      "bytes": 35507,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.56,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          606.0,
+          210.0,
+          119.1,
+          224.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0161,
+        "player_contrast_ratio": 0.3535,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__1080p.png",
+      "sha256": "06052aef72fcec2bac60131feaa88bb0443bb50835f4d67afb9bf6bcd711865f",
+      "bytes": 60471,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 0.84,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          909.1,
+          315.0,
+          178.7,
+          336.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0125,
+        "player_contrast_ratio": 0.3507,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "key": "soldier/soldier_bayonet",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 2.15,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__2k.png",
+      "sha256": "2ab667c136e8799a1a099e149c848e4f656f2c326b87990541e5672692cd3b14",
+      "bytes": 82800,
+      "screen_shake": false,
+      "crowd": 0,
+      "victim_impacts": 0,
+      "on_screen_scale": 1.12,
+      "measured": {
+        "opaque_coverage_ratio": 0.0006,
+        "effect_bounds": [
+          1212.1,
+          420.0,
+          238.2,
+          448.0
+        ],
+        "effect_inside_zone": true,
+        "veil_alpha": 0.0
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0144,
+        "player_contrast_ratio": 0.3531,
+        "hazards": [
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          },
+          {
+            "contrast": 0.613,
+            "hue_spread": 0.776,
+            "warm": true
+          }
+        ],
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    }
+  ]
+}
