@@ -49,6 +49,45 @@ const ADOPTION_SHARD_PATH := "res://data/ultimates/classes/thief/presentation_ad
 
 ## The shipped scenes, executors and assets were captured from this integrated
 ## revision; the capture tooling and evidence are added by FAN-3941 on top.
+## The recorded source is checked against git itself: the commit must exist in
+## this repository, its tree must be the recorded tree, and it must be an
+## ancestor of (or equal to) the checked-out HEAD — the evidence commit that
+## carries the frames comes after it, so the manifest never refers to itself.
+static func git_source_violations(source: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var commit := str(source.get("commit_sha", ""))
+	var tree := str(source.get("tree_sha", ""))
+	if commit.length() != 40 or tree.length() != 40:
+		return errors
+	var resolved := _git(["rev-parse", "--verify", "--quiet", commit + "^{commit}"])
+	if resolved != commit:
+		errors.append("manifest source.commit_sha %s is not a commit of this repository" % commit)
+		return errors
+	var resolved_tree := _git(["rev-parse", commit + "^{tree}"])
+	if resolved_tree != tree:
+		errors.append("manifest source.tree_sha %s is not the tree of commit %s (%s)" % [tree, commit, resolved_tree])
+	if _git_exit(["merge-base", "--is-ancestor", commit, "HEAD"]) != 0:
+		errors.append("manifest source.commit_sha %s is not an ancestor of the checked-out HEAD" % commit)
+	return errors
+
+
+static func _git(args: Array) -> String:
+	var output: Array = []
+	var packed := PackedStringArray()
+	for arg in args:
+		packed.append(str(arg))
+	if OS.execute("git", packed, output, true) != 0:
+		return ""
+	return str(output[0]).strip_edges() if not output.is_empty() else ""
+
+
+static func _git_exit(args: Array) -> int:
+	var packed := PackedStringArray()
+	for arg in args:
+		packed.append(str(arg))
+	return OS.execute("git", packed, [], true)
+
+
 ## Provenance is read from git by the renderer at capture time: the source
 ## commit and tree are whatever the clean worktree is checked out at, so the
 ## amended scenes, drivers and tooling are committed first and the evidence
@@ -749,6 +788,7 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 			errors.append("manifest source.%s must be a full SHA" % field)
 	if source.get("worktree_clean") != true:
 		errors.append("manifest source.worktree_clean must be true: the amended source is committed before the capture")
+	errors.append_array(git_source_violations(source))
 	if str(source.get("recorded_by", "")) != SOURCE_RECORDER:
 		errors.append("manifest source must be recorded by %s, not typed in" % SOURCE_RECORDER)
 	var engine := manifest.get("engine", {}) as Dictionary
@@ -959,7 +999,10 @@ static func mode_violations(manifest: Dictionary, images: Dictionary) -> Array[S
 				continue
 			if kind == EFFECT_NONE_INTRINSIC and str(effect.get("production_semantics", "")).strip_edges().is_empty():
 				errors.append("%s/%s: an intrinsic no-op must state its production semantics" % [weapon_id, mode_id])
-			var baseline_mode := MODE_REDUCED_MOTION if mode_id == MODE_PHOTOSENSITIVITY_SAFE else MODE_NORMAL
+			# Every mode is judged against the normal twin: the production
+			# preferences are independent, so photosensitivity-safe keeps the
+			# camera device and differs from normal only by the surface.
+			var baseline_mode := MODE_NORMAL
 			for viewport_id in VIEWPORT_IDS:
 				for beat_id in beat_ids(weapon_id):
 					var id := entry_id({"weapon_id": weapon_id, "mode": mode_id, "viewport": viewport_id, "beat": beat_id})
@@ -984,8 +1027,14 @@ static func mode_violations(manifest: Dictionary, images: Dictionary) -> Array[S
 								if ratio < MIN_MODE_DIFF_RATIO:
 									errors.append("%s: the reduced-motion impact frame must differ from the shaken normal frame" % id)
 						EFFECT_FULLSCREEN_SUPPRESSED:
-							if ratio < MIN_MODE_DIFF_RATIO and beat_id in ["impact", "active"]:
-								errors.append("%s: suppressing the full-screen surface must change the frame" % id)
+							# A lit surface in the normal twin must be visibly gone; a beat
+							# whose presentation is already released in the normal twin
+							# (nothing to remove) must reproduce it exactly.
+							var base_lit := bool(base.get("presentation_live", true)) and float((base.get("measured", {}) as Dictionary).get("fullscreen_alpha", 0.0)) > 0.0
+							if base_lit and ratio < MIN_MODE_DIFF_RATIO and beat_id in ["impact", "active"]:
+								errors.append("%s: the photosensitivity-safe policy must visibly remove the lit full-screen surface" % id)
+							if not base_lit and ratio > 0.0:
+								errors.append("%s: with no surface lit in the normal twin the photosensitivity-safe frame must reproduce it exactly, differs by %.4f" % [id, ratio])
 						EFFECT_NONE_INTRINSIC:
 							if ratio > 0.0:
 								errors.append("%s: an intrinsic no-op must reproduce its baseline frame exactly, differs by %.4f" % [id, ratio])
@@ -1042,6 +1091,30 @@ static func presentation_elapsed(host: Node) -> float:
 ## Two real-time casts never land on the same frame, so a beat is compared on
 ## the pair of samples (one per run, at or after the beat, within two frames
 ## of it) whose presentation clocks are closest to each other.
+## The pair of samples inside the beat window whose formations agree, closest
+## in time first; on the real clock the two runs sample the drawn pose at
+## slightly different phases of a fast beat (the hitstop shifts the drawn
+## clock by whole frames), so the nearest pair alone is not the fair test.
+## Falls back to the closest pair so a genuine mismatch is reported with it.
+static func matching_samples(a: Array, b: Array, beat: float) -> Array:
+	var window := beat + 3.0 / float(FIXED_FPS)
+	var candidates: Array = []
+	for left in a:
+		var la := float((left as Dictionary)["elapsed"])
+		if la < beat or la > window:
+			continue
+		for right in b:
+			var lb := float((right as Dictionary)["elapsed"])
+			if lb < beat or lb > window:
+				continue
+			candidates.append([absf(la - lb), left, right])
+	candidates.sort_custom(func(x, y): return float(x[0]) < float(y[0]))
+	for candidate in candidates:
+		if formation_close(str((candidate[1] as Dictionary)["signature"]), str((candidate[2] as Dictionary)["signature"])):
+			return [candidate[1], candidate[2]]
+	return [candidates[0][1], candidates[0][2]] if not candidates.is_empty() else []
+
+
 static func closest_samples(a: Array, b: Array, beat: float) -> Array:
 	var window := beat + 3.0 / float(FIXED_FPS)
 	var best: Array = []
@@ -1495,7 +1568,7 @@ func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 		var normal_trace := signatures.get(MODE_NORMAL, []) as Array
 		var reduced_trace := signatures.get(MODE_REDUCED_MOTION, []) as Array
 		for beat_id in BEAT_IDS:
-			var pair := closest_samples(normal_trace, reduced_trace, beat_seconds(weapon_id, beat_id))
+			var pair := matching_samples(normal_trace, reduced_trace, beat_seconds(weapon_id, beat_id))
 			_expect(not pair.is_empty(), "%s: the live cast must reach the %s beat in both modes" % [weapon_id, beat_id], errors)
 			if not pair.is_empty():
 				_expect(formation_close(str(pair[0]["signature"]), str(pair[1]["signature"])), "%s: reduced motion must preserve the formation and timing at the %s beat (%.3f s %s vs %.3f s %s)" % [weapon_id, beat_id, float(pair[0]["elapsed"]), str(pair[0]["signature"]).left(100), float(pair[1]["elapsed"]), str(pair[1]["signature"]).left(100)], errors)
@@ -1534,6 +1607,9 @@ func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile:
 	var wrong_source := manifest.duplicate(true)
 	(wrong_source["source"] as Dictionary)["commit_sha"] = "0".repeat(40)
 	_expect_red(identity_violations(wrong_source, profile), "an unpinned source commit", errors)
+	var wrong_tree := manifest.duplicate(true)
+	(wrong_tree["source"] as Dictionary)["tree_sha"] = "0".repeat(40)
+	_expect_red(identity_violations(wrong_tree, profile), "a source tree that is not the recorded commit's tree", errors)
 
 	var first := ((manifest["captures"] as Array)[0] as Dictionary).duplicate(true)
 	var absent := first.duplicate(true)
