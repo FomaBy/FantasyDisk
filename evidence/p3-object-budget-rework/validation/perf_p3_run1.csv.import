@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c8l2ap1bid32e"
+
+[deps]
+
+files=["res://evidence/p3-object-budget-rework/validation/perf_p3_run1.frame.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.engine.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.process.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.physics.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.memory.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.objects.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.nodes.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.orphans.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.draw.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.render.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.primitives.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.physics.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.collision.translation"]
+
+source_file="res://evidence/p3-object-budget-rework/validation/perf_p3_run1.csv"
+dest_files=["res://evidence/p3-object-budget-rework/validation/perf_p3_run1.frame.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.engine.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.process.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.physics.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.memory.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.objects.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.nodes.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.orphans.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.draw.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.render.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.primitives.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.physics.translation", "res://evidence/p3-object-budget-rework/validation/perf_p3_run1.collision.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

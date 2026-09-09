@@ -22,16 +22,16 @@ func _run() -> void:
 		await create_timer(0.5).timeout
 
 	await settle.call()
-	var base := objects.call()
+	var base: int = objects.call()
 
 	# A: plain load() on a fresh script — residency while held and after drop.
 	var plain_path := "res://scripts/ultimates/classes/ranger/bow.gd"
-	var plain = load(plain_path)
+	var plain: Variant = load(plain_path)
 	await settle.call()
-	var plain_held := objects.call()
+	var plain_held: int = objects.call()
 	plain = null
 	await settle.call()
-	var plain_dropped := objects.call()
+	var plain_dropped: int = objects.call()
 	result["plain_load"] = {
 		"path": plain_path,
 		"delta_while_held": plain_held - base,
@@ -41,12 +41,12 @@ func _run() -> void:
 
 	# B: CACHE_MODE_IGNORE on a different fresh script.
 	var ignore_path := "res://scripts/ultimates/classes/priest/staff.gd"
-	var ignored = ResourceLoader.load(ignore_path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var ignored: Variant = ResourceLoader.load(ignore_path, "", ResourceLoader.CACHE_MODE_IGNORE)
 	await settle.call()
-	var ignore_held := objects.call()
+	var ignore_held: int = objects.call()
 	ignored = null
 	await settle.call()
-	var ignore_dropped := objects.call()
+	var ignore_dropped: int = objects.call()
 	result["ignore_load"] = {
 		"path": ignore_path,
 		"delta_while_held": ignore_held - base,
@@ -58,14 +58,14 @@ func _run() -> void:
 	# C: cold-activation admission cost through the lazy runtime registry
 	# (the controller's pre-charge resolution point).
 	var registry = RegistryScript.new(ProgressionData.WEAPONS_BY_CLASS)
-	var before_admission := objects.call()
+	var before_admission: int = objects.call()
 	var t0 := Time.get_ticks_usec()
-	var axe = registry.executor_for("berserk", "axe")
+	var axe: Variant = registry.executor_for("berserk", "axe")
 	var cold_us := Time.get_ticks_usec() - t0
 	await settle.call()
-	var after_admission := objects.call()
+	var after_admission: int = objects.call()
 	var t1 := Time.get_ticks_usec()
-	var axe_again = registry.executor_for("berserk", "axe")
+	var axe_again: Variant = registry.executor_for("berserk", "axe")
 	var warm_us := Time.get_ticks_usec() - t1
 	result["cold_activation"] = {
 		"admitted": axe is GDScript,

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dgxejeuaf0dgf"
+
+[deps]
+
+files=["res://evidence/p3-object-budget-rework/attribution/no_enemies.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_enemies.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_enemies.orphans.translation"]
+
+source_file="res://evidence/p3-object-budget-rework/attribution/no_enemies.csv"
+dest_files=["res://evidence/p3-object-budget-rework/attribution/no_enemies.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_enemies.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_enemies.orphans.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

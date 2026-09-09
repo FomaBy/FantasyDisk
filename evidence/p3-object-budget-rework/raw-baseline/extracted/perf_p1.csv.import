@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://8xt1dudo0jki"
+
+[deps]
+
+files=["res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.frame.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.engine.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.process.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.physics.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.memory.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.objects.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.nodes.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.orphans.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.draw.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.render.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.primitives.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.physics.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.collision.translation"]
+
+source_file="res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.csv"
+dest_files=["res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.frame.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.engine.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.process.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.physics.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.memory.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.objects.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.nodes.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.orphans.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.draw.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.render.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.primitives.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.physics.translation", "res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_p1.collision.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
