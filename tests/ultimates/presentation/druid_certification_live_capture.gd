@@ -324,15 +324,23 @@ func _prepare_hazards(main: Node, player: Node2D, wanted: int) -> Array[Node2D]:
 	main.set("spawn_cooldown", 1.0e9)
 	var combat: Object = main.get("combat")
 	var live := _live_hazards()
+	## Harden live hazards before another frame can let ordinary player attacks
+	## remove one from a crowd-cap sample while the fixture is still filling it.
+	for enemy in live:
+		enemy.set("health", HAZARD_HEALTH)
+		enemy.set("max_health", HAZARD_HEALTH)
 	## Wave pressure alone does not reach the declared crowd cap, so the shortfall
 	## is spawned through the same shipped spawn path the waves use.
 	var guard := 0
 	while live.size() < wanted and guard < wanted * 3:
 		var angle := float(guard) * TAU / 8.0
 		var spot := player.global_position + Vector2(float(HAZARD_RING_RADII[guard % HAZARD_RING_RADII.size()]), 0.0).rotated(angle)
-		if combat.call("_spawn_random_enemy", main.get("enemy_scene"), spot, true, 0.0) == null:
-			break
+		var spawned: Node2D = combat.call("_spawn_random_enemy", main.get("enemy_scene"), spot, true, 0.0) as Node2D
 		guard += 1
+		if spawned == null:
+			continue
+		spawned.set("health", HAZARD_HEALTH)
+		spawned.set("max_health", HAZARD_HEALTH)
 		live = _live_hazards()
 	await process_frame
 	live = _live_hazards()
