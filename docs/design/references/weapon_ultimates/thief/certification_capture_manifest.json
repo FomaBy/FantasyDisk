@@ -10,8 +10,8 @@
   "source": {
     "ref": "agent/fable/e50731ad6088",
     "branch_at_capture": "agent/fable/e50731ad6088",
-    "commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
-    "tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+    "commit_sha": "cc283b740ef70c35831a4d8796316344bdd94c5e",
+    "tree_sha": "0141120f491c82859dbee0ce84bea5eda6cadf32",
     "worktree_clean": true,
     "recorded_by": "git rev-parse at capture time",
     "note": "The commit the clean worktree was checked out at when these frames were rendered: the shipped Thief scenes, drivers, executors, Player, Enemy, hazard, HUD, the production accessibility policy and this capture tooling all come from it. The frames and this manifest are committed afterwards in a separate evidence commit, so the recorded source never refers to itself."
@@ -23,7 +23,7 @@
     "video_adapter": "Apple M4 Pro",
     "os": "macOS 26.5.1",
     "display_server": "macOS",
-    "captured_at_utc": "2026-09-09 10:28:29"
+    "captured_at_utc": "2026-09-09 14:49:24"
   },
   "capture": {
     "script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
@@ -157,12 +157,12 @@
           "production_semantics": "the declared performance.crowd_cap of real Enemy scenes stands in the cast; every victim takes the executor's damage and the weapon's victim-impact flipbook"
         },
         "reduced_motion": {
-          "effect": "none_intrinsic",
-          "production_semantics": "ultimate_reduced_motion=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live cast never moved the camera, so the Player's Camera2D offset stays at zero with the preference on or off (measured every frame of both runs) and the frame is the normal frame by construction. The scene's driver owns the device, but the host released the presentation at 0.32 s in the normal cast, before the 1.10 s active edge where it fires (see the readability report's runtime finding)."
+          "effect": "camera_shake",
+          "production_semantics": "ultimate_reduced_motion=true in the persisted ultimate_accessibility_settings snapshot on the tree root (scripts/settings/ultimate_accessibility_settings.gd, published as main.gd publishes it; the shipped screen_shake toggle stays on); the live cast's own driver reads it and leaves the Player's Camera2D offset at zero, everything else in the cast is unchanged"
         },
         "photosensitivity_safe": {
           "effect": "fullscreen_suppressed",
-          "production_semantics": "ultimate_photosensitivity_safe=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live cast's own driver keeps the 1 full-screen surface(s) it flags as fullscreen_layer (the arena-wide veil, the only surface the cast draws over the whole viewport) dark for the whole cast (normal peak alpha 0.082, safe peak alpha 0.000, measured every frame); the camera device is unchanged"
+          "production_semantics": "ultimate_photosensitivity_safe=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live cast's own driver keeps the 1 full-screen surface(s) it flags as fullscreen_layer (the arena-wide veil, the only surface the cast draws over the whole viewport) dark for the whole cast (normal peak alpha 0.300, safe peak alpha 0.000, measured every frame); the camera device is unchanged"
         }
       },
       "envelope_sweep": {
@@ -171,11 +171,11 @@
         "step_seconds": 0.0333,
         "samples": 82,
         "duration_seconds": 2.68,
-        "peak_opaque_coverage_ratio": 0.0029,
-        "peak_at_seconds": 0.27,
+        "peak_opaque_coverage_ratio": 0.0044,
+        "peak_at_seconds": 2.57,
         "note": "uncommitted sweep cast: every second frame of the normal 648p cast measured, plus every beat frame"
       },
-      "max_opaque_coverage_ratio": 0.0037,
+      "max_opaque_coverage_ratio": 0.0044,
       "hud_band_clear_all_frames": true
     },
     {
@@ -234,7 +234,7 @@
         "samples": 88,
         "duration_seconds": 2.88,
         "peak_opaque_coverage_ratio": 0.0043,
-        "peak_at_seconds": 1.03,
+        "peak_at_seconds": 2.1,
         "note": "uncommitted sweep cast: every second frame of the normal 648p cast measured, plus every beat frame"
       },
       "max_opaque_coverage_ratio": 0.0043,
@@ -316,18 +316,18 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 161,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.504
       }
     },
@@ -343,18 +343,18 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.56
       }
     },
@@ -370,18 +370,18 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.84
       }
     },
@@ -397,18 +397,18 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 1.12
       }
     },
@@ -429,13 +429,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 79,
-      "presentation_released_seconds": 1.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 161,
         "max_offset": 6.461,
         "first_nonzero_frame": 66,
-        "last_nonzero_frame": 78,
+        "last_nonzero_frame": 92,
         "zoom": 0.504
       }
     },
@@ -456,13 +456,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 79,
-      "presentation_released_seconds": 1.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 6.461,
         "first_nonzero_frame": 66,
-        "last_nonzero_frame": 78,
+        "last_nonzero_frame": 92,
         "zoom": 0.56
       }
     },
@@ -483,13 +483,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 79,
-      "presentation_released_seconds": 1.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 6.461,
         "first_nonzero_frame": 66,
-        "last_nonzero_frame": 78,
+        "last_nonzero_frame": 92,
         "zoom": 0.84
       }
     },
@@ -510,13 +510,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 79,
-      "presentation_released_seconds": 1.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 6.461,
         "first_nonzero_frame": 66,
-        "last_nonzero_frame": 78,
+        "last_nonzero_frame": 92,
         "zoom": 1.12
       }
     },
@@ -532,13 +532,13 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 161,
         "max_offset": 0.0,
@@ -559,13 +559,13 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 0.0,
@@ -586,13 +586,13 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 0.0,
@@ -613,13 +613,13 @@
         "ultimate_photosensitivity_safe": false
       },
       "fullscreen_surfaces": 1,
-      "fullscreen_alpha_peak": 0.082,
+      "fullscreen_alpha_peak": 0.3,
       "aim_target": [
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
         "max_offset": 0.0,
@@ -645,13 +645,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 161,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.504
       }
     },
@@ -672,13 +672,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.56
       }
     },
@@ -699,13 +699,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 0.84
       }
     },
@@ -726,13 +726,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 19,
-      "presentation_released_seconds": 0.32,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 102,
-        "max_offset": 0.0,
-        "first_nonzero_frame": -1,
-        "last_nonzero_frame": -1,
+        "max_offset": 6.462,
+        "first_nonzero_frame": 66,
+        "last_nonzero_frame": 92,
         "zoom": 1.12
       }
     },
@@ -753,13 +753,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 173,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.504
       }
     },
@@ -780,13 +780,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.56
       }
     },
@@ -807,13 +807,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.84
       }
     },
@@ -834,13 +834,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 1.12
       }
     },
@@ -861,13 +861,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 173,
-        "max_offset": 4.954,
+        "max_offset": 6.909,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.504
       }
     },
@@ -888,13 +888,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
-        "max_offset": 4.954,
+        "max_offset": 6.909,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.56
       }
     },
@@ -915,13 +915,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
-        "max_offset": 4.954,
+        "max_offset": 6.909,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.84
       }
     },
@@ -942,13 +942,13 @@
         2134.54,
         1123.09
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
-        "max_offset": 4.954,
+        "max_offset": 6.909,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 1.12
       }
     },
@@ -969,8 +969,8 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 173,
         "max_offset": 0.0,
@@ -996,8 +996,8 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 0.0,
@@ -1023,8 +1023,8 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 0.0,
@@ -1050,8 +1050,8 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 0.0,
@@ -1077,13 +1077,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 173,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.504
       }
     },
@@ -1104,13 +1104,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.56
       }
     },
@@ -1131,13 +1131,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 0.84
       }
     },
@@ -1158,13 +1158,13 @@
         2206.57,
         1235.76
       ],
-      "presentation_released_frame": 77,
-      "presentation_released_seconds": 1.28,
+      "presentation_released_frame": -1,
+      "presentation_released_seconds": -1.0,
       "camera_trace": {
         "samples": 114,
         "max_offset": 8.573,
         "first_nonzero_frame": 74,
-        "last_nonzero_frame": 76,
+        "last_nonzero_frame": 103,
         "zoom": 1.12
       }
     },
@@ -1615,15 +1615,15 @@
       "beat": "release",
       "beat_seconds": 0.9,
       "frame": 54,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 0.917,
       "phase": "release",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__release__648p.png",
-      "sha256": "a56119c72f28f5cc71b80b1411aff86ab9ca6ff95e5987575a6ab6a06e4bdec3",
-      "bytes": 53880,
+      "sha256": "0161393731d226aac7e2bc6cca62200df55b5f6573ace8ac73ed6854567b0247",
+      "bytes": 72144,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -1684,27 +1684,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0037,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          540.0,
+          304.0,
+          64.0,
+          80.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.25,
+        "formation_signature_sha1": "c5cd57c278e04cf78dbfe9c4b7994eccc917f6ca"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.4427,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
+          0.301,
+          0.2857,
+          0.3367
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.301,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -1721,15 +1721,15 @@
       "beat": "impact",
       "beat_seconds": 1.25,
       "frame": 75,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.267,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__impact__648p.png",
-      "sha256": "b0d4a2224a58b9c49eca9890f846cfdbb5452e0a7fc439ead5bcb715d79c2b93",
-      "bytes": 54258,
+      "sha256": "fc43a7eaa44797c6b13313a0471dc82fd7546154b004897440d3cb388afd2a03",
+      "bytes": 71453,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -1737,12 +1737,12 @@
       "enemies": 3,
       "camera": {
         "center": [
-          2048.0,
-          1152.0
+          2048.556,
+          1150.703
         ],
         "offset": [
-          0.0,
-          0.0
+          0.556,
+          -1.297
         ],
         "baseline_offset": [
           0.0,
@@ -1790,30 +1790,30 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0022,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          550.0,
+          300.0,
+          56.0,
+          48.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "683fd2076893fdf24cd7f013845115a18f7faa82"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.5486,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
+          0.2959,
+          0.3061,
+          0.2959
         ],
-        "hazard_zone_contrast": 0.338,
+        "hazard_zone_contrast": 0.297,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
+        "projectile_contrast_ratio": 0.1837,
+        "projectile_drawn_pixels": 49,
         "projectile_readable": true,
         "mode_swatch_matches": true,
         "weapon_swatch_matches": true
@@ -1827,15 +1827,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__648p.png",
-      "sha256": "6f88460f3558ddf370976a350db8e2d5db2a4db4aa954016921b2a4c257ca096",
-      "bytes": 54136,
+      "sha256": "47886ca06258040a5422b9133e16a4a0bceb30925be79c9ab21a206531972527",
+      "bytes": 76589,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -1896,27 +1896,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0031,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          526.0,
+          288.0,
+          98.0,
+          74.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.5827,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
+          0.301,
+          0.2857,
+          0.3367
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.29,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -1933,15 +1933,15 @@
       "beat": "recovery",
       "beat_seconds": 2.68,
       "frame": 161,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.7,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__recovery__648p.png",
-      "sha256": "21fa6f1bba76994d47c570664f88a0155c23ae173c1a13e3c4eab2864752ef50",
-      "bytes": 53960,
+      "sha256": "dc4b83955f8c07f548e51fdd0c07c0e713c9e9aca6e8fb3a548d3021d048a42b",
+      "bytes": 70602,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2002,27 +2002,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0042,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          536.0,
+          278.0,
+          82.0,
+          70.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.164,
+        "formation_signature_sha1": "7692300c8f2c05f80e8ed10915af2e962f92664e"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.644,
         "enemy_contrast_ratios": [
-          0.3214,
           0.3163,
-          0.3622
+          0.3061,
+          0.3571
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.314,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -2039,15 +2039,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__720p.png",
-      "sha256": "d87e8304a4c8ea2e135f5b8769a6ad9eacdae1ab6769616443c7b80282d81a48",
-      "bytes": 60246,
+      "sha256": "25a8a20becd00a19c8335d039118dcf4dd34d4b8602d34d097e7dbcc34d53584",
+      "bytes": 86320,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2108,29 +2108,29 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          584.0,
+          320.0,
+          108.0,
+          80.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0146,
-        "player_contrast_ratio": 0.1699,
+        "player_contrast_ratio": 0.5948,
         "enemy_contrast_ratios": [
-          0.3125,
-          0.3208,
-          0.3125
+          0.3042,
+          0.2958,
+          0.3
         ],
-        "hazard_zone_contrast": 0.358,
+        "hazard_zone_contrast": 0.3,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1905,
+        "projectile_contrast_ratio": 0.1746,
         "projectile_drawn_pixels": 63,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -2145,15 +2145,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__1080p.png",
-      "sha256": "735f4afe4756a34235ea31a726e2702bfe8546956f7c8596a075a698fab9910c",
-      "bytes": 111822,
+      "sha256": "becf351c7b76fcb9097c60bf9bb398327beb5d17fb37048d61eb9c2816e77335",
+      "bytes": 159791,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2214,29 +2214,29 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0033,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          876.0,
+          480.0,
+          162.0,
+          122.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.015,
-        "player_contrast_ratio": 0.1629,
+        "player_contrast_ratio": 0.581,
         "enemy_contrast_ratios": [
-          0.3043,
-          0.3384,
-          0.344
+          0.2892,
+          0.3119,
+          0.3176
         ],
-        "hazard_zone_contrast": 0.34,
+        "hazard_zone_contrast": 0.289,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1486,
+        "projectile_contrast_ratio": 0.1419,
         "projectile_drawn_pixels": 148,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -2251,15 +2251,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__normal__active__2k.png",
-      "sha256": "916866ad30916e634ff38ea46aa6622329761b0ccf15338ce0006c8d61c55b09",
-      "bytes": 167237,
+      "sha256": "8d669b9b0d4863be740e888b9ce8aad6b242d96a8fc81f2880e490e1cf09c3f1",
+      "bytes": 241805,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2320,29 +2320,29 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1168.0,
+          640.0,
+          216.0,
+          162.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1625,
+        "player_contrast_ratio": 0.5893,
         "enemy_contrast_ratios": [
-          0.3351,
-          0.3312,
-          0.3323
+          0.3049,
+          0.3,
+          0.3022
         ],
-        "hazard_zone_contrast": 0.385,
+        "hazard_zone_contrast": 0.318,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1865,
+        "projectile_contrast_ratio": 0.1786,
         "projectile_drawn_pixels": 252,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -2689,15 +2689,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__648p.png",
-      "sha256": "85a38c309ba793745a601606553fab77a4247832fa4784b0030995e9c9482bfb",
-      "bytes": 91921,
+      "sha256": "fa5081177540061eda00fd8f7d073c2a39b99e911ac0136fe45f8d4598bcd681",
+      "bytes": 112731,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2806,39 +2806,39 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0031,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          526.0,
+          288.0,
+          98.0,
+          74.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1787,
+        "player_contrast_ratio": 0.5867,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3316,
-          0.3622,
-          0.3214,
-          0.3265,
-          0.4643,
+          0.301,
+          0.301,
+          0.3367,
           0.3061,
-          0.3061,
-          0.3265,
-          0.3673,
-          0.3214,
-          0.3418,
-          0.4643,
+          0.4286,
+          0.449,
+          0.2959,
+          0.2755,
+          0.301,
           0.3571,
-          0.3418
+          0.3061,
+          0.3265,
+          0.4235,
+          0.352,
+          0.3265
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.29,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -2855,15 +2855,15 @@
       "beat": "recovery",
       "beat_seconds": 2.68,
       "frame": 161,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.7,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__recovery__648p.png",
-      "sha256": "ce1146e6b8e1c163f1145e8b8429c899a6d61433e13b88190ee645a1e4be8403",
-      "bytes": 91163,
+      "sha256": "586a2c7d461bed8a0564f883830bd0549e88805630bc2387d2517d270e2d7c6c",
+      "bytes": 106977,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -2972,39 +2972,39 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0042,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          536.0,
+          278.0,
+          82.0,
+          70.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.164,
+        "formation_signature_sha1": "7692300c8f2c05f80e8ed10915af2e962f92664e"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1787,
+        "player_contrast_ratio": 0.656,
         "enemy_contrast_ratios": [
+          0.3163,
+          0.3163,
+          0.3571,
           0.3214,
-          0.3316,
-          0.3622,
-          0.3214,
-          0.3265,
-          0.4643,
+          0.4388,
+          0.4541,
           0.3061,
           0.3061,
           0.2806,
           0.3673,
+          0.3163,
+          0.3316,
+          0.4592,
           0.3214,
-          0.3418,
-          0.4643,
-          0.3214,
-          0.3418
+          0.3316
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.314,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -3021,15 +3021,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__720p.png",
-      "sha256": "6fb2265325a279b08ef04edcdf58648e7ca86e8d01b817e832aa847da8e39eeb",
-      "bytes": 105722,
+      "sha256": "e855a35b43dd751c870b43215e1f36c69e2dc8d70663080667b6d72031e93191",
+      "bytes": 129799,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -3138,37 +3138,1641 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
-          0.0,
-          0.0,
+          584.0,
+          320.0,
+          108.0,
+          80.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.5991,
+        "enemy_contrast_ratios": [
+          0.3042,
+          0.3583,
+          0.3,
+          0.3289,
+          0.4622,
+          0.4336,
+          0.3,
+          0.4044,
+          0.3244,
+          0.3956,
+          0.3511,
+          0.3208,
+          0.4792,
+          0.3333,
+          0.3378
+        ],
+        "hazard_zone_contrast": 0.3,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1746,
+        "projectile_drawn_pixels": 63,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__1080p.png",
+      "sha256": "1d9c21783768b4027a8b7cc4444c5c4dbbee0e0172d10e22958502c5459ed238",
+      "bytes": 239476,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 15,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
           0.0,
           0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.84
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ],
+          [
+            2390.48,
+            1272.63
+          ],
+          [
+            2134.54,
+            1123.09
+          ],
+          [
+            2449.88,
+            1055.39
+          ],
+          [
+            2247.64,
+            1339.35
+          ],
+          [
+            2202.13,
+            967.41
+          ],
+          [
+            2506.53,
+            1228.15
+          ],
+          [
+            2079.85,
+            1242.05
+          ],
+          [
+            2403.96,
+            925.57
+          ],
+          [
+            2377.01,
+            1403.9
+          ],
+          [
+            2057.47,
+            1012.61
+          ],
+          [
+            2583.19,
+            1089.3
+          ],
+          [
+            2122.01,
+            1402.33
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2134.54,
+          1123.09
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          876.0,
+          480.0,
+          162.0,
+          122.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.015,
+        "player_contrast_ratio": 0.5863,
+        "enemy_contrast_ratios": [
+          0.2892,
+          0.3365,
+          0.3176,
+          0.3233,
+          0.4348,
+          0.4008,
+          0.3233,
+          0.3214,
+          0.2968,
+          0.3724,
+          0.3062,
+          0.3195,
+          0.4291,
+          0.3422,
+          0.3119
+        ],
+        "hazard_zone_contrast": 0.289,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1419,
+        "projectile_drawn_pixels": 148,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "crowded",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__2k.png",
+      "sha256": "b71bc0aa3aa1a7fae2f5251374ad0e9bea40c473e21e95f5f9f4980c1a4824fe",
+      "bytes": 350497,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 15,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 1.12
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ],
+          [
+            2390.48,
+            1272.63
+          ],
+          [
+            2134.54,
+            1123.09
+          ],
+          [
+            2449.88,
+            1055.39
+          ],
+          [
+            2247.64,
+            1339.35
+          ],
+          [
+            2202.13,
+            967.41
+          ],
+          [
+            2506.53,
+            1228.15
+          ],
+          [
+            2079.85,
+            1242.05
+          ],
+          [
+            2403.96,
+            925.57
+          ],
+          [
+            2377.01,
+            1403.9
+          ],
+          [
+            2057.47,
+            1012.61
+          ],
+          [
+            2583.19,
+            1089.3
+          ],
+          [
+            2122.01,
+            1402.33
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2134.54,
+          1123.09
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1168.0,
+          640.0,
+          216.0,
+          162.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0148,
+        "player_contrast_ratio": 0.5943,
+        "enemy_contrast_ratios": [
+          0.3049,
+          0.3613,
+          0.3022,
+          0.3022,
+          0.4505,
+          0.4235,
+          0.2989,
+          0.2978,
+          0.2833,
+          0.3183,
+          0.3089,
+          0.3194,
+          0.4333,
+          0.314,
+          0.2903
+        ],
+        "hazard_zone_contrast": 0.318,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1786,
+        "projectile_drawn_pixels": 252,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "frame": 54,
+      "presentation_elapsed": 0.917,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__release__648p.png",
+      "sha256": "e577e145c6df009a95b512a6dff36410324efcdaa4fcb5a82dac3c9176c539cb",
+      "bytes": 71812,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0037,
+        "effect_bounds": [
+          540.0,
+          304.0,
+          64.0,
+          80.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.25,
+        "formation_signature_sha1": "c5cd57c278e04cf78dbfe9c4b7994eccc917f6ca"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.4427,
+        "enemy_contrast_ratios": [
+          0.301,
+          0.2857,
+          0.3367
+        ],
+        "hazard_zone_contrast": 0.301,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "impact",
+      "beat_seconds": 1.25,
+      "frame": 75,
+      "presentation_elapsed": 1.267,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__impact__648p.png",
+      "sha256": "5b4a1182069b6e8e32662c3b2db20fe9059d1d769ef0d043bb3468ddb1211a49",
+      "bytes": 71216,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0022,
+        "effect_bounds": [
+          550.0,
+          300.0,
+          56.0,
+          48.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "683fd2076893fdf24cd7f013845115a18f7faa82"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.536,
+        "enemy_contrast_ratios": [
+          0.301,
+          0.2857,
+          0.3367
+        ],
+        "hazard_zone_contrast": 0.29,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__648p.png",
+      "sha256": "25f7340caf4381a5c879540ccc491489798dde9fd1866c5abf5971f2543bebb5",
+      "bytes": 76143,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0031,
+        "effect_bounds": [
+          526.0,
+          288.0,
+          98.0,
+          74.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.5827,
+        "enemy_contrast_ratios": [
+          0.301,
+          0.2857,
+          0.3367
+        ],
+        "hazard_zone_contrast": 0.29,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "frame": 161,
+      "presentation_elapsed": 2.7,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__recovery__648p.png",
+      "sha256": "86ba85c2f55a1d147b024628356061740789640f07459c04ff39847a21105fff",
+      "bytes": 71049,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0042,
+        "effect_bounds": [
+          536.0,
+          278.0,
+          82.0,
+          70.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.164,
+        "formation_signature_sha1": "7692300c8f2c05f80e8ed10915af2e962f92664e"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.644,
+        "enemy_contrast_ratios": [
+          0.3163,
+          0.3061,
+          0.3571
+        ],
+        "hazard_zone_contrast": 0.314,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__720p.png",
+      "sha256": "9fbb948fff93b4aac746618a17d4a12ebb337e1e422a64307abc2c26270c469e",
+      "bytes": 88189,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.56
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          584.0,
+          320.0,
+          108.0,
+          80.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0146,
+        "player_contrast_ratio": 0.5948,
+        "enemy_contrast_ratios": [
+          0.3042,
+          0.2958,
+          0.3
+        ],
+        "hazard_zone_contrast": 0.3,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1746,
+        "projectile_drawn_pixels": 63,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__1080p.png",
+      "sha256": "a0c7258f1f666c35b2c3764b922efe3296a163bce801eb71bbe9c2cb998e6fd7",
+      "bytes": 159728,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.84
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0033,
+        "effect_bounds": [
+          876.0,
+          480.0,
+          162.0,
+          122.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.015,
+        "player_contrast_ratio": 0.581,
+        "enemy_contrast_ratios": [
+          0.2892,
+          0.3119,
+          0.3176
+        ],
+        "hazard_zone_contrast": 0.289,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1419,
+        "projectile_drawn_pixels": 148,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__2k.png",
+      "sha256": "8b882a74d3284d5b18961a1f2244a476fc215a45e81c71ffd83dee333cb31f3f",
+      "bytes": 241866,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 1.12
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0032,
+        "effect_bounds": [
+          1168.0,
+          640.0,
+          216.0,
+          162.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.3,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0148,
+        "player_contrast_ratio": 0.5893,
+        "enemy_contrast_ratios": [
+          0.3049,
+          0.3,
+          0.3022
+        ],
+        "hazard_zone_contrast": 0.318,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1786,
+        "projectile_drawn_pixels": 252,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "frame": 54,
+      "presentation_elapsed": 0.917,
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__release__648p.png",
+      "sha256": "8a1d4f5078622d39bd82d51390ffcca8278f4e21a1bb231756690fffdd917fd5",
+      "bytes": 61081,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0016,
+        "effect_bounds": [
+          552.0,
+          304.0,
+          52.0,
+          44.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "c5cd57c278e04cf78dbfe9c4b7994eccc917f6ca"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.4507,
+        "enemy_contrast_ratios": [
+          0.3214,
+          0.3163,
+          0.3622
+        ],
+        "hazard_zone_contrast": 0.343,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "impact",
+      "beat_seconds": 1.25,
+      "frame": 75,
+      "presentation_elapsed": 1.267,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__impact__648p.png",
+      "sha256": "11e5a0b7de79b3dfbdb515c828feddf257b289e7a4dd48628fca9627a61a6433",
+      "bytes": 58969,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.556,
+          1150.703
+        ],
+        "offset": [
+          0.556,
+          -1.297
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0021,
+        "effect_bounds": [
+          550.0,
+          300.0,
+          56.0,
+          48.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.0,
+        "formation_signature_sha1": "683fd2076893fdf24cd7f013845115a18f7faa82"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.5708,
+        "enemy_contrast_ratios": [
+          0.3163,
+          0.3265,
+          0.3265
+        ],
+        "hazard_zone_contrast": 0.354,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1837,
+        "projectile_drawn_pixels": 49,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__648p.png",
+      "sha256": "4d4a14cd1f1ee2e29b974caf97c4a15d6ac8bd88ba131582270839442f861f03",
+      "bytes": 63115,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0031,
+        "effect_bounds": [
+          526.0,
+          288.0,
+          98.0,
+          74.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.0,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.592,
+        "enemy_contrast_ratios": [
+          0.3214,
+          0.3163,
+          0.3622
+        ],
+        "hazard_zone_contrast": 0.343,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 2.68,
+      "frame": 161,
+      "presentation_elapsed": 2.7,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__recovery__648p.png",
+      "sha256": "fa5f5a100d03020641373836efce8a3a845cf5cec78af68ce75901b4b9adf3ca",
+      "bytes": 63233,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0042,
+        "effect_bounds": [
+          536.0,
+          278.0,
+          82.0,
+          70.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.0,
+        "formation_signature_sha1": "7692300c8f2c05f80e8ed10915af2e962f92664e"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0117,
+        "player_contrast_ratio": 0.6453,
+        "enemy_contrast_ratios": [
+          0.3214,
+          0.3163,
+          0.3622
+        ],
+        "hazard_zone_contrast": 0.343,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.1765,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "thief_coin_pouch",
+      "key": "thief/thief_coin_pouch",
+      "mode": "photosensitivity_safe",
+      "viewport": "720p",
+      "beat": "active",
+      "beat_seconds": 1.7,
+      "frame": 102,
+      "presentation_elapsed": 1.717,
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__720p.png",
+      "sha256": "6ddf37017273e42dfb20ef564e2203a608a6b20dd2a07ea2f5ccba21f2b6b658",
+      "bytes": 73888,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.56
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2206.57,
+          1235.76
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0031,
+        "effect_bounds": [
+          584.0,
+          320.0,
+          108.0,
+          80.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.0,
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0146,
-        "player_contrast_ratio": 0.1819,
+        "player_contrast_ratio": 0.61,
         "enemy_contrast_ratios": [
           0.3125,
-          0.3792,
-          0.3125,
-          0.3556,
-          0.3778,
-          0.4492,
-          0.3125,
-          0.4178,
-          0.3422,
-          0.4,
-          0.3556,
-          0.3292,
-          0.4875,
-          0.3333,
-          0.3467
+          0.3208,
+          0.3125
         ],
         "hazard_zone_contrast": 0.356,
         "hazard_zone_warm": true,
@@ -3182,1624 +4786,20 @@
     {
       "weapon_id": "thief_coin_pouch",
       "key": "thief/thief_coin_pouch",
-      "mode": "crowded",
-      "viewport": "1080p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1920,
-      "height": 1080,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__1080p.png",
-      "sha256": "718b840c73f2a88cecfea25bf39c8e0501ae0a55cda1a0a696ee551d37f29fbb",
-      "bytes": 194775,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 15,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.84
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ],
-          [
-            2390.48,
-            1272.63
-          ],
-          [
-            2134.54,
-            1123.09
-          ],
-          [
-            2449.88,
-            1055.39
-          ],
-          [
-            2247.64,
-            1339.35
-          ],
-          [
-            2202.13,
-            967.41
-          ],
-          [
-            2506.53,
-            1228.15
-          ],
-          [
-            2079.85,
-            1242.05
-          ],
-          [
-            2403.96,
-            925.57
-          ],
-          [
-            2377.01,
-            1403.9
-          ],
-          [
-            2057.47,
-            1012.61
-          ],
-          [
-            2583.19,
-            1089.3
-          ],
-          [
-            2122.01,
-            1402.33
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2134.54,
-          1123.09
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.015,
-        "player_contrast_ratio": 0.1761,
-        "enemy_contrast_ratios": [
-          0.3043,
-          0.3686,
-          0.344,
-          0.3403,
-          0.327,
-          0.414,
-          0.344,
-          0.3346,
-          0.3081,
-          0.3894,
-          0.3176,
-          0.3308,
-          0.4594,
-          0.344,
-          0.3327
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1486,
-        "projectile_drawn_pixels": 148,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "crowded",
-      "viewport": "2k",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 2560,
-      "height": 1440,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__crowded__active__2k.png",
-      "sha256": "656cb5410a2a6dd82469499a9c6251c66382cde65d3cfcb306ad97bebd8eddf7",
-      "bytes": 281489,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 15,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 1.12
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ],
-          [
-            2390.48,
-            1272.63
-          ],
-          [
-            2134.54,
-            1123.09
-          ],
-          [
-            2449.88,
-            1055.39
-          ],
-          [
-            2247.64,
-            1339.35
-          ],
-          [
-            2202.13,
-            967.41
-          ],
-          [
-            2506.53,
-            1228.15
-          ],
-          [
-            2079.85,
-            1242.05
-          ],
-          [
-            2403.96,
-            925.57
-          ],
-          [
-            2377.01,
-            1403.9
-          ],
-          [
-            2057.47,
-            1012.61
-          ],
-          [
-            2583.19,
-            1089.3
-          ],
-          [
-            2122.01,
-            1402.33
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2134.54,
-          1123.09
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1761,
-        "enemy_contrast_ratios": [
-          0.3351,
-          0.3935,
-          0.3323,
-          0.3258,
-          0.3505,
-          0.4485,
-          0.3323,
-          0.3178,
-          0.2911,
-          0.343,
-          0.3222,
-          0.3301,
-          0.4688,
-          0.3204,
-          0.3151
-        ],
-        "hazard_zone_contrast": 0.387,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1865,
-        "projectile_drawn_pixels": 252,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "beat": "release",
-      "beat_seconds": 0.9,
-      "frame": 54,
-      "presentation_elapsed": -1.0,
-      "phase": "release",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__release__648p.png",
-      "sha256": "7a1042fa311316e0c684937710d72a60e4f2a3dab2d7074166b24d8e9a1b1bb8",
-      "bytes": 53572,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "beat": "impact",
-      "beat_seconds": 1.25,
-      "frame": 75,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__impact__648p.png",
-      "sha256": "b260c803c45659f206f06a438c0ee99af1231b51507f903d8884378b48cc682a",
-      "bytes": 53187,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.338,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__648p.png",
-      "sha256": "e38ddc921de5cde291bfe5098dcc39ca8ac35848d0acc13ec6a1d11af312fc43",
-      "bytes": 53694,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "beat": "recovery",
-      "beat_seconds": 2.68,
-      "frame": 161,
-      "presentation_elapsed": -1.0,
-      "phase": "recovery",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__recovery__648p.png",
-      "sha256": "55cf3927829071ccd21db23847e80222dc6c0b9d2b971639eeaad7ece30de0dc",
-      "bytes": 54415,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "720p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1280,
-      "height": 720,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__720p.png",
-      "sha256": "156da95d25f60d2ad9ee6ca6f9e686534df999124b5ab1a487df31e7a47cb50b",
-      "bytes": 62133,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.56
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0146,
-        "player_contrast_ratio": 0.1699,
-        "enemy_contrast_ratios": [
-          0.3125,
-          0.3208,
-          0.3125
-        ],
-        "hazard_zone_contrast": 0.358,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1905,
-        "projectile_drawn_pixels": 63,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "1080p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1920,
-      "height": 1080,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__1080p.png",
-      "sha256": "9bdade1196faf5418a6b299b90c3ebdfa837ea9a6fd7fc8276a3aed483df2322",
-      "bytes": 111757,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.84
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.015,
-        "player_contrast_ratio": 0.1629,
-        "enemy_contrast_ratios": [
-          0.3043,
-          0.3384,
-          0.344
-        ],
-        "hazard_zone_contrast": 0.34,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1486,
-        "projectile_drawn_pixels": 148,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "reduced_motion",
-      "viewport": "2k",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 2560,
-      "height": 1440,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__reduced_motion__active__2k.png",
-      "sha256": "917821ef7b223ec894ac16edbecb6ff35eb203eb0fb264866a518abaa19f0eb5",
-      "bytes": 167305,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 1.12
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1625,
-        "enemy_contrast_ratios": [
-          0.3351,
-          0.3312,
-          0.3323
-        ],
-        "hazard_zone_contrast": 0.385,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1865,
-        "projectile_drawn_pixels": 252,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "photosensitivity_safe",
-      "viewport": "648p",
-      "beat": "release",
-      "beat_seconds": 0.9,
-      "frame": 54,
-      "presentation_elapsed": -1.0,
-      "phase": "release",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__release__648p.png",
-      "sha256": "71aaea56a1c3531f8b2fb3f9957558aea34394e723dfedae26c66d1b6ea8ab7b",
-      "bytes": 52887,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "photosensitivity_safe",
-      "viewport": "648p",
-      "beat": "impact",
-      "beat_seconds": 1.25,
-      "frame": 75,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__impact__648p.png",
-      "sha256": "48c7b6cd7d083fa89bbeab54f40e7740146de51bc9880545540693d6487ebca6",
-      "bytes": 52678,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.338,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "photosensitivity_safe",
-      "viewport": "648p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__648p.png",
-      "sha256": "499ad1439c4128657373cd996cea4614abe4d9c0ce30975333d739f4623a3cbf",
-      "bytes": 52986,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "photosensitivity_safe",
-      "viewport": "648p",
-      "beat": "recovery",
-      "beat_seconds": 2.68,
-      "frame": 161,
-      "presentation_elapsed": -1.0,
-      "phase": "recovery",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__recovery__648p.png",
-      "sha256": "01dcb00645aef32aeb2b64e8f93b7c7c98881d7ca1ffb3a6c4c8a9340bc5db0f",
-      "bytes": 53424,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
-        "enemy_contrast_ratios": [
-          0.3214,
-          0.3163,
-          0.3622
-        ],
-        "hazard_zone_contrast": 0.343,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
-      "mode": "photosensitivity_safe",
-      "viewport": "720p",
-      "beat": "active",
-      "beat_seconds": 1.7,
-      "frame": 102,
-      "presentation_elapsed": -1.0,
-      "phase": "active",
-      "width": 1280,
-      "height": 720,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__720p.png",
-      "sha256": "4bc93bb10c27ece8710695b33444e7d836d59d9500693e061e9825f4cd324235",
-      "bytes": 61269,
-      "activation_started": true,
-      "presentation_live": false,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.56
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2206.57,
-          1235.76
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0,
-        "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0146,
-        "player_contrast_ratio": 0.1699,
-        "enemy_contrast_ratios": [
-          0.3125,
-          0.3208,
-          0.3125
-        ],
-        "hazard_zone_contrast": 0.358,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1905,
-        "projectile_drawn_pixels": 63,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "thief_coin_pouch",
-      "key": "thief/thief_coin_pouch",
       "mode": "photosensitivity_safe",
       "viewport": "1080p",
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__1080p.png",
-      "sha256": "3a3f2453bd760848faeaee62078ccc2d1cd0981dd44b99b80a834e1cd2a7292c",
-      "bytes": 111206,
+      "sha256": "d643d268cc0c9b917a6b24de2118be2d1344c3c868bd5c04b4c638f255aeba55",
+      "bytes": 138067,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -4860,27 +4860,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          876.0,
+          480.0,
+          162.0,
+          122.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.015,
-        "player_contrast_ratio": 0.1629,
+        "player_contrast_ratio": 0.5907,
         "enemy_contrast_ratios": [
           0.3043,
           0.3384,
           0.344
         ],
-        "hazard_zone_contrast": 0.34,
+        "hazard_zone_contrast": 0.343,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1486,
         "projectile_drawn_pixels": 148,
@@ -4897,15 +4897,15 @@
       "beat": "active",
       "beat_seconds": 1.7,
       "frame": 102,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.717,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_coin_pouch__photosensitivity_safe__active__2k.png",
-      "sha256": "22eb7a7a4b363a318974259055b4aeccef90c26f6093f8f1bab010eccf6a6bb5",
-      "bytes": 166883,
+      "sha256": "a620f51f3b31119c3834c569b57c4c192b921f0357415cf94d2589dca2a93fce",
+      "bytes": 213456,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -4966,27 +4966,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1168.0,
+          640.0,
+          216.0,
+          162.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "2a660fb17ba71aec74efd57ad477bc07456c13d5"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1625,
+        "player_contrast_ratio": 0.602,
         "enemy_contrast_ratios": [
           0.3351,
           0.3312,
           0.3323
         ],
-        "hazard_zone_contrast": 0.385,
+        "hazard_zone_contrast": 0.387,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1865,
         "projectile_drawn_pixels": 252,
@@ -5109,15 +5109,15 @@
       "beat": "impact",
       "beat_seconds": 1.37,
       "frame": 82,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.383,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__impact__648p.png",
-      "sha256": "db009b74152f8c5325c1d2993996afca4deed7f702f47bbf7c868e88b1f17958",
-      "bytes": 66419,
+      "sha256": "588fa0e06572b4637f48d454d7ab9a2a5d9de96ef93cd4b45298debb3f880508",
+      "bytes": 87464,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5125,12 +5125,12 @@
       "enemies": 3,
       "camera": {
         "center": [
-          2048.0,
-          1152.0
+          2047.664,
+          1152.076
         ],
         "offset": [
-          0.0,
-          0.0
+          -0.336,
+          0.076
         ],
         "baseline_offset": [
           0.0,
@@ -5187,21 +5187,21 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1307,
         "enemy_contrast_ratios": [
-          0.5408,
-          0.398,
+          0.3571,
+          0.352,
           0.3163
         ],
-        "hazard_zone_contrast": 0.335,
+        "hazard_zone_contrast": 0.285,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
+        "projectile_contrast_ratio": 0.1852,
+        "projectile_drawn_pixels": 54,
         "projectile_readable": true,
         "mode_swatch_matches": true,
         "weapon_swatch_matches": true
@@ -5215,15 +5215,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__648p.png",
-      "sha256": "860a69bc426a332e125c12e8299a2260eb06f29c20be1ff3a1757cf14732b869",
-      "bytes": 62080,
+      "sha256": "bcf5548e702b69dda85c015d145cbf17bd91632fbd15a95566ef7f48d520b4c3",
+      "bytes": 94163,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5284,27 +5284,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0039,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          522.0,
+          282.0,
+          134.0,
+          104.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1267,
         "enemy_contrast_ratios": [
-          0.4694,
-          0.4898,
-          0.5153
+          0.2806,
+          0.301,
+          0.3622
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.282,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -5321,15 +5321,15 @@
       "beat": "recovery",
       "beat_seconds": 2.89,
       "frame": 173,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.9,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__recovery__648p.png",
-      "sha256": "851595790e99d9865bd72c5d67a6434d016db6ad6ae1690ff95e27fc92874efc",
-      "bytes": 56210,
+      "sha256": "ef0066b2331240f8394097eba546f62238d31fc64a79351520210c58f8d0c371",
+      "bytes": 70969,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5390,27 +5390,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0008,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          544.0,
+          304.0,
+          66.0,
+          44.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.183,
+        "formation_signature_sha1": "72a46e37e7abae232f4b00805f6fadafc74e9286"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1453,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3112,
-          0.3622
+          0.301,
+          0.2857,
+          0.3367
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.308,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -5427,15 +5427,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__720p.png",
-      "sha256": "3e4577e605a2270e22abe9b29cb76f7df1fa19e4cd97b82b3d6f3b25c025fa2d",
-      "bytes": 70090,
+      "sha256": "c14c93066575298cf5ff1b6b0be257f0ae21fb0a2a0a883dcf47b38b4235348c",
+      "bytes": 108061,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5496,27 +5496,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          580.0,
+          312.0,
+          150.0,
+          118.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.1699,
+        "player_contrast_ratio": 0.1296,
         "enemy_contrast_ratios": [
-          0.4958,
-          0.5125,
-          0.5083
+          0.3042,
+          0.3167,
+          0.35
         ],
-        "hazard_zone_contrast": 0.358,
+        "hazard_zone_contrast": 0.288,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1905,
         "projectile_drawn_pixels": 63,
@@ -5533,15 +5533,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__1080p.png",
-      "sha256": "73e2a9ff16a9a304d3ce822477bd4fcd45cb7bc49dd3395ca23687b280d82a46",
-      "bytes": 129262,
+      "sha256": "79eb3df2f59703c9ddc043b31f9e13ea9620b09087a9509c57d63185dbe25469",
+      "bytes": 197962,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5602,27 +5602,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          868.0,
+          468.0,
+          226.0,
+          176.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1629,
+        "player_contrast_ratio": 0.1293,
         "enemy_contrast_ratios": [
-          0.4896,
-          0.4896,
-          0.5142
+          0.3119,
+          0.3233,
+          0.3648
         ],
-        "hazard_zone_contrast": 0.34,
+        "hazard_zone_contrast": 0.278,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1486,
         "projectile_drawn_pixels": 148,
@@ -5639,15 +5639,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__active__2k.png",
-      "sha256": "e537afbe33646796bae52187c462fbfd673ecb643c60ab491558e84209ff0066",
-      "bytes": 197000,
+      "sha256": "692a95ae5da6c6d18f23dcaadf74ab45e3170450df00f566ae9f5f4ce4140a83",
+      "bytes": 301534,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5708,27 +5708,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1156.0,
+          624.0,
+          302.0,
+          234.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.1625,
+        "player_contrast_ratio": 0.1249,
         "enemy_contrast_ratios": [
-          0.4672,
-          0.4462,
-          0.5075
+          0.3122,
+          0.3065,
+          0.343
         ],
-        "hazard_zone_contrast": 0.385,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1944,
         "projectile_drawn_pixels": 252,
@@ -5901,15 +5901,15 @@
       "beat": "impact",
       "beat_seconds": 1.37,
       "frame": 82,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.383,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__impact__648p.png",
-      "sha256": "c2f69359fc2d532b31fa70987ac96a9b30d4e6def014b86dc137292ebf8d91b4",
-      "bytes": 102955,
+      "sha256": "c098a6dad55dceb5a5aa278ee4f4dc9ce023015a3873ea923bff0b98674d4583",
+      "bytes": 123666,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -5917,12 +5917,12 @@
       "enemies": 13,
       "camera": {
         "center": [
-          2048.0,
-          1152.0
+          2044.538,
+          1157.979
         ],
         "offset": [
-          0.0,
-          0.0
+          -3.462,
+          5.979
         ],
         "baseline_offset": [
           0.0,
@@ -6019,31 +6019,31 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1787,
+        "player_contrast_ratio": 0.1347,
         "enemy_contrast_ratios": [
-          0.3367,
-          0.3112,
-          0.3622,
+          0.2959,
+          0.2653,
+          0.3163,
+          0.2857,
+          0.2704,
+          0.3724,
+          0.2959,
+          0.2755,
+          0.2704,
           0.2551,
-          0.3265,
-          0.3673,
-          0.3061,
-          0.3061,
-          0.3163,
-          0.3163,
-          0.398,
-          0.4235,
-          0.4643
+          0.4082,
+          0.4184,
+          0.3776
         ],
-        "hazard_zone_contrast": 0.335,
+        "hazard_zone_contrast": 0.276,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
+        "projectile_contrast_ratio": 0.2115,
+        "projectile_drawn_pixels": 52,
         "projectile_readable": true,
         "mode_swatch_matches": true,
         "weapon_swatch_matches": true
@@ -6057,15 +6057,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__648p.png",
-      "sha256": "b3a9c96a7304ba036747a95d9c6e9ab6f3b7cbcf4de9406c753bafc3adb58c92",
-      "bytes": 89289,
+      "sha256": "e0d41a584f347b28601648471c077daf27e8cace1dc5e644e2a997bad79444fa",
+      "bytes": 117309,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -6166,37 +6166,37 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0039,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          522.0,
+          282.0,
+          134.0,
+          104.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1787,
+        "player_contrast_ratio": 0.136,
         "enemy_contrast_ratios": [
-          0.3878,
-          0.3112,
-          0.3827,
-          0.4031,
-          0.3265,
-          0.4643,
-          0.3163,
-          0.2551,
-          0.3163,
-          0.3163,
-          0.3214,
-          0.3418,
-          0.4643
+          0.4184,
+          0.2806,
+          0.4184,
+          0.4337,
+          0.2653,
+          0.449,
+          0.352,
+          0.2398,
+          0.301,
+          0.2602,
+          0.2908,
+          0.3061,
+          0.3776
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.282,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -6213,15 +6213,15 @@
       "beat": "recovery",
       "beat_seconds": 2.89,
       "frame": 173,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.9,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__recovery__648p.png",
-      "sha256": "6ac76d84fdf4a6fa1e4b0dfbc5beb600481f8758e1fc2b4f25d79670ee488dd4",
-      "bytes": 88055,
+      "sha256": "931244614545a845e4315d1d57a55d6b3c1ac8ca42e054009a70d0b5d4377cc8",
+      "bytes": 102532,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -6322,37 +6322,37 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0008,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          544.0,
+          304.0,
+          66.0,
+          44.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.183,
+        "formation_signature_sha1": "72a46e37e7abae232f4b00805f6fadafc74e9286"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1787,
+        "player_contrast_ratio": 0.1587,
         "enemy_contrast_ratios": [
-          0.3214,
+          0.301,
+          0.2857,
+          0.3367,
+          0.3163,
           0.3112,
-          0.3622,
-          0.3214,
-          0.3265,
-          0.4643,
+          0.449,
           0.3061,
-          0.3061,
+          0.2857,
           0.3163,
+          0.3112,
           0.3163,
-          0.3214,
-          0.3418,
-          0.4643
+          0.3316,
+          0.4388
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.308,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -6369,15 +6369,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__720p.png",
-      "sha256": "04d4716e89b679a440c703f760ff598a1220469f5c7313a93f05d32ea92b8161",
-      "bytes": 102309,
+      "sha256": "b156855f2c58f0fc9b68f6dca8ec8c2e57bb205348d5ba4438711054eb3750d0",
+      "bytes": 135245,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -6478,37 +6478,37 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          580.0,
+          312.0,
+          150.0,
+          118.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.1819,
+        "player_contrast_ratio": 0.1405,
         "enemy_contrast_ratios": [
-          0.3917,
-          0.3208,
-          0.3875,
-          0.3556,
-          0.3778,
-          0.4492,
-          0.3583,
-          0.2667,
-          0.3511,
+          0.4042,
+          0.2958,
+          0.4125,
+          0.3644,
+          0.28,
+          0.4258,
+          0.3792,
+          0.2756,
           0.3289,
-          0.3556,
-          0.3292,
-          0.4875
+          0.2578,
+          0.3467,
+          0.3125,
+          0.4208
         ],
-        "hazard_zone_contrast": 0.358,
+        "hazard_zone_contrast": 0.288,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1905,
         "projectile_drawn_pixels": 63,
@@ -6525,15 +6525,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__1080p.png",
-      "sha256": "320889b266da0acd9c11a5d7dabb7d46d5a79c9a7b5eb158749f755387bc0cdc",
-      "bytes": 190510,
+      "sha256": "39ae61781516ef7405ede26491c818999e1aaee87452adf70ea6599974bbc82e",
+      "bytes": 248091,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -6634,37 +6634,37 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          868.0,
+          468.0,
+          226.0,
+          176.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1761,
+        "player_contrast_ratio": 0.142,
         "enemy_contrast_ratios": [
-          0.3894,
-          0.3384,
-          0.3573,
-          0.4083,
-          0.327,
-          0.4121,
+          0.4216,
+          0.2987,
           0.3837,
-          0.2741,
-          0.3138,
-          0.3422,
-          0.3176,
-          0.3289,
-          0.4594
+          0.4197,
+          0.2609,
+          0.397,
+          0.4159,
+          0.2854,
+          0.2949,
+          0.2703,
+          0.2968,
+          0.3081,
+          0.3856
         ],
-        "hazard_zone_contrast": 0.34,
+        "hazard_zone_contrast": 0.278,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1486,
         "projectile_drawn_pixels": 148,
@@ -6681,15 +6681,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__active__2k.png",
-      "sha256": "52362d0350fef7ec2ae5906f5b8789d3730990ec759f8e93629f844c6563f8c3",
-      "bytes": 281892,
+      "sha256": "7f3114b9c3be7ef736d48813722fe9ce1c5e47ccc57cf940bb115717f3dc34a2",
+      "bytes": 371044,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": false
@@ -6790,37 +6790,37 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1156.0,
+          624.0,
+          302.0,
+          234.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.1758,
+        "player_contrast_ratio": 0.1371,
         "enemy_contrast_ratios": [
-          0.3913,
-          0.3312,
-          0.3656,
-          0.3978,
-          0.3505,
-          0.4485,
-          0.3677,
-          0.2711,
-          0.3111,
-          0.3323,
-          0.3222,
-          0.329,
-          0.4688
+          0.4069,
+          0.2849,
+          0.3914,
+          0.4183,
+          0.2645,
+          0.4173,
+          0.3892,
+          0.2956,
+          0.2811,
+          0.2538,
+          0.2856,
+          0.3043,
+          0.3796
         ],
-        "hazard_zone_contrast": 0.385,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1944,
         "projectile_drawn_pixels": 252,
@@ -6943,15 +6943,15 @@
       "beat": "impact",
       "beat_seconds": 1.37,
       "frame": 82,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.383,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__impact__648p.png",
-      "sha256": "5b4939d1e015d7099f7e343f12aba99ba83e1c2deaa5c43c9e3618b423280f57",
-      "bytes": 66863,
+      "sha256": "b1953aaec820b2f1eb0840d34061df2754fae39a93591d4711b1e5e094150212",
+      "bytes": 87747,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7021,18 +7021,18 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.128,
         "enemy_contrast_ratios": [
-          0.5408,
-          0.398,
+          0.3776,
+          0.352,
           0.3163
         ],
-        "hazard_zone_contrast": 0.335,
+        "hazard_zone_contrast": 0.277,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -7049,15 +7049,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__648p.png",
-      "sha256": "48f11e42e61e322d61ed3178930c3ee327afa46396b8555ae4c922d42d4bad36",
-      "bytes": 61986,
+      "sha256": "c0ffa043c8d91165ed566f2afb6e0834f1cceb096e6f53bc7fc2cae55099f162",
+      "bytes": 94075,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7118,27 +7118,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0039,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          522.0,
+          282.0,
+          134.0,
+          104.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1267,
         "enemy_contrast_ratios": [
-          0.4694,
-          0.4898,
-          0.5153
+          0.2806,
+          0.301,
+          0.3622
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.282,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -7155,15 +7155,15 @@
       "beat": "recovery",
       "beat_seconds": 2.89,
       "frame": 173,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.9,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__recovery__648p.png",
-      "sha256": "8b2c95a6610497eec1462565803f65a360742c21c38d8ba9bff06113d138b9fd",
-      "bytes": 54470,
+      "sha256": "d0477afe7f42e4316d4b146a0cbf97d8e4daf802a1e795b2cce09d525852075c",
+      "bytes": 69336,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7224,27 +7224,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0008,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          544.0,
+          304.0,
+          66.0,
+          44.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.183,
+        "formation_signature_sha1": "72a46e37e7abae232f4b00805f6fadafc74e9286"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1453,
         "enemy_contrast_ratios": [
-          0.3214,
-          0.3112,
-          0.3622
+          0.301,
+          0.2857,
+          0.3367
         ],
-        "hazard_zone_contrast": 0.343,
+        "hazard_zone_contrast": 0.308,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -7261,15 +7261,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__720p.png",
-      "sha256": "095af61606c316381dc7ecfd67fd3f5c3d8d0a69b42a87354737747c8aa90864",
-      "bytes": 71308,
+      "sha256": "36ebe3c35c822c5e6b1ca21a9120e626ed92ec8819e9d1ea7041e678394014b1",
+      "bytes": 109319,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7330,27 +7330,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          580.0,
+          312.0,
+          150.0,
+          118.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.1699,
+        "player_contrast_ratio": 0.1296,
         "enemy_contrast_ratios": [
-          0.4958,
-          0.5125,
-          0.5083
+          0.3042,
+          0.3167,
+          0.35
         ],
-        "hazard_zone_contrast": 0.358,
+        "hazard_zone_contrast": 0.288,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1905,
         "projectile_drawn_pixels": 63,
@@ -7367,15 +7367,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__1080p.png",
-      "sha256": "8cd06d29bea2f3573106fd736f904edabf62c5db2dfb733bfb868d3f23277f36",
-      "bytes": 129130,
+      "sha256": "966f406c25e7a6e588edc6c2b120e839f7037f3753156d7e0e8f74bf67b671f3",
+      "bytes": 197789,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7436,27 +7436,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          868.0,
+          468.0,
+          226.0,
+          176.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1629,
+        "player_contrast_ratio": 0.1293,
         "enemy_contrast_ratios": [
-          0.4896,
-          0.4896,
-          0.5142
+          0.3119,
+          0.3233,
+          0.3648
         ],
-        "hazard_zone_contrast": 0.34,
+        "hazard_zone_contrast": 0.278,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1486,
         "projectile_drawn_pixels": 148,
@@ -7473,15 +7473,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__active__2k.png",
-      "sha256": "efa0fc533cac4feb937fae4466c101199018dba0350b05cfacd5761c1472b38f",
-      "bytes": 196473,
+      "sha256": "ed40488231fe8292767bf7a7915ab976005e110e2a4203cf0456bc58e8dc0d91",
+      "bytes": 301022,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
@@ -7542,27 +7542,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0038,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1156.0,
+          624.0,
+          302.0,
+          234.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "fullscreen_alpha": 0.32,
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.1625,
+        "player_contrast_ratio": 0.1249,
         "enemy_contrast_ratios": [
-          0.4672,
-          0.4462,
-          0.5075
+          0.3122,
+          0.3065,
+          0.343
         ],
-        "hazard_zone_contrast": 0.385,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1944,
         "projectile_drawn_pixels": 252,
@@ -7685,15 +7685,15 @@
       "beat": "impact",
       "beat_seconds": 1.37,
       "frame": 82,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.383,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__impact__648p.png",
-      "sha256": "1698b0019b6760629af0dea6330e2897a105e109b1245329f6f5184e7d5790d9",
-      "bytes": 66312,
+      "sha256": "3e20a17737ee141fd95d37c851ee22849dbbb4d621a5d3c358ee2b03487aa978",
+      "bytes": 74602,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -7701,12 +7701,12 @@
       "enemies": 3,
       "camera": {
         "center": [
-          2048.0,
-          1152.0
+          2047.664,
+          1152.076
         ],
         "offset": [
-          0.0,
-          0.0
+          -0.336,
+          0.076
         ],
         "baseline_offset": [
           0.0,
@@ -7764,20 +7764,20 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1613,
         "enemy_contrast_ratios": [
-          0.5408,
-          0.398,
+          0.3571,
+          0.352,
           0.3163
         ],
-        "hazard_zone_contrast": 0.335,
+        "hazard_zone_contrast": 0.347,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.1765,
-        "projectile_drawn_pixels": 51,
+        "projectile_contrast_ratio": 0.1852,
+        "projectile_drawn_pixels": 54,
         "projectile_readable": true,
         "mode_swatch_matches": true,
         "weapon_swatch_matches": true
@@ -7791,15 +7791,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__648p.png",
-      "sha256": "fa2c4e9398aa4e43e2214a8922bb4170aecf8266728bab45d0ab86a38762f5a5",
-      "bytes": 60969,
+      "sha256": "2731b73676346824870ce83b5fee84374d411490d8c1ee4c8a076952548433bc",
+      "bytes": 80591,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -7860,25 +7860,25 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0023,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          550.0,
+          298.0,
+          106.0,
+          76.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.168,
         "enemy_contrast_ratios": [
-          0.4694,
-          0.4898,
-          0.5153
+          0.2806,
+          0.301,
+          0.3622
         ],
         "hazard_zone_contrast": 0.343,
         "hazard_zone_warm": true,
@@ -7897,15 +7897,15 @@
       "beat": "recovery",
       "beat_seconds": 2.89,
       "frame": 173,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 2.9,
       "phase": "recovery",
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__recovery__648p.png",
-      "sha256": "e9279560cfedaddb2c4e59d2718fdbaa586fed847d535e6382b46b4afd9f7c9d",
-      "bytes": 55829,
+      "sha256": "21af90b8a864ebeb11debc4fd66edbe208e3a8ddbf179180074ff8cf9fa4a175",
+      "bytes": 62803,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -7966,21 +7966,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0003,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          550.0,
+          310.0,
+          52.0,
+          34.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "72a46e37e7abae232f4b00805f6fadafc74e9286"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.164,
+        "player_contrast_ratio": 0.1613,
         "enemy_contrast_ratios": [
           0.3214,
           0.3112,
@@ -8003,15 +8003,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__720p.png",
-      "sha256": "241bce83247e420e6f3da2ea6e2eb98e32059d294be6566786ca3b97b7875785",
-      "bytes": 71004,
+      "sha256": "af481d5ecc841b9e016dbe637b5ab6ca3ebca2ed27c657c715c93e0b58f49a1a",
+      "bytes": 94799,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -8072,25 +8072,25 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0022,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          612.0,
+          330.0,
+          118.0,
+          86.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
         "player_contrast_ratio": 0.1699,
         "enemy_contrast_ratios": [
-          0.4958,
-          0.5125,
-          0.5083
+          0.3042,
+          0.3167,
+          0.35
         ],
         "hazard_zone_contrast": 0.358,
         "hazard_zone_warm": true,
@@ -8109,15 +8109,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__1080p.png",
-      "sha256": "d72d3c884d5e2effc558dd3b2c605c0ce68e00bfac2204af8e23fb78e4eb3b39",
-      "bytes": 128563,
+      "sha256": "65e88d67d39c4afad355bd0f0bd0dad097d3a41b5575e8bdfbd3b8a69abb9aac",
+      "bytes": 176929,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -8178,25 +8178,25 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0022,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          916.0,
+          496.0,
+          178.0,
+          126.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.1629,
+        "player_contrast_ratio": 0.1634,
         "enemy_contrast_ratios": [
-          0.4896,
-          0.4896,
-          0.5142
+          0.3119,
+          0.3233,
+          0.3648
         ],
         "hazard_zone_contrast": 0.34,
         "hazard_zone_warm": true,
@@ -8215,15 +8215,15 @@
       "beat": "active",
       "beat_seconds": 1.9,
       "frame": 114,
-      "presentation_elapsed": -1.0,
+      "presentation_elapsed": 1.917,
       "phase": "active",
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__active__2k.png",
-      "sha256": "1abb064561c630e38d35a6e2d9cb7f3f89cc1409eea50424718b8b2cb8bd09fb",
-      "bytes": 195700,
+      "sha256": "e26936473c6d4b52a8a51346b18b550d6462aa24e205567a2680bd995554bce9",
+      "bytes": 275894,
       "activation_started": true,
-      "presentation_live": false,
+      "presentation_live": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
         "ultimate_photosensitivity_safe": true
@@ -8284,25 +8284,25 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0022,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1222.0,
+          660.0,
+          236.0,
+          170.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "released"
+        "formation_signature_sha1": "ca4f4c6960181141e06d144994edadd2503ef008"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.1625,
+        "player_contrast_ratio": 0.1614,
         "enemy_contrast_ratios": [
-          0.4672,
-          0.4462,
-          0.5075
+          0.3122,
+          0.3065,
+          0.343
         ],
         "hazard_zone_contrast": 0.385,
         "hazard_zone_warm": true,

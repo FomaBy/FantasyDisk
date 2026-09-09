@@ -91,7 +91,7 @@
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0037 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0044 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "thief_ultimate_crouched_toss",
@@ -381,8 +381,8 @@
       "capture_script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/thief_certification_capture_test.gd",
       "source_ref": "agent/fable/e50731ad6088",
-      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
-      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "source_commit_sha": "cc283b740ef70c35831a4d8796316344bdd94c5e",
+      "source_tree_sha": "0141120f491c82859dbee0ce84bea5eda6cadf32",
       "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
       "exclusive_gate": true,
       "weapon_ids": [
