@@ -23,6 +23,7 @@ extends SceneTree
 
 const HazardVfx := preload("res://scripts/hazard_vfx.gd")
 const AttackVfx := preload("res://scripts/attack_vfx.gd")
+const CombatFeedbackTimeline := preload("res://scripts/combat_feedback_timeline.gd")
 
 const SAMPLES := 24
 const TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
@@ -172,6 +173,62 @@ func _run() -> void:
 	flat_holder.queue_free()
 	probe_parent.queue_free()
 	await process_frame
+
+	# E (round-5 grant): pooled feedback timeline — full density, zero warm-pool
+	# allocation, group-count parity and cleanup.
+	var scene_root := Node2D.new()
+	root.add_child(scene_root)
+	await process_frame
+	var timeline: Node = CombatFeedbackTimeline.for_scene(scene_root)
+	if timeline == null:
+		failures.append("CombatFeedbackTimeline.for_scene did not create the timeline")
+	else:
+		if timeline.process_mode != Node.PROCESS_MODE_PAUSABLE:
+			failures.append("timeline is not pause-aware (PAUSABLE)")
+		if CombatFeedbackTimeline.for_scene(scene_root) != timeline:
+			failures.append("for_scene created a second timeline for the same scene")
+		var spawn_batch := func() -> void:
+			for i in range(24):
+				var setup := func(label: Label) -> void:
+					label.text = str(i)
+					label.z_index = 3000
+				timeline.spawn_number(setup, Vector2(i * 10.0, 100.0), 44.0, 0.62, 0.20, 0.42, i % 2 == 0)
+				timeline.spawn_tick(Vector2(i * 5.0, 50.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+		spawn_batch.call()
+		await process_frame
+		var warm_objects := int(Performance.get_monitor(Performance.OBJECT_COUNT))
+		var warm_nodes := int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+		var active_labels := scene_root.get_tree().get_nodes_in_group("combat_feedback_labels").size()
+		if active_labels != 24:
+			failures.append("group count is %d after 24 numbers — cap semantics broken" % active_labels)
+		# Wait for full item lifetime, then re-spawn: must reuse the pool with
+		# zero new objects (no per-event node/tween allocation).
+		await create_timer(0.8).timeout
+		if scene_root.get_tree().get_nodes_in_group("combat_feedback_labels").size() != 0:
+			failures.append("released numbers remain in the feedback group")
+		spawn_batch.call()
+		await process_frame
+		var reuse_delta_objects := int(Performance.get_monitor(Performance.OBJECT_COUNT)) - warm_objects
+		var reuse_delta_nodes := int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)) - warm_nodes
+		if reuse_delta_objects != 0 or reuse_delta_nodes != 0:
+			failures.append("warm-pool re-spawn allocated %d new objects / %d new nodes — pooling broken" % [reuse_delta_objects, reuse_delta_nodes])
+		# Overlap: two body flashes on the same canvas item must restart, not stack.
+		var flash_target := Sprite2D.new()
+		scene_root.add_child(flash_target)
+		await process_frame
+		flash_target.modulate = Color(1.0, 1.0, 1.0, 1.0).lerp(Color(1.0, 0.42, 0.34, 1.0), 0.4)
+		timeline.call("flash_body", flash_target, Color(1.0, 1.0, 1.0, 1.0))
+		timeline.call("flash_body", flash_target, Color(1.0, 1.0, 1.0, 1.0))
+		await create_timer(0.25).timeout
+		var restored: Color = flash_target.modulate
+		if absf(restored.r - 1.0) > 0.01 or absf(restored.g - 1.0) > 0.01:
+			failures.append("body flash did not restore modulate (got %s)" % str(restored))
+		scene_root.queue_free()
+		await process_frame
+		await process_frame
+		var timeline_orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+		if timeline_orphans != 0:
+			failures.append("orphans appeared after scene/timeline cleanup: %d" % timeline_orphans)
 
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
