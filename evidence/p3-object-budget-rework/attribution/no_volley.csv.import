@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b5dupjtvruilu"
+
+[deps]
+
+files=["res://evidence/p3-object-budget-rework/attribution/no_volley.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_volley.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_volley.orphans.translation"]
+
+source_file="res://evidence/p3-object-budget-rework/attribution/no_volley.csv"
+dest_files=["res://evidence/p3-object-budget-rework/attribution/no_volley.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_volley.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_volley.orphans.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

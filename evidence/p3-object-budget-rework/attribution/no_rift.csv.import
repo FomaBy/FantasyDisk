@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bwkmduuhiwev4"
+
+[deps]
+
+files=["res://evidence/p3-object-budget-rework/attribution/no_rift.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_rift.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_rift.orphans.translation"]
+
+source_file="res://evidence/p3-object-budget-rework/attribution/no_rift.csv"
+dest_files=["res://evidence/p3-object-budget-rework/attribution/no_rift.objects.translation", "res://evidence/p3-object-budget-rework/attribution/no_rift.nodes.translation", "res://evidence/p3-object-budget-rework/attribution/no_rift.orphans.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
