@@ -276,9 +276,9 @@
     "authored_focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "origin/dev",
-      "source_commit_sha": "9da21d2c225a5cbcd56f984b76b0ff28d0adf4a2",
-      "source_tree_sha": "2b17787eb63856a044efaf043da2420b2be3d3b3",
+      "source_ref": "agent/codex-dev-sol-5-6/4d7a94c42825",
+      "source_commit_sha": "450f4a50bef2e9c355bd7bb63057f5e12e5585de",
+      "source_tree_sha": "579e55b71f91c87f6ab4d825590aa3b134fa3b01",
       "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
@@ -305,7 +305,12 @@
         "1080p": "1920x1080",
         "2k": "2560x1440"
       },
-      "sheet_sha256": {},
+      "sheet_sha256": {
+        "648p": "c452b6d27b2b250108982af34dbe6ca478667e31eac24e5107c74e61cc461ecb",
+        "720p": "15397570dcdaa87fe6bc14dee475dae93b7baaab218c8745e1858ae9158c00f9",
+        "1080p": "96f505816e1665c3891e9e421337ae618ecfaff6f4a29c4f5c0236c32bc36221",
+        "2k": "02f279ceeb75debe11060d0cd0981b877fbba6b6f76b2dff6da9752da566d8fd"
+      },
       "live_samples": 144,
       "note": "Four native-size mode matrices index 144 fresh measurements from real Main.tscn combat runs with the shipped Player, HUD and Enemy hazards. The dedicated persisted accessibility flags drive the reduced-motion and photosensitivity-safe variants independently."
     }
