@@ -254,8 +254,8 @@
       "capture_script": "tests/ultimates/presentation/soldier_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/soldier_certification_capture_test.gd",
       "source_ref": "agent/fable/e50731ad6088",
-      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
-      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "source_commit_sha": "fdae4dd5ecc14f98b60f5821a1a56e69774dfae3",
+      "source_tree_sha": "66bf3389dd94e98a5b8a87a6ac758ee9f44b8d3a",
       "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
       "exclusive_gate": true,
       "weapon_ids": [

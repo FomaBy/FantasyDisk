@@ -10,8 +10,8 @@
   "source": {
     "ref": "agent/fable/e50731ad6088",
     "branch_at_capture": "agent/fable/e50731ad6088",
-    "commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
-    "tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+    "commit_sha": "fdae4dd5ecc14f98b60f5821a1a56e69774dfae3",
+    "tree_sha": "66bf3389dd94e98a5b8a87a6ac758ee9f44b8d3a",
     "worktree_clean": true,
     "recorded_by": "git rev-parse at capture time",
     "note": "The commit the clean worktree was checked out at when these frames were rendered: the shipped Soldier scenes, drivers, executors, Player, Enemy, hazard, HUD, the production accessibility policy and this capture tooling all come from it. The frames and this manifest are committed afterwards in a separate evidence commit, so the recorded source never refers to itself."
@@ -23,7 +23,7 @@
     "video_adapter": "Apple M4 Pro",
     "os": "macOS 26.5.1",
     "display_server": "macOS",
-    "captured_at_utc": "2026-09-09 10:29:25"
+    "captured_at_utc": "2026-09-09 18:01:40"
   },
   "capture": {
     "script": "tests/ultimates/presentation/soldier_certification_live_capture.gd",
@@ -1741,8 +1741,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__impact__648p.png",
-      "sha256": "f7e35e57d5a29045c1e697a4aed0a31921c70cfaf799085212a69adfd4ac63a2",
-      "bytes": 64558,
+      "sha256": "d2e20bd3309829af1cd46cbc22c82318a804bd335aca093952a3a1bab093b860",
+      "bytes": 64544,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -1808,18 +1808,18 @@
         "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
           498.0,
-          300.0,
+          296.0,
           152.0,
-          54.0
+          58.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "0bcfe9c673f329804c791ba482f2d7eea0131b14"
+        "formation_signature_sha1": "c5dcceadf35599fa2d66e1bdf703f90f16984063"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7611,
+        "player_contrast_ratio": 0.7597,
         "enemy_contrast_ratios": [
           0.2806,
           0.2806,
@@ -1847,8 +1847,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__648p.png",
-      "sha256": "809fbc1b2071dd8a851632d491011833ff56a14cc399a828fdf92baa50be6aa3",
-      "bytes": 76953,
+      "sha256": "2e77b40e8ba92c18fdd2cbb02103fd63bee39329165f712b50b4c6530806588b",
+      "bytes": 76821,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -1921,11 +1921,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7173,
+        "player_contrast_ratio": 0.7107,
         "enemy_contrast_ratios": [
           0.4388,
           0.4031,
@@ -1953,8 +1953,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__recovery__648p.png",
-      "sha256": "8a52a1d3d7d21fc7343a6d846dc0f529a1418924e69033730676fbfc1105960e",
-      "bytes": 76970,
+      "sha256": "dfc66d544798b5e18e88f65634f6525838d8e17d5cce0d045ae19d89f1f71479",
+      "bytes": 75666,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2026,18 +2026,18 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.25,
+        "fullscreen_alpha": 0.225,
         "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7053,
+        "player_contrast_ratio": 0.696,
         "enemy_contrast_ratios": [
-          0.4235,
+          0.4286,
           0.3673,
           0.4031
         ],
-        "hazard_zone_contrast": 0.3,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -2059,8 +2059,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__720p.png",
-      "sha256": "3606ff7ce5798f087f1e29072bdc206f22aeae0d878d80777810b2d6996d79da",
-      "bytes": 88127,
+      "sha256": "c0647e2e31c7859f7f22271cfce04d8b1b88bec1af5f5b96d25b2659ad4c3d73",
+      "bytes": 88024,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2133,11 +2133,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.7527,
+        "player_contrast_ratio": 0.7473,
         "enemy_contrast_ratios": [
           0.45,
           0.3917,
@@ -2165,8 +2165,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__1080p.png",
-      "sha256": "0ddc6fa7f130392467f75d62ff7312d7ae947e35c89f6b134b2339642bb7654d",
-      "bytes": 163074,
+      "sha256": "ae100eb6232f361f9d081aace72dc57c825ddd4c10d82f3e4207d029c2a92a57",
+      "bytes": 162896,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2239,11 +2239,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.7171,
+        "player_contrast_ratio": 0.7073,
         "enemy_contrast_ratios": [
           0.4178,
           0.4197,
@@ -2271,8 +2271,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__normal__active__2k.png",
-      "sha256": "e4c1c92e182d90f5b32b95eb454824676fa74f98891ef3559a66c65e577ad54a",
-      "bytes": 245833,
+      "sha256": "77ffddc5d8c34b26e74f9c7b090621d35815f54efdeca47a5dc2faa6c402365b",
+      "bytes": 245442,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2345,11 +2345,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
-        "player_contrast_ratio": 0.7369,
+        "player_contrast_ratio": 0.7239,
         "enemy_contrast_ratios": [
           0.4194,
           0.3968,
@@ -2578,8 +2578,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__impact__648p.png",
-      "sha256": "04775c5b636b513178dca0c27ef5f45eadf4eae3d37b71f5418f3365bef64405",
-      "bytes": 100894,
+      "sha256": "44e64f9fb274fdc47344a556246292da9d8e715cbcf97a5c12d62144a42a36d3",
+      "bytes": 100984,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2721,24 +2721,24 @@
         "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
           502.0,
-          298.0,
+          294.0,
           152.0,
-          56.0
+          60.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "0bcfe9c673f329804c791ba482f2d7eea0131b14"
+        "formation_signature_sha1": "c5dcceadf35599fa2d66e1bdf703f90f16984063"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7583,
+        "player_contrast_ratio": 0.7556,
         "enemy_contrast_ratios": [
           0.2857,
           0.3469,
           0.301,
           0.2653,
-          0.4286,
+          0.4184,
           0.4286,
           0.4133,
           0.3316,
@@ -2779,8 +2779,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__648p.png",
-      "sha256": "8f7f465b3e215773c01998f69a7872007e7b77f5b7a1981069de485e0133033a",
-      "bytes": 183298,
+      "sha256": "e08bf7713a932a0bf3abe962e688b5da203165390a00b587e8fa9179f582ee33",
+      "bytes": 183145,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -2929,17 +2929,17 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7373,
+        "player_contrast_ratio": 0.7307,
         "enemy_contrast_ratios": [
           0.4388,
           0.4082,
           0.4184,
           0.4337,
-          0.4694,
+          0.4592,
           0.551,
           0.5816,
           0.4541,
@@ -2980,8 +2980,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__recovery__648p.png",
-      "sha256": "96a01167b45c014a55224d7fe2a6681ccbfdb22cbb39c1c394e6dcd246887141",
-      "bytes": 144336,
+      "sha256": "33f9d06d96091722bd258d76f153af8879247a7121f091be5c71246a3eef7e7e",
+      "bytes": 142908,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -3120,7 +3120,7 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0123,
+        "opaque_coverage_ratio": 0.0122,
         "effect_bounds": [
           500.0,
           148.0,
@@ -3129,12 +3129,12 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.25,
+        "fullscreen_alpha": 0.225,
         "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7107,
+        "player_contrast_ratio": 0.7013,
         "enemy_contrast_ratios": [
           0.3724,
           0.3673,
@@ -3144,22 +3144,22 @@
           0.5408,
           0.5306,
           0.3571,
-          0.4898,
+          0.4949,
           0.4694,
+          0.3724,
           0.3673,
-          0.3622,
           0.7602,
           0.4745,
           0.3622,
           0.4388,
           0.4847,
-          0.449,
+          0.4643,
           0.5204,
           0.3929,
           0.4184,
           0.4541
         ],
-        "hazard_zone_contrast": 0.3,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -3181,8 +3181,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__720p.png",
-      "sha256": "005ce2ba5aa1fcc26453f450f1ac54e64add34d8fe1eb6d39f633b701b4a3e0a",
-      "bytes": 214573,
+      "sha256": "a895a4845f8efe680fec6301ed2afd3b9cbe951031fc446df0a2b1ff366e1459",
+      "bytes": 214417,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -3331,11 +3331,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.7691,
+        "player_contrast_ratio": 0.7636,
         "enemy_contrast_ratios": [
           0.45,
           0.4042,
@@ -3382,8 +3382,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__1080p.png",
-      "sha256": "b9348dc3fb3b938e97496213076db72314c2bffe103ef49680d2ff5f9b2f6d6f",
-      "bytes": 405463,
+      "sha256": "78bdd7715d07cc030fb7626a5034473c05da7e689759bce3ef316588ed6f61f8",
+      "bytes": 405259,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -3532,17 +3532,17 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.7327,
+        "player_contrast_ratio": 0.7229,
         "enemy_contrast_ratios": [
           0.4178,
           0.4253,
           0.4234,
           0.4348,
-          0.448,
+          0.4442,
           0.5444,
           0.5047,
           0.4367,
@@ -3583,8 +3583,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__crowded__active__2k.png",
-      "sha256": "178929c6cacfe07bc77cf7548182defbbd80337f0207f79cc4d2e8c3ac9dca45",
-      "bytes": 614648,
+      "sha256": "2314f06eadedd3b626290479272a6eff1b0b59628aa09bad24bda0147310a763",
+      "bytes": 614351,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -3733,17 +3733,17 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
-        "player_contrast_ratio": 0.7584,
+        "player_contrast_ratio": 0.7471,
         "enemy_contrast_ratios": [
           0.4194,
           0.4183,
           0.4129,
           0.4204,
-          0.4237,
+          0.4226,
           0.5401,
           0.5301,
           0.4233,
@@ -3890,8 +3890,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__impact__648p.png",
-      "sha256": "763ad1326d6c7554603d7635b4ba503753caa29f55b64d0cbb168055472a8e5f",
-      "bytes": 63761,
+      "sha256": "c2982d928d72d1acb847cfe71cc641d6474d5b519c2432e5afc25a63b8566965",
+      "bytes": 63890,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -3957,14 +3957,14 @@
         "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
           500.0,
-          300.0,
+          296.0,
           152.0,
-          56.0
+          60.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "0bcfe9c673f329804c791ba482f2d7eea0131b14"
+        "formation_signature_sha1": "c5dcceadf35599fa2d66e1bdf703f90f16984063"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
@@ -3996,8 +3996,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__648p.png",
-      "sha256": "a7f4d79c5df96dbcc886bc763142af6d32a25d839538db39b00a0462f08b4f7b",
-      "bytes": 76875,
+      "sha256": "60795d4a67b7c4dd1162243c2143b5b1bb2e3c1c52d9712602761221c0758286",
+      "bytes": 76736,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4070,11 +4070,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7173,
+        "player_contrast_ratio": 0.7107,
         "enemy_contrast_ratios": [
           0.4388,
           0.4031,
@@ -4102,8 +4102,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__recovery__648p.png",
-      "sha256": "31afb382c5500034d229712c803aa904c36fede6aa981c749fb35b723f1018e7",
-      "bytes": 75922,
+      "sha256": "59e941ca0c8d390dfdeeb212448cab0ced5c2312a36ee8545619e90ecddfa8e0",
+      "bytes": 74681,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4175,18 +4175,18 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.25,
+        "fullscreen_alpha": 0.225,
         "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.7053,
+        "player_contrast_ratio": 0.696,
         "enemy_contrast_ratios": [
-          0.4235,
+          0.4286,
           0.3673,
           0.4031
         ],
-        "hazard_zone_contrast": 0.3,
+        "hazard_zone_contrast": 0.306,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -4208,8 +4208,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__720p.png",
-      "sha256": "89cf6097853d267d86903179567a03baa3dc277867f665395bada3359396a140",
-      "bytes": 87925,
+      "sha256": "8202b6aa89c31ea9d486d35cf377259261d427f07c243f8e7c1a33cc92268557",
+      "bytes": 87815,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4282,11 +4282,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.7527,
+        "player_contrast_ratio": 0.7473,
         "enemy_contrast_ratios": [
           0.45,
           0.3917,
@@ -4314,8 +4314,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__1080p.png",
-      "sha256": "352fdb395c6f2d28c42c52d7dc1d7f57f8fe6cc5e003b22a74473154155f4478",
-      "bytes": 162168,
+      "sha256": "9a0b61072bdd6a95d50fa44cc94752f2fb56bb3e6e7a977125b56a4bf0abadac",
+      "bytes": 162009,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4388,11 +4388,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.7171,
+        "player_contrast_ratio": 0.7073,
         "enemy_contrast_ratios": [
           0.4178,
           0.4197,
@@ -4420,8 +4420,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__reduced_motion__active__2k.png",
-      "sha256": "df7b3a3c84d5bf15c43fe88c413dd5b75145ddef95bdc7faac17220e22e3b7c4",
-      "bytes": 244761,
+      "sha256": "7ad076dcbe873b530eb782f469d071e4f9b070d3265068e1c4e8c9585d461d7a",
+      "bytes": 244349,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4494,11 +4494,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
-        "player_contrast_ratio": 0.7369,
+        "player_contrast_ratio": 0.7239,
         "enemy_contrast_ratios": [
           0.4194,
           0.3968,
@@ -4632,8 +4632,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__impact__648p.png",
-      "sha256": "9b32613d499c57172b9f981125936a4e840b0066c20729b5c64598c3a6ab5e67",
-      "bytes": 53995,
+      "sha256": "b2e6970893f51c84e554b3e7e55b5289a545e4dbb61d1ea4983006a7b57e85c6",
+      "bytes": 54001,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4696,21 +4696,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0031,
+        "opaque_coverage_ratio": 0.0032,
         "effect_bounds": [
           498.0,
-          300.0,
+          296.0,
           152.0,
-          54.0
+          58.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "0bcfe9c673f329804c791ba482f2d7eea0131b14"
+        "formation_signature_sha1": "c5dcceadf35599fa2d66e1bdf703f90f16984063"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.5528,
+        "player_contrast_ratio": 0.55,
         "enemy_contrast_ratios": [
           0.2908,
           0.2908,
@@ -4738,8 +4738,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__648p.png",
-      "sha256": "9a0ad6681381bb819c7614ef30dbc4736885a3d78b61288389008f9497eb581a",
-      "bytes": 67332,
+      "sha256": "ece1d09f7ac260300aa37236b75c4e545aaef502d31d17622782f9a26ec550d0",
+      "bytes": 67112,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -4812,11 +4812,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0115,
-        "player_contrast_ratio": 0.5293,
+        "player_contrast_ratio": 0.5093,
         "enemy_contrast_ratios": [
           0.4796,
           0.4337,
@@ -4950,8 +4950,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__720p.png",
-      "sha256": "927dcbad107d8fe376817029e8964586d3ae3ba92c48c2bc73dbe2a38128fd60",
-      "bytes": 78642,
+      "sha256": "4370a9ed78b344cb63059a1302504b1b11373602b286632bf8b91b6b2ec3d4d0",
+      "bytes": 78505,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5024,11 +5024,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0145,
-        "player_contrast_ratio": 0.5425,
+        "player_contrast_ratio": 0.5218,
         "enemy_contrast_ratios": [
           0.4708,
           0.4458,
@@ -5056,8 +5056,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__1080p.png",
-      "sha256": "e5454cea0b4eab56e99a5034d712e8b3bf5c4ac8be6ed82e8385d021283213c5",
-      "bytes": 145712,
+      "sha256": "7b4cb2f2059ebfa931f76f1a196a1438dfaee6131317faf36b4485f82baf4193",
+      "bytes": 145418,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5130,11 +5130,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.5093,
+        "player_contrast_ratio": 0.478,
         "enemy_contrast_ratios": [
           0.4405,
           0.448,
@@ -5162,8 +5162,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_rifle__photosensitivity_safe__active__2k.png",
-      "sha256": "2c1de0b9d1facec9197740045451957dceb7985bc44c9758b755b484c46d7857",
-      "bytes": 221992,
+      "sha256": "b6d0426aaca16acc8a8ce8ca2de59d3a6bfb7eaa90549fe85c936ac141a8e6dc",
+      "bytes": 221610,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5236,11 +5236,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "63af3ff0b59019235c2a00b9abecf74bef25b90f"
+        "formation_signature_sha1": "0a7d1acfac1fcca279c26a8538fc639642b6eb0b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
-        "player_contrast_ratio": 0.5265,
+        "player_contrast_ratio": 0.5,
         "enemy_contrast_ratios": [
           0.4433,
           0.4387,
@@ -5374,8 +5374,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__impact__648p.png",
-      "sha256": "30d964c95dc833ec36711a2a38f5d728567e67b65cd227cf8dee738ff58df178",
-      "bytes": 91739,
+      "sha256": "bd3b413bfddc0b62964f3574182acdeecb906695acceeb4d51ad6a8987dabf9f",
+      "bytes": 92489,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5447,7 +5447,7 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.068,
+        "fullscreen_alpha": 0.07,
         "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
@@ -5480,114 +5480,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__648p.png",
-      "sha256": "1f4e7f6e805c9421eff3943023e670a204538df34cbb71b665debf8fdb3598df",
-      "bytes": 85603,
-      "activation_started": true,
-      "presentation_live": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2298.0,
-          1152.0
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0062,
-        "effect_bounds": [
-          464.0,
-          248.0,
-          224.0,
-          178.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.2133,
-        "enemy_contrast_ratios": [
-          0.2806,
-          0.2551,
-          0.3163
-        ],
-        "hazard_zone_contrast": 0.355,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6078,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "soldier_grenade",
-      "key": "soldier/soldier_grenade",
-      "mode": "normal",
-      "viewport": "648p",
-      "beat": "recovery",
-      "beat_seconds": 3.2,
-      "frame": 192,
-      "presentation_elapsed": 3.217,
-      "phase": "recovery",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__recovery__648p.png",
-      "sha256": "853f6569019b5ec6303ac58b19e91249552a6d0491fdf9d07e88896c671e498c",
-      "bytes": 71776,
+      "sha256": "7b4a20f072fe03035b63fd76c779eb9f342273a0a2ed63d1bf2b870f316ac6a9",
+      "bytes": 84807,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5659,12 +5553,118 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.015,
-        "formation_signature_sha1": "faa660a28d10aa41528636dc10633cd8c2834b0f"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.2,
+        "player_contrast_ratio": 0.2133,
+        "enemy_contrast_ratios": [
+          0.2806,
+          0.2551,
+          0.3163
+        ],
+        "hazard_zone_contrast": 0.355,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.6078,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "normal",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "frame": 192,
+      "presentation_elapsed": 3.217,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__recovery__648p.png",
+      "sha256": "f32d9c895c7ce39096b91f6c031a74006db735b583fbcff3debf9f1b5bd22b3d",
+      "bytes": 70197,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2298.0,
+          1152.0
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          482.0,
+          248.0,
+          198.0,
+          178.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.013,
+        "formation_signature_sha1": "b2ab5f00ebe5064af88c51c03cae18c7240cee2d"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0116,
+        "player_contrast_ratio": 0.1987,
         "enemy_contrast_ratios": [
           0.2908,
           0.2551,
@@ -5672,7 +5672,7 @@
         ],
         "hazard_zone_contrast": 0.338,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6471,
+        "projectile_contrast_ratio": 0.6275,
         "projectile_drawn_pixels": 51,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -6010,8 +6010,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__720p.png",
-      "sha256": "38c89a7c6ad0e0cdd0ec75d8ee5752f1411e824c505260131d45cd298335a976",
-      "bytes": 98351,
+      "sha256": "d9ba5b1cf52441037e4f923019d212074ee0b8126cbfc2414e8cb88e4ec18077",
+      "bytes": 97335,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -6074,21 +6074,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          516.0,
+          536.0,
           276.0,
-          248.0,
+          218.0,
           196.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.22,
+        "player_contrast_ratio": 0.219,
         "enemy_contrast_ratios": [
           0.3083,
           0.2625,
@@ -6434,8 +6434,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__1080p.png",
-      "sha256": "953ce1c3212fe2daa957839487d87bd36085eb590c86f60edb3cc60fec1a120f",
-      "bytes": 179964,
+      "sha256": "11aa586f6bc5a0af7f3ccedfc667b9a59ff022abe50b730a3fb43e904bcf7cd3",
+      "bytes": 178404,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -6498,21 +6498,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          774.0,
+          804.0,
           414.0,
-          372.0,
+          338.0,
           296.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2029,
+        "player_contrast_ratio": 0.202,
         "enemy_contrast_ratios": [
           0.3006,
           0.2439,
@@ -6858,8 +6858,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__normal__active__2k.png",
-      "sha256": "5929463c84a272facbc2689adf6061f644626d201176574f7f777ce219ce0515",
-      "bytes": 272652,
+      "sha256": "333343867c6ac4b7e0d861f21bb064237e4b10630e58f4e6d17f193278f275d5",
+      "bytes": 270928,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -6922,17 +6922,17 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          1032.0,
+          1070.0,
           552.0,
-          496.0,
+          452.0,
           394.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
@@ -6944,7 +6944,7 @@
         ],
         "hazard_zone_contrast": 0.397,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.5119,
+        "projectile_contrast_ratio": 0.5079,
         "projectile_drawn_pixels": 252,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -7503,8 +7503,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__impact__648p.png",
-      "sha256": "3f4cc9d3bff92271e63bfc2ed1c526bbee9fd9eff4036e5f40168f2dc393b73f",
-      "bytes": 136927,
+      "sha256": "92efe7069203851661051a95aaf944510ef504188b4144a5e8864c5dac2f1930",
+      "bytes": 137565,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -7668,7 +7668,7 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.068,
+        "fullscreen_alpha": 0.07,
         "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
@@ -7678,9 +7678,9 @@
           0.3469,
           0.2857,
           0.3673,
+          0.3163,
           0.3112,
-          0.3112,
-          0.3878,
+          0.3929,
           0.4184,
           0.4694,
           0.3367,
@@ -7691,10 +7691,10 @@
           0.3163,
           0.2806,
           0.4286,
-          0.3265,
+          0.3316,
           0.3214,
           0.3571,
-          0.2704,
+          0.2755,
           0.4388,
           0.2857,
           0.2959,
@@ -7724,229 +7724,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__648p.png",
-      "sha256": "c4b7d2eb5f04db7c12ce3334d59ca51d236eefb03d55ec44394c973890394853",
-      "bytes": 132063,
-      "activation_started": true,
-      "presentation_live": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 26,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ],
-          [
-            2390.48,
-            1272.63
-          ],
-          [
-            2134.54,
-            1123.09
-          ],
-          [
-            2449.88,
-            1055.39
-          ],
-          [
-            2247.64,
-            1339.35
-          ],
-          [
-            2202.13,
-            967.41
-          ],
-          [
-            2506.53,
-            1228.15
-          ],
-          [
-            2079.85,
-            1242.05
-          ],
-          [
-            2403.96,
-            925.57
-          ],
-          [
-            2377.01,
-            1403.9
-          ],
-          [
-            2057.47,
-            1012.61
-          ],
-          [
-            2583.19,
-            1089.3
-          ],
-          [
-            2122.01,
-            1402.33
-          ],
-          [
-            2256.88,
-            834.65
-          ],
-          [
-            2553.39,
-            1367.24
-          ],
-          [
-            1950.3,
-            1166.38
-          ],
-          [
-            2554.6,
-            896.65
-          ],
-          [
-            2280.63,
-            1527.6
-          ],
-          [
-            2048.12,
-            852.57
-          ],
-          [
-            2698.39,
-            1205.87
-          ],
-          [
-            1954.88,
-            1390.73
-          ],
-          [
-            2392.81,
-            730.53
-          ],
-          [
-            2519.74,
-            1538.97
-          ],
-          [
-            1859.76,
-            1012.19
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2298.0,
-          1152.0
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0062,
-        "effect_bounds": [
-          464.0,
-          248.0,
-          224.0,
-          178.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.2133,
-        "enemy_contrast_ratios": [
-          0.2806,
-          0.2602,
-          0.3163,
-          0.2908,
-          0.3163,
-          0.4082,
-          0.3929,
-          0.3827,
-          0.3469,
-          0.4184,
-          0.2755,
-          0.3112,
-          0.5204,
-          0.3265,
-          0.2908,
-          0.3265,
-          0.3929,
-          0.3214,
-          0.3827,
-          0.3163,
-          0.3112,
-          0.2908,
-          0.3112,
-          0.2908,
-          0.3061,
-          0.2908
-        ],
-        "hazard_zone_contrast": 0.355,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6078,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "soldier_grenade",
-      "key": "soldier/soldier_grenade",
-      "mode": "crowded",
-      "viewport": "648p",
-      "beat": "recovery",
-      "beat_seconds": 3.2,
-      "frame": 192,
-      "presentation_elapsed": 3.217,
-      "phase": "recovery",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__recovery__648p.png",
-      "sha256": "8a856f285aa4e1181ec8b4138fcaaf5fb2dee3a27db9b3f5d92743f51454b0aa",
-      "bytes": 116249,
+      "sha256": "7b22cff46cf186079e6375798af835d01f6129e2762c15cd2f1fb05662b4400a",
+      "bytes": 131221,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -8110,12 +7889,233 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.015,
-        "formation_signature_sha1": "faa660a28d10aa41528636dc10633cd8c2834b0f"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.204,
+        "player_contrast_ratio": 0.2133,
+        "enemy_contrast_ratios": [
+          0.2806,
+          0.2602,
+          0.3163,
+          0.2908,
+          0.3112,
+          0.4082,
+          0.3929,
+          0.3827,
+          0.3469,
+          0.4133,
+          0.2755,
+          0.3112,
+          0.5204,
+          0.3265,
+          0.2908,
+          0.3265,
+          0.3929,
+          0.3214,
+          0.3827,
+          0.3163,
+          0.3112,
+          0.2908,
+          0.3112,
+          0.2908,
+          0.3061,
+          0.2908
+        ],
+        "hazard_zone_contrast": 0.355,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.6078,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "crowded",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "frame": 192,
+      "presentation_elapsed": 3.217,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__recovery__648p.png",
+      "sha256": "801adf91bbdc3b42abeaafc77518789709845c75e379993345aab832bf5352d9",
+      "bytes": 114694,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 26,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ],
+          [
+            2390.48,
+            1272.63
+          ],
+          [
+            2134.54,
+            1123.09
+          ],
+          [
+            2449.88,
+            1055.39
+          ],
+          [
+            2247.64,
+            1339.35
+          ],
+          [
+            2202.13,
+            967.41
+          ],
+          [
+            2506.53,
+            1228.15
+          ],
+          [
+            2079.85,
+            1242.05
+          ],
+          [
+            2403.96,
+            925.57
+          ],
+          [
+            2377.01,
+            1403.9
+          ],
+          [
+            2057.47,
+            1012.61
+          ],
+          [
+            2583.19,
+            1089.3
+          ],
+          [
+            2122.01,
+            1402.33
+          ],
+          [
+            2256.88,
+            834.65
+          ],
+          [
+            2553.39,
+            1367.24
+          ],
+          [
+            1950.3,
+            1166.38
+          ],
+          [
+            2554.6,
+            896.65
+          ],
+          [
+            2280.63,
+            1527.6
+          ],
+          [
+            2048.12,
+            852.57
+          ],
+          [
+            2698.39,
+            1205.87
+          ],
+          [
+            1954.88,
+            1390.73
+          ],
+          [
+            2392.81,
+            730.53
+          ],
+          [
+            2519.74,
+            1538.97
+          ],
+          [
+            1859.76,
+            1012.19
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2298.0,
+          1152.0
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          482.0,
+          248.0,
+          198.0,
+          178.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.013,
+        "formation_signature_sha1": "b2ab5f00ebe5064af88c51c03cae18c7240cee2d"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0116,
+        "player_contrast_ratio": 0.2027,
         "enemy_contrast_ratios": [
           0.2908,
           0.2602,
@@ -8146,7 +8146,7 @@
         ],
         "hazard_zone_contrast": 0.338,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6471,
+        "projectile_contrast_ratio": 0.6275,
         "projectile_drawn_pixels": 51,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -8829,8 +8829,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__720p.png",
-      "sha256": "84196c175fc68cd0581de98d896f93c9f223e348753d55fde0b14e78ff7e8738",
-      "bytes": 154477,
+      "sha256": "3edd8980f99ffb219712450f60eaf10a88b1d05ef7fa6d42d41015c701b4418e",
+      "bytes": 153446,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -8985,35 +8985,35 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          516.0,
+          536.0,
           276.0,
-          248.0,
+          218.0,
           196.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.22,
+        "player_contrast_ratio": 0.219,
         "enemy_contrast_ratios": [
           0.3083,
           0.3292,
           0.3417,
           0.3156,
-          0.3289,
+          0.3244,
           0.375,
           0.3958,
           0.4533,
           0.3511,
-          0.4356,
+          0.4222,
           0.3333,
           0.3125,
-          0.4625,
+          0.4583,
           0.3208,
           0.3289,
           0.3875,
@@ -9713,8 +9713,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__1080p.png",
-      "sha256": "9971ff783008123900c33b721ea8573249322ea482655f50cf4e8670f8a07340",
-      "bytes": 273302,
+      "sha256": "688bf1f72c0f5a5d05fe80f57077521b0e587afb30e670069d9e2005e0397c7e",
+      "bytes": 271616,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -9869,40 +9869,40 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          774.0,
+          804.0,
           414.0,
-          372.0,
+          338.0,
           296.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2029,
+        "player_contrast_ratio": 0.202,
         "enemy_contrast_ratios": [
           0.3006,
           0.2741,
           0.3138,
           0.2722,
-          0.3081,
+          0.3025,
           0.4026,
           0.344,
           0.4575,
           0.3497,
-          0.3989,
+          0.3951,
           0.2968,
           0.3043,
           0.4234,
-          0.3422,
+          0.3403,
           0.2911,
           0.3932,
           0.3535,
-          0.3119,
+          0.31,
           0.3629,
           0.3062,
           0.3705,
@@ -10597,8 +10597,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__crowded__active__2k.png",
-      "sha256": "7c9593427bfdee164a04be270ebc0490cf8532fac416f4f9cc964b31a4819931",
-      "bytes": 394547,
+      "sha256": "00f848a86c8a5e463bdcae298867f6c2e82bb057d324f82bad7765d4a9f93b2a",
+      "bytes": 392826,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -10753,17 +10753,17 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          1032.0,
+          1070.0,
           552.0,
-          496.0,
+          452.0,
           394.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
@@ -10773,12 +10773,12 @@
           0.2903,
           0.2989,
           0.2882,
-          0.329,
+          0.328,
           0.3767,
           0.3785,
           0.4111,
           0.3422,
-          0.3581,
+          0.3527,
           0.3022,
           0.2871,
           0.429,
@@ -10786,19 +10786,19 @@
           0.3022,
           0.3946,
           0.3788,
-          0.314,
+          0.3129,
           0.3484,
           0.2933,
           0.3946,
           0.2944,
           0.31,
           0.3101,
-          0.2922,
+          0.29,
           0.3452
         ],
         "hazard_zone_contrast": 0.397,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.5119,
+        "projectile_contrast_ratio": 0.5079,
         "projectile_drawn_pixels": 252,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -11587,8 +11587,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__impact__648p.png",
-      "sha256": "71775d144d417918fdd02298d24cdff52805f9b905a2640939a137bb40f45634",
-      "bytes": 91412,
+      "sha256": "4992f9f59376626f2fbbb2f5308318e412cbb0e9426342896121f56af3d3e57c",
+      "bytes": 92010,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -11660,7 +11660,7 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.068,
+        "fullscreen_alpha": 0.07,
         "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
@@ -11693,114 +11693,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__648p.png",
-      "sha256": "28e67455dc3fc700379db179934917fe5c985da7a373ddc784610dd27fbbe83b",
-      "bytes": 85031,
-      "activation_started": true,
-      "presentation_live": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "enemies": 3,
-      "camera": {
-        "center": [
-          2048.0,
-          1152.0
-        ],
-        "offset": [
-          0.0,
-          0.0
-        ],
-        "baseline_offset": [
-          0.0,
-          0.0
-        ],
-        "zoom": 0.504
-      },
-      "world": {
-        "player": [
-          2048.0,
-          1152.0
-        ],
-        "enemies": [
-          [
-            2408.0,
-            1152.0
-          ],
-          [
-            2206.57,
-            1235.76
-          ],
-          [
-            2310.06,
-            1014.53
-          ]
-        ],
-        "hazard_zone": {
-          "center": [
-            1858.0,
-            1292.0
-          ],
-          "radius": 96.0
-        },
-        "projectile": [
-          1928.0,
-          972.0
-        ],
-        "aim_center": [
-          2298.0,
-          1152.0
-        ],
-        "aim_target": [
-          2298.0,
-          1152.0
-        ]
-      },
-      "measured": {
-        "opaque_coverage_ratio": 0.0062,
-        "effect_bounds": [
-          464.0,
-          248.0,
-          224.0,
-          178.0
-        ],
-        "hud_band_clear": true,
-        "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
-      },
-      "readability": {
-        "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.2133,
-        "enemy_contrast_ratios": [
-          0.2806,
-          0.2551,
-          0.3163
-        ],
-        "hazard_zone_contrast": 0.355,
-        "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6078,
-        "projectile_drawn_pixels": 51,
-        "projectile_readable": true,
-        "mode_swatch_matches": true,
-        "weapon_swatch_matches": true
-      }
-    },
-    {
-      "weapon_id": "soldier_grenade",
-      "key": "soldier/soldier_grenade",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "beat": "recovery",
-      "beat_seconds": 3.2,
-      "frame": 192,
-      "presentation_elapsed": 3.217,
-      "phase": "recovery",
-      "width": 1152,
-      "height": 648,
-      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__recovery__648p.png",
-      "sha256": "045b788c53a4e7c2b7855155ff6b4ba04f800b21a5d673bc1c4ea119e7bf0588",
-      "bytes": 70424,
+      "sha256": "6d7bc8a3fa33b13c84e144e190869b87204220ae77c64c16374dab1e8bd081b1",
+      "bytes": 84234,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -11872,12 +11766,118 @@
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.015,
-        "formation_signature_sha1": "faa660a28d10aa41528636dc10633cd8c2834b0f"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0116,
-        "player_contrast_ratio": 0.2,
+        "player_contrast_ratio": 0.2133,
+        "enemy_contrast_ratios": [
+          0.2806,
+          0.2551,
+          0.3163
+        ],
+        "hazard_zone_contrast": 0.355,
+        "hazard_zone_warm": true,
+        "projectile_contrast_ratio": 0.6078,
+        "projectile_drawn_pixels": 51,
+        "projectile_readable": true,
+        "mode_swatch_matches": true,
+        "weapon_swatch_matches": true
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "key": "soldier/soldier_grenade",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "beat": "recovery",
+      "beat_seconds": 3.2,
+      "frame": 192,
+      "presentation_elapsed": 3.217,
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__recovery__648p.png",
+      "sha256": "650e2fb43e7b1a5d0fa22512cc076290d2fc3ec2157346fb91c9b304c8e335fe",
+      "bytes": 68841,
+      "activation_started": true,
+      "presentation_live": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "enemies": 3,
+      "camera": {
+        "center": [
+          2048.0,
+          1152.0
+        ],
+        "offset": [
+          0.0,
+          0.0
+        ],
+        "baseline_offset": [
+          0.0,
+          0.0
+        ],
+        "zoom": 0.504
+      },
+      "world": {
+        "player": [
+          2048.0,
+          1152.0
+        ],
+        "enemies": [
+          [
+            2408.0,
+            1152.0
+          ],
+          [
+            2206.57,
+            1235.76
+          ],
+          [
+            2310.06,
+            1014.53
+          ]
+        ],
+        "hazard_zone": {
+          "center": [
+            1858.0,
+            1292.0
+          ],
+          "radius": 96.0
+        },
+        "projectile": [
+          1928.0,
+          972.0
+        ],
+        "aim_center": [
+          2298.0,
+          1152.0
+        ],
+        "aim_target": [
+          2298.0,
+          1152.0
+        ]
+      },
+      "measured": {
+        "opaque_coverage_ratio": 0.0054,
+        "effect_bounds": [
+          482.0,
+          248.0,
+          198.0,
+          178.0
+        ],
+        "hud_band_clear": true,
+        "fullscreen_surfaces": 1,
+        "fullscreen_alpha": 0.013,
+        "formation_signature_sha1": "b2ab5f00ebe5064af88c51c03cae18c7240cee2d"
+      },
+      "readability": {
+        "hud_contrast_ratio": 0.0116,
+        "player_contrast_ratio": 0.1987,
         "enemy_contrast_ratios": [
           0.2908,
           0.2551,
@@ -11885,7 +11885,7 @@
         ],
         "hazard_zone_contrast": 0.338,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.6471,
+        "projectile_contrast_ratio": 0.6275,
         "projectile_drawn_pixels": 51,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -12223,8 +12223,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__720p.png",
-      "sha256": "68114d1b31eaafbcdda15afb6111f0e44a209a803eb06a4087f127fee8ee404a",
-      "bytes": 100175,
+      "sha256": "3e88e6693b83246f43b3fbbf6ac0c5277b6170e3ff346bec560aed70f9135923",
+      "bytes": 99150,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -12287,21 +12287,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          516.0,
+          536.0,
           276.0,
-          248.0,
+          218.0,
           196.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
-        "player_contrast_ratio": 0.22,
+        "player_contrast_ratio": 0.219,
         "enemy_contrast_ratios": [
           0.3083,
           0.2625,
@@ -12647,8 +12647,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__1080p.png",
-      "sha256": "a342935536b166e9a94dc368ca8866c22c9506f1757b00d88a07cb74c1f9e828",
-      "bytes": 179850,
+      "sha256": "f02f650760a11762e13feb786c4a017cbc553b54096e62897e7cddd75e678081",
+      "bytes": 178288,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -12711,21 +12711,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          774.0,
+          804.0,
           414.0,
-          372.0,
+          338.0,
           296.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2029,
+        "player_contrast_ratio": 0.202,
         "enemy_contrast_ratios": [
           0.3006,
           0.2439,
@@ -13071,8 +13071,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__reduced_motion__active__2k.png",
-      "sha256": "5995175a89602a0c4e561414012855b8b5bd496f7a767f9093aa980f1f6672f8",
-      "bytes": 271963,
+      "sha256": "5b8ce862964114981ffa7446446a748c18c5d2b9345c9360226007bf89396693",
+      "bytes": 270236,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -13135,17 +13135,17 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0062,
+        "opaque_coverage_ratio": 0.0054,
         "effect_bounds": [
-          1032.0,
+          1070.0,
           552.0,
-          496.0,
+          452.0,
           394.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.05,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "fullscreen_alpha": 0.048,
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
@@ -13157,7 +13157,7 @@
         ],
         "hazard_zone_contrast": 0.397,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.5119,
+        "projectile_contrast_ratio": 0.5079,
         "projectile_drawn_pixels": 252,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -13707,8 +13707,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__648p.png",
-      "sha256": "8c6e3dbb64fe347e397dc8dc4907585587c46c4955bdcbfb83bff95b35872726",
-      "bytes": 63483,
+      "sha256": "565f8fbb5c41ad637959d04e0dc003520a7039a996e83afabd0e4c93551e4937",
+      "bytes": 63481,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -13781,7 +13781,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0116,
@@ -13813,8 +13813,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__recovery__648p.png",
-      "sha256": "63391a6b9c249679974eb44d1205962c702c54fc7af26af24065b6c179069f4b",
-      "bytes": 62742,
+      "sha256": "fd1eb47def21953771e1ab91994a287a41f12a81b8ea714608a4f82634b342cb",
+      "bytes": 62722,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -13887,7 +13887,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "faa660a28d10aa41528636dc10633cd8c2834b0f"
+        "formation_signature_sha1": "b2ab5f00ebe5064af88c51c03cae18c7240cee2d"
       },
       "readability": {
         "hud_contrast_ratio": 0.0116,
@@ -14237,8 +14237,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__720p.png",
-      "sha256": "20418ffde5317897cb458162712ecacfcf4cc6843f1c76abaf56ad99a83e1eb1",
-      "bytes": 74884,
+      "sha256": "dd25102fcaf3fa308447e4561de962f05581665a2b33217c1a8ae173f59b6d5d",
+      "bytes": 74896,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -14311,7 +14311,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0148,
@@ -14323,7 +14323,7 @@
         ],
         "hazard_zone_contrast": 0.358,
         "hazard_zone_warm": true,
-        "projectile_contrast_ratio": 0.619,
+        "projectile_contrast_ratio": 0.6032,
         "projectile_drawn_pixels": 63,
         "projectile_readable": true,
         "mode_swatch_matches": true,
@@ -14661,8 +14661,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__1080p.png",
-      "sha256": "dce684824929e3e6e2f5dbac0ff4c9560d6178e9356882ceba53da943344ed5f",
-      "bytes": 139836,
+      "sha256": "a55722e2bad2915deff68b4b737a4301c82adb59852e6bad23b7cff5d2c9b465",
+      "bytes": 139917,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -14735,7 +14735,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
@@ -15085,8 +15085,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_grenade__photosensitivity_safe__active__2k.png",
-      "sha256": "0531949bfdfe6f6762a72316f769113ce262d663d0280c1ddf8922ef564258a7",
-      "bytes": 215877,
+      "sha256": "147a5ed2ac4cd62c7922da556580200b2fa0203d527b6d4bef68ec154a4e3307",
+      "bytes": 215912,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -15159,7 +15159,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "e29f5fd4a8f0169894b8d93aac32ee5e96fa17ac"
+        "formation_signature_sha1": "661b5cf86a1d016b853f8d8121248c741ce7c950"
       },
       "readability": {
         "hud_contrast_ratio": 0.0142,
@@ -15721,8 +15721,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__648p.png",
-      "sha256": "244c240201cc4d91d7a0beca6261b54dea665c03de52e7befcca3ef35c723777",
-      "bytes": 66300,
+      "sha256": "462cc00633bc0aa28a5f8e7185a326be94e5da5341474ecb136b70dd0cd06fcd",
+      "bytes": 66104,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -15795,11 +15795,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2907,
+        "player_contrast_ratio": 0.2893,
         "enemy_contrast_ratios": [
           0.2449,
           0.2194,
@@ -15827,8 +15827,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__recovery__648p.png",
-      "sha256": "fb92a2cffcbf5a6857af153f841c3cbfef3db3d572b8337d3c5c5d676dc72b1c",
-      "bytes": 66212,
+      "sha256": "5c2141822ff096022df7d067468ddbdd1b750ffe20357095544e608a77cb9071",
+      "bytes": 64393,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -15891,27 +15891,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0012,
+        "opaque_coverage_ratio": 0.0011,
         "effect_bounds": [
           532.0,
-          218.0,
+          244.0,
           94.0,
-          98.0
+          72.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.283,
-        "formation_signature_sha1": "981e2b26e59bba6fcfcee62241bf37f9dbf7ef16"
+        "fullscreen_alpha": 0.242,
+        "formation_signature_sha1": "358c719bdf96aed01a0f5f2b333b58b332545e80"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2773,
+        "player_contrast_ratio": 0.2693,
         "enemy_contrast_ratios": [
-          0.2449,
-          0.2194,
-          0.2653
+          0.25,
+          0.2296,
+          0.2806
         ],
-        "hazard_zone_contrast": 0.294,
+        "hazard_zone_contrast": 0.299,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -15933,8 +15933,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__720p.png",
-      "sha256": "e1df3ba5918b73049a57062accce2f9440f7bc9fc03ef7a79d7d77d8dfd08759",
-      "bytes": 73710,
+      "sha256": "cd783957b87308ca22fb6b7cd852d490a8ea0d07b936dd299704aeb8bc86af4b",
+      "bytes": 73609,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -16007,7 +16007,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0144,
@@ -16039,8 +16039,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__1080p.png",
-      "sha256": "24d3321f5cd9310d0c29fda662d7fb3220a0eb41e4c42d9962a2d4d37f4eeb11",
-      "bytes": 132140,
+      "sha256": "88a03eaca3aea7a0ceb17cbf31af86c0d6f0bb035f687c7b9d1a0af2c5342145",
+      "bytes": 131926,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -16113,11 +16113,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2673,
+        "player_contrast_ratio": 0.2668,
         "enemy_contrast_ratios": [
           0.2268,
           0.2401,
@@ -16145,8 +16145,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__normal__active__2k.png",
-      "sha256": "1de69eb1fb0754b5bc77318efa892110ca34df61f00ada96f07a2b77ad801d4e",
-      "bytes": 193609,
+      "sha256": "073dcabe4010483e2147feb0f538c828906705c33bab138c5eb6689ba6d90824",
+      "bytes": 193050,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -16219,11 +16219,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0141,
-        "player_contrast_ratio": 0.2775,
+        "player_contrast_ratio": 0.2772,
         "enemy_contrast_ratios": [
           0.2435,
           0.2269,
@@ -16613,8 +16613,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__648p.png",
-      "sha256": "31464275ddabdea04527dfc6406e076d2ace9949fe6319f260d4b770850ca69e",
-      "bytes": 147318,
+      "sha256": "6af37ef19250eb3ad68d81927a8fd45aa5c8cad9c78867e48c7d567ba4866b42",
+      "bytes": 147162,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -16747,11 +16747,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.3013,
+        "player_contrast_ratio": 0.3,
         "enemy_contrast_ratios": [
           0.3112,
           0.4643,
@@ -16794,8 +16794,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__recovery__648p.png",
-      "sha256": "d43ebec84e1d27f8bdc82d78bbb2f4a48d9fced6bd01ef00dab0314624816546",
-      "bytes": 113288,
+      "sha256": "2d4a94ecb8f3c694c2944cf9dedb16a25066b8f1a2de839b7bee533a05ca5017",
+      "bytes": 111397,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -16918,42 +16918,42 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0012,
+        "opaque_coverage_ratio": 0.0011,
         "effect_bounds": [
           532.0,
-          218.0,
+          244.0,
           94.0,
-          98.0
+          72.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.283,
-        "formation_signature_sha1": "981e2b26e59bba6fcfcee62241bf37f9dbf7ef16"
+        "fullscreen_alpha": 0.242,
+        "formation_signature_sha1": "358c719bdf96aed01a0f5f2b333b58b332545e80"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.288,
+        "player_contrast_ratio": 0.28,
         "enemy_contrast_ratios": [
           0.301,
           0.301,
           0.3367,
-          0.3061,
-          0.2755,
-          0.449,
-          0.2959,
+          0.3214,
           0.2806,
+          0.449,
+          0.3061,
+          0.2908,
           0.3316,
           0.3571,
-          0.3061,
+          0.3163,
           0.3316,
-          0.5816,
+          0.5408,
           0.2959,
-          0.3265,
+          0.3316,
           0.3673,
           0.2857,
-          0.2653
+          0.2704
         ],
-        "hazard_zone_contrast": 0.294,
+        "hazard_zone_contrast": 0.299,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -16975,8 +16975,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__720p.png",
-      "sha256": "ff146af1b29f5d50e97b2662d9dd41321655752327845a89774a17d7fe9fac2b",
-      "bytes": 171508,
+      "sha256": "706ee4331f3934bee4d7a54d736097c1defd32c6820f4b5fd9d0882332973e44",
+      "bytes": 171390,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -17109,7 +17109,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0144,
@@ -17156,8 +17156,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__1080p.png",
-      "sha256": "b1bca7468052c4c543842b4bf41793f7cb910040673089c1d1495225816df90b",
-      "bytes": 315196,
+      "sha256": "d4b5d1676bed18ebef867080996270c53e9492785b870332963f6259f94be977",
+      "bytes": 315054,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -17290,11 +17290,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2785,
+        "player_contrast_ratio": 0.278,
         "enemy_contrast_ratios": [
           0.2987,
           0.5255,
@@ -17337,8 +17337,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__crowded__active__2k.png",
-      "sha256": "14c061315e1f5519a043cd7923f73b968ed4f3eec19daa746bf602e8dd7a4774",
-      "bytes": 466963,
+      "sha256": "3ed3f23db4deddeb67a08bcc3c4926dca8a72ab3d675cbae48469b1afcd1b0be",
+      "bytes": 466965,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -17471,11 +17471,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0141,
-        "player_contrast_ratio": 0.2897,
+        "player_contrast_ratio": 0.2894,
         "enemy_contrast_ratios": [
           0.3143,
           0.5204,
@@ -17730,8 +17730,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__648p.png",
-      "sha256": "207fd54ab7334cfd4a097389a8287e6ae970020b1527e6c43690fa4aa25c04f8",
-      "bytes": 65739,
+      "sha256": "f0f2bb0b3a0e155977f392eb194f2e972d4b47a6de90d75291654d8f98dd7960",
+      "bytes": 65543,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -17804,11 +17804,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2907,
+        "player_contrast_ratio": 0.2893,
         "enemy_contrast_ratios": [
           0.2449,
           0.2194,
@@ -17836,8 +17836,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__recovery__648p.png",
-      "sha256": "1f77d39bad2a1a162ea0ac01d59c156e826c61f6c05c6db501fb8948cf75afe4",
-      "bytes": 65417,
+      "sha256": "414151e7c3de9667e787aaf3acae0546c3c359fbd8525b8eb142e9f96110d995",
+      "bytes": 63593,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -17900,27 +17900,27 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0012,
+        "opaque_coverage_ratio": 0.0011,
         "effect_bounds": [
           532.0,
-          218.0,
+          244.0,
           94.0,
-          98.0
+          72.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
-        "fullscreen_alpha": 0.283,
-        "formation_signature_sha1": "981e2b26e59bba6fcfcee62241bf37f9dbf7ef16"
+        "fullscreen_alpha": 0.242,
+        "formation_signature_sha1": "358c719bdf96aed01a0f5f2b333b58b332545e80"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2773,
+        "player_contrast_ratio": 0.2693,
         "enemy_contrast_ratios": [
-          0.2449,
-          0.2194,
-          0.2653
+          0.25,
+          0.2296,
+          0.2806
         ],
-        "hazard_zone_contrast": 0.294,
+        "hazard_zone_contrast": 0.299,
         "hazard_zone_warm": true,
         "projectile_contrast_ratio": 0.1765,
         "projectile_drawn_pixels": 51,
@@ -17942,8 +17942,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__720p.png",
-      "sha256": "3903e94e4c19f2ccefbc671710ffb1a7e1abee733f4a0333eec6d56cf0a31927",
-      "bytes": 75699,
+      "sha256": "681bdd73b9610e42018f00151070904d4d6592d2a7d188a63989b7a5c46a6bc2",
+      "bytes": 75597,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18016,7 +18016,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0144,
@@ -18048,8 +18048,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__1080p.png",
-      "sha256": "581a5e6b8bb30c0f584992b68c2b06b0b7afe2dd6e1f6127944bf36ee1ff1c06",
-      "bytes": 131832,
+      "sha256": "325746e297f07e97df014e574fb7fe4c0b897fc2f8fe506f0e38d78ac0442094",
+      "bytes": 131615,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18122,11 +18122,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
-        "player_contrast_ratio": 0.2673,
+        "player_contrast_ratio": 0.2668,
         "enemy_contrast_ratios": [
           0.2268,
           0.2401,
@@ -18154,8 +18154,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__reduced_motion__active__2k.png",
-      "sha256": "b3f99b237e71b33fd7fbfc836207a909354d97f6f2dd56a1ce9b763a1a2ed721",
-      "bytes": 192844,
+      "sha256": "787648c58925c440321d658168d147668a180f3d47893e46dd6fb188f768dce0",
+      "bytes": 192415,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18228,11 +18228,11 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.3,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0141,
-        "player_contrast_ratio": 0.2775,
+        "player_contrast_ratio": 0.2772,
         "enemy_contrast_ratios": [
           0.2435,
           0.2269,
@@ -18472,8 +18472,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__648p.png",
-      "sha256": "6361277185ae50bae1266281d229da4b37c761798b628492d1cac076efa6d20e",
-      "bytes": 56285,
+      "sha256": "405a95ceef9f2e5f20efcfbc8213cce76a75272d6c5dd8518020e8560176c020",
+      "bytes": 56300,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18541,16 +18541,16 @@
           532.0,
           190.0,
           62.0,
-          80.0
+          66.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2867,
+        "player_contrast_ratio": 0.2853,
         "enemy_contrast_ratios": [
           0.2857,
           0.2806,
@@ -18578,8 +18578,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__recovery__648p.png",
-      "sha256": "a4bba57ccaffbea392ba2a16960d12f80cbce931091932aa54324fdd6fa05dc4",
-      "bytes": 57237,
+      "sha256": "667d0e16d29af84bfdeb7a18b332a2f919eb5d7a5081c1c93739ae662dcfd121",
+      "bytes": 57282,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18642,21 +18642,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0006,
+        "opaque_coverage_ratio": 0.0004,
         "effect_bounds": [
           532.0,
-          218.0,
+          244.0,
           94.0,
-          72.0
+          62.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "981e2b26e59bba6fcfcee62241bf37f9dbf7ef16"
+        "formation_signature_sha1": "358c719bdf96aed01a0f5f2b333b58b332545e80"
       },
       "readability": {
         "hud_contrast_ratio": 0.0111,
-        "player_contrast_ratio": 0.2773,
+        "player_contrast_ratio": 0.2693,
         "enemy_contrast_ratios": [
           0.2857,
           0.2806,
@@ -18684,8 +18684,8 @@
       "width": 1280,
       "height": 720,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__720p.png",
-      "sha256": "083e3f7180b588d588cbfc787d54af043834f06208eec510357b793c8fddfbb0",
-      "bytes": 65752,
+      "sha256": "699fb2e3880972d8ac6d27db214529263c003aff5480f87171401e804f934076",
+      "bytes": 65773,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18753,16 +18753,16 @@
           590.0,
           212.0,
           72.0,
-          88.0
+          72.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0144,
-        "player_contrast_ratio": 0.2843,
+        "player_contrast_ratio": 0.2832,
         "enemy_contrast_ratios": [
           0.3042,
           0.2958,
@@ -18790,8 +18790,8 @@
       "width": 1920,
       "height": 1080,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__1080p.png",
-      "sha256": "dc98bf86f989554917336b66e60cfb187cb07e8707647769fbc3b35cc84b06a4",
-      "bytes": 118802,
+      "sha256": "5d97977bab19ef3a757e30682393a3c6575b10d9161a63ac6d709bc4f4bbdc7b",
+      "bytes": 118690,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18859,12 +18859,12 @@
           886.0,
           316.0,
           106.0,
-          134.0
+          110.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0147,
@@ -18896,8 +18896,8 @@
       "width": 2560,
       "height": 1440,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/soldier/soldier_bayonet__photosensitivity_safe__active__2k.png",
-      "sha256": "2c1d84fbe243877213ff17ef8f44f4f1c0e8a22e05731dcf924df2b4c5c0153c",
-      "bytes": 177877,
+      "sha256": "da876cbdb4ce5598c5a233e3277713fc4c0e261523a2405cdb1fdf2be0f18a7e",
+      "bytes": 177684,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -18962,19 +18962,19 @@
       "measured": {
         "opaque_coverage_ratio": 0.0004,
         "effect_bounds": [
-          1180.0,
+          1182.0,
           420.0,
-          142.0,
-          180.0
+          140.0,
+          148.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "6b19ca4e31cda8f374bb210dfffb7324857bfca7"
+        "formation_signature_sha1": "1fb3220ca5a96111996fbe1d5cd26b707dd1900b"
       },
       "readability": {
         "hud_contrast_ratio": 0.0141,
-        "player_contrast_ratio": 0.2747,
+        "player_contrast_ratio": 0.2742,
         "enemy_contrast_ratios": [
           0.2914,
           0.2828,

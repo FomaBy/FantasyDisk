@@ -381,8 +381,8 @@
       "capture_script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/thief_certification_capture_test.gd",
       "source_ref": "agent/fable/e50731ad6088",
-      "source_commit_sha": "cc283b740ef70c35831a4d8796316344bdd94c5e",
-      "source_tree_sha": "0141120f491c82859dbee0ce84bea5eda6cadf32",
+      "source_commit_sha": "fdae4dd5ecc14f98b60f5821a1a56e69774dfae3",
+      "source_tree_sha": "66bf3389dd94e98a5b8a87a6ac758ee9f44b8d3a",
       "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
       "exclusive_gate": true,
       "weapon_ids": [

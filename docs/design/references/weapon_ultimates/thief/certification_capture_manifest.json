@@ -10,8 +10,8 @@
   "source": {
     "ref": "agent/fable/e50731ad6088",
     "branch_at_capture": "agent/fable/e50731ad6088",
-    "commit_sha": "cc283b740ef70c35831a4d8796316344bdd94c5e",
-    "tree_sha": "0141120f491c82859dbee0ce84bea5eda6cadf32",
+    "commit_sha": "fdae4dd5ecc14f98b60f5821a1a56e69774dfae3",
+    "tree_sha": "66bf3389dd94e98a5b8a87a6ac758ee9f44b8d3a",
     "worktree_clean": true,
     "recorded_by": "git rev-parse at capture time",
     "note": "The commit the clean worktree was checked out at when these frames were rendered: the shipped Thief scenes, drivers, executors, Player, Enemy, hazard, HUD, the production accessibility policy and this capture tooling all come from it. The frames and this manifest are committed afterwards in a separate evidence commit, so the recorded source never refers to itself."
@@ -23,7 +23,7 @@
     "video_adapter": "Apple M4 Pro",
     "os": "macOS 26.5.1",
     "display_server": "macOS",
-    "captured_at_utc": "2026-09-09 14:49:24"
+    "captured_at_utc": "2026-09-09 18:00:51"
   },
   "capture": {
     "script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
@@ -5114,8 +5114,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__normal__impact__648p.png",
-      "sha256": "588fa0e06572b4637f48d454d7ab9a2a5d9de96ef93cd4b45298debb3f880508",
-      "bytes": 87464,
+      "sha256": "02ff0c1e21466a238ea022d175aeaba8c6cf64f417a27c40b75468bf9bfb19e9",
+      "bytes": 87853,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -5178,21 +5178,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0003,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          556.0,
+          272.0,
+          42.0,
+          34.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.32,
-        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
+        "formation_signature_sha1": "c82a3c732e6e7273bab45607ecea104c26df0e41"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1307,
+        "player_contrast_ratio": 0.1213,
         "enemy_contrast_ratios": [
           0.3571,
           0.352,
@@ -5906,8 +5906,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__crowded__impact__648p.png",
-      "sha256": "c098a6dad55dceb5a5aa278ee4f4dc9ce023015a3873ea923bff0b98674d4583",
-      "bytes": 123666,
+      "sha256": "88af405a16f864f768ce83297f6f509ad223ea39adf4dead09d46ca13144c9bd",
+      "bytes": 124067,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -6010,21 +6010,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0003,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          560.0,
+          270.0,
+          40.0,
+          32.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.32,
-        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
+        "formation_signature_sha1": "c82a3c732e6e7273bab45607ecea104c26df0e41"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.1347,
+        "player_contrast_ratio": 0.1292,
         "enemy_contrast_ratios": [
           0.2959,
           0.2653,
@@ -6038,7 +6038,7 @@
           0.2551,
           0.4082,
           0.4184,
-          0.3776
+          0.3673
         ],
         "hazard_zone_contrast": 0.276,
         "hazard_zone_warm": true,
@@ -6948,8 +6948,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__reduced_motion__impact__648p.png",
-      "sha256": "b1953aaec820b2f1eb0840d34061df2754fae39a93591d4711b1e5e094150212",
-      "bytes": 87747,
+      "sha256": "d49031d6cc186440659f3efb3512dc7cbd643f1be3cc17812329ad3501748979",
+      "bytes": 88136,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -7012,21 +7012,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0,
+        "opaque_coverage_ratio": 0.0003,
         "effect_bounds": [
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          556.0,
+          272.0,
+          42.0,
+          34.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.32,
-        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
+        "formation_signature_sha1": "c82a3c732e6e7273bab45607ecea104c26df0e41"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
-        "player_contrast_ratio": 0.128,
+        "player_contrast_ratio": 0.1213,
         "enemy_contrast_ratios": [
           0.3776,
           0.352,
@@ -7690,8 +7690,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_shadow_cloak__photosensitivity_safe__impact__648p.png",
-      "sha256": "3e20a17737ee141fd95d37c851ee22849dbbb4d621a5d3c358ee2b03487aa978",
-      "bytes": 74602,
+      "sha256": "700e9f8b9a53a3d5bccd3eee204c025e26dab6d3c9334e78bfad161d8b8ef9d7",
+      "bytes": 74989,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -7764,7 +7764,7 @@
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "d4333c7b3fb39080b7f6133972ed35fb3e6385e4"
+        "formation_signature_sha1": "c82a3c732e6e7273bab45607ecea104c26df0e41"
       },
       "readability": {
         "hud_contrast_ratio": 0.0117,
@@ -8432,8 +8432,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__normal__impact__648p.png",
-      "sha256": "df6303db2983f446369304e58854ee15ba7b0ebc862e00f481c9103ab05c02b0",
-      "bytes": 67497,
+      "sha256": "4c363c7ce8e611fe2f976c7374e6b0487236bac6c899d1aa85f502498fc132d6",
+      "bytes": 67648,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -8496,21 +8496,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0056,
+        "opaque_coverage_ratio": 0.0059,
         "effect_bounds": [
           522.0,
           272.0,
-          102.0,
+          104.0,
           104.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.28,
-        "formation_signature_sha1": "1f03d7dfd0bb3f1e5ff4e48fa4ac96680409fb6d"
+        "formation_signature_sha1": "dbee78342fd542688ca164e7c4cf90f912d07d6c"
       },
       "readability": {
         "hud_contrast_ratio": 0.0113,
-        "player_contrast_ratio": 0.3792,
+        "player_contrast_ratio": 0.3722,
         "enemy_contrast_ratios": [
           0.2602,
           0.2143,
@@ -9224,8 +9224,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__crowded__impact__648p.png",
-      "sha256": "976f93510af51cb7dd1015ae59ee3301f7f998c5485b5f5af2bfe03983935a87",
-      "bytes": 84919,
+      "sha256": "26eebb10ee6db4188915eb7c66c500fc80603976f3e4a7a9edbdc21fc0a4cb77",
+      "bytes": 85014,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -9328,32 +9328,32 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0057,
+        "opaque_coverage_ratio": 0.0059,
         "effect_bounds": [
-          528.0,
-          272.0,
+          530.0,
+          270.0,
           104.0,
-          102.0
+          106.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.28,
-        "formation_signature_sha1": "1f03d7dfd0bb3f1e5ff4e48fa4ac96680409fb6d"
+        "formation_signature_sha1": "dbee78342fd542688ca164e7c4cf90f912d07d6c"
       },
       "readability": {
         "hud_contrast_ratio": 0.0113,
-        "player_contrast_ratio": 0.375,
+        "player_contrast_ratio": 0.3625,
         "enemy_contrast_ratios": [
           0.2551,
           0.2449,
           0.2857,
           0.2551,
-          0.602,
+          0.6173,
           0.3673,
           0.2551,
           0.2653,
           0.2857,
-          0.5459,
+          0.5918,
           0.2755,
           0.2602,
           0.4031
@@ -10266,8 +10266,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__reduced_motion__impact__648p.png",
-      "sha256": "c7c24b6092572d9da86c14e2433421500d8898919e14b0e967f8a8cdd6a26a83",
-      "bytes": 67047,
+      "sha256": "baaa83cda78b39c3f72b2c792e1af48903d57c253d5763ff60fe32a6d659a92c",
+      "bytes": 67631,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -10330,21 +10330,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0056,
+        "opaque_coverage_ratio": 0.006,
         "effect_bounds": [
           526.0,
-          274.0,
-          102.0,
-          102.0
+          272.0,
+          104.0,
+          106.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.28,
-        "formation_signature_sha1": "1f03d7dfd0bb3f1e5ff4e48fa4ac96680409fb6d"
+        "formation_signature_sha1": "dbee78342fd542688ca164e7c4cf90f912d07d6c"
       },
       "readability": {
         "hud_contrast_ratio": 0.0113,
-        "player_contrast_ratio": 0.38,
+        "player_contrast_ratio": 0.3893,
         "enemy_contrast_ratios": [
           0.2449,
           0.2602,
@@ -11008,8 +11008,8 @@
       "width": 1152,
       "height": 648,
       "path": "docs/design/reference-assets-lfs/ultimate-certification/thief/thief_smoke_bomb__photosensitivity_safe__impact__648p.png",
-      "sha256": "2b9bb355750f71bec46eb295d195e4fecf3309fd264ed62f6e82f404bdcbb146",
-      "bytes": 61942,
+      "sha256": "01f8dbfdeea18d1b073b4891b1328ff003b00d5e23c1ac06ff4f8744c90ce38d",
+      "bytes": 62120,
       "activation_started": true,
       "presentation_live": true,
       "accessibility": {
@@ -11072,21 +11072,21 @@
         ]
       },
       "measured": {
-        "opaque_coverage_ratio": 0.0012,
+        "opaque_coverage_ratio": 0.0013,
         "effect_bounds": [
           522.0,
           284.0,
-          102.0,
+          104.0,
           80.0
         ],
         "hud_band_clear": true,
         "fullscreen_surfaces": 1,
         "fullscreen_alpha": 0.0,
-        "formation_signature_sha1": "1f03d7dfd0bb3f1e5ff4e48fa4ac96680409fb6d"
+        "formation_signature_sha1": "dbee78342fd542688ca164e7c4cf90f912d07d6c"
       },
       "readability": {
         "hud_contrast_ratio": 0.0113,
-        "player_contrast_ratio": 0.3778,
+        "player_contrast_ratio": 0.3653,
         "enemy_contrast_ratios": [
           0.2806,
           0.2551,
