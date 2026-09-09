@@ -104,13 +104,14 @@ func _initialize() -> void:
 	_check_v2_contract(packages, errors)
 	for weapon_id in WEAPON_IDS:
 		_check_presence_devices(weapon_id, packages.get(weapon_id, {}) as Dictionary, errors)
+		await _check_scheduled_hitstop(weapon_id, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_weapon_local_impacts(errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Soldier ultimate timelines passed (three distinct scenes, frozen phase bindings, lifecycle, v2 presence devices, accessibility policy, evidence, and crowd budgets).")
+	print("Soldier ultimate timelines passed (three distinct scenes, frozen phase bindings, lifecycle, v2 presence devices, accessibility policy, scheduled hitstop within 80-150 ms under the live time-scale dip, evidence, and crowd budgets).")
 	quit(0)
 
 
@@ -316,9 +317,11 @@ func _check_presence_devices(weapon_id: String, package: Dictionary, errors: Arr
 	var hitstop := float(presence.get("hitstop_ms", 0.0)) / 1000.0
 	_expect(not timeline.is_playing(), "%s first impact must pause the authored timeline for its hitstop" % weapon_id, errors)
 	_expect(veil.visible and veil.self_modulate.a > 0.0, "%s veil must be lit at the first impact" % weapon_id, errors)
-	instance._process(hitstop * 0.5)
+	# Direct steps mimic the engine: the delta a scheduled scene receives is
+	# already multiplied by the live time scale (the impact just dipped it).
+	instance._process(hitstop * 0.5 * Engine.time_scale)
 	_expect(not timeline.is_playing(), "%s hitstop must hold for at least half its window" % weapon_id, errors)
-	instance._process(hitstop)
+	instance._process(hitstop * Engine.time_scale)
 	_expect(timeline.is_playing(), "%s timeline must resume after the hitstop" % weapon_id, errors)
 	instance.finish("cancel")
 	_expect(not veil.visible and is_zero_approx(veil.self_modulate.a), "%s cleanup must clear the veil" % weapon_id, errors)
@@ -339,6 +342,78 @@ func _check_presence_devices(weapon_id: String, package: Dictionary, errors: Arr
 	safe.finish("cancel")
 	safe.free()
 	Accessibility.apply_snapshot(root, {Accessibility.REDUCED_MOTION_KEY: false, Accessibility.PHOTOSENSITIVITY_SAFE_KEY: false})
+
+
+## FAN-3941 (second review): the first-impact hitstop measured through the
+## engine's own scheduling with the declared time-scale dip live. The driver
+## pauses the authored AnimationPlayer for the hold; the hold is the run of
+## scheduled frames the timeline stays paused after the active edge, summed
+## in wall-clock seconds (the engine's delta is divided back by
+## Engine.time_scale), and must sit inside 80-150 ms within half a frame.
+## Direct `_process(delta)` calls with unscaled deltas cannot see the
+## mismatch between a scaled countdown and the wall-clock dip timer.
+func _check_scheduled_hitstop(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var packed := _pack_for(weapon_id).get("scene") as PackedScene
+	if packed == null:
+		return
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var presence := package.get("presence", {}) as Dictionary
+	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
+	var declared_dip := float(presence.get("time_scale_dip", 1.0))
+	var active := float(timing.get("active", 0.0))
+	var instance := packed.instantiate() as Node2D
+	root.add_child(instance)
+	await process_frame
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	if timeline == null:
+		instance.free()
+		return
+	timeline.play(&"ultimate")
+	var wall := 0.0
+	var frame_seconds := 1.0 / 60.0
+	var hold_seconds := 0.0
+	var hold_frames := 0
+	var hold_open := false
+	var hold_closed := false
+	var dip_seconds := 0.0
+	var lowest_scale := Engine.time_scale
+	while wall < active + 1.0 and not hold_closed:
+		await process_frame
+		var delta := _wall_delta()
+		frame_seconds = delta
+		wall += delta
+		lowest_scale = minf(lowest_scale, Engine.time_scale)
+		if Engine.time_scale < 0.99:
+			dip_seconds += delta
+		var paused := not timeline.is_playing()
+		if not hold_open:
+			if paused:
+				hold_open = true
+				hold_frames = 1
+				hold_seconds = delta
+		elif paused:
+			hold_frames += 1
+			hold_seconds += delta
+		else:
+			hold_closed = true
+	var half_frame := frame_seconds * 0.5
+	_expect(hold_closed, "%s scheduled: the authored timeline must pause on the first impact and resume (hold never closed by %.2f s)" % [weapon_id, wall], errors)
+	_expect(hold_seconds >= 0.08 - half_frame and hold_seconds <= 0.15 + half_frame, "%s scheduled: the actual pose hold must stay inside 80-150 ms, held %.1f ms (%d frames) for a declared %.0f ms at dip %.2f" % [weapon_id, hold_seconds * 1000.0, hold_frames, declared_seconds * 1000.0, declared_dip], errors)
+	_expect(absf(hold_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0], errors)
+	if declared_dip < 1.0:
+		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
+		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	instance.finish("cancel")
+	instance.free()
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
+
+
+## Wall-clock seconds of one scheduled frame: the engine hands nodes a delta
+## already multiplied by Engine.time_scale, so dividing it back out gives the
+## real time the frame took whatever dip is live.
+func _wall_delta() -> float:
+	return root.get_process_delta_time() / maxf(Engine.time_scale, 0.0001)
 
 
 func _check_weapon_local_impacts(errors: Array[String]) -> void:

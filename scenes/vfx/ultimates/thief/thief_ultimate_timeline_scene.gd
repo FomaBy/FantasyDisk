@@ -241,6 +241,11 @@ func _fit_backdrop_to_viewport(veil: Sprite2D) -> void:
 	veil.scale = (visible_size + overscan * 2.0) / Vector2(veil.texture.get_size())
 
 
+## Wall-clock seconds behind a scaled process delta.
+static func _wall_seconds(delta: float) -> float:
+	return delta / maxf(Engine.time_scale, 0.0001)
+
+
 ## The hitstop freezes the drawn pose, never the envelope clock.
 func _drawn_elapsed(elapsed: float) -> float:
 	return _hitstop_pose if _hitstop_remaining > 0.0 else elapsed
@@ -252,7 +257,12 @@ func _advance_weight_devices(delta: float, elapsed: float) -> void:
 	var shake: Dictionary = config.get("shake", {})
 	var timing: Dictionary = config.get("timing", {})
 	if _hitstop_remaining > 0.0:
-		_hitstop_remaining = maxf(_hitstop_remaining - delta, 0.0)
+		# The hold is a wall-clock duration: the engine hands this scene a
+		# delta already multiplied by Engine.time_scale, and the declared dip
+		# is live for exactly this window, so the countdown divides the scale
+		# back out and ends with the dip instead of outliving it by (1 - dip)
+		# of its length (FAN-3941, second review).
+		_hitstop_remaining = maxf(_hitstop_remaining - _wall_seconds(delta), 0.0)
 	elif not _impact_fired and elapsed >= float(timing.get("active", INF)):
 		_impact_fired = true
 		_hitstop_pose = elapsed

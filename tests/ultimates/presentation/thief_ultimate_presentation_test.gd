@@ -40,12 +40,13 @@ func _initialize() -> void:
 		_test_lifecycle(registry, weapon_id, errors)
 		_test_v2_scene_bindings(registry, weapon_id, errors)
 		_test_accessibility_policy(registry, weapon_id, errors)
+		await _test_scheduled_hitstop(registry, weapon_id, errors)
 	if not errors.is_empty():
 		for error in errors:
 			push_error("Thief ultimate presentation: %s" % error)
 		quit(1)
 		return
-	print("Thief ultimate presentation pack passed (3 distinct timelines, schema, lifecycle, budgets, v2 presence devices, accessibility policy).")
+	print("Thief ultimate presentation pack passed (3 distinct timelines, schema, lifecycle, budgets, v2 presence devices, accessibility policy, scheduled hitstop within 80-150 ms under the live time-scale dip).")
 	quit(0)
 
 
@@ -187,9 +188,11 @@ func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String])
 	var frozen := _scene_pose(scene)
 	var hitstop_seconds := float(Pack.presence_for(weapon_id).get("hitstop_ms", 0.0)) / 1000.0
 	_expect(hitstop_seconds >= 0.08 and hitstop_seconds <= 0.15, "%s hitstop must stay inside 80-150 ms" % weapon_id, errors)
-	scene.step(hitstop_seconds * 0.5)
+	# Direct steps mimic the engine: the delta a scheduled scene receives is
+	# already multiplied by the live time scale (the impact just dipped it).
+	scene.step(hitstop_seconds * 0.5 * Engine.time_scale)
 	_expect(_scene_pose(scene) == frozen, "%s first impact must hold the drawn pose for its hitstop" % weapon_id, errors)
-	scene.step(hitstop_seconds)
+	scene.step(hitstop_seconds * Engine.time_scale)
 	_expect(_scene_pose(scene) != frozen, "%s must resume drawing after the hitstop" % weapon_id, errors)
 	_expect(veil != null and veil.self_modulate.a > 0.0, "%s backdrop must be lit across the active window" % weapon_id, errors)
 	var drawn := 0
@@ -236,6 +239,89 @@ func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String])
 			mutated.set_meta(str(mutation["meta"]), 0)
 		_expect_code(Pack.scene_violations(mutated, weapon_id), str(mutation["code"]), "%s with a broken %s declaration must report %s" % [weapon_id, mutation.get("meta", "fullscreen_layer"), mutation["code"]], errors)
 		mutated.free()
+
+
+## FAN-3941 (second review): the first-impact hitstop measured through the
+## engine's own scheduling, with the declared time-scale dip actually live.
+## Direct `step()` calls cannot see this: the engine hands the scene a delta
+## already multiplied by Engine.time_scale while the dip timer runs on the
+## wall clock, so a countdown fed scaled deltas outlives the dip and the real
+## hold stretches to about H x (2 - dip). The drawn pose (the formation
+## sprites) is sampled every scheduled frame; the hold is the run of frames
+## it stays frozen after the first impact, summed in wall-clock seconds, and
+## must sit inside the v2 envelope of 80-150 ms within half a frame.
+func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
+	var presence := Pack.presence_for(weapon_id)
+	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
+	var declared_dip := float(presence.get("time_scale_dip", 1.0))
+	var active := float(timing.get("active", 0.0))
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	await process_frame
+	scene.begin(registry, _probes(), 0)
+	var wall := 0.0
+	var frame_seconds := 1.0 / 60.0
+	var hold_seconds := 0.0
+	var hold_frames := 0
+	var hold_open := false
+	var hold_closed := false
+	var hold_pose := ""
+	var pose_frozen := true
+	var pose_after := ""
+	var dip_seconds := 0.0
+	var lowest_scale := Engine.time_scale
+	var restored_after := -1.0
+	while wall < active + 1.0 and not hold_closed:
+		await process_frame
+		var delta := _wall_delta()
+		frame_seconds = delta
+		wall += delta
+		lowest_scale = minf(lowest_scale, Engine.time_scale)
+		if Engine.time_scale < 0.99:
+			dip_seconds += delta
+		# The hold is the run of scheduled frames the driver reports its
+		# first-impact hitstop live after processing; the drawn pose must be
+		# identical across all of them and move again on the frame after.
+		var holding := float(scene.get("_hitstop_remaining")) > 0.0
+		var pose := _scene_pose(scene)
+		if not hold_open:
+			if holding:
+				hold_open = true
+				hold_frames = 1
+				hold_seconds = delta
+				hold_pose = pose
+		elif holding:
+			hold_frames += 1
+			hold_seconds += delta
+			pose_frozen = pose_frozen and pose == hold_pose
+		else:
+			hold_closed = true
+			pose_after = pose
+			if is_equal_approx(Engine.time_scale, 1.0):
+				restored_after = wall
+	var half_frame := frame_seconds * 0.5
+	_expect(hold_closed, "%s scheduled: the drawn pose must freeze on the first impact and resume (hold never closed by %.2f s)" % [weapon_id, wall], errors)
+	_expect(pose_frozen and hold_frames > 0 and pose_after != hold_pose, "%s scheduled: the drawn pose must stay identical across the %d held frames and move on the frame after" % [weapon_id, hold_frames], errors)
+	_expect(hold_seconds >= 0.08 - half_frame and hold_seconds <= 0.15 + half_frame, "%s scheduled: the actual pose hold must stay inside 80-150 ms, held %.1f ms (%d frames) for a declared %.0f ms at dip %.2f" % [weapon_id, hold_seconds * 1000.0, hold_frames, declared_seconds * 1000.0, declared_dip], errors)
+	_expect(absf(hold_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0], errors)
+	if declared_dip < 1.0:
+		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
+		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
+	_expect(restored_after >= 0.0 and is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	scene.finish("cancel")
+	scene.free()
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
+
+
+## Wall-clock seconds of one scheduled frame: the engine hands nodes a delta
+## already multiplied by Engine.time_scale, so dividing it back out gives the
+## real time the frame took whatever dip is live.
+func _wall_delta() -> float:
+	return root.get_process_delta_time() / maxf(Engine.time_scale, 0.0001)
 
 
 ## FAN-3941: the production accessibility policy read by the live driver —

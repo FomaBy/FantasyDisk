@@ -325,7 +325,12 @@ func _advance_weight_devices(delta: float, elapsed: float) -> void:
 	var shake: Dictionary = SHAKE.get(_weapon_id(), {})
 	var timeline := get_node_or_null(TIMELINE_NODE) as AnimationPlayer
 	if _hitstop_remaining > 0.0:
-		_hitstop_remaining = maxf(_hitstop_remaining - delta, 0.0)
+		# The hold is a wall-clock duration: the engine hands this scene a
+		# delta already multiplied by Engine.time_scale, and the declared dip
+		# is live for exactly this window, so the countdown divides the scale
+		# back out and ends with the dip instead of outliving it by (1 - dip)
+		# of its length (FAN-3941, second review).
+		_hitstop_remaining = maxf(_hitstop_remaining - delta / maxf(Engine.time_scale, 0.0001), 0.0)
 		if _hitstop_remaining <= 0.0 and timeline != null and not timeline.is_playing() and timeline.has_animation(&"ultimate") and _elapsed < timeline.get_animation(&"ultimate").length:
 			timeline.play(&"ultimate")
 	elif not _impact_fired and elapsed >= _timing("active", INF):
