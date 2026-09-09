@@ -415,16 +415,20 @@ func _suppress_standard_weapon_feedback(viewport: SubViewport) -> void:
 			effect.process_mode = Node.PROCESS_MODE_DISABLED
 			if effect is CanvasItem:
 				(effect as CanvasItem).visible = false
-	## Projectile trails are intentionally detached from their holder by
-	## AttackVfx. In this isolated viewport, top-level Sprite2D nodes are those
-	## feedback trails (the real actor, hazard, HUD, and ultimate all use their
-	## own roots), so hide and freeze them rather than sampling a variable
-	## in-flight frame or destroying nodes that the active runtime owns.
+	## AttackVfx can intentionally detach a trail or ring from its holder and
+	## place its CanvasItem directly in this isolated SubViewport. At this point
+	## the only required direct children are the floor, the real-world subtree,
+	## and the real ElitePoisonZone hazard; every other direct child is transient
+	## post-executor feedback. Hide and freeze those nodes rather than sampling a
+	## variable in-flight frame or destroying a node that the active runtime owns.
 	for raw_child in viewport.get_children():
 		var child := raw_child as Node
-		if child is Sprite2D:
-			child.process_mode = Node.PROCESS_MODE_DISABLED
-			(child as Sprite2D).visible = false
+		if child == null or child is ColorRect \
+				or child.name == &"ChemistCertificationWorld" or child.name == &"ElitePoisonZone":
+			continue
+		child.process_mode = Node.PROCESS_MODE_DISABLED
+		if child is CanvasItem:
+			(child as CanvasItem).visible = false
 
 
 func _pause_capture_tweens() -> void:
