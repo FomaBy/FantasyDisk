@@ -243,6 +243,11 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 		if image == null:
 			return false
 		var camera := SPEC.camera_record(arena.camera, baseline)
+		# The simulation stays paused from here until the captioned frame is
+		# read, so the composite, the coverage render, the camera record and
+		# the committed PNG all describe this exact process step (an unpaused
+		# frame in between would advance the cast and move a shaking camera).
+		paused = true
 		var coverage := await _measure_coverage(viewport, scene, bench, hud["layer"], caption, "%s/%s/%s frame %d" % [weapon_id, mode_id, viewport_id, frame])
 		if coverage.is_empty():
 			return false
@@ -254,6 +259,7 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 			if sweep_samples % 25 == 0:
 				print("%s certification sweep %s: %d samples, frame %d, peak %.4f" % [SPEC.CLASS_ID.capitalize(), weapon_id, sweep_samples, frame, sweep_peak])
 		if sweep:
+			paused = false
 			continue
 		for raw_beat in beat_frames.get(frame, []) as Array:
 			var beat_id := str(raw_beat)
@@ -263,6 +269,10 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 			await RenderingServer.frame_post_draw
 			var framed := _read(viewport, SPEC.entry_id(entry))
 			if framed == null:
+				return false
+			var framed_camera := SPEC.camera_record(arena.camera, baseline)
+			if framed_camera != camera:
+				_errors.append("%s: the camera moved between the composite read and the committed frame (%s vs %s)" % [SPEC.entry_id(entry), JSON.stringify(camera), JSON.stringify(framed_camera)])
 				return false
 			# The runtime frees a released scene at the end of the frame it was
 			# released in, so the liveness read above is confirmed after the
@@ -278,6 +288,7 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 			print("%s certification capture saved: %s (%dx%d, frame %d, coverage %.4f, offset %.2f)" % [
 				SPEC.CLASS_ID.capitalize(), str(record["path"]), size.x, size.y, frame, float(coverage["ratio"]), caption_offset.length(),
 			])
+		paused = false
 	if arena.host.controller().is_active():
 		arena.host.controller().cancel("cancel")
 	if sweep:
@@ -447,8 +458,8 @@ func _rect_node(rect: Rect2, color: Color) -> Polygon2D:
 ## so no clock moves, every CanvasItem in the viewport outside the live scene's
 ## subtree (and its ancestors) is hidden, the viewport is rendered transparent,
 ## and the visibility is restored before the tree resumes.
+## Runs with the tree already paused by the caller.
 func _measure_coverage(viewport: SubViewport, scene: Variant, _bench: Array[CanvasItem], hud: CanvasLayer, caption: CanvasLayer, label: String) -> Dictionary:
-	paused = true
 	var hidden: Array[CanvasItem] = []
 	var keep := {}
 	if scene != null and is_instance_valid(scene):
@@ -483,7 +494,6 @@ func _measure_coverage(viewport: SubViewport, scene: Variant, _bench: Array[Canv
 	hud.visible = hud_visible
 	caption.visible = caption_visible
 	await RenderingServer.frame_post_draw
-	paused = false
 	if image == null:
 		return {}
 	var coverage := SPEC.opaque_coverage(image)
@@ -673,7 +683,7 @@ func _manifest() -> Dictionary:
 			"fixed_fps": SPEC.FIXED_FPS,
 			"seed": SPEC.CAPTURE_SEED,
 			"seed_note": "seed() is reset to this value before every cast; the shake device draws randf_range for its offsets, so the seed plus the fixed frame clock make every offset and every frame reproducible, and runs that differ only in a device stay pixel-comparable.",
-			"method": "One real cast per weapon x mode x viewport in a SubViewport of the exact viewport size: the shipped Player (configure_character, full ultimate charge, its own Camera2D made current at combat zoom 1.12 x viewport_height/1440, smoothing off) at the origin; real Enemy scenes on a deterministic spiral around the aim centre (frozen in place, real HP, real hit feedback); a real HazardVfx telegraph and a real EnemyProjectile; the live UltimateHudRuntimeAdapter mounting the real UltimateHudWidget plus an HP readout bound to the Player; the cast started with UltimatePlayerHost.activate so the executor, authored scene, victim impacts and weight devices run as in the game. The engine runs under --fixed-fps 60: beat = frame index. Each frame samples the Player camera offset (reduced-motion evidence). The hero's basic weapon is held (its _process is off) so only the ultimate acts. At a beat the composite frame is read, then the tree is paused, every CanvasItem outside the authored scene's subtree is hidden and the viewport rendered transparent for the authored-scene opaque-coverage measurement (alpha >= 0.5, stride 2; bounding box against the HUD band), then restored. reduced_motion and photosensitivity_safe publish the persisted ultimate_accessibility_settings snapshot on the tree root (scripts/settings/ultimate_accessibility_settings.gd apply_snapshot, as main.gd does at startup) and the live cast's own driver honours it; the capture runner never touches the scene. The full-screen surface alpha of the live scene is sampled every frame. crowded stands the declared crowd cap of enemies. Readability probes project the recorded world positions through the recorded camera state.",
+			"method": "One real cast per weapon x mode x viewport in a SubViewport of the exact viewport size: the shipped Player (configure_character, full ultimate charge, its own Camera2D made current at combat zoom 1.12 x viewport_height/1440, smoothing off) at the origin; real Enemy scenes on a deterministic spiral around the aim centre (frozen in place, real HP, real hit feedback); a real HazardVfx telegraph and a real EnemyProjectile; the live UltimateHudRuntimeAdapter mounting the real UltimateHudWidget plus an HP readout bound to the Player; the cast started with UltimatePlayerHost.activate so the executor, authored scene, victim impacts and weight devices run as in the game. The engine runs under --fixed-fps 60: beat = frame index. Each frame samples the Player camera offset (reduced-motion evidence). The hero's basic weapon is held (its _process is off) so only the ultimate acts. At a beat the composite frame is read and the tree is paused; every CanvasItem outside the authored scene's subtree is hidden and the viewport rendered transparent for the authored-scene opaque-coverage measurement (alpha >= 0.5, stride 2; bounding box against the HUD band), then restored, the caption drawn and the committed frame read while still paused, so the PNG, the camera record and the coverage describe the same process step; the tree resumes afterwards. reduced_motion and photosensitivity_safe publish the persisted ultimate_accessibility_settings snapshot on the tree root (scripts/settings/ultimate_accessibility_settings.gd apply_snapshot, as main.gd does at startup) and the live cast's own driver honours it; the capture runner never touches the scene. The full-screen surface alpha of the live scene is sampled every frame. crowded stands the declared crowd cap of enemies. Readability probes project the recorded world positions through the recorded camera state.",
 			"logical_canvas": "%dx%d" % [int(SPEC.LOGICAL_CANVAS.x), int(SPEC.LOGICAL_CANVAS.y)],
 			"stretch_mode": "canvas_items",
 			"combat_camera_zoom": SPEC.COMBAT_CAMERA_ZOOM,

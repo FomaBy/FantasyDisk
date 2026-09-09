@@ -1362,7 +1362,12 @@ static func build_arena(tree: SceneTree, parent: Node, weapon_id: String, mode: 
 		arena.camera.position_smoothing_enabled = false
 		arena.camera.offset = Vector2.ZERO
 		arena.camera.enabled = true
-		arena.camera.make_current()
+		# A headless contract tree parents the arena before root is in the
+		# tree; the camera becomes current once it is.
+		if arena.camera.is_inside_tree():
+			arena.camera.make_current()
+		else:
+			arena.camera.call_deferred("make_current")
 	arena.host = PlayerHost.for_player(arena.player)
 	if headless_presentation:
 		arena.host.set("_presentation_headless_mode", LIVE_PRESENTATION_HEADLESS_MODE)
