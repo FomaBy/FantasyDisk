@@ -81,11 +81,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.04,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same war banner, spectral rifle rank, volley lane and three muzzle-flash waves on the same timing, because the scene authors no camera-shake device: each volley is an alpha step on the lane and the rank's aim rotation is the beat",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the authored AnimationPlayer timeline's war banner, spectral rifle rank, volley lane and three muzzle-flash waves carry the beat as alpha steps and the rank's aim rotation on the unchanged timing; the backdrop veil still darkens to 0.30 and the first-impact hitstop still pauses the authored timeline",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0293 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; the fastest authored alpha track is MuzzleFlashWave at 0.94 Hz on a lane-sized element"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0300 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -134,11 +134,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.05,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same lob arc, seven seeded grenades and shrinking fuse ring on the same timing, because the scene authors no camera-shake device: the fuse ring's contraction is the countdown read and its alpha pulse stays a ring-sized element",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the authored lob arc, the seven seeded grenades, the shrinking fuse ring and the executor-driven detonation rings and crater column carry the beat on the unchanged timing; the release-beat veil flash and the first-impact hitstop stay as shipped",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
-        "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0369 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; the peak is the chain-blast ring drawn from the executor's .detonate beats on the executor clock (4.7-6.5 s), each blast at a different point; the ring-sized FuseRing pulse is 1.14 Hz"
+        "max_flash_coverage_ratio": 1.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0357 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -187,11 +187,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.03,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same three ghost-infantry ranks, charge corridor, frontal guard and crossed-bayonet pin on the same timing, because the scene authors no camera-shake device: each rank's charge down the corridor is a positional step and the pin is a contrast cross",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the three ghost-infantry ranks' charge down the corridor, the frontal guard and the crossed-bayonet pin carry the beat as positional steps and a contrast cross on the unchanged timing; the backdrop veil still darkens to 0.30 and the first-impact hitstop still pauses the authored timeline",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0184 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; no authored alpha track rises more than once per cast"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0226 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -253,9 +253,11 @@
       "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/soldier",
       "capture_script": "tests/ultimates/presentation/soldier_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/soldier_certification_capture_test.gd",
-      "source_ref": "dev",
-      "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
-      "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+      "source_ref": "agent/fable/e50731ad6088",
+      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
+      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
+      "exclusive_gate": true,
       "weapon_ids": [
         "soldier_rifle",
         "soldier_grenade",
@@ -280,7 +282,7 @@
         "2k": "2560x1440"
       },
       "frames": 132,
-      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock and the exclusive process admission, with the reduced-motion and photosensitivity-safe modes published through the production ultimate_accessibility_settings snapshot; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
     }
   }
 }

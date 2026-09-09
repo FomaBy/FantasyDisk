@@ -87,11 +87,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.01,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene draws exactly the same thirteen-coin ricochet formation on the same timing, because the scene authors no camera-shake device: the staggered coin hops and the crown-burst return are the beat, read as position and scale steps",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the staggered thirteen-coin ricochet hops and the crown-burst return carry the beat as position and scale steps on the unchanged timing; the backdrop veil still swells to 0.30 and the first-impact hitstop still freezes the drawn formation",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0022 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; note the executor completes after one hop per target (0.32 s with three targets, 1.28 s at the crowd cap) and the host releases the authored 3.05 s presentation at that moment"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0037 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "thief_ultimate_crouched_toss",
@@ -138,11 +138,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.01,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene draws exactly the same eight-mark phantom-backstab chain on the same timing, because the scene authors no camera-shake device: each sequential stab arrival is a scale-and-alpha pulse on its mark and the red-line collapse is a positional close",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so each sequential phantom-stab arrival is a scale-and-alpha pulse on its mark and the red-line collapse a positional close on the unchanged timing; the backdrop veil still swells to 0.32 and the first-impact hitstop still freezes the drawn formation",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0029 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; note the executor completes after its eight strikes (1.27 s) and the host releases the authored 3.20 s presentation at that moment"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.32 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "thief_ultimate_crouched_toss",
@@ -189,11 +189,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.01,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene draws exactly the same expanding smoke dome and six pressure marks on the same timing, because the scene authors no camera-shake device: the dome's growth and its snap collapse are the beat, read as scale steps of a translucent silhouette",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the smoke dome's growth and its snap collapse carry the beat as scale steps of a translucent silhouette on the unchanged timing; the backdrop veil still swells to 0.28 and the first-impact hitstop still freezes the drawn formation",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0015 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; the dome is translucent so its visual footprint is larger than the opaque count"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0074 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.28 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "thief_ultimate_crouched_toss",
@@ -380,9 +380,11 @@
       "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/thief",
       "capture_script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/thief_certification_capture_test.gd",
-      "source_ref": "dev",
-      "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
-      "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+      "source_ref": "agent/fable/e50731ad6088",
+      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
+      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
+      "exclusive_gate": true,
       "weapon_ids": [
         "thief_coin_pouch",
         "thief_shadow_cloak",
@@ -407,7 +409,7 @@
         "2k": "2560x1440"
       },
       "frames": 84,
-      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock and the exclusive process admission, with the reduced-motion and photosensitivity-safe modes published through the production ultimate_accessibility_settings snapshot; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
     }
   },
   "runtime_boundary": {

@@ -82,11 +82,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.01,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene applies no camera shake, so the moon mark bloom, the aimed bolt and the four split bolts carry the beat on their own; the backdrop veil still swells to 0.30 and the 95 ms hitstop still freezes the drawn pose on the first impact",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the moon mark bloom, the aimed bolt and the four split bolts carry the beat on their own on the unchanged timing; the backdrop veil still swells to 0.30 and the 95 ms hitstop still freezes the drawn pose on the first impact",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0041 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; the live cast moves the Player camera by up to about 6 px with screen_shake on and 0 px with it off"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0041 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
@@ -134,11 +134,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.01,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene applies no camera shake, so the corridor draw and the seven tail-to-tip lightning beats carry the beat as sequential contrast steps; the release-beat veil flash and the 120 ms hitstop stay as shipped",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the corridor draw and the seven tail-to-tip lightning beats carry the beat as sequential contrast steps on the unchanged timing; the release-beat veil flash and the 120 ms hitstop stay as shipped",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 1.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); the live cast moves the Player camera by up to about 9 px with screen_shake on and 0 px with it off"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
@@ -186,11 +186,11 @@
       "quality": {
         "max_viewport_coverage_ratio": 0.02,
         "hud_bands_clear": true,
-        "reduced_motion_substitute": "with the shipped screen_shake toggle off the timeline scene applies no camera shake, so the three closing jaw rings and the chain-net closure carry the beat as a shrinking silhouette; the backdrop veil still thickens to 0.34 and the 145 ms hitstop still freezes the drawn pose on the snap",
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the three closing jaw rings and the chain-net closure carry the beat as a shrinking silhouette on the unchanged timing; the backdrop veil still thickens to 0.34 and the 145 ms hitstop still freezes the drawn pose on the snap",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0116 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.34 that rises once per cast and is excluded from opaque coverage; the live cast moves the Player camera by up to about 13 px with screen_shake on and 0 px with it off"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0116 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.34 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
       },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
@@ -321,9 +321,11 @@
       "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/ranger",
       "capture_script": "tests/ultimates/presentation/ranger_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/ranger_certification_capture_test.gd",
-      "source_ref": "dev",
-      "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
-      "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+      "source_ref": "agent/fable/e50731ad6088",
+      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
+      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
+      "exclusive_gate": true,
       "weapon_ids": [
         "moon_crossbow",
         "storm_longbow",
@@ -348,7 +350,7 @@
         "2k": "2560x1440"
       },
       "frames": 84,
-      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock and the exclusive process admission, with the reduced-motion and photosensitivity-safe modes published through the production ultimate_accessibility_settings snapshot; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
     }
   }
 }
