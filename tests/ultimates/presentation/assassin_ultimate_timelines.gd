@@ -10,20 +10,18 @@ const SCENES := {
 	"venom_wire": preload("res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn"),
 }
 const REQUIRED_NODES := {
-	"chakrams": ["Orbit/MoonOne", "Orbit/MoonEight", "ReturnCrescents", "BackdropDarken", "ImpactFlash"],
+	"chakrams": ["Orbit/MoonOne", "Orbit/MoonEight", "ReturnCrescents", "BackdropLayer/BackdropVeil", "ImpactFlash"],
 	"shadow_daggers": ["FreezeMarks", "Afterimages/BackstabOne", "FinalReveal"],
 	"venom_wire": ["Anchors/NeedleOne", "Anchors/NeedleSix", "HexWeb", "SnapCollapse"],
 }
-# FAN-2956: the chakrams pair has left PRESENTATION_V2_MIGRATION_ALLOWLIST, so
-# its package must carry the full v2 envelope, presence and identity contract.
+# FAN-3942: the full class has left PRESENTATION_V2_MIGRATION_ALLOWLIST, so
+# every package must carry the full v2 envelope, presence and identity contract.
 const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
-const V2_WEAPON_ID := "chakrams"
 const V2_PRESENCE_FIELDS := {
 	"fullscreen_footprint": true,
 	"camera_shake": true,
 	"sfx_ducking": true,
 }
-const V2_SILHOUETTE_ASSET := "res://assets/sprites/weapons/chakrams.png"
 const CAPTURES := [
 	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
 	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
@@ -74,7 +72,7 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(str(weapon_id), profiles.get(str(weapon_id), {}) as Dictionary, packages.get(str(weapon_id), {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
-	_check_v2_chakrams(packages.get(V2_WEAPON_ID, {}) as Dictionary, errors)
+	_check_v2_packages(packages, errors)
 	_check_contact_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
@@ -247,28 +245,32 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		_expect(values.size() == WEAPON_IDS.size() and not values.has(""), "all Assassin weapons must have unique %s" % field, errors)
 
 
-func _check_v2_chakrams(package: Dictionary, errors: Array[String]) -> void:
-	_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("assassin/chakrams"), "assassin/chakrams must have left the v2 migration allowlist", errors)
-	_expect(not package.is_empty(), "chakrams v2 package must exist", errors)
-	if package.is_empty():
-		return
-	var envelope := V2_SCHEMA.v2_envelope_errors(package.get("timing_seconds", {}), "assassin/chakrams")
-	_expect(envelope.is_empty(), "chakrams timing must satisfy the v2 envelope: %s" % [", ".join(envelope)], errors)
-	var presence := package.get("presence", {}) as Dictionary
-	for field in V2_PRESENCE_FIELDS:
-		_expect(presence.get(field) == V2_PRESENCE_FIELDS[field], "chakrams presence.%s must be %s" % [field, str(V2_PRESENCE_FIELDS[field])], errors)
-	_expect(V2_SCHEMA.V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))), "chakrams presence.backdrop must be a v2 treatment", errors)
-	var hitstop := float(presence.get("hitstop_ms", -1.0))
-	_expect(hitstop >= V2_SCHEMA.V2_HITSTOP_RANGE_MS[0] and hitstop <= V2_SCHEMA.V2_HITSTOP_RANGE_MS[1], "chakrams presence.hitstop_ms must stay in 80-150", errors)
-	var dip = presence.get("time_scale_dip", null)
-	if dip != null:
-		_expect(float(dip) >= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[0] and float(dip) <= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[1], "chakrams presence.time_scale_dip must stay in 0.3-0.5", errors)
-	var identity := package.get("identity", {}) as Dictionary
-	_expect(str(identity.get("cast_pose_id", "")).begins_with("weapon_ultimate.cast_pose.assassin."), "chakrams identity.cast_pose_id must be the assassin cast pose", errors)
-	_expect(str(identity.get("weapon_silhouette_asset", "")) == V2_SILHOUETTE_ASSET and FileAccess.file_exists(V2_SILHOUETTE_ASSET), "chakrams identity.weapon_silhouette_asset must be its own weapon sprite", errors)
-	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "chakrams identity.class_palette_id must be declared", errors)
-	var materials := package.get("performance", {}) as Dictionary
-	_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "chakrams must declare a material budget ahead of the FAN-2972 assert", errors)
+func _check_v2_packages(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var key := "assassin/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must have left the v2 migration allowlist" % key, errors)
+		_expect(not package.is_empty(), "%s v2 package must exist" % weapon_id, errors)
+		if package.is_empty():
+			continue
+		var envelope := V2_SCHEMA.v2_envelope_errors(package.get("timing_seconds", {}), key)
+		_expect(envelope.is_empty(), "%s timing must satisfy the v2 envelope: %s" % [weapon_id, ", ".join(envelope)], errors)
+		var presence := package.get("presence", {}) as Dictionary
+		for field in V2_PRESENCE_FIELDS:
+			_expect(presence.get(field) == V2_PRESENCE_FIELDS[field], "%s presence.%s must be %s" % [weapon_id, field, str(V2_PRESENCE_FIELDS[field])], errors)
+		_expect(V2_SCHEMA.V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))), "%s presence.backdrop must be a v2 treatment" % weapon_id, errors)
+		var hitstop := float(presence.get("hitstop_ms", -1.0))
+		_expect(hitstop >= V2_SCHEMA.V2_HITSTOP_RANGE_MS[0] and hitstop <= V2_SCHEMA.V2_HITSTOP_RANGE_MS[1], "%s presence.hitstop_ms must stay in 80-150" % weapon_id, errors)
+		var dip = presence.get("time_scale_dip", null)
+		if dip != null:
+			_expect(float(dip) >= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[0] and float(dip) <= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[1], "%s presence.time_scale_dip must stay in 0.3-0.5" % weapon_id, errors)
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(str(identity.get("cast_pose_id", "")).begins_with("weapon_ultimate.cast_pose.assassin."), "%s identity.cast_pose_id must be the assassin cast pose" % weapon_id, errors)
+		var silhouette_path := str(identity.get("weapon_silhouette_asset", ""))
+		_expect(not silhouette_path.is_empty() and FileAccess.file_exists(silhouette_path), "%s identity.weapon_silhouette_asset must name a shipped weapon silhouette" % weapon_id, errors)
+		_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s identity.class_palette_id must be declared" % weapon_id, errors)
+		var materials := package.get("performance", {}) as Dictionary
+		_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "%s must declare a material budget ahead of the FAN-2972 assert" % weapon_id, errors)
 
 
 func _check_contact_evidence(errors: Array[String]) -> void:

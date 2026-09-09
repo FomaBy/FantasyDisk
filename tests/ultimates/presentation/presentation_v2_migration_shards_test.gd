@@ -2,8 +2,8 @@ extends SceneTree
 
 ## Focused gate for the class-owned presentation-v2 migration shards (FAN-3933).
 ##
-## It proves five things: the live shards aggregate to exactly the 23-pair map
-## the shared schema carried before the split, the public
+## It proves five things: the live shards aggregate to the exact ratcheted map
+## while the immutable 23-pair ceiling from the split remains intact, the public
 ## PRESENTATION_V2_MIGRATION_ALLOWLIST every consumer reads is that aggregate,
 ## every aggregate gate outcome (catalog, single manifest, visual-direction
 ## contract) is identical whether it reads the shards or the legacy map, the
@@ -23,7 +23,8 @@ const Shards := preload("res://scripts/ultimates/presentation/presentation_v2_mi
 const SHARDS_SCRIPT_PATH := "res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd"
 const SCHEMA_SCRIPT_PATH := "res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd"
 const EXPECTED_CLASS_COUNT := 17
-const EXPECTED_PAIR_COUNT := 23
+const EXPECTED_PAIR_COUNT := 15
+const FROZEN_CEILING_PAIR_COUNT := 23
 const EXPECTED_CATALOG_SIZE := 51
 const REFERENCE_CLASS := "doctor"
 const MIGRATED_KEY := "berserk/sword"
@@ -34,7 +35,7 @@ const LEGACY_REASON := "shipped under the v1 envelope before FAN-2948; awaiting 
 ## The shared map exactly as WeaponUltimatePresentationSchema carried it at the
 ## starting candidate (d192be10bbe52dd89971cab0acc66eb92ccab37f), before the
 ## shards.
-const LEGACY_ALLOWLIST := {
+const FROZEN_CEILING_ALLOWLIST := {
 	"assassin/shadow_daggers": LEGACY_REASON,
 	"assassin/venom_wire": LEGACY_REASON,
 	"doctor/restore_potion": LEGACY_REASON,
@@ -43,6 +44,27 @@ const LEGACY_ALLOWLIST := {
 	"druid/summon_amulet": LEGACY_REASON,
 	"druid/briar_staff": LEGACY_REASON,
 	"druid/raven_totem": LEGACY_REASON,
+	"elementalist/elementalist_orb_ring": LEGACY_REASON,
+	"elementalist/elementalist_prism_focus": LEGACY_REASON,
+	"elementalist/elementalist_meteor_core": LEGACY_REASON,
+	"guitarist/electric_guitar": LEGACY_REASON,
+	"guitarist/bass_guitar": LEGACY_REASON,
+	"guitarist/sound_amp": LEGACY_REASON,
+	"knight/long_spear": LEGACY_REASON,
+	"knight/tower_shield": LEGACY_REASON,
+	"knight/holy_flail": LEGACY_REASON,
+	"priest/priest_reliquary": LEGACY_REASON,
+	"priest/priest_censer": LEGACY_REASON,
+	"priest/priest_chime": LEGACY_REASON,
+	"robot/robot_magnetic_anchor": LEGACY_REASON,
+	"robot/robot_hydraulic_press": LEGACY_REASON,
+	"robot/robot_reactor_core": LEGACY_REASON,
+}
+
+## FAN-3942 removes only its eight now-certified pairs. This is deliberately an
+## exact expectation rather than a copy of the live aggregate, so an accidental
+## shard deletion still fails closed.
+const EXPECTED_LIVE_ALLOWLIST := {
 	"elementalist/elementalist_orb_ring": LEGACY_REASON,
 	"elementalist/elementalist_prism_focus": LEGACY_REASON,
 	"elementalist/elementalist_meteor_core": LEGACY_REASON,
@@ -81,8 +103,8 @@ func _initialize() -> void:
 
 
 ## Every canonical class carries one valid shard, the shard roster is the
-## manifest roster, and the aggregate is the legacy map through both public
-## readers.
+## manifest roster, and the aggregate is the exact ratcheted map through both
+## public readers.
 func _check_live_shards(errors: Array[String]) -> void:
 	for violation in Shards.shard_violations():
 		errors.append("live shards must validate: %s" % violation)
@@ -96,8 +118,8 @@ func _check_live_shards(errors: Array[String]) -> void:
 	canonical.sort()
 	if canonical != roster:
 		errors.append("loader roster %s must equal the manifest roster %s" % [str(canonical), str(roster)])
-	_expect_same_allowlist(Shards.load_allowlist(), LEGACY_ALLOWLIST, "loader aggregate", errors)
-	_expect_same_allowlist(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, LEGACY_ALLOWLIST, "PRESENTATION_V2_MIGRATION_ALLOWLIST", errors)
+	_expect_same_allowlist(Shards.load_allowlist(), EXPECTED_LIVE_ALLOWLIST, "loader aggregate", errors)
+	_expect_same_allowlist(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, EXPECTED_LIVE_ALLOWLIST, "PRESENTATION_V2_MIGRATION_ALLOWLIST", errors)
 	if Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.size() != EXPECTED_PAIR_COUNT:
 		errors.append("expected %d live exemptions, got %d" % [EXPECTED_PAIR_COUNT, Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.size()])
 	if not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.is_read_only():
@@ -106,11 +128,11 @@ func _check_live_shards(errors: Array[String]) -> void:
 		var shard := _read_shard(Shards.SHARD_ROOT, class_id)
 		var declared: Dictionary = shard.get("migration_exemptions", {})
 		var legacy_count := 0
-		for key in LEGACY_ALLOWLIST:
+		for key in EXPECTED_LIVE_ALLOWLIST:
 			if str(key).begins_with("%s/" % class_id):
 				legacy_count += 1
 		if declared.size() != legacy_count:
-			errors.append("%s shard declares %d pair(s), the legacy map carried %d" % [class_id, declared.size(), legacy_count])
+			errors.append("%s shard declares %d pair(s), the ratcheted map expects %d" % [class_id, declared.size(), legacy_count])
 
 
 ## The frozen ceiling is exactly the legacy key set, names only live registry
@@ -122,15 +144,17 @@ func _check_ceiling(errors: Array[String]) -> void:
 		if seen.has(key):
 			errors.append("frozen ceiling lists %s twice" % key)
 		seen[key] = true
-		if not LEGACY_ALLOWLIST.has(key):
+		if not FROZEN_CEILING_ALLOWLIST.has(key):
 			errors.append("frozen ceiling admits %s, which the legacy map never carried" % key)
 		if not _profiles.has(key):
 			errors.append("frozen ceiling names unknown registry pair %s" % key)
 		if not Shards.CLASS_IDS.has(key.get_slice("/", 0)):
 			errors.append("frozen ceiling names unknown class in %s" % key)
-	for key in LEGACY_ALLOWLIST:
+	for key in FROZEN_CEILING_ALLOWLIST:
 		if not seen.has(str(key)):
 			errors.append("frozen ceiling lost legacy pair %s" % str(key))
+	if seen.size() != FROZEN_CEILING_PAIR_COUNT:
+		errors.append("frozen ceiling must retain %d pairs, found %d" % [FROZEN_CEILING_PAIR_COUNT, seen.size()])
 
 
 ## Every live exemption names a registry pair with a reason, none is stale, and
@@ -152,18 +176,18 @@ func _check_ratchet(errors: Array[String]) -> void:
 ## Old and new aggregate gate outcomes are identical: the catalog gate, the
 ## runtime single-manifest gate and the visual-direction contract report the
 ## same violations whether they read the shards (default argument) or the
-## legacy map (explicit override), and an explicit empty override still asserts
+## exact live map (explicit override), and an explicit empty override still asserts
 ## the full v2 contract.
 func _check_gate_outcomes_match(errors: Array[String]) -> void:
 	var manifests := _manifest_array()
 	var default_catalog := Schema.validate_catalog(manifests, _profiles)
-	var legacy_catalog := Schema.validate_catalog(manifests, _profiles, LEGACY_ALLOWLIST)
+	var legacy_catalog := Schema.validate_catalog(manifests, _profiles, EXPECTED_LIVE_ALLOWLIST)
 	if default_catalog != legacy_catalog:
 		errors.append("catalog outcome differs: shards %s vs legacy %s" % [str(default_catalog), str(legacy_catalog)])
 	var enforced := Schema.validate_catalog(manifests, _profiles, {})
 	if enforced.is_empty():
 		errors.append("an explicit empty allowlist must still assert the full v2 contract on the v1 pairs")
-	for raw_key in LEGACY_ALLOWLIST:
+	for raw_key in EXPECTED_LIVE_ALLOWLIST:
 		if not _has_code_detail(enforced, "presentation.v2.", str(raw_key)):
 			errors.append("explicit empty allowlist must report %s" % str(raw_key))
 	var keys: Array = _catalog.keys()
@@ -171,7 +195,7 @@ func _check_gate_outcomes_match(errors: Array[String]) -> void:
 	for raw_key in keys:
 		var key := str(raw_key)
 		var by_default := Schema.validate_manifest(_catalog[key], _profiles[key])
-		var by_legacy := Schema.validate_manifest(_catalog[key], _profiles[key], LEGACY_ALLOWLIST)
+		var by_legacy := Schema.validate_manifest(_catalog[key], _profiles[key], EXPECTED_LIVE_ALLOWLIST)
 		if by_default != by_legacy:
 			errors.append("single-manifest outcome differs for %s: %s vs %s" % [key, str(by_default), str(by_legacy)])
 	for class_id in Contract.class_ids():
@@ -180,7 +204,7 @@ func _check_gate_outcomes_match(errors: Array[String]) -> void:
 			errors.append("class %s has no readable manifest" % class_id)
 			continue
 		var by_default := Contract.violations(class_id, manifest)
-		var by_legacy := Contract.violations(class_id, manifest, LEGACY_ALLOWLIST)
+		var by_legacy := Contract.violations(class_id, manifest, EXPECTED_LIVE_ALLOWLIST)
 		if by_default != by_legacy:
 			errors.append("contract outcome differs for %s: %s vs %s" % [class_id, str(by_default), str(by_legacy)])
 		var enforced_default := Contract.violations(class_id, manifest, {})
@@ -368,9 +392,11 @@ func _check_loader_goes_red(errors: Array[String]) -> void:
 	_expect_error(Shards.load_shards("%s/never_created" % FIXTURE_ROOT), "v2_migration.root_missing:", errors)
 
 	# Broken class data reaches the schema as a smaller allowlist, never a
-	# larger one: the pairs it dropped are asserted against v2 and fail closed.
+	# larger one. Every still-live exemption dropped by this incomplete fixture
+	# is asserted against v2 and fails closed. The Doctor fixture itself is now
+	# intentionally v2 and remains useful only for the loader's frozen ceiling.
 	var fail_closed: Dictionary = envelope_result["allowlist"]
-	for raw_key in doctor_pairs:
+	for raw_key in EXPECTED_LIVE_ALLOWLIST:
 		var key := str(raw_key)
 		var outcome := Schema.validate_catalog([_catalog[key]], {key: _profiles[key]}, fail_closed)
 		if not _has_code_prefix(outcome, "presentation.v2."):
@@ -382,7 +408,7 @@ func _check_loader_goes_red(errors: Array[String]) -> void:
 ## An exemption for a pair that already satisfies v2 is stale in catalog scope,
 ## and the runtime single-manifest path never rejects a live activation over it.
 func _check_stale_goes_red(errors: Array[String]) -> void:
-	if not _catalog.has(MIGRATED_KEY) or LEGACY_ALLOWLIST.has(MIGRATED_KEY):
+	if not _catalog.has(MIGRATED_KEY) or EXPECTED_LIVE_ALLOWLIST.has(MIGRATED_KEY):
 		errors.append("%s must be a migrated registry pair for the stale control" % MIGRATED_KEY)
 		return
 	var stale_allowlist := {MIGRATED_KEY: "listed although migrated"}
@@ -405,9 +431,9 @@ func _code_lines(source: String) -> String:
 
 func _legacy_pairs_of(class_id: String) -> Dictionary:
 	var pairs := {}
-	for key in LEGACY_ALLOWLIST:
+	for key in FROZEN_CEILING_ALLOWLIST:
 		if str(key).begins_with("%s/" % class_id):
-			pairs[str(key)] = str(LEGACY_ALLOWLIST[key])
+			pairs[str(key)] = str(FROZEN_CEILING_ALLOWLIST[key])
 	return pairs
 
 
@@ -510,7 +536,7 @@ func _has_code_detail(reported: Array[String], prefix: String, detail: String) -
 
 func _finish(errors: Array[String]) -> void:
 	if errors.is_empty():
-		print("Presentation v2 migration shards passed (%d class shards equal the legacy %d-pair map, gate outcomes identical, loader dependency-free, every rejection red)." % [EXPECTED_CLASS_COUNT, EXPECTED_PAIR_COUNT])
+		print("Presentation v2 migration shards passed (%d class shards equal the ratcheted %d-pair map, frozen %d-pair ceiling intact, gate outcomes identical, loader dependency-free, every rejection red)." % [EXPECTED_CLASS_COUNT, EXPECTED_PAIR_COUNT, FROZEN_CEILING_PAIR_COUNT])
 		quit(0)
 		return
 	for error in errors:
