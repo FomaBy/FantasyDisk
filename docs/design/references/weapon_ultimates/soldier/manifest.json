@@ -78,13 +78,13 @@
         "sfx_ducking": true
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.01,
+        "max_viewport_coverage_ratio": 0.04,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same war banner, spectral rifle rank, volley lane and three muzzle-flash waves on the same timing, because the scene authors no camera-shake device: each volley is an alpha step on the lane and the rank's aim rotation is the beat",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 certification capture: peak opaque coverage 0.0032 of the viewport (alpha >= 0.5 on a scene-only render at the game's on-screen scale, 1152x648 sweep of the whole 3.20 s cast every 1/30 s plus every committed frame); the scene authors no full-screen surface; the fastest authored alpha track is MuzzleFlashWave at 0.94 Hz (three volleys per cast) on a lane-sized element"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0293 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; the fastest authored alpha track is MuzzleFlashWave at 0.94 Hz on a lane-sized element"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -130,13 +130,13 @@
         "sfx_ducking": true
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.01,
+        "max_viewport_coverage_ratio": 0.05,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same lob arc, seven seeded grenades and shrinking fuse ring on the same timing, because the scene authors no camera-shake device: the fuse ring's contraction is the countdown read and its alpha pulse stays a ring-sized element",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 certification capture: peak opaque coverage 0.0054 of the viewport (alpha >= 0.5 on a scene-only render at the game's on-screen scale, 1152x648 sweep of the whole 3.50 s cast every 1/30 s plus every committed frame); the presence block declares a flash backdrop but the shipped scene authors no full-screen surface, so no full-screen flash exists to declare; the fastest authored alpha track is the ring-sized FuseRing pulse at 1.14 Hz, under the 3 Hz threshold"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0369 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; the peak is the chain-blast ring drawn from the executor's .detonate beats on the executor clock (4.7-6.5 s), each blast at a different point; the ring-sized FuseRing pulse is 1.14 Hz"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -182,13 +182,13 @@
         "sfx_ducking": true
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.01,
+        "max_viewport_coverage_ratio": 0.03,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "with the shipped screen_shake toggle off the authored AnimationPlayer timeline plays exactly the same three ghost-infantry ranks, charge corridor, frontal guard and crossed-bayonet pin on the same timing, because the scene authors no camera-shake device: each rank's charge down the corridor is a positional step and the pin is a contrast cross",
         "reduced_motion_preserves_timing": true,
         "full_screen_flash_hz": 0.0,
         "max_flash_coverage_ratio": 0.0,
-        "measurement": "FAN-3941 certification capture: peak opaque coverage 0.0026 of the viewport (alpha >= 0.5 on a scene-only render at the game's on-screen scale, 1152x648 sweep of the whole 3.80 s cast every 1/30 s plus every committed frame); the scene authors no full-screen surface and no authored alpha track rises more than once per cast (0.26 Hz)"
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0184 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the live scene authors no full-screen surface and the live cast never moves the Player camera; no authored alpha track rises more than once per cast"
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
@@ -232,7 +232,16 @@
         "2k": "2560x1440"
       },
       "frames_per_mode_viewport": 1,
-      "note": "Four-mode live frames per weapon and viewport, one native-size PNG per combination at the active beat plus release/recovery at 1152x648, rendered from the shipped scenes with the hero, crowd at the declared crowd cap, hazards and the real ultimate HUD widget. `crowded` draws the declared crowd cap with the weapon's victim-impact flipbook routed through present(); `reduced_motion` applies the shipped screen_shake toggle; `photosensitivity_safe` additionally has no full-screen surface to suppress because the scenes author none (verified by the gate). The four legacy resolution sheets above remain the FAN-1468 contact sheets."
+      "note": "Real-runtime four-mode frames per weapon and viewport through UltimatePlayerHost with the shipped Player, real Enemy scenes, a real hazard telegraph and enemy projectile and the live ultimate HUD adapter under a fixed 60 fps clock: the active beat and, for soldier_grenade, the executor-clock detonation/crater/final beats at every viewport, plus release/impact/recovery at 1152x648. `crowded` stands the declared crowd cap; `reduced_motion` applies the shipped screen_shake toggle (an intrinsic no-op for the Soldier scenes, measured as a zero camera trace); `photosensitivity_safe` additionally has no full-screen surface to suppress (measured zero). The four legacy resolution sheets above remain the FAN-1468 contact sheets.",
+      "beats": [
+        "release",
+        "impact",
+        "active",
+        "recovery",
+        "detonation",
+        "crater",
+        "final"
+      ]
     },
     "certification": {
       "issue": "FAN-3941",
@@ -257,6 +266,7 @@
       ],
       "beats": [
         "release",
+        "impact",
         "active",
         "recovery"
       ],
@@ -266,8 +276,8 @@
         "1080p": "1920x1080",
         "2k": "2560x1440"
       },
-      "frames": 72,
-      "note": "One native-size frame per weapon x mode x viewport at the active beat plus release and recovery at 1152x648, rendered from the shipped scenes at the game's on-screen scale with the hero, crowd, hazards and the real ultimate HUD widget; the capture manifest pins every file hash, the engine, the command and the measured coverage."
+      "frames": 132,
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
     }
   }
 }

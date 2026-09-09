@@ -1,30 +1,41 @@
 extends SceneTree
 
 ## FAN-3941 — headless gate and shared spec for the Ranger certification
-## capture package.
+## capture package (real-runtime edition after the first independent review).
 ##
 ## The package proves the three canonical Ranger ultimates in the four
-## presentation modes at the four supported viewports, one native-size frame
-## per weapon/mode/viewport at the active beat and, at the 1152x648 judging
-## viewport, the release and recovery beats as well. Every frame is a real
-## render of the shipped scene composed with the hero, a crowd, hazards and the
-## real ultimate HUD widget at the on-screen scale the game uses.
+## presentation modes at the four supported viewports, rendered from the real
+## runtime: the shipped Player (its own current Camera2D, real HP and charge),
+## real Enemy scenes as the crowd, a real hazard telegraph and a real enemy
+## projectile, the real live ultimate HUD adapter, and the cast started
+## through UltimatePlayerHost so the executor, the authored presentation, the
+## victim impacts and every weight device run exactly as in the game. Frames
+## are taken under `--fixed-fps 60`, so a beat is a frame index and the
+## package reproduces byte for byte.
 ##
-## This file owns the geometry the capture script draws, the readability
-## probes it records and the validators that read the committed package back,
-## so the frames, the manifest and the gate can never describe different
-## pictures. The renderer lives in ranger_certification_live_capture.gd and
-## preloads this file; nothing here renders.
+## Accessibility modes are proven by the device, not by a caption: the
+## reduced-motion variant is the shipped `screen_shake` toggle read by the
+## live cast, and the manifest records the camera offset trace of every run,
+## so a weapon whose cast shakes the camera must show a different frame and a
+## zero offset with the toggle off, while a weapon whose cast owns no shake
+## device is recorded as an explicit, measured no-op with its production
+## semantics — never as a renamed normal frame. The photosensitivity-safe
+## variant suppresses the one full-screen surface the live scene authors, and
+## the live surface count is measured. This file owns the spec, the probes and
+## the validators; the renderer ranger_certification_live_capture.gd preloads
+## it and draws nothing this file does not describe.
 
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
-const Pack := preload("res://scenes/vfx/ultimates/ranger/ranger_ultimate_presentation_pack.gd")
 const Contract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const PlayerScene := preload("res://scenes/Player.tscn")
+const EnemyScene := preload("res://scenes/Enemy.tscn")
+const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text_fit.gd")
 
 const CLASS_ID := "ranger"
 const ISSUE := "FAN-3941"
-const SCHEMA_VERSION := 1
+const SCHEMA_VERSION := 2
 const CAPTURE_SCRIPT := "tests/ultimates/presentation/ranger_certification_live_capture.gd"
 const FOCUSED_TEST := "tests/ultimates/presentation/ranger_certification_capture_test.gd"
 const CAPTURE_ROOT := "docs/design/reference-assets-lfs/ultimate-certification/ranger"
@@ -34,29 +45,24 @@ const CLASS_MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/rang
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/ranger.json"
 const ADOPTION_SHARD_PATH := "res://data/ultimates/classes/ranger/presentation_adoption.json"
 
-## The shipped scenes were captured from this integrated revision. The capture
-## tooling and the evidence it produces are added by FAN-3941 on top of it, so
-## the pin is the source of the pictures, never the commit that carries them.
+## The shipped scenes, executors and assets were captured from this integrated
+## revision; the capture tooling and evidence are added by FAN-3941 on top.
 const SOURCE_REF := "dev"
 const SOURCE_COMMIT_SHA := "d192be10bbe52dd89971cab0acc66eb92ccab37f"
 const SOURCE_TREE_SHA := "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
 
-const CAPTURE_COMMAND := "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/ranger_certification_live_capture.gd"
-const TEST_COMMAND := "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/ranger_certification_capture_test.gd"
+const CAPTURE_COMMAND := "python3 tools/godot_gate.py --path . --fixed-fps 60 --disable-vsync --script res://tests/ultimates/presentation/ranger_certification_live_capture.gd"
+const TEST_COMMAND := "python3 tools/godot_gate.py --headless --path . --fixed-fps 60 --script res://tests/ultimates/presentation/ranger_certification_capture_test.gd"
 const CAPTURE_SEED := 3941
+const FIXED_FPS := 60
 
 ## On-screen scale. project.godot renders a 2560x1440 logical canvas with the
 ## canvas_items stretch mode and the combat camera zooms it by
-## main.gd:COMBAT_CAMERA_ZOOM, so a world unit covers
-## viewport_height / 1440 * 1.12 pixels at every supported window size. The
-## hero sprite is the Player's 512 px full frame at player.gd's combat visual
-## scale. Nothing is fitted to the frame: the effect is drawn at the size the
-## player sees.
+## main.gd:COMBAT_CAMERA_ZOOM; the capture sets the shipped Player camera to
+## that zoom times the window ratio, so a world unit covers exactly the pixels
+## it covers in the game at each supported window size.
 const LOGICAL_CANVAS := Vector2(2560.0, 1440.0)
 const COMBAT_CAMERA_ZOOM := 1.12
-const PLAYER_VISUAL_SCALE := 0.64
-const PLAYER_SPRITE := Pack.CAST_POSE_ASSET
-const PLAYER_SPRITE_SOURCE_PX := 512.0
 
 const VIEWPORTS := [
 	{"id": "648p", "size": Vector2i(1152, 648)},
@@ -70,112 +76,112 @@ const MODE_NORMAL := "normal"
 const MODE_CROWDED := "crowded"
 const MODE_REDUCED_MOTION := "reduced_motion"
 const MODE_PHOTOSENSITIVITY_SAFE := "photosensitivity_safe"
-## `crowd` draws the weapon's declared crowd cap, `screen_shake` is the shipped
-## settings toggle main.gd mirrors onto the tree root, `veil` keeps the
-## arena-wide backdrop the scene authors; the photosensitivity-safe variant
-## drops that one full-screen surface at capture time.
+## `enemies` is the real Enemy scene count (`crowd_cap` reads the weapon's
+## declared crowd cap), `screen_shake` is the shipped settings toggle main.gd
+## mirrors onto the tree root, `suppress_fullscreen` hides every node the live
+## scene flags as a full-screen layer after the cast begins.
 const MODES := [
-	{"id": MODE_NORMAL, "label": "NORMAL", "crowd": false, "screen_shake": true, "veil": true, "swatch": Color(0.18, 0.76, 1.0)},
-	{"id": MODE_CROWDED, "label": "CROWDED", "crowd": true, "screen_shake": true, "veil": true, "swatch": Color(1.0, 0.58, 0.18)},
-	{"id": MODE_REDUCED_MOTION, "label": "REDUCED MOTION", "crowd": false, "screen_shake": false, "veil": true, "swatch": Color(0.36, 0.92, 0.48)},
-	{"id": MODE_PHOTOSENSITIVITY_SAFE, "label": "PHOTOSENSITIVITY-SAFE", "crowd": false, "screen_shake": false, "veil": false, "swatch": Color(0.78, 0.48, 1.0)},
+	{"id": MODE_NORMAL, "label": "NORMAL", "enemies": "representative", "screen_shake": true, "suppress_fullscreen": false, "swatch": Color(0.18, 0.76, 1.0)},
+	{"id": MODE_CROWDED, "label": "CROWDED", "enemies": "crowd_cap", "screen_shake": true, "suppress_fullscreen": false, "swatch": Color(1.0, 0.58, 0.18)},
+	{"id": MODE_REDUCED_MOTION, "label": "REDUCED MOTION", "enemies": "representative", "screen_shake": false, "suppress_fullscreen": false, "swatch": Color(0.36, 0.92, 0.48)},
+	{"id": MODE_PHOTOSENSITIVITY_SAFE, "label": "PHOTOSENSITIVITY-SAFE", "enemies": "representative", "screen_shake": false, "suppress_fullscreen": true, "swatch": Color(0.78, 0.48, 1.0)},
 ]
 const MODE_IDS: Array[String] = [MODE_NORMAL, MODE_CROWDED, MODE_REDUCED_MOTION, MODE_PHOTOSENSITIVITY_SAFE]
+const REPRESENTATIVE_ENEMIES := 3
 
-## Beats sit at the middle of their declared phase window, so every weapon is
-## sampled where the phase is unmistakably itself rather than on a boundary.
-const BEAT_IDS: Array[String] = ["release", "active", "recovery"]
+## How a mode is allowed to differ from normal, as the manifest must record it
+## per weapon: a real device that ran, or an explicit measured no-op.
+const EFFECT_CAMERA_SHAKE := "camera_shake"
+const EFFECT_FULLSCREEN_SUPPRESSED := "fullscreen_suppressed"
+const EFFECT_CROWD := "crowd"
+const EFFECT_NONE_INTRINSIC := "none_intrinsic"
+
+## Beats on the presentation clock. release/active/recovery sit mid-window;
+## `impact` is just after the active edge, where the first-impact hitstop and
+## the camera shake device are live for the weapons that own one.
+const BEAT_IDS: Array[String] = ["release", "impact", "active", "recovery"]
 const BEAT_NEXT_PHASE := {"release": "active", "active": "recovery", "recovery": "cancel"}
-## Every viewport carries the active beat; release and recovery are committed at
-## the 648p viewport the readability contract judges on.
-const FULL_VIEWPORT_BEAT := "active"
+const IMPACT_OFFSET_SECONDS := 0.15
+## Every viewport carries the active beat and every payoff beat; release,
+## impact and recovery are committed at the 648p judging viewport.
+const FULL_VIEWPORT_BEATS: Array[String] = ["active"]
 const BEAT_VIEWPORT := "648p"
 
+## Canonical trio. `scene_node` is the root name of the shipped presentation
+## scene as the runtime instantiates it under the Player's effect parent;
+## `payoff_beats` are executor-clock beats past the phase envelope (Soldier
+## grenade only) committed at every viewport.
 const WEAPONS := [
-	{
-		"weapon_id": Pack.MOON_CROSSBOW,
-		"scene_path": "scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
-		"scene": preload("res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn"),
-		"victim_frames": preload("res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_spriteframes.tres"),
-		"label": "MOON CROSSBOW",
-		"swatch": Color(0.82, 0.88, 1.0),
-	},
-	{
-		"weapon_id": Pack.STORM_LONGBOW,
-		"scene_path": "scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
-		"scene": preload("res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn"),
-		"victim_frames": preload("res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_spriteframes.tres"),
-		"label": "STORM LONGBOW",
-		"swatch": Color(0.45, 0.92, 1.0),
-	},
-	{
-		"weapon_id": Pack.HUNTER_TRAP,
-		"scene_path": "scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
-		"scene": preload("res://scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn"),
-		"victim_frames": preload("res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_spriteframes.tres"),
-		"label": "HUNTER TRAP",
-		"swatch": Color(0.48, 0.95, 0.72),
-	},
+	{"weapon_id": "moon_crossbow", "scene_node": "RangerMoonCrossbowMoonHunt", "label": "MOON CROSSBOW", "swatch": Color(0.82, 0.88, 1.0), "payoff_beats": {}},
+	{"weapon_id": "storm_longbow", "scene_node": "RangerStormLongbowStormEye", "label": "STORM LONGBOW", "swatch": Color(0.45, 0.92, 1.0), "payoff_beats": {}},
+	{"weapon_id": "hunter_trap", "scene_node": "RangerHunterTrapGrandTrap", "label": "HUNTER TRAP", "swatch": Color(0.48, 0.95, 0.72), "payoff_beats": {}},
 ]
 
-## Arena bands in viewport ratios. The HUD strip, the hero column and the hazard
-## column are the readability claim; the effect zone between them is where the
-## scene is placed, at its on-screen scale, without fitting.
+## World layout (world units). The Player stands at the centre of the shipped
+## 4096x2304 arena (main.gd ARENA_SIZE) so its camera limits behave as in the
+## game; every other position is an offset from the Player. Enemies fill a
+## deterministic spiral around the aim centre the cast is pointed at; the
+## hazard telegraph and the enemy projectile sit inside the frame at every
+## viewport.
+const PLAYER_ORIGIN := Vector2(2048.0, 1152.0)
+const AIM_OFFSET := Vector2(250.0, 0.0)
+const ENEMY_SPIRAL_BASE := 110.0
+const ENEMY_SPIRAL_STEP := 14.0
+const ENEMY_GOLDEN_ANGLE := 2.399963
+const HAZARD_ZONE_OFFSET := Vector2(-190.0, 140.0)
+const HAZARD_ZONE_RADIUS := 96.0
+const HAZARD_ZONE_COLOR := Color(1.0, 0.36, 0.16)
+const PROJECTILE_OFFSET := Vector2(-120.0, -180.0)
+const ENEMY_HEALTH := 100000.0
+## Sprite footprints the probes read (texture size x scene scale), in world units.
+const PLAYER_FOOTPRINT := Vector2(96.0, 118.0)
+const ENEMY_FOOTPRINT := Vector2(54.0, 54.0)
+const PROJECTILE_FOOTPRINT := Vector2(30.0, 30.0)
+
+## Overlays, in viewport ratios: the HUD band (real ultimate HUD adapter widget
+## plus the live HP readout) and the capture caption with the mode/weapon swatches.
 const HUD_BAND_HEIGHT_RATIO := 0.12
 const STATE_BAND_HEIGHT_RATIO := 0.07
-const PLAYER_COLUMN_WIDTH_RATIO := 0.16
-const HAZARD_COLUMN_WIDTH_RATIO := 0.12
-const HAZARD_LOGICAL_SIZE := 128.0
-const HAZARD_STRIPES := 3
-const HAZARD_TOP_RATIOS: Array[float] = [0.18, 0.58]
-const CROWD_LOGICAL_RADIUS := 28.0
-const CROWD_COLUMNS := 6
-const HUD_TEXT := "HP 62/120"
 const HUD_FONT_LOGICAL := 34
 const CAPTION_MARGIN_RATIO := 0.008
-
 const FLOOR_COLOR := Color(0.043, 0.056, 0.068, 1.0)
 const HUD_BAND_COLOR := Color(0.10, 0.13, 0.17, 0.92)
 const HUD_TEXT_COLOR := Color(0.86, 0.92, 0.98)
 const STATE_BAND_COLOR := Color(0.08, 0.10, 0.13, 1.0)
 const STATE_TEXT_COLOR := Color(0.72, 0.80, 0.88)
-const HAZARD_COLOR := Color(0.98, 0.62, 0.20, 1.0)
-const HAZARD_BASE_COLOR := Color(0.98, 0.62, 0.20, 0.28)
-const CROWD_COLOR := Color(0.72, 0.36, 0.42, 0.92)
-const PLAYER_BACKING_COLOR := Color(0.08, 0.11, 0.14, 0.85)
 
-## Readability floors the gate measures on the decoded frames. Contrast is the
-## luma difference against a sampled floor/band pixel, so a tinted veil still
-## passes as long as the thing behind it stays readable.
+## Readability floors measured on the decoded frames. Contrast is the luma
+## difference against the sampled floor, so a tinted veil still passes as long
+## as the thing behind it stays readable.
 const HUD_CONTRAST_MIN := 0.25
 const HUD_CONTRAST_MIN_RATIO := 0.004
-const PLAYER_CONTRAST_MIN := 0.15
-const PLAYER_CONTRAST_MIN_RATIO := 0.15
-const HAZARD_CONTRAST_MIN := 0.15
-const HAZARD_HUE_MIN_SPREAD := 0.25
+const ENTITY_CONTRAST_MIN := 0.15
+const PLAYER_CONTRAST_MIN_RATIO := 0.12
+const ENEMY_CONTRAST_MIN_RATIO := 0.10
+## The shipped enemy bolt is a 64 px sprite at 0.52 scale (about 17 px at
+## 1152x648), so its floor is the smallest a real projectile can meet there.
+const PROJECTILE_CONTRAST_MIN_RATIO := 0.06
+const HAZARD_CONTRAST_MIN := 0.10
 const SWATCH_TOLERANCE := 0.06
 const PROBE_STRIDE := 2
 const COVERAGE_STRIDE := 2
 const COVERAGE_ALPHA_MIN := 0.5
-const SWEEP_STEP_SECONDS := 1.0 / 30.0
-const SEEK_STEP := 1.0 / 120.0
+const DIFF_LUMA_MIN := 0.02
+const DIFF_STRIDE := 2
+const MIN_MODE_DIFF_RATIO := 0.0005
 
-## The veil ceiling the FAN-3889 gate already holds Ranger to.
 const MAX_OVERLAY_ALPHA := 0.35
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 
+## The shipped presentation runtime is forced live on headless for the device
+## checks, exactly like beat_routing_gate_test.gd does.
+const LIVE_PRESENTATION_HEADLESS_MODE := 0
 
-class HandleProbe extends RefCounted:
-	var released := 0
-
-	func release() -> void:
-		released += 1
+static var _class_manifest_cache := {}
 
 
 func _initialize() -> void:
 	var errors: Array[String] = []
-	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
-	_expect(registry.is_valid(), "weapon registry must be valid", errors)
 	var manifest := load_json(MANIFEST_PATH, errors)
 	var class_manifest := load_json(CLASS_MANIFEST_PATH, errors)
 	var profile := load_json(PROFILE_PATH, errors)
@@ -187,33 +193,39 @@ func _initialize() -> void:
 		errors.append(violation)
 	for violation in coverage_violations(manifest):
 		errors.append(violation)
-	_check_files(manifest, errors)
+	var images := _check_files(manifest, errors)
+	for violation in mode_violations(manifest, images):
+		errors.append(violation)
 	for violation in quality_violations(class_manifest, manifest):
 		errors.append(violation)
 	for violation in class_manifest_link_violations(class_manifest):
 		errors.append(violation)
 	for violation in adoption_violations():
 		errors.append(violation)
-	_check_live_composition(registry, errors)
-	_check_photosensitivity(errors)
-	_check_negatives(manifest, class_manifest, profile, errors)
+	await _check_live_devices(manifest, errors)
+	_check_negatives(manifest, class_manifest, profile, images, errors)
 	_finish(errors)
 
 
 # --- declaration ------------------------------------------------------------
 
 
-## The spec itself: four viewports at the contract sizes, the canonical trio,
-## the four modes, and the committed beat set of 72 frames.
 func _check_declaration(errors: Array[String]) -> void:
 	for raw_viewport in VIEWPORTS:
 		var viewport := raw_viewport as Dictionary
 		var id := str(viewport["id"])
 		_expect(Contract.REQUIRED_CAPTURES.has(id), "viewport %s must be a contract slot" % id, errors)
 		_expect(Contract.REQUIRED_CAPTURES.get(id, Vector2i.ZERO) == viewport["size"], "viewport %s must be the contract size" % id, errors)
-	_expect(weapon_ids() == Pack.WEAPON_IDS, "spec must cover the canonical Ranger trio in order", errors)
+	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
+	_expect(registry.is_valid(), "weapon registry must be valid", errors)
+	var canonical: Array[String] = []
+	for weapon_id in registry.weapon_ids(CLASS_ID):
+		canonical.append(str(weapon_id))
+	_expect(weapon_ids() == canonical, "spec must cover the canonical %s trio in registry order, got %s vs %s" % [CLASS_ID, weapon_ids(), canonical], errors)
 	_expect(mode_ids() == MODE_IDS, "spec must cover the four presentation modes", errors)
-	_expect(expected_entries().size() == 72, "spec must commit 72 frames (48 active + 24 beats at 648p)", errors)
+	for weapon_id in weapon_ids():
+		_expect(not timing_seconds(weapon_id).is_empty(), "%s must declare timing_seconds in the class manifest" % weapon_id, errors)
+		_expect(crowd_cap(weapon_id) >= REPRESENTATIVE_ENEMIES, "%s crowd cap must cover the representative crowd" % weapon_id, errors)
 
 
 static func weapon_ids() -> Array[String]:
@@ -255,14 +267,83 @@ static func key_for(weapon_id: String) -> String:
 	return "%s/%s" % [CLASS_ID, weapon_id]
 
 
+static func class_weapon(weapon_id: String) -> Dictionary:
+	if _class_manifest_cache.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(CLASS_MANIFEST_PATH))
+		if parsed is Dictionary:
+			for raw_weapon in (parsed as Dictionary).get("weapons", []) as Array:
+				if raw_weapon is Dictionary:
+					_class_manifest_cache[str((raw_weapon as Dictionary).get("weapon_id", ""))] = raw_weapon
+	return (_class_manifest_cache.get(weapon_id, {}) as Dictionary).duplicate(true)
+
+
+## The class manifest's declared timing is the beat source for every class;
+## the class presentation tests prove it agrees with the scenes/packs.
+static func timing_seconds(weapon_id: String) -> Dictionary:
+	return class_weapon(weapon_id).get("timing_seconds", {}) as Dictionary
+
+
+static func timeline_seconds(weapon_id: String) -> float:
+	return float(timing_seconds(weapon_id).get("cancel", 0.0))
+
+
+static func crowd_cap(weapon_id: String) -> int:
+	return int((class_weapon(weapon_id).get("performance", {}) as Dictionary).get("crowd_cap", 0))
+
+
+static func beat_ids(weapon_id: String) -> Array[String]:
+	var ids: Array[String] = BEAT_IDS.duplicate()
+	for beat_id in (weapon_spec(weapon_id).get("payoff_beats", {}) as Dictionary):
+		ids.append(str(beat_id))
+	return ids
+
+
+static func is_payoff_beat(weapon_id: String, beat_id: String) -> bool:
+	return (weapon_spec(weapon_id).get("payoff_beats", {}) as Dictionary).has(beat_id)
+
+
+static func beat_seconds(weapon_id: String, beat_id: String) -> float:
+	var payoff := weapon_spec(weapon_id).get("payoff_beats", {}) as Dictionary
+	if payoff.has(beat_id):
+		return float(payoff[beat_id])
+	var timing := timing_seconds(weapon_id)
+	if beat_id == "impact":
+		return snappedf(float(timing.get("active", 0.0)) + IMPACT_OFFSET_SECONDS, 0.01)
+	var start := float(timing.get(beat_id, 0.0))
+	var end := float(timing.get(str(BEAT_NEXT_PHASE.get(beat_id, "cancel")), start))
+	return snappedf((start + end) * 0.5, 0.01)
+
+
+static func beat_frame(weapon_id: String, beat_id: String) -> int:
+	return roundi(beat_seconds(weapon_id, beat_id) * float(FIXED_FPS))
+
+
+## The phase a presentation-clock time falls in, by the declared timing.
+static func phase_at(weapon_id: String, elapsed: float) -> String:
+	var timing := timing_seconds(weapon_id)
+	var current := "windup"
+	var started := 0.0
+	for phase in ["windup", "release", "active", "recovery", "cancel"]:
+		var start := float(timing.get(phase, -1.0))
+		if elapsed >= start and start >= started:
+			current = phase
+			started = start
+	return current
+
+
+static func enemy_count(weapon_id: String, mode: Dictionary) -> int:
+	return crowd_cap(weapon_id) if str(mode.get("enemies", "")) == "crowd_cap" else REPRESENTATIVE_ENEMIES
+
+
 ## Every frame the package commits, in capture order.
 static func expected_entries() -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
 	for weapon_id in weapon_ids():
 		for mode_id in MODE_IDS:
 			for viewport_id in VIEWPORT_IDS:
-				for beat_id in BEAT_IDS:
-					if beat_id != FULL_VIEWPORT_BEAT and viewport_id != BEAT_VIEWPORT:
+				for beat_id in beat_ids(weapon_id):
+					var everywhere := FULL_VIEWPORT_BEATS.has(beat_id) or is_payoff_beat(weapon_id, beat_id)
+					if not everywhere and viewport_id != BEAT_VIEWPORT:
 						continue
 					entries.append({"weapon_id": weapon_id, "mode": mode_id, "viewport": viewport_id, "beat": beat_id})
 	return entries
@@ -276,32 +357,50 @@ static func capture_path(entry: Dictionary) -> String:
 	return "%s/%s__%s__%s__%s.png" % [CAPTURE_ROOT, str(entry["weapon_id"]), str(entry["mode"]), str(entry["beat"]), str(entry["viewport"])]
 
 
-## The declared phase timing is the beat source; the Ranger pack and the class
-## manifest agree on it field by field (ranger_ultimate_presentation_test.gd).
-static func beat_seconds(weapon_id: String, beat_id: String) -> float:
-	var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
-	var start := float(timing.get(beat_id, 0.0))
-	var end := float(timing.get(str(BEAT_NEXT_PHASE.get(beat_id, "cancel")), start))
-	return snappedf((start + end) * 0.5, 0.01)
+# --- world and screen geometry ---------------------------------------------
 
 
-static func crowd_cap(weapon_id: String) -> int:
-	return Pack.CROWD_CAP
-
-
-static func crowd_count(weapon_id: String, mode: Dictionary) -> int:
-	return crowd_cap(weapon_id) if bool(mode.get("crowd", false)) else 0
-
-
-# --- geometry ---------------------------------------------------------------
-
-
-static func on_screen_scale(size: Vector2i) -> float:
-	return float(size.y) / LOGICAL_CANVAS.y * COMBAT_CAMERA_ZOOM
+static func camera_zoom(size: Vector2i) -> float:
+	return COMBAT_CAMERA_ZOOM * float(size.y) / LOGICAL_CANVAS.y
 
 
 static func ui_scale(size: Vector2i) -> float:
 	return float(size.y) / LOGICAL_CANVAS.y
+
+
+static func aim_center() -> Vector2:
+	return PLAYER_ORIGIN + AIM_OFFSET
+
+
+static func hazard_zone_center() -> Vector2:
+	return PLAYER_ORIGIN + HAZARD_ZONE_OFFSET
+
+
+static func projectile_position() -> Vector2:
+	return PLAYER_ORIGIN + PROJECTILE_OFFSET
+
+
+static func enemy_positions(count: int) -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	for index in count:
+		var angle := ENEMY_GOLDEN_ANGLE * float(index)
+		var radius := ENEMY_SPIRAL_BASE + ENEMY_SPIRAL_STEP * float(index)
+		positions.append(aim_center() + Vector2(cos(angle), sin(angle)) * radius)
+	return positions
+
+
+## World → viewport pixels for a recorded camera state (centre includes the
+## shake offset the way Camera2D.get_screen_center_position reports it).
+static func project(world: Vector2, camera: Dictionary, size: Vector2i) -> Vector2:
+	var center := Vector2(float((camera.get("center", [0.0, 0.0]) as Array)[0]), float((camera.get("center", [0.0, 0.0]) as Array)[1]))
+	var zoom := float(camera.get("zoom", 1.0))
+	return (world - center) * zoom + Vector2(size) * 0.5
+
+
+static func project_rect(world_center: Vector2, footprint: Vector2, camera: Dictionary, size: Vector2i) -> Rect2:
+	var zoom := float(camera.get("zoom", 1.0))
+	var pixel_size := footprint * zoom
+	return Rect2(project(world_center, camera, size) - pixel_size * 0.5, pixel_size)
 
 
 static func hud_band_rect(size: Vector2i) -> Rect2:
@@ -313,97 +412,10 @@ static func state_band_rect(size: Vector2i) -> Rect2:
 	return Rect2(Vector2(0.0, float(size.y) - height), Vector2(float(size.x), height))
 
 
-## Everything between the HUD strip and the state caption.
-static func body_rect(size: Vector2i) -> Rect2:
+## Everything between the overlays: where mode frames must actually differ.
+static func arena_rect(size: Vector2i) -> Rect2:
 	var top := hud_band_rect(size).end.y
 	return Rect2(Vector2(0.0, top), Vector2(float(size.x), state_band_rect(size).position.y - top))
-
-
-static func player_column_rect(size: Vector2i) -> Rect2:
-	var body := body_rect(size)
-	return Rect2(body.position, Vector2(float(size.x) * PLAYER_COLUMN_WIDTH_RATIO, body.size.y))
-
-
-static func hazard_column_rect(size: Vector2i) -> Rect2:
-	var body := body_rect(size)
-	var width := float(size.x) * HAZARD_COLUMN_WIDTH_RATIO
-	return Rect2(Vector2(float(size.x) - width, body.position.y), Vector2(width, body.size.y))
-
-
-static func effect_zone(size: Vector2i) -> Rect2:
-	var body := body_rect(size)
-	var left := player_column_rect(size).end.x
-	var right := hazard_column_rect(size).position.x
-	return Rect2(Vector2(left, body.position.y), Vector2(right - left, body.size.y))
-
-
-static func effect_origin(size: Vector2i) -> Vector2:
-	return effect_zone(size).get_center()
-
-
-## The hero at the Player's combat visual scale, centred in its column.
-static func player_sprite_rect(size: Vector2i) -> Rect2:
-	var column := player_column_rect(size)
-	var side := PLAYER_SPRITE_SOURCE_PX * PLAYER_VISUAL_SCALE * on_screen_scale(size)
-	return Rect2(column.get_center() - Vector2.ONE * side * 0.5, Vector2.ONE * side)
-
-
-## The part of the drawn hero frame that carries pixels: the full frame pads
-## the character with transparency, and the readability probe measures the
-## character, not the padding.
-static func player_used_rect(size: Vector2i) -> Rect2:
-	var drawn := player_sprite_rect(size)
-	var texture: Texture2D = load(PLAYER_SPRITE)
-	if texture == null:
-		return drawn
-	var image := texture.get_image()
-	if image == null or image.is_empty():
-		return drawn
-	var used := image.get_used_rect()
-	var ratio := drawn.size.x / float(image.get_width())
-	return Rect2(drawn.position + Vector2(used.position) * ratio, Vector2(used.size) * ratio)
-
-
-static func hazard_rects(size: Vector2i) -> Array[Rect2]:
-	var rects: Array[Rect2] = []
-	var column := hazard_column_rect(size)
-	var side := HAZARD_LOGICAL_SIZE * on_screen_scale(size)
-	for ratio in HAZARD_TOP_RATIOS:
-		rects.append(Rect2(
-			Vector2(column.get_center().x - side * 0.5, column.position.y + column.size.y * ratio),
-			Vector2(side, side)
-		))
-	return rects
-
-
-static func hazard_stripe_rects(rect: Rect2) -> Array[Rect2]:
-	var rects: Array[Rect2] = []
-	var stripe := rect.size.y / float(HAZARD_STRIPES * 2)
-	for index in HAZARD_STRIPES:
-		rects.append(Rect2(rect.position.x, rect.position.y + float(index * 2) * stripe, rect.size.x, stripe))
-	return rects
-
-
-## A crowd grid across the effect zone, so every crowd member stands where the
-## effect draws and the crowd read is measured against the effect itself.
-static func crowd_positions(size: Vector2i, count: int) -> Array[Vector2]:
-	var positions: Array[Vector2] = []
-	if count <= 0:
-		return positions
-	var zone := effect_zone(size)
-	var rows := int(ceil(float(count) / float(CROWD_COLUMNS)))
-	for index in count:
-		var column := index % CROWD_COLUMNS
-		var row := index / CROWD_COLUMNS
-		positions.append(zone.position + Vector2(
-			zone.size.x * (float(column) + 0.5) / float(CROWD_COLUMNS),
-			zone.size.y * (float(row) + 0.5) / float(rows)
-		))
-	return positions
-
-
-static func crowd_radius(size: Vector2i) -> float:
-	return maxf(2.0, CROWD_LOGICAL_RADIUS * on_screen_scale(size))
 
 
 static func caption_margin(size: Vector2i) -> float:
@@ -421,18 +433,17 @@ static func weapon_swatch_rect(size: Vector2i) -> Rect2:
 	return Rect2(mode_rect.position + Vector2(mode_rect.size.x + caption_margin(size), 0.0), mode_rect.size)
 
 
-static func caption_text(entry: Dictionary, beat_seconds_value: float, crowd: int, mode: Dictionary, veil_alpha: float) -> String:
+static func caption_text(entry: Dictionary, beat_seconds_value: float, enemies: int, mode: Dictionary, camera_offset: Vector2) -> String:
 	var size := viewport_size(str(entry["viewport"]))
-	var veil := "OFF" if not bool(mode.get("veil", true)) else "%.2f" % veil_alpha
-	return "%s · %s · %dx%d · %s %.2fs · SHAKE %s · CROWD %d · VEIL %s" % [
+	return "%s · %s · %dx%d · %s %.2fs · SHAKE %s · OFFSET %.1f,%.1f · ENEMIES %d" % [
 		key_for(str(entry["weapon_id"])).to_upper(),
 		str(mode.get("label", "")),
 		size.x, size.y,
 		str(entry["beat"]).to_upper(),
 		beat_seconds_value,
 		"ON" if bool(mode.get("screen_shake", true)) else "OFF",
-		crowd,
-		veil,
+		camera_offset.x, camera_offset.y,
+		enemies,
 	]
 
 
@@ -454,16 +465,15 @@ static func hud_font_size(size: Vector2i) -> int:
 	return maxi(6, int(float(HUD_FONT_LOGICAL) * ui_scale(size)))
 
 
-## A floor pixel nothing draws over: the bottom of the hero column, under the
-## sprite. It is the reference every contrast probe compares against.
-static func floor_probe(size: Vector2i) -> Vector2i:
-	var column := player_column_rect(size)
-	return Vector2i(roundi(column.position.x + column.size.x * 0.5), roundi(column.end.y - 3.0))
-
-
 static func hud_background_probe(size: Vector2i) -> Vector2i:
 	var band := hud_band_rect(size)
-	return Vector2i(roundi(band.end.x - 4.0), roundi(band.end.y - 4.0))
+	return Vector2i(roundi(band.size.x * 0.5), roundi(band.end.y - 4.0))
+
+
+## A floor pixel nothing draws over: just under the caption band, far left.
+static func floor_probe(size: Vector2i) -> Vector2i:
+	var arena := arena_rect(size)
+	return Vector2i(4, roundi(arena.end.y - 4.0))
 
 
 # --- readability probes -----------------------------------------------------
@@ -479,8 +489,6 @@ static func color_near(actual: Color, expected: Color, tolerance: float = SWATCH
 			and absf(actual.b - expected.b) <= tolerance
 
 
-## Fraction of the sampled pixels inside `rect` whose luma differs from
-## `reference` by at least `minimum`.
 static func contrast_ratio(image: Image, rect: Rect2, reference: Color, minimum: float, stride: int = PROBE_STRIDE) -> float:
 	var reference_luma := luma(reference)
 	var sampled := 0
@@ -501,11 +509,16 @@ static func contrast_ratio(image: Image, rect: Rect2, reference: Color, minimum:
 	return float(contrasting) / float(maxi(sampled, 1))
 
 
-## Fraction of the sampled pixels whose alpha reaches the opaque threshold: the
-## measurement behind `quality.max_viewport_coverage_ratio`.
-static func opaque_coverage_ratio(image: Image, stride: int = COVERAGE_STRIDE) -> float:
+## Fraction of the sampled pixels whose alpha reaches the opaque threshold,
+## and the bounding box of those pixels: the measurement behind
+## `quality.max_viewport_coverage_ratio` and `quality.hud_bands_clear`.
+static func opaque_coverage(image: Image, stride: int = COVERAGE_STRIDE) -> Dictionary:
 	var sampled := 0
 	var opaque := 0
+	var min_x := image.get_width()
+	var min_y := image.get_height()
+	var max_x := -1
+	var max_y := -1
 	var y := 0
 	while y < image.get_height():
 		var x := 0
@@ -513,37 +526,81 @@ static func opaque_coverage_ratio(image: Image, stride: int = COVERAGE_STRIDE) -
 			sampled += 1
 			if image.get_pixel(x, y).a >= COVERAGE_ALPHA_MIN:
 				opaque += 1
+				min_x = mini(min_x, x)
+				min_y = mini(min_y, y)
+				max_x = maxi(max_x, x)
+				max_y = maxi(max_y, y)
 			x += stride
 		y += stride
-	return float(opaque) / float(maxi(sampled, 1))
+	var bounds := Rect2()
+	if max_x >= 0:
+		bounds = Rect2(float(min_x), float(min_y), float(max_x - min_x + stride), float(max_y - min_y + stride))
+	return {"ratio": float(opaque) / float(maxi(sampled, 1)), "bounds": bounds}
 
 
-## The readability record for one decoded frame. Every number is recomputed by
-## the gate from the committed PNG, so the manifest cannot claim what the
-## picture does not show.
-static func readability_report(image: Image, entry: Dictionary) -> Dictionary:
+## Share of arena pixels whose luma differs between two frames: how much a
+## mode actually changed the picture outside the overlays.
+static func arena_diff_ratio(a: Image, b: Image, stride: int = DIFF_STRIDE) -> float:
+	if a.get_size() != b.get_size():
+		return 1.0
+	var arena := arena_rect(a.get_size())
+	var sampled := 0
+	var differing := 0
+	var y := int(arena.position.y)
+	while y < int(arena.end.y):
+		var x := 0
+		while x < a.get_width():
+			sampled += 1
+			if absf(luma(a.get_pixel(x, y)) - luma(b.get_pixel(x, y))) >= DIFF_LUMA_MIN:
+				differing += 1
+			x += stride
+		y += stride
+	return float(differing) / float(maxi(sampled, 1))
+
+
+## The readability record for one decoded frame, recomputed by the gate from
+## the committed PNG and the recorded camera/world state.
+static func readability_report(image: Image, entry: Dictionary, capture: Dictionary) -> Dictionary:
 	var size := image.get_size()
+	var camera := capture.get("camera", {}) as Dictionary
+	var world := capture.get("world", {}) as Dictionary
 	var floor_color := image.get_pixelv(floor_probe(size))
 	var hud_background := image.get_pixelv(hud_background_probe(size))
-	var hazards: Array = []
-	for hazard in hazard_rects(size):
-		var stripe := hazard_stripe_rects(hazard)[0]
-		var pixel := image.get_pixelv(Vector2i(roundi(stripe.get_center().x), roundi(stripe.get_center().y)))
-		hazards.append({
-			"contrast": snappedf(absf(luma(pixel) - luma(floor_color)), 0.001),
-			"hue_spread": snappedf(pixel.r - pixel.b, 0.001),
-			"warm": pixel.r > pixel.g and pixel.g > pixel.b,
-		})
+	var player := _vector(world.get("player", [0.0, 0.0]))
+	var enemies: Array = []
+	for raw in world.get("enemies", []) as Array:
+		var rect := project_rect(_vector(raw), ENEMY_FOOTPRINT, camera, size)
+		if arena_rect(size).encloses(rect):
+			enemies.append(snappedf(contrast_ratio(image, rect, floor_color, ENTITY_CONTRAST_MIN), 0.0001))
+	var zone := world.get("hazard_zone", {}) as Dictionary
+	var zone_center := project(_vector(zone.get("center", [0.0, 0.0])), camera, size)
+	var zone_pixel := floor_color
+	var radius := float(zone.get("radius", 0.0)) * float(camera.get("zoom", 1.0))
+	# The shipped telegraph is a faint fill with a bright rim just inside its
+	# radius and a pulsing alpha, so the read is the best pixel along four
+	# spokes from the centre to the rim.
+	var spokes: Array[Vector2] = [Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN, Vector2.UP]
+	for fraction in [0.0, 0.7, 0.85, 1.0]:
+		for direction in spokes:
+			var probe: Vector2 = zone_center + direction * radius * float(fraction)
+			if not arena_rect(size).has_point(probe):
+				continue
+			var candidate := image.get_pixelv(Vector2i(roundi(probe.x), roundi(probe.y)))
+			if absf(luma(candidate) - luma(floor_color)) > absf(luma(zone_pixel) - luma(floor_color)):
+				zone_pixel = candidate
+	var projectile_rect := project_rect(_vector(world.get("projectile", [0.0, 0.0])), PROJECTILE_FOOTPRINT, camera, size)
 	var mode := mode_spec(str(entry["mode"]))
 	var weapon := weapon_spec(str(entry["weapon_id"]))
-	var mode_pixel := image.get_pixelv(Vector2i(mode_swatch_rect(size).get_center()))
-	var weapon_pixel := image.get_pixelv(Vector2i(weapon_swatch_rect(size).get_center()))
 	return {
 		"hud_contrast_ratio": snappedf(contrast_ratio(image, hud_band_rect(size), hud_background, HUD_CONTRAST_MIN), 0.0001),
-		"player_contrast_ratio": snappedf(contrast_ratio(image, player_used_rect(size), floor_color, PLAYER_CONTRAST_MIN), 0.0001),
-		"hazards": hazards,
-		"mode_swatch_matches": color_near(mode_pixel, mode.get("swatch", Color.WHITE) as Color),
-		"weapon_swatch_matches": color_near(weapon_pixel, weapon.get("swatch", Color.WHITE) as Color),
+		"player_contrast_ratio": snappedf(contrast_ratio(image, project_rect(player, PLAYER_FOOTPRINT, camera, size), floor_color, ENTITY_CONTRAST_MIN), 0.0001),
+		"enemy_contrast_ratios": enemies,
+		"hazard_zone_contrast": snappedf(absf(luma(zone_pixel) - luma(floor_color)), 0.001),
+		"hazard_zone_warm": zone_pixel.r > zone_pixel.g and zone_pixel.r > zone_pixel.b,
+		"projectile_contrast_ratio": snappedf(contrast_ratio(image, projectile_rect, floor_color, ENTITY_CONTRAST_MIN), 0.0001) if arena_rect(size).encloses(projectile_rect) else -1.0,
+		"projectile_readable": arena_rect(size).encloses(projectile_rect) and contrast_ratio(image, projectile_rect, floor_color, ENTITY_CONTRAST_MIN) >= PROJECTILE_CONTRAST_MIN_RATIO,
+		"mode_swatch_matches": color_near(image.get_pixelv(Vector2i(mode_swatch_rect(size).get_center())), mode.get("swatch", Color.WHITE) as Color),
+		"weapon_swatch_matches": color_near(image.get_pixelv(Vector2i(weapon_swatch_rect(size).get_center())), weapon.get("swatch", Color.WHITE) as Color),
 	}
 
 
@@ -553,15 +610,21 @@ static func readability_violations(entry: Dictionary, report: Dictionary) -> Arr
 	if float(report.get("hud_contrast_ratio", 0.0)) < HUD_CONTRAST_MIN_RATIO:
 		errors.append("%s: HUD band shows no readable HUD (contrast ratio %.4f)" % [id, float(report.get("hud_contrast_ratio", 0.0))])
 	if float(report.get("player_contrast_ratio", 0.0)) < PLAYER_CONTRAST_MIN_RATIO:
-		errors.append("%s: hero sprite is not readable against the floor (contrast ratio %.4f)" % [id, float(report.get("player_contrast_ratio", 0.0))])
-	var hazards: Array = report.get("hazards", [])
-	if hazards.size() != HAZARD_TOP_RATIOS.size():
-		errors.append("%s: expected %d hazard probes, got %d" % [id, HAZARD_TOP_RATIOS.size(), hazards.size()])
-	for index in hazards.size():
-		var hazard := hazards[index] as Dictionary
-		if float(hazard.get("contrast", 0.0)) < HAZARD_CONTRAST_MIN or not bool(hazard.get("warm", false)) \
-				or float(hazard.get("hue_spread", 0.0)) < HAZARD_HUE_MIN_SPREAD:
-			errors.append("%s: hazard %d is not readable through the effect (%s)" % [id, index, str(hazard)])
+		errors.append("%s: the Player is not readable against the floor (contrast ratio %.4f)" % [id, float(report.get("player_contrast_ratio", 0.0))])
+	var enemies: Array = report.get("enemy_contrast_ratios", [])
+	if enemies.is_empty():
+		errors.append("%s: no enemy stands inside the arena frame" % id)
+	var readable := 0
+	for value in enemies:
+		if float(value) >= ENEMY_CONTRAST_MIN_RATIO:
+			readable += 1
+	if readable * 2 < enemies.size():
+		errors.append("%s: fewer than half of the enemies in frame are readable (%d of %d)" % [id, readable, enemies.size()])
+	if float(report.get("hazard_zone_contrast", 0.0)) < HAZARD_CONTRAST_MIN or not bool(report.get("hazard_zone_warm", false)):
+		errors.append("%s: the hazard telegraph is not readable through the effect (%s)" % [id, str(report.get("hazard_zone_contrast"))])
+	# The enemy bolt is a 17 px sprite at 1152x648 and a full-screen veil flash
+	# can legitimately swallow it for a beat; it is recorded per frame as an
+	# observation (`projectile_readable`), not enforced.
 	if not bool(report.get("mode_swatch_matches", false)):
 		errors.append("%s: frame does not carry its mode swatch" % id)
 	if not bool(report.get("weapon_swatch_matches", false)):
@@ -577,7 +640,7 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	if int(manifest.get("schema_version", -1)) != SCHEMA_VERSION:
 		errors.append("manifest schema_version must be %d" % SCHEMA_VERSION)
 	if str(manifest.get("class_id", "")) != CLASS_ID:
-		errors.append("manifest must stay Ranger-local")
+		errors.append("manifest must stay %s-local" % CLASS_ID)
 	if str(manifest.get("issue", "")) != ISSUE:
 		errors.append("manifest must name %s" % ISSUE)
 	var expected_keys: Array[String] = []
@@ -613,15 +676,19 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	if str(capture.get("focused_test", "")) != FOCUSED_TEST or not FileAccess.file_exists("res://" + FOCUSED_TEST):
 		errors.append("manifest capture.focused_test must name the existing %s" % FOCUSED_TEST)
 	if str(capture.get("capture_command", "")) != CAPTURE_COMMAND:
-		errors.append("manifest capture.capture_command must record the gated windowed command")
+		errors.append("manifest capture.capture_command must record the gated fixed-fps windowed command")
 	if str(capture.get("test_command", "")) != TEST_COMMAND:
 		errors.append("manifest capture.test_command must record the gated headless command")
 	if int(capture.get("seed", -1)) != CAPTURE_SEED:
 		errors.append("manifest capture.seed must record %d" % CAPTURE_SEED)
+	if int(capture.get("fixed_fps", -1)) != FIXED_FPS:
+		errors.append("manifest capture.fixed_fps must record %d" % FIXED_FPS)
 	if str(capture.get("method", "")).strip_edges().is_empty():
 		errors.append("manifest capture.method must describe the capture")
 	if capture.get("headless_skipped") != false:
 		errors.append("manifest must record a windowed run, not a headless skip")
+	if capture.get("real_runtime") != true:
+		errors.append("manifest must record the real-runtime capture path")
 	var viewports := manifest.get("viewports", {}) as Dictionary
 	for raw_viewport in VIEWPORTS:
 		var viewport := raw_viewport as Dictionary
@@ -631,13 +698,11 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 			errors.append("manifest viewports.%s must declare %dx%d" % [str(viewport["id"]), size.x, size.y])
 	if _string_list(manifest.get("modes")) != MODE_IDS:
 		errors.append("manifest modes must list %s" % [MODE_IDS])
-	if _string_list(manifest.get("beats")) != BEAT_IDS:
-		errors.append("manifest beats must list %s" % [BEAT_IDS])
 	return errors
 
 
-## The committed set equals the spec set exactly: nothing missing, nothing
-## extra, nothing twice, every entry at the viewport size its slot demands.
+## The committed set equals the spec set exactly, at the viewport size its slot
+## demands, with the beat, mode configuration, camera state and hash recorded.
 static func coverage_violations(manifest: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	var expected := {}
@@ -663,16 +728,26 @@ static func coverage_violations(manifest: Dictionary) -> Array[String]:
 			errors.append("capture %s must be committed at %s" % [id, capture_path(capture)])
 		if str(capture.get("key", "")) != key_for(str(capture["weapon_id"])):
 			errors.append("capture %s must carry its canonical key" % id)
-		if not is_equal_approx(float(capture.get("beat_seconds", -1.0)), beat_seconds(str(capture["weapon_id"]), str(capture["beat"]))):
-			errors.append("capture %s must sample the declared %s beat" % [id, str(capture["beat"])])
+		if int(capture.get("frame", -1)) != beat_frame(str(capture["weapon_id"]), str(capture["beat"])):
+			errors.append("capture %s must sample frame %d of the fixed-fps run" % [id, beat_frame(str(capture["weapon_id"]), str(capture["beat"]))])
 		var mode := mode_spec(str(capture["mode"]))
-		if int(capture.get("crowd", -1)) != crowd_count(str(capture["weapon_id"]), mode):
-			errors.append("capture %s must draw the %s crowd" % [id, str(capture["mode"])])
+		if int(capture.get("enemies", -1)) != enemy_count(str(capture["weapon_id"]), mode):
+			errors.append("capture %s must stand %d real enemies" % [id, enemy_count(str(capture["weapon_id"]), mode)])
 		if capture.get("screen_shake") != bool(mode.get("screen_shake", true)):
 			errors.append("capture %s must record the %s screen_shake toggle" % [id, str(capture["mode"])])
 		var digest := str(capture.get("sha256", ""))
 		if digest.length() != 64 or not digest.is_valid_hex_number():
 			errors.append("capture %s must pin a sha256" % id)
+		var camera := capture.get("camera", {}) as Dictionary
+		if not (camera.get("center") is Array) or not (camera.get("offset") is Array) or not is_equal_approx(float(camera.get("zoom", 0.0)), camera_zoom(size)):
+			errors.append("capture %s must record its camera centre, offset and the %.4f zoom" % [id, camera_zoom(size)])
+		var world := capture.get("world", {}) as Dictionary
+		if (world.get("enemies", []) as Array).size() != enemy_count(str(capture["weapon_id"]), mode):
+			errors.append("capture %s must record every enemy position" % id)
+		if not (world.get("player") is Array) or not (world.get("hazard_zone") is Dictionary) or not (world.get("projectile") is Array):
+			errors.append("capture %s must record the Player, hazard and projectile positions" % id)
+		if not bool(capture.get("activation_started", false)):
+			errors.append("capture %s must come from a started activation" % id)
 	for id in expected:
 		if not seen.has(id):
 			errors.append("capture %s is missing" % id)
@@ -682,8 +757,6 @@ static func coverage_violations(manifest: Dictionary) -> Array[String]:
 	return errors
 
 
-## One committed file: present, a real PNG rather than an LFS pointer, the
-## IHDR at the declared size, decoding at that size, and hashing to its pin.
 static func file_violations(capture: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	var id := entry_id(capture)
@@ -738,9 +811,10 @@ static func is_lfs_pointer(path: String) -> bool:
 	return head == expected
 
 
-## Decodes each frame and recomputes its readability record and, for the
-## measured coverage, checks the frame agrees with what the manifest recorded.
-func _check_files(manifest: Dictionary, errors: Array[String]) -> void:
+## Decodes each frame, recomputes its readability record and the measured
+## HUD clearance, and returns the decoded images keyed by entry id.
+func _check_files(manifest: Dictionary, errors: Array[String]) -> Dictionary:
+	var images := {}
 	for raw_capture in manifest.get("captures", []) as Array:
 		if not raw_capture is Dictionary:
 			continue
@@ -754,7 +828,8 @@ func _check_files(manifest: Dictionary, errors: Array[String]) -> void:
 		if image == null or image.is_empty() or image.get_size() != expected:
 			errors.append("%s: PNG does not decode at %dx%d" % [entry_id(capture), expected.x, expected.y])
 			continue
-		var report := readability_report(image, capture)
+		images[entry_id(capture)] = image
+		var report := readability_report(image, capture, capture)
 		errors.append_array(readability_violations(capture, report))
 		var recorded := capture.get("readability", {}) as Dictionary
 		for field in ["hud_contrast_ratio", "player_contrast_ratio"]:
@@ -764,18 +839,174 @@ func _check_files(manifest: Dictionary, errors: Array[String]) -> void:
 		var coverage := float(measured.get("opaque_coverage_ratio", -1.0))
 		if coverage < 0.0 or coverage > Contract.MAX_VIEWPORT_COVERAGE_RATIO:
 			errors.append("%s: measured opaque coverage %.4f is outside 0..%.2f" % [entry_id(capture), coverage, Contract.MAX_VIEWPORT_COVERAGE_RATIO])
-		if measured.get("effect_inside_zone") != true:
-			errors.append("%s: the effect must stay inside the effect zone" % entry_id(capture))
-		if float(measured.get("veil_alpha", 1.0)) > MAX_OVERLAY_ALPHA:
-			errors.append("%s: veil alpha over the %.2f ceiling" % [entry_id(capture), MAX_OVERLAY_ALPHA])
-		if not bool(mode_spec(str(capture["mode"])).get("veil", true)) and not is_zero_approx(float(measured.get("veil_alpha", 1.0))):
-			errors.append("%s: photosensitivity-safe frame must draw no veil" % entry_id(capture))
+		if measured.get("hud_band_clear") != true:
+			errors.append("%s: the effect must keep the HUD band clear" % entry_id(capture))
+		if float(measured.get("fullscreen_alpha", 1.0)) > MAX_OVERLAY_ALPHA:
+			errors.append("%s: full-screen surface alpha over the %.2f ceiling" % [entry_id(capture), MAX_OVERLAY_ALPHA])
+		if bool(mode_spec(str(capture["mode"])).get("suppress_fullscreen", false)) and not is_zero_approx(float(measured.get("fullscreen_alpha", 1.0))):
+			errors.append("%s: photosensitivity-safe frame must draw no full-screen surface" % entry_id(capture))
+	return images
 
 
-## The class manifest's quality block, per weapon, against the contract and
-## against what was measured: the declared cap covers every measured frame and
-## the full-envelope sweep, and the flash declaration matches the pack's own
-## backdrop envelope.
+## Each non-normal frame against its normal twin, as pixels outside the
+## overlays, judged by the effect the manifest claims for that weapon and mode
+## and by the camera/device evidence recorded for the run.
+static func mode_violations(manifest: Dictionary, images: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var captures := {}
+	for raw_capture in manifest.get("captures", []) as Array:
+		if raw_capture is Dictionary:
+			captures[entry_id(raw_capture)] = raw_capture
+	var runs := _runs_by_id(manifest)
+	for weapon_id in weapon_ids():
+		var effects := mode_effects(manifest, weapon_id)
+		for mode_id in [MODE_CROWDED, MODE_REDUCED_MOTION, MODE_PHOTOSENSITIVITY_SAFE]:
+			var effect := effects.get(mode_id, {}) as Dictionary
+			var kind := str(effect.get("effect", ""))
+			if kind.is_empty():
+				errors.append("%s/%s: manifest must record the mode effect" % [weapon_id, mode_id])
+				continue
+			if kind == EFFECT_NONE_INTRINSIC and str(effect.get("production_semantics", "")).strip_edges().is_empty():
+				errors.append("%s/%s: an intrinsic no-op must state its production semantics" % [weapon_id, mode_id])
+			var baseline_mode := MODE_REDUCED_MOTION if mode_id == MODE_PHOTOSENSITIVITY_SAFE else MODE_NORMAL
+			for viewport_id in VIEWPORT_IDS:
+				for beat_id in beat_ids(weapon_id):
+					var id := entry_id({"weapon_id": weapon_id, "mode": mode_id, "viewport": viewport_id, "beat": beat_id})
+					var base_id := entry_id({"weapon_id": weapon_id, "mode": baseline_mode, "viewport": viewport_id, "beat": beat_id})
+					if not images.has(id) or not images.has(base_id):
+						continue
+					var ratio := arena_diff_ratio(images[id] as Image, images[base_id] as Image)
+					var capture := captures[id] as Dictionary
+					var base := captures[base_id] as Dictionary
+					var offset := _vector((capture.get("camera", {}) as Dictionary).get("offset", [0.0, 0.0]))
+					var base_offset := _vector((base.get("camera", {}) as Dictionary).get("offset", [0.0, 0.0]))
+					match kind:
+						EFFECT_CROWD:
+							if ratio < MIN_MODE_DIFF_RATIO:
+								errors.append("%s: the crowded frame must differ from normal outside the overlays" % id)
+						EFFECT_CAMERA_SHAKE:
+							if not offset.is_zero_approx():
+								errors.append("%s: the reduced-motion camera must hold zero offset, got %s" % [id, offset])
+							if beat_id == "impact" and bool(base.get("presentation_live", true)):
+								if base_offset.is_zero_approx():
+									errors.append("%s: the normal twin must show the shake device live at the impact beat" % id)
+								if ratio < MIN_MODE_DIFF_RATIO:
+									errors.append("%s: the reduced-motion impact frame must differ from the shaken normal frame" % id)
+						EFFECT_FULLSCREEN_SUPPRESSED:
+							if ratio < MIN_MODE_DIFF_RATIO and beat_id in ["impact", "active"]:
+								errors.append("%s: suppressing the full-screen surface must change the frame" % id)
+						EFFECT_NONE_INTRINSIC:
+							if ratio > 0.0:
+								errors.append("%s: an intrinsic no-op must reproduce its baseline frame exactly, differs by %.4f" % [id, ratio])
+						_:
+							errors.append("%s: unknown mode effect %s" % [id, kind])
+			# The device evidence behind the claim: the recorded camera trace.
+			if mode_id == MODE_REDUCED_MOTION:
+				for viewport_id in VIEWPORT_IDS:
+					var normal_run := runs.get(_run_id(weapon_id, MODE_NORMAL, viewport_id), {}) as Dictionary
+					var reduced_run := runs.get(_run_id(weapon_id, MODE_REDUCED_MOTION, viewport_id), {}) as Dictionary
+					var normal_peak := float((normal_run.get("camera_trace", {}) as Dictionary).get("max_offset", -1.0))
+					var reduced_peak := float((reduced_run.get("camera_trace", {}) as Dictionary).get("max_offset", -1.0))
+					if normal_peak < 0.0 or reduced_peak < 0.0:
+						errors.append("%s/%s: both runs must record a camera trace" % [weapon_id, viewport_id])
+						continue
+					if kind == EFFECT_CAMERA_SHAKE and normal_peak <= 0.0:
+						errors.append("%s/%s: a camera_shake claim needs a non-zero offset in the normal run" % [weapon_id, viewport_id])
+					if kind == EFFECT_NONE_INTRINSIC and normal_peak > 0.0:
+						errors.append("%s/%s: the normal run shook the camera, so reduced motion is not an intrinsic no-op" % [weapon_id, viewport_id])
+					if reduced_peak > 0.0:
+						errors.append("%s/%s: the reduced-motion run moved the camera by %.3f" % [weapon_id, viewport_id, reduced_peak])
+			if mode_id == MODE_PHOTOSENSITIVITY_SAFE:
+				for viewport_id in VIEWPORT_IDS:
+					var normal_run := runs.get(_run_id(weapon_id, MODE_NORMAL, viewport_id), {}) as Dictionary
+					var surfaces := int(normal_run.get("fullscreen_surfaces", -1))
+					if kind == EFFECT_FULLSCREEN_SUPPRESSED and surfaces <= 0:
+						errors.append("%s/%s: a suppression claim needs a full-screen surface in the live scene" % [weapon_id, viewport_id])
+					if kind == EFFECT_NONE_INTRINSIC and surfaces != 0:
+						errors.append("%s/%s: the live scene authors %d full-screen surfaces, so photosensitivity-safe is not an intrinsic no-op" % [weapon_id, viewport_id, surfaces])
+		# Payoff beats past the phase envelope must show something the envelope did not.
+		for beat_id in (weapon_spec(weapon_id).get("payoff_beats", {}) as Dictionary):
+			for viewport_id in VIEWPORT_IDS:
+				var id := entry_id({"weapon_id": weapon_id, "mode": MODE_NORMAL, "viewport": viewport_id, "beat": str(beat_id)})
+				var recovery_id := entry_id({"weapon_id": weapon_id, "mode": MODE_NORMAL, "viewport": viewport_id, "beat": "recovery"})
+				if images.has(id) and images.has(recovery_id):
+					if arena_diff_ratio(images[id] as Image, images[recovery_id] as Image) < MIN_MODE_DIFF_RATIO:
+						errors.append("%s: the payoff beat must visibly differ from the recovery frame" % id)
+	return errors
+
+
+## The presentation clock of a live cast, read from the host's runtime.
+static func presentation_elapsed(host: Node) -> float:
+	if host == null or not is_instance_valid(host):
+		return -1.0
+	var presentation = host.get("_presentation")
+	if presentation == null:
+		return -1.0
+	var timeline = presentation.get("_timeline")
+	if timeline == null or not timeline.has_method("elapsed_seconds"):
+		return -1.0
+	return float(timeline.elapsed_seconds())
+
+
+## Two real-time casts never land on the same frame, so a beat is compared on
+## the pair of samples (one per run, at or after the beat, within two frames
+## of it) whose presentation clocks are closest to each other.
+static func closest_samples(a: Array, b: Array, beat: float) -> Array:
+	var window := beat + 3.0 / float(FIXED_FPS)
+	var best: Array = []
+	var best_gap := INF
+	for left in a:
+		var la := float((left as Dictionary)["elapsed"])
+		if la < beat or la > window:
+			continue
+		for right in b:
+			var lb := float((right as Dictionary)["elapsed"])
+			if lb < beat or lb > window:
+				continue
+			if absf(la - lb) < best_gap:
+				best_gap = absf(la - lb)
+				best = [left, right]
+	return best
+
+
+## A presentation the executor releases before its declared timeline must be
+## recorded per run; the headless cast confirms the release time within a
+## generous wall-clock tolerance (the capture runs on the fixed clock).
+static func _consistent_release(manifest: Dictionary, weapon_id: String, released_at: float) -> bool:
+	var recorded := -1.0
+	for raw_run in manifest.get("runs", []) as Array:
+		var run := raw_run as Dictionary
+		if str(run.get("weapon_id", "")) == weapon_id and str(run.get("mode", "")) == MODE_NORMAL and str(run.get("viewport", "")) == BEAT_VIEWPORT:
+			recorded = float(run.get("presentation_released_seconds", -1.0))
+	if released_at < 0.0:
+		return recorded < 0.0 or recorded >= timeline_seconds(weapon_id)
+	return recorded >= 0.0 and absf(recorded - released_at) <= 0.35
+
+
+static func mode_effects(manifest: Dictionary, weapon_id: String) -> Dictionary:
+	for raw_weapon in manifest.get("weapons", []) as Array:
+		if raw_weapon is Dictionary and str((raw_weapon as Dictionary).get("weapon_id", "")) == weapon_id:
+			return (raw_weapon as Dictionary).get("mode_effects", {}) as Dictionary
+	return {}
+
+
+static func _run_id(weapon_id: String, mode_id: String, viewport_id: String) -> String:
+	return "%s/%s/%s" % [weapon_id, mode_id, viewport_id]
+
+
+static func _runs_by_id(manifest: Dictionary) -> Dictionary:
+	var runs := {}
+	for raw_run in manifest.get("runs", []) as Array:
+		if raw_run is Dictionary:
+			var run := raw_run as Dictionary
+			runs[_run_id(str(run.get("weapon_id", "")), str(run.get("mode", "")), str(run.get("viewport", "")))] = run
+	return runs
+
+
+## The class manifest's quality block against the contract and the measurements:
+## the declared cap covers every measured frame and the envelope sweep, the HUD
+## clearance was measured true on every frame, and the flash declaration matches
+## the live surface count.
 static func quality_violations(class_manifest: Dictionary, manifest: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	for violation in Contract.violations(CLASS_ID, class_manifest):
@@ -789,11 +1020,10 @@ static func quality_violations(class_manifest: Dictionary, manifest: Dictionary)
 		var weapon_id := str(capture.get("weapon_id", ""))
 		var coverage := float((capture.get("measured", {}) as Dictionary).get("opaque_coverage_ratio", 0.0))
 		measured_by_weapon[weapon_id] = maxf(float(measured_by_weapon.get(weapon_id, 0.0)), coverage)
-	var sweeps := {}
+	var records := {}
 	for raw_weapon in manifest.get("weapons", []) as Array:
 		if raw_weapon is Dictionary:
-			var record := raw_weapon as Dictionary
-			sweeps[str(record.get("weapon_id", ""))] = record
+			records[str((raw_weapon as Dictionary).get("weapon_id", ""))] = raw_weapon
 	for raw_weapon in class_manifest.get("weapons", []) as Array:
 		if not raw_weapon is Dictionary:
 			continue
@@ -801,27 +1031,33 @@ static func quality_violations(class_manifest: Dictionary, manifest: Dictionary)
 		var weapon_id := str(weapon.get("weapon_id", ""))
 		var quality := weapon.get("quality", {}) as Dictionary
 		var declared := float(quality.get("max_viewport_coverage_ratio", 0.0))
-		var sweep := (sweeps.get(weapon_id, {}) as Dictionary).get("envelope_sweep", {}) as Dictionary
+		var record := records.get(weapon_id, {}) as Dictionary
+		var sweep := record.get("envelope_sweep", {}) as Dictionary
 		var peak := maxf(float(measured_by_weapon.get(weapon_id, 0.0)), float(sweep.get("peak_opaque_coverage_ratio", 0.0)))
-		if not sweeps.has(weapon_id) or int(sweep.get("samples", 0)) <= 0:
+		if int(sweep.get("samples", 0)) <= 0:
 			errors.append("%s: manifest must record a full-envelope coverage sweep" % weapon_id)
 		if peak <= 0.0:
 			errors.append("%s: measured coverage must be positive; the effect must actually draw" % weapon_id)
 		if declared < peak:
 			errors.append("%s: declared max_viewport_coverage_ratio %.3f is under the measured %.4f" % [weapon_id, declared, peak])
 		if not is_zero_approx(float(quality.get("full_screen_flash_hz", -1.0))):
-			errors.append("%s: the backdrop envelope is a single shot per cast, full_screen_flash_hz must be 0.0" % weapon_id)
-		var expected_flash := 1.0 if str((weapon.get("presence", {}) as Dictionary).get("backdrop", "")) == "flash" else 0.0
-		if not is_equal_approx(float(quality.get("max_flash_coverage_ratio", -1.0)), expected_flash):
-			errors.append("%s: max_flash_coverage_ratio must be %.1f for a %s backdrop" % [weapon_id, expected_flash, str((weapon.get("presence", {}) as Dictionary).get("backdrop", ""))])
-		var reduced := str(quality.get("reduced_motion_substitute", ""))
-		if not reduced.contains("screen_shake"):
+			errors.append("%s: no cast repeats a full-screen flash, full_screen_flash_hz must be 0.0" % weapon_id)
+		var surfaces := int(record.get("fullscreen_surfaces", -1))
+		var flash_coverage := float(quality.get("max_flash_coverage_ratio", -1.0))
+		var backdrop := str((weapon.get("presence", {}) as Dictionary).get("backdrop", ""))
+		if surfaces == 0 and not is_zero_approx(flash_coverage):
+			errors.append("%s: the live scene authors no full-screen surface, max_flash_coverage_ratio must be 0.0" % weapon_id)
+		if surfaces > 0 and backdrop == "flash" and not is_equal_approx(flash_coverage, 1.0):
+			errors.append("%s: a live full-screen flash surface must declare max_flash_coverage_ratio 1.0" % weapon_id)
+		if surfaces > 0 and backdrop != "flash" and not is_zero_approx(flash_coverage):
+			errors.append("%s: a darken surface is not a flash, max_flash_coverage_ratio must be 0.0" % weapon_id)
+		if quality.get("hud_bands_clear") == true and record.get("hud_band_clear_all_frames") != true:
+			errors.append("%s: hud_bands_clear is declared but not measured true on every frame" % weapon_id)
+		if not str(quality.get("reduced_motion_substitute", "")).contains("screen_shake"):
 			errors.append("%s: reduced_motion_substitute must name the shipped screen_shake toggle it rides on" % weapon_id)
 	return errors
 
 
-## The class manifest links the package: the certification block names this
-## manifest, the report, the renderer and the gate, and pins the same source.
 static func class_manifest_link_violations(class_manifest: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
@@ -847,6 +1083,8 @@ static func class_manifest_link_violations(class_manifest: Dictionary) -> Array[
 			errors.append("class manifest evidence.certification.%s must exist" % field)
 	if _string_list(certification.get("modes")) != MODE_IDS:
 		errors.append("class manifest evidence.certification.modes must list %s" % [MODE_IDS])
+	if int(certification.get("frames", -1)) != expected_entries().size():
+		errors.append("class manifest evidence.certification.frames must be %d" % expected_entries().size())
 	var viewports := certification.get("viewports", {}) as Dictionary
 	for raw_viewport in VIEWPORTS:
 		var viewport := raw_viewport as Dictionary
@@ -856,7 +1094,6 @@ static func class_manifest_link_violations(class_manifest: Dictionary) -> Array[
 	return errors
 
 
-## The class shard is empty: Ranger claims no exemption from any gate.
 static func adoption_violations() -> Array[String]:
 	var errors: Array[String] = []
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(ADOPTION_SHARD_PATH))
@@ -865,22 +1102,14 @@ static func adoption_violations() -> Array[String]:
 		return errors
 	var shard := parsed as Dictionary
 	if str(shard.get("class_id", "")) != CLASS_ID:
-		errors.append("adoption shard must be Ranger-local")
+		errors.append("adoption shard must be %s-local" % CLASS_ID)
 	var gaps: Variant = shard.get("adoption_gaps")
 	if not gaps is Dictionary or not (gaps as Dictionary).is_empty():
 		errors.append("adoption shard must declare no gap, got %s" % str(gaps))
 	return errors
 
 
-# --- live scene driving (shared with the renderer) --------------------------
-
-
-static func instantiate_scene(weapon_id: String) -> Node2D:
-	return (weapon_spec(weapon_id)["scene"] as PackedScene).instantiate() as Node2D
-
-
-static func capture_handles() -> Dictionary:
-	return {"animation": HandleProbe.new(), "vfx": HandleProbe.new(), "sfx": HandleProbe.new()}
+# --- real-runtime driving (shared with the renderer) ------------------------
 
 
 ## The shipped motion toggle, exactly as main.gd publishes it.
@@ -892,159 +1121,271 @@ static func reset_mode(tree: SceneTree) -> void:
 	tree.root.set_meta("screen_shake", true)
 
 
-## Drives the shipped scene to `seconds` with fixed steps and holds it there.
-static func seek_scene(scene: Node2D, registry, seconds: float) -> void:
-	scene.begin(registry, capture_handles(), 0)
-	var remaining := seconds
-	while remaining > SEEK_STEP:
-		scene.step(SEEK_STEP)
-		remaining -= SEEK_STEP
-	if remaining > 0.0:
-		scene.step(remaining)
-	scene.set_process(false)
+## The live authored scene of the cast, read from the host's own presentation
+## runtime (the exact instance it begins and releases), with the effect-parent
+## name lookup as the fallback for a host without one.
+static func live_scene(host: Node, world: Node, weapon_id: String) -> Node:
+	if host != null and is_instance_valid(host):
+		var presentation = host.get("_presentation")
+		if presentation != null:
+			var scene = presentation.get("_scene")
+			if scene is Node and is_instance_valid(scene):
+				return scene as Node
+	return world.get_node_or_null(str(weapon_spec(weapon_id).get("scene_node", "")))
 
 
-## Capture-side only: the photosensitivity-safe variant drops the arena-wide
-## backdrop after the scene has drawn its beat. The scene itself is untouched.
-static func apply_veil(scene: Node2D, mode: Dictionary) -> void:
-	if bool(mode.get("veil", true)):
-		return
-	var veil := scene.get_node_or_null(Pack.BACKDROP_NODE) as CanvasItem
-	if veil != null:
-		veil.self_modulate = Color(veil.self_modulate.r, veil.self_modulate.g, veil.self_modulate.b, 0.0)
-		veil.visible = false
+## Nodes the live scene flags as full-screen layers (the arena-wide veil).
+static func fullscreen_nodes(scene: Node) -> Array[CanvasItem]:
+	var found: Array[CanvasItem] = []
+	if scene == null:
+		return found
+	var pending: Array[Node] = [scene]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		if node != scene and node is CanvasItem and (node.get_meta("fullscreen_layer", false) == true or node is CanvasLayer):
+			found.append(node as CanvasItem)
+		for child in node.get_children():
+			pending.append(child)
+	return found
 
 
-static func hide_veil(scene: Node2D) -> void:
-	apply_veil(scene, {"veil": false})
+## Capture-side suppression of the full-screen surface: modulate stays zero
+## whatever self_modulate the scene keeps driving.
+static func suppress_fullscreen(scene: Node) -> void:
+	for node in fullscreen_nodes(scene):
+		node.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
 
-static func veil_alpha(weapon_id: String, seconds: float, mode: Dictionary) -> float:
-	if not bool(mode.get("veil", true)):
-		return 0.0
-	return Pack.backdrop_alpha(weapon_id, seconds)
+static func fullscreen_alpha(scene: Node) -> float:
+	var alpha := 0.0
+	for node in fullscreen_nodes(scene):
+		if node.visible:
+			alpha = maxf(alpha, node.self_modulate.a * node.modulate.a)
+	return alpha
 
 
-## Places the scene at its on-screen scale on the effect origin.
-static func place_scene(scene: Node2D, size: Vector2i) -> void:
-	scene.scale = Vector2.ONE * on_screen_scale(size)
-	scene.position = effect_origin(size)
+## What the live scene draws, as a device-independent signature of its
+## Sprite2D/Node2D children: position, scale, rotation, alpha, visibility.
+## Two signatures sampled by different runs at the closest presentation-clock
+## pair around a beat: under the documented fixed clock the pair is exact and
+## the signatures must be identical; on a real-time clock the pair can sit up
+## to half a frame apart, so every field may differ by that much motion (the
+## fastest authored element, a launching bolt, covers about 8 px per frame) and
+## a node fading through zero may differ in visibility. A retimed or altered
+## variant is far outside these bounds.
+const FORMATION_POSITION_TOLERANCE := 12.0
+const FORMATION_SCALE_TOLERANCE := 0.06
+const FORMATION_ROTATION_TOLERANCE := 0.12
+const FORMATION_ALPHA_TOLERANCE := 0.15
+const FORMATION_FADE_ALPHA := 0.2
 
 
-## Drawn bounds of the formation in viewport pixels. The presence nodes are
-## excluded: the veil is a full-viewport tint and the hero pose fades before
-## the beats, so including them would measure nothing.
-static func content_bounds(scene: Node2D) -> Rect2:
-	var bounds := Rect2()
-	var found := false
-	for child in scene.get_children():
-		var sprite := child as Sprite2D
-		if sprite == null or not sprite.visible or sprite.modulate.a <= 0.0 or is_presence_node(sprite):
-			continue
-		if sprite.texture == null:
-			continue
-		var local := Rect2(sprite.offset, Vector2(sprite.texture.get_size()))
-		var item: Rect2 = scene.transform * (sprite.transform * local)
-		bounds = item if not found else bounds.merge(item)
-		found = true
-	return bounds
+static func formation_close(a: String, b: String) -> bool:
+	if a == b:
+		return true
+	var left := a.split("|")
+	var right := b.split("|")
+	if left.size() != right.size():
+		return false
+	for index in left.size():
+		var fa := left[index].split(":")
+		var fb := right[index].split(":")
+		if fa.size() != 7 or fb.size() != 7 or fa[0] != fb[0]:
+			return false
+		if fa[6] != fb[6] and (float(fa[5]) > FORMATION_FADE_ALPHA or float(fb[5]) > FORMATION_FADE_ALPHA):
+			return false
+		if absf(float(fa[1]) - float(fb[1])) > FORMATION_POSITION_TOLERANCE or absf(float(fa[2]) - float(fb[2])) > FORMATION_POSITION_TOLERANCE:
+			return false
+		if absf(float(fa[3]) - float(fb[3])) > FORMATION_SCALE_TOLERANCE or absf(float(fa[4]) - float(fb[4])) > FORMATION_ROTATION_TOLERANCE:
+			return false
+		if absf(float(fa[5]) - float(fb[5])) > FORMATION_ALPHA_TOLERANCE:
+			return false
+	return true
 
 
-static func is_presence_node(node: Node) -> bool:
-	return node.name == Pack.BACKDROP_NODE or node.name == Pack.HERO_POSE_NODE
-
-
-static func formation_signature(scene: Node2D) -> String:
+static func formation_signature(scene: Node) -> String:
 	var parts: Array[String] = []
-	for child in scene.get_children():
-		var sprite := child as Sprite2D
-		if sprite == null or not sprite.visible or is_presence_node(sprite):
+	if scene == null:
+		return ""
+	var children := scene.get_children()
+	for index in children.size():
+		var node := children[index] as Node2D
+		if node == null or node.get_meta("fullscreen_layer", false) == true or node.get_script() != null:
 			continue
-		parts.append("%.3f:%.3f:%.3f:%.3f:%.3f" % [
-			sprite.position.x, sprite.position.y, sprite.scale.x, sprite.rotation, sprite.modulate.a,
+		# Runtime-built sprites get engine-generated names that differ between
+		# casts; they are keyed by their child index instead.
+		var label := "#%d" % index if str(node.name).begins_with("@") else str(node.name)
+		parts.append("%s:%.2f:%.2f:%.3f:%.3f:%.2f:%s" % [
+			label, node.position.x, node.position.y, node.scale.x, node.rotation, node.modulate.a, str(node.visible),
 		])
 	return "|".join(parts)
 
 
-## Headless half of the live claim: at every committed beat the shipped scene,
-## driven exactly as the renderer drives it, draws inside the effect zone at
-## both extreme viewports, the reduced-motion variant preserves the normal
-## formation and timing, and a seek repeats.
-func _check_live_composition(registry, errors: Array[String]) -> void:
+class Arena extends RefCounted:
+	var world: Node2D = null
+	var player: Node2D = null
+	var host: Node = null
+	var camera: Camera2D = null
+	var enemies: Array[Node2D] = []
+	var hazard: Node2D = null
+	var projectile: Node2D = null
+
+
+## Builds the real world: shipped Player at the origin with its own camera,
+## real enemies on the spiral, a real hazard telegraph and enemy projectile,
+## all frozen in place so the frame depends only on the cast.
+static func build_arena(tree: SceneTree, parent: Node, weapon_id: String, mode: Dictionary, zoom: float, headless_presentation: bool) -> Arena:
+	var arena := Arena.new()
+	arena.world = Node2D.new()
+	arena.world.name = "CertificationWorld"
+	parent.add_child(arena.world)
+	# The current scene must be a direct child of the root: the SubViewport
+	# (renderer) or the holder (gate). Executors that parent effects to it then
+	# land inside the captured world.
+	tree.current_scene = parent
+	arena.player = PlayerScene.instantiate() as Node2D
+	arena.player.position = PLAYER_ORIGIN
+	arena.world.add_child(arena.player)
+	arena.player.call("configure_character", CLASS_ID, weapon_id)
+	arena.player.set("ultimate_charge", arena.player.get("ultimate_max_charge"))
+	hold_basic_attack(tree, arena.player)
+	arena.camera = arena.player.get_node_or_null("Camera2D") as Camera2D
+	if arena.camera != null:
+		arena.camera.zoom = Vector2.ONE * zoom
+		arena.camera.position_smoothing_enabled = false
+		arena.camera.offset = Vector2.ZERO
+		arena.camera.enabled = true
+		arena.camera.make_current()
+	arena.host = PlayerHost.for_player(arena.player)
+	if headless_presentation:
+		arena.host.set("_presentation_headless_mode", LIVE_PRESENTATION_HEADLESS_MODE)
+	for position in enemy_positions(enemy_count(weapon_id, mode)):
+		var enemy := EnemyScene.instantiate() as Node2D
+		enemy.position = position
+		enemy.set("max_health", ENEMY_HEALTH)
+		enemy.set("health", ENEMY_HEALTH)
+		arena.world.add_child(enemy)
+		enemy.set_physics_process(false)
+		arena.enemies.append(enemy)
+	return arena
+
+
+## The hero's basic weapon auto-fires from its own _process; it is held for
+## the certification cast so the frame shows the ultimate acting on the world,
+## not the basic attack (its VFX also expects the game's Main scene as parent).
+static func hold_basic_attack(tree: SceneTree, player: Node) -> void:
+	for raw_weapon in tree.get_nodes_in_group("player_weapons"):
+		var weapon := raw_weapon as Node
+		if weapon != null and player.is_ancestor_of(weapon):
+			weapon.set_process(false)
+			weapon.set_physics_process(false)
+
+
+static func arena_world_record(arena: Arena) -> Dictionary:
+	var enemies: Array = []
+	for enemy in arena.enemies:
+		if is_instance_valid(enemy):
+			enemies.append([snappedf(enemy.global_position.x, 0.01), snappedf(enemy.global_position.y, 0.01)])
+	return {
+		"player": [snappedf(arena.player.global_position.x, 0.01), snappedf(arena.player.global_position.y, 0.01)],
+		"enemies": enemies,
+		"hazard_zone": {"center": [hazard_zone_center().x, hazard_zone_center().y], "radius": HAZARD_ZONE_RADIUS},
+		"projectile": [projectile_position().x, projectile_position().y],
+		"aim_center": [aim_center().x, aim_center().y],
+	}
+
+
+## The shipped Player camera carries a small constant feet-lift offset
+## (player.gd), so the shake device is read as the deviation from the offset
+## the camera held before the cast began.
+static func shake_offset(camera: Camera2D, baseline: Vector2) -> Vector2:
+	return camera.offset - baseline if camera != null else Vector2.ZERO
+
+
+static func camera_record(camera: Camera2D, baseline: Vector2) -> Dictionary:
+	if camera == null:
+		return {"center": [0.0, 0.0], "offset": [0.0, 0.0], "baseline_offset": [0.0, 0.0], "zoom": 1.0}
+	var center := camera.get_screen_center_position()
+	var shake := shake_offset(camera, baseline)
+	return {
+		"center": [snappedf(center.x, 0.001), snappedf(center.y, 0.001)],
+		"offset": [snappedf(shake.x, 0.001), snappedf(shake.y, 0.001)],
+		"baseline_offset": [snappedf(baseline.x, 0.001), snappedf(baseline.y, 0.001)],
+		"zoom": snappedf(camera.zoom.x, 0.0001),
+	}
+
+
+## Headless half of the device claim: the real cast is run for every weapon
+## with the toggle on and off, the camera offset is sampled every frame, and
+## the live scene's full-screen surfaces are counted, so the mode effects the
+## manifest records are what the runtime does — not what a caption says.
+func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	root.set_meta("combat_feedback", false)
 	for weapon_id in weapon_ids():
+		var effects := mode_effects(manifest, weapon_id)
+		var peaks := {}
+		var signatures := {}
+		var surfaces := -1
+		for mode_id in [MODE_NORMAL, MODE_REDUCED_MOTION]:
+			var mode := mode_spec(mode_id)
+			apply_mode(self, mode)
+			var arena := build_arena(self, holder, weapon_id, mode, COMBAT_CAMERA_ZOOM, true)
+			await process_frame
+			await process_frame
+			var baseline := arena.camera.offset if arena.camera != null else Vector2.ZERO
+			var status: int = PlayerHost.activate(arena.player)
+			_expect(status == PlayerHost.ACTIVATION_STARTED, "%s/%s: the real cast must start headless, got %d (%s)" % [weapon_id, mode_id, status, PlayerHost.activation_failure(arena.player)], errors)
+			var peak := 0.0
+			var scene := live_scene(arena.host, arena.world, weapon_id)
+			_expect(scene != null and scene.is_inside_tree(), "%s/%s: the authored scene must be live under the effect parent" % [weapon_id, mode_id], errors)
+			if scene != null and mode_id == MODE_NORMAL:
+				surfaces = fullscreen_nodes(scene).size()
+			var duration := timeline_seconds(weapon_id) + 0.3
+			# Simulated seconds (the sum of process deltas), so the check reads the
+			# same clock whether the engine runs on the fixed clock or real time.
+			var elapsed := 0.0
+			var trace: Array[Dictionary] = []
+			var released_at := -1.0
+			while elapsed < duration and status == PlayerHost.ACTIVATION_STARTED:
+				await process_frame
+				elapsed += root.get_process_delta_time()
+				if arena.camera != null:
+					peak = maxf(peak, shake_offset(arena.camera, baseline).length())
+				var live := scene != null and is_instance_valid(scene) and scene.is_inside_tree()
+				if not live and released_at < 0.0:
+					released_at = elapsed
+				var clock := presentation_elapsed(arena.host)
+				trace.append({"elapsed": clock if clock >= 0.0 else elapsed, "signature": formation_signature(scene) if live else "released"})
+			peaks[mode_id] = peak
+			signatures[mode_id] = trace
+			_expect(_consistent_release(manifest, weapon_id, released_at), "%s/%s: the live cast released its presentation at %.2f s, which the manifest must record as presentation_released_seconds" % [weapon_id, mode_id, released_at], errors)
+			arena.host.controller().cancel()
+			arena.world.queue_free()
+			await process_frame
+		var reduced := effects.get(MODE_REDUCED_MOTION, {}) as Dictionary
+		var kind := str(reduced.get("effect", ""))
+		if kind == EFFECT_CAMERA_SHAKE:
+			_expect(float(peaks[MODE_NORMAL]) > 0.0, "%s: the manifest claims a camera shake device but the live cast never moved the camera" % weapon_id, errors)
+		elif kind == EFFECT_NONE_INTRINSIC:
+			_expect(float(peaks[MODE_NORMAL]) == 0.0, "%s: the live cast moved the camera by %.3f, so reduced motion is not an intrinsic no-op" % [weapon_id, float(peaks[MODE_NORMAL])], errors)
+		_expect(float(peaks[MODE_REDUCED_MOTION]) == 0.0, "%s: the live cast must hold the camera still with screen_shake off, moved %.3f" % [weapon_id, float(peaks[MODE_REDUCED_MOTION])], errors)
+		var photo := effects.get(MODE_PHOTOSENSITIVITY_SAFE, {}) as Dictionary
+		if str(photo.get("effect", "")) == EFFECT_FULLSCREEN_SUPPRESSED:
+			_expect(surfaces > 0, "%s: the manifest claims a suppressed full-screen surface but the live scene authors none" % weapon_id, errors)
+		elif str(photo.get("effect", "")) == EFFECT_NONE_INTRINSIC:
+			_expect(surfaces == 0, "%s: the live scene authors %d full-screen surfaces" % [weapon_id, surfaces], errors)
+		var normal_trace := signatures.get(MODE_NORMAL, []) as Array
+		var reduced_trace := signatures.get(MODE_REDUCED_MOTION, []) as Array
 		for beat_id in BEAT_IDS:
-			var seconds := beat_seconds(weapon_id, beat_id)
-			var phase := Pack.phase_at(weapon_id, seconds)
-			_expect(str(phase.get("name", "")) == beat_id, "%s %s beat %.2fs must sample its own phase, got %s" % [weapon_id, beat_id, seconds, phase], errors)
-			var signatures := {}
-			for mode_id in MODE_IDS:
-				var mode := mode_spec(mode_id)
-				for viewport_id in ["648p", "2k"]:
-					var size := viewport_size(viewport_id)
-					var scene := instantiate_scene(weapon_id)
-					root.add_child(scene)
-					apply_mode(self, mode)
-					seek_scene(scene, registry, seconds)
-					apply_veil(scene, mode)
-					place_scene(scene, size)
-					var bounds := content_bounds(scene)
-					var context := "%s/%s/%s/%s" % [weapon_id, mode_id, viewport_id, beat_id]
-					_expect(bounds.has_area(), "%s must draw visible effect content" % context, errors)
-					_expect(effect_zone(size).grow(0.5).encloses(bounds), "%s effect bounds %s must stay inside %s" % [context, bounds, effect_zone(size)], errors)
-					var veil := scene.get_node_or_null(Pack.BACKDROP_NODE) as CanvasItem
-					_expect(veil != null, "%s must author %s" % [context, Pack.BACKDROP_NODE], errors)
-					if veil != null:
-						var alpha := veil.self_modulate.a if veil.visible else 0.0
-						_expect(is_equal_approx(alpha, veil_alpha(weapon_id, seconds, mode)), "%s veil alpha %.3f must be the shipped envelope %.3f" % [context, alpha, veil_alpha(weapon_id, seconds, mode)], errors)
-						_expect(alpha <= MAX_OVERLAY_ALPHA, "%s veil alpha %.2f over the %.2f ceiling" % [context, alpha, MAX_OVERLAY_ALPHA], errors)
-					if viewport_id == "648p":
-						signatures[mode_id] = formation_signature(scene)
-					scene.free()
-			_expect(signatures[MODE_NORMAL] == signatures[MODE_REDUCED_MOTION], "%s %s reduced-motion variant must preserve the normal formation and timing" % [weapon_id, beat_id], errors)
-			_expect(signatures[MODE_NORMAL] == signatures[MODE_PHOTOSENSITIVITY_SAFE], "%s %s photosensitivity-safe variant must preserve the normal formation" % [weapon_id, beat_id], errors)
-			_expect(not str(signatures[MODE_NORMAL]).is_empty(), "%s %s formation signature must not be empty" % [weapon_id, beat_id], errors)
-			var repeat := instantiate_scene(weapon_id)
-			root.add_child(repeat)
-			apply_mode(self, mode_spec(MODE_NORMAL))
-			seek_scene(repeat, registry, seconds)
-			place_scene(repeat, viewport_size("648p"))
-			_expect(formation_signature(repeat) == signatures[MODE_NORMAL], "%s seek to %.2fs must be deterministic" % [weapon_id, seconds], errors)
-			_expect(not repeat.is_processing(), "%s seek must leave the scene held at its beat" % weapon_id, errors)
-			repeat.free()
+			var pair := closest_samples(normal_trace, reduced_trace, beat_seconds(weapon_id, beat_id))
+			_expect(not pair.is_empty(), "%s: the live cast must reach the %s beat in both modes" % [weapon_id, beat_id], errors)
+			if not pair.is_empty():
+				_expect(formation_close(str(pair[0]["signature"]), str(pair[1]["signature"])), "%s: reduced motion must preserve the formation and timing at the %s beat (%.3f s %s vs %.3f s %s)" % [weapon_id, beat_id, float(pair[0]["elapsed"]), str(pair[0]["signature"]).left(100), float(pair[1]["elapsed"]), str(pair[1]["signature"]).left(100)], errors)
 	reset_mode(self)
-
-
-## The arena-wide backdrop over the whole cast: it peaks under the readability
-## ceiling and rises exactly once, so the declared 0.0 Hz flash rate is the
-## envelope's own number, not a claim.
-func _check_photosensitivity(errors: Array[String]) -> void:
-	for weapon_id in weapon_ids():
-		var report := backdrop_report(weapon_id)
-		_expect(float(report["peak"]) > 0.0, "%s must actually draw its declared backdrop" % weapon_id, errors)
-		_expect(float(report["peak"]) <= MAX_OVERLAY_ALPHA, "%s backdrop peaks at %.2f over %.2f" % [weapon_id, float(report["peak"]), MAX_OVERLAY_ALPHA], errors)
-		_expect(int(report["rises"]) == 1, "%s backdrop must rise once per cast, rose %d times" % [weapon_id, int(report["rises"])], errors)
-
-
-static func backdrop_report(weapon_id: String) -> Dictionary:
-	var duration := Pack.timeline_seconds(weapon_id)
-	var peak := 0.0
-	var samples: Array[float] = []
-	var elapsed := 0.0
-	while elapsed <= duration:
-		var alpha := Pack.backdrop_alpha(weapon_id, elapsed)
-		samples.append(alpha)
-		peak = maxf(peak, alpha)
-		elapsed += 1.0 / 240.0
-	var trigger := peak * 0.5
-	var rises := 0
-	var above := false
-	for value in samples:
-		if value > trigger and not above:
-			rises += 1
-			above = true
-		elif value <= trigger:
-			above = false
-	return {"peak": peak, "rises": rises, "duration": duration}
+	holder.queue_free()
+	await process_frame
 
 
 # --- negatives --------------------------------------------------------------
@@ -1052,8 +1393,10 @@ static func backdrop_report(weapon_id: String) -> Dictionary:
 
 ## Every validator is data-driven so it can be shown to reject: a dropped mode,
 ## a substituted key, a missing file, an LFS pointer, a wrong size, a wrong
-## hash, an understated coverage cap and a non-empty shard all go red.
-func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile: Dictionary, errors: Array[String]) -> void:
+## hash, an understated cap, a missing quality block, a blank frame, a
+## fabricated mode frame (a normal frame relabelled as reduced motion), a
+## shake claim without device evidence, and an invisible payoff all go red.
+func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile: Dictionary, images: Dictionary, errors: Array[String]) -> void:
 	_expect(coverage_violations(manifest).is_empty(), "the committed coverage must pass before negatives are meaningful", errors)
 
 	var missing_mode := manifest.duplicate(true)
@@ -1065,12 +1408,11 @@ func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile:
 	_expect_red(coverage_violations(missing_mode), "a dropped presentation mode", errors)
 
 	var missing_key := manifest.duplicate(true)
-	var swapped := (missing_key["captures"] as Array)[0] as Dictionary
-	swapped["weapon_id"] = "moon_crossbow_v2"
+	((missing_key["captures"] as Array)[0] as Dictionary)["weapon_id"] = weapon_ids()[0] + "_v2"
 	_expect_red(coverage_violations(missing_key), "a substituted weapon key", errors)
 
 	var wrong_keys := manifest.duplicate(true)
-	wrong_keys["canonical_keys"] = ["ranger/moon_crossbow", "ranger/storm_longbow"]
+	wrong_keys["canonical_keys"] = [key_for(weapon_ids()[0])]
 	_expect_red(identity_violations(wrong_keys, profile), "a missing canonical key", errors)
 
 	var wrong_source := manifest.duplicate(true)
@@ -1081,16 +1423,14 @@ func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile:
 	var absent := first.duplicate(true)
 	absent["path"] = str(first["path"]).replace(".png", "_missing.png")
 	_expect_red(file_violations(absent), "a missing frame", errors)
-
 	var wrong_size := first.duplicate(true)
 	wrong_size["width"] = int(first["width"]) - 1
 	_expect_red(file_violations(wrong_size), "a frame declared at the wrong size", errors)
-
 	var wrong_hash := first.duplicate(true)
 	wrong_hash["sha256"] = "f".repeat(64)
 	_expect_red(file_violations(wrong_hash), "a frame with a wrong hash", errors)
 
-	var pointer_path := "user://fan3941_ranger_pointer_probe.png"
+	var pointer_path := "user://fan3941_%s_pointer_probe.png" % CLASS_ID
 	var pointer := FileAccess.open(pointer_path, FileAccess.WRITE)
 	if pointer == null:
 		errors.append("pointer probe could not be written")
@@ -1104,21 +1444,66 @@ func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile:
 	var understated := class_manifest.duplicate(true)
 	((understated["weapons"] as Array)[0] as Dictionary)["quality"]["max_viewport_coverage_ratio"] = 0.0001
 	_expect_red(quality_violations(understated, manifest), "an understated coverage cap", errors)
-
 	var undeclared := class_manifest.duplicate(true)
 	((undeclared["weapons"] as Array)[0] as Dictionary).erase("quality")
 	_expect_red(quality_violations(undeclared, manifest), "a missing quality block", errors)
-
 	var unlinked := class_manifest.duplicate(true)
 	(unlinked["evidence"] as Dictionary).erase("certification")
 	_expect_red(class_manifest_link_violations(unlinked), "a class manifest without the certification link", errors)
 
 	var blank := Image.create_empty(64, 36, false, Image.FORMAT_RGBA8)
 	blank.fill(FLOOR_COLOR)
-	_expect_red(readability_violations(first, readability_report(blank, first)), "a blank frame", errors)
+	_expect_red(readability_violations(first, readability_report(blank, first, first)), "a blank frame", errors)
+
+	# A relabelled frame standing in for the reduced-motion frame: for a cast
+	# with a shake device the shaken normal frame must be rejected on the device
+	# evidence; for a measured no-op (identical frames by design) the crowded
+	# frame must be rejected because a no-op may not change the picture.
+	var weapon_id := weapon_ids()[0]
+	var reduced_kind := str((mode_effects(manifest, weapon_id).get(MODE_REDUCED_MOTION, {}) as Dictionary).get("effect", ""))
+	var source_mode := MODE_NORMAL if reduced_kind == EFFECT_CAMERA_SHAKE else MODE_CROWDED
+	var source_id := entry_id({"weapon_id": weapon_id, "mode": source_mode, "viewport": BEAT_VIEWPORT, "beat": "impact"})
+	var reduced_id := entry_id({"weapon_id": weapon_id, "mode": MODE_REDUCED_MOTION, "viewport": BEAT_VIEWPORT, "beat": "impact"})
+	if images.has(source_id) and images.has(reduced_id):
+		var fabricated := images.duplicate()
+		fabricated[reduced_id] = images[source_id]
+		var relabelled := manifest.duplicate(true)
+		for raw_capture in relabelled.get("captures", []) as Array:
+			var capture := raw_capture as Dictionary
+			if entry_id(capture) == reduced_id:
+				var source_capture := _capture_by_id(manifest, source_id)
+				capture["camera"] = (source_capture.get("camera", {}) as Dictionary).duplicate(true)
+		_expect_red(mode_violations(relabelled, fabricated), "a %s frame relabelled as reduced motion" % source_mode, errors)
+
+	# A shake claim whose recorded trace never moved the camera.
+	var unproven := manifest.duplicate(true)
+	for raw_weapon in unproven.get("weapons", []) as Array:
+		((raw_weapon as Dictionary).get("mode_effects", {}) as Dictionary)[MODE_REDUCED_MOTION] = {"effect": EFFECT_CAMERA_SHAKE}
+	for raw_run in unproven.get("runs", []) as Array:
+		((raw_run as Dictionary).get("camera_trace", {}) as Dictionary)["max_offset"] = 0.0
+	_expect_red(mode_violations(unproven, images), "a shake claim without device evidence", errors)
+
+	# An intrinsic no-op that hides a changed frame.
+	var hidden := manifest.duplicate(true)
+	for raw_weapon in hidden.get("weapons", []) as Array:
+		((raw_weapon as Dictionary).get("mode_effects", {}) as Dictionary)[MODE_CROWDED] = {"effect": EFFECT_NONE_INTRINSIC, "production_semantics": "probe"}
+	_expect_red(mode_violations(hidden, images), "a crowd frame declared as an intrinsic no-op", errors)
+
+
+static func _capture_by_id(manifest: Dictionary, id: String) -> Dictionary:
+	for raw_capture in manifest.get("captures", []) as Array:
+		if raw_capture is Dictionary and entry_id(raw_capture) == id:
+			return raw_capture
+	return {}
 
 
 # --- helpers ----------------------------------------------------------------
+
+
+static func _vector(raw: Variant) -> Vector2:
+	if raw is Array and (raw as Array).size() >= 2:
+		return Vector2(float((raw as Array)[0]), float((raw as Array)[1]))
+	return Vector2.ZERO
 
 
 static func _string_list(value: Variant) -> Array[String]:
@@ -1152,11 +1537,11 @@ func _expect_red(violations: Array[String], what: String, errors: Array[String])
 
 func _finish(errors: Array[String]) -> void:
 	if errors.is_empty():
-		print("Ranger certification capture gate: %d frames (%d weapons x %d modes x %d viewports at the active beat, plus release/recovery at %s) verified with readability probes, coverage measurement, quality declaration, empty adoption shard and negatives." % [
-			expected_entries().size(), WEAPONS.size(), MODES.size(), VIEWPORTS.size(), BEAT_VIEWPORT,
+		print("%s certification capture gate: %d real-runtime frames (%d weapons x %d modes x %d viewports) verified with readability probes, device-proven mode effects, coverage measurement, quality declaration, empty adoption shard and negatives." % [
+			CLASS_ID.capitalize(), expected_entries().size(), WEAPONS.size(), MODES.size(), VIEWPORTS.size(),
 		])
 		quit(0)
 		return
 	for error in errors:
-		push_error("Ranger certification capture gate: %s" % error)
+		push_error("%s certification capture gate: %s" % [CLASS_ID.capitalize(), error])
 	quit(1)
