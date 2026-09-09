@@ -472,6 +472,43 @@ func _run() -> void:
 	if final_orphans != 0:
 		failures.append("orphans after teardown: %d" % final_orphans)
 
+	# I (QA rework 19:33:57Z): exact body-flash endpoint. The restore must land
+	# on the recorded pre-flash modulate exactly, at whatever frame crosses
+	# 0.16 s (non-aligned lifetime), and repeated flash/reuse must not drift a
+	# non-white base tint. No tolerance: is_equal_approx per channel.
+	var endpoint_root := Node2D.new()
+	root.add_child(endpoint_root)
+	await process_frame
+	var endpoint_timeline: Node = CombatFeedbackTimeline.for_scene(endpoint_root)
+	var endpoint_body := Sprite2D.new()
+	endpoint_root.add_child(endpoint_body)
+	var base_tint := Color(0.62, 0.48, 0.71, 1.0)
+	endpoint_body.modulate = base_tint
+	await process_frame
+	# Non-aligned crossing: the awaited lifetime deliberately does not divide
+	# the 0.16 s restore window (frame steps land mid-interpolation).
+	endpoint_body.modulate = base_tint.lerp(Color(1.0, 0.42, 0.34, base_tint.a), 0.4)
+	endpoint_timeline.flash_body(endpoint_body, base_tint)
+	await create_timer(0.163).timeout
+	var restored_exact := true
+	for channel in ["r", "g", "b", "a"]:
+		if not is_equal_approx(endpoint_body.modulate[channel], base_tint[channel]):
+			restored_exact = false
+	if not restored_exact:
+		failures.append("body flash did not land exactly on the recorded restore endpoint (got %s, expected %s)" % [str(endpoint_body.modulate), str(base_tint)])
+	# Repeated flash/reuse from the restored state must converge back exactly,
+	# proving no cumulative drift across hits.
+	for round_index in range(4):
+		endpoint_body.modulate = base_tint.lerp(Color(1.0, 0.42, 0.34, base_tint.a), 0.4)
+		endpoint_timeline.flash_body(endpoint_body, base_tint)
+		await create_timer(0.163 if round_index % 2 == 0 else 0.171).timeout
+	for channel in ["r", "g", "b", "a"]:
+		if not is_equal_approx(endpoint_body.modulate[channel], base_tint[channel]):
+			failures.append("repeated flash/reuse drifted the body tint (channel %s: %s vs %s)" % [channel, str(endpoint_body.modulate[channel]), str(base_tint[channel])])
+			break
+	endpoint_root.queue_free()
+	await process_frame
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

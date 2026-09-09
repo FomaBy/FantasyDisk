@@ -198,7 +198,16 @@ func _step_bodies(delta: float) -> void:
 		var record: Dictionary = _active_bodies[index]
 		record["elapsed"] = float(record["elapsed"]) + delta
 		var elapsed := float(record["elapsed"])
-		if not is_instance_valid(record["body"]) or elapsed >= BODY_RESTORE_TIME:
+		if not is_instance_valid(record["body"]):
+			_active_bodies.remove_at(index)
+			continue
+		if elapsed >= BODY_RESTORE_TIME:
+			# QA rework: the prior tween reached its endpoint exactly; assign the
+			# recorded restore value before removing the completed record so a
+			# frame that crosses the lifetime lands on the exact pre-flash
+			# modulate instead of the last interpolated tint (no cumulative
+			# drift across repeated hits).
+			(record["body"] as CanvasItem).modulate = record["restore"]
 			_active_bodies.remove_at(index)
 			continue
 		var body := record["body"] as CanvasItem
