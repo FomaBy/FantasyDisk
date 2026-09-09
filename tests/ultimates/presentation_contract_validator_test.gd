@@ -15,6 +15,14 @@ func _initialize() -> void:
 	var expected_profiles := Manifest.expected_profiles_for_registry(registry)
 	var valid := _manifest_array(catalog)
 	_expect(Schema.validate_catalog(valid, expected_profiles).is_empty(), "canonical manifest must validate", errors)
+	# FAN-3933: the default allowlist argument is the class-owned shard
+	# aggregate, so passing that aggregate explicitly is the same validation.
+	var live_allowlist := Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.duplicate()
+	_expect(
+		Schema.validate_catalog(valid, expected_profiles, live_allowlist) == Schema.validate_catalog(valid, expected_profiles),
+		"explicit shard aggregate and default argument must validate identically",
+		errors
+	)
 
 	var missing_phase := _manifest_array(catalog)
 	(missing_phase[0]["phases"] as Array).remove_at(4)
