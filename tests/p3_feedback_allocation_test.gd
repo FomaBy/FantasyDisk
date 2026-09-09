@@ -303,11 +303,14 @@ func _run() -> void:
 	else:
 		if absf((300.0 - pause_label.global_position.y) - slowed_rise) > 2.0:
 			failures.append("number rise does not follow Engine.time_scale (expected %.1f, got %.1f)" % [slowed_rise, 300.0 - pause_label.global_position.y])
+	var pre_pause_y: float = pause_label.global_position.y
 	paused = true
 	# process_always timers still fire while the tree is paused; the feedback
 	# item itself must NOT advance.
 	await create_timer(0.3, true).timeout
 	var paused_y: float = pause_label.global_position.y
+	if absf(paused_y - pre_pause_y) > 0.001:
+		failures.append("item advanced while the tree was paused: %.3f -> %.3f" % [pre_pause_y, paused_y])
 	paused = false
 	Engine.time_scale = 1.0
 	await create_timer(0.2).timeout
@@ -357,21 +360,56 @@ func _run() -> void:
 		# Seeded parity: the first number's start offset must match the seeded
 		# reference sequence computed from the same randf_range calls.
 		if labels.size() == 3:
-			var expected_x: float = victims[0].global_position.x - 48.0 + reference_jitter[0]
-			if absf(labels[0].global_position.x - expected_x) > 0.5:
-				failures.append("seeded random parity broken: first number x %.1f, expected %.1f" % [labels[0].global_position.x, expected_x])
-		# Originating-owner deletion mid-flight: numbers must survive (pooled,
-		# scene-owned) and orphans must stay zero after the owner is freed.
-		victims[1].queue_free()
-		victims[1] = null
-		await process_frame
-		await process_frame
-		var still_visible := 0
-		for child in production_timeline.get_children():
-			if child is Label and child.visible:
-				still_visible += 1
-		if still_visible < 2:
-			failures.append("feedback numbers died with their originating enemy (owner lifetime broken)")
+			# Complete deterministic sequence: every label's x offset equals its
+			# reference draw (x is never animated, so this is exact); the y jitter
+			# differences between labels equal the reference draw differences
+			# (all Biters share one feedback height).
+			for index in range(3):
+				var expected_x: float = victims[index].global_position.x - 48.0 + reference_jitter[index * 2]
+				if absf(labels[index].global_position.x - expected_x) > 0.5:
+					failures.append("seeded random parity broken: label %d x %.1f, expected %.1f" % [index, labels[index].global_position.x, expected_x])
+			var y0: float = labels[0].global_position.y - victims[0].global_position.y
+			var y1: float = labels[1].global_position.y - victims[1].global_position.y
+			var y2: float = labels[2].global_position.y - victims[2].global_position.y
+			if absf((y1 - y0) - (reference_jitter[3] - reference_jitter[1])) > 1.0 \
+					or absf((y2 - y0) - (reference_jitter[5] - reference_jitter[1])) > 1.0:
+				failures.append("seeded random parity broken: y jitter sequence mismatch")
+		# Originating-owner deletion mid-flight: retain the EXACT label spawned
+		# by the enemy about to be deleted (matched by its deterministic x
+		# offset) and assert it survives its full remaining lifetime, then
+		# releases cleanly — not merely that two of three labels remain.
+		var orphaned_label: Label = null
+		if labels.size() == 3:
+			var target_x: float = victims[1].global_position.x - 48.0 + reference_jitter[2]
+			for label in labels:
+				if absf(label.global_position.x - target_x) < 0.5:
+					orphaned_label = label
+					break
+		if orphaned_label == null:
+			failures.append("could not identify the deleted enemy's label via seeded offsets")
+		else:
+			victims[1].queue_free()
+			victims[1] = null
+			await process_frame
+			await process_frame
+			if not is_instance_valid(orphaned_label) or not orphaned_label.visible:
+				failures.append("the deleted enemy's own number died with its owner (owner lifetime broken)")
+			await create_timer(0.75).timeout
+			if is_instance_valid(orphaned_label) and orphaned_label.visible:
+				failures.append("the deleted enemy's number outlived its 0.62 s lifetime")
+			# All three numbers share one damage event, so after the full
+			# lifetime none may remain; the deleted enemy's label must have been
+			# released back to the pool (instance alive, hidden, group-free).
+			var still_visible := 0
+			for child in production_timeline.get_children():
+				if child is Label and child.visible:
+					still_visible += 1
+			if still_visible != 0:
+				failures.append("after full lifetimes, %d numbers remain visible" % still_visible)
+			if is_instance_valid(orphaned_label) and orphaned_label.visible:
+				failures.append("the deleted enemy's label was not released to the pool")
+			if is_instance_valid(orphaned_label) and orphaned_label.is_in_group("combat_feedback_labels"):
+				failures.append("released label still occupies the cap group")
 	# Tick curve asserted in-flight, before expiry (complements F's end checks).
 	var tick_root := Node2D.new()
 	root.add_child(tick_root)
@@ -408,10 +446,21 @@ func _run() -> void:
 	if absf(mid_flash.g - white.g) < 0.02:
 		failures.append("overlapping flash trajectory: body already at restore endpoint mid-flight")
 	overlap_body.modulate = mid_flash.lerp(Color(0.4, 0.8, 1.0, 1.0), 0.4)
+	var restart_from: Color = overlap_body.modulate
 	overlap_timeline.flash_body(overlap_body, white)
 	await create_timer(0.05).timeout
-	if overlap_body.modulate.g < mid_flash.g:
-		failures.append("second overlapping flash did not restart restore from the current blend")
+	# Expected restart trajectory: from the recorded restart blend toward white
+	# with quad-out progress 0.05/0.16 — exact per channel, which also proves
+	# continuity (the curve passes near mid_flight, never through the endpoint).
+	var restart_blend: float = 1.0 - pow(1.0 - 0.05 / 0.16, 2.0)
+	var expected_color: Color = restart_from.lerp(white, restart_blend)
+	for channel in ["r", "g", "b"]:
+		var observed: float = overlap_body.modulate[channel]
+		var expected: float = expected_color[channel]
+		if absf(observed - expected) > 0.03:
+			failures.append("overlap restart curve mismatch on %s: %.3f, expected %.3f" % [channel, observed, expected])
+	if absf(overlap_body.modulate.g - mid_flash.g) > 0.15:
+		failures.append("overlap restart lost continuity with the first flash trajectory")
 	await create_timer(0.25).timeout
 	if absf(overlap_body.modulate.g - 1.0) > 0.01:
 		failures.append("overlapping flashes did not converge to the restore target")
