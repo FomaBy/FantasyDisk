@@ -83,6 +83,7 @@ func _capture_sheet(_registry, capture: Dictionary) -> int:
 			var image := _read_viewport(viewport, "%s/%s/%s" % [
 				Spec.WEAPON_IDS[weapon_index], Spec.MODE_IDS[mode_index], phase,
 			])
+			_reset_player_host(viewport)
 			viewport.queue_free()
 			current_scene = null
 			await process_frame
@@ -199,6 +200,12 @@ func _arena_viewport(arena_size: Vector2i, weapon_index: int, mode_index: int, p
 	## renderer presenting its bounded settle frames on macOS.
 	_pause_capture_tweens()
 	return viewport
+
+
+func _reset_player_host(viewport: SubViewport) -> void:
+	var player := viewport.find_child("Player", true, false) as Node2D
+	if player != null:
+		PlayerHost.reset(player)
 
 
 func _chrome_viewport(size: Vector2i, phase: String) -> SubViewport:
