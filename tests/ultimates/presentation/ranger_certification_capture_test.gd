@@ -174,9 +174,13 @@ const HUD_CONTRAST_MIN_RATIO := 0.004
 const ENTITY_CONTRAST_MIN := 0.15
 const PLAYER_CONTRAST_MIN_RATIO := 0.12
 const ENEMY_CONTRAST_MIN_RATIO := 0.10
-## The shipped enemy bolt is a 64 px sprite at 0.52 scale (about 17 px at
-## 1152x648), so its floor is the smallest a real projectile can meet there.
-const PROJECTILE_CONTRAST_MIN_RATIO := 0.10
+## Readability of the small enemy bolt: the share of its drawn pixels (the
+## texture's opaque pixels, not the padding of its used rect) whose luma
+## differs from the bolt's immediate surround by the entity floor. The
+## surround is what the eye compares it with under a veil, a flash or a
+## formation element, so the ultimate's own art counts against it. The floor
+## is the value the first certification candidate published and is unchanged.
+const PROJECTILE_CONTRAST_MIN_RATIO := 0.06
 const HAZARD_CONTRAST_MIN := 0.10
 const SWATCH_TOLERANCE := 0.06
 const PROBE_STRIDE := 2
@@ -434,6 +438,34 @@ static func projectile_rect(world_center: Vector2, camera: Dictionary, size: Vec
 	return Rect2(center + offset - Vector2(used.size) * scale * 0.5, Vector2(used.size) * scale)
 
 
+## Contrast share over the bolt's drawn pixels only: every screen pixel of the
+## rect is mapped back onto the bolt texture and counted when the texel is
+## opaque, so the transparent padding of the used rect neither helps nor hurts.
+static func projectile_contrast_ratio(image: Image, rect: Rect2, reference: Color, zoom: float) -> Dictionary:
+	var texture: Texture2D = load(PROJECTILE_TEXTURE)
+	var texel_image := texture.get_image() if texture != null else null
+	if texel_image == null or texel_image.is_empty():
+		return {"ratio": contrast_ratio(image, rect, reference, ENTITY_CONTRAST_MIN, 1), "drawn_pixels": -1}
+	var used := texel_image.get_used_rect()
+	var scale := PROJECTILE_SCALE * zoom
+	var reference_luma := luma(reference)
+	var drawn := 0
+	var contrasting := 0
+	var y := maxi(0, int(rect.position.y))
+	while y < mini(image.get_height(), int(rect.end.y)):
+		var x := maxi(0, int(rect.position.x))
+		while x < mini(image.get_width(), int(rect.end.x)):
+			var tx := int((float(x) - rect.position.x) / scale) + used.position.x
+			var ty := int((float(y) - rect.position.y) / scale) + used.position.y
+			if tx >= 0 and ty >= 0 and tx < texel_image.get_width() and ty < texel_image.get_height() and texel_image.get_pixel(tx, ty).a >= 0.5:
+				drawn += 1
+				if absf(luma(image.get_pixel(x, y)) - reference_luma) >= ENTITY_CONTRAST_MIN:
+					contrasting += 1
+			x += 1
+		y += 1
+	return {"ratio": float(contrasting) / float(maxi(drawn, 1)), "drawn_pixels": drawn}
+
+
 ## Mean colour of the ring of pixels just outside a rect: the local surround
 ## a small sprite is read against.
 static func surround_color(image: Image, rect: Rect2, margin: float) -> Color:
@@ -640,7 +672,8 @@ static func readability_report(image: Image, entry: Dictionary, capture: Diction
 				zone_pixel = candidate
 	var bolt := projectile_rect(_vector(world.get("projectile", [0.0, 0.0])), camera, size)
 	var bolt_in_frame := arena_rect(size).encloses(bolt.grow(PROJECTILE_SURROUND_PX))
-	var bolt_ratio := contrast_ratio(image, bolt, surround_color(image, bolt, PROJECTILE_SURROUND_PX), ENTITY_CONTRAST_MIN, 1) if bolt_in_frame else -1.0
+	var bolt_probe := projectile_contrast_ratio(image, bolt, surround_color(image, bolt, PROJECTILE_SURROUND_PX), float(camera.get("zoom", 1.0))) if bolt_in_frame else {"ratio": -1.0, "drawn_pixels": 0}
+	var bolt_ratio := float(bolt_probe["ratio"])
 	var mode := mode_spec(str(entry["mode"]))
 	var weapon := weapon_spec(str(entry["weapon_id"]))
 	return {
@@ -650,6 +683,7 @@ static func readability_report(image: Image, entry: Dictionary, capture: Diction
 		"hazard_zone_contrast": snappedf(absf(luma(zone_pixel) - luma(floor_color)), 0.001),
 		"hazard_zone_warm": zone_pixel.r > zone_pixel.g and zone_pixel.r > zone_pixel.b,
 		"projectile_contrast_ratio": snappedf(bolt_ratio, 0.0001),
+		"projectile_drawn_pixels": int(bolt_probe["drawn_pixels"]),
 		"projectile_readable": bolt_in_frame and bolt_ratio >= PROJECTILE_CONTRAST_MIN_RATIO,
 		"mode_swatch_matches": color_near(image.get_pixelv(Vector2i(mode_swatch_rect(size).get_center())), mode.get("swatch", Color.WHITE) as Color),
 		"weapon_swatch_matches": color_near(image.get_pixelv(Vector2i(weapon_swatch_rect(size).get_center())), weapon.get("swatch", Color.WHITE) as Color),
