@@ -13,21 +13,23 @@ extends SceneTree
 ## are taken under `--fixed-fps 60`, so a beat is a frame index and the
 ## package reproduces byte for byte.
 ##
-## Accessibility modes are proven by the device, not by a caption: the
-## reduced-motion variant is the shipped `screen_shake` toggle read by the
-## live cast, and the manifest records the camera offset trace of every run,
-## so a weapon whose cast shakes the camera must show a different frame and a
-## zero offset with the toggle off, while a weapon whose cast owns no shake
-## device is recorded as an explicit, measured no-op with its production
-## semantics — never as a renamed normal frame. The photosensitivity-safe
-## variant suppresses the one full-screen surface the live scene authors, and
-## the live surface count is measured. This file owns the spec, the probes and
-## the validators; the renderer soldier_certification_live_capture.gd preloads
-## it and draws nothing this file does not describe.
+## Accessibility modes run through the production policy, not a capture
+## switch: the reduced-motion and photosensitivity-safe variants publish the
+## shipped `ultimate_accessibility_settings` root snapshot
+## (scripts/settings/ultimate_accessibility_settings.gd, the same call
+## main.gd makes at startup) and the live cast's own driver honours it. The
+## manifest records the camera offset trace and the full-screen surface alpha
+## trace of every run, so reduced motion must show a zero offset against a
+## moving normal run, and photosensitivity-safe must show a zero surface
+## against a lit normal run; a measured no-op is only accepted with its
+## production semantics recorded. This file owns the spec, the probes and the
+## validators; the renderer soldier_certification_live_capture.gd preloads it
+## and draws nothing this file does not describe.
 
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Contract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const PlayerScene := preload("res://scenes/Player.tscn")
 const EnemyScene := preload("res://scenes/Enemy.tscn")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
@@ -35,7 +37,7 @@ const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text
 
 const CLASS_ID := "soldier"
 const ISSUE := "FAN-3941"
-const SCHEMA_VERSION := 2
+const SCHEMA_VERSION := 3
 const CAPTURE_SCRIPT := "tests/ultimates/presentation/soldier_certification_live_capture.gd"
 const FOCUSED_TEST := "tests/ultimates/presentation/soldier_certification_capture_test.gd"
 const CAPTURE_ROOT := "docs/design/reference-assets-lfs/ultimate-certification/soldier"
@@ -47,11 +49,17 @@ const ADOPTION_SHARD_PATH := "res://data/ultimates/classes/soldier/presentation_
 
 ## The shipped scenes, executors and assets were captured from this integrated
 ## revision; the capture tooling and evidence are added by FAN-3941 on top.
-const SOURCE_REF := "dev"
-const SOURCE_COMMIT_SHA := "d192be10bbe52dd89971cab0acc66eb92ccab37f"
-const SOURCE_TREE_SHA := "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
+## Provenance is read from git by the renderer at capture time: the source
+## commit and tree are whatever the clean worktree is checked out at, so the
+## amended scenes, drivers and tooling are committed first and the evidence
+## commit that carries the frames comes after. A dirty worktree refuses to
+## capture.
+const SOURCE_REF := "agent/fable/e50731ad6088"
+const SOURCE_RECORDER := "git rev-parse at capture time"
 
-const CAPTURE_COMMAND := "python3 tools/godot_gate.py --path . --fixed-fps 60 --disable-vsync --script res://tests/ultimates/presentation/soldier_certification_live_capture.gd"
+## Certification captures run under the explicit exclusive process admission
+## of tools/godot_gate.py on the fixed frame clock.
+const CAPTURE_COMMAND := "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --fixed-fps 60 --disable-vsync --script res://tests/ultimates/presentation/soldier_certification_live_capture.gd"
 const TEST_COMMAND := "python3 tools/godot_gate.py --headless --path . --fixed-fps 60 --script res://tests/ultimates/presentation/soldier_certification_capture_test.gd"
 const CAPTURE_SEED := 3941
 const FIXED_FPS := 60
@@ -77,14 +85,16 @@ const MODE_CROWDED := "crowded"
 const MODE_REDUCED_MOTION := "reduced_motion"
 const MODE_PHOTOSENSITIVITY_SAFE := "photosensitivity_safe"
 ## `enemies` is the real Enemy scene count (`crowd_cap` reads the weapon's
-## declared crowd cap), `screen_shake` is the shipped settings toggle main.gd
-## mirrors onto the tree root, `suppress_fullscreen` hides every node the live
-## scene flags as a full-screen layer after the cast begins.
+## declared crowd cap); `reduced_motion` and `photosensitivity_safe` are the
+## two persisted production preferences published on the tree root through
+## scripts/settings/ultimate_accessibility_settings.gd, exactly as main.gd
+## publishes the saved settings. The shipped `screen_shake` toggle stays on in
+## every mode so the frames prove the ultimate preference on its own.
 const MODES := [
-	{"id": MODE_NORMAL, "label": "NORMAL", "enemies": "representative", "screen_shake": true, "suppress_fullscreen": false, "swatch": Color(0.18, 0.76, 1.0)},
-	{"id": MODE_CROWDED, "label": "CROWDED", "enemies": "crowd_cap", "screen_shake": true, "suppress_fullscreen": false, "swatch": Color(1.0, 0.58, 0.18)},
-	{"id": MODE_REDUCED_MOTION, "label": "REDUCED MOTION", "enemies": "representative", "screen_shake": false, "suppress_fullscreen": false, "swatch": Color(0.36, 0.92, 0.48)},
-	{"id": MODE_PHOTOSENSITIVITY_SAFE, "label": "PHOTOSENSITIVITY-SAFE", "enemies": "representative", "screen_shake": false, "suppress_fullscreen": true, "swatch": Color(0.78, 0.48, 1.0)},
+	{"id": MODE_NORMAL, "label": "NORMAL", "enemies": "representative", "reduced_motion": false, "photosensitivity_safe": false, "swatch": Color(0.18, 0.76, 1.0)},
+	{"id": MODE_CROWDED, "label": "CROWDED", "enemies": "crowd_cap", "reduced_motion": false, "photosensitivity_safe": false, "swatch": Color(1.0, 0.58, 0.18)},
+	{"id": MODE_REDUCED_MOTION, "label": "REDUCED MOTION", "enemies": "representative", "reduced_motion": true, "photosensitivity_safe": false, "swatch": Color(0.36, 0.92, 0.48)},
+	{"id": MODE_PHOTOSENSITIVITY_SAFE, "label": "PHOTOSENSITIVITY-SAFE", "enemies": "representative", "reduced_motion": false, "photosensitivity_safe": true, "swatch": Color(0.78, 0.48, 1.0)},
 ]
 const MODE_IDS: Array[String] = [MODE_NORMAL, MODE_CROWDED, MODE_REDUCED_MOTION, MODE_PHOTOSENSITIVITY_SAFE]
 const REPRESENTATIVE_ENEMIES := 3
@@ -93,6 +103,8 @@ const REPRESENTATIVE_ENEMIES := 3
 ## per weapon: a real device that ran, or an explicit measured no-op.
 const EFFECT_CAMERA_SHAKE := "camera_shake"
 const EFFECT_FULLSCREEN_SUPPRESSED := "fullscreen_suppressed"
+## The production preferences and the module that publishes them.
+const POLICY_MODULE := "scripts/settings/ultimate_accessibility_settings.gd"
 const EFFECT_CROWD := "crowd"
 const EFFECT_NONE_INTRINSIC := "none_intrinsic"
 
@@ -141,7 +153,11 @@ const ENEMY_HEALTH := 100000.0
 ## Sprite footprints the probes read (texture size x scene scale), in world units.
 const PLAYER_FOOTPRINT := Vector2(96.0, 118.0)
 const ENEMY_FOOTPRINT := Vector2(54.0, 54.0)
-const PROJECTILE_FOOTPRINT := Vector2(30.0, 30.0)
+## The enemy bolt is scenes/EnemyProjectile.tscn's 64 px sprite at 0.52 scale;
+## its drawn pixels are read from the texture's used rect, not its padding.
+const PROJECTILE_TEXTURE := "res://assets/sprites/projectiles/enemy_projectile_magic_64.png"
+const PROJECTILE_SCALE := 0.52
+const PROJECTILE_SURROUND_PX := 6.0
 
 ## Overlays, in viewport ratios: the HUD band (real ultimate HUD adapter widget
 ## plus the live HP readout) and the capture caption with the mode/weapon swatches.
@@ -165,7 +181,7 @@ const PLAYER_CONTRAST_MIN_RATIO := 0.12
 const ENEMY_CONTRAST_MIN_RATIO := 0.10
 ## The shipped enemy bolt is a 64 px sprite at 0.52 scale (about 17 px at
 ## 1152x648), so its floor is the smallest a real projectile can meet there.
-const PROJECTILE_CONTRAST_MIN_RATIO := 0.06
+const PROJECTILE_CONTRAST_MIN_RATIO := 0.10
 const HAZARD_CONTRAST_MIN := 0.10
 const SWATCH_TOLERANCE := 0.06
 const PROBE_STRIDE := 2
@@ -203,7 +219,7 @@ func _initialize() -> void:
 		errors.append(violation)
 	for violation in quality_violations(class_manifest, manifest):
 		errors.append(violation)
-	for violation in class_manifest_link_violations(class_manifest):
+	for violation in class_manifest_link_violations(class_manifest, manifest):
 		errors.append(violation)
 	for violation in adoption_violations():
 		errors.append(violation)
@@ -408,6 +424,39 @@ static func project_rect(world_center: Vector2, footprint: Vector2, camera: Dict
 	return Rect2(project(world_center, camera, size) - pixel_size * 0.5, pixel_size)
 
 
+## The bolt's drawn pixels on screen: the texture's used rect scaled by the
+## scene scale and the camera zoom around its world position.
+static func projectile_rect(world_center: Vector2, camera: Dictionary, size: Vector2i) -> Rect2:
+	var zoom := float(camera.get("zoom", 1.0))
+	var texture: Texture2D = load(PROJECTILE_TEXTURE)
+	if texture == null:
+		return project_rect(world_center, Vector2(30.0, 30.0), camera, size)
+	var image := texture.get_image()
+	var used := image.get_used_rect() if image != null and not image.is_empty() else Rect2i(Vector2i.ZERO, texture.get_size())
+	var scale := PROJECTILE_SCALE * zoom
+	var center := project(world_center, camera, size)
+	var offset := (Vector2(used.position) + Vector2(used.size) * 0.5 - Vector2(texture.get_size()) * 0.5) * scale
+	return Rect2(center + offset - Vector2(used.size) * scale * 0.5, Vector2(used.size) * scale)
+
+
+## Mean colour of the ring of pixels just outside a rect: the local surround
+## a small sprite is read against.
+static func surround_color(image: Image, rect: Rect2, margin: float) -> Color:
+	var outer := rect.grow(margin)
+	var sum := Color(0.0, 0.0, 0.0, 0.0)
+	var count := 0
+	var y := maxi(0, int(outer.position.y))
+	while y < mini(image.get_height(), int(outer.end.y)):
+		var x := maxi(0, int(outer.position.x))
+		while x < mini(image.get_width(), int(outer.end.x)):
+			if not rect.has_point(Vector2(x, y)):
+				sum += image.get_pixel(x, y)
+				count += 1
+			x += 1
+		y += 1
+	return sum / float(maxi(count, 1))
+
+
 static func hud_band_rect(size: Vector2i) -> Rect2:
 	return Rect2(Vector2.ZERO, Vector2(float(size.x), float(size.y) * HUD_BAND_HEIGHT_RATIO))
 
@@ -440,13 +489,14 @@ static func weapon_swatch_rect(size: Vector2i) -> Rect2:
 
 static func caption_text(entry: Dictionary, beat_seconds_value: float, enemies: int, mode: Dictionary, camera_offset: Vector2) -> String:
 	var size := viewport_size(str(entry["viewport"]))
-	return "%s · %s · %dx%d · %s %.2fs · SHAKE %s · OFFSET %.1f,%.1f · ENEMIES %d" % [
+	return "%s · %s · %dx%d · %s %.2fs · RM %s · PS %s · OFFSET %.1f,%.1f · ENEMIES %d" % [
 		key_for(str(entry["weapon_id"])).to_upper(),
 		str(mode.get("label", "")),
 		size.x, size.y,
 		str(entry["beat"]).to_upper(),
 		beat_seconds_value,
-		"ON" if bool(mode.get("screen_shake", true)) else "OFF",
+		"ON" if bool(mode.get("reduced_motion", false)) else "OFF",
+		"ON" if bool(mode.get("photosensitivity_safe", false)) else "OFF",
 		camera_offset.x, camera_offset.y,
 		enemies,
 	]
@@ -593,7 +643,9 @@ static func readability_report(image: Image, entry: Dictionary, capture: Diction
 			var candidate := image.get_pixelv(Vector2i(roundi(probe.x), roundi(probe.y)))
 			if absf(luma(candidate) - luma(floor_color)) > absf(luma(zone_pixel) - luma(floor_color)):
 				zone_pixel = candidate
-	var projectile_rect := project_rect(_vector(world.get("projectile", [0.0, 0.0])), PROJECTILE_FOOTPRINT, camera, size)
+	var bolt := projectile_rect(_vector(world.get("projectile", [0.0, 0.0])), camera, size)
+	var bolt_in_frame := arena_rect(size).encloses(bolt.grow(PROJECTILE_SURROUND_PX))
+	var bolt_ratio := contrast_ratio(image, bolt, surround_color(image, bolt, PROJECTILE_SURROUND_PX), ENTITY_CONTRAST_MIN, 1) if bolt_in_frame else -1.0
 	var mode := mode_spec(str(entry["mode"]))
 	var weapon := weapon_spec(str(entry["weapon_id"]))
 	return {
@@ -602,8 +654,8 @@ static func readability_report(image: Image, entry: Dictionary, capture: Diction
 		"enemy_contrast_ratios": enemies,
 		"hazard_zone_contrast": snappedf(absf(luma(zone_pixel) - luma(floor_color)), 0.001),
 		"hazard_zone_warm": zone_pixel.r > zone_pixel.g and zone_pixel.r > zone_pixel.b,
-		"projectile_contrast_ratio": snappedf(contrast_ratio(image, projectile_rect, floor_color, ENTITY_CONTRAST_MIN), 0.0001) if arena_rect(size).encloses(projectile_rect) else -1.0,
-		"projectile_readable": arena_rect(size).encloses(projectile_rect) and contrast_ratio(image, projectile_rect, floor_color, ENTITY_CONTRAST_MIN) >= PROJECTILE_CONTRAST_MIN_RATIO,
+		"projectile_contrast_ratio": snappedf(bolt_ratio, 0.0001),
+		"projectile_readable": bolt_in_frame and bolt_ratio >= PROJECTILE_CONTRAST_MIN_RATIO,
 		"mode_swatch_matches": color_near(image.get_pixelv(Vector2i(mode_swatch_rect(size).get_center())), mode.get("swatch", Color.WHITE) as Color),
 		"weapon_swatch_matches": color_near(image.get_pixelv(Vector2i(weapon_swatch_rect(size).get_center())), weapon.get("swatch", Color.WHITE) as Color),
 	}
@@ -627,9 +679,8 @@ static func readability_violations(entry: Dictionary, report: Dictionary) -> Arr
 		errors.append("%s: fewer than half of the enemies in frame are readable (%d of %d)" % [id, readable, enemies.size()])
 	if float(report.get("hazard_zone_contrast", 0.0)) < HAZARD_CONTRAST_MIN or not bool(report.get("hazard_zone_warm", false)):
 		errors.append("%s: the hazard telegraph is not readable through the effect (%s)" % [id, str(report.get("hazard_zone_contrast"))])
-	# The enemy bolt is a 17 px sprite at 1152x648 and a full-screen veil flash
-	# can legitimately swallow it for a beat; it is recorded per frame as an
-	# observation (`projectile_readable`), not enforced.
+	if float(report.get("projectile_contrast_ratio", -1.0)) >= 0.0 and not bool(report.get("projectile_readable", false)):
+		errors.append("%s: the enemy projectile is not readable against its surround (contrast ratio %.4f)" % [id, float(report.get("projectile_contrast_ratio", 0.0))])
 	if not bool(report.get("mode_swatch_matches", false)):
 		errors.append("%s: frame does not carry its mode swatch" % id)
 	if not bool(report.get("weapon_swatch_matches", false)):
@@ -667,10 +718,10 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 		var value := str(source.get(field, ""))
 		if value.length() != 40 or not value.is_valid_hex_number():
 			errors.append("manifest source.%s must be a full SHA" % field)
-	if str(source.get("commit_sha", "")) != SOURCE_COMMIT_SHA:
-		errors.append("manifest source.commit_sha must pin %s" % SOURCE_COMMIT_SHA)
-	if str(source.get("tree_sha", "")) != SOURCE_TREE_SHA:
-		errors.append("manifest source.tree_sha must pin %s" % SOURCE_TREE_SHA)
+	if source.get("worktree_clean") != true:
+		errors.append("manifest source.worktree_clean must be true: the amended source is committed before the capture")
+	if str(source.get("recorded_by", "")) != SOURCE_RECORDER:
+		errors.append("manifest source must be recorded by %s, not typed in" % SOURCE_RECORDER)
 	var engine := manifest.get("engine", {}) as Dictionary
 	for field in ["godot", "rendering_method", "rendering_driver", "video_adapter", "os"]:
 		if str(engine.get(field, "")).strip_edges().is_empty():
@@ -681,7 +732,11 @@ static func identity_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	if str(capture.get("focused_test", "")) != FOCUSED_TEST or not FileAccess.file_exists("res://" + FOCUSED_TEST):
 		errors.append("manifest capture.focused_test must name the existing %s" % FOCUSED_TEST)
 	if str(capture.get("capture_command", "")) != CAPTURE_COMMAND:
-		errors.append("manifest capture.capture_command must record the gated fixed-fps windowed command")
+		errors.append("manifest capture.capture_command must record the exclusive fixed-fps windowed command")
+	if capture.get("exclusive_gate") != true:
+		errors.append("manifest capture.exclusive_gate must record the exclusive process admission (FSD_GODOT_EXCLUSIVE=1)")
+	if str(capture.get("accessibility_policy", "")) != POLICY_MODULE:
+		errors.append("manifest capture.accessibility_policy must name %s" % POLICY_MODULE)
 	if str(capture.get("test_command", "")) != TEST_COMMAND:
 		errors.append("manifest capture.test_command must record the gated headless command")
 	if int(capture.get("seed", -1)) != CAPTURE_SEED:
@@ -738,8 +793,10 @@ static func coverage_violations(manifest: Dictionary) -> Array[String]:
 		var mode := mode_spec(str(capture["mode"]))
 		if int(capture.get("enemies", -1)) != enemy_count(str(capture["weapon_id"]), mode):
 			errors.append("capture %s must stand %d real enemies" % [id, enemy_count(str(capture["weapon_id"]), mode)])
-		if capture.get("screen_shake") != bool(mode.get("screen_shake", true)):
-			errors.append("capture %s must record the %s screen_shake toggle" % [id, str(capture["mode"])])
+		var policy := capture.get("accessibility", {}) as Dictionary
+		if policy.get(Accessibility.REDUCED_MOTION_KEY) != bool(mode.get("reduced_motion", false)) \
+				or policy.get(Accessibility.PHOTOSENSITIVITY_SAFE_KEY) != bool(mode.get("photosensitivity_safe", false)):
+			errors.append("capture %s must record the %s production accessibility snapshot" % [id, str(capture["mode"])])
 		var digest := str(capture.get("sha256", ""))
 		if digest.length() != 64 or not digest.is_valid_hex_number():
 			errors.append("capture %s must pin a sha256" % id)
@@ -848,7 +905,7 @@ func _check_files(manifest: Dictionary, errors: Array[String]) -> Dictionary:
 			errors.append("%s: the effect must keep the HUD band clear" % entry_id(capture))
 		if float(measured.get("fullscreen_alpha", 1.0)) > MAX_OVERLAY_ALPHA:
 			errors.append("%s: full-screen surface alpha over the %.2f ceiling" % [entry_id(capture), MAX_OVERLAY_ALPHA])
-		if bool(mode_spec(str(capture["mode"])).get("suppress_fullscreen", false)) and not is_zero_approx(float(measured.get("fullscreen_alpha", 1.0))):
+		if bool(mode_spec(str(capture["mode"])).get("photosensitivity_safe", false)) and not is_zero_approx(float(measured.get("fullscreen_alpha", 1.0))):
 			errors.append("%s: photosensitivity-safe frame must draw no full-screen surface" % entry_id(capture))
 	return images
 
@@ -1058,18 +1115,19 @@ static func quality_violations(class_manifest: Dictionary, manifest: Dictionary)
 			errors.append("%s: a darken surface is not a flash, max_flash_coverage_ratio must be 0.0" % weapon_id)
 		if quality.get("hud_bands_clear") == true and record.get("hud_band_clear_all_frames") != true:
 			errors.append("%s: hud_bands_clear is declared but not measured true on every frame" % weapon_id)
-		if not str(quality.get("reduced_motion_substitute", "")).contains("screen_shake"):
-			errors.append("%s: reduced_motion_substitute must name the shipped screen_shake toggle it rides on" % weapon_id)
+		if not str(quality.get("reduced_motion_substitute", "")).contains("ultimate_reduced_motion"):
+			errors.append("%s: reduced_motion_substitute must name the production ultimate_reduced_motion preference it honours" % weapon_id)
 	return errors
 
 
-static func class_manifest_link_violations(class_manifest: Dictionary) -> Array[String]:
+static func class_manifest_link_violations(class_manifest: Dictionary, capture_manifest: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var certification := evidence.get("certification", {}) as Dictionary
 	if certification.is_empty():
 		errors.append("class manifest must carry evidence.certification")
 		return errors
+	var source := capture_manifest.get("source", {}) as Dictionary
 	var expected := {
 		"issue": ISSUE,
 		"capture_manifest": MANIFEST_PATH.trim_prefix("res://"),
@@ -1077,8 +1135,10 @@ static func class_manifest_link_violations(class_manifest: Dictionary) -> Array[
 		"capture_script": CAPTURE_SCRIPT,
 		"focused_test": FOCUSED_TEST,
 		"source_ref": SOURCE_REF,
-		"source_commit_sha": SOURCE_COMMIT_SHA,
-		"source_tree_sha": SOURCE_TREE_SHA,
+		"source_commit_sha": str(source.get("commit_sha", "")),
+		"source_tree_sha": str(source.get("tree_sha", "")),
+		"accessibility_policy": POLICY_MODULE,
+		"exclusive_gate": true,
 	}
 	for field in expected:
 		if str(certification.get(field, "")) != str(expected[field]):
@@ -1117,13 +1177,28 @@ static func adoption_violations() -> Array[String]:
 # --- real-runtime driving (shared with the renderer) ------------------------
 
 
-## The shipped motion toggle, exactly as main.gd publishes it.
+## The production accessibility policy, published exactly as main.gd
+## publishes the saved settings; the shipped screen_shake toggle stays on.
 static func apply_mode(tree: SceneTree, mode: Dictionary) -> void:
-	tree.root.set_meta("screen_shake", bool(mode.get("screen_shake", true)))
+	tree.root.set_meta("screen_shake", true)
+	Accessibility.apply_snapshot(tree.root, mode_snapshot(mode))
 
 
 static func reset_mode(tree: SceneTree) -> void:
 	tree.root.set_meta("screen_shake", true)
+	Accessibility.apply_snapshot(tree.root, mode_snapshot(mode_spec(MODE_NORMAL)))
+
+
+static func mode_snapshot(mode: Dictionary) -> Dictionary:
+	return {
+		Accessibility.REDUCED_MOTION_KEY: bool(mode.get("reduced_motion", false)),
+		Accessibility.PHOTOSENSITIVITY_SAFE_KEY: bool(mode.get("photosensitivity_safe", false)),
+	}
+
+
+## The snapshot the tree root publishes right now, as the frames record it.
+static func current_snapshot(tree: SceneTree) -> Dictionary:
+	return Accessibility.read_snapshot(tree.root)
 
 
 ## The live authored scene of the cast, read from the host's own presentation
@@ -1152,13 +1227,6 @@ static func fullscreen_nodes(scene: Node) -> Array[CanvasItem]:
 		for child in node.get_children():
 			pending.append(child)
 	return found
-
-
-## Capture-side suppression of the full-screen surface: modulate stays zero
-## whatever self_modulate the scene keeps driving.
-static func suppress_fullscreen(scene: Node) -> void:
-	for node in fullscreen_nodes(scene):
-		node.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
 
 static func fullscreen_alpha(scene: Node) -> float:
@@ -1321,9 +1389,10 @@ static func camera_record(camera: Camera2D, baseline: Vector2) -> Dictionary:
 
 
 ## Headless half of the device claim: the real cast is run for every weapon
-## with the toggle on and off, the camera offset is sampled every frame, and
-## the live scene's full-screen surfaces are counted, so the mode effects the
-## manifest records are what the runtime does — not what a caption says.
+## under the normal, reduced-motion and photosensitivity-safe production
+## snapshots, the camera offset and the full-screen surface alpha are sampled
+## every frame, so the mode effects the manifest records are what the runtime
+## does under the shipped policy — not what a caption says.
 func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 	var holder := Node2D.new()
 	root.add_child(holder)
@@ -1331,9 +1400,10 @@ func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 	for weapon_id in weapon_ids():
 		var effects := mode_effects(manifest, weapon_id)
 		var peaks := {}
+		var surface_peaks := {}
 		var signatures := {}
 		var surfaces := -1
-		for mode_id in [MODE_NORMAL, MODE_REDUCED_MOTION]:
+		for mode_id in [MODE_NORMAL, MODE_REDUCED_MOTION, MODE_PHOTOSENSITIVITY_SAFE]:
 			var mode := mode_spec(mode_id)
 			apply_mode(self, mode)
 			var arena := build_arena(self, holder, weapon_id, mode, COMBAT_CAMERA_ZOOM, true)
@@ -1343,6 +1413,7 @@ func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 			var status: int = PlayerHost.activate(arena.player)
 			_expect(status == PlayerHost.ACTIVATION_STARTED, "%s/%s: the real cast must start headless, got %d (%s)" % [weapon_id, mode_id, status, PlayerHost.activation_failure(arena.player)], errors)
 			var peak := 0.0
+			var surface_peak := 0.0
 			var scene := live_scene(arena.host, arena.world, weapon_id)
 			_expect(scene != null and scene.is_inside_tree(), "%s/%s: the authored scene must be live under the effect parent" % [weapon_id, mode_id], errors)
 			if scene != null and mode_id == MODE_NORMAL:
@@ -1359,11 +1430,14 @@ func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 				if arena.camera != null:
 					peak = maxf(peak, shake_offset(arena.camera, baseline).length())
 				var live := scene != null and is_instance_valid(scene) and scene.is_inside_tree()
+				if live:
+					surface_peak = maxf(surface_peak, fullscreen_alpha(scene))
 				if not live and released_at < 0.0:
 					released_at = elapsed
 				var clock := presentation_elapsed(arena.host)
 				trace.append({"elapsed": clock if clock >= 0.0 else elapsed, "signature": formation_signature(scene) if live else "released"})
 			peaks[mode_id] = peak
+			surface_peaks[mode_id] = surface_peak
 			signatures[mode_id] = trace
 			_expect(_consistent_release(manifest, weapon_id, released_at), "%s/%s: the live cast released its presentation at %.2f s, which the manifest must record as presentation_released_seconds" % [weapon_id, mode_id, released_at], errors)
 			arena.host.controller().cancel()
@@ -1375,12 +1449,15 @@ func _check_live_devices(manifest: Dictionary, errors: Array[String]) -> void:
 			_expect(float(peaks[MODE_NORMAL]) > 0.0, "%s: the manifest claims a camera shake device but the live cast never moved the camera" % weapon_id, errors)
 		elif kind == EFFECT_NONE_INTRINSIC:
 			_expect(float(peaks[MODE_NORMAL]) == 0.0, "%s: the live cast moved the camera by %.3f, so reduced motion is not an intrinsic no-op" % [weapon_id, float(peaks[MODE_NORMAL])], errors)
-		_expect(float(peaks[MODE_REDUCED_MOTION]) == 0.0, "%s: the live cast must hold the camera still with screen_shake off, moved %.3f" % [weapon_id, float(peaks[MODE_REDUCED_MOTION])], errors)
+		_expect(float(peaks[MODE_REDUCED_MOTION]) == 0.0, "%s: the live cast must hold the camera still under ultimate_reduced_motion, moved %.3f" % [weapon_id, float(peaks[MODE_REDUCED_MOTION])], errors)
 		var photo := effects.get(MODE_PHOTOSENSITIVITY_SAFE, {}) as Dictionary
 		if str(photo.get("effect", "")) == EFFECT_FULLSCREEN_SUPPRESSED:
 			_expect(surfaces > 0, "%s: the manifest claims a suppressed full-screen surface but the live scene authors none" % weapon_id, errors)
+			_expect(float(surface_peaks[MODE_NORMAL]) > 0.0, "%s: the live scene never lit its full-screen surface in the normal cast" % weapon_id, errors)
 		elif str(photo.get("effect", "")) == EFFECT_NONE_INTRINSIC:
 			_expect(surfaces == 0, "%s: the live scene authors %d full-screen surfaces" % [weapon_id, surfaces], errors)
+		_expect(float(surface_peaks[MODE_PHOTOSENSITIVITY_SAFE]) == 0.0, "%s: the live cast must leave every full-screen surface dark under ultimate_photosensitivity_safe, peaked at %.3f" % [weapon_id, float(surface_peaks[MODE_PHOTOSENSITIVITY_SAFE])], errors)
+		_expect(float(peaks[MODE_PHOTOSENSITIVITY_SAFE]) == float(peaks[MODE_NORMAL]) or float(peaks[MODE_NORMAL]) > 0.0, "%s: photosensitivity-safe must not change the camera device" % weapon_id, errors)
 		var normal_trace := signatures.get(MODE_NORMAL, []) as Array
 		var reduced_trace := signatures.get(MODE_REDUCED_MOTION, []) as Array
 		for beat_id in BEAT_IDS:
@@ -1454,7 +1531,16 @@ func _check_negatives(manifest: Dictionary, class_manifest: Dictionary, profile:
 	_expect_red(quality_violations(undeclared, manifest), "a missing quality block", errors)
 	var unlinked := class_manifest.duplicate(true)
 	(unlinked["evidence"] as Dictionary).erase("certification")
-	_expect_red(class_manifest_link_violations(unlinked), "a class manifest without the certification link", errors)
+	_expect_red(class_manifest_link_violations(unlinked, manifest), "a class manifest without the certification link", errors)
+	var mispinned := class_manifest.duplicate(true)
+	((mispinned["evidence"] as Dictionary)["certification"] as Dictionary)["source_commit_sha"] = "0000000000000000000000000000000000000000"
+	_expect_red(class_manifest_link_violations(mispinned, manifest), "a class manifest pinning a source commit the capture did not record", errors)
+	var self_referential := manifest.duplicate(true)
+	(self_referential["source"] as Dictionary)["worktree_clean"] = false
+	_expect_red(identity_violations(self_referential, profile), "a capture from a dirty worktree", errors)
+	var shared := manifest.duplicate(true)
+	(shared["capture"] as Dictionary)["exclusive_gate"] = false
+	_expect_red(identity_violations(shared, profile), "a capture without the exclusive process admission", errors)
 
 	var blank := Image.create_empty(64, 36, false, Image.FORMAT_RGBA8)
 	blank.fill(FLOOR_COLOR)

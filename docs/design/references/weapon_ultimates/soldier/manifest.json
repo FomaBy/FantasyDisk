@@ -62,12 +62,13 @@
         "cancel": "weapon_ultimate.phase.soldier.soldier_rifle.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 10,
         "crowd_cap": 22,
         "max_unique_materials": 1,
         "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "total_boss_cap_split_owner": "mechanics FAN-1469"
+        "total_boss_cap_split_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -114,12 +115,13 @@
         "cancel": "weapon_ultimate.phase.soldier.soldier_grenade.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 11,
+        "max_visual_nodes": 13,
         "crowd_cap": 26,
         "max_unique_materials": 1,
         "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "chain_detonation_damage_owner": "mechanics FAN-1469"
+        "chain_detonation_damage_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -166,12 +168,13 @@
         "cancel": "weapon_ultimate.phase.soldier.soldier_bayonet.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 10,
         "crowd_cap": 18,
         "max_unique_materials": 1,
         "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "pin_stagger_and_frontal_guard_owner": "mechanics FAN-1469"
+        "pin_stagger_and_frontal_guard_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
       },
       "presence": {
         "fullscreen_footprint": true,

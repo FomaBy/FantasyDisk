@@ -70,10 +70,11 @@
         "cancel": "weapon_ultimate.phase.thief.thief_coin_pouch.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 13,
-        "crowd_cap": 13,
+        "max_visual_nodes": 15,
+        "crowd_cap": 15,
         "max_unique_materials": 1,
-        "max_fullscreen_materials": 1
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -120,10 +121,11 @@
         "cancel": "weapon_ultimate.phase.thief.thief_shadow_cloak.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 10,
         "crowd_cap": 13,
         "max_unique_materials": 1,
-        "max_fullscreen_materials": 1
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
       },
       "presence": {
         "fullscreen_footprint": true,
@@ -170,10 +172,11 @@
         "cancel": "weapon_ultimate.phase.thief.thief_smoke_bomb.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 7,
+        "max_visual_nodes": 9,
         "crowd_cap": 13,
         "max_unique_materials": 1,
-        "max_fullscreen_materials": 1
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
       },
       "presence": {
         "fullscreen_footprint": true,

@@ -38,6 +38,7 @@ const FLOOR_Z := -100
 var _errors: Array[String] = []
 var _captures: Array[Dictionary] = []
 var _runs: Array[Dictionary] = []
+var _source: Dictionary = {}
 var _hud_clear := {}
 var _sweeps := {}
 
@@ -46,6 +47,14 @@ func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
 		print("FAN-3941 %s certification capture skipped (headless); run windowed for evidence." % SPEC.CLASS_ID.capitalize())
 		quit(0)
+		return
+	if OS.get_environment("FSD_GODOT_EXCLUSIVE") != "1":
+		push_error("%s certification capture: certification captures run under the exclusive process admission only (FSD_GODOT_EXCLUSIVE=1 %s)" % [SPEC.CLASS_ID.capitalize(), SPEC.CAPTURE_COMMAND])
+		quit(1)
+		return
+	_source = _git_source()
+	if _source.is_empty():
+		quit(1)
 		return
 	if not await _fixed_fps_active():
 		push_error("%s certification capture: run with --fixed-fps %d so beats are frame indices" % [SPEC.CLASS_ID.capitalize(), SPEC.FIXED_FPS])
@@ -85,6 +94,44 @@ func _initialize() -> void:
 	file.close()
 	print("%s certification capture manifest written: %s (%d frames, %d runs)" % [SPEC.CLASS_ID.capitalize(), SPEC.MANIFEST_PATH, _captures.size(), _runs.size()])
 	quit(0)
+
+
+## Provenance read from git at capture time: the commit and tree the clean
+## worktree is checked out at. Only the evidence output paths of the three
+## certification classes may be dirty (an earlier class's fresh frames); any
+## other change refuses the capture, so the recorded commit is the source the
+## frames were rendered from.
+func _git_source() -> Dictionary:
+	var head := _git(["rev-parse", "HEAD"])
+	var tree := _git(["rev-parse", "HEAD^{tree}"])
+	var branch := _git(["rev-parse", "--abbrev-ref", "HEAD"])
+	var dirty := _git(["status", "--porcelain", "--untracked-files=all", "--", ".", ":!docs/design/reference-assets-lfs/ultimate-certification", ":!docs/design/references/weapon_ultimates"])
+	if head.length() != 40 or tree.length() != 40:
+		push_error("%s certification capture: git provenance unavailable (head '%s', tree '%s')" % [SPEC.CLASS_ID.capitalize(), head, tree])
+		return {}
+	if not dirty.is_empty():
+		push_error("%s certification capture: the worktree has uncommitted source changes; commit the amended source first:\n%s" % [SPEC.CLASS_ID.capitalize(), dirty])
+		return {}
+	return {
+		"ref": SPEC.SOURCE_REF,
+		"branch_at_capture": branch,
+		"commit_sha": head,
+		"tree_sha": tree,
+		"worktree_clean": true,
+		"recorded_by": SPEC.SOURCE_RECORDER,
+		"note": "The commit the clean worktree was checked out at when these frames were rendered: the shipped %s scenes, drivers, executors, Player, Enemy, hazard, HUD, the production accessibility policy and this capture tooling all come from it. The frames and this manifest are committed afterwards in a separate evidence commit, so the recorded source never refers to itself." % SPEC.CLASS_ID.capitalize(),
+	}
+
+
+func _git(args: Array) -> String:
+	var output: Array = []
+	var packed := PackedStringArray()
+	for arg in args:
+		packed.append(str(arg))
+	var code := OS.execute("git", packed, output, true)
+	if code != 0:
+		return ""
+	return str(output[0]).strip_edges() if not output.is_empty() else ""
 
 
 ## The engine consumes its own --fixed-fps option, so the fixed clock is
@@ -148,8 +195,8 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 		_errors.append("%s/%s/%s: the authored scene is not live under the effect parent" % [weapon_id, mode_id, viewport_id])
 		return false
 	var surfaces := SPEC.fullscreen_nodes(scene).size()
-	if bool(mode.get("suppress_fullscreen", false)):
-		SPEC.suppress_fullscreen(scene)
+	var accessibility := SPEC.current_snapshot(self)
+	var surface_peak := 0.0
 	var activation = arena.host.controller().active_activation()
 	var aim_target: Variant = activation.primitive_value("target") if activation != null else null
 
@@ -176,6 +223,8 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 	while frame < last_frame:
 		await process_frame
 		frame += 1
+		if scene != null and is_instance_valid(scene) and scene.is_inside_tree():
+			surface_peak = maxf(surface_peak, SPEC.fullscreen_alpha(scene))
 		var offset_length := SPEC.shake_offset(arena.camera, baseline).length()
 		if offset_length > 0.0:
 			trace_max = maxf(trace_max, offset_length)
@@ -252,9 +301,9 @@ func _run(weapon_id: String, mode_id: String, viewport_id: String, sweep: bool) 
 		"viewport": viewport_id,
 		"frames": frame,
 		"enemies": enemies,
-		"screen_shake": bool(mode.get("screen_shake", true)),
-		"suppress_fullscreen": bool(mode.get("suppress_fullscreen", false)),
+		"accessibility": accessibility,
 		"fullscreen_surfaces": surfaces,
+		"fullscreen_alpha_peak": snappedf(surface_peak, 0.001),
 		"aim_target": _pair(aim_target) if aim_target is Vector2 else null,
 		"presentation_released_frame": released_frame,
 		"presentation_released_seconds": snappedf(float(released_frame) / float(SPEC.FIXED_FPS), 0.01) if released_frame >= 0 else -1.0,
@@ -470,7 +519,7 @@ func _save(entry: Dictionary, image: Image, camera: Dictionary, arena, scene: Va
 		"bytes": FileAccess.open("res://" + path, FileAccess.READ).get_length(),
 		"activation_started": true,
 		"presentation_live": live,
-		"screen_shake": bool(mode.get("screen_shake", true)),
+		"accessibility": SPEC.current_snapshot(self),
 		"enemies": SPEC.enemy_count(str(entry["weapon_id"]), mode),
 		"camera": camera,
 		"world": world,
@@ -514,12 +563,26 @@ func _presentation_elapsed(host: Node) -> float:
 func _mode_effects(weapon_id: String) -> Dictionary:
 	var shook := false
 	var surfaces := 0
+	var lit := 0.0
+	var safe_lit := 0.0
+	var released_before_active := -1.0
+	var active_edge := float(SPEC.timing_seconds(weapon_id).get("active", 0.0))
 	for run in _runs:
 		if str(run["weapon_id"]) != weapon_id:
 			continue
 		if str(run["mode"]) == SPEC.MODE_NORMAL:
 			shook = shook or float((run["camera_trace"] as Dictionary)["max_offset"]) > 0.0
 			surfaces = maxi(surfaces, int(run["fullscreen_surfaces"]))
+			lit = maxf(lit, float(run.get("fullscreen_alpha_peak", 0.0)))
+			var released := float(run.get("presentation_released_seconds", -1.0))
+			if released >= 0.0 and released < active_edge:
+				released_before_active = maxf(released_before_active, released)
+		elif str(run["mode"]) == SPEC.MODE_PHOTOSENSITIVITY_SAFE:
+			safe_lit = maxf(safe_lit, float(run.get("fullscreen_alpha_peak", 0.0)))
+	# A cast whose executor completes before the declared active edge has its
+	# presentation released by the host before the first-impact devices fire;
+	# that is recorded as what it is, not as a scene without the device.
+	var early_release := "" if released_before_active < 0.0 else " The scene's driver owns the device, but the host released the presentation at %.2f s in the normal cast, before the %.2f s active edge where it fires (see the readability report's runtime finding)." % [released_before_active, active_edge]
 	var effects := {
 		SPEC.MODE_CROWDED: {
 			"effect": SPEC.EFFECT_CROWD,
@@ -529,22 +592,22 @@ func _mode_effects(weapon_id: String) -> Dictionary:
 	if shook:
 		effects[SPEC.MODE_REDUCED_MOTION] = {
 			"effect": SPEC.EFFECT_CAMERA_SHAKE,
-			"production_semantics": "settings.screen_shake off (main.gd mirrors it onto the tree root); the live cast's shake device reads it and leaves the Player's Camera2D offset at zero, everything else in the cast is unchanged",
+			"production_semantics": "ultimate_reduced_motion=true in the persisted ultimate_accessibility_settings snapshot on the tree root (scripts/settings/ultimate_accessibility_settings.gd, published as main.gd publishes it; the shipped screen_shake toggle stays on); the live cast's own driver reads it and leaves the Player's Camera2D offset at zero, everything else in the cast is unchanged",
 		}
 	else:
 		effects[SPEC.MODE_REDUCED_MOTION] = {
 			"effect": SPEC.EFFECT_NONE_INTRINSIC,
-			"production_semantics": "settings.screen_shake off (main.gd mirrors it onto the tree root); the live cast owns no camera-shake device, so the Player's Camera2D offset stays at zero with the toggle on or off (measured every frame of both runs) and the frame is the normal frame by construction",
+			"production_semantics": "ultimate_reduced_motion=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live cast never moved the camera, so the Player's Camera2D offset stays at zero with the preference on or off (measured every frame of both runs) and the frame is the normal frame by construction." + early_release,
 		}
 	if surfaces > 0:
 		effects[SPEC.MODE_PHOTOSENSITIVITY_SAFE] = {
 			"effect": SPEC.EFFECT_FULLSCREEN_SUPPRESSED,
-			"production_semantics": "settings.screen_shake off plus capture-side suppression of the %d full-screen surface(s) the live scene flags as fullscreen_layer (the arena-wide veil), the only surface the cast draws over the whole viewport; the shipped game has no dedicated photosensitivity setting" % surfaces,
+			"production_semantics": "ultimate_photosensitivity_safe=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live cast's own driver keeps the %d full-screen surface(s) it flags as fullscreen_layer (the arena-wide veil, the only surface the cast draws over the whole viewport) dark for the whole cast (normal peak alpha %.3f, safe peak alpha %.3f, measured every frame); the camera device is unchanged" % [surfaces, lit, safe_lit],
 		}
 	else:
 		effects[SPEC.MODE_PHOTOSENSITIVITY_SAFE] = {
 			"effect": SPEC.EFFECT_NONE_INTRINSIC,
-			"production_semantics": "settings.screen_shake off; the live scene authors no full-screen surface (0 fullscreen_layer nodes measured on the live cast), so there is nothing to suppress and the frame is the reduced-motion frame by construction; the shipped game has no dedicated photosensitivity setting",
+			"production_semantics": "ultimate_photosensitivity_safe=true in the persisted ultimate_accessibility_settings snapshot on the tree root; the live scene authors no full-screen surface (0 fullscreen_layer nodes measured on the live cast), so the preference has nothing to remove and the frame is the normal frame by construction." + early_release,
 		}
 	return effects
 
@@ -588,12 +651,7 @@ func _manifest() -> Dictionary:
 		"issue": SPEC.ISSUE,
 		"class_id": SPEC.CLASS_ID,
 		"canonical_keys": keys,
-		"source": {
-			"ref": SPEC.SOURCE_REF,
-			"commit_sha": SPEC.SOURCE_COMMIT_SHA,
-			"tree_sha": SPEC.SOURCE_TREE_SHA,
-			"note": "Integrated origin/dev revision whose shipped %s scenes, executors, Player, Enemy, hazard and HUD were run; the capture tooling, frames and this manifest are added by FAN-3941 on top of it. The Soldier grenade executor and scene driver carry FAN-3941's presentation-only payoff instrumentation." % SPEC.CLASS_ID.capitalize(),
-		},
+		"source": _source,
 		"engine": {
 			"godot": str(version.get("string", "")),
 			"rendering_method": RenderingServer.get_current_rendering_method(),
@@ -609,12 +667,13 @@ func _manifest() -> Dictionary:
 			"capture_command": SPEC.CAPTURE_COMMAND,
 			"test_command": SPEC.TEST_COMMAND,
 			"exclusive_gate": OS.get_environment("FSD_GODOT_EXCLUSIVE") == "1",
+			"accessibility_policy": SPEC.POLICY_MODULE,
 			"headless_skipped": false,
 			"real_runtime": true,
 			"fixed_fps": SPEC.FIXED_FPS,
 			"seed": SPEC.CAPTURE_SEED,
 			"seed_note": "seed() is reset to this value before every cast; the shake device draws randf_range for its offsets, so the seed plus the fixed frame clock make every offset and every frame reproducible, and runs that differ only in a device stay pixel-comparable.",
-			"method": "One real cast per weapon x mode x viewport in a SubViewport of the exact viewport size: the shipped Player (configure_character, full ultimate charge, its own Camera2D made current at combat zoom 1.12 x viewport_height/1440, smoothing off) at the origin; real Enemy scenes on a deterministic spiral around the aim centre (frozen in place, real HP, real hit feedback); a real HazardVfx telegraph and a real EnemyProjectile; the live UltimateHudRuntimeAdapter mounting the real UltimateHudWidget plus an HP readout bound to the Player; the cast started with UltimatePlayerHost.activate so the executor, authored scene, victim impacts and weight devices run as in the game. The engine runs under --fixed-fps 60: beat = frame index. Each frame samples the Player camera offset (reduced-motion evidence). The hero's basic weapon is held (its _process is off) so only the ultimate acts. At a beat the composite frame is read, then the tree is paused, every CanvasItem outside the authored scene's subtree is hidden and the viewport rendered transparent for the authored-scene opaque-coverage measurement (alpha >= 0.5, stride 2; bounding box against the HUD band), then restored. reduced_motion sets the shipped screen_shake toggle off on the tree root; photosensitivity_safe additionally zeroes the modulate of every node the live scene flags as fullscreen_layer; crowded stands the declared crowd cap of enemies. Readability probes project the recorded world positions through the recorded camera state.",
+			"method": "One real cast per weapon x mode x viewport in a SubViewport of the exact viewport size: the shipped Player (configure_character, full ultimate charge, its own Camera2D made current at combat zoom 1.12 x viewport_height/1440, smoothing off) at the origin; real Enemy scenes on a deterministic spiral around the aim centre (frozen in place, real HP, real hit feedback); a real HazardVfx telegraph and a real EnemyProjectile; the live UltimateHudRuntimeAdapter mounting the real UltimateHudWidget plus an HP readout bound to the Player; the cast started with UltimatePlayerHost.activate so the executor, authored scene, victim impacts and weight devices run as in the game. The engine runs under --fixed-fps 60: beat = frame index. Each frame samples the Player camera offset (reduced-motion evidence). The hero's basic weapon is held (its _process is off) so only the ultimate acts. At a beat the composite frame is read, then the tree is paused, every CanvasItem outside the authored scene's subtree is hidden and the viewport rendered transparent for the authored-scene opaque-coverage measurement (alpha >= 0.5, stride 2; bounding box against the HUD band), then restored. reduced_motion and photosensitivity_safe publish the persisted ultimate_accessibility_settings snapshot on the tree root (scripts/settings/ultimate_accessibility_settings.gd apply_snapshot, as main.gd does at startup) and the live cast's own driver honours it; the capture runner never touches the scene. The full-screen surface alpha of the live scene is sampled every frame. crowded stands the declared crowd cap of enemies. Readability probes project the recorded world positions through the recorded camera state.",
 			"logical_canvas": "%dx%d" % [int(SPEC.LOGICAL_CANVAS.x), int(SPEC.LOGICAL_CANVAS.y)],
 			"stretch_mode": "canvas_items",
 			"combat_camera_zoom": SPEC.COMBAT_CAMERA_ZOOM,
