@@ -42,6 +42,23 @@ const SAMPLE_INJECTOR_MIN_DELTA_SAMPLE_COUNT := 1500
 const SAMPLE_INJECTOR_MIN_DELTA_BOUNDS := Vector2i(80, 220)
 const SAMPLE_INJECTOR_DELTA_CHANNEL_THRESHOLD := 0.10
 const SAMPLE_INJECTOR_DELTA_SAMPLE_STRIDE := 2
+const RUNTIME_CONFIGURATION_RESOURCE_KEYS: Array[String] = [
+	"player_scene",
+	"ultimate_host",
+	"hud_adapter",
+	"hazard_vfx",
+	"scenic_underlay",
+]
+const RUNTIME_CONFIGURATION_RUNNER_DECLARATIONS := {
+	"player_scene": "const PlayerScene := preload(\"%s\")",
+	"ultimate_host": "const PlayerHost := preload(\"%s\")",
+	"hud_adapter": "const UltimateHudRuntimeAdapter := preload(\"%s\")",
+	"hazard_vfx": "const HazardVfx := preload(\"%s\")",
+	"scenic_underlay": "const BACKGROUND_PATH := \"%s\"",
+}
+const CROWDED_HAZARD_TELEGRAPH_COUNT := 5
+const CROWDED_TARGET_COUNT_POLICY := "declared_weapon_crowd_cap"
+const STANDARD_TARGET_COUNT := 4
 
 
 func _initialize() -> void:
@@ -102,6 +119,8 @@ func _check_capture_harness(manifest: Dictionary, class_manifest: Dictionary, er
 		"native_no_repeating_fullscreen_flash",
 	]:
 		_expect(source.contains(required_snippet), "capture runner must retain live-runtime evidence hook: %s" % required_snippet, errors)
+	_expect(source.contains("int(weapon[\"crowd_cap\"]) if bool(mode[\"crowded\"]) else 4"), "capture runner must use each weapon's declared crowded target cap", errors)
+	_expect(source.contains("5 if bool(mode[\"crowded\"]) else 2"), "capture runner must create five crowded hazard telegraphs", errors)
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var certification := evidence.get("certification_capture", {}) as Dictionary
 	_expect(str(certification.get("manifest", "")) == CERTIFICATION_MANIFEST_PATH.trim_prefix("res://"), "class manifest must link the certification manifest", errors)
@@ -155,6 +174,25 @@ func _check_capture_files(manifest: Dictionary, errors: Array[String]) -> void:
 
 
 func _check_negative_probes(manifest: Dictionary, errors: Array[String]) -> void:
+	var missing_runtime_path := manifest.duplicate(true)
+	var missing_runtime_configuration := missing_runtime_path.get("runtime_configuration", {}) as Dictionary
+	missing_runtime_configuration["hud_adapter"] = "res://scripts/ui/missing_runtime_adapter.gd"
+	_expect(not _manifest_violations(missing_runtime_path).is_empty(), "a nonexistent declared runtime path must fail closed", errors)
+	var mismatched_runtime_path := manifest.duplicate(true)
+	var mismatched_runtime_configuration := mismatched_runtime_path.get("runtime_configuration", {}) as Dictionary
+	mismatched_runtime_configuration["hazard_vfx"] = "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd"
+	_expect(not _manifest_violations(mismatched_runtime_path).is_empty(), "a declared runtime path not used by the runner must fail closed", errors)
+	var inconsistent_crowded_telegraphs := manifest.duplicate(true)
+	var crowded_modes := _presentation_modes_by_id(inconsistent_crowded_telegraphs.get("presentation_modes", []))
+	var crowded_mode := crowded_modes.get("crowded", {}) as Dictionary
+	crowded_mode["hazard_telegraph_count"] = CROWDED_HAZARD_TELEGRAPH_COUNT - 1
+	_expect(not _manifest_violations(inconsistent_crowded_telegraphs).is_empty(), "an inconsistent crowded hazard configuration must fail closed", errors)
+	var inconsistent_crowded_targets := manifest.duplicate(true)
+	for raw_capture in inconsistent_crowded_targets.get("captures", []) as Array:
+		if raw_capture is Dictionary and str((raw_capture as Dictionary).get("mode", "")) == "crowded":
+			(raw_capture as Dictionary)["representative_target_count"] = STANDARD_TARGET_COUNT
+			break
+	_expect(not _manifest_violations(inconsistent_crowded_targets).is_empty(), "an inconsistent crowded target configuration must fail closed", errors)
 	var missing_asset_errors := _png_violations("res://docs/design/reference-assets-lfs/ultimate-certification/biologist/missing.png", Vector2i(1, 1))
 	_expect(not missing_asset_errors.is_empty(), "missing capture asset must fail closed", errors)
 	var pointer := FileAccess.open(POINTER_PROBE_PATH, FileAccess.WRITE)
@@ -207,6 +245,10 @@ func _manifest_violations(manifest: Dictionary) -> Array[String]:
 		violations.append("canonical_weapon_ids")
 	if _mode_ids(manifest.get("presentation_modes", [])) != MODE_IDS:
 		violations.append("presentation_modes")
+	for runtime_violation in _runtime_configuration_violations(manifest):
+		violations.append(runtime_violation)
+	for crowded_violation in _crowded_configuration_violations(manifest):
+		violations.append(crowded_violation)
 	for readability_violation in _sample_injector_readability_violations(manifest):
 		violations.append(readability_violation)
 	var declared_viewports := _viewports_by_id(manifest.get("viewports", []))
@@ -253,6 +295,54 @@ func _manifest_violations(manifest: Dictionary) -> Array[String]:
 			violations.append("capture_photosensitivity:%s" % key)
 	if seen.size() != expected_keys.size():
 		violations.append("capture_matrix")
+	return violations
+
+
+func _runtime_configuration_violations(manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var configuration := manifest.get("runtime_configuration", {}) as Dictionary
+	var runner_source := FileAccess.get_file_as_string(CAPTURE_SCRIPT_PATH)
+	for key in RUNTIME_CONFIGURATION_RESOURCE_KEYS:
+		var resource_path := str(configuration.get(key, ""))
+		if not resource_path.begins_with("res://") or not FileAccess.file_exists(resource_path):
+			violations.append("runtime_configuration:%s:missing_resource" % key)
+		elif not runner_source.contains(str(RUNTIME_CONFIGURATION_RUNNER_DECLARATIONS[key]) % resource_path):
+			violations.append("runtime_configuration:%s:runner_mismatch" % key)
+	return violations
+
+
+func _crowded_configuration_violations(manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var crowded_mode := _presentation_modes_by_id(manifest.get("presentation_modes", [])).get("crowded", {}) as Dictionary
+	if int(crowded_mode.get("hazard_telegraph_count", -1)) != CROWDED_HAZARD_TELEGRAPH_COUNT:
+		violations.append("crowded_hazard_telegraph_count")
+	if str(crowded_mode.get("target_count_policy", "")) != CROWDED_TARGET_COUNT_POLICY:
+		violations.append("crowded_target_count_policy")
+	var configuration := str(crowded_mode.get("configuration", ""))
+	if not configuration.contains("Five hazard telegraphs") or not configuration.contains("declared crowd cap"):
+		violations.append("crowded_configuration_description")
+	var packages := _packages_by_weapon(manifest)
+	var seen_crowded_weapons := {}
+	for raw_capture in manifest.get("captures", []) as Array:
+		if raw_capture is not Dictionary:
+			continue
+		var capture := raw_capture as Dictionary
+		var weapon_id := str(capture.get("weapon_id", ""))
+		var package := packages.get(weapon_id, {}) as Dictionary
+		if package.is_empty():
+			violations.append("crowded_unknown_weapon:%s" % weapon_id)
+			continue
+		var declared_crowd_cap := int(package.get("executor_crowd_cap", -1))
+		if declared_crowd_cap <= 0 or int(capture.get("executor_crowd_cap", -1)) != declared_crowd_cap:
+			violations.append("capture_crowd_cap:%s" % _capture_key(capture))
+		var expected_target_count := declared_crowd_cap if str(capture.get("mode", "")) == "crowded" else STANDARD_TARGET_COUNT
+		if int(capture.get("representative_target_count", -1)) != expected_target_count:
+			violations.append("capture_target_count:%s" % _capture_key(capture))
+		if str(capture.get("mode", "")) == "crowded":
+			seen_crowded_weapons[weapon_id] = true
+	for weapon_id in WEAPON_IDS:
+		if not seen_crowded_weapons.has(weapon_id):
+			violations.append("missing_crowded_weapon:%s" % weapon_id)
 	return violations
 
 
@@ -314,6 +404,19 @@ func _packages_by_weapon(manifest: Dictionary) -> Dictionary:
 			var package := raw_package as Dictionary
 			packages[str(package.get("weapon_id", ""))] = package
 	return packages
+
+
+func _presentation_modes_by_id(raw_modes: Variant) -> Dictionary:
+	var modes := {}
+	if raw_modes is not Array:
+		return modes
+	for raw_mode in raw_modes as Array:
+		if raw_mode is Dictionary:
+			var mode := raw_mode as Dictionary
+			var mode_id := str(mode.get("id", ""))
+			if not mode_id.is_empty() and not modes.has(mode_id):
+				modes[mode_id] = mode
+	return modes
 
 
 func _viewports_by_id(raw_viewports: Variant) -> Dictionary:

@@ -52,7 +52,9 @@
     },
     {
       "id": "crowded",
-      "configuration": "Representative hazard plus four targets, while the executor retains its authored crowd cap.",
+      "configuration": "Five hazard telegraphs; target count equals each weapon's declared crowd cap (18 / 16 / 22).",
+      "hazard_telegraph_count": 5,
+      "target_count_policy": "declared_weapon_crowd_cap",
       "intent": "Readability with simultaneous target and hazard pressure."
     },
     {
@@ -91,8 +93,8 @@
   "runtime_configuration": {
     "player_scene": "res://scenes/Player.tscn",
     "ultimate_host": "res://scripts/ultimates/controller/ultimate_player_host.gd",
-    "hud_adapter": "res://scripts/ui/ultimate_hud_runtime_adapter.gd",
-    "hazard_vfx": "res://scripts/vfx/hazard_vfx.gd",
+    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
+    "hazard_vfx": "res://scripts/hazard_vfx.gd",
     "scenic_underlay": "res://assets/backgrounds/field_misty_marsh.png",
     "camera": "Shipped Player Camera2D centered on the 2048x1152 arena fixture.",
     "targets": "Four real Enemy.tscn instances are seeded in normal, reduced-motion, and photosensitivity-safe modes; crowded mode instantiates the declared weapon crowd cap. Damage evidence is asserted for every captured active beat.",
