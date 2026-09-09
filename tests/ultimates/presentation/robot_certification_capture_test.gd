@@ -21,8 +21,8 @@ const LIVE_CAPTURE_SCRIPT := "tests/ultimates/presentation/robot_certification_l
 
 const CAPTURE_ROOT := "res://docs/design/reference-assets-lfs/ultimate-certification/robot"
 const CAPTURE_BASE_REF := "dev"
-const CAPTURE_BASE_SHA := "fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2"
-const CAPTURE_BASE_TREE := "61e18a3744066df4ef34fd5611b3e3dcaddb3c8c"
+const CAPTURE_BASE_SHA := "3ffe04e8c8f22d175b0303e6e63e8e33185175e6"
+const CAPTURE_BASE_TREE := "1dcc00f516103ec68a064ff71af5ae5763f7de6e"
 const CAPTURE_SEED := 394402
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const CAPTURE_STEP := 0.01

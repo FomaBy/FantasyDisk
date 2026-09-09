@@ -8,7 +8,7 @@ This package certifies the shipped Robot ultimate trio after full presentation-v
 
 | Field | Value |
 | --- | --- |
-| Source ref / commit / tree | `agent/codex-dev-sol-5-6/3fbc2f531de0` / `fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2` / `61e18a3744066df4ef34fd5611b3e3dcaddb3c8c` |
+| Source ref / commit / tree | `agent/codex-dev-sol-5-6/3fbc2f531de0` / `3ffe04e8c8f22d175b0303e6e63e8e33185175e6` / `1dcc00f516103ec68a064ff71af5ae5763f7de6e` |
 | Engine / renderer | Godot `4.7.stable.official.5b4e0cb0f` / GL Compatibility (OpenGL API 4.1 Metal, Apple M4 Pro) |
 | Controlled seed | `394402`, reseeded per phase/weapon/mode cell |
 | Workload exclusion | `FSD_GODOT_EXCLUSIVE=1` machine-wide Godot lease |
