@@ -408,9 +408,9 @@
     "authored_focused_test": "tests/ultimates/presentation/doctor_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "origin/dev",
-      "source_commit_sha": "9da21d2c225a5cbcd56f984b76b0ff28d0adf4a2",
-      "source_tree_sha": "2b17787eb63856a044efaf043da2420b2be3d3b3",
+      "source_ref": "agent/codex-dev-sol-5-6/4d7a94c42825",
+      "source_commit_sha": "b9911a7a908c1da23129303f9794cedef8320bc5",
+      "source_tree_sha": "dc28f372db1c6d822da2eb4b05c4fc972ed7e756",
       "capture_manifest": "docs/design/references/weapon_ultimates/doctor/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/doctor/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
@@ -437,7 +437,12 @@
         "1080p": "1920x1080",
         "2k": "2560x1440"
       },
-      "sheet_sha256": {},
+      "sheet_sha256": {
+        "648p": "0cee66e370e922c8008ee9642a27083e072496a165ae18a1951b4c5033737969",
+        "720p": "eb2084da294ec8dff1c85955a60fdf8c9d66c75e072c6d3fb17cb6027d958b13",
+        "1080p": "a58db68326795654b5ae1407b0d13398a19873ad8c41c0e0993e1567fa9217b9",
+        "2k": "1e65d0f85896fa06d136a6dab0e64258ee98c00c030c65fd24652974fa60771d"
+      },
       "live_samples": 144,
       "note": "Four native-size mode matrices index 144 fresh measurements from real Main.tscn combat runs with the shipped Player, HUD and Enemy hazards. The dedicated persisted accessibility flags drive the reduced-motion and photosensitivity-safe variants independently."
     }
