@@ -1136,15 +1136,23 @@ static func closest_samples(a: Array, b: Array, beat: float) -> Array:
 ## A presentation the executor releases before its declared timeline must be
 ## recorded per run; the headless cast confirms the release time within a
 ## generous wall-clock tolerance (the capture runs on the fixed clock).
+## The renderer watches a cast only until its last committed beat frame; a
+## release it recorded (-1 = none inside its window) must agree with what the
+## live cast does here: an observed release inside the recorded window must
+## have been recorded at the same time, one past the window may be unrecorded.
 static func _consistent_release(manifest: Dictionary, weapon_id: String, released_at: float) -> bool:
 	var recorded := -1.0
+	var window := timeline_seconds(weapon_id)
 	for raw_run in manifest.get("runs", []) as Array:
 		var run := raw_run as Dictionary
 		if str(run.get("weapon_id", "")) == weapon_id and str(run.get("mode", "")) == MODE_NORMAL and str(run.get("viewport", "")) == BEAT_VIEWPORT:
 			recorded = float(run.get("presentation_released_seconds", -1.0))
+			window = float(run.get("frames", 0)) / float(FIXED_FPS)
 	if released_at < 0.0:
-		return recorded < 0.0 or recorded >= timeline_seconds(weapon_id)
-	return recorded >= 0.0 and absf(recorded - released_at) <= 0.35
+		return recorded < 0.0 or recorded >= window - 0.35
+	if recorded < 0.0:
+		return released_at >= window - 0.35
+	return absf(recorded - released_at) <= 0.35
 
 
 static func mode_effects(manifest: Dictionary, weapon_id: String) -> Dictionary:
