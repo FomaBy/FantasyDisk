@@ -1,8 +1,11 @@
 # FAN-3934 round-5c — complete review-admission package
 
 Candidate for review: production source `1b548ee4c25458d804c1812697bbf0aa3433615f`,
-source tree `fa05f171008f18d552d8e0ead97bfc1e16cadf42`. This commit is both the
-measured production source and the branch tip (evidence committed with it). Prior
+source tree `fa05f171008f18d552d8e0ead97bfc1e16cadf42`. CORRECTION (16:08 UTC PM
+continuation): this commit was the branch tip only at publication time; the pushed
+evidence successor `1096a43257c9ec613085f1a2c3be1667da6c1e24` (tree
+`3d2c01f71c7a94c6eb24a33848201249e8bc7776`) is the branch tip, and its direct-parent
+diff is evidence-only. The round-5d package supersedes this one for admission. Prior
 history: `8cb305f6396d…` / tree `c0687f02fffb…` (round-5b candidate), `8fec34fb1…` /
 tree `2134aac124a…` (round-5 candidate), base `d192be10b`.
 
