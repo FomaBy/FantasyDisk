@@ -214,7 +214,7 @@ func _chrome_viewport(size: Vector2i, phase: String) -> SubViewport:
 	var host := Node2D.new()
 	viewport.add_child(host)
 	var title := Label.new()
-	title.text = "CHEMIST ULTIMATES — %s LIVE RUNTIME MATRIX" % phase.to_upper()
+	title.text = "PRIEST ULTIMATES — %s LIVE RUNTIME MATRIX" % phase.to_upper()
 	title.position = Vector2(size.x * 0.022, size.y * 0.020)
 	title.add_theme_font_size_override("font_size", maxi(16, roundi(size.y * 0.032)))
 	title.add_theme_color_override("font_color", Color(0.82, 1.0, 0.56))
