@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3938",
+  "class_id": "dark_mage",
+  "capture_script": "tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+  "focused_test": "tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
+  "victim_impact_source_candidate": {
+    "issue": "FAN-3886",
+    "sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "tree": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+    "description": "Integrated Dark Mage victim-impact delivery used by this capture package."
+  },
+  "capture_base": {
+    "ref": "origin/dev",
+    "sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+    "tree": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
+  },
+  "canonical_weapon_ids": [
+    "dark_book",
+    "cursed_skull",
+    "dark_wand"
+  ],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "description": "Three-victim live timeline and impact snapshot at the ordinary active beat."
+    },
+    {
+      "id": "crowded",
+      "description": "Thirty-nine live victim markers exercise the production degraded ripple path while HUD and hazard probes remain visible."
+    },
+    {
+      "id": "reduced_motion",
+      "description": "A held, no-camera-shake capture frame preserves the same weapon and victim-impact read without advancing motion after sampling."
+    },
+    {
+      "id": "photosensitivity_safe",
+      "description": "A held low-contrast frame contains no repeating full-screen flash; the bounded victim-impact burst remains local to its targets."
+    }
+  ],
+  "layout": {
+    "rows": "canonical_weapon_ids",
+    "columns": "presentation_modes",
+    "cells_per_sheet": 12,
+    "runtime_resources": {
+      "timeline_scenes": [
+        "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+        "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+        "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn"
+      ],
+      "effect_scenes": [
+        "scripts/ultimates/classes/dark_mage/dark_book.tscn",
+        "scripts/ultimates/classes/dark_mage/cursed_skull.tscn",
+        "scripts/ultimates/classes/dark_mage/dark_wand.tscn"
+      ],
+      "victim_impact_service": "scripts/ultimates/presentation/victim_impact_player.gd"
+    }
+  },
+  "viewports": [
+    {
+      "id": "648p",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/dark_mage/dark_mage_certification_648p.png",
+      "lfs_object_id": "sha256:e864e29702996e84b9ff402f814a72b6edd40fc4dbee3ae1fd894620cb2e5c36"
+    },
+    {
+      "id": "720p",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/dark_mage/dark_mage_certification_720p.png",
+      "lfs_object_id": "sha256:547b40b1cc81c2135478f5d00c29e004f6eb4a77c1efe6b409762cea2059b294"
+    },
+    {
+      "id": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/dark_mage/dark_mage_certification_1080p.png",
+      "lfs_object_id": "sha256:11918efb3731c6c57be63205c9817ae7efae0002080752535368e77e93585107"
+    },
+    {
+      "id": "2k",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/dark_mage/dark_mage_certification_2k.png",
+      "lfs_object_id": "sha256:65dd7dae35e7d31aa5ce8ecabd13471b002b598384fddfa51e237f7142284d91"
+    }
+  ],
+  "verification": {
+    "windowed_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+    "focused_probe": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
+    "victim_impact_probe": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_victim_impact_test.gd",
+    "lfs_integrity": "git lfs fsck"
+  },
+  "scope_boundary": "This is reproducible capture evidence only. Production Dark Mage VFX, gameplay, balance, shared registries, and legacy adoption manifests remain unchanged."
+}

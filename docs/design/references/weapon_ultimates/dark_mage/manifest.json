@@ -276,6 +276,14 @@
       "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/dark_mage_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd",
+    "live_capture": {
+      "certification_manifest": "docs/design/references/weapon_ultimates/dark_mage/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/dark_mage/certification_readability_report.md",
+      "mode_count": 4,
+      "viewport_count": 4,
+      "capture_base_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+      "capture_base_tree": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
+    }
   }
 }
