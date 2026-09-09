@@ -26,13 +26,21 @@
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_1080p.png",
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_2k.png"
     ],
-    "certification_capture": {
+    "live_capture": {
       "issue": "FAN-3940",
-      "manifest": "docs/design/references/weapon_ultimates/sniper/certification_capture_manifest.json",
+      "source_ref": "origin/dev",
+      "source_commit_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+      "source_tree_sha": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+      "capture_manifest": "docs/design/references/weapon_ultimates/sniper/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/sniper/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/sniper_certification_live_capture.gd",
       "focused_test": "tests/ultimates/presentation/sniper_certification_capture_test.gd",
       "capture_mode": "windowed Godot render at --fixed-fps 60; a headless run owns no render target and is skipped, never substituted",
+      "weapon_ids": [
+        "sniper_deadeye_rifle",
+        "sniper_spotter_scope",
+        "sniper_shatter_rounds"
+      ],
       "modes": [
         "normal",
         "crowded",
@@ -40,7 +48,12 @@
         "photosensitivity_safe"
       ],
       "beats": ["release", "active", "recovery"],
-      "viewports": ["648p", "720p", "1080p", "2k"],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
       "sheets": [
         "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_648p.png",
         "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_normal_720p.png",
@@ -59,7 +72,8 @@
         "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_1080p.png",
         "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_photosensitivity_safe_2k.png"
       ],
-      "note": "One sheet per presentation mode and viewport. Each sheet is three canonical weapons by the release, active and recovery beats, and every cell is a native-resolution render of the shipped presentation scene downscaled by one third. The four legacy viewport contact sheets above stay as they are; this block adds the four-mode live evidence FAN-3877 found missing."
+      "live_samples": 144,
+      "note": "One committed sheet per presentation mode and viewport. Each sheet holds the three canonical weapons by the release, active and recovery beats, and every cell is a native-resolution frame of the shipped presentation scene with its shipped weapon effect and victim-impact flipbook live on real hazards, downscaled by one third. The modes use only switches the game already publishes on the scene-tree root - screen_shake for reduced motion and combat_feedback for flash reduction - plus the weapon's declared crowd cap for crowded. All 144 samples are measured in the capture manifest. The four authored viewport sheets stay in evidence.contact_sheets because the shared visual-direction contract owns that four-slot field; they are one presentation at four sizes and never established four-mode coverage (FAN-3877). No production scene, VFX, gameplay or balance value is changed."
     },
     "focused_test": "tests/ultimates/presentation/sniper_runtime_presentation_test.gd"
   },

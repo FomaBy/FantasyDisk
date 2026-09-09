@@ -53,14 +53,15 @@ const VIEWPORT_SIZES := {
 	"2k": Vector2i(2560, 1440),
 }
 
-## `screen_shake` is the shipped accessibility toggle the Sniper presentation
-## reads off the tree root; `hazards` of -1 means the weapon's own declared
-## crowd cap.
+## Both switches are the ones the shipped game publishes on the tree root from
+## GameSettings: `screen_shake` gates the presentation's camera shake and
+## `combat_feedback` gates the per-victim hit flash the shipped impact player
+## asks each victim for. `hazards` of -1 means the weapon's declared crowd cap.
 const MODE_SPECS := {
-	"normal": {"label": "NORMAL", "screen_shake": true, "hazards": 3},
-	"crowded": {"label": "CROWDED", "screen_shake": true, "hazards": -1},
-	"reduced_motion": {"label": "REDUCED MOTION", "screen_shake": false, "hazards": 3},
-	"photosensitivity_safe": {"label": "PHOTO-SAFE", "screen_shake": false, "hazards": 3},
+	"normal": {"label": "NORMAL", "screen_shake": true, "combat_feedback": true, "hazards": 3},
+	"crowded": {"label": "CROWDED", "screen_shake": true, "combat_feedback": true, "hazards": -1},
+	"reduced_motion": {"label": "REDUCED MOTION", "screen_shake": false, "combat_feedback": true, "hazards": 3},
+	"photosensitivity_safe": {"label": "PHOTO-SAFE", "screen_shake": false, "combat_feedback": false, "hazards": 3},
 }
 
 const ULTIMATE_SCENES := {
@@ -108,16 +109,33 @@ var _errors: Array[String] = []
 
 
 ## A hazard that answers the two combat-feedback calls the shipped victim-impact
-## player makes, so the impact bursts in every frame are the production ones.
+## player makes, mirroring `enemy.gd`: the same root-meta guard and the same
+## additive impact_flash tick. Hard-coding the guard to `true` would have made
+## the photosensitivity-safe mode indistinguishable from the others.
 class HazardProbe extends Node2D:
+	const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
+
 	var health := 100.0
 	var flashes := 0
+	var reach := 48.0
 
 	func _combat_feedback_enabled() -> bool:
-		return true
+		if not is_inside_tree():
+			return false
+		return bool(get_tree().root.get_meta("combat_feedback", true))
 
 	func _show_hit_flash() -> void:
 		flashes += 1
+		var tick := Sprite2D.new()
+		tick.name = "CombatHitTick"
+		tick.texture = HIT_FLASH_TEXTURE
+		var tick_material := CanvasItemMaterial.new()
+		tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		tick.material = tick_material
+		tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
+		tick.scale = Vector2.ONE * (maxf(reach * 0.95, 48.0) / 128.0)
+		tick.z_index = 2999
+		add_child(tick)
 
 
 class CaptureActivation extends RefCounted:
@@ -191,6 +209,7 @@ func _render_native_frame(weapon_id: String, mode_id: String, beat_id: String, v
 		hazard_count = int((weapon.get("performance", {}) as Dictionary).get("crowd_cap", 24))
 	seed(_panel_seed(weapon_id, mode_id, beat_id, viewport_id))
 	root.set_meta("screen_shake", bool(mode.get("screen_shake", true)))
+	root.set_meta("combat_feedback", bool(mode.get("combat_feedback", true)))
 
 	var viewport := SubViewport.new()
 	viewport.size = size
@@ -213,6 +232,7 @@ func _render_native_frame(weapon_id: String, mode_id: String, beat_id: String, v
 	for hazard_rect in hazard_rects:
 		var hazard := HazardProbe.new()
 		hazard.position = hazard_rect.get_center()
+		hazard.reach = maxf(hazard_rect.size.x, hazard_rect.size.y)
 		world.add_child(hazard)
 		_add_color_rect(hazard, Rect2(-hazard_rect.size * 0.5, hazard_rect.size), HAZARD_COLOR, -5)
 		hazards.append(hazard)
@@ -256,6 +276,7 @@ func _render_native_frame(weapon_id: String, mode_id: String, beat_id: String, v
 	record["hazard_count"] = hazards.size()
 	record["visible_phase"] = str(ultimate.call("visible_phase_name"))
 	record["screen_shake_setting"] = bool(mode.get("screen_shake", true))
+	record["combat_feedback_setting"] = bool(mode.get("combat_feedback", true))
 	record["camera_shake_applied"] = ultimate.get("_camera") != null
 	record["camera_offset_px"] = [snappedf(view_offset.x, 0.001), snappedf(view_offset.y, 0.001)]
 	record["backdrop_alpha"] = snappedf(backdrop.modulate.a, 0.0001) if backdrop != null else 0.0
@@ -464,7 +485,7 @@ func _mode_readout(record: Dictionary) -> String:
 	var offset := record.get("camera_offset_px", [0.0, 0.0]) as Array
 	if str(record.get("mode", "")) == "photosensitivity_safe":
 		var flash := _flash_by_weapon.get(str(record.get("weapon_id", "")), {}) as Dictionary
-		return "flash %.2fHz veil %.2f shake off" % [
+		return "veil %.2fHz/%.2f no shake no flash" % [
 			float(flash.get("flash_hz", 0.0)), float(flash.get("peak_veil_alpha", 0.0))]
 	if not bool(record.get("camera_shake_applied", false)):
 		return "shake off offset 0.0,0.0"
@@ -495,6 +516,7 @@ func _write_manifest() -> void:
 		modes.append({
 			"id": mode_id,
 			"screen_shake_setting": bool(mode.get("screen_shake", true)),
+			"combat_feedback_setting": bool(mode.get("combat_feedback", true)),
 			"hazard_population": "declared crowd_cap" if int(mode.get("hazards", 3)) < 0 else int(mode.get("hazards", 3)),
 			"description": _mode_description(mode_id),
 		})
@@ -604,7 +626,7 @@ func _mode_description(mode_id: String) -> String:
 		"reduced_motion":
 			return "Shipped reduced-motion path: the screen_shake toggle is off, so SniperUltimatePresentationScene never binds a camera and the frame stays centred."
 		"photosensitivity_safe":
-			return "Screen shake off and the per-beat backdrop alpha recorded; the Sniper treatment is a single monotone step per phase, so it carries no repeating full-screen flash."
+			return "Both shipped switches off: no camera shake and no per-victim hit flash, because the shipped impact player asks every victim for combat_feedback before flashing it. The recorded veil series shows the remaining backdrop is one monotone step per phase, not a repeating full-screen flash."
 	return ""
 
 

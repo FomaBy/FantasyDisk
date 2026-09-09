@@ -62,19 +62,34 @@ func _check_source_pin(manifest: Dictionary) -> void:
 
 func _check_class_manifest_link(class_manifest: Dictionary, manifest: Dictionary) -> void:
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
-	var certification := evidence.get("certification_capture", {}) as Dictionary
-	_check(str(certification.get("issue", "")) == str(manifest.get("issue", "")), "class manifest must record the certification issue")
-	_check(str(certification.get("manifest", "")) == Capture.MANIFEST_PATH.trim_prefix("res://"),
+	var live := evidence.get("live_capture", {}) as Dictionary
+	_check(str(live.get("issue", "")) == str(manifest.get("issue", "")), "class manifest must record the certification issue")
+	_check(str(live.get("capture_manifest", "")) == Capture.MANIFEST_PATH.trim_prefix("res://"),
 		"class manifest must point at the certification capture manifest")
-	_check(str(certification.get("capture_script", "")) == str(manifest.get("capture_script", "")),
+	_check(str(live.get("readability_report", "")) == str(manifest.get("readability_report", "")),
+		"class manifest and capture manifest must name the same readability report")
+	_check(str(live.get("capture_script", "")) == str(manifest.get("capture_script", "")),
 		"class manifest and capture manifest must name the same renderer")
-	var declared := _string_array(certification.get("modes", []))
-	_check(declared == Capture.MODE_IDS, "class manifest must declare the four live modes")
-	var sheets := _string_array(certification.get("sheets", []))
+	_check(str(live.get("focused_test", "")) == str(manifest.get("focused_test", "")),
+		"class manifest and capture manifest must name the same gate")
+	_check(str(live.get("source_commit_sha", "")) == Capture.CAPTURE_SOURCE_SHA
+		and str(live.get("source_tree_sha", "")) == Capture.CAPTURE_SOURCE_TREE,
+		"class manifest must carry the same non-self-referential source pin")
+	_check(_string_array(live.get("weapon_ids", [])) == Capture.WEAPON_IDS, "class manifest must declare the canonical trio")
+	_check(_string_array(live.get("modes", [])) == Capture.MODE_IDS, "class manifest must declare the four live modes")
+	_check(_string_array(live.get("beats", [])) == Capture.BEAT_IDS, "class manifest must declare the three captured beats")
+	var declared_viewports := live.get("viewports", {}) as Dictionary
+	for viewport_id in Capture.VIEWPORT_IDS:
+		var size := Capture.VIEWPORT_SIZES[viewport_id] as Vector2i
+		_check(str(declared_viewports.get(viewport_id, "")) == "%dx%d" % [size.x, size.y],
+			"class manifest must declare %s at its native size" % viewport_id)
+	var sheets := _string_array(live.get("sheets", []))
 	_check(sheets.size() == Capture.MODE_IDS.size() * Capture.VIEWPORT_IDS.size(),
 		"class manifest must list one sheet per mode and viewport")
 	for path in sheets:
 		_check(FileAccess.file_exists("res://%s" % path), "class manifest sheet must exist: %s" % path)
+	_check(int(live.get("live_samples", 0)) == (manifest.get("observations", []) as Array).size(),
+		"class manifest sample count must match the measured frames")
 	var legacy := _string_array(evidence.get("contact_sheets", []))
 	_check(legacy.size() == Capture.VIEWPORT_IDS.size(), "the shipped four-viewport contact sheets must stay declared")
 

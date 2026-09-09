@@ -42,7 +42,14 @@ records what each one measurably did.
 | `normal` | `screen_shake` on, three live hazards | `camera_shake_applied: true` in all 36 frames, camera offset up to 6.38 px |
 | `crowded` | `screen_shake` on, hazards at the weapon's declared `crowd_cap` (24/24/26) | 24-26 live victims per frame, impact pool peak 6-7, `degraded: false` throughout |
 | `reduced_motion` | `screen_shake` off — the shipped accessibility toggle `SniperUltimatePresentationScene` reads off the tree root | `camera_shake_applied: false` and camera offset exactly `(0.0, 0.0)` in all 36 frames |
-| `photosensitivity_safe` | `screen_shake` off, plus a full-cast veil-alpha series sampled every 0.05 s | one rising edge per cast: 0.34 Hz / 0.29 Hz / 0.32 Hz, peak veil alpha 0.42 / 0.34 / 0.34 |
+| `photosensitivity_safe` | `screen_shake` off **and** `combat_feedback` off — both switches `main.gd` publishes on the tree root from `GameSettings` — plus a full-cast veil-alpha series sampled every 0.05 s | `flashes: 0` in all 36 frames against 2 in `reduced_motion`, and one rising veil edge per cast: 0.34 Hz / 0.29 Hz / 0.32 Hz, peak alpha 0.42 / 0.34 / 0.34 |
+
+Both root switches are read by shipped code, not by the capture: the presentation
+scene gates its camera shake on `screen_shake`, and `UltimateVictimImpactPlayer`
+asks every victim for `_combat_feedback_enabled()` before flashing it, exactly as
+`enemy.gd` answers it. The hazard nodes in these captures answer the same way and
+draw the same additive `impact_flash` tick, so turning the switch off removes a
+real flash rather than a drawn annotation.
 
 ## Readability at the beats
 
@@ -57,7 +64,7 @@ translucent tint that would otherwise read as a lost marker.
 | --- | ---: | ---: | ---: | ---: | ---: |
 | `sniper_deadeye_rifle` | 0.28 | 0.024 | 0.0000 | 0.0 | 0.34 Hz, one rising edge |
 | `sniper_spotter_scope` | 0.30 | 0.079 | 0.0517 | 0.0 | 0.29 Hz, one rising edge |
-| `sniper_shatter_rounds` | 0.30 | 0.076 | 0.0487 | 0.0 | 0.32 Hz, one rising edge |
+| `sniper_shatter_rounds` | 0.30 | 0.077 | 0.0487 | 0.0 | 0.32 Hz, one rising edge |
 
 All three stay far inside their declared opaque-coverage caps. None of the three
 produces a repeating full-screen flash: the veil is a single monotone step per
@@ -73,12 +80,15 @@ These are recorded, not repaired. This card authorises no production scene,
 runtime, executor or overlay change, so each item below is evidence for a
 separate scope decision rather than a defect fixed here.
 
-1. **The Sniper presentation has no photosensitivity-specific branch.** Its only
-   accessibility toggle is `screen_shake`, so the `photosensitivity_safe` frames
-   are pixel-identical to `reduced_motion`. That is not a capture shortcut: the
-   veil-alpha series is what carries the photosensitivity claim, and it shows
-   there is nothing to suppress — a single 0.29-0.34 Hz rising edge per cast.
-   Two of the sixteen sheets therefore differ only in their measured caption.
+1. **The photosensitivity-safe difference is real but small.** With
+   `combat_feedback` off the per-victim additive tick disappears — `flashes: 0`
+   against 2 — and 2.223 % of the 648p sheet's pixels change. That is the whole
+   of it: `SniperUltimatePresentationScene` has no photosensitivity branch of its
+   own, so the backdrop veil is unchanged between the two shake-off modes. The
+   veil series is what carries the rest of the claim, and it shows there is
+   nothing left to suppress: one 0.29-0.34 Hz rising edge per cast against a
+   3 Hz threshold. At the sheet's one-third scale the two modes look alike; the
+   measurements, not the thumbnails, are where they separate.
 2. **The reduced-motion variant is narrower than the manifest describes.** Each
    weapon declares a `reduced_motion_substitute` — a steady dim, a held pose, a
    static glint. `SniperUltimatePresentationScene` implements none of that; it
