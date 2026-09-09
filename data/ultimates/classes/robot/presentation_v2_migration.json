@@ -1,9 +1,5 @@
 {
   "schema_version": 1,
   "class_id": "robot",
-  "migration_exemptions": {
-    "robot/robot_magnetic_anchor": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "robot/robot_hydraulic_press": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "robot/robot_reactor_core": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
-  }
+  "migration_exemptions": {}
 }

@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3944",
+  "class_id": "robot",
+  "capture_script": "tests/ultimates/presentation/robot_certification_live_capture.gd",
+  "focused_test": "tests/ultimates/presentation/robot_certification_capture_test.gd",
+  "readability_report": "docs/design/references/weapon_ultimates/robot/certification_readability_report.md",
+  "capture_source": {
+    "source_ref": "agent/codex-dev-sol-5-6/3fbc2f531de0",
+    "source_commit_sha": "0000000000000000000000000000000000000000",
+    "source_tree_sha": "0000000000000000000000000000000000000000",
+    "controlled_seed": 394402,
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "renderer": "gl_compatibility (OpenGL API 4.1 Metal compatibility, Apple M4 Pro)",
+    "capture_method": "macOS windowed SubViewport render; Player.activate_ultimate -> UltimateHost -> shipped Robot V2 scene, actual EnemySpitter targets and ElitePoisonZone hazard; fixed executor advancement and named release/active/recovery seek; three frozen UPDATE_ONCE readback frames",
+    "workload_exclusion": "FSD_GODOT_EXCLUSIVE=1 acquires the machine-wide Godot lease before final PNG generation",
+    "headless_policy": "The renderer exits 0 without creating PNGs when headless. That structural skip is not image evidence; hydrated windowed verification remains fail-closed.",
+    "command": "env FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=1800 python3 tools/godot_gate.py --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd"
+  },
+  "canonical_weapon_ids": [
+    "robot_magnetic_anchor",
+    "robot_hydraulic_press",
+    "robot_reactor_core"
+  ],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "3 representative real EnemySpitter targets"
+    },
+    {
+      "id": "crowded",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "the per-weapon declared crowd cap (9 / 9 / 9) using real EnemySpitter targets"
+    },
+    {
+      "id": "reduced_motion",
+      "screen_shake": false,
+      "photosafe": false,
+      "crowd": "3 representative real EnemySpitter targets"
+    },
+    {
+      "id": "photosensitivity_safe",
+      "screen_shake": false,
+      "photosafe": true,
+      "crowd": "3 representative real EnemySpitter targets with the shipped backdrop veil suppressed"
+    }
+  ],
+  "coverage_matrix": {
+    "rows": [
+      "robot_magnetic_anchor",
+      "robot_hydraulic_press",
+      "robot_reactor_core"
+    ],
+    "columns": [
+      "normal",
+      "crowded",
+      "reduced_motion",
+      "photosensitivity_safe"
+    ],
+    "phases": [
+      "release",
+      "active",
+      "recovery"
+    ],
+    "cells_per_viewport": 12,
+    "captures_per_viewport": 3,
+    "readability_beats": {
+      "robot_magnetic_anchor": {
+        "release": 0.8,
+        "active": 1.25,
+        "recovery": 3.15
+      },
+      "robot_hydraulic_press": {
+        "release": 0.85,
+        "active": 1.3,
+        "recovery": 3.2
+      },
+      "robot_reactor_core": {
+        "release": 0.9,
+        "active": 1.35,
+        "recovery": 3.25
+      }
+    }
+  },
+  "runtime_configuration": {
+    "scene_paths": [
+      "scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
+      "scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
+      "scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn"
+    ],
+    "player_scene": "res://scenes/Player.tscn",
+    "enemy_scene": "res://scenes/EnemySpitter.tscn",
+    "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
+    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
+    "hud_scene": "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "fixture_note": "Each isolated cell runs the real Player activation and Player-owned controller, real EnemySpitter group targets, an actual Enemy elite poison hazard, and the shipped HUD through UltimateHudRuntimeAdapter. Capture-only placement/freezing never changes production mechanics."
+  },
+  "viewports": [
+    {
+      "id": "648p-release",
+      "viewport_id": "648p",
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p_release.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "648p-active",
+      "viewport_id": "648p",
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "648p-recovery",
+      "viewport_id": "648p",
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p_recovery.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "720p-release",
+      "viewport_id": "720p",
+      "phase": "release",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p_release.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "720p-active",
+      "viewport_id": "720p",
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "720p-recovery",
+      "viewport_id": "720p",
+      "phase": "recovery",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p_recovery.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "1080p-release",
+      "viewport_id": "1080p",
+      "phase": "release",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p_release.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "1080p-active",
+      "viewport_id": "1080p",
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "1080p-recovery",
+      "viewport_id": "1080p",
+      "phase": "recovery",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p_recovery.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "2k-release",
+      "viewport_id": "2k",
+      "phase": "release",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k_release.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "2k-active",
+      "viewport_id": "2k",
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "2k-recovery",
+      "viewport_id": "2k",
+      "phase": "recovery",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k_recovery.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "scope_boundary": "FAN-3944 adopts the existing Robot presentation into the full V2 timing/presence/identity/accessibility contract and adds class-owned live evidence; damage, cooldown, charge, targeting, saves, and canonical IDs remain unchanged."
+}

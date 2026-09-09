@@ -17,7 +17,10 @@ const HYDRAULIC_PRESS := "robot_hydraulic_press"
 const REACTOR_CORE := "robot_reactor_core"
 
 const WEAPON_IDS: Array[String] = [MAGNETIC_ANCHOR, HYDRAULIC_PRESS, REACTOR_CORE]
-const MAX_ELEMENTS_PER_ULTIMATE := 8
+const MAX_ELEMENTS_PER_ULTIMATE := 9
+const MAX_UNIQUE_MATERIALS := 1
+const MAX_FULLSCREEN_MATERIALS := 1
+const BACKDROP_NODE := "BackdropVeil"
 
 ## These three motions must remain mechanically distinct: a radial implosion,
 ## a two-wall corridor crush, and rotating exhaust vents. No balance values or
@@ -30,8 +33,12 @@ const WEAPONS := {
 		"sfx_file": "sfx_hit_magic.ogg",
 		"tint": Color(0.58, 0.88, 1.0),
 		"pivot": {"x": 0.50, "y": 0.50},
-		"timing": {"windup": 0.0, "release": 0.45, "active": 1.05, "recovery": 4.25, "cancel": 4.75},
+		"timing": {"windup": 0.0, "release": 0.8, "active": 1.25, "recovery": 3.15, "cancel": 3.75},
 		"formation": {"kind": "implosion_well", "count": 8, "radius": 166.0},
+		"backdrop_tint": Color(0.02, 0.09, 0.13, 1.0),
+		"shake": {"seconds": 0.50, "amplitude": 8.0, "duck_db": -8.0},
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 105.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.robot.magnetic_lock", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png", "class_palette_id": "palette.robot.cyan_induction"},
 		"silhouette": "one black-point anchor with eight inward-pulled cyan debris arcs",
 		"motion": "concentric debris contracts into an aimed singularity, then expands as a cyan EMP ring",
 		"impact": "black-point implosion followed by a single outward EMP release",
@@ -43,8 +50,12 @@ const WEAPONS := {
 		"sfx_file": "sfx_hit.ogg",
 		"tint": Color(0.96, 0.76, 0.46),
 		"pivot": {"x": 0.50, "y": 0.50},
-		"timing": {"windup": 0.0, "release": 0.72, "active": 1.32, "recovery": 3.48, "cancel": 4.05},
+		"timing": {"windup": 0.0, "release": 0.85, "active": 1.3, "recovery": 3.2, "cancel": 3.8},
 		"formation": {"kind": "press_walls", "count": 2, "radius": 238.0},
+		"backdrop_tint": Color(0.12, 0.075, 0.025, 1.0),
+		"shake": {"seconds": 0.55, "amplitude": 10.0, "duck_db": -9.0},
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 120.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.robot.hydraulic_brace", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png", "class_palette_id": "palette.robot.brass_hydraulic"},
 		"silhouette": "two colossal steel press walls framing a narrow horizontal danger corridor",
 		"motion": "warning rails hold wide, walls slam together in repeated compression beats, then recoil",
 		"impact": "opposing steel crush with sparks followed by an explosive hydraulic release",
@@ -56,8 +67,12 @@ const WEAPONS := {
 		"sfx_file": "sfx_boss_phase.ogg",
 		"tint": Color(1.0, 0.36, 0.18),
 		"pivot": {"x": 0.50, "y": 0.50},
-		"timing": {"windup": 0.0, "release": 0.56, "active": 1.08, "recovery": 5.42, "cancel": 6.02},
+		"timing": {"windup": 0.0, "release": 0.9, "active": 1.35, "recovery": 3.25, "cancel": 3.9},
 		"formation": {"kind": "plasma_vents", "count": 8, "radius": 104.0},
+		"backdrop_tint": Color(0.16, 0.025, 0.01, 1.0),
+		"shake": {"seconds": 0.60, "amplitude": 9.0, "duck_db": -9.0},
+		"presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 115.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+		"identity": {"cast_pose_id": "cast_pose.robot.reactor_overdrive", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_reactor_core.png", "class_palette_id": "palette.robot.red_zone"},
 		"silhouette": "eight red-orange reactor vents orbiting an exposed white-hot core",
 		"motion": "vents unfold in a wheel, accelerate around the core, then lift as a cooling steam column",
 		"impact": "accelerating plasma vent wave ending in a white-hot vertical exhaust",
@@ -127,8 +142,18 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 		"phases": phases,
 		"pivot": (config.get("pivot", {}) as Dictionary).duplicate(),
 		"timing": (config.get("timing", {}) as Dictionary).duplicate(),
+		"presence": (config.get("presence", {}) as Dictionary).duplicate(true),
+		"identity": (config.get("identity", {}) as Dictionary).duplicate(true),
 		"headless_fallback": "no_op",
 	}
+
+
+static func presence_for(weapon_id: String) -> Dictionary:
+	return (weapon_config(weapon_id).get("presence", {}) as Dictionary).duplicate(true)
+
+
+static func identity_for(weapon_id: String) -> Dictionary:
+	return (weapon_config(weapon_id).get("identity", {}) as Dictionary).duplicate(true)
 
 
 static func manifests(registry) -> Dictionary:

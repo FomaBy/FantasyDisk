@@ -11,7 +11,7 @@
       "recovery",
       "cancel"
     ],
-    "max_timeline_seconds": 10.0,
+    "max_timeline_seconds": 10,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
@@ -45,11 +45,11 @@
       "motion_path": "stationary shrine opens its doors, rings consecrate outward in three beats, then a vertical pillar and soft shield halo",
       "impact_language": "three sanctify ring beats, one vertical judgment pillar, then a soft heal-shield halo",
       "timing_seconds": {
-        "windup": 0.0,
+        "windup": 0,
         "release": 0.9,
-        "active": 1.25,
-        "recovery": 7.8,
-        "cancel": 8.6
+        "active": 1.2,
+        "recovery": 3.3,
+        "cancel": 3.9
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.priest.priest_reliquary.windup",
@@ -62,7 +62,33 @@
         "max_visual_nodes": 12,
         "crowd_cap": 22,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "heal_overheal_shield_owner": "mechanics FAN-1485"
+        "heal_overheal_shield_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.reliquary_benediction",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+        "class_palette_id": "palette.priest.ivory_gold"
       }
     },
     {
@@ -73,11 +99,11 @@
       "motion_path": "chain unwinds and the censer orbit accelerates around the hero while the ward thickens and stored-light beads grow",
       "impact_language": "sustained capped-mitigation smoke ward ends in a censer slam and one holy counter wave",
       "timing_seconds": {
-        "windup": 0.0,
-        "release": 0.6,
-        "active": 0.95,
-        "recovery": 6.9,
-        "cancel": 7.6
+        "windup": 0,
+        "release": 0.8,
+        "active": 1.3,
+        "recovery": 3,
+        "cancel": 3.7
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.priest.priest_censer.windup",
@@ -90,7 +116,33 @@
         "max_visual_nodes": 10,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mitigation_cap_and_counter_owner": "mechanics FAN-1485"
+        "mitigation_cap_and_counter_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 105,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.censer_vow",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_censer.png",
+        "class_palette_id": "palette.priest.smoke_gold"
       }
     },
     {
@@ -101,11 +153,11 @@
       "motion_path": "bell swings three sequential toll arcs outward — silver, gold, then white dawn — before a celestial mote dissolve",
       "impact_language": "staccato triple toll — silver interrupt, gold chain smite, white dawn lethal guard — then chime motes",
       "timing_seconds": {
-        "windup": 0.0,
-        "release": 0.5,
-        "active": 0.8,
-        "recovery": 5.6,
-        "cancel": 6.4
+        "windup": 0,
+        "release": 0.75,
+        "active": 1.4,
+        "recovery": 2.7,
+        "cancel": 3.5
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.priest.priest_chime.windup",
@@ -118,7 +170,33 @@
         "max_visual_nodes": 9,
         "crowd_cap": 18,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "lethal_prevention_window_owner": "mechanics FAN-1485"
+        "lethal_prevention_window_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.triple_toll",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_chime.png",
+        "class_palette_id": "palette.priest.silver_dawn"
       }
     }
   ],
@@ -130,6 +208,12 @@
       "docs/design/references/weapon_ultimates/priest/priest_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/priest_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/priest_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/priest_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/priest/certification_capture_manifest.json",
+      "report": "docs/design/references/weapon_ultimates/priest/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/priest_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/priest_certification_capture_test.gd"
+    }
   }
 }
