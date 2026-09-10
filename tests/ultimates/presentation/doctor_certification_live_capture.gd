@@ -240,7 +240,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 
 	for _frame in SETTLE_FRAMES:
 		await process_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw()
 	var baseline := root.get_texture().get_image()
 	if baseline == null or baseline.get_size() != size:
 		main.queue_free()
@@ -683,7 +683,7 @@ func _render_sheet(host: Node2D, size: Vector2i, path: String) -> int:
 	viewport.add_child(host)
 	for _frame in 3:
 		await process_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw()
 	var image := viewport.get_texture().get_image()
 	viewport.queue_free()
 	await process_frame
