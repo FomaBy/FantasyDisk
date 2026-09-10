@@ -171,6 +171,7 @@ func _initialize() -> void:
 func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Dictionary) -> String:
 	var size := viewport["size"] as Vector2i
 	var mode_id := str(mode["id"])
+	print("FAN-3942 Assassin capture sample: %s/%s/%s" % [str(viewport["id"]), weapon_id, mode_id])
 	var beats := _beats_for(weapon_id)
 	if beats.is_empty():
 		return "%s declares no release/active/recovery beats" % weapon_id
@@ -179,6 +180,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 	root.add_child(main)
 	await process_frame
 	await process_frame
+	print("FAN-3942 Assassin capture stage: main_ready")
 	## `Main._ready()` randomizes its own generator; the capture pins it so two
 	## runs place the same wave.
 	var run_rng := main.get("rng") as RandomNumberGenerator
@@ -189,9 +191,11 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 	main.call("_start_combat", false, "battle")
 	for _frame in SETTLE_FRAMES:
 		await process_frame
+	print("FAN-3942 Assassin capture stage: combat_ready")
 	## `Main` restores its own window geometry while it boots, so the capture
 	## size is applied to the live run and then confirmed.
 	await _apply_window_size(size)
+	print("FAN-3942 Assassin capture stage: window_ready")
 	if root.size != size:
 		main.queue_free()
 		await process_frame
@@ -227,6 +231,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 	if bool(mode["crowd_cap"]):
 		hazard_count = _crowd_cap(weapon_id)
 	var hazards := await _prepare_hazards(main, player, hazard_count)
+	print("FAN-3942 Assassin capture stage: hazards_ready")
 	if hazards.size() < hazard_count:
 		main.queue_free()
 		await process_frame
@@ -244,6 +249,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			"null" if baseline == null else str(baseline.get_size()), str(size),
 		]
 	baseline.convert(Image.FORMAT_RGB8)
+	print("FAN-3942 Assassin capture stage: baseline_ready")
 	# Advance the real 60 Hz game without rasterizing frames that are never
 	# evidence. Each declared beat re-enables rendering while the tree is paused,
 	# so its native framebuffer still describes the exact simulation step.
@@ -258,11 +264,13 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		await process_frame
 		return "%s/%s/%s did not activate through Player (%s)" % [weapon_id, mode_id, viewport["id"], PlayerHost.activation_failure(player)]
 	Engine.time_scale = SIMULATION_ACCELERATION
+	print("FAN-3942 Assassin capture stage: activated")
 	var presentation = host.get("_presentation")
 
 	var elapsed := 0.0
 	for beat in beats:
 		var target := float(beat["sample_time"])
+		print("FAN-3942 Assassin capture stage: advancing_%s" % str(beat["phase"]))
 		while elapsed < target:
 			await process_frame
 			var simulated_step := minf(SIMULATION_ACCELERATION * FIXED_STEP, target - elapsed)
@@ -283,6 +291,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			]
 		frame.convert(Image.FORMAT_RGB8)
 		var effect_root := _presentation_root(main, weapon_id)
+		print("FAN-3942 Assassin capture stage: measuring_%s" % str(beat["phase"]))
 		var record := _measure(frame, baseline, size, effect_root, player, hud_root, hazards)
 		record["weapon_id"] = weapon_id
 		record["mode"] = mode_id
