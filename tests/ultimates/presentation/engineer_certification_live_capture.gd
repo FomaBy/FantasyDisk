@@ -2,357 +2,467 @@ extends SceneTree
 
 ## Windowed, deterministic evidence renderer for FAN-3939.
 ##
-## Each sheet holds the three canonical Engineer ultimate scenes in four
-## presentation modes (normal, crowded, reduced motion, photosensitivity
-## safe). The shipped timeline scene and victim-impact flipbooks are real
-## runtime resources; only the surrounding HUD, player, and hazard fixtures
-## make their readability reviewable in one stable, seeded frame per mode.
+## Every PNG is one isolated native frame. The frame starts with the real
+## persisted accessibility boundary, then takes the normal Player-owned
+## ultimate path through actual EnemySpitter targets, an elite hazard and the
+## shipped ultimate HUD. Capture-only work begins only after that path has run:
+## fixed tween/runtime stepping, explicit clock freezing and bounded readback.
 
+const Spec := preload("res://tests/ultimates/presentation/engineer_certification_capture_test.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const GameSettings := preload("res://scripts/game_settings.gd")
+const PlayerScene := preload("res://scenes/Player.tscn")
+const EnemySpitterScene := preload("res://scenes/EnemySpitter.tscn")
+const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const HudAdapter := preload("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 
-const CAPTURE_MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json"
-const CLASS_MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/engineer/manifest.json"
-## Captures are rendered from the exact dev candidate the audit failed;
-## provenance is recorded without a self-referential final commit hash.
-const CAPTURE_BASE_SHA := "d192be10bbe52dd89971cab0acc66eb92ccab37f"
-const CAPTURE_BASE_TREE := "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
-const RENDERER_VERSION := "godot 4.7.stable.official.5b4e0cb0f"
-const CAPTURE_SEED := 3939
+const CAPTURE_SETTLE_FRAMES := 3
 
-const WEAPON_IDS: Array[String] = ["engineer_sentry_wrench", "engineer_repair_drone", "engineer_pressure_mines"]
-const MODE_IDS: Array[String] = ["normal", "crowded", "reduced_motion", "photosensitivity_safe"]
-const TIMELINE_SCENES := {
-	"engineer_sentry_wrench": preload("res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn"),
-	"engineer_repair_drone": preload("res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn"),
-	"engineer_pressure_mines": preload("res://scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn"),
-}
-const VICTIM_FRAMES := {
-	"engineer_sentry_wrench": preload("res://assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres"),
-	"engineer_repair_drone": preload("res://assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres"),
-	"engineer_pressure_mines": preload("res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres"),
-}
-## Mode -> beat name sampled from each weapon's frozen manifest timing so the
-## matrix as a whole covers release, active, and recovery evidence.
-const MODE_BEATS := {
-	"normal": "active",
-	"crowded": "release",
-	"reduced_motion": "active",
-	"photosensitivity_safe": "recovery",
-}
-## Frozen active-beat fallbacks identical to the focused timeline test's
-## proven sample points, used when the manifest timing is unavailable.
-const ACTIVE_BEATS := {
-	"engineer_sentry_wrench": 2.2,
-	"engineer_repair_drone": 2.3,
-	"engineer_pressure_mines": 1.85,
-}
-const CAPTURES := [
-	{"id": "648p", "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_648p.png", "size": Vector2i(1152, 648)},
-	{"id": "720p", "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_720p.png", "size": Vector2i(1280, 720)},
-	{"id": "1080p", "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_1080p.png", "size": Vector2i(1920, 1080)},
-	{"id": "2k", "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_2k.png", "size": Vector2i(2560, 1440)},
-]
-const MODE_SPECS := [
-	{
-		"id": "normal", "label": "NORMAL", "victims": 3,
-		"marker_color": Color(0.18, 0.76, 1.0), "panel_color": Color(0.055, 0.090, 0.135, 1.0),
-	},
-	{
-		"id": "crowded", "label": "CROWDED", "victims": 39,
-		"marker_color": Color(1.0, 0.58, 0.18), "panel_color": Color(0.125, 0.078, 0.045, 1.0),
-	},
-	{
-		"id": "reduced_motion", "label": "REDUCED MOTION", "victims": 3,
-		"marker_color": Color(0.36, 0.92, 0.48), "panel_color": Color(0.045, 0.105, 0.080, 1.0),
-	},
-	{
-		"id": "photosensitivity_safe", "label": "PHOTOSENSITIVITY SAFE", "victims": 3,
-		"marker_color": Color(0.78, 0.48, 1.0), "panel_color": Color(0.090, 0.060, 0.125, 1.0),
-	},
-]
-
-const BACKGROUND_COLOR := Color(0.018, 0.025, 0.040, 1.0)
-const HUD_COLOR := Color(0.080, 0.115, 0.165, 1.0)
-const PLAYER_COLOR := Color(0.68, 0.92, 1.0, 1.0)
-const HAZARD_COLOR := Color(1.0, 0.32, 0.16, 1.0)
-const GRID_COLOR := Color(0.24, 0.31, 0.42, 1.0)
-const PANEL_TOP_RATIO := 0.180
-const PANEL_BOTTOM_RATIO := 0.895
-const PANEL_MARGIN_RATIO := 0.010
-
-var _beat_by_weapon := {}
+var _capture_source: Dictionary = {}
+var _samples: Array[Dictionary] = []
 
 
 func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
-		print("FAN-3939 Engineer certification capture skipped (headless); run windowed for PNG evidence.")
+		print("FAN-3939 Engineer certification capture skipped: headless runs never create certification PNG evidence.")
 		quit(0)
 		return
-	var seed_state := RandomNumberGenerator.new()
-	seed_state.seed = CAPTURE_SEED
-	_load_beats()
-	for raw_capture in CAPTURES:
-		var capture := raw_capture as Dictionary
-		var result := await _capture_sheet(capture, seed_state)
-		if result != OK:
-			push_error("FAN-3939 Engineer certification capture failed: %s" % error_string(result))
+	_capture_source = _read_capture_source()
+	if not Spec.is_git_sha(str(_capture_source.get("source_commit_sha", ""))) \
+			or not Spec.is_git_sha(str(_capture_source.get("source_tree_sha", ""))):
+		push_error("FAN-3939 Engineer certification capture requires FAN3939_CAPTURE_SOURCE_SHA and FAN3939_CAPTURE_SOURCE_TREE from the committed renderer source.")
+		quit(1)
+		return
+	if PlayerScene == null or EnemySpitterScene == null or HudAdapter == null:
+		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
+		quit(1)
+		return
+	var captures := Spec.captures()
+	for capture_index in captures.size():
+		var capture := captures[capture_index] as Dictionary
+		var sample := await _capture_one(capture_index, capture)
+		if sample.is_empty():
 			quit(1)
 			return
+		_samples.append(sample)
+	if _write_capture_manifest() != OK:
+		push_error("FAN-3939 Engineer certification capture could not write the manifest.")
+		quit(1)
+		return
+	Accessibility.apply_settings(root, GameSettings.DEFAULTS.duplicate(true))
+	root.set_meta("screen_shake", true)
+	root.set_meta("combat_feedback", true)
+	print("FAN-3939 Engineer certification capture wrote %d isolated native frames." % _samples.size())
 	quit(0)
 
 
-## Beat times come from the frozen class manifest timing so each sheet's
-## panels sample the recorded release/active/recovery beats, not ad-hoc skips.
-func _load_beats() -> void:
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(CLASS_MANIFEST_PATH))
-	if parsed is Dictionary:
-		for raw_weapon in (parsed as Dictionary).get("weapons", []) as Array:
-			if raw_weapon is Dictionary:
-				var weapon := raw_weapon as Dictionary
-				var timing := weapon.get("timing_seconds", {}) as Dictionary
-				_beat_by_weapon[str(weapon.get("weapon_id", ""))] = timing
-	for weapon_id in WEAPON_IDS:
-		if not _beat_by_weapon.has(weapon_id):
-			_beat_by_weapon[weapon_id] = {"active": ACTIVE_BEATS[weapon_id]}
+func _read_capture_source() -> Dictionary:
+	var version := Engine.get_version_info()
+	var source_sha := OS.get_environment("FAN3939_CAPTURE_SOURCE_SHA")
+	var source_tree := OS.get_environment("FAN3939_CAPTURE_SOURCE_TREE")
+	return {
+		"source_ref": "dev",
+		"source_commit_sha": source_sha,
+		"source_tree_sha": source_tree,
+		"controlled_seed": Spec.CAPTURE_SEED,
+		"godot_version": str(version.get("string", "unknown")),
+		"renderer": "display=%s; rendering_method=%s" % [
+			DisplayServer.get_name(),
+			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
+		],
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed Player activation/runtime tween stepping; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
+		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
+	}
 
 
-func _beat_time(weapon_id: String, beat_name: String) -> float:
-	var timing := _beat_by_weapon.get(weapon_id, {}) as Dictionary
-	var sample := float(timing.get(beat_name, -1.0))
-	if sample < 0.0:
-		sample = float(timing.get("active", ACTIVE_BEATS.get(weapon_id, 1.5)))
-	return sample
-
-
-func _capture_sheet(capture: Dictionary, seed_state: RandomNumberGenerator) -> int:
+func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 	var size := capture.get("size", Vector2i.ZERO) as Vector2i
 	var output := str(capture.get("path", ""))
 	if size == Vector2i.ZERO or output.is_empty():
-		return ERR_INVALID_PARAMETER
+		push_error("FAN-3939 Engineer certification capture received an invalid sample descriptor.")
+		return {}
 	var directory_result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output).get_base_dir())
 	if directory_result != OK:
-		return directory_result
+		push_error("FAN-3939 Engineer certification capture could not create output directory: %s" % error_string(directory_result))
+		return {}
+	## Every frame receives a deterministic seed independent of capture order.
+	seed(Spec.CAPTURE_SEED + capture_index)
+	var viewport := await _build_live_viewport(capture)
+	if bool(viewport.get_meta("fan3939_capture_failed", false)):
+		var reason := str(viewport.get_meta("fan3939_capture_failure", "unknown live runtime failure"))
+		_cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification live frame failed: %s" % reason)
+		return {}
+	await _finalize_viewport_for_readback(viewport)
+	var image := viewport.get_texture().get_image()
+	if image == null or image.is_empty() or image.get_size() != size:
+		_cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification readback was empty or wrong-sized: %s" % str(capture["id"]))
+		return {}
+	image.convert(Image.FORMAT_RGBA8)
+	var save_result := image.save_png(ProjectSettings.globalize_path(output))
+	_cleanup_viewport(viewport)
+	if save_result != OK:
+		push_error("FAN-3939 Engineer certification could not save %s: %s" % [output, error_string(save_result)])
+		return {}
+	var digest := FileAccess.get_sha256(output).to_lower()
+	print("FAN-3939 sample %s %dx%d sha256=%s" % [str(capture["id"]), size.x, size.y, digest])
+	return {
+		"id": str(capture["id"]),
+		"viewport_id": str(capture["viewport_id"]),
+		"weapon_id": str(capture["weapon_id"]),
+		"mode_id": str(capture["mode_id"]),
+		"beat": str(capture["beat"]),
+		"width": size.x,
+		"height": size.y,
+		"path": output,
+		"layout": "isolated_native_frame",
+		"sha256": digest,
+		## The second renderer pass is compared externally against this exact
+		## field; once it matches, writing the same value makes the committed
+		## manifest a stable per-frame repeatability witness.
+		"repeat_sha256": digest,
+		"runtime_context": {
+			"player": "scenes/Player.tscn",
+			"victims": _mode_victim_count(str(capture["mode_id"])),
+			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+			"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+		},
+	}
+
+
+## The world is deliberately one SubViewport per sample. Target queries are
+## SceneTree-global, so this prevents one sample's real victims from becoming
+## another sample's crowd and gives every native image a hard visual boundary.
+func _build_live_viewport(capture: Dictionary) -> SubViewport:
+	var size := capture["size"] as Vector2i
+	var mode := _mode_spec(str(capture["mode_id"]))
+	var pack := _pack_spec(str(capture["weapon_id"]))
 	var viewport := SubViewport.new()
+	viewport.name = "EngineerCertification_%s" % str(capture["id"])
 	viewport.size = size
 	viewport.transparent_bg = false
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(viewport)
-	viewport.add_child(_make_sheet(size, seed_state))
-	for _frame in 3:
-		await process_frame
-	await RenderingServer.frame_post_draw
-	var result := viewport.get_texture().get_image().save_png(ProjectSettings.globalize_path(output))
-	viewport.queue_free()
+	var background := ColorRect.new()
+	background.color = Color(0.030, 0.052, 0.060, 1.0)
+	background.size = Vector2(size)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(background)
+	var world := Node2D.new()
+	world.name = "EngineerCertificationWorld"
+	viewport.add_child(world)
+	## The production Enemy hazard attaches to current_scene. Because this
+	## viewport is a root child, the real hazard is born inside this frame.
+	current_scene = viewport
+	_apply_persisted_options(mode)
+
+	var player := PlayerScene.instantiate() as Node2D
+	if player == null:
+		return _failed_viewport(viewport, "Player.tscn did not instantiate")
+	player.position = Vector2(float(size.x) * 0.23, float(size.y) * 0.58)
+	world.add_child(player)
 	await process_frame
-	if result == OK:
-		print("FAN-3939 Engineer certification capture saved: %s" % output)
-	return result
+	_disable_player_camera(player)
+	player.call("configure_character", Spec.CLASS_ID, str(pack["weapon_id"]))
+	await process_frame
+
+	var enemies := _spawn_real_enemies(world, size, int(mode["victims"]))
+	if enemies.size() != int(mode["victims"]):
+		return _failed_viewport(viewport, "EnemySpitter.tscn did not instantiate every real capture target")
+	var hazard := _spawn_real_hazard(viewport, enemies[0], Vector2(float(size.x) * 0.84, float(size.y) * 0.69))
+	if hazard == null or hazard.get_node_or_null("HazardTelegraph") == null:
+		return _failed_viewport(viewport, "real ElitePoisonZone/HazardTelegraph did not spawn")
+	for enemy in enemies:
+		_freeze_actor(enemy)
+	_freeze_hazard(hazard)
+
+	var host := PlayerHost.for_player(player)
+	host.set("_presentation_headless_mode", 0)
+	## The host normally advances with wall time. Keep it stopped so only the
+	## fixed manual steps below can change this evidence frame.
+	host.set_process(false)
+	player.set("ultimate_charge", player.get("ultimate_max_charge"))
+	if not bool(player.call("activate_ultimate")):
+		return _failed_viewport(viewport, "%s did not activate through Player.activate_ultimate" % str(pack["weapon_id"]))
+	var controller = host.call("controller")
+	var activation = controller.call("active_activation") if controller != null else null
+	if activation == null:
+		return _failed_viewport(viewport, "%s did not retain a Player-owned activation" % str(pack["weapon_id"]))
+	_pause_activation(activation)
+	## Let Godot consume the mounted scene's deferred autoplay once before the
+	## deterministic freeze. This closes the old F3 renderer-paced race.
+	await process_frame
+	var runtime = host.get("_presentation")
+	var scene := runtime.get("_scene") as Node2D if runtime != null else null
+	if scene == null or scene.get_parent() != world:
+		return _failed_viewport(viewport, "%s did not mount its shipped Engineer scene through PlayerHost" % str(pack["weapon_id"]))
+	var applied := Accessibility.read_snapshot(root)
+	var state := scene.call("accessibility_state_for_tests") as Dictionary
+	if (state.get("modes", {}) as Dictionary) != applied:
+		return _failed_viewport(viewport, "%s did not consume the persisted accessibility snapshot" % str(pack["weapon_id"]))
+	var beat := str(capture["beat"])
+	var beat_seconds := float((pack["beats"] as Dictionary)[beat])
+	_advance_activation(activation, Spec.runtime_execution_seconds(pack, beat))
+	if runtime != null:
+		runtime.call("advance", beat_seconds)
+	## Preserve the real release/damage/victim-impact work, then stop the host
+	## and every capture clock before renderer frames can race it.
+	if runtime != null:
+		runtime.call("set_paused", true)
+	if not bool(mode["reduced_motion"]) and not bool(mode["photosensitivity_safe"]):
+		_seek_normal_scene(scene, beat_seconds)
+	_freeze_scene_clocks(scene)
+	_hold_victim_impacts(scene)
+	_freeze_actor(player)
+	_freeze_runtime_siblings(world, player, scene, enemies)
+	player.z_index = 50
+	_attach_shipped_hud(viewport, player, size)
+	if bool(viewport.get_meta("fan3939_capture_failed", false)):
+		return viewport
+	_pause_capture_tweens()
+	return viewport
 
 
-func _make_sheet(size: Vector2i, seed_state: RandomNumberGenerator) -> Node2D:
-	var host := Node2D.new()
-	_add_rect(host, Rect2(Vector2.ZERO, Vector2(size)), BACKGROUND_COLOR, -100)
-	var heading := Label.new()
-	heading.text = "ENGINEER ULTIMATES — LIVE FOUR-MODE CERTIFICATION MATRIX"
-	heading.position = Vector2(size.x * 0.025, size.y * 0.027)
-	heading.add_theme_font_size_override("font_size", maxi(16, roundi(size.y * 0.031)))
-	heading.add_theme_color_override("font_color", Color(0.55, 0.95, 0.85))
-	heading.z_index = 3904
-	host.add_child(heading)
-	_add_hud(host, size)
-	for weapon_index in WEAPON_IDS.size():
-		for mode_index in MODE_IDS.size():
-			_add_panel(host, size, weapon_index, mode_index, seed_state)
-	return host
+func _apply_persisted_options(mode: Dictionary) -> void:
+	var settings := GameSettings.DEFAULTS.duplicate(true)
+	settings[Accessibility.REDUCED_MOTION_KEY] = bool(mode["reduced_motion"])
+	settings[Accessibility.PHOTOSENSITIVITY_SAFE_KEY] = bool(mode["photosensitivity_safe"])
+	var applied := Accessibility.apply_settings(root, settings)
+	if applied != Accessibility.read_snapshot(root):
+		push_error("FAN-3939 capture could not apply the production accessibility snapshot")
+	root.set_meta("screen_shake", not bool(mode["reduced_motion"]))
+	root.set_meta("combat_feedback", true)
+	root.set_meta("aim_mode", "nearest")
 
 
-func _add_hud(host: Node2D, size: Vector2i) -> void:
-	var top := Rect2(Vector2(size.x * 0.018, size.y * 0.105), Vector2(size.x * 0.964, size.y * 0.045))
-	var bottom := Rect2(Vector2(size.x * 0.018, size.y * 0.918), Vector2(size.x * 0.964, size.y * 0.045))
-	_add_rect(host, top, HUD_COLOR, 3900)
-	_add_rect(host, bottom, HUD_COLOR, 3900)
-	var status := Label.new()
-	status.text = "ENGINEER  HP 100%   •   ULTIMATE READY   •   SENTRY / DRONE / MINES HAZARD READOUT"
-	status.position = top.position + Vector2(size.x * 0.012, size.y * 0.003)
-	status.add_theme_font_size_override("font_size", maxi(10, roundi(size.y * 0.017)))
-	status.add_theme_color_override("font_color", Color(0.78, 0.88, 1.0))
-	status.z_index = 3901
-	host.add_child(status)
-	var footer := Label.new()
-	footer.text = "LIVE SCENE • NORMAL / CROWDED / REDUCED-MOTION / PHOTO-SAFE • HUD AND HAZARDS HELD VISIBLE"
-	footer.position = bottom.position + Vector2(size.x * 0.012, size.y * 0.003)
-	footer.add_theme_font_size_override("font_size", maxi(9, roundi(size.y * 0.015)))
-	footer.add_theme_color_override("font_color", Color(0.70, 0.79, 0.90))
-	footer.z_index = 3901
-	host.add_child(footer)
+func _spawn_real_enemies(world: Node2D, size: Vector2i, count: int) -> Array[Node2D]:
+	var enemies: Array[Node2D] = []
+	var columns := mini(7, maxi(1, count))
+	var rows := ceili(float(count) / float(columns))
+	for index in count:
+		var enemy := EnemySpitterScene.instantiate() as Node2D
+		if enemy == null:
+			continue
+		var column := index % columns
+		var row := index / columns
+		enemy.position = Vector2(
+			lerpf(float(size.x) * 0.43, float(size.x) * 0.74, (float(column) + 0.5) / float(columns)),
+			lerpf(float(size.y) * 0.28, float(size.y) * 0.72, (float(row) + 0.5) / float(rows))
+		)
+		enemy.set("max_health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", Spec.ENEMY_CAPTURE_HEALTH)
+		world.add_child(enemy)
+		## Enemy._ready initializes health; write the known value again after it
+		## has joined the real world so no target disappears during a live beat.
+		enemy.set("max_health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemies.append(enemy)
+	return enemies
 
 
-func _add_panel(host: Node2D, size: Vector2i, weapon_index: int, mode_index: int, seed_state: RandomNumberGenerator) -> void:
-	var weapon_id := WEAPON_IDS[weapon_index]
-	var mode_id := MODE_IDS[mode_index]
-	var mode := mode_spec(mode_id)
-	var beat_name := str(MODE_BEATS.get(mode_id, "active"))
-	var rect := panel_rect(size, weapon_index, mode_index)
-	_add_rect(host, rect, mode.get("panel_color", Color.DIM_GRAY) as Color, -20)
-	_add_outline(host, rect, GRID_COLOR, 3800)
-	var marker_center := mode_marker_probe(size, weapon_index, mode_index)
-	var marker_radius := maxi(4.0, float(size.y) * 0.008)
-	_add_rect(host, Rect2(Vector2(marker_center) - Vector2.ONE * marker_radius, Vector2.ONE * marker_radius * 2.0), mode.get("marker_color", Color.WHITE) as Color, 3902)
-	var label := Label.new()
-	label.text = "%s · %s · %s BEAT" % [str(mode.get("label", "")), weapon_id.to_upper(), beat_name.to_upper()]
-	label.position = rect.position + Vector2(size.x * 0.018, size.y * 0.018)
-	label.add_theme_font_size_override("font_size", maxi(9, roundi(size.y * 0.014)))
-	label.add_theme_color_override("font_color", mode.get("marker_color", Color.WHITE) as Color)
-	label.z_index = 3903
-	host.add_child(label)
-	_add_live_timeline(host, rect, weapon_id, mode_id, beat_name)
-	_add_live_impacts(host, rect, weapon_id, mode_id, seed_state)
-	_add_player(host, player_probe(size, weapon_index, mode_index), size)
-	_add_hazard(host, hazard_probe(size, weapon_index, mode_index), size)
+func _spawn_real_hazard(parent: Node, source_enemy: Node2D, position: Vector2) -> Node2D:
+	if source_enemy == null or not source_enemy.has_method("_spawn_elite_hazard"):
+		return null
+	source_enemy.call("_spawn_elite_hazard", position)
+	return parent.get_node_or_null("ElitePoisonZone") as Node2D
 
 
-## The shipped scene is instanced for real and driven through its frozen
-## `ultimate` AnimationPlayer timeline: play, deterministic seek to the mode's
-## recorded beat, then freeze so the captured frame cannot drift with pacing.
-func _add_live_timeline(host: Node2D, rect: Rect2, weapon_id: String, mode_id: String, beat_name: String) -> void:
-	var scene := (TIMELINE_SCENES.get(weapon_id) as PackedScene).instantiate() as Node2D
-	scene.position = rect.get_center() + Vector2(0.0, rect.size.y * 0.04)
-	scene.scale = Vector2.ONE * minf(rect.size.x / 620.0, rect.size.y / 520.0) * 0.82
-	if mode_id == "reduced_motion":
-		scene.scale *= 0.90
-		root.set_meta("screen_shake", false)
-	elif mode_id == "photosensitivity_safe":
-		scene.modulate = Color(0.82, 0.84, 0.96, 1.0)
-	host.add_child(scene)
+func _attach_shipped_hud(viewport: SubViewport, player: Node2D, size: Vector2i) -> void:
+	var hud_root := Control.new()
+	hud_root.name = "EngineerCertificationHudRoot"
+	hud_root.size = Vector2(size)
+	hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(hud_root)
+	var adapter := HudAdapter.new()
+	hud_root.add_child(adapter)
+	if not adapter.mount(hud_root, player):
+		_mark_failed(viewport, "shipped UltimateHudRuntimeAdapter could not mount")
+		return
+	var widget := hud_root.get_node_or_null("UltimateHudWidget") as Control
+	if widget == null or not widget.has_method("state"):
+		_mark_failed(viewport, "shipped UltimateHudWidget is missing after adapter mount")
+		return
+	adapter.refresh()
+	var state := widget.call("state") as Dictionary
+	var selection := state.get("selection", {}) as Dictionary
+	if str(selection.get("class_id", "")) != Spec.CLASS_ID or not bool((state.get("charge", {}) as Dictionary).get("active", false)):
+		_mark_failed(viewport, "shipped HUD did not read the active Engineer Player state")
+		return
+	widget.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	widget.position = Vector2(6.0, 6.0)
+	widget.scale = Vector2.ONE * clampf(float(size.y) / 440.0, 0.30, 0.62)
+	widget.z_index = 100
+	adapter.set_process(false)
+
+
+func _pause_activation(activation) -> void:
+	for tween in activation.call("tweens_for_tests"):
+		if tween != null and tween.is_valid():
+			tween.pause()
+
+
+func _advance_activation(activation, seconds: float) -> void:
+	var tweens: Array = activation.call("tweens_for_tests")
+	for tween in tweens:
+		if tween != null and tween.is_valid():
+			tween.play()
+	var elapsed := 0.0
+	while elapsed < seconds:
+		var step := minf(Spec.CAPTURE_STEP, seconds - elapsed)
+		for tween in tweens:
+			if tween != null and tween.is_valid():
+				tween.custom_step(step)
+		elapsed += step
+	_pause_activation(activation)
+
+
+func _seek_normal_scene(scene: Node2D, seconds: float) -> void:
 	var timeline := scene.get_node_or_null("Timeline") as AnimationPlayer
-	if timeline != null and timeline.has_animation(&"ultimate"):
-		timeline.stop()
-		timeline.play(&"ultimate")
-		timeline.seek(_beat_time(weapon_id, beat_name), true)
+	if timeline == null:
+		return
+	timeline.stop()
+	timeline.play(&"ultimate")
+	timeline.seek(seconds, true)
+	timeline.pause()
+	for raw_sprite in scene.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+
+
+func _freeze_scene_clocks(scene: Node2D) -> void:
+	var timeline := scene.get_node_or_null("Timeline") as AnimationPlayer
+	if timeline != null:
+		timeline.pause()
+	for raw_sprite in scene.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
 	scene.set_process(false)
-	for child in scene.get_children():
-		child.set_process(false)
-	if mode_id != "reduced_motion":
-		root.set_meta("screen_shake", true)
 
 
-func _add_live_impacts(host: Node2D, rect: Rect2, weapon_id: String, mode_id: String, seed_state: RandomNumberGenerator) -> void:
-	var impacts: Node2D = ImpactPlayer.new()
-	impacts.extra_hit_flash = mode_id != "photosensitivity_safe"
-	host.add_child(impacts)
-	var markers: Array[Node2D] = []
-	var mode := mode_spec(mode_id)
-	var victim_count := int(mode.get("victims", 3))
-	for index in victim_count:
-		var marker := Node2D.new()
-		var jitter := Vector2(seed_state.randf_range(-0.01, 0.01), seed_state.randf_range(-0.01, 0.01))
-		marker.global_position = victim_position(rect, index, victim_count) + rect.size * jitter
-		host.add_child(marker)
-		markers.append(marker)
-	impacts.play(VICTIM_FRAMES.get(weapon_id) as SpriteFrames, markers, rect.get_center())
-	impacts.advance(0.14 if mode_id == "crowded" else 0.12)
-	impacts.set_paused(true)
+func _hold_victim_impacts(scene: Node2D) -> void:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var impacts := raw_child as Node2D
+			impacts.call("advance", 0.12)
+			impacts.call("set_paused", true)
 
 
-func _add_player(host: Node2D, center: Vector2i, size: Vector2i) -> void:
-	var radius := maxi(6.0, float(size.y) * 0.012)
-	var player := Polygon2D.new()
-	player.polygon = PackedVector2Array([
-		Vector2(center.x, center.y - radius), Vector2(center.x + radius, center.y),
-		Vector2(center.x, center.y + radius), Vector2(center.x - radius, center.y),
-	])
-	player.color = PLAYER_COLOR
-	player.z_index = 4000
-	host.add_child(player)
+func _freeze_actor(actor: Node) -> void:
+	if actor == null:
+		return
+	actor.process_mode = Node.PROCESS_MODE_DISABLED
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for raw_timeline in actor.find_children("*", "AnimationPlayer", true, false):
+		var timeline := raw_timeline as AnimationPlayer
+		if timeline != null:
+			timeline.pause()
+	for raw_sprite in actor.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+			sprite.frame = 0
+			sprite.frame_progress = 0.0
 
 
-func _add_hazard(host: Node2D, center: Vector2i, size: Vector2i) -> void:
-	var radius := maxi(5.0, float(size.y) * 0.010)
-	var hazard := Polygon2D.new()
-	hazard.polygon = PackedVector2Array([
-		Vector2(center.x, center.y - radius), Vector2(center.x + radius, center.y + radius),
-		Vector2(center.x - radius, center.y + radius),
-	])
-	hazard.color = HAZARD_COLOR
-	hazard.z_index = 4001
-	host.add_child(hazard)
+func _freeze_hazard(hazard: Node2D) -> void:
+	if hazard == null:
+		return
+	for raw_node in hazard.find_children("*", "Node", true, false):
+		var node := raw_node as Node
+		if node != null:
+			node.process_mode = Node.PROCESS_MODE_DISABLED
+	hazard.process_mode = Node.PROCESS_MODE_DISABLED
 
 
-func _add_rect(host: Node2D, rect: Rect2, color: Color, z_index: int) -> void:
-	var node := Polygon2D.new()
-	node.polygon = PackedVector2Array([
-		rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y),
-	])
-	node.color = color
-	node.z_index = z_index
-	host.add_child(node)
+func _freeze_runtime_siblings(world: Node2D, player: Node2D, scene: Node2D, enemies: Array[Node2D]) -> void:
+	var retained := {player.get_instance_id(): true, scene.get_instance_id(): true}
+	for enemy in enemies:
+		retained[enemy.get_instance_id()] = true
+	for raw_child in world.get_children():
+		var child := raw_child as Node
+		if child != null and not retained.has(child.get_instance_id()):
+			_freeze_actor(child)
 
 
-func _add_outline(host: Node2D, rect: Rect2, color: Color, z_index: int) -> void:
-	var line := Line2D.new()
-	line.points = PackedVector2Array([
-		rect.position, Vector2(rect.end.x, rect.position.y), rect.end,
-		Vector2(rect.position.x, rect.end.y), rect.position,
-	])
-	line.width = 1.5
-	line.default_color = color
-	line.z_index = z_index
-	host.add_child(line)
+func _pause_capture_tweens() -> void:
+	for tween in get_processed_tweens():
+		if tween != null and tween.is_valid():
+			tween.pause()
 
 
-static func capture_for_id(capture_id: String) -> Dictionary:
-	for raw_capture in CAPTURES:
-		var capture := raw_capture as Dictionary
-		if str(capture.get("id", "")) == capture_id:
-			return capture.duplicate(true)
-	return {}
+func _disable_player_camera(player: Node2D) -> void:
+	for raw_camera in player.find_children("*", "Camera2D", true, false):
+		var camera := raw_camera as Camera2D
+		if camera != null:
+			camera.enabled = false
 
 
-static func mode_spec(mode_id: String) -> Dictionary:
-	for raw_mode in MODE_SPECS:
+func _finalize_viewport_for_readback(viewport: SubViewport) -> void:
+	for _frame in CAPTURE_SETTLE_FRAMES:
+		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		await process_frame
+		await RenderingServer.frame_post_draw
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+
+
+func _cleanup_viewport(viewport: SubViewport) -> void:
+	if viewport == null:
+		return
+	var player := viewport.find_child("Player", true, false) as Node
+	if player != null:
+		var host := PlayerHost.for_player(player)
+		var controller = host.call("controller") if host != null else null
+		if controller != null:
+			controller.call("cancel", "cancel")
+		PlayerHost.reset(player)
+	viewport.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _failed_viewport(viewport: SubViewport, reason: String) -> SubViewport:
+	_mark_failed(viewport, reason)
+	return viewport
+
+
+func _mark_failed(viewport: SubViewport, reason: String) -> void:
+	viewport.set_meta("fan3939_capture_failed", true)
+	viewport.set_meta("fan3939_capture_failure", reason)
+
+
+func _mode_spec(mode_id: String) -> Dictionary:
+	for raw_mode in Spec.MODES:
 		var mode := raw_mode as Dictionary
-		if str(mode.get("id", "")) == mode_id:
-			return mode.duplicate(true)
+		if str(mode["id"]) == mode_id:
+			return mode
 	return {}
 
 
-static func panel_rect(size: Vector2i, weapon_index: int, mode_index: int) -> Rect2:
-	var column_width := float(size.x) / float(MODE_IDS.size())
-	var top := float(size.y) * PANEL_TOP_RATIO
-	var bottom := float(size.y) * PANEL_BOTTOM_RATIO
-	var row_height := (bottom - top) / float(WEAPON_IDS.size())
-	var margin := maxf(4.0, float(size.y) * PANEL_MARGIN_RATIO)
-	return Rect2(
-		Vector2(float(mode_index) * column_width + margin, top + float(weapon_index) * row_height + margin),
-		Vector2(column_width - margin * 2.0, row_height - margin * 2.0)
-	)
+func _pack_spec(weapon_id: String) -> Dictionary:
+	for raw_pack in Spec.PACKS:
+		var pack := raw_pack as Dictionary
+		if str(pack["weapon_id"]) == weapon_id:
+			return pack
+	return {}
 
 
-static func mode_marker_probe(size: Vector2i, weapon_index: int, mode_index: int) -> Vector2i:
-	var rect := panel_rect(size, weapon_index, mode_index)
-	var offset := maxi(4.0, float(size.y) * 0.008)
-	return Vector2i(roundi(rect.position.x + offset), roundi(rect.position.y + offset))
+func _mode_victim_count(mode_id: String) -> int:
+	var mode := _mode_spec(mode_id)
+	return int(mode.get("victims", 0))
 
 
-static func player_probe(size: Vector2i, weapon_index: int, mode_index: int) -> Vector2i:
-	var rect := panel_rect(size, weapon_index, mode_index)
-	return Vector2i(roundi(rect.get_center().x), roundi(rect.position.y + rect.size.y * 0.76))
-
-
-static func hazard_probe(size: Vector2i, weapon_index: int, mode_index: int) -> Vector2i:
-	var rect := panel_rect(size, weapon_index, mode_index)
-	return Vector2i(roundi(rect.position.x + rect.size.x * 0.12), roundi(rect.position.y + rect.size.y * 0.77))
-
-
-static func hud_probe(size: Vector2i) -> Vector2i:
-	return Vector2i(roundi(size.x * 0.020), roundi(size.y * 0.120))
-
-
-static func victim_position(rect: Rect2, index: int, total: int) -> Vector2:
-	var columns := mini(8, maxi(1, total))
-	var rows := ceili(float(total) / float(columns))
-	var column := index % columns
-	var row := index / columns
-	var x_ratio := 0.20 + 0.60 * (float(column) / float(maxi(columns - 1, 1)))
-	var y_ratio := 0.33 + 0.28 * (float(row) / float(maxi(rows - 1, 1)))
-	return rect.position + Vector2(rect.size.x * x_ratio, rect.size.y * y_ratio)
+func _write_capture_manifest() -> int:
+	var document := Spec.manifest_document(_samples, _capture_source)
+	var absolute := ProjectSettings.globalize_path(Spec.CAPTURE_MANIFEST_PATH)
+	var file := FileAccess.open(absolute, FileAccess.WRITE)
+	if file == null:
+		return FileAccess.get_open_error()
+	file.store_string(JSON.stringify(document, "\t") + "\n")
+	file.close()
+	return OK

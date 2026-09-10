@@ -1,19 +1,20 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "issue": "FAN-3939",
   "class_id": "engineer",
   "capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
   "focused_test": "tests/ultimates/presentation/engineer_certification_capture_test.gd",
   "readability_report": "docs/design/references/weapon_ultimates/engineer/certification_readability_report.md",
-  "capture_base": {
-    "ref": "dev",
-    "sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
-    "tree": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf"
-  },
-  "renderer": {
-    "engine": "godot 4.7.stable.official.5b4e0cb0f",
-    "method": "windowed SubViewport render, real shipped timeline scenes driven by Timeline.play/seek at frozen manifest beats, deterministic seed 3939, no headless substitution",
-    "seed": 3939
+  "capture_source": {
+    "source_ref": "dev",
+    "source_commit_sha": "pending-windowed-capture",
+    "source_tree_sha": "pending-windowed-capture",
+    "controlled_seed": 3939,
+    "godot_version": "pending-windowed-capture",
+    "renderer": "pending-windowed-capture",
+    "capture_method": "pending-windowed-capture",
+    "command": "pending-windowed-capture",
+    "workload_exclusion": "capture-only Engineer certification evidence"
   },
   "canonical_weapon_ids": [
     "engineer_sentry_wrench",
@@ -25,80 +26,78 @@
       "id": "normal",
       "beat": "active",
       "victims": 3,
-      "description": "Live timeline and victim-impact snapshot at each weapon's frozen active beat with HUD, player, and hazard fixtures visible."
+      "persisted_settings": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "crowd": "three real EnemySpitter targets"
     },
     {
       "id": "crowded",
       "beat": "release",
       "victims": 39,
-      "description": "Thirty-nine live victim markers exercise the production degraded ripple path above the 38-victim threshold at the release beat."
+      "persisted_settings": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "crowd": "thirty-nine real EnemySpitter targets"
     },
     {
       "id": "reduced_motion",
       "beat": "active",
       "victims": 3,
-      "description": "A held, no-camera-shake capture frame at the active beat; scene processing is frozen after the deterministic seek so no motion advances."
+      "persisted_settings": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "crowd": "three real EnemySpitter targets"
     },
     {
       "id": "photosensitivity_safe",
       "beat": "recovery",
       "victims": 3,
-      "description": "A held low-contrast recovery frame; the bounded victim-impact burst stays local to its targets and no full-screen flash is present."
+      "persisted_settings": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "crowd": "three real EnemySpitter targets"
     }
   ],
-  "layout": {
-    "rows": "canonical_weapon_ids",
-    "columns": "presentation_modes",
-    "cells_per_sheet": 12,
-    "runtime_resources": {
-      "timeline_scenes": [
-        "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-        "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
-        "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn"
-      ],
-      "victim_flipbooks": [
-        "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres",
-        "assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres",
-        "assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres"
-      ],
-      "victim_impact_service": "scripts/ultimates/presentation/victim_impact_player.gd"
-    }
-  },
   "viewports": [
-    {
-      "id": "648p",
-      "width": 1152,
-      "height": 648,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_648p.png",
-      "lfs_object_id": "sha256:ec62eb6c2b59c1c409fe92106babc9306b8a8ea4e4253e377ac0a9363ba93926"
-    },
-    {
-      "id": "720p",
-      "width": 1280,
-      "height": 720,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_720p.png",
-      "lfs_object_id": "sha256:9b5988482d461a08e17b047f51509b5454c490048edeefdc47bca4b038ddc164"
-    },
-    {
-      "id": "1080p",
-      "width": 1920,
-      "height": 1080,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_1080p.png",
-      "lfs_object_id": "sha256:62d5797ec6df21909d5b7e060569f48f8ec03896de055e1cc9b6a254a7217fc3"
-    },
-    {
-      "id": "2k",
-      "width": 2560,
-      "height": 1440,
-      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/engineer_ultimate_certification_2k.png",
-      "lfs_object_id": "sha256:650a0f743afe721bb14018e4ccf4669f1efe59b69bd3c915b470d105c4d1a5b3"
-    }
+    {"id": "648p", "width": 1152, "height": 648},
+    {"id": "720p", "width": 1280, "height": 720},
+    {"id": "1080p", "width": 1920, "height": 1080},
+    {"id": "2k", "width": 2560, "height": 1440}
   ],
-  "verification": {
-    "windowed_capture": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
-    "focused_probe": "GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/engineer_certification_capture_test.gd",
-    "class_timeline_probe": "GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/engineer_ultimate_timelines.gd",
-    "lfs_integrity": "git lfs fsck"
+  "runtime_configuration": {
+    "player_scene": "res://scenes/Player.tscn",
+    "enemy_scene": "res://scenes/EnemySpitter.tscn",
+    "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
+    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
+    "scene_paths": [
+      "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+      "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+      "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn"
+    ],
+    "mode_application": "GameSettings.DEFAULTS copied into UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate"
   },
-  "scope_boundary": "This is reproducible capture evidence only. Production Engineer VFX, gameplay, balance, shared registries, and legacy adoption manifests remain unchanged. Provenance names the dev base SHA the captures were rendered from; the final candidate hash is published on the FAN-3939 card, not here."
+  "coverage_matrix": {
+    "weapons": [
+      "engineer_sentry_wrench",
+      "engineer_repair_drone",
+      "engineer_pressure_mines"
+    ],
+    "modes": [
+      "normal",
+      "crowded",
+      "reduced_motion",
+      "photosensitivity_safe"
+    ],
+    "viewports": ["648p", "720p", "1080p", "2k"],
+    "sample_count": 48,
+    "cells_per_viewport": 12,
+    "beats": ["release", "active", "recovery"],
+    "layout": "isolated_native_frame"
+  },
+  "samples": []
 }

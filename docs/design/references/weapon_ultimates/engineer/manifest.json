@@ -361,8 +361,9 @@
       "mode_count": 4,
       "viewport_count": 4,
       "weapon_count": 3,
-      "base_ref": "dev",
-      "base_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f"
+      "native_sample_count": 48,
+      "layout": "isolated_native_frame",
+      "capture_source": "The exact committed renderer source SHA/tree, windowed command, settings snapshot and per-frame hashes are recorded in certification_capture_manifest.json; the final candidate SHA remains card metadata rather than self-referential capture provenance."
     }
   }
 }
