@@ -33,6 +33,11 @@ Every frame runs the same shipped context before it is frozen for readback:
 - Actual `EnemySpitter.tscn` targets are used (3 normally, 39 for the crowded
   load condition). An actual target invokes `_spawn_elite_hazard`, yielding an
   `ElitePoisonZone` with its shipped `HazardTelegraph`.
+- The capture fixture does not replace that hazard. Before renderer clocks are
+  frozen, it pins the two existing `HazardVfx.telegraph` sprite layers to their
+  authored post-fade state: zone target scale / alpha 0.62 and rim alpha 0.90.
+  The production tween normally supplies those values, but would remain at its
+  authored zero-alpha start when the deterministic capture freezes time.
 - `UltimateHudRuntimeAdapter` mounts the shipped `UltimateHudWidget`, whose
   selection and active charge state are read from that same Player.
 
@@ -67,6 +72,15 @@ readback, preventing deferred teardown from selecting a renderer-dependent
 frame. The renderer then draws three explicit `UPDATE_ONCE` frames and switches
 the target to `UPDATE_DISABLED`.
 
+After that freeze, each frame performs an observation-only visibility proof on
+the exact `ElitePoisonZone/HazardTelegraph`: it reads a native visible image,
+hides only that real `CanvasItem`, reads the hidden baseline, then restores it.
+The saved PNG is the visible half of this probe; no marker, substitute effect,
+or production VFX change is used. Each manifest sample records the resulting
+`hazard_visibility` metrics. The gate requires the frozen visible-versus-hidden
+native-frame RGB delta method, at least 120 changed stride-2 samples, an
+80 × 80-or-larger delta bounds, and a 0.10 per-channel threshold.
+
 One windowed invocation performs two fresh passes of all 48 isolated contexts.
 The second pass must SHA-256-match every first-pass file before the manifest is
 written; its independently computed value is retained as `repeat_sha256`. The
@@ -75,10 +89,11 @@ Godot process and compares its manifest hashes before publishing the candidate.
 
 The paired headless integrity gate validates all 48 manifest keys and native
 IHDR sizes, LFS hydration, image decoding and file hashes. Its negative probes
-fail closed for a missing mode, missing provenance key, missing PNG, LFS
-pointer, and wrong dimensions. The same gate also runs real Player/enemy/
-hazard/HUD mode checks, while `engineer_accessibility_modes_test.gd` remains the
-broader production accessibility and lifecycle regression suite.
+fail closed for a missing mode, missing provenance key, missing or zero/too-small
+hazard visibility proof, missing PNG, LFS pointer, and wrong dimensions. Its
+live production fixture also rejects a missing, hidden, or zero-alpha real
+`HazardTelegraph` before freeze. `engineer_accessibility_modes_test.gd` remains
+the broader production accessibility and lifecycle regression suite.
 
 ## Reproduction
 

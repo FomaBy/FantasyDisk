@@ -363,7 +363,7 @@
       "weapon_count": 3,
       "native_sample_count": 48,
       "layout": "isolated_native_frame",
-      "capture_source": "The exact committed renderer source SHA/tree, windowed command, settings snapshot and per-frame hashes are recorded in certification_capture_manifest.json; the final candidate SHA remains card metadata rather than self-referential capture provenance."
+      "capture_source": "The exact committed renderer source SHA/tree, windowed command, settings snapshot, per-frame hashes, and frozen visible-versus-hidden real HazardTelegraph pixel-delta metrics are recorded in certification_capture_manifest.json; the final candidate SHA remains card metadata rather than self-referential capture provenance."
     }
   }
 }

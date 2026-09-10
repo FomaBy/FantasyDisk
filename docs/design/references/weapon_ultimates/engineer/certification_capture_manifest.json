@@ -6,14 +6,14 @@
 	],
 	"capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
 	"capture_source": {
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
-		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=dc04a2032afb3e28a98471f6d6bd5aa8de6a28fa FAN3939_CAPTURE_SOURCE_TREE=57a507dba4c85c18c1205d5bfeb03f28cff494bb GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=999d142f16f5bc5ca6a7205ab3bea7f4ab29e003 FAN3939_CAPTURE_SOURCE_TREE=f2a33234cd2101399a94f0bd923f9d9d7be45f55 GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
 		"controlled_seed": 3939,
 		"godot_version": "4.7-stable (official)",
 		"renderer": "display=macOS; rendering_method=gl_compatibility",
-		"source_commit_sha": "dc04a2032afb3e28a98471f6d6bd5aa8de6a28fa",
+		"source_commit_sha": "999d142f16f5bc5ca6a7205ab3bea7f4ab29e003",
 		"source_ref": "agent/codex-dev-terra-b/b00766a9083d",
-		"source_tree_sha": "57a507dba4c85c18c1205d5bfeb03f28cff494bb",
+		"source_tree_sha": "f2a33234cd2101399a94f0bd923f9d9d7be45f55",
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified"
 	},
 	"class_id": "engineer",
@@ -104,1008 +104,1488 @@
 	"samples": [
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_sentry_wrench__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__normal__active.png",
-			"repeat_sha256": "74fb9f082babf789e9a8b3ed4e0e576df83153365d47a56a2003008d9f1c269c",
+			"repeat_sha256": "5a8baffbc808bb1ca9eeef29bb411796d27a96e1d1d8998a44a3b31b00d40dad",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "74fb9f082babf789e9a8b3ed4e0e576df83153365d47a56a2003008d9f1c269c",
+			"sha256": "5a8baffbc808bb1ca9eeef29bb411796d27a96e1d1d8998a44a3b31b00d40dad",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1152
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_sentry_wrench__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__crowded__release.png",
-			"repeat_sha256": "94a512fedb87838dbc0a1314b18ff6bda034dbf5ee2f25f95f11035d65f2d3c4",
+			"repeat_sha256": "c297bd7321e9e3632af3c923414521ef6b515bcda92e3463c2d234954067ef24",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.871,
-			"sha256": "94a512fedb87838dbc0a1314b18ff6bda034dbf5ee2f25f95f11035d65f2d3c4",
+			"sha256": "c297bd7321e9e3632af3c923414521ef6b515bcda92e3463c2d234954067ef24",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_sentry_wrench__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__reduced_motion__active.png",
-			"repeat_sha256": "2b255e4af8d47c36877600afb5c5b03c64d6648557bf4ef515e5eeeea6823acb",
+			"repeat_sha256": "752310db74b66cebacf80685b9371c6374f8baf70359d781c5f66fcf27bba374",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "2b255e4af8d47c36877600afb5c5b03c64d6648557bf4ef515e5eeeea6823acb",
+			"sha256": "752310db74b66cebacf80685b9371c6374f8baf70359d781c5f66fcf27bba374",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1152
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_sentry_wrench__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "0fb9c5f121ec46d7066324e5e072517f127417a6aba67561d14b81ecd0bc73aa",
+			"repeat_sha256": "e641a281893281ec43971fd751c973ee5592cb41fa81902b27817cbb3bb07a72",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "0fb9c5f121ec46d7066324e5e072517f127417a6aba67561d14b81ecd0bc73aa",
+			"sha256": "e641a281893281ec43971fd751c973ee5592cb41fa81902b27817cbb3bb07a72",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_repair_drone__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "efdba1904a46d1bf0d4026aee08b47be9348a424f8c8f0fb62cb8c9af86f3742",
+			"repeat_sha256": "fb5a5d92861152e006f198ceae0c0f2015656d47b4e181b0b131919e44d89332",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "efdba1904a46d1bf0d4026aee08b47be9348a424f8c8f0fb62cb8c9af86f3742",
+			"sha256": "fb5a5d92861152e006f198ceae0c0f2015656d47b4e181b0b131919e44d89332",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_repair_drone__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "9ce28c67af0034f819a83d5f6a6c81c89e00ba77368144ae5bd2c724db2fa8af",
+			"repeat_sha256": "3234b715b6aea8fb59474f30c1a4f3173bfaf6d5c62490d977be498cc3d939e8",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "9ce28c67af0034f819a83d5f6a6c81c89e00ba77368144ae5bd2c724db2fa8af",
+			"sha256": "3234b715b6aea8fb59474f30c1a4f3173bfaf6d5c62490d977be498cc3d939e8",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_repair_drone__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "c6636d5e32b93635e3d89cede37633143b406700bb237fe37474bad5d74fda10",
+			"repeat_sha256": "38bcbee109251a9cd1b84b34088db6e551bc3550e20ae5cdd5af472f983adb02",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "c6636d5e32b93635e3d89cede37633143b406700bb237fe37474bad5d74fda10",
+			"sha256": "38bcbee109251a9cd1b84b34088db6e551bc3550e20ae5cdd5af472f983adb02",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_repair_drone__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "b195172855cfc68ae23b63b0fe4aa109a8d246802305f8c76814643b7bfae61f",
+			"repeat_sha256": "ec848bdac4185c7d60074b296681cb0fad8cec72256cc5fd8947ffcee459ecc1",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "b195172855cfc68ae23b63b0fe4aa109a8d246802305f8c76814643b7bfae61f",
+			"sha256": "ec848bdac4185c7d60074b296681cb0fad8cec72256cc5fd8947ffcee459ecc1",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_pressure_mines__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__normal__active.png",
-			"repeat_sha256": "db38710fa765c9d71608a0dc918434b752d3adbf6253e43ead1dc37771f8b014",
+			"repeat_sha256": "7e8e06499710a92c09633a45fc55d40d7067fd8ca1d965dbdc189f9bfeb79a1c",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "db38710fa765c9d71608a0dc918434b752d3adbf6253e43ead1dc37771f8b014",
+			"sha256": "7e8e06499710a92c09633a45fc55d40d7067fd8ca1d965dbdc189f9bfeb79a1c",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1152
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_pressure_mines__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__crowded__release.png",
-			"repeat_sha256": "3242ba2519c3d62cdc3c789440dd4631913cc427d7a85cc39754c0f3f0a907e6",
+			"repeat_sha256": "12179d9b04dc18c6b200656a437bfd2feb814270bd6b2e8c5667604fb7716b3a",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.971,
-			"sha256": "3242ba2519c3d62cdc3c789440dd4631913cc427d7a85cc39754c0f3f0a907e6",
+			"sha256": "12179d9b04dc18c6b200656a437bfd2feb814270bd6b2e8c5667604fb7716b3a",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_pressure_mines__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__reduced_motion__active.png",
-			"repeat_sha256": "75c269d4fcbbfc6931e9fe69c9393bad0686bf45de283526a2e5fec7f14cbcd5",
+			"repeat_sha256": "372c71f6498677f412350f66015fda4f1140b8d9db6addb0890ca64824bb8a10",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "75c269d4fcbbfc6931e9fe69c9393bad0686bf45de283526a2e5fec7f14cbcd5",
+			"sha256": "372c71f6498677f412350f66015fda4f1140b8d9db6addb0890ca64824bb8a10",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1152
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2613,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 648,
 			"id": "648p--engineer_pressure_mines__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "b55997f243a6245db10b1c9f3cb2dd4ae01e09334d58152c57ac3568545fc46c",
+			"repeat_sha256": "43850051a6c17064cf75fa2afd56183198e70b7da73adaa6ffb5b3ed43611dc3",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "b55997f243a6245db10b1c9f3cb2dd4ae01e09334d58152c57ac3568545fc46c",
+			"sha256": "43850051a6c17064cf75fa2afd56183198e70b7da73adaa6ffb5b3ed43611dc3",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1152
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_sentry_wrench__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__normal__active.png",
-			"repeat_sha256": "01ff01cf2f47080250f46f061e95015eb457183cc82eb6745cb418c646efbd21",
+			"repeat_sha256": "1dea424094df4096da3acf5a936dbb370b47301fd0826a183209f24870ae62f4",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "01ff01cf2f47080250f46f061e95015eb457183cc82eb6745cb418c646efbd21",
+			"sha256": "1dea424094df4096da3acf5a936dbb370b47301fd0826a183209f24870ae62f4",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1280
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_sentry_wrench__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__crowded__release.png",
-			"repeat_sha256": "e0848e03352e01087f6b63056c39fcb2b8a8205fb4c6faa3edf652d4f4a14f0c",
+			"repeat_sha256": "8b628de958c145329f97b2ef7be4cf539ad704d7cf07fed0ae068d0f9c3488f4",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.871,
-			"sha256": "e0848e03352e01087f6b63056c39fcb2b8a8205fb4c6faa3edf652d4f4a14f0c",
+			"sha256": "8b628de958c145329f97b2ef7be4cf539ad704d7cf07fed0ae068d0f9c3488f4",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_sentry_wrench__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__reduced_motion__active.png",
-			"repeat_sha256": "51f5d16404251fc9230ecc28560d856a36cb52223c7ff2194ea07a3969522347",
+			"repeat_sha256": "9709017e7ad5a2f16401938b1656b8a6cfc5c11de25eefd0d3c9abb791e20f5b",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "51f5d16404251fc9230ecc28560d856a36cb52223c7ff2194ea07a3969522347",
+			"sha256": "9709017e7ad5a2f16401938b1656b8a6cfc5c11de25eefd0d3c9abb791e20f5b",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1280
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_sentry_wrench__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "69956168cbd2b0886aa9ff779f6d8ed092ca6ee35106deac1f797c0a16ffa656",
+			"repeat_sha256": "21fd6533fbd4df3055a1a4b6839044be956b4823e1525db5d253bc4dc923eb50",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "69956168cbd2b0886aa9ff779f6d8ed092ca6ee35106deac1f797c0a16ffa656",
+			"sha256": "21fd6533fbd4df3055a1a4b6839044be956b4823e1525db5d253bc4dc923eb50",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_repair_drone__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "50cef44483fe1a9cbb8623771dc59707c9c2eb4773f7b172d8523e1d04a005f3",
+			"repeat_sha256": "3309766956b3021879d0f003905a0bbed22ab9d945178a29d58ce3ab32bd6f41",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "50cef44483fe1a9cbb8623771dc59707c9c2eb4773f7b172d8523e1d04a005f3",
+			"sha256": "3309766956b3021879d0f003905a0bbed22ab9d945178a29d58ce3ab32bd6f41",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_repair_drone__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "abbb683d25c7dea45901830f8c9d78227aec807e754c87652b30c8ccfdd3d03d",
+			"repeat_sha256": "165f4be4aa36d0f516c171b58e09ee050bf0f297e1b087ff9796b153c40e803b",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "abbb683d25c7dea45901830f8c9d78227aec807e754c87652b30c8ccfdd3d03d",
+			"sha256": "165f4be4aa36d0f516c171b58e09ee050bf0f297e1b087ff9796b153c40e803b",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_repair_drone__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "34fd2937424777cb13a7549425c45954b6535660a159a4a170cfe7825341cf2f",
+			"repeat_sha256": "09b96306feafd5e1aec4a4a72595ea5ba85d3da011d605b26f09703223a29966",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "34fd2937424777cb13a7549425c45954b6535660a159a4a170cfe7825341cf2f",
+			"sha256": "09b96306feafd5e1aec4a4a72595ea5ba85d3da011d605b26f09703223a29966",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_repair_drone__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "ddad3f96ab7d8f75d9890bc93693c6c3405f0c337681ecb45ee448579f103338",
+			"repeat_sha256": "156f32faae4175f9df46b65ab90d95cba6242997e8e06eae29f058924e605d37",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "ddad3f96ab7d8f75d9890bc93693c6c3405f0c337681ecb45ee448579f103338",
+			"sha256": "156f32faae4175f9df46b65ab90d95cba6242997e8e06eae29f058924e605d37",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_pressure_mines__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__normal__active.png",
-			"repeat_sha256": "85f68a3b69f9c3ec062a1b0cbd86fea8ab16df8ef332805efd29d8bd048369e2",
+			"repeat_sha256": "dd733f6c2665b49cec9c4d8d76aaebf83dbf9bd085a57574662ed6049264a2d2",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "85f68a3b69f9c3ec062a1b0cbd86fea8ab16df8ef332805efd29d8bd048369e2",
+			"sha256": "dd733f6c2665b49cec9c4d8d76aaebf83dbf9bd085a57574662ed6049264a2d2",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1280
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_pressure_mines__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__crowded__release.png",
-			"repeat_sha256": "dc5113f5fbb0fa2ed59276599aecb91d7d941bc987dd568a5b09e2848699718e",
+			"repeat_sha256": "9724bdc01f4cac6b0fe90a498fa2e3409d294162a7d287e24b5f8288115344eb",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.971,
-			"sha256": "dc5113f5fbb0fa2ed59276599aecb91d7d941bc987dd568a5b09e2848699718e",
+			"sha256": "9724bdc01f4cac6b0fe90a498fa2e3409d294162a7d287e24b5f8288115344eb",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_pressure_mines__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__reduced_motion__active.png",
-			"repeat_sha256": "5efa958b853ac7b7970bdaafddcfe5fe7f9fcd0af22a777ada97df00574ba6fa",
+			"repeat_sha256": "0621149b76f385d6ec79c1c21f04c07fba2aa0e84f6d9fa32ac204fd206bb5dc",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "5efa958b853ac7b7970bdaafddcfe5fe7f9fcd0af22a777ada97df00574ba6fa",
+			"sha256": "0621149b76f385d6ec79c1c21f04c07fba2aa0e84f6d9fa32ac204fd206bb5dc",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1280
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2622,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 720,
 			"id": "720p--engineer_pressure_mines__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "201e8f39112e7df031c6eada7600ba66952f22ddc5698df20e85775d82bceb8c",
+			"repeat_sha256": "b0b6319246166f3c2a35e0341b93b825a52f827d92768a3ebc16e50301d2e468",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "201e8f39112e7df031c6eada7600ba66952f22ddc5698df20e85775d82bceb8c",
+			"sha256": "b0b6319246166f3c2a35e0341b93b825a52f827d92768a3ebc16e50301d2e468",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1280
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_sentry_wrench__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__normal__active.png",
-			"repeat_sha256": "2039386409313ce65a8281afc6ae0734bd8191a6c095c67ba9dc380f207febd8",
+			"repeat_sha256": "7c834822259a496db560f442f65938ad100ec6f48aaaba5273e6097748dfb8c1",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "2039386409313ce65a8281afc6ae0734bd8191a6c095c67ba9dc380f207febd8",
+			"sha256": "7c834822259a496db560f442f65938ad100ec6f48aaaba5273e6097748dfb8c1",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1920
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_sentry_wrench__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__crowded__release.png",
-			"repeat_sha256": "084596b3c02c7cc1be19834a92538ed94f119d36cdedf4a5444188612280c727",
+			"repeat_sha256": "7da0af770bb98d1a77bebd2fdda161c30a6647c6af41204ed2fb5f5032d18b3f",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.871,
-			"sha256": "084596b3c02c7cc1be19834a92538ed94f119d36cdedf4a5444188612280c727",
+			"sha256": "7da0af770bb98d1a77bebd2fdda161c30a6647c6af41204ed2fb5f5032d18b3f",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_sentry_wrench__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__reduced_motion__active.png",
-			"repeat_sha256": "9787dbd68c7805dd9d30ed7c8897dee03d321fff58f49880f86ad9e5f866f113",
+			"repeat_sha256": "931a6db71f2330bcf78153e14baf5197ae2eba9c7501b4e9cbb719406a9d33e5",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "9787dbd68c7805dd9d30ed7c8897dee03d321fff58f49880f86ad9e5f866f113",
+			"sha256": "931a6db71f2330bcf78153e14baf5197ae2eba9c7501b4e9cbb719406a9d33e5",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1920
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_sentry_wrench__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "dc5aef8a51148c37e5ea73d7dc85d897430cb8103b53eaaeca12b9f70dd1805a",
+			"repeat_sha256": "b127899e18cf9efb29b8c8429d759593dbce2d2c697fd63c7f4daa7ad64bdb12",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "dc5aef8a51148c37e5ea73d7dc85d897430cb8103b53eaaeca12b9f70dd1805a",
+			"sha256": "b127899e18cf9efb29b8c8429d759593dbce2d2c697fd63c7f4daa7ad64bdb12",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_repair_drone__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "6101295c000da3f025af4f2024ad0296018b6c7a1a47bc1b119cbb02509638c8",
+			"repeat_sha256": "708d1116a408851b743eae261ac3e92bfd833fe20e59bd4a96b924a19dcde651",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "6101295c000da3f025af4f2024ad0296018b6c7a1a47bc1b119cbb02509638c8",
+			"sha256": "708d1116a408851b743eae261ac3e92bfd833fe20e59bd4a96b924a19dcde651",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_repair_drone__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "c291b19ab4a0e9a41573130b90dd51f28cb503cda0062bc864e6d71ed778a517",
+			"repeat_sha256": "71550a5691558b003a68a586571a410efb59a567762f4a340d02aaea221eb367",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "c291b19ab4a0e9a41573130b90dd51f28cb503cda0062bc864e6d71ed778a517",
+			"sha256": "71550a5691558b003a68a586571a410efb59a567762f4a340d02aaea221eb367",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_repair_drone__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "67272bb02ee0ffccbadb3cec143b5d704f3da72dcf285ae46dae68de0e8e514b",
+			"repeat_sha256": "2efd45ab57263ff9d67c0379a740b98a30ef7221714aa52b92dff72ab3c78c7c",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "67272bb02ee0ffccbadb3cec143b5d704f3da72dcf285ae46dae68de0e8e514b",
+			"sha256": "2efd45ab57263ff9d67c0379a740b98a30ef7221714aa52b92dff72ab3c78c7c",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_repair_drone__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "7eccb953f2986c60494890281ca60e3fa8d1925d1e2f658b1d530cb8f7bbb8aa",
+			"repeat_sha256": "fa663bd8f000ff206bc9912ec22a7a615569d3f608c3bfa4a771d48ab1acfcc1",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "7eccb953f2986c60494890281ca60e3fa8d1925d1e2f658b1d530cb8f7bbb8aa",
+			"sha256": "fa663bd8f000ff206bc9912ec22a7a615569d3f608c3bfa4a771d48ab1acfcc1",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_pressure_mines__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__normal__active.png",
-			"repeat_sha256": "87bf696cdd06d1ad48e990586d3bf9a95e82ff70c10f70c2ba51001f2cb16cc4",
+			"repeat_sha256": "fd92762dff9c5c388c6adba5fea6d1a68c7755780a3ee051e59656653bbdf3ff",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "87bf696cdd06d1ad48e990586d3bf9a95e82ff70c10f70c2ba51001f2cb16cc4",
+			"sha256": "fd92762dff9c5c388c6adba5fea6d1a68c7755780a3ee051e59656653bbdf3ff",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1920
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_pressure_mines__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__crowded__release.png",
-			"repeat_sha256": "10f8898ca0a2ed8525be131416dfc6d1709fb32557c3add8d3ddcd755aebf558",
+			"repeat_sha256": "03daaa69bc13bbd73ad2f66ace7f9e15afba70e979a5663b1639faf80d930aec",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.971,
-			"sha256": "10f8898ca0a2ed8525be131416dfc6d1709fb32557c3add8d3ddcd755aebf558",
+			"sha256": "03daaa69bc13bbd73ad2f66ace7f9e15afba70e979a5663b1639faf80d930aec",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_pressure_mines__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__reduced_motion__active.png",
-			"repeat_sha256": "9f61909ff6e114a71cd23942402c864ed530275bb12e434d0c5cd5e07929cd37",
+			"repeat_sha256": "5f03cd7a893b0e401ec8b1539a37dbb256348a85013c479476d7518d18575877",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "9f61909ff6e114a71cd23942402c864ed530275bb12e434d0c5cd5e07929cd37",
+			"sha256": "5f03cd7a893b0e401ec8b1539a37dbb256348a85013c479476d7518d18575877",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1920
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 114,
+					"width": 164
+				},
+				"delta_sample_count": 2611,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1080,
 			"id": "1080p--engineer_pressure_mines__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "568a36698fc9d3857836540b1b1b321497a9ce1840e1c6f5cdd24d60e676376c",
+			"repeat_sha256": "ba9d63b3b1c7830b39bf423bd78e8cbc050dc7468b11cf60f4f69b69022b5976",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "568a36698fc9d3857836540b1b1b321497a9ce1840e1c6f5cdd24d60e676376c",
+			"sha256": "ba9d63b3b1c7830b39bf423bd78e8cbc050dc7468b11cf60f4f69b69022b5976",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 1920
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_sentry_wrench__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__normal__active.png",
-			"repeat_sha256": "993fae65c3be045ff3bfbb206bdf16761e158c68979e22023a84b80e3d623fbf",
+			"repeat_sha256": "a7cd71b219c6bd5184e1a518ff4e491c7f16542179f66845a211f1447f997968",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "993fae65c3be045ff3bfbb206bdf16761e158c68979e22023a84b80e3d623fbf",
+			"sha256": "a7cd71b219c6bd5184e1a518ff4e491c7f16542179f66845a211f1447f997968",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 2560
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_sentry_wrench__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__crowded__release.png",
-			"repeat_sha256": "74dcfa501e803654a09527d6339c806c468fa8f26ac225da3959d399c4f4d435",
+			"repeat_sha256": "0659ac8b3bd050101b4c55a7c74ceffb5ea1a48ab36ede7236c7e1fc78faccb1",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.871,
-			"sha256": "74dcfa501e803654a09527d6339c806c468fa8f26ac225da3959d399c4f4d435",
+			"sha256": "0659ac8b3bd050101b4c55a7c74ceffb5ea1a48ab36ede7236c7e1fc78faccb1",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 2560
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_sentry_wrench__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__reduced_motion__active.png",
-			"repeat_sha256": "e67b7c8b61aadd6bda77680d243cd372c43dd90b93c7eb21d858d6a180ff57f6",
+			"repeat_sha256": "a74820ddd02beb8addf38f777a3c12d912233359394c3aafb78bd3c4fc3352ac",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.221,
-			"sha256": "e67b7c8b61aadd6bda77680d243cd372c43dd90b93c7eb21d858d6a180ff57f6",
+			"sha256": "a74820ddd02beb8addf38f777a3c12d912233359394c3aafb78bd3c4fc3352ac",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 2560
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_sentry_wrench__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "f8985deefaaa9af6b9356eb09798eff6970cf95745a53d8c34061be4a82d64e0",
+			"repeat_sha256": "dc2bfce7dcdefccf2a943f78247f835b2d63b0cffb4e9596fa32ca0088d7549c",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "f8985deefaaa9af6b9356eb09798eff6970cf95745a53d8c34061be4a82d64e0",
+			"sha256": "dc2bfce7dcdefccf2a943f78247f835b2d63b0cffb4e9596fa32ca0088d7549c",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_sentry_wrench",
 			"width": 2560
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_repair_drone__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "713c3e1647386e45d2a751e010610e5ac29ca40032284dc1cd179d63f99261d4",
+			"repeat_sha256": "51b6ea7062f236d6f244252aba2c15f586f1e257cdc0f64b28f1112f751100d5",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "713c3e1647386e45d2a751e010610e5ac29ca40032284dc1cd179d63f99261d4",
+			"sha256": "51b6ea7062f236d6f244252aba2c15f586f1e257cdc0f64b28f1112f751100d5",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_repair_drone__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "0264bace4815124fcb1af72ab76b4fcdfda1753630387fbc204427cdb91225a6",
+			"repeat_sha256": "f267caedea96fd0217b569bc456395a7722aa2003340462e853b525a8a50cf2c",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "0264bace4815124fcb1af72ab76b4fcdfda1753630387fbc204427cdb91225a6",
+			"sha256": "f267caedea96fd0217b569bc456395a7722aa2003340462e853b525a8a50cf2c",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_repair_drone__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "b0f0cd9ae2461f9e46c703cb07cb2d1b8b6af2bd736a441029a266b418dac5a2",
+			"repeat_sha256": "2054d1bbe9b922dc104ab57940854e0f2a0e8fab34d2209d923dfc8202a2c196",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "b0f0cd9ae2461f9e46c703cb07cb2d1b8b6af2bd736a441029a266b418dac5a2",
+			"sha256": "2054d1bbe9b922dc104ab57940854e0f2a0e8fab34d2209d923dfc8202a2c196",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_repair_drone__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "d19daa4f31a91f8a58c81323a03ce4a7884ff06241bfe5807e54b9a08e8243af",
+			"repeat_sha256": "f94fdf6fb66e3efe3265a1a35a277a9d41c04e92e4a3203062140463148e3888",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "d19daa4f31a91f8a58c81323a03ce4a7884ff06241bfe5807e54b9a08e8243af",
+			"sha256": "f94fdf6fb66e3efe3265a1a35a277a9d41c04e92e4a3203062140463148e3888",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_pressure_mines__normal__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__normal__active.png",
-			"repeat_sha256": "a4dcff16be422805755014b01596e6bf86d676bc00f81474934254950643ba60",
+			"repeat_sha256": "f2cbd13d17ae014e9f3ee427132a338c95ef21a0a44b4ce47bfe37c99783ee32",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "a4dcff16be422805755014b01596e6bf86d676bc00f81474934254950643ba60",
+			"sha256": "f2cbd13d17ae014e9f3ee427132a338c95ef21a0a44b4ce47bfe37c99783ee32",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 2560
 		},
 		{
 			"beat": "release",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_pressure_mines__crowded__release",
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__crowded__release.png",
-			"repeat_sha256": "fa6c4e0c407cad2de39995075a067b3efcafc5d97a4037e9e0cc8ee9e76ba6b0",
+			"repeat_sha256": "26be045529e2f7b7ff754d3bfc394d833a4699ddb8ba3ba11639dea501bb2401",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 39
 			},
 			"sample_time_seconds": 0.971,
-			"sha256": "fa6c4e0c407cad2de39995075a067b3efcafc5d97a4037e9e0cc8ee9e76ba6b0",
+			"sha256": "26be045529e2f7b7ff754d3bfc394d833a4699ddb8ba3ba11639dea501bb2401",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 2560
 		},
 		{
 			"beat": "active",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_pressure_mines__reduced_motion__active",
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__reduced_motion__active.png",
-			"repeat_sha256": "c8693971c132f1bcbbe98242e94708d759c525535a5dbbaf31f7fa36032e04bc",
+			"repeat_sha256": "290a39f717e948c4be884a9e5f4fb87075fcd7820c9d6f167f7ce272c8dff315",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 1.771,
-			"sha256": "c8693971c132f1bcbbe98242e94708d759c525535a5dbbaf31f7fa36032e04bc",
+			"sha256": "290a39f717e948c4be884a9e5f4fb87075fcd7820c9d6f167f7ce272c8dff315",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 2560
 		},
 		{
 			"beat": "recovery",
+			"hazard_visibility": {
+				"channel_threshold": 0.1,
+				"delta_bounds": {
+					"height": 110,
+					"width": 164
+				},
+				"delta_sample_count": 2616,
+				"method": "frozen visible-vs-hidden native-frame pixel delta",
+				"sample_stride": 2
+			},
 			"height": 1440,
 			"id": "2k--engineer_pressure_mines__photosensitivity_safe__recovery",
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "2d3c0ce53decb11ffaf59e5e04dcd204e83c9f3973d55fc4965679126e3a9ea8",
+			"repeat_sha256": "e50a00eb30456a652443245c8130eec6cb9894fba8e2d313add0ba523e47dc88",
 			"runtime_context": {
-				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 				"player": "scenes/Player.tscn",
 				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 				"victims": 3
 			},
 			"sample_time_seconds": 3.171,
-			"sha256": "2d3c0ce53decb11ffaf59e5e04dcd204e83c9f3973d55fc4965679126e3a9ea8",
+			"sha256": "e50a00eb30456a652443245c8130eec6cb9894fba8e2d313add0ba523e47dc88",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_pressure_mines",
 			"width": 2560
