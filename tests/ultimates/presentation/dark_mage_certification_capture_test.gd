@@ -17,6 +17,7 @@ const CAPTURE_ROOT := "res://docs/design/reference-assets-lfs/ultimate-certifica
 const POINTER_FIXTURE_PATH := "user://fan3938_dark_mage_lfs_pointer_probe.png"
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const SHA256_LENGTH := 64
+const GIT_SHA_LENGTH := 40
 
 const WEAPON_IDS: Array[String] = ["dark_book", "cursed_skull", "dark_wand"]
 const MODE_IDS: Array[String] = ["normal", "crowded", "reduced_motion", "photosensitivity_safe"]
@@ -207,7 +208,7 @@ func _manifest_violations(certification: Dictionary, class_manifest: Dictionary)
 	var source := certification.get("capture_source", {}) as Dictionary
 	var source_commit := str(source.get("commit_sha", "")).to_lower()
 	var source_tree := str(source.get("tree_sha", "")).to_lower()
-	if str(source.get("ref", "")).is_empty() or not _is_sha(source_commit) or not _is_sha(source_tree):
+	if str(source.get("ref", "")).is_empty() or not _is_git_sha(source_commit) or not _is_git_sha(source_tree):
 		errors.append("capture_source")
 	elif OS.execute("git", ["show", "-s", "--format=%T", source_commit], [], false) != 0:
 		errors.append("capture_source_commit_missing")
@@ -262,9 +263,13 @@ func _manifest_violations(certification: Dictionary, class_manifest: Dictionary)
 			errors.append("capture_hash:%s" % key)
 		if str(capture.get("scene_path", "")) != str(weapon_scenes.get(weapon_id, "")):
 			errors.append("capture_scene:%s" % key)
+		elif not FileAccess.file_exists("res://%s" % str(capture.get("scene_path", ""))):
+			errors.append("capture_scene_missing:%s" % key)
 		var expected_mode := MODE_SETTINGS[mode_id] as Dictionary
 		var settings := capture.get("persisted_settings", {}) as Dictionary
-		if bool(settings.get("ultimate_reduced_motion", false)) != bool(expected_mode["ultimate_reduced_motion"]) \
+		if not settings.has("ultimate_reduced_motion") \
+				or not settings.has("ultimate_photosensitivity_safe") \
+				or bool(settings.get("ultimate_reduced_motion", false)) != bool(expected_mode["ultimate_reduced_motion"]) \
 				or bool(settings.get("ultimate_photosensitivity_safe", false)) != bool(expected_mode["ultimate_photosensitivity_safe"]) \
 				or bool(capture.get("crowded", false)) != bool(expected_mode["crowded"]):
 			errors.append("capture_mode:%s" % key)
@@ -383,7 +388,7 @@ func _weapon_scenes(class_manifest: Dictionary) -> Dictionary:
 	for raw_weapon in class_manifest.get("weapons", []) as Array:
 		if raw_weapon is Dictionary:
 			var weapon := raw_weapon as Dictionary
-			result[str(weapon.get("weapon_id", ""))] = "res://%s" % str(weapon.get("scene_path", ""))
+			result[str(weapon.get("weapon_id", ""))] = str(weapon.get("scene_path", ""))
 	return result
 
 
@@ -411,6 +416,15 @@ func _string_array(raw: Variant) -> Array[String]:
 
 func _is_sha(value: String) -> bool:
 	if value.length() != SHA256_LENGTH:
+		return false
+	for character in value:
+		if not (character >= "0" and character <= "9") and not (character >= "a" and character <= "f"):
+			return false
+	return true
+
+
+func _is_git_sha(value: String) -> bool:
+	if value.length() != GIT_SHA_LENGTH:
 		return false
 	for character in value:
 		if not (character >= "0" and character <= "9") and not (character >= "a" and character <= "f"):
