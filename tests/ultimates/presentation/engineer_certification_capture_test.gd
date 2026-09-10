@@ -668,8 +668,8 @@ static func hazard_telegraph_is_visible(hazard: Node2D) -> bool:
 	var layers := hazard_telegraph_layers(hazard)
 	if telegraph == null or not telegraph.visible or telegraph.modulate.a <= 0.05 or layers.size() != 2:
 		return false
-	return layers[0].visible and layers[0].modulate.a >= HAZARD_TELEGRAPH_ZONE_ALPHA \
-		and layers[1].visible and layers[1].modulate.a >= HAZARD_TELEGRAPH_RIM_ALPHA
+	return layers[0].visible and is_equal_approx(layers[0].modulate.a, HAZARD_TELEGRAPH_ZONE_ALPHA) \
+		and layers[1].visible and is_equal_approx(layers[1].modulate.a, HAZARD_TELEGRAPH_RIM_ALPHA)
 
 
 static func hazard_visibility_metrics(visible_image: Image, hidden_image: Image, size: Vector2i) -> Dictionary:
