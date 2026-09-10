@@ -316,11 +316,15 @@ func _presentation_elapsed() -> float:
 	return float(timeline.elapsed_seconds()) if timeline != null else -1.0
 
 
-## Simulated seconds: the sum of process deltas, the same clock the host feeds
-## the presentation (Engine.time_scale is 1 here).
+## Wall-clock seconds: the engine hands nodes a delta already multiplied by
+## Engine.time_scale, so it is divided back out. This is the clock both sides
+## of the seam run on — the host advances the presentation by
+## delta / Engine.time_scale, and an activation's tweens ignore the time scale
+## — so a first-impact dip (Soldier grenade 0.40 for 120 ms) cannot make the
+## test's clock drift from theirs by a frame-rate-dependent amount.
 func _tick() -> void:
 	await process_frame
-	_last_delta = maxf(root.get_process_delta_time(), 0.0001)
+	_last_delta = maxf(root.get_process_delta_time(), 0.0001) / maxf(Engine.time_scale, 0.0001)
 	_elapsed += _last_delta
 
 

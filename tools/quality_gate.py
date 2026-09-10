@@ -232,6 +232,22 @@ def _certification_capture_declarations(
             "manifest",
             runner_key,
         ))
+    # FAN-3941: the Ranger, Thief and Soldier class manifests publish their
+    # certification link as `evidence.certification` with `capture_manifest`,
+    # `capture_script` and `focused_test`.  A link this lister does not read is
+    # evidence CI never hydrates, so the certification gate then fails on LFS
+    # pointers instead of judging the frames.
+    class_certification = evidence.get("certification")
+    if class_certification is not None:
+        if not isinstance(class_certification, dict):
+            raise RuntimeError(f"{description}.certification must be an object")
+        if "capture_manifest" in class_certification:
+            declarations.append((
+                "certification",
+                class_certification,
+                "capture_manifest",
+                "capture_script",
+            ))
     live_capture = evidence.get("live_capture")
     if live_capture is not None:
         if not isinstance(live_capture, dict):
@@ -322,6 +338,46 @@ def manifest_declared_lfs_evidence_paths() -> list[str]:
     if not paths:
         raise RuntimeError("no manifest-declared LFS evidence found")
     return sorted(paths)
+
+
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
+def manifest_declared_capture_source_commits() -> list[str]:
+    """Source commits every linked certification manifest records it was rendered from.
+
+    The certification gates prove each recorded `source.commit_sha` is an
+    ancestor of the checked-out candidate.  A shallow candidate checkout
+    cannot prove that on its own, so CI fetches enough history for exactly
+    these commits before the gates run; a manifest that records no usable
+    commit fails the candidate here rather than passing as unprovable.
+    """
+    manifest_paths = _weapon_ultimate_manifest_paths()
+    if not manifest_paths:
+        raise RuntimeError("no ultimate manifests found for capture sources")
+    commits: set[str] = set()
+    for manifest_path in manifest_paths:
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        for declaration in _certification_capture_declarations(evidence, description):
+            nested_path = _linked_certification_manifest_path(declaration, description)
+            nested_description = nested_path.relative_to(ROOT).as_posix()
+            nested = _load_json_object(nested_path, "certification capture manifest")
+            source = nested.get("source")
+            if source is None:
+                continue
+            if not isinstance(source, dict):
+                raise RuntimeError(f"{nested_description}.source must be an object")
+            commit = source.get("commit_sha")
+            if not isinstance(commit, str) or not _COMMIT_SHA_RE.match(commit):
+                raise RuntimeError(
+                    f"{nested_description}.source.commit_sha must be a full lowercase commit SHA"
+                )
+            commits.add(commit)
+    return sorted(commits)
 
 
 def _certification_test_script_path(raw_path: object, description: str) -> str:
@@ -1631,6 +1687,11 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         action="store_true",
         help="list fail-closed manifest-declared LFS evidence paths and exit",
     )
+    parser.add_argument(
+        "--list-manifest-capture-sources",
+        action="store_true",
+        help="list the source commits linked certification manifests record and exit",
+    )
     parser.add_argument("--report", default="build/quality_gate_report.json")
     parser.add_argument(
         "--combine-reports",
@@ -1651,6 +1712,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             for path in manifest_declared_lfs_evidence_paths():
                 print(path)
+        except RuntimeError as exc:
+            print(f"quality_gate: {exc}", file=sys.stderr)
+            return 2
+        return 0
+    if args.list_manifest_capture_sources:
+        try:
+            for commit in manifest_declared_capture_source_commits():
+                print(commit)
         except RuntimeError as exc:
             print(f"quality_gate: {exc}", file=sys.stderr)
             return 2
