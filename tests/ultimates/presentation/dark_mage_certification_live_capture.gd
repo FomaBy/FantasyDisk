@@ -576,7 +576,7 @@ func _write_capture_manifest() -> int:
 		"commands": {
 			"live_capture": "FSD_GODOT_EXCLUSIVE=1 DARK_MAGE_CERT_SOURCE_REF=<ref> DARK_MAGE_CERT_SOURCE_SHA=<sha> DARK_MAGE_CERT_SOURCE_TREE=<tree> python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
 			"focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
-			"runtime_modes": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd",
+			"runtime_modes": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd",
 			"class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_ultimate_timelines.gd",
 			"static_guard": "python3 tools/quality_static_guard.py --changed-ref <declared-base-sha>",
 		},

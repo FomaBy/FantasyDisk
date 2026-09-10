@@ -88,6 +88,44 @@ unregistered paths, duplicate capture keys, and absent release/active/recovery
 observations. It verifies the hydrated files instead of treating a headless
 capture skip as visual proof.
 
+### Windowed accessibility-runtime recovery
+
+The prior independent QA run on the earlier candidate was inconclusive because
+its windowed accessibility-mode command stayed silent until the outer 3600-second
+gate intervened. Recovery isolated the stall to the test harness after the
+first `dark_book/normal` cell: `frame_post_draw` stopped arriving while the
+SceneTree continued advancing fixed simulation ticks. Under `--fixed-fps`, a
+`SceneTreeTimer` is simulation-time rather than a wall-clock deadline, so its
+nominal two-second watchdog expired in 40–51 ms of elapsed wall time.
+
+The recovery is limited to
+`tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd`; no player,
+ultimate, renderer, shared helper, or other-class code changed. Its test-only,
+process-always watchdog now uses monotonic `Time`, arms `frame_post_draw`, and
+requests `RenderingServer.force_draw(false)` only after the listener is armed.
+A successful luminance sample therefore still follows a completed real native
+window draw. If neither route completes, the watchdog records the exact
+cell/stage/display/renderer and ordinary per-cell cleanup continues; a separate
+180-second gate remains the fail-closed diagnostic for a complete engine freeze.
+
+The corrected source was exercised before this evidence update:
+
+- Harness source commit: `afcef6f4cdbd3a1851c43ec0a34f6708ac3ae841`
+- Harness source tree: `9ee1e0c64cb9aee070e48aa7469d04f9df597304`
+- Environment: Godot `4.7-stable (official)`, `gl_compatibility`, macOS;
+  `render_loop_enabled=true`.
+- Result: `dark_mage_accessibility_modes_test: PASS (12 cells, windowed)` in
+  33.157 seconds. All 12 real production cells completed their assertions and
+  cleanup, restored persisted settings, and recorded 1,272 framebuffer
+  luminance samples with zero watchdog diagnostics or timed-out cells.
+
+```sh
+FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 \
+  DARK_MAGE_ACCESSIBILITY_REPORT=<path> \
+  python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 \
+  --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd
+```
+
 ### Limits
 
 These are still images, not a substitute for audio or continuous-motion review.
