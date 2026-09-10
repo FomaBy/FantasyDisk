@@ -19,6 +19,11 @@ const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impac
 const PressureMines := preload("res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd")
 
 const CAPTURE_SETTLE_FRAMES := 3
+## The recorded windowed command must advance the renderer at a bounded rate.
+## `--fixed-fps` is command-line owned, so retain its required value beside the
+## source command rather than attempting to read consumed engine arguments.
+const CAPTURE_FIXED_FPS := 60
+const CAPTURE_BACKEND_WARMUP := "one discarded complete first context before the certified matrix"
 const CAPTURE_SOURCE_REF := "agent/codex-dev-terra-b/b00766a9083d"
 
 var _capture_source: Dictionary = {}
@@ -46,6 +51,22 @@ func _initialize() -> void:
 	_time_scale_before_capture = Engine.time_scale
 	Engine.time_scale = 0.0
 	var captures := Spec.captures()
+	if captures.is_empty():
+		Engine.time_scale = _time_scale_before_capture
+		push_error("FAN-3939 Engineer certification capture has no matrix contexts to warm.")
+		quit(1)
+		return
+	## A new windowed renderer can expose an initialization frame even after the
+	## per-context readback settle. Build and read one complete real context, then
+	## discard it before the recorded 48-frame matrix begins. This never persists
+	## an artifact or a manifest sample; each published frame is still isolated.
+	var first_capture := captures[0] as Dictionary
+	var warmup_sample := await _capture_one(0, first_capture, false)
+	if warmup_sample.is_empty():
+		Engine.time_scale = _time_scale_before_capture
+		quit(1)
+		return
+	print("FAN-3939 Engineer certification backend warmup completed; starting the certified 48-context matrix.")
 	for capture_index in captures.size():
 		var capture := captures[capture_index] as Dictionary
 		var sample := await _capture_one(capture_index, capture)
@@ -97,18 +118,20 @@ func _read_capture_source() -> Dictionary:
 		"source_commit_sha": source_sha,
 		"source_tree_sha": source_tree,
 		"controlled_seed": Spec.CAPTURE_SEED,
+		"fixed_fps": CAPTURE_FIXED_FPS,
+		"backend_warmup": CAPTURE_BACKEND_WARMUP,
 		"godot_version": str(version.get("string", "unknown")),
 		"renderer": "display=%s; rendering_method=%s" % [
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
-		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
+		"capture_method": "windowed SubViewport render at a required fixed 60 FPS; one complete first context is read and discarded to warm the new backend before the certified matrix; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree, CAPTURE_FIXED_FPS],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
 
 
-func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
+func _capture_one(capture_index: int, capture: Dictionary, persist := true) -> Dictionary:
 	var size := capture.get("size", Vector2i.ZERO) as Vector2i
 	var output := str(capture.get("path", ""))
 	if size == Vector2i.ZERO or output.is_empty():
@@ -145,6 +168,9 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		push_error("FAN-3939 Engineer certification readback was empty or wrong-sized: %s" % str(capture["id"]))
 		return {}
 	image.convert(Image.FORMAT_RGBA8)
+	if not persist:
+		_cleanup_viewport(viewport)
+		return {"id": str(capture["id"]), "warmup": true}
 	var save_result := image.save_png(ProjectSettings.globalize_path(output))
 	_cleanup_viewport(viewport)
 	if save_result != OK:

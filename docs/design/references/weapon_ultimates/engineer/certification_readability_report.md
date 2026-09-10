@@ -54,8 +54,13 @@ persisted setting.
 
 ## Determinism and readability controls
 
-Before readback, the renderer advances the real activation and presentation
-only with fixed interior-of-phase tween/runtime steps. Pressure Mines invokes
+Before readback, the documented windowed command requires `--fixed-fps 60`, so
+the renderer keeps advancing at a bounded rate instead of depending on host
+real-time synchronization. Before the certification matrix, it builds, reads,
+and discards one complete real first context to warm the new windowed backend;
+that preflight never persists a PNG or manifest sample. The renderer then
+advances the real activation and presentation only with fixed
+interior-of-phase tween/runtime steps. Pressure Mines invokes
 the shipped smart-chain and outer-to-inner finale callbacks on that real
 activation into the callback state for the requested sample, so a renderer
 frame cannot choose a boundary. The capture-only renderer disables generic
@@ -97,8 +102,9 @@ the broader production accessibility and lifecycle regression suite.
 
 ## Reproduction
 
-Run the manifest's recorded `capture_source.command` exactly (windowed and
-through `tools/godot_gate.py`); headless invocation intentionally creates no
-PNG evidence. Follow it with the manifest's focused headless integrity gate,
+Run the manifest's recorded `capture_source.command` exactly (exclusive,
+windowed, and with `--fixed-fps 60` through `tools/godot_gate.py`); headless
+invocation intentionally creates no PNG evidence. Follow it with the
+manifest's focused headless integrity gate,
 the Engineer accessibility/timeline presentation checks, static scope guard,
 and `git lfs fsck` after hydration.

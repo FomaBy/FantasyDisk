@@ -163,6 +163,9 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"hazard_visibility",
 		"is_queued_for_deletion()",
 		"repeat_sha256",
+		"CAPTURE_FIXED_FPS",
+		"CAPTURE_BACKEND_WARMUP",
+		"_capture_one(0, first_capture, false)",
 	]:
 		_expect(source.contains(required), "live renderer must retain production/determinism contract: %s" % required, errors)
 	_expect(not source.contains("Polygon2D.new()"), "live renderer must not draw a stand-in player or hazard", errors)
@@ -193,6 +196,14 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, errors: A
 	var missing_key := manifest.duplicate(true)
 	(missing_key.get("capture_source", {}) as Dictionary).erase("source_tree_sha")
 	_expect(not manifest_violations(missing_key, profile).is_empty(), "a missing provenance key must fail closed", errors)
+	var realtime_command := manifest.duplicate(true)
+	var realtime_source := realtime_command.get("capture_source", {}) as Dictionary
+	realtime_source["command"] = str(realtime_source.get("command", "")).replace("--fixed-fps 60 ", "")
+	_expect(not manifest_violations(realtime_command, profile).is_empty(), "a capture command without fixed 60 FPS must fail closed", errors)
+	var unpinned_command := manifest.duplicate(true)
+	var unpinned_source := unpinned_command.get("capture_source", {}) as Dictionary
+	unpinned_source["command"] = str(unpinned_source.get("command", "")).replace("FAN3939_CAPTURE_SOURCE_TREE=%s" % str(unpinned_source.get("source_tree_sha", "")), "")
+	_expect(not manifest_violations(unpinned_command, profile).is_empty(), "a capture command without its recorded source-tree assignment must fail closed", errors)
 	if (manifest.get("samples", []) as Array).is_empty():
 		errors.append("a valid manifest must provide a sample for artifact negative probes")
 		return
@@ -543,15 +554,25 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	if str(manifest.get("focused_test", "")) != "tests/ultimates/presentation/engineer_certification_capture_test.gd":
 		violations.append("focused_test")
 	var source := manifest.get("capture_source", {}) as Dictionary
-	for key in ["source_ref", "source_commit_sha", "source_tree_sha", "godot_version", "renderer", "capture_method", "command", "workload_exclusion"]:
+	for key in ["source_ref", "source_commit_sha", "source_tree_sha", "godot_version", "renderer", "capture_method", "command", "workload_exclusion", "backend_warmup"]:
 		if str(source.get(key, "")).is_empty():
 			violations.append("capture_source.%s" % key)
 	if not str(source.get("source_ref", "")).begins_with("agent/") or not is_git_sha(str(source.get("source_commit_sha", ""))) or not is_git_sha(str(source.get("source_tree_sha", ""))):
 		violations.append("capture_source.pin")
 	if int(source.get("controlled_seed", -1)) != CAPTURE_SEED:
 		violations.append("capture_source.controlled_seed")
-	if not str(source.get("command", "")).contains("--windowed") or not str(source.get("command", "")).contains("FSD_GODOT_EXCLUSIVE=1"):
+	if int(source.get("fixed_fps", -1)) != 60:
+		violations.append("capture_source.fixed_fps")
+	if not str(source.get("backend_warmup", "")).contains("discarded complete first context"):
+		violations.append("capture_source.backend_warmup")
+	var command := str(source.get("command", ""))
+	if not command.contains("--windowed") or not command.contains("FSD_GODOT_EXCLUSIVE=1"):
 		violations.append("capture_source.windowed_command")
+	if not command_has_flag_value(command, "--fixed-fps", "60"):
+		violations.append("capture_source.fixed_fps_command")
+	if not command_has_assignment(command, "FAN3939_CAPTURE_SOURCE_SHA", str(source.get("source_commit_sha", ""))) \
+			or not command_has_assignment(command, "FAN3939_CAPTURE_SOURCE_TREE", str(source.get("source_tree_sha", ""))):
+		violations.append("capture_source.command_pin")
 	if not str(source.get("capture_method", "")).contains("Player.activate_ultimate") or not str(source.get("capture_method", "")).contains("apply_settings"):
 		violations.append("capture_source.runtime_path")
 	var expected_weapons := WEAPON_IDS.duplicate()
@@ -614,6 +635,21 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 				or not hazard_visibility_probe_is_readable(record.get("hazard_visibility", {}) as Dictionary):
 			violations.append("sample:%s" % str(capture["id"]))
 	return violations
+
+
+static func command_has_flag_value(command: String, flag: String, expected_value: String) -> bool:
+	var tokens := command.split(" ", false)
+	for index in tokens.size():
+		if str(tokens[index]) == flag and index + 1 < tokens.size() \
+				and str(tokens[index + 1]) == expected_value:
+			return true
+	return false
+
+
+static func command_has_assignment(command: String, key: String, expected_value: String) -> bool:
+	if expected_value.is_empty():
+		return false
+	return command.split(" ", false).has("%s=%s" % [key, expected_value])
 
 
 ## The renderer preloads this script, keeping the capture-only materialization
