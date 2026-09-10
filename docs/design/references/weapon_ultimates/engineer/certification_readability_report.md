@@ -66,7 +66,14 @@ matrix, it builds, reads, and discards one complete real first context to warm
 the new windowed backend; that preflight never persists a PNG or manifest
 sample. The renderer then advances the real
 activation and presentation only with fixed
-interior-of-phase tween/runtime steps. Pressure Mines invokes
+interior-of-phase tween/runtime steps.
+
+The certification validator pins the declared renderer provenance to the
+committed renderer pair `e94c4bb272a15ab255a7e40c7f84e8da80976570` /
+`e00d8381c0f16b9b12ab604e956e577210de462e`; a plausible-looking but different
+environment SHA/tree is rejected before an evidence manifest can pass review.
+
+Pressure Mines invokes
 the shipped smart-chain and outer-to-inner finale callbacks on that real
 activation into the callback state for the requested sample, so a renderer
 frame cannot choose a boundary. The capture-only renderer disables generic

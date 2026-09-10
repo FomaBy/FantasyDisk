@@ -55,6 +55,10 @@ const CAPTURE_FIXED_FPS := 60
 const CAPTURE_FIXED_DELTA_SECONDS := 1.0 / 60.0
 const CAPTURE_FIXED_STEP_SAMPLE_COUNT := 8
 const CAPTURE_FIXED_STEP_TOLERANCE := 1.0e-9
+## The windowed renderer itself is committed separately so this validator can
+## reject a plausible-looking environment pin that does not name its source.
+const CAPTURE_RENDERER_SOURCE_COMMIT := "e94c4bb272a15ab255a7e40c7f84e8da80976570"
+const CAPTURE_RENDERER_SOURCE_TREE := "e00d8381c0f16b9b12ab604e956e577210de462e"
 
 const WEAPON_IDS: Array[String] = [
 	"engineer_sentry_wrench",
@@ -214,6 +218,12 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, errors: A
 	var unpinned_source := unpinned_command.get("capture_source", {}) as Dictionary
 	unpinned_source["command"] = str(unpinned_source.get("command", "")).replace("FAN3939_CAPTURE_SOURCE_TREE=%s" % str(unpinned_source.get("source_tree_sha", "")), "")
 	_expect(not manifest_violations(unpinned_command, profile).is_empty(), "a capture command without its recorded source-tree assignment must fail closed", errors)
+	var wrong_provenance := manifest.duplicate(true)
+	var wrong_provenance_source := wrong_provenance.get("capture_source", {}) as Dictionary
+	wrong_provenance_source["source_commit_sha"] = "ccad59d94752fe681b41a83ca1c608d30354ee11"
+	wrong_provenance_source["source_tree_sha"] = "668878ff5e0562b73ddd0cc67f1ece139cdcb2f4"
+	wrong_provenance_source["command"] = canonical_capture_command(wrong_provenance_source)
+	_expect(not manifest_violations(wrong_provenance, profile).is_empty(), "a syntactically valid but wrong renderer source pin must fail closed", errors)
 	var bad_fixed_delta := manifest.duplicate(true)
 	var bad_delta_source := bad_fixed_delta.get("capture_source", {}) as Dictionary
 	var bad_delta_witness := bad_delta_source.get("fixed_step_witness", {}) as Dictionary
@@ -578,6 +588,9 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 			violations.append("capture_source.%s" % key)
 	if not str(source.get("source_ref", "")).begins_with("agent/") or not is_git_sha(str(source.get("source_commit_sha", ""))) or not is_git_sha(str(source.get("source_tree_sha", ""))):
 		violations.append("capture_source.pin")
+	if str(source.get("source_commit_sha", "")) != CAPTURE_RENDERER_SOURCE_COMMIT \
+			or str(source.get("source_tree_sha", "")) != CAPTURE_RENDERER_SOURCE_TREE:
+		violations.append("capture_source.renderer_pin")
 	if int(source.get("controlled_seed", -1)) != CAPTURE_SEED:
 		violations.append("capture_source.controlled_seed")
 	if int(source.get("fixed_fps", -1)) != CAPTURE_FIXED_FPS:
