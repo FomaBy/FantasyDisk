@@ -694,6 +694,7 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose.name = "UltimateCastPose"
 	_cast_pose.texture = texture
 	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose.self_modulate = Color(1.25, 1.25, 1.25, 1.0)
 	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
 	_cast_pose.z_index = 2
 	visual_root.add_child(_cast_pose)

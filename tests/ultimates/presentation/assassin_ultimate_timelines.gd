@@ -12,6 +12,11 @@ const SCENES := {
 	"shadow_daggers": preload("res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn"),
 	"venom_wire": preload("res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn"),
 }
+const EXECUTOR_SCENES := {
+	"chakrams": preload("res://scripts/ultimates/classes/assassin/chakrams.tscn"),
+	"shadow_daggers": preload("res://scripts/ultimates/classes/assassin/shadow_daggers.tscn"),
+	"venom_wire": preload("res://scripts/ultimates/classes/assassin/venom_wire.tscn"),
+}
 const REQUIRED_NODES := {
 	"chakrams": ["Orbit/MoonOne", "Orbit/MoonEight", "ReturnCrescents", "BackdropLayer/BackdropVeil", "ImpactFlash"],
 	"shadow_daggers": ["FreezeMarks", "Afterimages/BackstabOne", "FinalReveal"],
@@ -76,6 +81,7 @@ func _initialize() -> void:
 		_check_package(str(weapon_id), profiles.get(str(weapon_id), {}) as Dictionary, packages.get(str(weapon_id), {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_v2_packages(packages, errors)
+	_check_single_presentation_owner(errors)
 	_check_contact_evidence(errors)
 	await _check_runtime_clock_identity_rng_and_reduced_compass(errors)
 	if not errors.is_empty():
@@ -83,6 +89,14 @@ func _initialize() -> void:
 		return
 	print("Assassin ultimate timelines passed (frozen phases, distinct scenes, lifecycle, provenance, budgets, and evidence).")
 	quit(0)
+
+
+func _check_single_presentation_owner(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var executor := (EXECUTOR_SCENES[weapon_id] as PackedScene).instantiate()
+		_expect(executor.get_node_or_null("Presentation") == null,
+			"%s executor must not bypass the shared presentation runtime" % weapon_id, errors)
+		executor.free()
 
 
 func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]) -> void:

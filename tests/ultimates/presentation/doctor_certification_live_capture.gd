@@ -813,13 +813,18 @@ func _git(args: Array) -> String:
 func _record_digest(record: Dictionary) -> String:
 	var signed := record.duplicate(true)
 	signed.erase("record_sha256")
-	return JSON.stringify(signed).sha256_text()
+	return _canonical_digest(signed)
 
 
 func _payload_digest(payload: Dictionary) -> String:
 	var signed := payload.duplicate(true)
 	signed.erase("attestation_sha256")
-	return JSON.stringify(signed).sha256_text()
+	return _canonical_digest(signed)
+
+
+func _canonical_digest(value: Variant) -> String:
+	var normalized := JSON.parse_string(JSON.stringify(value))
+	return JSON.stringify(normalized).sha256_text()
 
 
 func _mode_declarations() -> Array:

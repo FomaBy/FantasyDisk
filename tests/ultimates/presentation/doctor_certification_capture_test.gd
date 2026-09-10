@@ -248,6 +248,8 @@ func coverage_violations(manifest: Dictionary, class_manifest: Dictionary) -> Ar
 			violations.append("sample %s live scene did not consume its mode" % key)
 		if not bool(state.get("cast_pose_bound", false)):
 			violations.append("sample %s did not realize the declared cast pose" % key)
+		if not str(state.get("cast_pose_binding_error", "missing_diagnostic")).is_empty():
+			violations.append("sample %s cast-pose binding reported %s" % [key, str(state.get("cast_pose_binding_error"))])
 	for weapon_id in _string_array(manifest.get("canonical_weapon_ids", [])):
 		for mode_id in _capture_mode_ids():
 			for raw_viewport in Capture.VIEWPORTS:
