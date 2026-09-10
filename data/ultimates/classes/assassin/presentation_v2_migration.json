@@ -1,8 +1,5 @@
 {
   "schema_version": 1,
   "class_id": "assassin",
-  "migration_exemptions": {
-    "assassin/shadow_daggers": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
-    "assassin/venom_wire": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
-  }
+  "migration_exemptions": {}
 }

@@ -1,15 +1,17 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres" id="1_flipbook"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd" id="2_driver"]
 
 [sub_resource type="Animation" id="Animation_raven_vortex"]
+resource_local_to_scene = true
 resource_name = "ultimate"
-length = 9.2
+length = 3.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("RavenVortex:frame")
 tracks/0/interp = 1
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.6, 0.95, 1.85, 3.1, 4.35, 5.6, 7.1, 8.4),
+"times": PackedFloat32Array(0, 0.3, 0.6, 1.25, 1.5, 1.75, 2, 2.35, 2.65),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -18,7 +20,7 @@ tracks/1/type = "value"
 tracks/1/path = NodePath("RavenVortex:scale")
 tracks/1/interp = 1
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6, 0.95, 1.85, 7.1, 8.4, 9.2),
+"times": PackedFloat32Array(0, 0.6, 1.25, 1.5, 2.35, 2.65, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.2, 0.2), Vector2(0.54, 0.54), Vector2(1.05, 1.05), Vector2(1.5, 1.5), Vector2(1.58, 1.58), Vector2(1.25, 1.25), Vector2(0.08, 0.08)]
@@ -27,7 +29,7 @@ tracks/2/type = "value"
 tracks/2/path = NodePath("RavenVortex:modulate:a")
 tracks/2/interp = 1
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6, 8.4, 9.2),
+"times": PackedFloat32Array(0, 0.25, 0.6, 2.65, 3.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.58, 1.0, 0.94, 0.0]
@@ -37,19 +39,40 @@ tracks/2/keys = {
 _data = {"ultimate": SubResource("Animation_raven_vortex")}
 
 [node name="DruidRavenTotemNightOfThousandWings" type="Node2D"]
+script = ExtResource("2_driver")
+release_at = 0.6
+impact_at = 1.25
+recovery_at = 2.65
+cancel_at = 3.4
+hitstop_ms = 90.0
 metadata/ultimate_id = "druid/raven_totem"
 metadata/silhouette = "layered_raven_vortex_around_a_totem_with_visible_marked_prey"
 metadata/motion_path = "counter_rotating_wing_layers_gather_then_staggered_dives_return_and_collapse"
 metadata/impact_language = "per_victim_raven_dive_burst_over_the_existing_white_hit_flash"
 metadata/max_visual_nodes = 11
 metadata/crowd_cap = 22
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+
+[node name="BackdropLayer" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="BackdropVeil" type="ColorRect" parent="BackdropLayer"]
+metadata/fullscreen_layer = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.018, 0.055, 0.25)
 
 [node name="RavenVortex" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_flipbook")
 animation = &"druid_raven_totem_ultimate"
 scale = Vector2(0.2, 0.2)
 modulate = Color(1, 1, 1, 0)
-z_index = 2
+z_index = -1
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_raven_vortex")}

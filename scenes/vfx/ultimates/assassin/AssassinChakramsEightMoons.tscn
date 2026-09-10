@@ -1,18 +1,20 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres" id="1_moon_frames"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/assassin/assassin_ultimate_v2_driver.gd" id="2_driver"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
 [sub_resource type="Animation" id="Animation_eight_moons"]
+resource_local_to_scene = true
 resource_name = "ultimate"
 length = 3.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("BackdropDarken:modulate:a")
+tracks/0/path = NodePath("BackdropLayer/BackdropVeil:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -206,17 +208,34 @@ tracks/15/keys = {
 _data = {"ultimate": SubResource("Animation_eight_moons")}
 
 [node name="AssassinChakramsEightMoons" type="Node2D"]
+script = ExtResource("2_driver")
+release_at = 0.8
+impact_at = 1.0
+recovery_at = 3.0
+cancel_at = 3.6
+hitstop_ms = 110.0
+photosensitive_nodes = PackedStringArray("ImpactFlash")
 metadata/ultimate_id = "assassin/chakrams"
 metadata/silhouette = "eight silver moon-discs in a compass orbit over a darkened arena"
 metadata/motion_path = "hero cast gleam, tight orbit expands to an arena-wide eight-lane compass sweep, then crescent return stack"
 metadata/impact_language = "backdrop darkens, eight-way disc launch with first-impact flash and returning crescent cut"
 metadata/max_visual_nodes = 14
 metadata/crowd_cap = 24
-metadata/material_budget = {"max_unique_materials": 16, "max_fullscreen_materials": 2}
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="BackdropDarken" type="Polygon2D" parent="."]
+[node name="BackdropLayer" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="BackdropVeil" type="ColorRect" parent="BackdropLayer"]
+metadata/fullscreen_layer = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 color = Color(0.05, 0.02, 0.1, 1)
-polygon = PackedVector2Array(-1200, -700, 1200, -700, 1200, 700, -1200, 700)
 modulate = Color(1, 1, 1, 0)
 
 [node name="WindupMoon" type="Polygon2D" parent="."]
@@ -325,7 +344,7 @@ modulate = Color(1, 1, 1, 0)
 [node name="ImpactFlash" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
 color = Color(0.78, 0.62, 1, 0.55)
-polygon = PackedVector2Array(-900, -520, 900, -520, 900, 520, -900, 520)
+polygon = PackedVector2Array(-360, -210, 360, -210, 360, 210, -360, 210)
 modulate = Color(1, 1, 1, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
