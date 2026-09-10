@@ -21,6 +21,7 @@ const CAPTURE_SETTLE_FRAMES := 3
 
 var _capture_source: Dictionary = {}
 var _samples: Array[Dictionary] = []
+var _time_scale_before_capture := 1.0
 
 
 func _initialize() -> void:
@@ -38,18 +39,25 @@ func _initialize() -> void:
 		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
 		quit(1)
 		return
+	## Renderer frame deltas are deliberately excluded from the evidence state.
+	## The real activation below advances only through its fixed custom steps.
+	_time_scale_before_capture = Engine.time_scale
+	Engine.time_scale = 0.0
 	var captures := Spec.captures()
 	for capture_index in captures.size():
 		var capture := captures[capture_index] as Dictionary
 		var sample := await _capture_one(capture_index, capture)
 		if sample.is_empty():
+			Engine.time_scale = _time_scale_before_capture
 			quit(1)
 			return
 		_samples.append(sample)
 	if _write_capture_manifest() != OK:
+		Engine.time_scale = _time_scale_before_capture
 		push_error("FAN-3939 Engineer certification capture could not write the manifest.")
 		quit(1)
 		return
+	Engine.time_scale = _time_scale_before_capture
 	Accessibility.apply_settings(root, GameSettings.DEFAULTS.duplicate(true))
 	root.set_meta("screen_shake", true)
 	root.set_meta("combat_feedback", true)
@@ -88,8 +96,9 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		push_error("FAN-3939 Engineer certification capture could not create output directory: %s" % error_string(directory_result))
 		return {}
 	## Every frame receives a deterministic seed independent of capture order.
-	seed(Spec.CAPTURE_SEED + capture_index)
-	var viewport := await _build_live_viewport(capture)
+	var capture_seed := Spec.CAPTURE_SEED + capture_index
+	seed(capture_seed)
+	var viewport := await _build_live_viewport(capture, capture_seed)
 	if bool(viewport.get_meta("fan3939_capture_failed", false)):
 		var reason := str(viewport.get_meta("fan3939_capture_failure", "unknown live runtime failure"))
 		_cleanup_viewport(viewport)
@@ -136,7 +145,7 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 ## The world is deliberately one SubViewport per sample. Target queries are
 ## SceneTree-global, so this prevents one sample's real victims from becoming
 ## another sample's crowd and gives every native image a hard visual boundary.
-func _build_live_viewport(capture: Dictionary) -> SubViewport:
+func _build_live_viewport(capture: Dictionary, capture_seed: int) -> SubViewport:
 	var size := capture["size"] as Vector2i
 	var mode := _mode_spec(str(capture["mode_id"]))
 	var pack := _pack_spec(str(capture["weapon_id"]))
@@ -185,6 +194,10 @@ func _build_live_viewport(capture: Dictionary) -> SubViewport:
 	## fixed manual steps below can change this evidence frame.
 	host.set_process(false)
 	player.set("ultimate_charge", player.get("ultimate_max_charge"))
+	## Enemy ready-state setup may consume the global RNG. Reset immediately
+	## before the Player-owned activation so combat feedback coordinates and
+	## ultimate-local random branches have a fixed, documented source.
+	seed(capture_seed)
 	if not bool(player.call("activate_ultimate")):
 		return _failed_viewport(viewport, "%s did not activate through Player.activate_ultimate" % str(pack["weapon_id"]))
 	var controller = host.call("controller")
@@ -373,10 +386,13 @@ func _freeze_actor(actor: Node) -> void:
 func _freeze_hazard(hazard: Node2D) -> void:
 	if hazard == null:
 		return
+	_freeze_actor(hazard)
 	for raw_node in hazard.find_children("*", "Node", true, false):
 		var node := raw_node as Node
 		if node != null:
 			node.process_mode = Node.PROCESS_MODE_DISABLED
+			node.set_process(false)
+			node.set_physics_process(false)
 	hazard.process_mode = Node.PROCESS_MODE_DISABLED
 
 
