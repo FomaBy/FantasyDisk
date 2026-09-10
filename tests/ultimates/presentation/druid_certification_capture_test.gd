@@ -42,6 +42,11 @@ const PNG_SIGNATURE := [137, 80, 78, 71, 13, 10, 26, 10]
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const SHA1_LENGTH := 40
 const SHA256_LENGTH := 64
+const ACCEPTED_CEILINGS := {
+	"summon_amulet": {"nodes": 11, "coverage": 0.30},
+	"briar_staff": {"nodes": 12, "coverage": 0.32},
+	"raven_totem": {"nodes": 11, "coverage": 0.32},
+}
 
 
 func _initialize() -> void:
@@ -54,13 +59,27 @@ func _initialize() -> void:
 		return
 
 	errors.append_array(declaration_violations(manifest, profile))
+	errors.append_array(attestation_violations(manifest))
 	errors.append_array(coverage_violations(manifest, class_manifest))
 	errors.append_array(readability_violations(manifest, class_manifest))
+	errors.append_array(contract_ceiling_violations(class_manifest))
 	errors.append_array(_sheet_violations(manifest))
 	_check_class_manifest_registration(class_manifest, manifest, errors)
 	await _check_accessibility_modes(class_manifest, errors)
 	_check_negative_probes(manifest, profile, class_manifest, errors)
 	_finish(errors)
+
+
+func contract_ceiling_violations(class_manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	for weapon_id in ACCEPTED_CEILINGS:
+		var weapon := _weapons_by_id(class_manifest).get(weapon_id, {}) as Dictionary
+		var accepted := ACCEPTED_CEILINGS[weapon_id] as Dictionary
+		if int((weapon.get("performance", {}) as Dictionary).get("max_visual_nodes", 999)) > int(accepted["nodes"]):
+			violations.append("%s visual-node ceiling was relaxed" % weapon_id)
+		if float((weapon.get("quality", {}) as Dictionary).get("max_viewport_coverage_ratio", 1.0)) > float(accepted["coverage"]):
+			violations.append("%s coverage ceiling was relaxed" % weapon_id)
+	return violations
 
 
 ## The package must describe the canonical class, not a convenient subset of it.
@@ -129,7 +148,22 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 			output.clear()
 			if OS.execute("git", ["merge-base", "--is-ancestor", commit_sha, "HEAD"], output, true) != 0:
 				violations.append("source.commit_sha must be an ancestor of the candidate under test")
+			else:
+				output.clear()
+				if OS.execute("git", ["diff", "--name-only", "%s..HEAD" % commit_sha], output, true) != 0:
+					violations.append("source applicability diff could not be resolved")
+				else:
+					for path in "\n".join(output).split("\n", false):
+						if not _is_evidence_only_path(path):
+							violations.append("source is stale: post-capture runtime/tooling change %s" % path)
 	return violations
+
+
+func _is_evidence_only_path(path: String) -> bool:
+	return path == CAPTURE_MANIFEST_PATH.trim_prefix("res://") \
+		or path == "docs/design/references/weapon_ultimates/druid/certification_readability_report.md" \
+		or path == CLASS_MANIFEST_PATH.trim_prefix("res://") \
+		or path.begins_with("docs/design/reference-assets-lfs/ultimate-certification/druid/")
 
 
 func _capture_block_violations(manifest: Dictionary) -> Array[String]:
@@ -145,12 +179,33 @@ func _capture_block_violations(manifest: Dictionary) -> Array[String]:
 		violations.append("capture.seed must record the pinned generator seed")
 	if int(capture.get("fixed_fps", 0)) <= 0:
 		violations.append("capture.fixed_fps must record the deterministic step")
+	if not bool(capture.get("real_activation", false)) or str(capture.get("activation_entry", "")) != "Player.activate_ultimate":
+		violations.append("capture must prove the shipped Player activation entry point")
 	if not FileAccess.file_exists("res://%s" % str(capture.get("capture_script", ""))):
 		violations.append("capture.capture_script must exist: %s" % str(capture.get("capture_script", "")))
 	var commands := manifest.get("commands", {}) as Dictionary
 	for field in ["live_capture", "focused_test", "static_guard", "lfs_integrity"]:
 		if str(commands.get(field, "")).is_empty():
 			violations.append("commands.%s must be recorded" % field)
+		elif str(commands.get(field, "")).contains("<"):
+			violations.append("commands.%s contains an unresolved placeholder" % field)
+	return violations
+
+
+func attestation_violations(manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var signed := manifest.duplicate(true)
+	var declared := str(signed.get("attestation_sha256", ""))
+	signed.erase("attestation_sha256")
+	if not _is_hex(declared, SHA256_LENGTH) or JSON.stringify(signed).sha256_text() != declared:
+		violations.append("capture attestation does not match the immutable payload")
+	for raw_sample in manifest.get("samples", []) as Array:
+		var sample := (raw_sample as Dictionary).duplicate(true)
+		var digest := str(sample.get("record_sha256", ""))
+		sample.erase("record_sha256")
+		if not _is_hex(digest, SHA256_LENGTH) or JSON.stringify(sample).sha256_text() != digest:
+			violations.append("sample record attestation mismatch")
+			break
 	return violations
 
 
@@ -180,6 +235,19 @@ func coverage_violations(manifest: Dictionary, class_manifest: Dictionary) -> Ar
 			violations.append("sample %s names scene %s, expected the shipped %s" % [
 				key, str(sample.get("presentation_scene", "")), expected_scene,
 			])
+		if not bool(sample.get("activation_started", false)):
+			violations.append("sample %s did not start through Player activation" % key)
+		var mode := _capture_mode(str(sample.get("mode", "")))
+		var accessibility := sample.get("accessibility", {}) as Dictionary
+		var state := sample.get("presentation_state", {}) as Dictionary
+		if bool(accessibility.get(Accessibility.REDUCED_MOTION_KEY, false)) != bool(mode.get("reduced_motion", false)) \
+				or bool(accessibility.get(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, false)) != bool(mode.get("photosensitivity_safe", false)):
+			violations.append("sample %s accessibility provenance does not match its mode" % key)
+		if bool(state.get("reduced_motion", false)) != bool(mode.get("reduced_motion", false)) \
+				or bool(state.get("photosensitivity_safe", false)) != bool(mode.get("photosensitivity_safe", false)):
+			violations.append("sample %s live scene did not consume its mode" % key)
+		if not bool(state.get("cast_pose_bound", false)):
+			violations.append("sample %s did not realize the declared cast pose" % key)
 	for weapon_id in _string_array(manifest.get("canonical_weapon_ids", [])):
 		for mode_id in _capture_mode_ids():
 			for raw_viewport in Capture.VIEWPORTS:
@@ -272,16 +340,21 @@ func _sheet_violations(manifest: Dictionary) -> Array[String]:
 	var violations: Array[String] = []
 	var matrix_viewports := {}
 	var sheets := manifest.get("sheets", []) as Array
-	if sheets.size() != Capture.VIEWPORTS.size():
-		violations.append("expected one committed sheet per viewport, found %d" % sheets.size())
+	if sheets.size() != Capture.VIEWPORTS.size() * Capture.BEAT_IDS.size():
+		violations.append("expected one committed sheet per viewport and beat, found %d" % sheets.size())
 	for raw_sheet in sheets:
 		var sheet := raw_sheet as Dictionary
 		var path := "res://%s" % str(sheet.get("path", ""))
 		var size := Vector2i(int(sheet.get("width", 0)), int(sheet.get("height", 0)))
-		if str(sheet.get("kind", "")) == "mode_matrix":
-			matrix_viewports[str(sheet.get("viewport", ""))] = true
+		var viewport_id := str(sheet.get("viewport", ""))
+		var beat_id := str(sheet.get("beat", ""))
+		var required_size := _capture_viewport_size(viewport_id)
+		if str(sheet.get("kind", "")) == "beat_mode_matrix" and Capture.BEAT_IDS.has(beat_id):
+			matrix_viewports["%s/%s" % [viewport_id, beat_id]] = true
 		else:
 			violations.append("%s declares an unknown sheet kind" % path)
+		if size != required_size:
+			violations.append("%s declares %s for viewport %s, expected %s" % [path, size, viewport_id, required_size])
 		if not _is_hex(str(sheet.get("sha256", "")), SHA256_LENGTH):
 			violations.append("%s must record a lowercase sha256 content hash" % path)
 		for violation in png_violations(path, size):
@@ -294,9 +367,18 @@ func _sheet_violations(manifest: Dictionary) -> Array[String]:
 				])
 	for raw_viewport in Capture.VIEWPORTS:
 		var id := str((raw_viewport as Dictionary)["id"])
-		if not matrix_viewports.has(id):
-			violations.append("no mode-coverage sheet was committed for viewport %s" % id)
+		for beat_id in Capture.BEAT_IDS:
+			if not matrix_viewports.has("%s/%s" % [id, beat_id]):
+				violations.append("no mode-coverage sheet was committed for viewport %s beat %s" % [id, beat_id])
 	return violations
+
+
+func _capture_viewport_size(viewport_id: String) -> Vector2i:
+	for raw_viewport in Capture.VIEWPORTS:
+		var viewport := raw_viewport as Dictionary
+		if str(viewport.get("id", "")) == viewport_id:
+			return viewport.get("size", Vector2i.ZERO) as Vector2i
+	return Vector2i.ZERO
 
 
 ## Real PNG bytes: an unsmudged LFS pointer, a truncated write and a wrong-sized
@@ -438,6 +520,15 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	wrong_record["width"] = int(wrong_record.get("width", 0)) - 1
 	_expect(not declaration_violations(wrong_viewport, profile).is_empty(), "a wrong declared viewport size must fail closed", errors)
 
+	var flipped_mode := manifest.duplicate(true)
+	var flipped_sample := (flipped_mode.get("samples", []) as Array)[0] as Dictionary
+	(flipped_sample.get("accessibility", {}) as Dictionary)[Accessibility.REDUCED_MOTION_KEY] = not bool((flipped_sample.get("accessibility", {}) as Dictionary).get(Accessibility.REDUCED_MOTION_KEY, false))
+	_expect(not coverage_violations(flipped_mode, class_manifest).is_empty() and not attestation_violations(flipped_mode).is_empty(), "a flipped mode record must fail closed", errors)
+
+	var fabricated := manifest.duplicate(true)
+	(fabricated.get("capture", {}) as Dictionary)["method"] = "fabricated nonempty provenance"
+	_expect(not attestation_violations(fabricated).is_empty(), "fabricated provenance must fail closed", errors)
+
 	var unpinned := manifest.duplicate(true)
 	(unpinned.get("source", {}) as Dictionary)["commit_sha"] = "not-a-sha"
 	_expect(not declaration_violations(unpinned, profile).is_empty(), "an unpinned capture source must fail closed", errors)
@@ -449,6 +540,17 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var wrong_tree := manifest.duplicate(true)
 	(wrong_tree.get("source", {}) as Dictionary)["tree_sha"] = "0".repeat(SHA1_LENGTH)
 	_expect(not declaration_violations(wrong_tree, profile).is_empty(), "a tree not owned by the source commit must fail closed", errors)
+
+	var stale_source := manifest.duplicate(true)
+	var stale_output: Array = []
+	var source_sha := str((manifest.get("source", {}) as Dictionary).get("commit_sha", ""))
+	if OS.execute("git", ["rev-parse", "%s^" % source_sha], stale_output, true) == 0:
+		var stale_sha := "".join(stale_output).strip_edges()
+		stale_output.clear()
+		if OS.execute("git", ["rev-parse", "%s^{tree}" % stale_sha], stale_output, true) == 0:
+			(stale_source.get("source", {}) as Dictionary)["commit_sha"] = stale_sha
+			(stale_source.get("source", {}) as Dictionary)["tree_sha"] = "".join(stale_output).strip_edges()
+			_expect(not declaration_violations(stale_source, profile).is_empty(), "a stale but valid source commit must fail closed", errors)
 
 	var missing_key := manifest.duplicate(true)
 	(missing_key.get("samples", []) as Array).remove_at(0)
@@ -490,6 +592,11 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var wrong_hash := manifest.duplicate(true)
 	((wrong_hash.get("sheets", []) as Array)[0] as Dictionary)["sha256"] = "0".repeat(SHA256_LENGTH)
 	_expect(not _sheet_violations(wrong_hash).is_empty(), "a wrong sheet content hash must fail closed", errors)
+
+	var relabeled := manifest.duplicate(true)
+	var relabeled_sheet := (relabeled.get("sheets", []) as Array)[0] as Dictionary
+	relabeled_sheet["viewport"] = "648p" if str(relabeled_sheet.get("viewport", "")) != "648p" else "720p"
+	_expect(not _sheet_violations(relabeled).is_empty(), "a relabeled sheet dimension must fail closed", errors)
 
 	var pointer := FileAccess.open(POINTER_FIXTURE_PATH, FileAccess.WRITE)
 	if pointer == null:
@@ -541,6 +648,14 @@ func _capture_mode_ids() -> Array[String]:
 	for raw_mode in Capture.MODES:
 		ids.append(str((raw_mode as Dictionary)["id"]))
 	return ids
+
+
+func _capture_mode(mode_id: String) -> Dictionary:
+	for raw_mode in Capture.MODES:
+		var mode := raw_mode as Dictionary
+		if str(mode.get("id", "")) == mode_id:
+			return mode
+	return {}
 
 
 func _string_array(value: Variant) -> Array[String]:

@@ -100,6 +100,7 @@ tracks/6/keys = {
 _data = {"ultimate": SubResource("Animation_moment_before_death")}
 
 [node name="AssassinShadowDaggersMomentBeforeDeath" type="Node2D"]
+scale = Vector2(0.86, 0.86)
 script = ExtResource("2_driver")
 release_at = 0.75
 impact_at = 1.1

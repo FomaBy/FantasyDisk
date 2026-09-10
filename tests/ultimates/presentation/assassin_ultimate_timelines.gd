@@ -3,6 +3,9 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/assassin.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/assassin/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const PD := preload("res://scripts/progression_data.gd")
 const WEAPON_IDS := ["chakrams", "shadow_daggers", "venom_wire"]
 const SCENES := {
 	"chakrams": preload("res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn"),
@@ -74,11 +77,60 @@ func _initialize() -> void:
 	_check_distinction(packages, errors)
 	_check_v2_packages(packages, errors)
 	_check_contact_evidence(errors)
+	await _check_runtime_clock_identity_rng_and_reduced_compass(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
 	print("Assassin ultimate timelines passed (frozen phases, distinct scenes, lifecycle, provenance, budgets, and evidence).")
 	quit(0)
+
+
+func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]) -> void:
+	var player := Node2D.new()
+	var visual_root := Node2D.new()
+	visual_root.name = "VisualRoot"
+	player.add_child(visual_root)
+	var body := Sprite2D.new()
+	body.name = "Body"
+	visual_root.add_child(body)
+	var camera := Camera2D.new()
+	camera.enabled = true
+	player.add_child(camera)
+	root.add_child(player)
+	player.add_to_group("player")
+	await process_frame
+	camera.make_current()
+	Accessibility.apply_snapshot(root, {
+		Accessibility.REDUCED_MOTION_KEY: true,
+		Accessibility.PHOTOSENSITIVITY_SAFE_KEY: false,
+	})
+	var scene := (SCENES["chakrams"] as PackedScene).instantiate() as Node2D
+	root.add_child(scene)
+	await process_frame
+	var state := scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
+	_expect(bool(state.get("cast_pose_bound", false)), "chakrams must replace the live player body with its cast pose", errors)
+	_expect(not body.visible and visual_root.get_node_or_null("UltimateCastPose") != null, "chakrams cast pose must be realized under the Player visual root", errors)
+	var bearings := {}
+	for index in range(1, 9):
+		var moon := scene.get_node("Orbit/Moon%s" % ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][index - 1]) as AnimatedSprite2D
+		bearings[str(moon.position)] = true
+		_expect(moon.scale.length() > 0.1, "reduced-motion moon %d must retain a readable authored scale" % index, errors)
+	_expect(bearings.size() == 8, "reduced-motion Chakrams must retain eight distinct compass bearings", errors)
+	scene.call("finish", "cancel")
+	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
+	seed(3942)
+	var expected_rng := randf()
+	seed(3942)
+	scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0)
+	scene.call("advance", 3.05)
+	_expect(float(scene.get("_elapsed")) >= 3.0, "runtime advance must place Chakrams in recovery on wall time", errors)
+	_expect(is_equal_approx(randf(), expected_rng), "presentation camera shake must not consume global gameplay RNG", errors)
+	scene.call("advance", 0.60)
+	_expect(body.visible and visual_root.get_node_or_null("UltimateCastPose") == null, "cast pose cleanup must restore the Player body", errors)
+	scene.queue_free()
+	player.queue_free()
+	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
+	await process_frame
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:

@@ -90,7 +90,7 @@
       "weapon_id": "restore_potion",
       "title": "Эликсир Жизни и Смерти",
       "scene_path": "scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
-      "silhouette": "giant overhead flask, wide poison pool, tight white healing spiral, and offset shield crystal",
+      "silhouette": "giant overhead flask, wide poison pool, glass burst, and offset shield crystal",
       "motion_path": "the flask follows a high aimed arc, shatters at range, then the outer and inner zones counter-rotate",
       "impact_language": "green glass blast and poison ring resolve inward as a white healing spiral and crystallized absorb shield",
       "timing_seconds": {
@@ -108,7 +108,7 @@
         "cancel": "weapon_ultimate.phase.doctor.restore_potion.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 6,
+        "max_visual_nodes": 5,
         "crowd_cap": 12,
         "runtime_enforcement_owner": "FAN-1541",
         "max_unique_materials": 1,
@@ -116,7 +116,7 @@
         "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.18,
+        "max_viewport_coverage_ratio": 0.12,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "the flask, pool and shield hold one representative pose in each phase while the exact phase envelope continues",
         "reduced_motion_preserves_timing": true,
@@ -143,7 +143,7 @@
       "weapon_id": "plague_syringe",
       "title": "Чёрная Эпидемия",
       "scene_path": "scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
-      "silhouette": "oversized diagonal syringe, pinned patient-zero mark, branching veins, three arena waves, and mask vapor",
+      "silhouette": "oversized diagonal syringe, pinned patient-zero mark, branching veins, paired arena waves, and mask vapor",
       "motion_path": "the syringe pierces one target before staggered infection waves expand through the arena",
       "impact_language": "black-green vascular bloom ticks outward and ends in a sharp plague-mask vapor burst",
       "timing_seconds": {
@@ -161,7 +161,7 @@
         "cancel": "weapon_ultimate.phase.doctor.plague_syringe.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 9,
+        "max_visual_nodes": 8,
         "crowd_cap": 12,
         "runtime_enforcement_owner": "FAN-1541",
         "max_unique_materials": 1,
@@ -169,7 +169,7 @@
         "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.32,
+        "max_viewport_coverage_ratio": 0.3,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "the syringe and infection waves hold one representative pose in each phase instead of rapidly expanding across the arena",
         "reduced_motion_preserves_timing": true,
@@ -196,7 +196,7 @@
       "weapon_id": "bone_saw",
       "title": "Экстренная Операция",
       "scene_path": "scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
-      "silhouette": "three close-orbit saws, bright surgical arc, metal sparks, paired drain ribbons, and stitched shield seam",
+      "silhouette": "three close-orbit saws, bright surgical arc, metal sparks, one drain ribbon, and stitched shield seam",
       "motion_path": "the saws snap from a surgical stance into a fast close orbit while vitality ribbons pull inward",
       "impact_language": "bone-white serration and sparks cut repeatedly before red drain ribbons turn green and stitch shut",
       "timing_seconds": {
@@ -214,7 +214,7 @@
         "cancel": "weapon_ultimate.phase.doctor.bone_saw.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 9,
+        "max_visual_nodes": 8,
         "crowd_cap": 12,
         "runtime_enforcement_owner": "FAN-1541",
         "max_unique_materials": 1,
@@ -222,7 +222,7 @@
         "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.16,
+        "max_viewport_coverage_ratio": 0.1,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "the surgical orbit holds one representative phase pose instead of spinning while the phase envelope continues unchanged",
         "reduced_motion_preserves_timing": true,

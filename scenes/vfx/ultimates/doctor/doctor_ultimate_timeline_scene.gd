@@ -66,9 +66,14 @@ var _camera: Camera2D = null
 var _camera_offset_before_shake := Vector2.ZERO
 var _duck_active := false
 var _sfx_bus_index := -1
+var _shake_rng := RandomNumberGenerator.new()
+var _cast_pose: Sprite2D = null
+var _player_body: CanvasItem = null
+var _player_body_was_visible := true
 
 
 func _ready() -> void:
+	process_priority = 1000
 	_apply_metadata()
 	_apply_accessibility_snapshot()
 	set_process(false)
@@ -82,12 +87,15 @@ func begin(registry, handles: Dictionary = {}, headless_mode := -1) -> Dictionar
 		push_error("DoctorUltimateTimelineScene: no manifest for %s" % weapon_id)
 		return {}
 	_presence = (manifest.get("presence", {}) as Dictionary).duplicate(true)
+	_bind_cast_pose(manifest)
+	_shake_rng.seed = hash("doctor/%s" % weapon_id)
+	scale = Vector2.ONE * _content_scale()
 	_timeline = Timeline.new(manifest, headless_mode)
 	var snapshot: Dictionary = _timeline.begin(handles)
 	if str(snapshot.get("state", "")) == Timeline.ACTIVE_STATE:
 		_build_visuals()
 		preview_at(0.0)
-		set_process(true)
+		set_process(false)
 	return snapshot
 
 
@@ -126,8 +134,15 @@ func step(delta: float) -> void:
 	if _shake_remaining > 0.0:
 		_shake_remaining = maxf(_shake_remaining - delta, 0.0)
 		_apply_camera_shake(_shake_remaining)
+	_apply_photo_safe_impacts()
 	if _timeline != null and _timeline.elapsed_seconds() >= Pack.timeline_seconds(weapon_id):
 		finish("node_end")
+
+
+## WeaponUltimatePresentationRuntime supplies wall-clock delta, including while
+## gameplay is under a time-scale dip. This is the scene's sole live clock.
+func advance(delta: float) -> void:
+	step(delta)
 
 
 func preview_at(elapsed: float) -> void:
@@ -180,6 +195,7 @@ func finish(reason: String) -> Dictionary:
 	_hitstop_remaining = 0.0
 	_shake_remaining = 0.0
 	_impact_fired = false
+	_release_cast_pose()
 	if _timeline == null:
 		_clear_visuals()
 		return {}
@@ -233,7 +249,6 @@ func _build_visuals() -> void:
 func _build_restore() -> void:
 	_visuals["bottle"] = _flipbook("GiantFlask", cast_frames)
 	_visuals["outer"] = _flipbook("OuterPoisonPool", signature_frames)
-	_visuals["inner"] = _line("InnerHealingSpiral", _spiral_points(82.0, 28), 8.0, Color(0.94, 1.0, 0.88, 0.92))
 	_visuals["shards"] = _polygon("GlassImpact", PackedVector2Array([Vector2(0, -50), Vector2(15, -14), Vector2(53, -4), Vector2(18, 13), Vector2(7, 54), Vector2(-13, 17), Vector2(-52, 5), Vector2(-16, -15)]), Color(0.58, 1.0, 0.55, 0.78))
 	_visuals["shield"] = _polygon("ShieldCrystal", PackedVector2Array([Vector2(0, -58), Vector2(42, -23), Vector2(34, 42), Vector2(0, 63), Vector2(-34, 42), Vector2(-42, -23)]), Color(0.88, 1.0, 0.92, 0.78))
 
@@ -244,7 +259,6 @@ func _build_plague() -> void:
 	_visuals["veins_a"] = _line("PlagueVeinsA", PackedVector2Array([Vector2.ZERO, Vector2(55, -28), Vector2(106, -18), Vector2(144, -57), Vector2(190, -45)]), 8.0, Color(0.08, 0.58, 0.22, 0.84))
 	_visuals["veins_b"] = _line("PlagueVeinsB", PackedVector2Array([Vector2.ZERO, Vector2(-50, 35), Vector2(-92, 22), Vector2(-132, 68), Vector2(-185, 60)]), 7.0, Color(0.18, 0.72, 0.24, 0.78))
 	_visuals["wave_a"] = _flipbook("PlagueWaveOne", signature_frames)
-	_visuals["wave_b"] = _flipbook("PlagueWaveTwo", signature_frames)
 	_visuals["wave_c"] = _flipbook("PlagueWaveThree", signature_frames)
 	_visuals["mask"] = _polygon("MaskVaporBurst", PackedVector2Array([Vector2(-52, -38), Vector2(-18, -58), Vector2(0, -38), Vector2(18, -58), Vector2(52, -38), Vector2(36, 35), Vector2(12, 58), Vector2(0, 38), Vector2(-12, 58), Vector2(-36, 35)]), Color(0.08, 0.32, 0.12, 0.82))
 
@@ -255,7 +269,6 @@ func _build_saw() -> void:
 	_visuals["arc"] = _flipbook("SurgicalOrbitArc", signature_frames)
 	_visuals["sparks"] = _line("MetalSparks", PackedVector2Array([Vector2(-145, -56), Vector2(-115, -24), Vector2(-154, 2), Vector2(-105, 18), Vector2(-130, 57)]), 6.0, Color(1.0, 0.68, 0.24, 0.82))
 	_visuals["drain_a"] = _line("DrainRibbonRed", PackedVector2Array([Vector2(-150, 72), Vector2(-85, 30), Vector2(-28, 18), Vector2.ZERO]), 9.0, Color(0.86, 0.12, 0.18, 0.8))
-	_visuals["drain_b"] = _line("DrainRibbonGreen", PackedVector2Array([Vector2(150, 68), Vector2(92, 25), Vector2(34, 14), Vector2.ZERO]), 8.0, Color(0.22, 0.92, 0.42, 0.78))
 	_visuals["stitches"] = _line("ShieldStitches", PackedVector2Array([Vector2(-88, 0), Vector2(-62, -18), Vector2(-36, 14), Vector2(-10, -16), Vector2(16, 13), Vector2(42, -18), Vector2(70, 0)]), 7.0, Color(0.72, 1.0, 0.76, 0.88))
 
 
@@ -263,7 +276,6 @@ func _preview_restore(phase: String, progress: float) -> void:
 	_hide_all()
 	var bottle := _visuals["bottle"] as AnimatedSprite2D
 	var outer := _visuals["outer"] as AnimatedSprite2D
-	var inner := _visuals["inner"] as Line2D
 	var shards := _visuals["shards"] as Polygon2D
 	var shield := _visuals["shield"] as Polygon2D
 	var target := Vector2(70, 24)
@@ -292,10 +304,6 @@ func _preview_restore(phase: String, progress: float) -> void:
 			outer.position = target
 			outer.scale = Vector2.ONE * (0.50 + progress * 0.72)
 			outer.rotation = progress * -1.3
-			_show(inner, 0.96 - progress * 0.18)
-			inner.position = target
-			inner.scale = Vector2.ONE * (0.62 + sin(progress * PI) * 0.18)
-			inner.rotation = progress * 2.6
 			_show(shield, clampf((progress - 0.28) * 1.8, 0.0, 0.82))
 			shield.position = Vector2(-72, 20)
 			shield.scale = Vector2.ONE * (0.45 + progress * 0.42)
@@ -306,10 +314,6 @@ func _preview_restore(phase: String, progress: float) -> void:
 			outer.position = target
 			outer.rotation = -1.3 - progress * 0.35
 			outer.scale = Vector2.ONE * (1.22 + progress * 0.20)
-			_show(inner, (1.0 - progress) * 0.68)
-			inner.position = target
-			inner.rotation = 2.6 + progress * 1.2
-			inner.scale = Vector2.ONE * (0.62 + progress * 0.10)
 			_show(shield, (1.0 - progress) * 0.86)
 			shield.position = Vector2(-72, 20)
 			shield.scale = Vector2.ONE * (0.86 + sin(progress * PI) * 0.08)
@@ -359,7 +363,6 @@ func _preview_plague(phase: String, progress: float) -> void:
 				vein.position = target
 				vein.scale = Vector2.ONE * (0.35 + progress * 0.82)
 			_update_wave(_visuals["wave_a"] as AnimatedSprite2D, target, progress * 3.0)
-			_update_wave(_visuals["wave_b"] as AnimatedSprite2D, target, progress * 3.0 - 0.82)
 			_update_wave(_visuals["wave_c"] as AnimatedSprite2D, target, progress * 3.0 - 1.64)
 		"recovery":
 			var mask := _visuals["mask"] as Polygon2D
@@ -421,7 +424,7 @@ func _preview_saw(phase: String, progress: float) -> void:
 		var sparks := _visuals["sparks"] as Line2D
 		_show(sparks, 0.78)
 		sparks.rotation = turns * TAU * 0.7
-		for key in ["drain_a", "drain_b"]:
+		for key in ["drain_a"]:
 			var ribbon := _visuals[key] as Line2D
 			_show(ribbon, 0.68 + sin(progress * PI) * 0.18)
 			ribbon.scale = Vector2.ONE * (0.72 + progress * 0.22)
@@ -615,6 +618,7 @@ func presence_snapshot() -> Dictionary:
 		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
 		"sfx_ducking": bool(_presence.get("sfx_ducking", false)),
 		"photosensitive_nodes": _photosensitive_names().size(),
+		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
 	}
 
 
@@ -633,7 +637,7 @@ func _apply_camera_shake(remaining: float) -> void:
 		_camera_offset_before_shake = _camera.offset
 	var strength := 7.0 * remaining / 0.48
 	_camera.offset = _camera_offset_before_shake + Vector2(
-		randf_range(-strength, strength), randf_range(-strength, strength)
+		_shake_rng.randf_range(-strength, strength), _shake_rng.randf_range(-strength, strength)
 	)
 	if remaining <= 0.0:
 		_end_camera_shake()
@@ -654,6 +658,100 @@ func _end_camera_shake() -> void:
 	if _camera != null and is_instance_valid(_camera):
 		_camera.offset = _camera_offset_before_shake
 	_camera = null
+
+
+func _content_scale() -> float:
+	match weapon_id:
+		Pack.RESTORE_POTION:
+			return 0.78
+		Pack.PLAGUE_SYRINGE:
+			return 0.90
+		Pack.BONE_SAW:
+			return 0.74
+	return 1.0
+
+
+func _bind_cast_pose(manifest: Dictionary) -> void:
+	var asset := str((manifest.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	var texture := load(asset) as Texture2D
+	var player := _nearest_player()
+	if texture == null or player == null:
+		return
+	var visual_root := player.get_node_or_null("VisualRoot") as Node2D
+	_player_body = player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	if visual_root == null or _player_body == null:
+		return
+	_player_body_was_visible = _player_body.visible
+	_player_body.visible = false
+	_cast_pose = Sprite2D.new()
+	_cast_pose.name = "UltimateCastPose"
+	_cast_pose.texture = texture
+	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
+	_cast_pose.z_index = 2
+	visual_root.add_child(_cast_pose)
+
+
+func _release_cast_pose() -> void:
+	if _cast_pose != null and is_instance_valid(_cast_pose):
+		_cast_pose.free()
+	_cast_pose = null
+	if _player_body != null and is_instance_valid(_player_body):
+		_player_body.visible = _player_body_was_visible
+	_player_body = null
+
+
+func _nearest_player() -> Node2D:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree == null:
+		return null
+	var nearest: Node2D = null
+	var distance := INF
+	for raw_player in tree.get_nodes_in_group("player"):
+		var player := raw_player as Node2D
+		if player == null:
+			continue
+		var candidate := player.global_position.distance_squared_to(global_position)
+		if candidate < distance:
+			distance = candidate
+			nearest = player
+	return nearest
+
+
+## Freeze and dim both presentation-routed and Doctor-executor victim players.
+## Executor impacts live outside `_visuals`, so they need an explicit adapter.
+func _apply_photo_safe_impacts() -> void:
+	if not _photosensitivity_safe:
+		return
+	var sprites: Array[Node] = []
+	if _impacts != null and is_instance_valid(_impacts):
+		sprites.append_array(_impacts.find_children("*", "AnimatedSprite2D", true, false))
+	if get_tree() != null:
+		for raw_sprite in get_tree().root.find_children("*", "AnimatedSprite2D", true, false):
+			if _is_doctor_executor_impact(raw_sprite as Node):
+				sprites.append(raw_sprite)
+	for raw_sprite in sprites:
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite == null:
+			continue
+		sprite.stop()
+		sprite.frame = clampi(4, 0, maxi(sprite.sprite_frames.get_frame_count(sprite.animation) - 1, 0)) \
+			if sprite.sprite_frames != null else 0
+		sprite.scale = Vector2.ONE * 0.24
+		sprite.modulate.a = minf(sprite.modulate.a, 0.12)
+		sprite.set_meta("photosensitivity_safe", true)
+
+
+func _is_doctor_executor_impact(node: Node) -> bool:
+	if node == null:
+		return false
+	var cursor := node.get_parent()
+	while cursor != null:
+		var script := cursor.get_script() as Script
+		if script != null and script.resource_path.contains("/scripts/ultimates/classes/doctor/"):
+			return true
+		cursor = cursor.get_parent()
+	return false
 
 
 func _begin_sfx_ducking() -> void:

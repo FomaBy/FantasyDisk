@@ -32,8 +32,8 @@ const PACKS := [
 		"color": Color(0.72, 1.0, 0.68),
 		"frames": [
 			{"phase": "release", "time": 1.10, "required_nodes": ["GiantFlask", "GlassImpact"]},
-			{"phase": "active", "time": 2.10, "required_nodes": ["GiantFlask", "OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
-			{"phase": "recovery", "time": 3.05, "required_nodes": ["OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
+			{"phase": "active", "time": 2.10, "required_nodes": ["GiantFlask", "OuterPoisonPool", "ShieldCrystal"]},
+			{"phase": "recovery", "time": 3.05, "required_nodes": ["OuterPoisonPool", "ShieldCrystal"]},
 		],
 	},
 	{
@@ -56,7 +56,7 @@ const PACKS := [
 		"color": Color(1.0, 0.72, 0.42),
 		"frames": [
 			{"phase": "release", "time": 0.85, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "SurgicalOrbitArc"]},
-			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonGreen"]},
+			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonRed"]},
 			{"phase": "recovery", "time": 2.55, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "ShieldStitches"]},
 		],
 	},
@@ -90,7 +90,6 @@ const PACK_BINDINGS := {
 		"nodes": {
 			"OversizedSyringe": "cast",
 			"PlagueWaveOne": "signature",
-			"PlagueWaveTwo": "signature",
 			"PlagueWaveThree": "signature",
 		},
 	},

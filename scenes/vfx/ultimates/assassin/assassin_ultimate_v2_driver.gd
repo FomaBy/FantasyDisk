@@ -6,6 +6,7 @@ extends Node2D
 ## owns only camera/audio weight, a frame-local hitstop and safe substitutions.
 
 const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const PresentationManifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 
 @export var release_at := 0.8
 @export var impact_at := 1.0
@@ -36,6 +37,11 @@ var _camera: Camera2D = null
 var _camera_offset_before_shake := Vector2.ZERO
 var _duck_active := false
 var _sfx_bus_index := -1
+var _externally_driven := false
+var _shake_rng := RandomNumberGenerator.new()
+var _cast_pose: Sprite2D = null
+var _player_body: CanvasItem = null
+var _player_body_was_visible := true
 
 
 func _ready() -> void:
@@ -49,15 +55,32 @@ func _ready() -> void:
 func begin(registry = null, _handles: Dictionary = {}, _headless_mode := -1) -> Dictionary:
 	_reset_run()
 	_apply_accessibility_snapshot()
+	_bind_cast_pose(registry)
+	_shake_rng.seed = hash(str(get_meta("ultimate_id", name)))
 	var timeline := _timeline()
 	if timeline != null:
 		timeline.play(&"ultimate")
 		timeline.seek(0.0, true)
-	set_process(true)
+		timeline.pause()
+	_externally_driven = true
+	set_process(false)
 	return presence_snapshot()
 
 
 func _process(delta: float) -> void:
+	if _externally_driven:
+		return
+	_step(delta)
+
+
+## WeaponUltimatePresentationRuntime supplies wall-clock delta. Keeping the
+## authored AnimationPlayer on that same clock prevents Engine.time_scale from
+## making the scene lag behind the host's release/recovery/cancel envelope.
+func advance(delta: float) -> void:
+	_step(delta)
+
+
+func _step(delta: float) -> void:
 	if _paused:
 		return
 	_elapsed += maxf(delta, 0.0)
@@ -77,7 +100,10 @@ func _process(delta: float) -> void:
 	if _shake_remaining > 0.0:
 		_shake_remaining = maxf(_shake_remaining - delta, 0.0)
 		_apply_camera_shake(_shake_remaining)
+	if _hitstop_remaining <= 0.0:
+		_seek_timeline_to_clock()
 	_apply_frame_safety()
+	_apply_executor_impact_safety()
 	if _elapsed >= cancel_at:
 		finish("node_end")
 
@@ -92,6 +118,7 @@ func set_paused(value: bool) -> void:
 
 func finish(_reason: String) -> void:
 	set_process(false)
+	_externally_driven = false
 	var timeline := _timeline()
 	if timeline != null:
 		timeline.stop()
@@ -99,6 +126,7 @@ func finish(_reason: String) -> void:
 	_end_camera_shake()
 	_hitstop_remaining = 0.0
 	_shake_remaining = 0.0
+	_release_cast_pose()
 
 
 func presence_snapshot() -> Dictionary:
@@ -110,6 +138,7 @@ func presence_snapshot() -> Dictionary:
 		"hitstop_ms": hitstop_ms,
 		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
 		"sfx_ducking": true,
+		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
 	}
 
 
@@ -131,6 +160,7 @@ func _reset_run() -> void:
 	_impact_fired = false
 	_hitstop_remaining = 0.0
 	_shake_remaining = 0.0
+	_release_cast_pose()
 	_restore_motion_tracks()
 
 
@@ -159,11 +189,9 @@ func _disable_fast_motion_tracks() -> void:
 		if property == "rotation" or property == "position" or property == "scale" or property == "frame":
 			animation.track_set_enabled(track, false)
 			_disabled_tracks.append(track)
-			if property == "scale":
-				var target_path := NodePath(str(animation.track_get_path(track).get_concatenated_names()))
-				var target := get_node_or_null(target_path) as Node2D
-				if target != null:
-					target.scale = Vector2.ONE
+	# Scene-authored transforms are the reduced-motion substitute. In
+	# particular, the Chakrams scene's eight distinct compass positions and
+	# 0.24 disc scale must not collapse to one default transform.
 
 
 func _restore_motion_tracks() -> void:
@@ -212,6 +240,17 @@ func _resume_timeline_at_clock() -> void:
 		return
 	timeline.play(&"ultimate")
 	timeline.seek(minf(_elapsed, cancel_at), true)
+	if _externally_driven:
+		timeline.pause()
+
+
+func _seek_timeline_to_clock() -> void:
+	var timeline := _timeline()
+	if timeline == null or _paused:
+		return
+	timeline.seek(minf(_elapsed, cancel_at), true)
+	if _externally_driven and timeline.is_playing():
+		timeline.pause()
 
 
 func _screen_shake_enabled() -> bool:
@@ -229,7 +268,7 @@ func _apply_camera_shake(remaining: float) -> void:
 		_camera_offset_before_shake = _camera.offset
 	var strength := shake_amplitude * remaining / maxf(shake_seconds, 0.001)
 	_camera.offset = _camera_offset_before_shake + Vector2(
-		randf_range(-strength, strength), randf_range(-strength, strength)
+		_shake_rng.randf_range(-strength, strength), _shake_rng.randf_range(-strength, strength)
 	)
 	if remaining <= 0.0:
 		_end_camera_shake()
@@ -250,6 +289,90 @@ func _end_camera_shake() -> void:
 	if _camera != null and is_instance_valid(_camera):
 		_camera.offset = _camera_offset_before_shake
 	_camera = null
+
+
+func _bind_cast_pose(registry) -> void:
+	if registry == null or not registry.has_method("catalog_profile_for"):
+		return
+	var key := str(get_meta("ultimate_id", ""))
+	var parts := key.split("/", false, 1)
+	if parts.size() != 2:
+		return
+	var manifest := PresentationManifest.manifest_for_profile(
+		registry.call("catalog_profile_for", parts[0], parts[1]) as Dictionary
+	)
+	var asset := str((manifest.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	var texture := load(asset) as Texture2D
+	var player := _nearest_player()
+	if texture == null or player == null:
+		return
+	var visual_root := player.get_node_or_null("VisualRoot") as Node2D
+	_player_body = player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	if visual_root == null or _player_body == null:
+		return
+	_player_body_was_visible = _player_body.visible
+	_player_body.visible = false
+	_cast_pose = Sprite2D.new()
+	_cast_pose.name = "UltimateCastPose"
+	_cast_pose.texture = texture
+	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
+	_cast_pose.z_index = 2
+	visual_root.add_child(_cast_pose)
+
+
+func _release_cast_pose() -> void:
+	if _cast_pose != null and is_instance_valid(_cast_pose):
+		_cast_pose.free()
+	_cast_pose = null
+	if _player_body != null and is_instance_valid(_player_body):
+		_player_body.visible = _player_body_was_visible
+	_player_body = null
+
+
+func _nearest_player() -> Node2D:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree == null:
+		return null
+	var nearest: Node2D = null
+	var distance := INF
+	for raw_player in tree.get_nodes_in_group("player"):
+		var player := raw_player as Node2D
+		if player == null:
+			continue
+		var candidate := player.global_position.distance_squared_to(global_position)
+		if candidate < distance:
+			distance = candidate
+			nearest = player
+	return nearest
+
+
+## Assassin executors own their victim flipbooks. Adapt only players below an
+## Assassin executor node, after its tween callback, so unrelated combat VFX
+## and gameplay RNG/state are untouched.
+func _apply_executor_impact_safety() -> void:
+	if not _photosensitivity_safe or get_tree() == null:
+		return
+	for raw_sprite in get_tree().root.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite == null or not _is_class_impact(sprite):
+			continue
+		sprite.stop()
+		sprite.frame = clampi(4, 0, maxi(sprite.sprite_frames.get_frame_count(sprite.animation) - 1, 0)) \
+			if sprite.sprite_frames != null else 0
+		sprite.scale = Vector2.ONE * 0.24
+		sprite.modulate.a = minf(sprite.modulate.a, 0.12)
+		sprite.set_meta("photosensitivity_safe", true)
+
+
+func _is_class_impact(node: Node) -> bool:
+	var cursor := node.get_parent()
+	while cursor != null:
+		var script := cursor.get_script() as Script
+		if script != null and script.resource_path.contains("/scripts/ultimates/classes/assassin/"):
+			return true
+		cursor = cursor.get_parent()
+	return false
 
 
 func _begin_sfx_ducking() -> void:

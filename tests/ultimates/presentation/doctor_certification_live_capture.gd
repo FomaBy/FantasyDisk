@@ -117,16 +117,10 @@ func _initialize() -> void:
 		quit(0)
 		return
 	seed(CAPTURE_SEED)
-	_source = {
-		"ref": OS.get_environment("DOCTOR_CERT_SOURCE_REF").strip_edges(),
-		"commit_sha": OS.get_environment("DOCTOR_CERT_SOURCE_SHA").strip_edges().to_lower(),
-		"tree_sha": OS.get_environment("DOCTOR_CERT_SOURCE_TREE").strip_edges().to_lower(),
-	}
-	for field in ["ref", "commit_sha", "tree_sha"]:
-		if str(_source[field]).is_empty():
-			push_error("FAN-3942 Doctor certification capture: DOCTOR_CERT_SOURCE_%s must name the checkout the captures come from" % field.to_upper())
-			quit(1)
-			return
+	_source = _clean_source()
+	if _source.is_empty():
+		quit(1)
+		return
 	_frame_dir = OS.get_environment("DOCTOR_CERT_FRAME_DIR").strip_edges()
 	if not _frame_dir.is_empty():
 		DirAccess.make_dir_recursive_absolute(_frame_dir)
@@ -155,11 +149,12 @@ func _initialize() -> void:
 					push_error("FAN-3942 Doctor certification capture: %s" % failure)
 					quit(1)
 					return
-		var matrix_error := await _write_matrix_sheet(viewport)
-		if matrix_error != OK:
-			push_error("FAN-3942 Doctor certification capture: matrix sheet %s failed (%s)" % [viewport["id"], error_string(matrix_error)])
-			quit(1)
-			return
+		for beat_id in BEAT_IDS:
+			var matrix_error := await _write_matrix_sheet(viewport, beat_id)
+			if matrix_error != OK:
+				push_error("FAN-3942 Doctor certification capture: matrix sheet %s/%s failed (%s)" % [viewport["id"], beat_id, error_string(matrix_error)])
+				quit(1)
+				return
 
 	var write_error := _write_capture_manifest()
 	if write_error != OK:
@@ -251,16 +246,13 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		]
 	baseline.convert(Image.FORMAT_RGB8)
 
-	## Start the shipped presentation runtime through the real Player host so the
-	## evidence measures the declared visual envelope independently of gameplay
-	## executor duration. No gameplay or balance parameter is changed.
+	## Charge and activate through the shipped Player entry point.
 	var host := PlayerHost.for_player(player)
-	var registry = PlayerHost.shared_registry()
-	var profile: Dictionary = registry.catalog_profile_for(CLASS_ID, weapon_id)
-	if profile.is_empty() or not bool(host.call("ultimate_host_begin_presentation", profile)):
+	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+	if not bool(player.call("activate_ultimate")):
 		main.queue_free()
 		await process_frame
-		return "%s/%s/%s did not start the shipped presentation runtime" % [weapon_id, mode_id, viewport["id"]]
+		return "%s/%s/%s did not activate through Player (%s)" % [weapon_id, mode_id, viewport["id"], PlayerHost.activation_failure(player)]
 
 	var elapsed := 0.0
 	for beat in beats:
@@ -291,6 +283,10 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["required_nodes_present"] = _required_nodes_present(effect_root, beat)
 		record["presentation_scene"] = str(_weapon_manifest.get(weapon_id, {}).get("scene_path", ""))
 		record["hazards_placed"] = hazards.size()
+		record["activation_started"] = true
+		record["accessibility"] = Accessibility.read_snapshot(root)
+		record["presentation_state"] = effect_root.call("presence_snapshot") if effect_root != null and effect_root.has_method("presence_snapshot") else {}
+		record["record_sha256"] = _record_digest(record)
 		_records.append(record)
 		_store_panel(viewport, weapon_id, mode_id, str(beat["phase"]), frame)
 		if not _frame_dir.is_empty():
@@ -618,10 +614,8 @@ func _crowd_cap(weapon_id: String) -> int:
 
 
 func _store_panel(viewport: Dictionary, weapon_id: String, mode_id: String, beat_id: String, frame: Image) -> void:
-	if beat_id != SHEET_BEAT:
-		return
 	var cell := matrix_cell_rect(viewport["size"] as Vector2i, WEAPON_IDS.find(weapon_id), _mode_index(mode_id))
-	_sheet_panels["%s/%s" % [weapon_id, mode_id]] = _panel_image(frame, cell.size)
+	_sheet_panels["%s/%s/%s" % [weapon_id, mode_id, beat_id]] = _panel_image(frame, cell.size)
 
 
 func _panel_image(frame: Image, target: Vector2) -> Image:
@@ -637,28 +631,28 @@ func _mode_index(mode_id: String) -> int:
 	return 0
 
 
-func _write_matrix_sheet(viewport: Dictionary) -> int:
+func _write_matrix_sheet(viewport: Dictionary, beat_id: String) -> int:
 	var size := viewport["size"] as Vector2i
 	var host := Node2D.new()
 	_add_backdrop(host, size)
-	_add_heading(host, size, "DOCTOR ULTIMATES — LIVE %s CAPTURE • ACTIVE BEAT • REAL PLAYER, HAZARDS AND HUD" % str(viewport["id"]).to_upper())
+	_add_heading(host, size, "DOCTOR ULTIMATES — LIVE %s CAPTURE • %s BEAT • REAL PLAYER ACTIVATION" % [str(viewport["id"]).to_upper(), beat_id.to_upper()])
 	for weapon_index in WEAPON_IDS.size():
 		for mode_index in MODES.size():
 			var weapon_id := WEAPON_IDS[weapon_index]
 			var mode := MODES[mode_index] as Dictionary
 			var cell := matrix_cell_rect(size, weapon_index, mode_index)
-			var panel := _sheet_panels.get("%s/%s" % [weapon_id, str(mode["id"])], null) as Image
+			var panel := _sheet_panels.get("%s/%s/%s" % [weapon_id, str(mode["id"]), beat_id], null) as Image
 			_add_cell(host, size, cell, panel, "%s — %s" % [weapon_id.to_upper(), str(mode["label"])])
-	var path := "%s/doctor_certification_%s.png" % [OUTPUT_DIR, str(viewport["id"])]
+	var path := "%s/doctor_certification_%s_%s.png" % [OUTPUT_DIR, str(viewport["id"]), beat_id]
 	var result := await _render_sheet(host, size, path)
 	if result == OK:
 		_sheets.append({
 			"sha256": FileAccess.get_sha256(path).to_lower(),
-			"kind": "mode_matrix",
+			"kind": "beat_mode_matrix",
 			"viewport": str(viewport["id"]),
 			"width": size.x,
 			"height": size.y,
-			"beat": SHEET_BEAT,
+			"beat": beat_id,
 			"path": path.trim_prefix("res://"),
 			"rows": WEAPON_IDS.duplicate(),
 			"columns": _mode_ids(),
@@ -743,11 +737,13 @@ func _write_capture_manifest() -> int:
 		"beats": BEAT_IDS.duplicate(),
 		"viewports": _viewport_declarations(),
 		"capture": {
-			"method": "windowed live run: scenes/Main.tscn + _start_combat(), shipped combat HUD, shipped Enemy hazards, presentation launched through the real Player UltimateHost and shipped WeaponUltimatePresentationRuntime",
+			"method": "windowed live run: scenes/Main.tscn + _start_combat(), full Player charge + activate_ultimate(), shipped executor, presentation drain, combat HUD, Enemy hazards, victim impacts and cast pose",
 			"capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
 			"focused_test": "tests/ultimates/presentation/doctor_certification_capture_test.gd",
 			"seed": CAPTURE_SEED,
 			"fixed_fps": 60,
+			"real_activation": true,
+			"activation_entry": "Player.activate_ultimate",
 			"godot_version": "%s.%s" % [
 				str(Engine.get_version_info().get("string", "")),
 				str(Engine.get_version_info().get("hash", "")).substr(0, 9),
@@ -762,21 +758,53 @@ func _write_capture_manifest() -> int:
 			"captured_at": Time.get_datetime_string_from_system(true, true),
 		},
 		"commands": {
-			"live_capture": "FSD_GODOT_EXCLUSIVE=1 DOCTOR_CERT_SOURCE_REF=<ref> DOCTOR_CERT_SOURCE_SHA=<sha> DOCTOR_CERT_SOURCE_TREE=<tree> python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/doctor_certification_live_capture.gd",
+			"live_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/doctor_certification_live_capture.gd",
 			"focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/doctor_certification_capture_test.gd",
 			"class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/doctor_ultimate_timelines.gd",
-			"static_guard": "python3 tools/quality_static_guard.py --changed-ref <declared-base-sha>",
+			"static_guard": "python3 tools/quality_static_guard.py --changed-ref %s" % str(_source["commit_sha"]),
 			"lfs_integrity": "git lfs fsck",
 		},
 		"sheets": _sheets,
 		"samples": _records,
 	}
+	payload["attestation_sha256"] = _payload_digest(payload)
 	var file := FileAccess.open(CAPTURE_MANIFEST_PATH, FileAccess.WRITE)
 	if file == null:
 		return FileAccess.get_open_error()
 	file.store_string(JSON.stringify(payload, "  ", false) + "\n")
 	file.close()
 	return OK
+
+
+func _clean_source() -> Dictionary:
+	var head := _git(["rev-parse", "HEAD"]).to_lower()
+	var tree := _git(["rev-parse", "HEAD^{tree}"]).to_lower()
+	var branch := _git(["branch", "--show-current"])
+	var dirty := _git(["status", "--porcelain", "--untracked-files=no"])
+	if head.length() != 40 or tree.length() != 40 or branch.is_empty() or not dirty.is_empty():
+		push_error("FAN-3942 Doctor certification capture: source checkout must be a clean named branch")
+		return {}
+	return {"ref": branch, "commit_sha": head, "tree_sha": tree, "worktree_clean": true}
+
+
+func _git(args: Array) -> String:
+	var output: Array = []
+	var packed := PackedStringArray()
+	for arg in args:
+		packed.append(str(arg))
+	return str(output[0]).strip_edges() if OS.execute("git", packed, output, true) == 0 and not output.is_empty() else ""
+
+
+func _record_digest(record: Dictionary) -> String:
+	var signed := record.duplicate(true)
+	signed.erase("record_sha256")
+	return JSON.stringify(signed).sha256_text()
+
+
+func _payload_digest(payload: Dictionary) -> String:
+	var signed := payload.duplicate(true)
+	signed.erase("attestation_sha256")
+	return JSON.stringify(signed).sha256_text()
 
 
 func _mode_declarations() -> Array:

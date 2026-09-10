@@ -146,7 +146,7 @@
         "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
       },
       "quality": {
-        "max_viewport_coverage_ratio": 0.18,
+        "max_viewport_coverage_ratio": 0.14,
         "hud_bands_clear": true,
         "reduced_motion_substitute": "the four dagger afterimages hold their authored frames and positions while phase scale and alpha preserve the execution silhouette",
         "reduced_motion_preserves_timing": true,
