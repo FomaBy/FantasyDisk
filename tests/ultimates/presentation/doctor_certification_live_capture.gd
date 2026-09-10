@@ -250,7 +250,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			"null" if baseline == null else str(baseline.get_size()), str(size),
 		]
 	baseline.convert(Image.FORMAT_RGB8)
-	RenderingServer.render_loop_enabled = false
 
 	## Charge and activate through the shipped Player entry point.
 	var host := PlayerHost.for_player(player)
@@ -308,7 +307,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			])
 		paused = false
 
-	RenderingServer.render_loop_enabled = true
 	Engine.time_scale = 1.0
 	host.call("ultimate_host_finish_presentation", "capture_complete")
 	main.queue_free()

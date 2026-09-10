@@ -249,10 +249,8 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			"null" if baseline == null else str(baseline.get_size()), str(size),
 		]
 	baseline.convert(Image.FORMAT_RGB8)
-	# Advance the real 60 Hz game without rasterizing frames that are never
-	# evidence. Each declared beat re-enables rendering while the tree is paused,
-	# so its native framebuffer still describes the exact simulation step.
-	RenderingServer.render_loop_enabled = false
+	# Advance the real 60 Hz game at a fixed accelerated simulation rate. Exact
+	# evidence beats use a synchronous draw while the tree is paused.
 
 	## Charge and activate through the shipped Player entry point. The gameplay
 	## executor, presentation drain, cast pose and victim feedback are all live.
@@ -311,7 +309,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			])
 		paused = false
 
-	RenderingServer.render_loop_enabled = true
 	Engine.time_scale = 1.0
 	host.call("ultimate_host_finish_presentation", "capture_complete")
 	main.queue_free()
