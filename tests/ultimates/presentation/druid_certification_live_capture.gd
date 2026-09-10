@@ -94,6 +94,7 @@ const HAZARD_HEALTH := 100000.0
 const CAPTURE_SEED := 394220260913
 
 const FIXED_STEP := 1.0 / 60.0
+const SIMULATION_ACCELERATION := 8.0
 const SETTLE_FRAMES := 8
 const CHANGED_PIXEL_EPSILON := 0.08
 const FLASH_LUMINANCE := 0.92
@@ -254,13 +255,19 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		main.queue_free()
 		await process_frame
 		return "%s/%s/%s did not activate through Player (%s)" % [weapon_id, mode_id, viewport["id"], PlayerHost.activation_failure(player)]
+	Engine.time_scale = SIMULATION_ACCELERATION
+	var presentation = host.get("_presentation")
 
 	var elapsed := 0.0
 	for beat in beats:
 		var target := float(beat["sample_time"])
 		while elapsed < target:
 			await process_frame
-			elapsed += FIXED_STEP
+			var simulated_step := minf(SIMULATION_ACCELERATION * FIXED_STEP, target - elapsed)
+			var automatic_step := root.get_process_delta_time() / Engine.time_scale
+			if presentation != null and simulated_step > automatic_step:
+				presentation.call("advance", simulated_step - automatic_step)
+			elapsed += simulated_step
 		paused = true
 		RenderingServer.render_loop_enabled = true
 		await RenderingServer.frame_post_draw
@@ -300,6 +307,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		paused = false
 
 	RenderingServer.render_loop_enabled = true
+	Engine.time_scale = 1.0
 	host.call("ultimate_host_finish_presentation", "capture_complete")
 	main.queue_free()
 	await process_frame
@@ -751,11 +759,12 @@ func _write_capture_manifest() -> int:
 		"beats": BEAT_IDS.duplicate(),
 		"viewports": _viewport_declarations(),
 		"capture": {
-			"method": "windowed live run: scenes/Main.tscn + _start_combat(), full Player charge + activate_ultimate(), shipped executor, presentation drain, combat HUD, Enemy hazards, victim impacts and cast pose",
+			"method": "windowed live run: scenes/Main.tscn + _start_combat(), full Player charge + activate_ultimate(), shipped executor, presentation drain, combat HUD, Enemy hazards, victim impacts and cast pose; gameplay and presentation advance together at the recorded simulation_acceleration while only exact beat frames are rasterized",
 			"capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
 			"focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
 			"seed": CAPTURE_SEED,
 			"fixed_fps": 60,
+			"simulation_acceleration": SIMULATION_ACCELERATION,
 			"real_activation": true,
 			"activation_entry": "Player.activate_ultimate",
 			"godot_version": "%s.%s" % [
