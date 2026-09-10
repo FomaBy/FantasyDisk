@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3938",
+  "class_id": "dark_mage",
+  "capture_source": {
+    "ref": "written by the windowed renderer",
+    "commit_sha": "",
+    "tree_sha": "",
+    "note": "The renderer replaces this template only after its harness commit is pinned, so the PNG evidence never claims a self-referential final artifact commit."
+  },
+  "canonical_weapon_ids": ["dark_book", "cursed_skull", "dark_wand"],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "configuration": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false,
+        "director_enemy_count": 8
+      },
+      "intent": "Persisted production defaults with a representative ring of shipped Enemy hazards."
+    },
+    {
+      "id": "crowded",
+      "configuration": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false,
+        "director_enemy_count": 39
+      },
+      "intent": "Persisted production defaults with 39 director-spawned Enemy hazards in the capture arena."
+    },
+    {
+      "id": "reduced_motion",
+      "configuration": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false,
+        "director_enemy_count": 8
+      },
+      "intent": "The shipped persisted ultimate_reduced_motion setting, observed through Main's published runtime snapshot."
+    },
+    {
+      "id": "photosensitivity_safe",
+      "configuration": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true,
+        "director_enemy_count": 8
+      },
+      "intent": "The shipped persisted ultimate_photosensitivity_safe setting, observed through Main's published runtime snapshot."
+    }
+  ],
+  "viewports": [
+    {"id": "1152x648", "width": 1152, "height": 648},
+    {"id": "1280x720", "width": 1280, "height": 720},
+    {"id": "1920x1080", "width": 1920, "height": 1080},
+    {"id": "2560x1440", "width": 2560, "height": 1440}
+  ],
+  "observed_beats": ["release", "active", "recovery"],
+  "capture": {
+    "method": "The windowed renderer replaces this declaration with its exact runtime, platform, renderer, seed, and source provenance before any image is committed.",
+    "capture_script": "tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/dark_mage_certification_capture_test.gd"
+  },
+  "captures": []
+}
