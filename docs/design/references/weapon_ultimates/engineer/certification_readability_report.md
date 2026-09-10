@@ -69,9 +69,18 @@ activation and presentation only with fixed
 interior-of-phase tween/runtime steps.
 
 The certification validator pins the declared renderer provenance to the
-committed renderer pair `e94c4bb272a15ab255a7e40c7f84e8da80976570` /
-`e00d8381c0f16b9b12ab604e956e577210de462e`; a plausible-looking but different
+committed renderer pair `6182fe4f8e9d4fc234e556b20b6a48852f477548` /
+`41268329f6bf019d1d933372603ee7f9994527f6`; a plausible-looking but different
 environment SHA/tree is rejected before an evidence manifest can pass review.
+
+Each frozen SubViewport reaches readback through a deterministic `process_frame` plus
+`RenderingServer.force_draw(false)` boundary. This redraws the real windowed
+SubViewport without waiting indefinitely for a macOS `frame_post_draw`
+presentation signal; the documented gate remains the process-level failure
+bound, with `FSD_GODOT_RUN_TIMEOUT=300` limiting the actual Godot process.
+Deferred viewport destruction receives one process frame before the next
+isolated context is built, preventing stale 2K targets from accumulating across
+the matrix.
 
 Pressure Mines invokes
 the shipped smart-chain and outer-to-inner finale callbacks on that real

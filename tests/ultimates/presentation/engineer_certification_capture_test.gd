@@ -57,8 +57,8 @@ const CAPTURE_FIXED_STEP_SAMPLE_COUNT := 8
 const CAPTURE_FIXED_STEP_TOLERANCE := 1.0e-9
 ## The windowed renderer itself is committed separately so this validator can
 ## reject a plausible-looking environment pin that does not name its source.
-const CAPTURE_RENDERER_SOURCE_COMMIT := "e94c4bb272a15ab255a7e40c7f84e8da80976570"
-const CAPTURE_RENDERER_SOURCE_TREE := "e00d8381c0f16b9b12ab604e956e577210de462e"
+const CAPTURE_RENDERER_SOURCE_COMMIT := "6182fe4f8e9d4fc234e556b20b6a48852f477548"
+const CAPTURE_RENDERER_SOURCE_TREE := "41268329f6bf019d1d933372603ee7f9994527f6"
 
 const WEAPON_IDS: Array[String] = [
 	"engineer_sentry_wrench",
@@ -174,11 +174,15 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"CAPTURE_FIXED_FPS",
 		"_measure_fixed_step_witness",
 		"get_process_delta_time()",
+		"_force_windowed_draws",
+		"RenderingServer.force_draw(false)",
+		"await _cleanup_viewport",
 		"CAPTURE_BACKEND_WARMUP",
 		"_capture_one(0, first_capture, false)",
 	]:
 		_expect(source.contains(required), "live renderer must retain production/determinism contract: %s" % required, errors)
 	_expect(not source.contains("Polygon2D.new()"), "live renderer must not draw a stand-in player or hazard", errors)
+	_expect(not source.contains("await RenderingServer.frame_post_draw"), "live renderer must not depend on an unbounded frame_post_draw signal", errors)
 
 
 func _check_class_manifest(class_manifest: Dictionary, errors: Array[String]) -> void:
@@ -683,7 +687,7 @@ static func fixed_step_witness_is_valid(witness: Dictionary) -> bool:
 
 
 static func canonical_capture_command(source: Dictionary) -> String:
-	return "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script %s" % [
+	return "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FSD_GODOT_RUN_TIMEOUT=300 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script %s" % [
 		str(source.get("source_commit_sha", "")), str(source.get("source_tree_sha", "")), CAPTURE_FIXED_FPS, LIVE_CAPTURE_SCRIPT,
 	]
 
