@@ -62,7 +62,11 @@ func _initialize() -> void:
 	await _check_crowded_repeated_impacts()
 	await _check_natural_completion()
 	await _check_death_and_node_removal()
-	if DisplayServer.get_name() != "headless":
+	if DisplayServer.get_name() == "headless":
+		# The dummy rasterizer hands an empty readback; the temporal envelope
+		# is measured only by the windowed invocation documented above.
+		pass
+	else:
 		await _measure_windowed_temporal_bounds()
 
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
@@ -211,9 +215,16 @@ func _check_crowded_repeated_impacts() -> void:
 		await process_frame
 
 
+## Natural completion under the FAN-3941 lifetime semantics: the mechanical
+## activation ends at its original instant (the executor's own scheduled end),
+## the authored presentation enters a finite drain, and the host's own
+## advancement releases it exactly at the authored timing.cancel boundary.
+## Host frame processing stays off so the sequence is deterministic; the host
+## is stepped explicitly through the same `_process` the game runs.
 func _check_natural_completion() -> void:
 	_apply_mode({"reduced": true, "photosafe": true})
 	for weapon_id in WEAPONS:
+		var cancel := float((WEAPONS[weapon_id] as Dictionary)["cancel"])
 		var player := await _spawn_player(str(weapon_id))
 		var host := PlayerHost.for_player(player)
 		host.set("_presentation_headless_mode", 0)
@@ -222,9 +233,25 @@ func _check_natural_completion() -> void:
 		_check(bool(player.call("activate_ultimate")), "%s natural-completion cast must activate" % weapon_id)
 		var controller = host.call("controller")
 		var activation = controller.call("active_activation")
+		var runtime = host.get("_presentation")
+		var scene := runtime.get("_scene") as Node if runtime != null else null
 		await _advance_activation(activation, 7.0)
-		_check(not controller.call("is_active") and host.get("_presentation") == null,
-			"%s natural completion must clear activation and presentation" % weapon_id)
+		_check(not controller.call("is_active") and not bool(player.get("_ultimate_active")),
+			"%s natural completion must clear the activation at its original instant" % weapon_id)
+		_check(host.get("_presentation") == runtime and bool(host.call("ultimate_host_presentation_draining"))
+			and scene != null and is_instance_valid(scene) and scene.is_inside_tree(),
+			"%s natural completion must leave the presentation draining, not released" % weapon_id)
+		# Just short of the boundary the drain is still live; at the boundary the
+		# host's own advancement releases it and frees the authored scene.
+		_advance_host(host, cancel - 0.1)
+		_check(host.get("_presentation") == runtime and bool(host.call("ultimate_host_presentation_draining")),
+			"%s drain must still be live %.2f s before its declared cancel" % [weapon_id, 0.1])
+		_advance_host(host, 0.1 + 1.0 / 60.0)
+		_check(host.get("_presentation") == null and not controller.call("is_active"),
+			"%s natural completion must clear the presentation at its declared cancel %.2f s" % [weapon_id, cancel])
+		await process_frame
+		_check(scene == null or not is_instance_valid(scene),
+			"%s the drained scene must be freed once the drain ends" % weapon_id)
 		_check(is_equal_approx(Engine.time_scale, 1.0), "%s natural completion must restore time scale" % weapon_id)
 		player.queue_free()
 		await process_frame
@@ -393,6 +420,15 @@ func _advance_activation(activation, seconds: float) -> void:
 				tween.custom_step(step)
 		elapsed += step
 	await process_frame
+
+
+## Steps the host through the same `_process` the game runs, in fixed frames.
+func _advance_host(host: Node, seconds: float) -> void:
+	var elapsed := 0.0
+	while elapsed < seconds:
+		var step := minf(1.0 / 60.0, seconds - elapsed)
+		host.call("_process", step)
+		elapsed += step
 
 
 func _advance_runtime(runtime, seconds: float) -> void:
