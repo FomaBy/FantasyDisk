@@ -826,7 +826,7 @@ func _payload_digest(payload: Dictionary) -> String:
 
 
 func _canonical_digest(value: Variant) -> String:
-	var normalized := JSON.parse_string(JSON.stringify(value))
+	var normalized: Variant = JSON.parse_string(JSON.stringify(value))
 	return JSON.stringify(normalized).sha256_text()
 
 
