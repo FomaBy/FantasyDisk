@@ -42,6 +42,7 @@ var _shake_rng := RandomNumberGenerator.new()
 var _cast_pose: Sprite2D = null
 var _player_body: CanvasItem = null
 var _player_body_was_visible := true
+var _cast_pose_binding_error := "not_started"
 
 
 func _ready() -> void:
@@ -139,6 +140,7 @@ func presence_snapshot() -> Dictionary:
 		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
 		"sfx_ducking": true,
 		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
+		"cast_pose_binding_error": _cast_pose_binding_error,
 	}
 
 
@@ -292,10 +294,12 @@ func _end_camera_shake() -> void:
 
 
 func _bind_cast_pose(registry) -> void:
+	_cast_pose_binding_error = "registry_unavailable"
 	if registry == null or not registry.has_method("catalog_profile_for"):
 		return
 	var key := str(get_meta("ultimate_id", ""))
 	var parts := key.split("/", false, 1)
+	_cast_pose_binding_error = "invalid_ultimate_id:%s" % key
 	if parts.size() != 2:
 		return
 	var manifest := PresentationManifest.manifest_for_profile(
@@ -303,11 +307,16 @@ func _bind_cast_pose(registry) -> void:
 	)
 	var asset := str((manifest.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
 	var texture := load(asset) as Texture2D
+	_cast_pose_binding_error = "silhouette_unavailable:%s" % asset
+	if texture == null:
+		return
 	var player := _nearest_player()
-	if texture == null or player == null:
+	_cast_pose_binding_error = "eligible_player_unavailable"
+	if player == null:
 		return
 	var visual_root := player.get_node_or_null("VisualRoot") as Node2D
 	_player_body = player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	_cast_pose_binding_error = "player_visual_tree_unavailable"
 	if visual_root == null or _player_body == null:
 		return
 	_player_body_was_visible = _player_body.visible
@@ -319,6 +328,7 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
 	_cast_pose.z_index = 2
 	visual_root.add_child(_cast_pose)
+	_cast_pose_binding_error = ""
 
 
 func _release_cast_pose() -> void:
@@ -338,7 +348,9 @@ func _nearest_player() -> Node2D:
 	var distance := INF
 	for raw_player in tree.get_nodes_in_group("player"):
 		var player := raw_player as Node2D
-		if player == null:
+		if player == null \
+				or not player.get_node_or_null("VisualRoot") is Node2D \
+				or not player.get_node_or_null("VisualRoot/Body") is CanvasItem:
 			continue
 		var candidate := player.global_position.distance_squared_to(global_position)
 		if candidate < distance:
