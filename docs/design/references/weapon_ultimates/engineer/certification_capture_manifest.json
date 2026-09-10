@@ -1,103 +1,1137 @@
 {
-  "schema_version": 2,
-  "issue": "FAN-3939",
-  "class_id": "engineer",
-  "capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
-  "focused_test": "tests/ultimates/presentation/engineer_certification_capture_test.gd",
-  "readability_report": "docs/design/references/weapon_ultimates/engineer/certification_readability_report.md",
-  "capture_source": {
-    "source_ref": "dev",
-    "source_commit_sha": "pending-windowed-capture",
-    "source_tree_sha": "pending-windowed-capture",
-    "controlled_seed": 3939,
-    "godot_version": "pending-windowed-capture",
-    "renderer": "pending-windowed-capture",
-    "capture_method": "pending-windowed-capture",
-    "command": "pending-windowed-capture",
-    "workload_exclusion": "capture-only Engineer certification evidence"
-  },
-  "canonical_weapon_ids": [
-    "engineer_sentry_wrench",
-    "engineer_repair_drone",
-    "engineer_pressure_mines"
-  ],
-  "presentation_modes": [
-    {
-      "id": "normal",
-      "beat": "active",
-      "victims": 3,
-      "persisted_settings": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "crowd": "three real EnemySpitter targets"
-    },
-    {
-      "id": "crowded",
-      "beat": "release",
-      "victims": 39,
-      "persisted_settings": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "crowd": "thirty-nine real EnemySpitter targets"
-    },
-    {
-      "id": "reduced_motion",
-      "beat": "active",
-      "victims": 3,
-      "persisted_settings": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "crowd": "three real EnemySpitter targets"
-    },
-    {
-      "id": "photosensitivity_safe",
-      "beat": "recovery",
-      "victims": 3,
-      "persisted_settings": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "crowd": "three real EnemySpitter targets"
-    }
-  ],
-  "viewports": [
-    {"id": "648p", "width": 1152, "height": 648},
-    {"id": "720p", "width": 1280, "height": 720},
-    {"id": "1080p", "width": 1920, "height": 1080},
-    {"id": "2k", "width": 2560, "height": 1440}
-  ],
-  "runtime_configuration": {
-    "player_scene": "res://scenes/Player.tscn",
-    "enemy_scene": "res://scenes/EnemySpitter.tscn",
-    "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
-    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
-    "scene_paths": [
-      "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-      "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
-      "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn"
-    ],
-    "mode_application": "GameSettings.DEFAULTS copied into UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate"
-  },
-  "coverage_matrix": {
-    "weapons": [
-      "engineer_sentry_wrench",
-      "engineer_repair_drone",
-      "engineer_pressure_mines"
-    ],
-    "modes": [
-      "normal",
-      "crowded",
-      "reduced_motion",
-      "photosensitivity_safe"
-    ],
-    "viewports": ["648p", "720p", "1080p", "2k"],
-    "sample_count": 48,
-    "cells_per_viewport": 12,
-    "beats": ["release", "active", "recovery"],
-    "layout": "isolated_native_frame"
-  },
-  "samples": []
+	"canonical_weapon_ids": [
+		"engineer_sentry_wrench",
+		"engineer_repair_drone",
+		"engineer_pressure_mines"
+	],
+	"capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
+	"capture_source": {
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=dc04a2032afb3e28a98471f6d6bd5aa8de6a28fa FAN3939_CAPTURE_SOURCE_TREE=57a507dba4c85c18c1205d5bfeb03f28cff494bb GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
+		"controlled_seed": 3939,
+		"godot_version": "4.7-stable (official)",
+		"renderer": "display=macOS; rendering_method=gl_compatibility",
+		"source_commit_sha": "dc04a2032afb3e28a98471f6d6bd5aa8de6a28fa",
+		"source_ref": "agent/codex-dev-terra-b/b00766a9083d",
+		"source_tree_sha": "57a507dba4c85c18c1205d5bfeb03f28cff494bb",
+		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified"
+	},
+	"class_id": "engineer",
+	"coverage_matrix": {
+		"beats": [
+			"release",
+			"active",
+			"recovery"
+		],
+		"cells_per_viewport": 12,
+		"layout": "isolated_native_frame",
+		"modes": [
+			"normal",
+			"crowded",
+			"reduced_motion",
+			"photosensitivity_safe"
+		],
+		"sample_count": 48,
+		"viewports": [
+			"648p",
+			"720p",
+			"1080p",
+			"2k"
+		],
+		"weapons": [
+			"engineer_sentry_wrench",
+			"engineer_repair_drone",
+			"engineer_pressure_mines"
+		]
+	},
+	"focused_test": "tests/ultimates/presentation/engineer_certification_capture_test.gd",
+	"issue": "FAN-3939",
+	"presentation_modes": [
+		{
+			"beat": "active",
+			"crowd": "three real EnemySpitter targets",
+			"id": "normal",
+			"persisted_settings": {
+				"ultimate_photosensitivity_safe": false,
+				"ultimate_reduced_motion": false
+			},
+			"victims": 3
+		},
+		{
+			"beat": "release",
+			"crowd": "thirty-nine real EnemySpitter targets",
+			"id": "crowded",
+			"persisted_settings": {
+				"ultimate_photosensitivity_safe": false,
+				"ultimate_reduced_motion": false
+			},
+			"victims": 39
+		},
+		{
+			"beat": "active",
+			"crowd": "three real EnemySpitter targets",
+			"id": "reduced_motion",
+			"persisted_settings": {
+				"ultimate_photosensitivity_safe": false,
+				"ultimate_reduced_motion": true
+			},
+			"victims": 3
+		},
+		{
+			"beat": "recovery",
+			"crowd": "three real EnemySpitter targets",
+			"id": "photosensitivity_safe",
+			"persisted_settings": {
+				"ultimate_photosensitivity_safe": true,
+				"ultimate_reduced_motion": false
+			},
+			"victims": 3
+		}
+	],
+	"readability_report": "docs/design/references/weapon_ultimates/engineer/certification_readability_report.md",
+	"runtime_configuration": {
+		"enemy_scene": "res://scenes/EnemySpitter.tscn",
+		"hazard_runtime": "EnemySpitter._spawn_elite_hazard",
+		"hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
+		"mode_application": "GameSettings.DEFAULTS copied into UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate",
+		"player_scene": "res://scenes/Player.tscn",
+		"scene_paths": [
+			"scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+			"scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+			"scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn"
+		]
+	},
+	"samples": [
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_sentry_wrench__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__normal__active.png",
+			"repeat_sha256": "74fb9f082babf789e9a8b3ed4e0e576df83153365d47a56a2003008d9f1c269c",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "74fb9f082babf789e9a8b3ed4e0e576df83153365d47a56a2003008d9f1c269c",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1152
+		},
+		{
+			"beat": "release",
+			"height": 648,
+			"id": "648p--engineer_sentry_wrench__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__crowded__release.png",
+			"repeat_sha256": "94a512fedb87838dbc0a1314b18ff6bda034dbf5ee2f25f95f11035d65f2d3c4",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.871,
+			"sha256": "94a512fedb87838dbc0a1314b18ff6bda034dbf5ee2f25f95f11035d65f2d3c4",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_sentry_wrench__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__reduced_motion__active.png",
+			"repeat_sha256": "2b255e4af8d47c36877600afb5c5b03c64d6648557bf4ef515e5eeeea6823acb",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "2b255e4af8d47c36877600afb5c5b03c64d6648557bf4ef515e5eeeea6823acb",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1152
+		},
+		{
+			"beat": "recovery",
+			"height": 648,
+			"id": "648p--engineer_sentry_wrench__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "0fb9c5f121ec46d7066324e5e072517f127417a6aba67561d14b81ecd0bc73aa",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "0fb9c5f121ec46d7066324e5e072517f127417a6aba67561d14b81ecd0bc73aa",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_repair_drone__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__normal__active.png",
+			"repeat_sha256": "efdba1904a46d1bf0d4026aee08b47be9348a424f8c8f0fb62cb8c9af86f3742",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "efdba1904a46d1bf0d4026aee08b47be9348a424f8c8f0fb62cb8c9af86f3742",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1152
+		},
+		{
+			"beat": "release",
+			"height": 648,
+			"id": "648p--engineer_repair_drone__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__crowded__release.png",
+			"repeat_sha256": "9ce28c67af0034f819a83d5f6a6c81c89e00ba77368144ae5bd2c724db2fa8af",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.771,
+			"sha256": "9ce28c67af0034f819a83d5f6a6c81c89e00ba77368144ae5bd2c724db2fa8af",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_repair_drone__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__reduced_motion__active.png",
+			"repeat_sha256": "c6636d5e32b93635e3d89cede37633143b406700bb237fe37474bad5d74fda10",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "c6636d5e32b93635e3d89cede37633143b406700bb237fe37474bad5d74fda10",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1152
+		},
+		{
+			"beat": "recovery",
+			"height": 648,
+			"id": "648p--engineer_repair_drone__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "b195172855cfc68ae23b63b0fe4aa109a8d246802305f8c76814643b7bfae61f",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.421,
+			"sha256": "b195172855cfc68ae23b63b0fe4aa109a8d246802305f8c76814643b7bfae61f",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_pressure_mines__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__normal__active.png",
+			"repeat_sha256": "db38710fa765c9d71608a0dc918434b752d3adbf6253e43ead1dc37771f8b014",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "db38710fa765c9d71608a0dc918434b752d3adbf6253e43ead1dc37771f8b014",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1152
+		},
+		{
+			"beat": "release",
+			"height": 648,
+			"id": "648p--engineer_pressure_mines__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__crowded__release.png",
+			"repeat_sha256": "3242ba2519c3d62cdc3c789440dd4631913cc427d7a85cc39754c0f3f0a907e6",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.971,
+			"sha256": "3242ba2519c3d62cdc3c789440dd4631913cc427d7a85cc39754c0f3f0a907e6",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 648,
+			"id": "648p--engineer_pressure_mines__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__reduced_motion__active.png",
+			"repeat_sha256": "75c269d4fcbbfc6931e9fe69c9393bad0686bf45de283526a2e5fec7f14cbcd5",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "75c269d4fcbbfc6931e9fe69c9393bad0686bf45de283526a2e5fec7f14cbcd5",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1152
+		},
+		{
+			"beat": "recovery",
+			"height": 648,
+			"id": "648p--engineer_pressure_mines__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "b55997f243a6245db10b1c9f3cb2dd4ae01e09334d58152c57ac3568545fc46c",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "b55997f243a6245db10b1c9f3cb2dd4ae01e09334d58152c57ac3568545fc46c",
+			"viewport_id": "648p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1152
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_sentry_wrench__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__normal__active.png",
+			"repeat_sha256": "01ff01cf2f47080250f46f061e95015eb457183cc82eb6745cb418c646efbd21",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "01ff01cf2f47080250f46f061e95015eb457183cc82eb6745cb418c646efbd21",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1280
+		},
+		{
+			"beat": "release",
+			"height": 720,
+			"id": "720p--engineer_sentry_wrench__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__crowded__release.png",
+			"repeat_sha256": "e0848e03352e01087f6b63056c39fcb2b8a8205fb4c6faa3edf652d4f4a14f0c",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.871,
+			"sha256": "e0848e03352e01087f6b63056c39fcb2b8a8205fb4c6faa3edf652d4f4a14f0c",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_sentry_wrench__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__reduced_motion__active.png",
+			"repeat_sha256": "51f5d16404251fc9230ecc28560d856a36cb52223c7ff2194ea07a3969522347",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "51f5d16404251fc9230ecc28560d856a36cb52223c7ff2194ea07a3969522347",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1280
+		},
+		{
+			"beat": "recovery",
+			"height": 720,
+			"id": "720p--engineer_sentry_wrench__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "69956168cbd2b0886aa9ff779f6d8ed092ca6ee35106deac1f797c0a16ffa656",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "69956168cbd2b0886aa9ff779f6d8ed092ca6ee35106deac1f797c0a16ffa656",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_repair_drone__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__normal__active.png",
+			"repeat_sha256": "50cef44483fe1a9cbb8623771dc59707c9c2eb4773f7b172d8523e1d04a005f3",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "50cef44483fe1a9cbb8623771dc59707c9c2eb4773f7b172d8523e1d04a005f3",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1280
+		},
+		{
+			"beat": "release",
+			"height": 720,
+			"id": "720p--engineer_repair_drone__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__crowded__release.png",
+			"repeat_sha256": "abbb683d25c7dea45901830f8c9d78227aec807e754c87652b30c8ccfdd3d03d",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.771,
+			"sha256": "abbb683d25c7dea45901830f8c9d78227aec807e754c87652b30c8ccfdd3d03d",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_repair_drone__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__reduced_motion__active.png",
+			"repeat_sha256": "34fd2937424777cb13a7549425c45954b6535660a159a4a170cfe7825341cf2f",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "34fd2937424777cb13a7549425c45954b6535660a159a4a170cfe7825341cf2f",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1280
+		},
+		{
+			"beat": "recovery",
+			"height": 720,
+			"id": "720p--engineer_repair_drone__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "ddad3f96ab7d8f75d9890bc93693c6c3405f0c337681ecb45ee448579f103338",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.421,
+			"sha256": "ddad3f96ab7d8f75d9890bc93693c6c3405f0c337681ecb45ee448579f103338",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_pressure_mines__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__normal__active.png",
+			"repeat_sha256": "85f68a3b69f9c3ec062a1b0cbd86fea8ab16df8ef332805efd29d8bd048369e2",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "85f68a3b69f9c3ec062a1b0cbd86fea8ab16df8ef332805efd29d8bd048369e2",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1280
+		},
+		{
+			"beat": "release",
+			"height": 720,
+			"id": "720p--engineer_pressure_mines__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__crowded__release.png",
+			"repeat_sha256": "dc5113f5fbb0fa2ed59276599aecb91d7d941bc987dd568a5b09e2848699718e",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.971,
+			"sha256": "dc5113f5fbb0fa2ed59276599aecb91d7d941bc987dd568a5b09e2848699718e",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 720,
+			"id": "720p--engineer_pressure_mines__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__reduced_motion__active.png",
+			"repeat_sha256": "5efa958b853ac7b7970bdaafddcfe5fe7f9fcd0af22a777ada97df00574ba6fa",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "5efa958b853ac7b7970bdaafddcfe5fe7f9fcd0af22a777ada97df00574ba6fa",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1280
+		},
+		{
+			"beat": "recovery",
+			"height": 720,
+			"id": "720p--engineer_pressure_mines__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "201e8f39112e7df031c6eada7600ba66952f22ddc5698df20e85775d82bceb8c",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "201e8f39112e7df031c6eada7600ba66952f22ddc5698df20e85775d82bceb8c",
+			"viewport_id": "720p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1280
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_sentry_wrench__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__normal__active.png",
+			"repeat_sha256": "2039386409313ce65a8281afc6ae0734bd8191a6c095c67ba9dc380f207febd8",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "2039386409313ce65a8281afc6ae0734bd8191a6c095c67ba9dc380f207febd8",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1920
+		},
+		{
+			"beat": "release",
+			"height": 1080,
+			"id": "1080p--engineer_sentry_wrench__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__crowded__release.png",
+			"repeat_sha256": "084596b3c02c7cc1be19834a92538ed94f119d36cdedf4a5444188612280c727",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.871,
+			"sha256": "084596b3c02c7cc1be19834a92538ed94f119d36cdedf4a5444188612280c727",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_sentry_wrench__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__reduced_motion__active.png",
+			"repeat_sha256": "9787dbd68c7805dd9d30ed7c8897dee03d321fff58f49880f86ad9e5f866f113",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "9787dbd68c7805dd9d30ed7c8897dee03d321fff58f49880f86ad9e5f866f113",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1920
+		},
+		{
+			"beat": "recovery",
+			"height": 1080,
+			"id": "1080p--engineer_sentry_wrench__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "dc5aef8a51148c37e5ea73d7dc85d897430cb8103b53eaaeca12b9f70dd1805a",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "dc5aef8a51148c37e5ea73d7dc85d897430cb8103b53eaaeca12b9f70dd1805a",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_repair_drone__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__normal__active.png",
+			"repeat_sha256": "6101295c000da3f025af4f2024ad0296018b6c7a1a47bc1b119cbb02509638c8",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "6101295c000da3f025af4f2024ad0296018b6c7a1a47bc1b119cbb02509638c8",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1920
+		},
+		{
+			"beat": "release",
+			"height": 1080,
+			"id": "1080p--engineer_repair_drone__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__crowded__release.png",
+			"repeat_sha256": "c291b19ab4a0e9a41573130b90dd51f28cb503cda0062bc864e6d71ed778a517",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.771,
+			"sha256": "c291b19ab4a0e9a41573130b90dd51f28cb503cda0062bc864e6d71ed778a517",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_repair_drone__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__reduced_motion__active.png",
+			"repeat_sha256": "67272bb02ee0ffccbadb3cec143b5d704f3da72dcf285ae46dae68de0e8e514b",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "67272bb02ee0ffccbadb3cec143b5d704f3da72dcf285ae46dae68de0e8e514b",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1920
+		},
+		{
+			"beat": "recovery",
+			"height": 1080,
+			"id": "1080p--engineer_repair_drone__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "7eccb953f2986c60494890281ca60e3fa8d1925d1e2f658b1d530cb8f7bbb8aa",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.421,
+			"sha256": "7eccb953f2986c60494890281ca60e3fa8d1925d1e2f658b1d530cb8f7bbb8aa",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_repair_drone",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_pressure_mines__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__normal__active.png",
+			"repeat_sha256": "87bf696cdd06d1ad48e990586d3bf9a95e82ff70c10f70c2ba51001f2cb16cc4",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "87bf696cdd06d1ad48e990586d3bf9a95e82ff70c10f70c2ba51001f2cb16cc4",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1920
+		},
+		{
+			"beat": "release",
+			"height": 1080,
+			"id": "1080p--engineer_pressure_mines__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__crowded__release.png",
+			"repeat_sha256": "10f8898ca0a2ed8525be131416dfc6d1709fb32557c3add8d3ddcd755aebf558",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.971,
+			"sha256": "10f8898ca0a2ed8525be131416dfc6d1709fb32557c3add8d3ddcd755aebf558",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1080,
+			"id": "1080p--engineer_pressure_mines__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__reduced_motion__active.png",
+			"repeat_sha256": "9f61909ff6e114a71cd23942402c864ed530275bb12e434d0c5cd5e07929cd37",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "9f61909ff6e114a71cd23942402c864ed530275bb12e434d0c5cd5e07929cd37",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1920
+		},
+		{
+			"beat": "recovery",
+			"height": 1080,
+			"id": "1080p--engineer_pressure_mines__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "568a36698fc9d3857836540b1b1b321497a9ce1840e1c6f5cdd24d60e676376c",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "568a36698fc9d3857836540b1b1b321497a9ce1840e1c6f5cdd24d60e676376c",
+			"viewport_id": "1080p",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 1920
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_sentry_wrench__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__normal__active.png",
+			"repeat_sha256": "993fae65c3be045ff3bfbb206bdf16761e158c68979e22023a84b80e3d623fbf",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "993fae65c3be045ff3bfbb206bdf16761e158c68979e22023a84b80e3d623fbf",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 2560
+		},
+		{
+			"beat": "release",
+			"height": 1440,
+			"id": "2k--engineer_sentry_wrench__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__crowded__release.png",
+			"repeat_sha256": "74dcfa501e803654a09527d6339c806c468fa8f26ac225da3959d399c4f4d435",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.871,
+			"sha256": "74dcfa501e803654a09527d6339c806c468fa8f26ac225da3959d399c4f4d435",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 2560
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_sentry_wrench__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__reduced_motion__active.png",
+			"repeat_sha256": "e67b7c8b61aadd6bda77680d243cd372c43dd90b93c7eb21d858d6a180ff57f6",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.221,
+			"sha256": "e67b7c8b61aadd6bda77680d243cd372c43dd90b93c7eb21d858d6a180ff57f6",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 2560
+		},
+		{
+			"beat": "recovery",
+			"height": 1440,
+			"id": "2k--engineer_sentry_wrench__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "f8985deefaaa9af6b9356eb09798eff6970cf95745a53d8c34061be4a82d64e0",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "f8985deefaaa9af6b9356eb09798eff6970cf95745a53d8c34061be4a82d64e0",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_sentry_wrench",
+			"width": 2560
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_repair_drone__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__normal__active.png",
+			"repeat_sha256": "713c3e1647386e45d2a751e010610e5ac29ca40032284dc1cd179d63f99261d4",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "713c3e1647386e45d2a751e010610e5ac29ca40032284dc1cd179d63f99261d4",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_repair_drone",
+			"width": 2560
+		},
+		{
+			"beat": "release",
+			"height": 1440,
+			"id": "2k--engineer_repair_drone__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__crowded__release.png",
+			"repeat_sha256": "0264bace4815124fcb1af72ab76b4fcdfda1753630387fbc204427cdb91225a6",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.771,
+			"sha256": "0264bace4815124fcb1af72ab76b4fcdfda1753630387fbc204427cdb91225a6",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_repair_drone",
+			"width": 2560
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_repair_drone__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__reduced_motion__active.png",
+			"repeat_sha256": "b0f0cd9ae2461f9e46c703cb07cb2d1b8b6af2bd736a441029a266b418dac5a2",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.271,
+			"sha256": "b0f0cd9ae2461f9e46c703cb07cb2d1b8b6af2bd736a441029a266b418dac5a2",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_repair_drone",
+			"width": 2560
+		},
+		{
+			"beat": "recovery",
+			"height": 1440,
+			"id": "2k--engineer_repair_drone__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "d19daa4f31a91f8a58c81323a03ce4a7884ff06241bfe5807e54b9a08e8243af",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.421,
+			"sha256": "d19daa4f31a91f8a58c81323a03ce4a7884ff06241bfe5807e54b9a08e8243af",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_repair_drone",
+			"width": 2560
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_pressure_mines__normal__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "normal",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__normal__active.png",
+			"repeat_sha256": "a4dcff16be422805755014b01596e6bf86d676bc00f81474934254950643ba60",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "a4dcff16be422805755014b01596e6bf86d676bc00f81474934254950643ba60",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 2560
+		},
+		{
+			"beat": "release",
+			"height": 1440,
+			"id": "2k--engineer_pressure_mines__crowded__release",
+			"layout": "isolated_native_frame",
+			"mode_id": "crowded",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__crowded__release.png",
+			"repeat_sha256": "fa6c4e0c407cad2de39995075a067b3efcafc5d97a4037e9e0cc8ee9e76ba6b0",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 39
+			},
+			"sample_time_seconds": 0.971,
+			"sha256": "fa6c4e0c407cad2de39995075a067b3efcafc5d97a4037e9e0cc8ee9e76ba6b0",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 2560
+		},
+		{
+			"beat": "active",
+			"height": 1440,
+			"id": "2k--engineer_pressure_mines__reduced_motion__active",
+			"layout": "isolated_native_frame",
+			"mode_id": "reduced_motion",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__reduced_motion__active.png",
+			"repeat_sha256": "c8693971c132f1bcbbe98242e94708d759c525535a5dbbaf31f7fa36032e04bc",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 1.771,
+			"sha256": "c8693971c132f1bcbbe98242e94708d759c525535a5dbbaf31f7fa36032e04bc",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 2560
+		},
+		{
+			"beat": "recovery",
+			"height": 1440,
+			"id": "2k--engineer_pressure_mines__photosensitivity_safe__recovery",
+			"layout": "isolated_native_frame",
+			"mode_id": "photosensitivity_safe",
+			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__photosensitivity_safe__recovery.png",
+			"repeat_sha256": "2d3c0ce53decb11ffaf59e5e04dcd204e83c9f3973d55fc4965679126e3a9ea8",
+			"runtime_context": {
+				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+				"player": "scenes/Player.tscn",
+				"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+				"victims": 3
+			},
+			"sample_time_seconds": 3.171,
+			"sha256": "2d3c0ce53decb11ffaf59e5e04dcd204e83c9f3973d55fc4965679126e3a9ea8",
+			"viewport_id": "2k",
+			"weapon_id": "engineer_pressure_mines",
+			"width": 2560
+		}
+	],
+	"schema_version": 2,
+	"viewports": [
+		{
+			"height": 648,
+			"id": "648p",
+			"width": 1152
+		},
+		{
+			"height": 720,
+			"id": "720p",
+			"width": 1280
+		},
+		{
+			"height": 1080,
+			"id": "1080p",
+			"width": 1920
+		},
+		{
+			"height": 1440,
+			"id": "2k",
+			"width": 2560
+		}
+	]
 }

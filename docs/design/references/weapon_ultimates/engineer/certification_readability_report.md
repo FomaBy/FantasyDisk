@@ -50,12 +50,28 @@ persisted setting.
 ## Determinism and readability controls
 
 Before readback, the renderer advances the real activation and presentation
-only with fixed tween/runtime steps. It then pauses the activation tweens,
-every relevant `AnimationPlayer` and `AnimatedSprite2D`, real actors and the
-hazard, renders three explicit `UPDATE_ONCE` frames, and switches the target to
-`UPDATE_DISABLED`. The verification pass repeats the windowed capture and
-compares every file hash; the matching value is retained as both `sha256` and
-`repeat_sha256` in the manifest.
+only with fixed interior-of-phase tween/runtime steps. Pressure Mines invokes
+the shipped smart-chain and outer-to-inner finale callbacks on that real
+activation into the callback state for the requested sample, so a renderer
+frame cannot choose a boundary. The capture-only renderer disables generic
+Enemy combat numbers/ticks and unrelated root-level class-weapon residue while
+preserving real damage and the Engineer-owned `UltimateVictimImpactPlayer`.
+It explicitly verifies both a real enemy HP decrease and a visible scene-owned
+impact frame. The real Player is held to its canonical idle readback pose after
+the ultimate has executed, avoiding equivalent directional-idle variants. It pauses
+activation tweens, relevant `AnimationPlayer` and `AnimatedSprite2D` clocks,
+real actors and the hazard; authored sprite progress is pinned and each visible
+real victim-impact flipbook is pinned to its first readable frame. Detonated
+mine devices that are already queued for production deletion are hidden before
+readback, preventing deferred teardown from selecting a renderer-dependent
+frame. The renderer then draws three explicit `UPDATE_ONCE` frames and switches
+the target to `UPDATE_DISABLED`.
+
+One windowed invocation performs two fresh passes of all 48 isolated contexts.
+The second pass must SHA-256-match every first-pass file before the manifest is
+written; its independently computed value is retained as `repeat_sha256`. The
+handoff also performs a second same-command windowed invocation in a fresh
+Godot process and compares its manifest hashes before publishing the candidate.
 
 The paired headless integrity gate validates all 48 manifest keys and native
 IHDR sizes, LFS hydration, image decoding and file hashes. Its negative probes
