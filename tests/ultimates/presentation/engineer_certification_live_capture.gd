@@ -44,14 +44,6 @@ func _initialize() -> void:
 		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
 		quit(1)
 		return
-	## Measure before Engine.time_scale is frozen: this proves that the consumed
-	## engine flag, rather than the recorded command text alone, produced exactly
-	## the required 1/60 process cadence. A bad cadence exits before any warmup,
-	## artifact write, or manifest write.
-	_fixed_step_witness = await _measure_fixed_step_witness()
-	if _fixed_step_witness.is_empty():
-		quit(1)
-		return
 	_capture_source = _read_capture_source()
 	if not Spec.is_git_sha(str(_capture_source.get("source_commit_sha", ""))) \
 			or not Spec.is_git_sha(str(_capture_source.get("source_tree_sha", ""))):
@@ -106,6 +98,19 @@ func _initialize() -> void:
 			return
 		first_sample["repeat_sha256"] = str(repeat_sample["sha256"])
 		_samples[capture_index] = first_sample
+	## Keep the certified renderer path frozen until every isolated frame has
+	## read back and matched. The cadence witness deliberately runs only after
+	## those contexts are gone, so its required real frames cannot perturb a
+	## certified image. It still proves that the consumed engine flag produced
+	## exactly 1/60 process cadence in this same Godot process, and a bad cadence
+	## exits before the manifest is published.
+	Engine.time_scale = _time_scale_before_capture
+	_fixed_step_witness = await _measure_fixed_step_witness()
+	if _fixed_step_witness.is_empty():
+		quit(1)
+		return
+	Engine.time_scale = 0.0
+	_capture_source["fixed_step_witness"] = _fixed_step_witness.duplicate(true)
 	if _write_capture_manifest() != OK:
 		Engine.time_scale = _time_scale_before_capture
 		push_error("FAN-3939 Engineer certification capture could not write the manifest.")
@@ -138,13 +143,16 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render at a required fixed 60 FPS, proven by eight pre-freeze 1/60 process-delta observations; one complete first context is read and discarded to warm the new backend before the certified matrix; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"capture_method": "windowed SubViewport render at a required fixed 60 FPS, proven by eight same-process 1/60 process-delta observations after the frozen matrix matches its fresh repeat and before manifest write; one complete first context is read and discarded to warm the new backend before the certified matrix; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree, CAPTURE_FIXED_FPS],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
 
 
 func _measure_fixed_step_witness() -> Dictionary:
+	## The matrix has already completed while capture clocks were frozen. Restore
+	## the original time scale briefly only to observe the consumed fixed-FPS
+	## cadence before the manifest can be written; no capture viewport remains.
 	var observed_deltas: Array[float] = []
 	for _sample in CAPTURE_FIXED_STEP_SAMPLE_COUNT:
 		await process_frame
