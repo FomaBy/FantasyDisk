@@ -396,13 +396,13 @@ func _preview_saw(phase: String, progress: float) -> void:
 			turns = progress * 0.35
 			alpha = 0.45 + progress * 0.45
 		"release":
-			radius = lerpf(58.0, 105.0, progress)
+			radius = lerpf(58.0, 96.0, progress)
 			turns = 0.35 + progress * 1.2
 		"active":
-			radius = 105.0 + sin(progress * TAU * 4.0) * 12.0
+			radius = 96.0 + sin(progress * TAU * 4.0) * 10.0
 			turns = 1.55 + progress * 5.5
 		"recovery":
-			radius = lerpf(105.0, 40.0, progress)
+			radius = lerpf(96.0, 40.0, progress)
 			turns = 7.05 + progress * 0.8
 			alpha = 0.88 * (1.0 - progress * 0.45)
 		"cancel":
@@ -417,7 +417,7 @@ func _preview_saw(phase: String, progress: float) -> void:
 		_play(saw, alpha, turns)
 		saw.position = center + Vector2.from_angle(angle) * radius
 		saw.rotation = angle + turns * SAW_SPIN_PER_TURN
-		saw.scale = Vector2.ONE * (0.38 + (0.08 if phase == "active" else 0.0))
+		saw.scale = Vector2.ONE * (0.35 + (0.08 if phase == "active" else 0.0))
 	var arc := _visuals["arc"] as AnimatedSprite2D
 	# One pass of the serration pack per revolution of the orbit it draws.
 	_play(arc, 0.76 if phase in ["release", "active"] else 0.32 * (1.0 - progress), turns)
