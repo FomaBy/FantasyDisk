@@ -855,9 +855,11 @@ func _abort_main(main: Node, player: Variant = null) -> void:
 	## A timeout can arrive after the normal lifecycle has freed the Player. Keep
 	## this boundary Variant-typed so a stale typed reference reaches the validity
 	## check instead of failing before ordinary scene disposal can run.
-	if player is Node2D and is_instance_valid(player):
-		PlayerHost.reset(player as Node2D)
-		_player_reset_count += 1
+	if is_instance_valid(player):
+		var live_player := player as Node2D
+		if live_player != null:
+			PlayerHost.reset(live_player)
+			_player_reset_count += 1
 	await _dispose_main(main)
 
 
