@@ -1,0 +1,765 @@
+extends SceneTree
+
+## Windowed, deterministic evidence renderer for FAN-3939.
+##
+## Every PNG is one isolated native frame. The frame starts with the real
+## persisted accessibility boundary, then takes the normal Player-owned
+## ultimate path through actual EnemySpitter targets, an elite hazard and the
+## shipped ultimate HUD. Capture-only work begins only after that path has run:
+## fixed tween/runtime stepping, explicit clock freezing and bounded readback.
+
+const Spec := preload("res://tests/ultimates/presentation/engineer_certification_capture_test.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const GameSettings := preload("res://scripts/game_settings.gd")
+const PlayerScene := preload("res://scenes/Player.tscn")
+const EnemySpitterScene := preload("res://scenes/EnemySpitter.tscn")
+const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const HudAdapter := preload("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const PressureMines := preload("res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd")
+
+const CAPTURE_SETTLE_FRAMES := 3
+## The recorded windowed command must advance the renderer at a bounded rate.
+## `--fixed-fps` is command-line owned, so retain its required value beside the
+## source command rather than attempting to read consumed engine arguments.
+const CAPTURE_FIXED_FPS := 60
+const CAPTURE_FIXED_DELTA_SECONDS := 1.0 / 60.0
+const CAPTURE_FIXED_STEP_SAMPLE_COUNT := 8
+const CAPTURE_FIXED_STEP_TOLERANCE := 1.0e-9
+const CAPTURE_BACKEND_WARMUP := "one discarded complete first context before the certified matrix"
+const CAPTURE_SOURCE_REF := "agent/codex-dev-terra-b/b00766a9083d"
+
+var _capture_source: Dictionary = {}
+var _samples: Array[Dictionary] = []
+var _time_scale_before_capture := 1.0
+var _fixed_step_witness: Dictionary = {}
+
+
+func _initialize() -> void:
+	if DisplayServer.get_name() == "headless":
+		print("FAN-3939 Engineer certification capture skipped: headless runs never create certification PNG evidence.")
+		quit(0)
+		return
+	if PlayerScene == null or EnemySpitterScene == null or HudAdapter == null:
+		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
+		quit(1)
+		return
+	_capture_source = _read_capture_source()
+	if not Spec.is_git_sha(str(_capture_source.get("source_commit_sha", ""))) \
+			or not Spec.is_git_sha(str(_capture_source.get("source_tree_sha", ""))):
+		push_error("FAN-3939 Engineer certification capture requires FAN3939_CAPTURE_SOURCE_SHA and FAN3939_CAPTURE_SOURCE_TREE from the committed renderer source.")
+		quit(1)
+		return
+	## Renderer frame deltas are deliberately excluded from the evidence state.
+	## The real activation below advances only through its fixed custom steps.
+	_time_scale_before_capture = Engine.time_scale
+	Engine.time_scale = 0.0
+	var captures := Spec.captures()
+	if captures.is_empty():
+		Engine.time_scale = _time_scale_before_capture
+		push_error("FAN-3939 Engineer certification capture has no matrix contexts to warm.")
+		quit(1)
+		return
+	## A new windowed renderer can expose an initialization frame even after the
+	## per-context readback settle. Build and read one complete real context, then
+	## discard it before the recorded 48-frame matrix begins. This never persists
+	## an artifact or a manifest sample; each published frame is still isolated.
+	var first_capture := captures[0] as Dictionary
+	var warmup_sample := await _capture_one(0, first_capture, false)
+	if warmup_sample.is_empty():
+		Engine.time_scale = _time_scale_before_capture
+		quit(1)
+		return
+	print("FAN-3939 Engineer certification backend warmup completed; starting the certified 48-context matrix.")
+	for capture_index in captures.size():
+		var capture := captures[capture_index] as Dictionary
+		var sample := await _capture_one(capture_index, capture)
+		if sample.is_empty():
+			Engine.time_scale = _time_scale_before_capture
+			quit(1)
+			return
+		_samples.append(sample)
+	## Rebuild every isolated runtime context a second time before publishing the
+	## manifest. This is a real repeat recapture, not a copied first-pass digest:
+	## each pass creates new Player, enemies, hazard, HUD and SubViewport nodes.
+	for capture_index in captures.size():
+		var capture := captures[capture_index] as Dictionary
+		var repeat_sample := await _capture_one(capture_index, capture)
+		if repeat_sample.is_empty():
+			Engine.time_scale = _time_scale_before_capture
+			quit(1)
+			return
+		var first_sample := _samples[capture_index] as Dictionary
+		if str(first_sample.get("id", "")) != str(repeat_sample.get("id", "")) \
+				or str(first_sample.get("sha256", "")) != str(repeat_sample.get("sha256", "")):
+			Engine.time_scale = _time_scale_before_capture
+			push_error("FAN-3939 Engineer certification repeat recapture hash mismatch: %s" % str(capture.get("id", "unknown")))
+			quit(1)
+			return
+		first_sample["repeat_sha256"] = str(repeat_sample["sha256"])
+		_samples[capture_index] = first_sample
+	## Keep the certified renderer path frozen until every isolated frame has
+	## read back and matched. The cadence witness deliberately runs only after
+	## those contexts are gone, so its required real frames cannot perturb a
+	## certified image. It still proves that the consumed engine flag produced
+	## exactly 1/60 process cadence in this same Godot process, and a bad cadence
+	## exits before the manifest is published.
+	Engine.time_scale = _time_scale_before_capture
+	_fixed_step_witness = await _measure_fixed_step_witness()
+	if _fixed_step_witness.is_empty():
+		quit(1)
+		return
+	Engine.time_scale = 0.0
+	_capture_source["fixed_step_witness"] = _fixed_step_witness.duplicate(true)
+	if _write_capture_manifest() != OK:
+		Engine.time_scale = _time_scale_before_capture
+		push_error("FAN-3939 Engineer certification capture could not write the manifest.")
+		quit(1)
+		return
+	Engine.time_scale = _time_scale_before_capture
+	Accessibility.apply_settings(root, GameSettings.DEFAULTS.duplicate(true))
+	root.set_meta("screen_shake", true)
+	root.set_meta("combat_feedback", true)
+	print("FAN-3939 Engineer certification capture wrote %d isolated native frames after a matching repeat recapture." % _samples.size())
+	quit(0)
+
+
+func _read_capture_source() -> Dictionary:
+	var version := Engine.get_version_info()
+	var source_sha := OS.get_environment("FAN3939_CAPTURE_SOURCE_SHA")
+	var source_tree := OS.get_environment("FAN3939_CAPTURE_SOURCE_TREE")
+	return {
+		## The renderer source is committed on this candidate branch rather than
+		## claiming it was already on the integration branch at capture time.
+		"source_ref": CAPTURE_SOURCE_REF,
+		"source_commit_sha": source_sha,
+		"source_tree_sha": source_tree,
+		"controlled_seed": Spec.CAPTURE_SEED,
+		"fixed_fps": CAPTURE_FIXED_FPS,
+		"fixed_step_witness": _fixed_step_witness.duplicate(true),
+		"backend_warmup": CAPTURE_BACKEND_WARMUP,
+		"godot_version": str(version.get("string", "unknown")),
+		"renderer": "display=%s; rendering_method=%s" % [
+			DisplayServer.get_name(),
+			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
+		],
+		"capture_method": "windowed SubViewport render at a required fixed 60 FPS, proven by eight same-process 1/60 process-delta observations after the frozen matrix matches its fresh repeat and before manifest write; one complete first context is read and discarded to warm the new backend before the certified matrix; deterministic main-thread SceneTree process-frame plus RenderingServer.force_draw(false) readback avoids macOS frame_post_draw presentation-idle waits while retaining real SubViewport output; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FSD_GODOT_RUN_TIMEOUT=300 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree, CAPTURE_FIXED_FPS],
+		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
+	}
+
+
+func _measure_fixed_step_witness() -> Dictionary:
+	## The matrix has already completed while capture clocks were frozen. Restore
+	## the original time scale briefly only to observe the consumed fixed-FPS
+	## cadence before the manifest can be written; no capture viewport remains.
+	var observed_deltas: Array[float] = []
+	for _sample in CAPTURE_FIXED_STEP_SAMPLE_COUNT:
+		await process_frame
+		var observed := root.get_process_delta_time()
+		observed_deltas.append(observed)
+		if absf(observed - CAPTURE_FIXED_DELTA_SECONDS) > CAPTURE_FIXED_STEP_TOLERANCE:
+			push_error("FAN-3939 Engineer certification requires --fixed-fps %d before capture; observed process delta %.12f instead of %.12f." % [CAPTURE_FIXED_FPS, observed, CAPTURE_FIXED_DELTA_SECONDS])
+			return {}
+	return {
+		"sample_count": CAPTURE_FIXED_STEP_SAMPLE_COUNT,
+		"expected_delta_seconds": CAPTURE_FIXED_DELTA_SECONDS,
+		"observed_deltas_seconds": observed_deltas,
+		"process_fps": CAPTURE_FIXED_FPS,
+		"tolerance_seconds": CAPTURE_FIXED_STEP_TOLERANCE,
+	}
+
+
+func _capture_one(capture_index: int, capture: Dictionary, persist := true) -> Dictionary:
+	var size := capture.get("size", Vector2i.ZERO) as Vector2i
+	var output := str(capture.get("path", ""))
+	if size == Vector2i.ZERO or output.is_empty():
+		push_error("FAN-3939 Engineer certification capture received an invalid sample descriptor.")
+		return {}
+	var directory_result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output).get_base_dir())
+	if directory_result != OK:
+		push_error("FAN-3939 Engineer certification capture could not create output directory: %s" % error_string(directory_result))
+		return {}
+	## Every frame receives a deterministic seed independent of capture order.
+	var capture_seed := Spec.CAPTURE_SEED + capture_index
+	var pack := _pack_spec(str(capture["weapon_id"]))
+	var beat := str(capture["beat"])
+	var sample_seconds := Spec.capture_sample_seconds(pack, beat)
+	seed(capture_seed)
+	var viewport := await _build_live_viewport(capture, capture_seed, sample_seconds)
+	if bool(viewport.get_meta("fan3939_capture_failed", false)):
+		var reason := str(viewport.get_meta("fan3939_capture_failure", "unknown live runtime failure"))
+		await _cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification live frame failed: %s" % reason)
+		return {}
+	await _finalize_viewport_for_readback(viewport)
+	var telegraph := viewport.get_node_or_null("ElitePoisonZone/HazardTelegraph") as CanvasItem
+	var rendered_probe := await _render_hazard_visibility_probe(viewport, telegraph, size)
+	var image := rendered_probe.get("visible_image") as Image
+	var hazard_visibility := rendered_probe.duplicate(false)
+	hazard_visibility.erase("visible_image")
+	if not Spec.hazard_visibility_probe_is_readable(hazard_visibility):
+		await _cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification rejected an unreadable real HazardTelegraph probe: %s" % JSON.stringify(hazard_visibility))
+		return {}
+	if image == null or image.is_empty() or image.get_size() != size:
+		await _cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification readback was empty or wrong-sized: %s" % str(capture["id"]))
+		return {}
+	image.convert(Image.FORMAT_RGBA8)
+	if not persist:
+		await _cleanup_viewport(viewport)
+		return {"id": str(capture["id"]), "warmup": true}
+	var save_result := image.save_png(ProjectSettings.globalize_path(output))
+	await _cleanup_viewport(viewport)
+	if save_result != OK:
+		push_error("FAN-3939 Engineer certification could not save %s: %s" % [output, error_string(save_result)])
+		return {}
+	var digest := FileAccess.get_sha256(output).to_lower()
+	print("FAN-3939 sample %s %dx%d sha256=%s" % [str(capture["id"]), size.x, size.y, digest])
+	return {
+		"id": str(capture["id"]),
+		"viewport_id": str(capture["viewport_id"]),
+		"weapon_id": str(capture["weapon_id"]),
+		"mode_id": str(capture["mode_id"]),
+		"beat": str(capture["beat"]),
+		"sample_time_seconds": sample_seconds,
+		"width": size.x,
+		"height": size.y,
+		"path": output,
+		"layout": "isolated_native_frame",
+		"sha256": digest,
+		"hazard_visibility": hazard_visibility,
+		## Filled only by the second fresh capture pass after its hash is compared
+		## to this first-pass digest in `_initialize()`.
+		"repeat_sha256": "",
+		"runtime_context": {
+			"player": "scenes/Player.tscn",
+			"victims": _mode_victim_count(str(capture["mode_id"])),
+			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
+			"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+			"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+		},
+	}
+
+
+## The world is deliberately one SubViewport per sample. Target queries are
+## SceneTree-global, so this prevents one sample's real victims from becoming
+## another sample's crowd and gives every native image a hard visual boundary.
+func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds: float) -> SubViewport:
+	var size := capture["size"] as Vector2i
+	var mode := _mode_spec(str(capture["mode_id"]))
+	var pack := _pack_spec(str(capture["weapon_id"]))
+	var viewport := SubViewport.new()
+	viewport.name = "EngineerCertification_%s" % str(capture["id"])
+	viewport.size = size
+	viewport.transparent_bg = false
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	var background := ColorRect.new()
+	background.color = Color(0.030, 0.052, 0.060, 1.0)
+	background.size = Vector2(size)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(background)
+	var world := Node2D.new()
+	world.name = "EngineerCertificationWorld"
+	viewport.add_child(world)
+	## The production Enemy hazard attaches to current_scene. Because this
+	## viewport is a root child, the real hazard is born inside this frame.
+	current_scene = viewport
+	_apply_persisted_options(mode)
+
+	var player := PlayerScene.instantiate() as Node2D
+	if player == null:
+		return _failed_viewport(viewport, "Player.tscn did not instantiate")
+	player.position = Vector2(float(size.x) * 0.23, float(size.y) * 0.58)
+	world.add_child(player)
+	## A freshly instantiated Player initially owns the default Guitarist attack
+	## mode until `configure_character()` below applies Engineer. Keep ordinary
+	## attack processing dormant across that ready frame so transient default
+	## sound-wave notes cannot enter an Engineer-ultimate evidence render.
+	## `activate_ultimate()` remains invoked directly on this real Player later.
+	player.set_process(false)
+	player.set_physics_process(false)
+	await process_frame
+	_disable_player_camera(player)
+	player.call("configure_character", Spec.CLASS_ID, str(pack["weapon_id"]))
+	await process_frame
+
+	var enemies := _spawn_real_enemies(world, player.position, int(mode["victims"]))
+	if enemies.size() != int(mode["victims"]):
+		return _failed_viewport(viewport, "EnemySpitter.tscn did not instantiate every real capture target")
+	var hazard := _spawn_real_hazard(viewport, enemies[0], Vector2(float(size.x) * 0.84, float(size.y) * 0.69))
+	if hazard == null or hazard.get_node_or_null("HazardTelegraph") == null:
+		return _failed_viewport(viewport, "real ElitePoisonZone/HazardTelegraph did not spawn")
+	if not Spec.materialize_hazard_telegraph(hazard):
+		return _failed_viewport(viewport, "real ElitePoisonZone/HazardTelegraph could not materialize its authored visible layers")
+	for enemy in enemies:
+		_freeze_actor(enemy)
+	_freeze_hazard(hazard)
+
+	var host := PlayerHost.for_player(player)
+	host.set("_presentation_headless_mode", 0)
+	## The host normally advances with wall time. Keep it stopped so only the
+	## fixed manual steps below can change this evidence frame.
+	host.set_process(false)
+	player.set("ultimate_charge", player.get("ultimate_max_charge"))
+	## Enemy ready-state setup may consume the global RNG. Reset immediately
+	## before the Player-owned activation so combat feedback coordinates and
+	## ultimate-local random branches have a fixed, documented source.
+	seed(capture_seed)
+	if not bool(player.call("activate_ultimate")):
+		return _failed_viewport(viewport, "%s did not activate through Player.activate_ultimate" % str(pack["weapon_id"]))
+	var controller = host.call("controller")
+	var activation = controller.call("active_activation") if controller != null else null
+	if activation == null:
+		return _failed_viewport(viewport, "%s did not retain a Player-owned activation" % str(pack["weapon_id"]))
+	_pause_activation(activation)
+	## Let Godot consume the mounted scene's deferred autoplay once before the
+	## deterministic freeze. This closes the old F3 renderer-paced race.
+	await process_frame
+	var runtime = host.get("_presentation")
+	var scene := runtime.get("_scene") as Node2D if runtime != null else null
+	if scene == null or scene.get_parent() != world:
+		return _failed_viewport(viewport, "%s did not mount its shipped Engineer scene through PlayerHost" % str(pack["weapon_id"]))
+	var applied := Accessibility.read_snapshot(root)
+	var state := scene.call("accessibility_state_for_tests") as Dictionary
+	if (state.get("modes", {}) as Dictionary) != applied:
+		return _failed_viewport(viewport, "%s did not consume the persisted accessibility snapshot" % str(pack["weapon_id"]))
+	## Advance the mounted presentation before the manually stepped combat
+	## callbacks. The activation's immediate release may already have queued an
+	## impact; letting the runtime consume that historical event first leaves the
+	## requested phase's real callback impact available to freeze visibly below.
+	if runtime != null:
+		runtime.call("advance", sample_seconds)
+	## The mounted scene receives one deferred frame before this point. Re-seed
+	## again at the manual execution boundary so any deferred engine work cannot
+	## perturb the real Enemy combat-feedback positions created by the next beat.
+	seed(capture_seed)
+	var beat := str(capture["beat"])
+	var execution_seconds := Spec.runtime_capture_seconds(pack, beat)
+	if str(pack["weapon_id"]) == "engineer_pressure_mines":
+		if not _advance_pressure_mines_capture(activation, execution_seconds):
+			return _failed_viewport(viewport, "Pressure Mines deterministic scheduler could not reach its shipped callback state")
+		_hide_queued_pressure_mine_devices(activation)
+	else:
+		_advance_activation(activation, execution_seconds)
+	if not _has_real_enemy_damage(enemies):
+		return _failed_viewport(viewport, "%s did not apply real capture damage" % str(pack["weapon_id"]))
+	## Preserve the requested real damage/victim-impact work, then stop the host
+	## and every capture clock before renderer frames can race it.
+	if runtime != null:
+		runtime.call("set_paused", true)
+	if not bool(mode["reduced_motion"]) and not bool(mode["photosensitivity_safe"]):
+		_seek_normal_scene(scene, sample_seconds)
+	_freeze_scene_clocks(scene)
+	_hold_victim_impacts(scene)
+	if not _has_scene_victim_impact(scene):
+		return _failed_viewport(viewport, "%s did not retain a shipped Engineer victim-impact event" % str(pack["weapon_id"]))
+	if not _has_visible_scene_victim_impact(scene):
+		return _failed_viewport(viewport, "%s did not retain a visible shipped Engineer victim-impact frame" % str(pack["weapon_id"]))
+	_freeze_actor(player)
+	_hold_player_capture_pose(player)
+	_freeze_runtime_siblings(world, player, scene, enemies)
+	_hide_nonultimate_root_visuals(viewport, world, hazard)
+	player.z_index = 50
+	_attach_shipped_hud(viewport, player, size)
+	if bool(viewport.get_meta("fan3939_capture_failed", false)):
+		return viewport
+	_pause_capture_tweens()
+	return viewport
+
+
+func _apply_persisted_options(mode: Dictionary) -> void:
+	var settings := GameSettings.DEFAULTS.duplicate(true)
+	settings[Accessibility.REDUCED_MOTION_KEY] = bool(mode["reduced_motion"])
+	settings[Accessibility.PHOTOSENSITIVITY_SAFE_KEY] = bool(mode["photosensitivity_safe"])
+	var applied := Accessibility.apply_settings(root, settings)
+	if applied != Accessibility.read_snapshot(root):
+		push_error("FAN-3939 capture could not apply the production accessibility snapshot")
+	root.set_meta("screen_shake", not bool(mode["reduced_motion"]))
+	## `Enemy._show_combat_feedback()` creates global random labels/ticks under
+	## current_scene. Those are not the Engineer-owned impact channel and can
+	## race a windowed render; suppress them only for this isolated evidence
+	## renderer while leaving actual damage and UltimateVictimImpactPlayer intact.
+	root.set_meta("combat_feedback", false)
+	root.set_meta("aim_mode", "nearest")
+
+
+func _spawn_real_enemies(world: Node2D, origin: Vector2, count: int) -> Array[Node2D]:
+	var enemies: Array[Node2D] = []
+	for index in count:
+		var enemy := EnemySpitterScene.instantiate() as Node2D
+		if enemy == null:
+			continue
+		enemy.position = origin + Spec.capture_enemy_offset(index, count)
+		enemy.set("max_health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", Spec.ENEMY_CAPTURE_HEALTH)
+		world.add_child(enemy)
+		## Enemy._ready initializes health; write the known value again after it
+		## has joined the real world so no target disappears during a live beat.
+		enemy.set("max_health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemy.set("health", Spec.ENEMY_CAPTURE_HEALTH)
+		enemies.append(enemy)
+	return enemies
+
+
+func _spawn_real_hazard(parent: Node, source_enemy: Node2D, position: Vector2) -> Node2D:
+	if source_enemy == null or not source_enemy.has_method("_spawn_elite_hazard"):
+		return null
+	source_enemy.call("_spawn_elite_hazard", position)
+	return parent.get_node_or_null("ElitePoisonZone") as Node2D
+
+
+func _attach_shipped_hud(viewport: SubViewport, player: Node2D, size: Vector2i) -> void:
+	var hud_root := Control.new()
+	hud_root.name = "EngineerCertificationHudRoot"
+	hud_root.size = Vector2(size)
+	hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	viewport.add_child(hud_root)
+	var adapter := HudAdapter.new()
+	hud_root.add_child(adapter)
+	if not adapter.mount(hud_root, player):
+		_mark_failed(viewport, "shipped UltimateHudRuntimeAdapter could not mount")
+		return
+	var widget := hud_root.get_node_or_null("UltimateHudWidget") as Control
+	if widget == null or not widget.has_method("state"):
+		_mark_failed(viewport, "shipped UltimateHudWidget is missing after adapter mount")
+		return
+	adapter.refresh()
+	var state := widget.call("state") as Dictionary
+	var selection := state.get("selection", {}) as Dictionary
+	if str(selection.get("class_id", "")) != Spec.CLASS_ID or not bool((state.get("charge", {}) as Dictionary).get("active", false)):
+		_mark_failed(viewport, "shipped HUD did not read the active Engineer Player state")
+		return
+	widget.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	widget.position = Vector2(6.0, 6.0)
+	widget.scale = Vector2.ONE * clampf(float(size.y) / 440.0, 0.30, 0.62)
+	widget.z_index = 100
+	adapter.set_process(false)
+
+
+func _pause_activation(activation) -> void:
+	for tween in activation.call("tweens_for_tests"):
+		if tween != null and tween.is_valid():
+			tween.pause()
+
+
+func _advance_activation(activation, seconds: float) -> void:
+	var tweens: Array = activation.call("tweens_for_tests")
+	for tween in tweens:
+		if tween != null and tween.is_valid():
+			tween.play()
+	var elapsed := 0.0
+	while elapsed < seconds:
+		var step := minf(Spec.CAPTURE_STEP, seconds - elapsed)
+		for tween in tweens:
+			if tween != null and tween.is_valid():
+				tween.custom_step(step)
+		elapsed += step
+		_pause_activation(activation)
+
+
+## `Tween.custom_step()` can defer an exact callback behind a windowed render.
+## Pressure Mines' combat path is a public static callback sequence, so drive
+## the same production functions from its real activation into the requested
+## deterministic callback state rather than allowing a renderer frame to
+## choose a callback boundary.
+func _advance_pressure_mines_capture(activation, seconds: float) -> bool:
+	var state := activation.call("primitive_value", "engineer_mine_state") as Dictionary
+	if state.is_empty():
+		return false
+	PressureMines.smart_chain(activation, state)
+	var finale_delay := float(activation.call("param_float", "finale_delay", 1.7))
+	if seconds < finale_delay:
+		return true
+	var interval := float(activation.call("param_float", "finale_interval", 0.10))
+	if interval <= 0.0:
+		return false
+	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
+	var order := PressureMines.outer_to_inner_order(points, activation.call("origin"))
+	var final_count := mini(order.size(), floori((seconds - finale_delay) / interval) + 1)
+	var damage := float(activation.call("scaled_damage", "damage", 1.20))
+	var blast_radius := float(activation.call("param_float", "blast_radius", 135.0))
+	for final_index in final_count:
+		PressureMines.detonate_mine(
+			activation, state, int(order[final_index]), damage, blast_radius, "finale", false
+		)
+	return true
+
+
+## `queue_free()` is intentionally deferred in the shipped executor. Hiding
+## only nodes already marked for deletion gives the capture the same completed
+## detonation result without asking its renderer frame to choose when deferred
+## device sprites disappear. It never alters active, undetonated mine devices.
+func _hide_queued_pressure_mine_devices(activation) -> void:
+	var state := activation.call("primitive_value", "engineer_mine_state") as Dictionary
+	for raw_node in state.get("nodes", []) as Array:
+		var device := raw_node as CanvasItem
+		if device != null and is_instance_valid(device) and device.is_queued_for_deletion():
+			device.hide()
+
+
+func _seek_normal_scene(scene: Node2D, seconds: float) -> void:
+	var timeline := scene.get_node_or_null("Timeline") as AnimationPlayer
+	if timeline == null:
+		return
+	timeline.stop()
+	timeline.play(&"ultimate")
+	timeline.seek(seconds, true)
+	timeline.pause()
+	for raw_sprite in scene.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+			sprite.frame_progress = 0.0
+
+
+func _freeze_scene_clocks(scene: Node2D) -> void:
+	var timeline := scene.get_node_or_null("Timeline") as AnimationPlayer
+	if timeline != null:
+		timeline.pause()
+	for raw_sprite in scene.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+			sprite.frame_progress = 0.0
+	scene.set_process(false)
+
+
+func _hold_victim_impacts(scene: Node2D) -> void:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var impacts := raw_child as Node2D
+			## Materialize the first real ripple wave before freezing it. The initial
+			## queued wave can have a positive stagger delay, so a zero-duration
+			## advance proves that damage happened but cannot make a visible event.
+			impacts.call("advance", 0.12)
+			## The real hit has already populated the scene-owned impact service.
+			## AnimatedSprite2D advances on the renderer clock independently of the
+			## service's queue, so choose its first visible frame explicitly before
+			## disabling that subtree. This preserves a real per-victim impact while
+			## keeping the evidence readback independent of frame presentation.
+			for raw_sprite in impacts.find_children("*", "AnimatedSprite2D", true, false):
+				var sprite := raw_sprite as AnimatedSprite2D
+				if sprite != null:
+					sprite.stop()
+					sprite.frame = 0
+					sprite.frame_progress = 0.0
+			impacts.call("set_paused", true)
+
+
+func _has_scene_victim_impact(scene: Node2D) -> bool:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var snapshot := raw_child.call("snapshot") as Dictionary
+			if int(snapshot.get("victims", 0)) > 0:
+				return true
+	return false
+
+
+func _has_visible_scene_victim_impact(scene: Node2D) -> bool:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var impacts := raw_child as Node2D
+			for raw_sprite in impacts.find_children("*", "AnimatedSprite2D", true, false):
+				var sprite := raw_sprite as AnimatedSprite2D
+				if sprite != null and sprite.visible:
+					return true
+	return false
+
+
+func _has_real_enemy_damage(enemies: Array[Node2D]) -> bool:
+	for enemy in enemies:
+		if is_instance_valid(enemy) and float(enemy.get("health")) < Spec.ENEMY_CAPTURE_HEALTH:
+			return true
+	return false
+
+
+func _freeze_actor(actor: Node) -> void:
+	if actor == null:
+		return
+	actor.process_mode = Node.PROCESS_MODE_DISABLED
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for raw_timeline in actor.find_children("*", "AnimationPlayer", true, false):
+		var timeline := raw_timeline as AnimationPlayer
+		if timeline != null:
+			timeline.pause()
+	for raw_sprite in actor.find_children("*", "AnimatedSprite2D", true, false):
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite != null:
+			sprite.pause()
+			sprite.frame = 0
+			sprite.frame_progress = 0.0
+
+
+## Player setup can choose a directional idle animation before the capture
+## freezes its sprites. The ultimate still executes through that real Player;
+## readback uses its canonical idle frame so the renderer cannot choose between
+## equivalent idle variants across two fresh contexts.
+func _hold_player_capture_pose(player: Node2D) -> void:
+	var body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
+	if body == null:
+		return
+	body.stop()
+	if body.sprite_frames != null and body.sprite_frames.has_animation(&"idle"):
+		body.animation = &"idle"
+	body.frame = 0
+	body.frame_progress = 0.0
+
+
+func _freeze_hazard(hazard: Node2D) -> void:
+	if hazard == null:
+		return
+	_freeze_actor(hazard)
+	for raw_node in hazard.find_children("*", "Node", true, false):
+		var node := raw_node as Node
+		if node != null:
+			node.process_mode = Node.PROCESS_MODE_DISABLED
+			node.set_process(false)
+			node.set_physics_process(false)
+	hazard.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _freeze_runtime_siblings(world: Node2D, player: Node2D, scene: Node2D, enemies: Array[Node2D]) -> void:
+	var retained := {player.get_instance_id(): true, scene.get_instance_id(): true}
+	for enemy in enemies:
+		retained[enemy.get_instance_id()] = true
+	for raw_child in world.get_children():
+		var child := raw_child as Node
+		if child != null and not retained.has(child.get_instance_id()):
+			_freeze_actor(child)
+
+
+## Player setup can leave an ordinary class-weapon release VFX at the root of
+## `current_scene` before the real Engineer ultimate is captured. Those nodes
+## are outside the Player-owned ultimate scene and may carry random flipbook
+## start frames. Keep the actual capture world, elite hazard, and any temporary
+## device explicitly tagged by the Engineer ultimate; hide only unrelated root
+## visual residue before readback.
+func _hide_nonultimate_root_visuals(viewport: SubViewport, world: Node2D, hazard: Node2D) -> void:
+	for raw_child in viewport.get_children():
+		var item := raw_child as CanvasItem
+		if item == null or item == world or item == hazard or item is ColorRect:
+			continue
+		var node := raw_child as Node
+		if node != null and not str(node.get_meta("engineer_ultimate_device", "")).is_empty():
+			continue
+		item.hide()
+
+
+func _pause_capture_tweens() -> void:
+	for tween in get_processed_tweens():
+		if tween != null and tween.is_valid():
+			tween.pause()
+
+
+func _disable_player_camera(player: Node2D) -> void:
+	for raw_camera in player.find_children("*", "Camera2D", true, false):
+		var camera := raw_camera as Camera2D
+		if camera != null:
+			camera.enabled = false
+
+
+func _finalize_viewport_for_readback(viewport: SubViewport) -> void:
+	for _frame in CAPTURE_SETTLE_FRAMES:
+		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		await _force_windowed_draws(1)
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+
+
+## `frame_post_draw` is a presentation-completion signal and can fail to emit
+## while a macOS window is live but idle. Force the real renderer after each
+## SceneTree frame instead: this stays on the main thread, redraws the actual
+## SubViewport, and gives each readback a deterministic draw boundary.
+func _force_windowed_draws(count: int) -> void:
+	for _frame in count:
+		await process_frame
+		RenderingServer.force_draw(false)
+
+
+## The saved image comes from the visible half of this frozen observation
+## probe. Hiding only the actual production `HazardTelegraph` for the baseline
+## proves composited pixels without replacing or synthesizing the hazard.
+func _render_hazard_visibility_probe(viewport: SubViewport, telegraph: CanvasItem, size: Vector2i) -> Dictionary:
+	if viewport == null or telegraph == null:
+		return {}
+	var was_paused := paused
+	var previous_update_mode := viewport.render_target_update_mode
+	paused = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	await _force_windowed_draws(2)
+	var visible_image := viewport.get_texture().get_image()
+	var was_visible := telegraph.visible
+	telegraph.visible = false
+	await _force_windowed_draws(2)
+	var hidden_image := viewport.get_texture().get_image()
+	telegraph.visible = was_visible
+	await _force_windowed_draws(2)
+	viewport.render_target_update_mode = previous_update_mode
+	paused = was_paused
+	if visible_image == null or hidden_image == null:
+		return {}
+	var metrics := Spec.hazard_visibility_metrics(visible_image, hidden_image, size)
+	metrics["visible_image"] = visible_image
+	return metrics
+
+
+func _cleanup_viewport(viewport: SubViewport) -> void:
+	if viewport == null:
+		return
+	var player := viewport.find_child("Player", true, false) as Node
+	if player != null:
+		var host := PlayerHost.for_player(player)
+		var controller = host.call("controller") if host != null else null
+		if controller != null:
+			controller.call("cancel", "cancel")
+		PlayerHost.reset(player)
+	viewport.queue_free()
+	current_scene = null
+	## SubViewport/GPU destruction is deferred. Yield once before building the
+	## next isolated context so a 2K matrix cannot accumulate stale targets.
+	await process_frame
+
+
+func _failed_viewport(viewport: SubViewport, reason: String) -> SubViewport:
+	_mark_failed(viewport, reason)
+	return viewport
+
+
+func _mark_failed(viewport: SubViewport, reason: String) -> void:
+	viewport.set_meta("fan3939_capture_failed", true)
+	viewport.set_meta("fan3939_capture_failure", reason)
+
+
+func _mode_spec(mode_id: String) -> Dictionary:
+	for raw_mode in Spec.MODES:
+		var mode := raw_mode as Dictionary
+		if str(mode["id"]) == mode_id:
+			return mode
+	return {}
+
+
+func _pack_spec(weapon_id: String) -> Dictionary:
+	for raw_pack in Spec.PACKS:
+		var pack := raw_pack as Dictionary
+		if str(pack["weapon_id"]) == weapon_id:
+			return pack
+	return {}
+
+
+func _mode_victim_count(mode_id: String) -> int:
+	var mode := _mode_spec(mode_id)
+	return int(mode.get("victims", 0))
+
+
+func _write_capture_manifest() -> int:
+	var document := Spec.manifest_document(_samples, _capture_source)
+	var absolute := ProjectSettings.globalize_path(Spec.CAPTURE_MANIFEST_PATH)
+	var file := FileAccess.open(absolute, FileAccess.WRITE)
+	if file == null:
+		return FileAccess.get_open_error()
+	file.store_string(JSON.stringify(document, "\t") + "\n")
+	file.close()
+	return OK
