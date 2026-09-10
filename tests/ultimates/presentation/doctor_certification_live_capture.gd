@@ -245,6 +245,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			"null" if baseline == null else str(baseline.get_size()), str(size),
 		]
 	baseline.convert(Image.FORMAT_RGB8)
+	RenderingServer.render_loop_enabled = false
 
 	## Charge and activate through the shipped Player entry point.
 	var host := PlayerHost.for_player(player)
@@ -260,6 +261,8 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		while elapsed < target:
 			await process_frame
 			elapsed += FIXED_STEP
+		paused = true
+		RenderingServer.render_loop_enabled = true
 		await RenderingServer.frame_post_draw
 		var frame := root.get_texture().get_image()
 		if frame == null or frame.get_size() != size:
@@ -293,7 +296,10 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			frame.save_png("%s/doctor_%s_%s_%s_%s.png" % [
 				_frame_dir, weapon_id, mode_id, str(viewport["id"]), str(beat["phase"]),
 			])
+		RenderingServer.render_loop_enabled = false
+		paused = false
 
+	RenderingServer.render_loop_enabled = true
 	host.call("ultimate_host_finish_presentation", "capture_complete")
 	main.queue_free()
 	await process_frame
