@@ -8,9 +8,9 @@ or synthetic hazard layer that could obscure a 648p cell boundary.
 
 ### Capture provenance
 
-- Harness source ref: `agent/codex-dev-terra-a/c1f1525cda9e`
-- Pre-artifact source commit: `7c682b2be8d8a17bbf534f23fe13f2a5073dd45d`
-- Pre-artifact source tree: `827ca032eb1c1c18e58a62269f69a944c0c6bcbf`
+- Harness source ref: `agent/codex-dev-terra-a/fan-3938-capture-deadline`
+- Pre-artifact source commit: `3e6b0e6f8e77d9457f1e64662c28bd72ae947cb4`
+- Pre-artifact source tree: `1dd9c1fd8cdf261ff2ddad655d87d07c877d019a`
 - Engine: Godot `4.7-stable (official)`; renderer `gl_compatibility` on Apple
   M4 Pro / macOS.
 - Controlled seed: `393820260910`, with a deterministic per-cell derived seed
@@ -72,9 +72,9 @@ runner-drawn color probes.
 
 ```sh
 FSD_GODOT_EXCLUSIVE=1 \
-  DARK_MAGE_CERT_SOURCE_REF=agent/codex-dev-terra-a/c1f1525cda9e \
-  DARK_MAGE_CERT_SOURCE_SHA=7c682b2be8d8a17bbf534f23fe13f2a5073dd45d \
-  DARK_MAGE_CERT_SOURCE_TREE=827ca032eb1c1c18e58a62269f69a944c0c6bcbf \
+  DARK_MAGE_CERT_SOURCE_REF=agent/codex-dev-terra-a/fan-3938-capture-deadline \
+  DARK_MAGE_CERT_SOURCE_SHA=3e6b0e6f8e77d9457f1e64662c28bd72ae947cb4 \
+  DARK_MAGE_CERT_SOURCE_TREE=1dd9c1fd8cdf261ff2ddad655d87d07c877d019a \
   python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 \
   --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd
 
@@ -87,6 +87,63 @@ files, unsmudged LFS pointers, malformed hashes, wrong native dimensions,
 unregistered paths, duplicate capture keys, and absent release/active/recovery
 observations. It verifies the hydrated files instead of treating a headless
 capture skip as visual proof.
+
+### Framebuffer watchdog and coherent publication
+
+The live capture runner arms each `frame_post_draw` listener before requesting
+the next draw. A process-always watchdog compares monotonic `Time` against a
+two-second wall-clock deadline, rather than relying on a simulation timer that
+would advance incorrectly under `--fixed-fps`. Its progress/report event names
+the weapon/mode/viewport context, phase, draw stage, display server, renderer,
+render-loop state, wall wait and watchdog tick count. A missed draw fails the
+run and performs ordinary scene, settings and window cleanup instead of waiting
+for the outer gate timeout.
+
+Frames are first saved in a task-owned `user://` staging area. Only a complete
+48-context / 144-frame matrix is copied into a new immutable generation under
+the capture root; the capture manifest is then atomically replaced to reference
+that complete generation. A timeout or other pre-publication failure leaves the
+previous manifest and its PNGs unchanged. `DARK_MAGE_CERT_RUN_REPORT=<path>`
+writes the progress, diagnostics, publication state and cleanup outcomes for
+runtime evidence.
+
+The following intentionally failing probe verifies that missing draw delivery
+terminates through the internal deadline, not through a larger outer timeout.
+It must exit nonzero and must not be used to publish a capture package:
+
+```sh
+FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 \
+  DARK_MAGE_CERT_TEST_NO_FORCE_DRAW=1 \
+  DARK_MAGE_CERT_RUN_REPORT=<path> \
+  DARK_MAGE_CERT_SOURCE_REF=<ref> \
+  DARK_MAGE_CERT_SOURCE_SHA=<sha> \
+  DARK_MAGE_CERT_SOURCE_TREE=<tree> \
+  python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 \
+  --disable-render-loop \
+  --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd
+```
+
+### Deadline rework validation
+
+The controlled no-frame probe reached the runner's own deadline at exactly
+2,000 ms for `dark_book/normal/1152x648`, `release`, `settle_1`. Its diagnostic
+identified macOS / `gl_compatibility`, `render_loop_enabled=false`, and
+`wall_clock_watchdog`; it exited nonzero without publishing a generation. The
+previous manifest and PNG package remained byte-identical, while settings,
+window, staging root, and one Main scene were all cleaned up.
+
+Two fresh complete windowed matrices then ran through the exclusive Godot gate
+at fixed 60 FPS. Each produced 144 frames, 288 successful framebuffer fences,
+zero watchdog diagnostics, zero capture failures, and 48 Main/player cleanups:
+
+- Generation `generation-3e6b0e6f8e77-2222` completed in 210.025 seconds.
+- Generation `generation-3e6b0e6f8e77-2045` completed in 210.275 seconds and
+  is the manifest's committed generation.
+
+Each full matrix includes 36 native 2560×1440 frames, so the two runs exercise
+72 largest-viewport frames without a viewport filter or a headless substitute.
+The final headless integrity gate verifies the current 144-frame generation's
+hydration, hashes, dimensions, LFS object IDs, provenance, and failure cases.
 
 ### Windowed accessibility-runtime recovery
 
