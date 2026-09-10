@@ -79,7 +79,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; capture-only generic Enemy combat feedback disabled while the shipped Engineer UltimateVictimImpactPlayer remains active; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -142,6 +142,7 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 			"victims": _mode_victim_count(str(capture["mode_id"])),
 			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
 			"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
+			"victim_impact": "scene-owned UltimateVictimImpactPlayer retained; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 		},
 	}
 
@@ -220,6 +221,10 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	var state := scene.call("accessibility_state_for_tests") as Dictionary
 	if (state.get("modes", {}) as Dictionary) != applied:
 		return _failed_viewport(viewport, "%s did not consume the persisted accessibility snapshot" % str(pack["weapon_id"]))
+	## The mounted scene receives one deferred frame before this point. Re-seed
+	## again at the manual execution boundary so any deferred engine work cannot
+	## perturb the real Enemy combat-feedback positions created by the next beat.
+	seed(capture_seed)
 	var beat := str(capture["beat"])
 	_advance_activation(activation, Spec.runtime_capture_seconds(pack, beat))
 	if runtime != null:
@@ -232,6 +237,8 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 		_seek_normal_scene(scene, sample_seconds)
 	_freeze_scene_clocks(scene)
 	_hold_victim_impacts(scene)
+	if not _has_scene_victim_impact(scene):
+		return _failed_viewport(viewport, "%s did not retain a shipped Engineer victim-impact event" % str(pack["weapon_id"]))
 	_freeze_actor(player)
 	_freeze_runtime_siblings(world, player, scene, enemies)
 	player.z_index = 50
@@ -250,7 +257,11 @@ func _apply_persisted_options(mode: Dictionary) -> void:
 	if applied != Accessibility.read_snapshot(root):
 		push_error("FAN-3939 capture could not apply the production accessibility snapshot")
 	root.set_meta("screen_shake", not bool(mode["reduced_motion"]))
-	root.set_meta("combat_feedback", true)
+	## `Enemy._show_combat_feedback()` creates global random labels/ticks under
+	## current_scene. Those are not the Engineer-owned impact channel and can
+	## race a windowed render; suppress them only for this isolated evidence
+	## renderer while leaving actual damage and UltimateVictimImpactPlayer intact.
+	root.set_meta("combat_feedback", false)
 	root.set_meta("aim_mode", "nearest")
 
 
@@ -366,6 +377,15 @@ func _hold_victim_impacts(scene: Node2D) -> void:
 			var impacts := raw_child as Node2D
 			impacts.call("advance", 0.12)
 			impacts.call("set_paused", true)
+
+
+func _has_scene_victim_impact(scene: Node2D) -> bool:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var snapshot := raw_child.call("snapshot") as Dictionary
+			if int(snapshot.get("victims", 0)) > 0:
+				return true
+	return false
 
 
 func _freeze_actor(actor: Node) -> void:
