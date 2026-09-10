@@ -671,7 +671,7 @@ func _content_scale() -> float:
 		Pack.PLAGUE_SYRINGE:
 			return 0.90
 		Pack.BONE_SAW:
-			return 0.74
+			return 0.72
 	return 1.0
 
 
