@@ -81,9 +81,16 @@ func _check_harness_registration(certification: Dictionary, class_manifest: Dict
 		"DisplayServer.window_set_size",
 		"release, active, and recovery",
 		"DARK_MAGE_CERT_SOURCE_SHA",
+		"FramePostDrawDeadline",
+		"Time.get_ticks_msec()",
+		"RenderingServer.force_draw(false)",
+		"STAGING_ROOT_PREFIX",
+		"_publish_staged_package",
+		"image.save_png(ProjectSettings.globalize_path(staged_path))",
+		"DARK_MAGE_CERT_TEST_NO_FORCE_DRAW",
 	]:
 		_expect(source.contains(required), "live renderer must retain production evidence hook: %s" % required, errors)
-	for forbidden in ["Polygon2D.new", "scene.scale", "scene.modulate", "HUD_COLOR", "MARKER_COLOR"]:
+	for forbidden in ["Polygon2D.new", "scene.scale", "scene.modulate", "HUD_COLOR", "MARKER_COLOR", "await RenderingServer.frame_post_draw", "image.save_png(ProjectSettings.globalize_path(output_path))"]:
 		_expect(not source.contains(forbidden), "live renderer must not synthesize stand-in evidence: %s" % forbidden, errors)
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var certification_link := evidence.get("certification_capture", {}) as Dictionary
@@ -110,7 +117,8 @@ func _check_harness_registration(certification: Dictionary, class_manifest: Dict
 
 func _check_capture_files(certification: Dictionary, errors: Array[String]) -> void:
 	var disk_files := {}
-	var directory := DirAccess.open(CAPTURE_ROOT)
+	var capture_directory := _capture_directory(certification)
+	var directory := DirAccess.open(capture_directory)
 	_expect(directory != null, "certification capture root must exist", errors)
 	if directory != null:
 		for file_name in directory.get_files():
@@ -124,6 +132,7 @@ func _check_capture_files(certification: Dictionary, errors: Array[String]) -> v
 		var capture := raw_capture as Dictionary
 		var key := _capture_key(capture)
 		var path := "res://%s" % str(capture.get("path", ""))
+		_expect(path.get_base_dir() == capture_directory, "%s capture must belong to one published generation" % key, errors)
 		var expected_size := VIEWPORTS.get(str(capture.get("viewport_id", "")), Vector2i.ZERO) as Vector2i
 		var file_name := path.get_file()
 		declared_files[file_name] = true
@@ -152,6 +161,11 @@ func _check_capture_files(certification: Dictionary, errors: Array[String]) -> v
 		for digest in hashes:
 			unique_hashes[str(digest)] = true
 		_expect(unique_hashes.size() == MODE_IDS.size(), "%s active captures must distinguish the real normal/crowded/accessibility states" % mode_key, errors)
+	if capture_directory != CAPTURE_ROOT:
+		var legacy_directory := DirAccess.open(CAPTURE_ROOT)
+		if legacy_directory != null:
+			for file_name in legacy_directory.get_files():
+				_expect(not file_name.ends_with(".png"), "superseded flat capture must not survive generation publication: %s" % file_name, errors)
 
 
 func _check_negative_probes(certification: Dictionary, class_manifest: Dictionary, errors: Array[String]) -> void:
@@ -236,6 +250,7 @@ func _manifest_violations(certification: Dictionary, class_manifest: Dictionary)
 		errors.append("capture_count")
 	var seen := {}
 	var seen_paths := {}
+	var capture_directory := ""
 	for raw_capture in captures:
 		if not raw_capture is Dictionary:
 			errors.append("capture_record_type")
@@ -258,6 +273,11 @@ func _manifest_violations(certification: Dictionary, class_manifest: Dictionary)
 		var path := str(capture.get("path", ""))
 		if not path.begins_with(CAPTURE_ROOT.trim_prefix("res://") + "/") or not path.ends_with(".png") or seen_paths.has(path):
 			errors.append("capture_path:%s" % key)
+		var directory := ("res://%s" % path).get_base_dir()
+		if capture_directory.is_empty():
+			capture_directory = directory
+		elif capture_directory != directory:
+			errors.append("capture_generation:%s" % key)
 		seen_paths[path] = true
 		if not _is_sha(str(capture.get("sha256", ""))) or str(capture.get("lfs_object_id", "")) != "sha256:%s" % str(capture.get("sha256", "")).to_lower():
 			errors.append("capture_hash:%s" % key)
@@ -405,6 +425,13 @@ func _load_json(path: String, errors: Array[String]) -> Dictionary:
 
 func _capture_key(capture: Dictionary) -> String:
 	return "%s/%s/%s/%s" % [capture.get("weapon_id", ""), capture.get("mode", ""), capture.get("viewport_id", ""), capture.get("phase", "")]
+
+
+func _capture_directory(certification: Dictionary) -> String:
+	for raw_capture in certification.get("captures", []) as Array:
+		if raw_capture is Dictionary:
+			return ("res://%s" % str((raw_capture as Dictionary).get("path", ""))).get_base_dir()
+	return CAPTURE_ROOT
 
 
 func _string_array(raw: Variant) -> Array[String]:

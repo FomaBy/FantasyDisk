@@ -45,7 +45,16 @@ const CROWDED_HAZARDS := 39
 const HAZARD_RING_RADII := [170.0, 240.0, 310.0, 380.0]
 const HAZARD_PARKING := Vector2(6000.0, 6000.0)
 const CAPTURE_TIMEOUT_SECONDS := 5.0
+## A fixed-FPS SceneTreeTimer advances simulated time, so it cannot bound a
+## stalled native frame delivery. This deadline uses monotonic wall-clock time.
+const FRAMEBUFFER_WAIT_DEADLINE_SECONDS := 2.0
 const LUMINANCE_SAMPLE_STRIDE := 16
+const STAGING_ROOT_PREFIX := "user://fan3938_dark_mage_capture_stage"
+const RUN_REPORT_ENV := "DARK_MAGE_CERT_RUN_REPORT"
+## Test-only seam used together with Godot's `--disable-render-loop` flag to
+## prove that the listener returns through the watchdog and cleanup path.
+const TEST_SUPPRESS_FORCE_DRAW_ENV := "DARK_MAGE_CERT_TEST_NO_FORCE_DRAW"
+const WINDOWED_CAPTURE_COMMAND := "FSD_GODOT_EXCLUSIVE=1 DARK_MAGE_CERT_SOURCE_REF=<ref> DARK_MAGE_CERT_SOURCE_SHA=<sha> DARK_MAGE_CERT_SOURCE_TREE=<tree> python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd"
 
 const WEAPON_IDS: Array[String] = ["dark_book", "cursed_skull", "dark_wand"]
 const PHASE_IDS: Array[String] = ["release", "active", "recovery"]
@@ -113,28 +122,120 @@ var _source := {}
 var _weapons := {}
 var _records: Array[Dictionary] = []
 var _failures: Array[String] = []
+var _staging_root := ""
+var _staging_manifest_path := ""
+var _published_root := ""
+var _run_started_msec := 0
+var _progress_events: Array[Dictionary] = []
+var _diagnostics: Array[Dictionary] = []
+var _settings_restored := false
+var _window_restored := false
+var _staging_cleaned := false
+var _published := false
+var _test_suppress_force_draw := false
+var _main_cleanup_count := 0
+var _player_reset_count := 0
+
+
+## This local node mirrors the proven accessibility regression watchdog. The
+## listener is armed before a draw is requested, and its process callback stays
+## active even under fixed-FPS simulation so a missed native draw fails closed.
+class FramePostDrawDeadline extends Node:
+	signal settled
+
+	var _settled := false
+	var _drew_frame := false
+	var _settled_by := ""
+	var _deadline_msec := 0
+	var _process_ticks := 0
+
+	func await_frame(tree: SceneTree, timeout_seconds: float, request_draw: bool) -> bool:
+		_deadline_msec = Time.get_ticks_msec() + ceili(timeout_seconds * 1000.0)
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		RenderingServer.frame_post_draw.connect(_on_frame_post_draw, CONNECT_ONE_SHOT)
+		tree.root.add_child(self)
+		set_process(true)
+		if request_draw:
+			RenderingServer.force_draw(false)
+		if not _settled:
+			await settled
+		if RenderingServer.frame_post_draw.is_connected(_on_frame_post_draw):
+			RenderingServer.frame_post_draw.disconnect(_on_frame_post_draw)
+		queue_free()
+		return _drew_frame
+
+	func _on_frame_post_draw() -> void:
+		_finish(true)
+
+	func _process(_delta: float) -> void:
+		_process_ticks += 1
+		if Time.get_ticks_msec() >= _deadline_msec:
+			_finish(false)
+
+	func _finish(drew_frame: bool) -> void:
+		if _settled:
+			return
+		_settled = true
+		_drew_frame = drew_frame
+		_settled_by = "frame_post_draw" if drew_frame else "wall_clock_watchdog"
+		set_process(false)
+		settled.emit()
+
+	func settled_by() -> String:
+		return _settled_by
+
+	func process_ticks() -> int:
+		return _process_ticks
 
 
 func _initialize() -> void:
+	_run_started_msec = Time.get_ticks_msec()
+	_test_suppress_force_draw = OS.get_environment(TEST_SUPPRESS_FORCE_DRAW_ENV).strip_edges() == "1"
+	_progress("run", "", "started", {
+		"command": WINDOWED_CAPTURE_COMMAND,
+		"framebuffer_wait_deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+		"test_suppress_force_draw": _test_suppress_force_draw,
+	})
 	if DisplayServer.get_name() == "headless":
+		_progress("run", "", "skipped_headless")
+		_write_run_report()
 		print("FAN-3938 Dark Mage certification capture skipped (headless); windowed evidence is required.")
 		quit(0)
 		return
 	_source = _source_from_environment()
 	if _source.is_empty():
+		_write_run_report()
 		quit(1)
 		return
 	_weapons = _weapons_from_manifest()
 	if _weapons.size() != WEAPON_IDS.size():
 		_fail("class manifest must expose the three canonical Dark Mage weapons")
-		quit(1)
-		return
-	var directory_result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_ROOT))
-	if directory_result != OK and directory_result != ERR_ALREADY_EXISTS:
-		_fail("cannot create capture directory: %s" % error_string(directory_result))
+		_write_run_report()
 		quit(1)
 		return
 	var settings_backup := _backup_settings()
+	var window_size_backup := root.size
+	var succeeded := await _capture_all()
+	_restore_settings(settings_backup)
+	_settings_restored = true
+	await _restore_window_size(window_size_backup)
+	_window_restored = true
+	if not succeeded:
+		_clear_staging()
+		_write_run_report()
+		_finish_failure()
+		return
+	_clear_staging()
+	_write_run_report()
+	print("FAN-3938 Dark Mage certification capture: PASS (%d native live captures)" % _records.size())
+	quit(0)
+
+
+func _capture_all() -> bool:
+	var staging_result := _prepare_staging()
+	if staging_result != OK:
+		_fail("cannot create capture staging root: %s" % error_string(staging_result))
+		return false
 	for raw_viewport in VIEWPORTS:
 		var viewport := raw_viewport as Dictionary
 		for raw_mode in MODES:
@@ -142,23 +243,21 @@ func _initialize() -> void:
 			for weapon_id in WEAPON_IDS:
 				var phase_records := await _capture_cell(viewport, mode, weapon_id)
 				if phase_records.is_empty():
-					_restore_settings(settings_backup)
-					_finish_failure()
-					return
+					return false
 				_records.append_array(phase_records)
-	_restore_settings(settings_backup)
 	var expected_captures := WEAPON_IDS.size() * MODES.size() * VIEWPORTS.size() * PHASE_IDS.size()
 	if _records.size() != expected_captures:
 		_fail("capture count is %d, expected %d" % [_records.size(), expected_captures])
-		_finish_failure()
-		return
-	var write_result := _write_capture_manifest()
-	if write_result != OK:
-		_fail("could not write capture manifest: %s" % error_string(write_result))
-		_finish_failure()
-		return
-	print("FAN-3938 Dark Mage certification capture: PASS (%d native live captures)" % _records.size())
-	quit(0)
+		return false
+	var manifest_result := _write_capture_manifest(_staging_manifest_path)
+	if manifest_result != OK:
+		_fail("could not stage capture manifest: %s" % error_string(manifest_result))
+		return false
+	var publish_result := _publish_staged_package()
+	if publish_result != OK:
+		_fail("could not publish staged capture package: %s" % error_string(publish_result))
+		return false
+	return true
 
 
 func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) -> Array[Dictionary]:
@@ -166,6 +265,7 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 	var mode_id := str(mode["id"])
 	var size := viewport["size"] as Vector2i
 	var context := "%s/%s/%s" % [weapon_id, mode_id, viewport_id]
+	_progress(context, "", "cell_started", {"width": size.x, "height": size.y})
 	var weapon := _weapons.get(weapon_id, {}) as Dictionary
 	var timing := weapon.get("timing_seconds", {}) as Dictionary
 	if timing.is_empty():
@@ -204,29 +304,29 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 	var hud_root := _combat_hud(main)
 	if player == null or str(player.get("character_id")) != CLASS_ID or str(player.get("weapon_id")) != weapon_id:
 		_fail("%s did not produce the configured live Dark Mage player" % context)
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
 	if hud_root == null or not hud_root.visible:
 		_fail("%s did not produce the shipped CombatHudRoot" % context)
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
 	_freeze_player_attacks(player)
 	var wanted_hazards := CROWDED_HAZARDS if bool(mode["crowded"]) else NORMAL_HAZARDS
 	var hazards := await _prepare_hazards(main, player, wanted_hazards)
 	if hazards.size() != wanted_hazards:
 		_fail("%s placed %d of %d director-spawned Enemy hazards" % [context, hazards.size(), wanted_hazards])
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	if not bool(player.call("activate_ultimate")):
 		_fail("%s Player.activate_ultimate() did not start the production cast" % context)
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
 	var host = PlayerHost.for_player(player)
 	var controller = host.controller() if host != null else null
 	if controller == null or not controller.is_active():
 		_fail("%s has no active UltimateController after Player activation" % context)
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
 	var observations := {}
 	var elapsed := 0.0
@@ -234,50 +334,56 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 		var target := float(timing.get(phase_id, -1.0))
 		if target <= 0.0:
 			_fail("%s has an invalid %s beat" % [context, phase_id])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		while elapsed < target and controller.is_active() and elapsed < CAPTURE_TIMEOUT_SECONDS:
 			await process_frame
 			elapsed += get_root().get_process_delta_time() / maxf(Engine.time_scale, 0.001)
 		if not controller.is_active():
 			_fail("%s ended before its %s beat" % [context, phase_id])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		var driver := _presentation_driver(main)
 		if driver == null:
 			_fail("%s did not mount the shipped Dark Mage presentation driver" % context)
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		var visual_state := driver.call("presence_state_for_tests") as Dictionary
 		if str(driver.call("visible_phase_name")) != phase_id:
 			_fail("%s reported phase %s at requested %s beat" % [context, str(driver.call("visible_phase_name")), phase_id])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		if not _driver_mode_matches(visual_state, mode):
 			_fail("%s driver state does not match Main's persisted mode snapshot" % context)
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		var artwork_nodes := _visible_required_artwork(driver, weapon_id, phase_id)
 		if artwork_nodes.is_empty():
 			_fail("%s lacks visible authored artwork at %s" % [context, phase_id])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		if not _hud_and_hazards_visible(hud_root, hazards):
 			_fail("%s lacks visible shipped HUD or Enemy hazard state at %s" % [context, phase_id])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
-		await RenderingServer.frame_post_draw
-		await RenderingServer.frame_post_draw
+		var settle_draw := await _await_framebuffer_draw(context, phase_id, "settle_1")
+		if not bool(settle_draw.get("drew_frame", false)):
+			await _abort_main(main, player)
+			return []
+		var readback_draw := await _await_framebuffer_draw(context, phase_id, "readback_2")
+		if not bool(readback_draw.get("drew_frame", false)):
+			await _abort_main(main, player)
+			return []
 		var image := root.get_texture().get_image()
 		if image == null or image.get_size() != size:
 			_fail("%s framebuffer at %s is not native %s" % [context, phase_id, size])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		image.convert(Image.FORMAT_RGBA8)
 		var variation := _luminance_variation(image)
 		if variation < 0.04:
 			_fail("%s framebuffer at %s is visually empty (variation %.3f)" % [context, phase_id, variation])
-			await _dispose_main(main)
+			await _abort_main(main, player)
 			return []
 		var observation := {
 			"phase": phase_id,
@@ -294,21 +400,21 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 			"rgba_sha256": _image_sha256(image),
 			"luminance_variation": snappedf(variation, 0.0001),
 		}
-		var output_path := _capture_path(weapon_id, mode_id, viewport_id, phase_id)
-		if image.save_png(ProjectSettings.globalize_path(output_path)) != OK:
-			_fail("%s could not save %s native PNG" % [context, phase_id])
-			await _dispose_main(main)
+		var output_path := _published_capture_path(weapon_id, mode_id, viewport_id, phase_id)
+		var staged_path := _staged_capture_path(weapon_id, mode_id, viewport_id, phase_id)
+		if image.save_png(ProjectSettings.globalize_path(staged_path)) != OK:
+			_fail("%s could not stage %s native PNG" % [context, phase_id])
+			await _abort_main(main, player)
 			return []
 		observation["path"] = output_path.trim_prefix("res://")
-		observation["sha256"] = FileAccess.get_sha256(output_path).to_lower()
+		observation["sha256"] = FileAccess.get_sha256(staged_path).to_lower()
 		observation["lfs_object_id"] = "sha256:%s" % str(observation["sha256"])
 		observations[phase_id] = observation
 	if not _has_ultimate_impact(hazards):
 		_fail("%s did not record a real ultimate impact on a director-spawned Enemy" % context)
-		await _dispose_main(main)
+		await _abort_main(main, player)
 		return []
-	PlayerHost.reset(player)
-	await _dispose_main(main)
+	await _abort_main(main, player)
 	var records: Array[Dictionary] = []
 	for phase_id in PHASE_IDS:
 		var phase_observation := observations.get(phase_id, {}) as Dictionary
@@ -336,6 +442,7 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 			"capture_observation": phase_observation,
 			"observed_beats": observations.duplicate(true),
 		})
+	_progress(context, "", "cell_captured", {"phases": PHASE_IDS.size()})
 	return records
 
 
@@ -402,6 +509,11 @@ func _apply_window_size(size: Vector2i) -> void:
 		await process_frame
 		if root.size == size:
 			return
+
+
+func _restore_window_size(size: Vector2i) -> void:
+	if root.size != size:
+		await _apply_window_size(size)
 
 
 func _combat_hud(main: Node) -> Control:
@@ -513,8 +625,117 @@ func _has_ultimate_impact(hazards: Array[Node2D]) -> bool:
 	return false
 
 
-func _capture_path(weapon_id: String, mode_id: String, viewport_id: String, phase_id: String) -> String:
-	return "%s/dark_mage__%s__%s__%s__%s.png" % [OUTPUT_ROOT, weapon_id, mode_id, viewport_id, phase_id]
+func _prepare_staging() -> int:
+	var run_id := "%s-%d" % [str(_source.get("commit_sha", "")).substr(0, 12), _run_started_msec]
+	_staging_root = "%s/%s" % [STAGING_ROOT_PREFIX, run_id]
+	_staging_manifest_path = "%s/certification_capture_manifest.json" % _staging_root
+	_published_root = "%s/generation-%s" % [OUTPUT_ROOT, run_id]
+	var result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_staging_root))
+	if result == OK or result == ERR_ALREADY_EXISTS:
+		_progress("run", "", "staging_ready", {"publication_pending": true})
+		return OK
+	return result
+
+
+func _published_capture_path(weapon_id: String, mode_id: String, viewport_id: String, phase_id: String) -> String:
+	return "%s/dark_mage__%s__%s__%s__%s.png" % [_published_root, weapon_id, mode_id, viewport_id, phase_id]
+
+
+func _staged_capture_path(weapon_id: String, mode_id: String, viewport_id: String, phase_id: String) -> String:
+	return "%s/%s" % [_staging_root, _published_capture_path(weapon_id, mode_id, viewport_id, phase_id).get_file()]
+
+
+func _publish_staged_package() -> int:
+	var directory_result := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_published_root))
+	if directory_result != OK and directory_result != ERR_ALREADY_EXISTS:
+		return directory_result
+	_progress("run", "", "publication_started", {"captures": _records.size()})
+	for record in _records:
+		var output_path := "res://%s" % str(record.get("path", ""))
+		var staged_path := "%s/%s" % [_staging_root, output_path.get_file()]
+		var copy_result := _copy_file(staged_path, output_path)
+		if copy_result != OK:
+			_remove_tree(_published_root)
+			return copy_result
+	var manifest_result := _replace_capture_manifest_from_staging()
+	if manifest_result != OK:
+		_remove_tree(_published_root)
+		return manifest_result
+	_published = true
+	_progress("run", "", "manifest_published", {"captures": _records.size()})
+	_remove_superseded_capture_artifacts()
+	return OK
+
+
+func _copy_file(source_path: String, destination_path: String) -> int:
+	var source := FileAccess.open(source_path, FileAccess.READ)
+	if source == null:
+		return ERR_FILE_NOT_FOUND
+	var bytes := source.get_buffer(source.get_length())
+	source.close()
+	var destination := FileAccess.open(destination_path, FileAccess.WRITE)
+	if destination == null:
+		return ERR_CANT_CREATE
+	destination.store_buffer(bytes)
+	destination.close()
+	return OK
+
+
+func _replace_capture_manifest_from_staging() -> int:
+	var temporary_path := CAPTURE_MANIFEST_PATH + ".tmp"
+	var copy_result := _copy_file(_staging_manifest_path, temporary_path)
+	if copy_result != OK:
+		return copy_result
+	var rename_result := DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(temporary_path),
+		ProjectSettings.globalize_path(CAPTURE_MANIFEST_PATH))
+	if rename_result != OK:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary_path))
+	return rename_result
+
+
+## The manifest is the public generation pointer. New frames are first written
+## into an unreferenced generation; once the manifest swap succeeds, old
+## generation files may be removed without making the active package incoherent.
+func _remove_superseded_capture_artifacts() -> void:
+	var root_dir := DirAccess.open(OUTPUT_ROOT)
+	if root_dir == null:
+		_record_cleanup_warning("could not open the capture root after manifest publication")
+		return
+	for file_name in root_dir.get_files():
+		if file_name.ends_with(".png") and root_dir.remove(file_name) != OK:
+			_record_cleanup_warning("could not remove superseded capture %s" % file_name)
+	for directory_name in root_dir.get_directories():
+		if directory_name == _published_root.get_file():
+			continue
+		var cleanup_result := _remove_tree("%s/%s" % [OUTPUT_ROOT, directory_name])
+		if cleanup_result != OK:
+			_record_cleanup_warning("could not remove superseded capture generation %s" % directory_name)
+
+
+func _clear_staging() -> void:
+	if _staging_root.is_empty():
+		_staging_cleaned = true
+		return
+	var result := _remove_tree(_staging_root)
+	_staging_cleaned = result == OK or result == ERR_DOES_NOT_EXIST
+	if not _staging_cleaned:
+		_record_cleanup_warning("could not clean the task-owned capture staging directory")
+
+
+func _remove_tree(path: String) -> int:
+	var directory := DirAccess.open(path)
+	if directory == null:
+		return ERR_DOES_NOT_EXIST
+	for file_name in directory.get_files():
+		var remove_file_result := directory.remove(file_name)
+		if remove_file_result != OK:
+			return remove_file_result
+	for directory_name in directory.get_directories():
+		var remove_directory_result := _remove_tree("%s/%s" % [path, directory_name])
+		if remove_directory_result != OK:
+			return remove_directory_result
+	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 func _cell_seed(viewport_id: String, mode_id: String, weapon_id: String) -> int:
@@ -540,7 +761,7 @@ func _luminance_variation(image: Image) -> float:
 	return maximum - minimum
 
 
-func _write_capture_manifest() -> int:
+func _write_capture_manifest(path: String) -> int:
 	var payload := {
 		"schema_version": 2,
 		"issue": CAPTURE_ID,
@@ -560,6 +781,8 @@ func _write_capture_manifest() -> int:
 			"focused_test": "tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
 			"fixed_fps": 60,
 			"deterministic_seed": CAPTURE_SEED,
+			"framebuffer_wait_deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+			"publication": "PNG frames are staged outside the published package. A complete new generation is written before the capture manifest atomically switches to it, so a failed capture keeps the prior manifest and frames coherent.",
 			"hash_scope": "PNG SHA-256 identifies the hydrated review artifact; per-beat RGBA SHA-256 identifies the in-run raw framebuffer. Fixed FPS and per-cell deterministic seeds constrain replay, but Metal/GPU raster output is not claimed byte-identical across driver versions.",
 			"godot_version": str(Engine.get_version_info().get("string", "")),
 			"renderer": str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "")),
@@ -574,7 +797,7 @@ func _write_capture_manifest() -> int:
 			},
 		},
 		"commands": {
-			"live_capture": "FSD_GODOT_EXCLUSIVE=1 DARK_MAGE_CERT_SOURCE_REF=<ref> DARK_MAGE_CERT_SOURCE_SHA=<sha> DARK_MAGE_CERT_SOURCE_TREE=<tree> python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+			"live_capture": WINDOWED_CAPTURE_COMMAND,
 			"focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
 			"runtime_modes": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd",
 			"class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/dark_mage_ultimate_timelines.gd",
@@ -582,7 +805,7 @@ func _write_capture_manifest() -> int:
 		},
 		"captures": _records,
 	}
-	var file := FileAccess.open(CAPTURE_MANIFEST_PATH, FileAccess.WRITE)
+	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return ERR_CANT_CREATE
 	file.store_string(JSON.stringify(payload, "  ") + "\n")
@@ -618,9 +841,123 @@ func _viewport_declarations() -> Array:
 func _dispose_main(main: Node) -> void:
 	if main != null and is_instance_valid(main):
 		main.queue_free()
+	_main_cleanup_count += 1
 	current_scene = null
 	await process_frame
 	await process_frame
+
+
+func _abort_main(main: Node, player: Variant = null) -> void:
+	## A timeout can arrive after the normal lifecycle has freed the Player. Keep
+	## this boundary Variant-typed so a stale typed reference reaches the validity
+	## check instead of failing before ordinary scene disposal can run.
+	if player is Node2D and is_instance_valid(player):
+		PlayerHost.reset(player as Node2D)
+		_player_reset_count += 1
+	await _dispose_main(main)
+
+
+func _await_framebuffer_draw(context: String, phase_id: String, wait_stage: String) -> Dictionary:
+	var started_msec := Time.get_ticks_msec()
+	var request_draw := not _test_suppress_force_draw
+	_progress(context, phase_id, "framebuffer_wait_begin", {
+		"wait_stage": wait_stage,
+		"deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+		"requested_force_draw": request_draw,
+	})
+	var deadline := FramePostDrawDeadline.new()
+	var drew_frame: bool = await deadline.await_frame(self, FRAMEBUFFER_WAIT_DEADLINE_SECONDS, request_draw)
+	var result := _runtime_metadata()
+	result.merge({
+		"context": context,
+		"phase": phase_id,
+		"stage": "framebuffer_wait",
+		"wait_stage": wait_stage,
+		"deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+		"waited_wall_msec": Time.get_ticks_msec() - started_msec,
+		"drew_frame": drew_frame,
+		"settled_by": deadline.settled_by(),
+		"watchdog_process_ticks": deadline.process_ticks(),
+		"requested_force_draw": request_draw,
+		"test_suppress_force_draw": _test_suppress_force_draw,
+		"command": WINDOWED_CAPTURE_COMMAND,
+	}, true)
+	if drew_frame:
+		_progress(context, phase_id, "framebuffer_wait_complete", result)
+		return result
+	result["kind"] = "framebuffer_wait_timeout"
+	_diagnostics.append(result.duplicate(true))
+	_progress(context, phase_id, "framebuffer_wait_timeout", result)
+	_fail("%s phase=%s stage=%s framebuffer wait timed out after %dms (display=%s renderer=%s render_loop_enabled=%s; command: %s)" % [
+		context,
+		phase_id,
+		wait_stage,
+		int(result["waited_wall_msec"]),
+		str(result["display_server"]),
+		str(result["renderer"]),
+		str(result["render_loop_enabled"]),
+		WINDOWED_CAPTURE_COMMAND,
+	])
+	return result
+
+
+func _runtime_metadata() -> Dictionary:
+	return {
+		"display_server": DisplayServer.get_name(),
+		"renderer": RenderingServer.get_current_rendering_method(),
+		"render_loop_enabled": RenderingServer.render_loop_enabled,
+		"video_adapter": RenderingServer.get_video_adapter_name(),
+		"godot": str(Engine.get_version_info().get("string", "")),
+		"wall_elapsed_msec": Time.get_ticks_msec() - _run_started_msec,
+	}
+
+
+func _progress(context: String, phase_id: String, stage: String, details: Dictionary = {}) -> void:
+	var event := _runtime_metadata()
+	event["context"] = context
+	event["phase"] = phase_id
+	event["stage"] = stage
+	for key in details:
+		event[key] = details[key]
+	_progress_events.append(event)
+	print("FAN-3938 Dark Mage certification capture: progress %s" % JSON.stringify(event))
+
+
+func _record_cleanup_warning(message: String) -> void:
+	var diagnostic := _runtime_metadata()
+	diagnostic.merge({"kind": "cleanup_warning", "message": message}, true)
+	_diagnostics.append(diagnostic)
+	push_warning("FAN-3938 Dark Mage certification capture: %s" % message)
+
+
+func _write_run_report() -> void:
+	var path := OS.get_environment(RUN_REPORT_ENV).strip_edges()
+	if path.is_empty():
+		return
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		_record_cleanup_warning("cannot write run report")
+		return
+	file.store_string(JSON.stringify({
+		"issue": CAPTURE_ID,
+		"display": "headless" if DisplayServer.get_name() == "headless" else "windowed",
+		"command": WINDOWED_CAPTURE_COMMAND,
+		"framebuffer_wait_deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+		"test_suppress_force_draw": _test_suppress_force_draw,
+		"published": _published,
+		"published_generation": _published_root.trim_prefix("res://"),
+		"cleanup": {
+			"settings_restored": _settings_restored,
+			"window_restored": _window_restored,
+			"staging_cleaned": _staging_cleaned,
+			"main_cleanup_count": _main_cleanup_count,
+			"player_reset_count": _player_reset_count,
+		},
+		"progress": _progress_events,
+		"diagnostics": _diagnostics,
+		"failures": _failures,
+	}, "  "))
+	file.close()
 
 
 func _fail(message: String) -> void:
