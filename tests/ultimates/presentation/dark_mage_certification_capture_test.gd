@@ -33,6 +33,23 @@ const MODE_SETTINGS := {
 	"reduced_motion": {"ultimate_reduced_motion": true, "ultimate_photosensitivity_safe": false, "crowded": false},
 	"photosensitivity_safe": {"ultimate_reduced_motion": false, "ultimate_photosensitivity_safe": true, "crowded": false},
 }
+const REQUIRED_ARTWORK_BY_PHASE := {
+	"dark_book": {
+		"release": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+		"active": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+		"recovery": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+	},
+	"cursed_skull": {
+		"release": ["CursedCrown"],
+		"active": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
+		"recovery": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
+	},
+	"dark_wand": {
+		"release": ["VanishingThread"],
+		"active": ["VanishingThread", "ThreadEchoNear"],
+		"recovery": ["VanishingThread", "ThreadEchoNear", "ThreadEchoFar"],
+	},
+}
 
 
 func _initialize() -> void:
@@ -268,6 +285,8 @@ func _manifest_violations(certification: Dictionary, class_manifest: Dictionary)
 			if bool(observation.get("driver_reduced_motion", false)) != bool(expected_mode["ultimate_reduced_motion"]) \
 					or bool(observation.get("driver_photosensitivity_safe", false)) != bool(expected_mode["ultimate_photosensitivity_safe"]):
 				errors.append("observation_mode:%s/%s" % [key, beat_id])
+			if _string_array(observation.get("visible_authored_nodes", [])) != _string_array((REQUIRED_ARTWORK_BY_PHASE[weapon_id] as Dictionary)[beat_id]):
+				errors.append("observation_artwork:%s/%s" % [key, beat_id])
 		var captured := capture.get("capture_observation", {}) as Dictionary
 		if str(captured.get("phase", "")) != phase_id \
 				or str(captured.get("path", "")) != path \

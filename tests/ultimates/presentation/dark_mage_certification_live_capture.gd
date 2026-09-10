@@ -88,10 +88,25 @@ const MODES := [
 	},
 ]
 
-const REQUIRED_NODES := {
-	"dark_book": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
-	"cursed_skull": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
-	"dark_wand": ["VanishingThread", "ThreadEchoNear", "ThreadEchoFar"],
+## Each requirement follows the authored alpha timeline at the declared named
+## beat. The crown and wand echoes intentionally enter after release; requiring
+## them before their authored reveal would falsely reject the shipped scene.
+const REQUIRED_ARTWORK_BY_PHASE := {
+	"dark_book": {
+		"release": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+		"active": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+		"recovery": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
+	},
+	"cursed_skull": {
+		"release": ["CursedCrown"],
+		"active": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
+		"recovery": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
+	},
+	"dark_wand": {
+		"release": ["VanishingThread"],
+		"active": ["VanishingThread", "ThreadEchoNear"],
+		"recovery": ["VanishingThread", "ThreadEchoNear", "ThreadEchoFar"],
+	},
 }
 
 var _source := {}
@@ -242,7 +257,8 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 			_fail("%s driver state does not match Main's persisted mode snapshot" % context)
 			await _dispose_main(main)
 			return []
-		if not _required_artwork_visible(driver, weapon_id):
+		var artwork_nodes := _visible_required_artwork(driver, weapon_id, phase_id)
+		if artwork_nodes.is_empty():
 			_fail("%s lacks visible authored artwork at %s" % [context, phase_id])
 			await _dispose_main(main)
 			return []
@@ -274,6 +290,7 @@ func _capture_cell(viewport: Dictionary, mode: Dictionary, weapon_id: String) ->
 			"hud_visible": true,
 			"enemy_hazards_visible": _visible_hazard_count(hazards),
 			"artwork_visible": true,
+			"visible_authored_nodes": artwork_nodes,
 			"rgba_sha256": _image_sha256(image),
 			"luminance_variation": snappedf(variation, 0.0001),
 		}
@@ -460,12 +477,19 @@ func _driver_mode_matches(state: Dictionary, mode: Dictionary) -> bool:
 		and str(state.get("timeline_animation", "")) == expected_timeline
 
 
-func _required_artwork_visible(driver: Node2D, weapon_id: String) -> bool:
-	for raw_name in REQUIRED_NODES.get(weapon_id, []) as Array:
+func _visible_required_artwork(driver: Node2D, weapon_id: String, phase_id: String) -> Array[String]:
+	var visible_nodes: Array[String] = []
+	var by_phase := REQUIRED_ARTWORK_BY_PHASE.get(weapon_id, {}) as Dictionary
+	var required_nodes := by_phase.get(phase_id, []) as Array
+	if required_nodes.is_empty():
+		return visible_nodes
+	for raw_name in required_nodes:
+		var node_name := str(raw_name)
 		var item := driver.get_node_or_null(str(raw_name)) as CanvasItem
 		if item == null or not item.visible or item.modulate.a <= 0.05 or item.self_modulate.a <= 0.05:
-			return false
-	return true
+			return []
+		visible_nodes.append(node_name)
+	return visible_nodes
 
 
 func _hud_and_hazards_visible(hud_root: Control, hazards: Array[Node2D]) -> bool:
