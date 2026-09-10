@@ -1,0 +1,6 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+P3_EXECUTOR_RESIDENCY_TEST PASS
+
+exit_status=0
+start/end recorded by driver; end_utc=2026-09-10T00:38:47Z
