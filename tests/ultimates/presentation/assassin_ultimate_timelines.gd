@@ -123,7 +123,11 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 	await process_frame
 	var state := scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
 	_expect(bool(state.get("cast_pose_bound", false)), "chakrams must replace the live player body with its cast pose", errors)
-	_expect(not body.visible and visual_root.get_node_or_null("UltimateCastPose") != null, "chakrams cast pose must be realized under the Player visual root", errors)
+	_expect(not body.visible \
+			and visual_root.get_node_or_null("UltimateCastPose") != null \
+			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") != null \
+			and visual_root.get_node_or_null("UltimateCastPoseHighlight") != null,
+		"chakrams cast pose and contrast sigil must replace the Player body", errors)
 	var bearings := {}
 	for index in range(1, 9):
 		var moon := scene.get_node("Orbit/Moon%s" % ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][index - 1]) as AnimatedSprite2D
@@ -140,7 +144,11 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 	_expect(float(scene.get("_elapsed")) >= 3.0, "runtime advance must place Chakrams in recovery on wall time", errors)
 	_expect(is_equal_approx(randf(), expected_rng), "presentation camera shake must not consume global gameplay RNG", errors)
 	scene.call("advance", 0.60)
-	_expect(body.visible and visual_root.get_node_or_null("UltimateCastPose") == null, "cast pose cleanup must restore the Player body", errors)
+	_expect(body.visible \
+			and visual_root.get_node_or_null("UltimateCastPose") == null \
+			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") == null \
+			and visual_root.get_node_or_null("UltimateCastPoseHighlight") == null,
+		"cast pose cleanup must restore the Player body and remove the contrast sigil", errors)
 	scene.queue_free()
 	player.queue_free()
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())

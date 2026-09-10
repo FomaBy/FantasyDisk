@@ -42,6 +42,8 @@ var _sfx_bus_index := -1
 var _externally_driven := false
 var _shake_rng := RandomNumberGenerator.new()
 var _cast_pose: Sprite2D = null
+var _cast_pose_backdrop: Polygon2D = null
+var _cast_pose_highlight: Polygon2D = null
 var _player_body: CanvasItem = null
 var _player_body_was_visible := true
 var _cast_pose_binding_error := "not_started"
@@ -322,6 +324,18 @@ func _bind_cast_pose(registry) -> void:
 		return
 	_player_body_was_visible = _player_body.visible
 	_player_body.visible = false
+	_cast_pose_backdrop = Polygon2D.new()
+	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
+	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
+	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
+	_cast_pose_backdrop.z_index = 0
+	visual_root.add_child(_cast_pose_backdrop)
+	_cast_pose_highlight = Polygon2D.new()
+	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
+	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
+	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
+	_cast_pose_highlight.z_index = 1
+	visual_root.add_child(_cast_pose_highlight)
 	_cast_pose = Sprite2D.new()
 	_cast_pose.name = "UltimateCastPose"
 	_cast_pose.texture = texture
@@ -337,6 +351,12 @@ func _release_cast_pose() -> void:
 	if _cast_pose != null and is_instance_valid(_cast_pose):
 		_cast_pose.free()
 	_cast_pose = null
+	if _cast_pose_highlight != null and is_instance_valid(_cast_pose_highlight):
+		_cast_pose_highlight.free()
+	_cast_pose_highlight = null
+	if _cast_pose_backdrop != null and is_instance_valid(_cast_pose_backdrop):
+		_cast_pose_backdrop.free()
+	_cast_pose_backdrop = null
 	if _player_body != null and is_instance_valid(_player_body):
 		_player_body.visible = _player_body_was_visible
 	_player_body = null
