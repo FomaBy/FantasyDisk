@@ -402,6 +402,17 @@ func _hold_victim_impacts(scene: Node2D) -> void:
 		if raw_child is ImpactPlayer:
 			var impacts := raw_child as Node2D
 			impacts.call("advance", 0.12)
+			## The real hit has already populated the scene-owned impact service.
+			## AnimatedSprite2D advances on the renderer clock independently of the
+			## service's queue, so choose its first visible frame explicitly before
+			## disabling that subtree. This preserves a real per-victim impact while
+			## keeping the evidence readback independent of frame presentation.
+			for raw_sprite in impacts.find_children("*", "AnimatedSprite2D", true, false):
+				var sprite := raw_sprite as AnimatedSprite2D
+				if sprite != null:
+					sprite.stop()
+					sprite.frame = 0
+					sprite.frame_progress = 0.0
 			impacts.call("set_paused", true)
 
 
