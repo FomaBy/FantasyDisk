@@ -140,6 +140,8 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"_has_real_enemy_damage",
 		"_has_visible_scene_victim_impact",
 		"_hide_queued_pressure_mine_devices",
+		"_hold_player_capture_pose",
+		"_hide_nonultimate_root_visuals",
 		"is_queued_for_deletion()",
 		"repeat_sha256",
 	]:

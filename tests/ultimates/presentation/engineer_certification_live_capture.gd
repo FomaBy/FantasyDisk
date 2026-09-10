@@ -102,7 +102,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; authored AnimatedSprite2D frame progress and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -200,6 +200,13 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 		return _failed_viewport(viewport, "Player.tscn did not instantiate")
 	player.position = Vector2(float(size.x) * 0.23, float(size.y) * 0.58)
 	world.add_child(player)
+	## A freshly instantiated Player initially owns the default Guitarist attack
+	## mode until `configure_character()` below applies Engineer. Keep ordinary
+	## attack processing dormant across that ready frame so transient default
+	## sound-wave notes cannot enter an Engineer-ultimate evidence render.
+	## `activate_ultimate()` remains invoked directly on this real Player later.
+	player.set_process(false)
+	player.set_physics_process(false)
 	await process_frame
 	_disable_player_camera(player)
 	player.call("configure_character", Spec.CLASS_ID, str(pack["weapon_id"]))
@@ -243,6 +250,12 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	var state := scene.call("accessibility_state_for_tests") as Dictionary
 	if (state.get("modes", {}) as Dictionary) != applied:
 		return _failed_viewport(viewport, "%s did not consume the persisted accessibility snapshot" % str(pack["weapon_id"]))
+	## Advance the mounted presentation before the manually stepped combat
+	## callbacks. The activation's immediate release may already have queued an
+	## impact; letting the runtime consume that historical event first leaves the
+	## requested phase's real callback impact available to freeze visibly below.
+	if runtime != null:
+		runtime.call("advance", sample_seconds)
 	## The mounted scene receives one deferred frame before this point. Re-seed
 	## again at the manual execution boundary so any deferred engine work cannot
 	## perturb the real Enemy combat-feedback positions created by the next beat.
@@ -257,9 +270,7 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 		_advance_activation(activation, execution_seconds)
 	if not _has_real_enemy_damage(enemies):
 		return _failed_viewport(viewport, "%s did not apply real capture damage" % str(pack["weapon_id"]))
-	if runtime != null:
-		runtime.call("advance", sample_seconds)
-	## Preserve the real release/damage/victim-impact work, then stop the host
+	## Preserve the requested real damage/victim-impact work, then stop the host
 	## and every capture clock before renderer frames can race it.
 	if runtime != null:
 		runtime.call("set_paused", true)
@@ -272,7 +283,9 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	if not _has_visible_scene_victim_impact(scene):
 		return _failed_viewport(viewport, "%s did not retain a visible shipped Engineer victim-impact frame" % str(pack["weapon_id"]))
 	_freeze_actor(player)
+	_hold_player_capture_pose(player)
 	_freeze_runtime_siblings(world, player, scene, enemies)
+	_hide_nonultimate_root_visuals(viewport, world, hazard)
 	player.z_index = 50
 	_attach_shipped_hud(viewport, player, size)
 	if bool(viewport.get_meta("fan3939_capture_failed", false)):
@@ -505,6 +518,21 @@ func _freeze_actor(actor: Node) -> void:
 			sprite.frame_progress = 0.0
 
 
+## Player setup can choose a directional idle animation before the capture
+## freezes its sprites. The ultimate still executes through that real Player;
+## readback uses its canonical idle frame so the renderer cannot choose between
+## equivalent idle variants across two fresh contexts.
+func _hold_player_capture_pose(player: Node2D) -> void:
+	var body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
+	if body == null:
+		return
+	body.stop()
+	if body.sprite_frames != null and body.sprite_frames.has_animation(&"idle"):
+		body.animation = &"idle"
+	body.frame = 0
+	body.frame_progress = 0.0
+
+
 func _freeze_hazard(hazard: Node2D) -> void:
 	if hazard == null:
 		return
@@ -526,6 +554,23 @@ func _freeze_runtime_siblings(world: Node2D, player: Node2D, scene: Node2D, enem
 		var child := raw_child as Node
 		if child != null and not retained.has(child.get_instance_id()):
 			_freeze_actor(child)
+
+
+## Player setup can leave an ordinary class-weapon release VFX at the root of
+## `current_scene` before the real Engineer ultimate is captured. Those nodes
+## are outside the Player-owned ultimate scene and may carry random flipbook
+## start frames. Keep the actual capture world, elite hazard, and any temporary
+## device explicitly tagged by the Engineer ultimate; hide only unrelated root
+## visual residue before readback.
+func _hide_nonultimate_root_visuals(viewport: SubViewport, world: Node2D, hazard: Node2D) -> void:
+	for raw_child in viewport.get_children():
+		var item := raw_child as CanvasItem
+		if item == null or item == world or item == hazard or item is ColorRect:
+			continue
+		var node := raw_child as Node
+		if node != null and not str(node.get_meta("engineer_ultimate_device", "")).is_empty():
+			continue
+		item.hide()
 
 
 func _pause_capture_tweens() -> void:
