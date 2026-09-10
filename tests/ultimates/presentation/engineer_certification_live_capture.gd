@@ -79,7 +79,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed Player activation/runtime tween stepping; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -97,8 +97,11 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		return {}
 	## Every frame receives a deterministic seed independent of capture order.
 	var capture_seed := Spec.CAPTURE_SEED + capture_index
+	var pack := _pack_spec(str(capture["weapon_id"]))
+	var beat := str(capture["beat"])
+	var sample_seconds := Spec.capture_sample_seconds(pack, beat)
 	seed(capture_seed)
-	var viewport := await _build_live_viewport(capture, capture_seed)
+	var viewport := await _build_live_viewport(capture, capture_seed, sample_seconds)
 	if bool(viewport.get_meta("fan3939_capture_failed", false)):
 		var reason := str(viewport.get_meta("fan3939_capture_failure", "unknown live runtime failure"))
 		_cleanup_viewport(viewport)
@@ -124,6 +127,7 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		"weapon_id": str(capture["weapon_id"]),
 		"mode_id": str(capture["mode_id"]),
 		"beat": str(capture["beat"]),
+		"sample_time_seconds": sample_seconds,
 		"width": size.x,
 		"height": size.y,
 		"path": output,
@@ -145,7 +149,7 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 ## The world is deliberately one SubViewport per sample. Target queries are
 ## SceneTree-global, so this prevents one sample's real victims from becoming
 ## another sample's crowd and gives every native image a hard visual boundary.
-func _build_live_viewport(capture: Dictionary, capture_seed: int) -> SubViewport:
+func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds: float) -> SubViewport:
 	var size := capture["size"] as Vector2i
 	var mode := _mode_spec(str(capture["mode_id"]))
 	var pack := _pack_spec(str(capture["weapon_id"]))
@@ -217,16 +221,15 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int) -> SubViewport
 	if (state.get("modes", {}) as Dictionary) != applied:
 		return _failed_viewport(viewport, "%s did not consume the persisted accessibility snapshot" % str(pack["weapon_id"]))
 	var beat := str(capture["beat"])
-	var beat_seconds := float((pack["beats"] as Dictionary)[beat])
-	_advance_activation(activation, Spec.runtime_execution_seconds(pack, beat))
+	_advance_activation(activation, Spec.runtime_capture_seconds(pack, beat))
 	if runtime != null:
-		runtime.call("advance", beat_seconds)
+		runtime.call("advance", sample_seconds)
 	## Preserve the real release/damage/victim-impact work, then stop the host
 	## and every capture clock before renderer frames can race it.
 	if runtime != null:
 		runtime.call("set_paused", true)
 	if not bool(mode["reduced_motion"]) and not bool(mode["photosensitivity_safe"]):
-		_seek_normal_scene(scene, beat_seconds)
+		_seek_normal_scene(scene, sample_seconds)
 	_freeze_scene_clocks(scene)
 	_hold_victim_impacts(scene)
 	_freeze_actor(player)

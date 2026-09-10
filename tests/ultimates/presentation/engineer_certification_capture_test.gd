@@ -27,6 +27,9 @@ const HUD_ADAPTER_PATH := "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_ad
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const CAPTURE_SEED := 3939
 const CAPTURE_STEP := 0.01
+## Frames are sampled just inside their named presentation phase. This avoids
+## an exact Tween callback boundary while preserving the authored beat label.
+const CAPTURE_PHASE_INTERIOR_OFFSET_SECONDS := 0.071
 const ENEMY_CAPTURE_HEALTH := 100000.0
 const CAPTURE_COUNT := 48
 
@@ -532,12 +535,14 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 		var capture := raw_capture as Dictionary
 		var record := records.get(str(capture["id"]), {}) as Dictionary
 		var size := capture["size"] as Vector2i
+		var pack := pack_for_weapon(str(capture["weapon_id"]))
 		if record.is_empty() \
 				or str(record.get("path", "")) != str(capture["path"]) \
 				or str(record.get("viewport_id", "")) != str(capture["viewport_id"]) \
 				or str(record.get("weapon_id", "")) != str(capture["weapon_id"]) \
 				or str(record.get("mode_id", "")) != str(capture["mode_id"]) \
 				or str(record.get("beat", "")) != str(capture["beat"]) \
+				or not is_equal_approx(float(record.get("sample_time_seconds", -1.0)), capture_sample_seconds(pack, str(capture["beat"]))) \
 				or int(record.get("width", 0)) != size.x or int(record.get("height", 0)) != size.y \
 				or str(record.get("layout", "")) != "isolated_native_frame" \
 				or not is_sha256(str(record.get("sha256", ""))) \
@@ -579,6 +584,24 @@ static func runtime_execution_seconds(pack: Dictionary, beat: String) -> float:
 	var beats := pack.get("beats", {}) as Dictionary
 	var requested := float(beats.get(beat, 0.0))
 	return minf(requested, float(beats.get("active", requested))) if beat == "recovery" else requested
+
+
+static func capture_sample_seconds(pack: Dictionary, beat: String) -> float:
+	var beats := pack.get("beats", {}) as Dictionary
+	return float(beats.get(beat, 0.0)) + CAPTURE_PHASE_INTERIOR_OFFSET_SECONDS
+
+
+static func runtime_capture_seconds(pack: Dictionary, beat: String) -> float:
+	var requested := capture_sample_seconds(pack, beat)
+	return minf(requested, capture_sample_seconds(pack, "active")) if beat == "recovery" else requested
+
+
+static func pack_for_weapon(weapon_id: String) -> Dictionary:
+	for raw_pack in PACKS:
+		var pack := raw_pack as Dictionary
+		if str(pack.get("weapon_id", "")) == weapon_id:
+			return pack
+	return {}
 
 
 static func png_violations(path: String, expected_size: Vector2i) -> Array[String]:
