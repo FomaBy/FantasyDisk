@@ -634,6 +634,7 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 	var impacts := _impact_player(scene)
 	_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
 	if impacts != null:
+		_expect(impacts.get_parent() == root, "%s victim impacts must live beside the caster presentation" % weapon_id, errors)
 		var planned := impacts.call("snapshot") as Dictionary
 		_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every actually affected enemy" % weapon_id, errors)
 		_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6,
@@ -665,6 +666,7 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 
 	scene.finish("cancel")
 	_expect(scene.get_child_count() == 0, "%s must release every impact node with the scene" % weapon_id, errors)
+	_expect(impacts == null or not is_instance_valid(impacts), "%s must release its sibling victim-impact service" % weapon_id, errors)
 	for victim in victims:
 		victim.free()
 	scene.free()
@@ -983,9 +985,9 @@ func _free_victims(victims: Array) -> void:
 
 
 func _impact_player(scene: Node) -> Node:
-	for child in scene.get_children():
-		if child.get_script() == ImpactPlayer:
-			return child
+	var impacts: Variant = scene.get("_impacts")
+	if impacts is Node and is_instance_valid(impacts):
+		return impacts as Node
 	return null
 
 

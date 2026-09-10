@@ -180,7 +180,14 @@ func present(_event_id: String, payload: Dictionary) -> void:
 		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
+		## Victim bursts follow the enemies they annotate and have their own pool
+		## budget; keep them beside the caster presentation so its declared
+		## footprint and node budget measure only the authored caster spectacle.
+		var impact_parent := get_parent()
+		if impact_parent != null:
+			impact_parent.add_child(_impacts)
+		else:
+			add_child(_impacts)
 		_impacts.play(impact_frames, victims, global_position)
 		return
 	# Later beats join the running ripple instead of replacing it, so a
