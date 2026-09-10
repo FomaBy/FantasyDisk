@@ -1,0 +1,44 @@
+command=python3 tools/godot_gate.py --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot', 'FSD_GODOT_EXCLUSIVE': '1'}
+observed_utc=2026-09-09T19:44:11Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
+--- during sampled_utc=2026-09-09T19:44:11Z
+(no foreign godot processes)
+--- during sampled_utc=2026-09-09T19:44:16Z
+87809  87.9   0:03.84 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:21Z
+87809  37.9   0:07.29 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:26Z
+87809  52.3   0:09.48 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:31Z
+87809  38.5   0:11.95 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:36Z
+87809  47.8   0:14.47 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:41Z
+87809  59.0   0:16.93 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:46Z
+87809  51.5   0:19.43 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:51Z
+87809  35.8   0:21.47 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:44:56Z
+87809  46.8   0:23.96 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:01Z
+87809  47.6   0:26.25 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:06Z
+87809  54.1   0:28.60 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:11Z
+87809  42.7   0:30.65 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:16Z
+87809  24.4   0:32.53 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:21Z
+87809  32.4   0:34.04 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:26Z
+87809  29.0   0:35.46 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+--- during sampled_utc=2026-09-09T19:45:31Z
+87809  24.9   0:36.92 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P2
+observed_utc=2026-09-09T19:45:36Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
+raw_staging_name=perf_p2.json / perf_p2.csv (shared staging; disambiguated by manifest)
+matrix_exit_status=0
