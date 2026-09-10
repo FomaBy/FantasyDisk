@@ -703,14 +703,18 @@ func _remove_superseded_capture_artifacts() -> void:
 		_record_cleanup_warning("could not open the capture root after manifest publication")
 		return
 	for file_name in root_dir.get_files():
-		if file_name.ends_with(".png") and root_dir.remove(file_name) != OK:
+		if _is_owned_flat_capture(file_name) and root_dir.remove(file_name) != OK:
 			_record_cleanup_warning("could not remove superseded capture %s" % file_name)
 	for directory_name in root_dir.get_directories():
-		if directory_name == _published_root.get_file():
+		if directory_name == _published_root.get_file() or not directory_name.begins_with("generation-"):
 			continue
 		var cleanup_result := _remove_tree("%s/%s" % [OUTPUT_ROOT, directory_name])
 		if cleanup_result != OK:
 			_record_cleanup_warning("could not remove superseded capture generation %s" % directory_name)
+
+
+func _is_owned_flat_capture(file_name: String) -> bool:
+	return file_name.begins_with("dark_mage__") and file_name.ends_with(".png")
 
 
 func _clear_staging() -> void:
