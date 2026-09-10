@@ -137,6 +137,11 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"timeline.pause()",
 		"AnimatedSprite2D",
 		"UPDATE_DISABLED",
+		"_has_real_enemy_damage",
+		"_has_visible_scene_victim_impact",
+		"_hide_queued_pressure_mine_devices",
+		"is_queued_for_deletion()",
+		"repeat_sha256",
 	]:
 		_expect(source.contains(required), "live renderer must retain production/determinism contract: %s" % required, errors)
 	_expect(not source.contains("Polygon2D.new()"), "live renderer must not draw a stand-in player or hazard", errors)
@@ -495,7 +500,7 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	for key in ["source_ref", "source_commit_sha", "source_tree_sha", "godot_version", "renderer", "capture_method", "command", "workload_exclusion"]:
 		if str(source.get(key, "")).is_empty():
 			violations.append("capture_source.%s" % key)
-	if str(source.get("source_ref", "")) != "dev" or not is_git_sha(str(source.get("source_commit_sha", ""))) or not is_git_sha(str(source.get("source_tree_sha", ""))):
+	if not str(source.get("source_ref", "")).begins_with("agent/") or not is_git_sha(str(source.get("source_commit_sha", ""))) or not is_git_sha(str(source.get("source_tree_sha", ""))):
 		violations.append("capture_source.pin")
 	if int(source.get("controlled_seed", -1)) != CAPTURE_SEED:
 		violations.append("capture_source.controlled_seed")

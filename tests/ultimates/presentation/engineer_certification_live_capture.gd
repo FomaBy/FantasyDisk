@@ -19,6 +19,7 @@ const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impac
 const PressureMines := preload("res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd")
 
 const CAPTURE_SETTLE_FRAMES := 3
+const CAPTURE_SOURCE_REF := "agent/codex-dev-terra-b/b00766a9083d"
 
 var _capture_source: Dictionary = {}
 var _samples: Array[Dictionary] = []
@@ -53,6 +54,25 @@ func _initialize() -> void:
 			quit(1)
 			return
 		_samples.append(sample)
+	## Rebuild every isolated runtime context a second time before publishing the
+	## manifest. This is a real repeat recapture, not a copied first-pass digest:
+	## each pass creates new Player, enemies, hazard, HUD and SubViewport nodes.
+	for capture_index in captures.size():
+		var capture := captures[capture_index] as Dictionary
+		var repeat_sample := await _capture_one(capture_index, capture)
+		if repeat_sample.is_empty():
+			Engine.time_scale = _time_scale_before_capture
+			quit(1)
+			return
+		var first_sample := _samples[capture_index] as Dictionary
+		if str(first_sample.get("id", "")) != str(repeat_sample.get("id", "")) \
+				or str(first_sample.get("sha256", "")) != str(repeat_sample.get("sha256", "")):
+			Engine.time_scale = _time_scale_before_capture
+			push_error("FAN-3939 Engineer certification repeat recapture hash mismatch: %s" % str(capture.get("id", "unknown")))
+			quit(1)
+			return
+		first_sample["repeat_sha256"] = str(repeat_sample["sha256"])
+		_samples[capture_index] = first_sample
 	if _write_capture_manifest() != OK:
 		Engine.time_scale = _time_scale_before_capture
 		push_error("FAN-3939 Engineer certification capture could not write the manifest.")
@@ -62,7 +82,7 @@ func _initialize() -> void:
 	Accessibility.apply_settings(root, GameSettings.DEFAULTS.duplicate(true))
 	root.set_meta("screen_shake", true)
 	root.set_meta("combat_feedback", true)
-	print("FAN-3939 Engineer certification capture wrote %d isolated native frames." % _samples.size())
+	print("FAN-3939 Engineer certification capture wrote %d isolated native frames after a matching repeat recapture." % _samples.size())
 	quit(0)
 
 
@@ -71,7 +91,9 @@ func _read_capture_source() -> Dictionary:
 	var source_sha := OS.get_environment("FAN3939_CAPTURE_SOURCE_SHA")
 	var source_tree := OS.get_environment("FAN3939_CAPTURE_SOURCE_TREE")
 	return {
-		"source_ref": "dev",
+		## The renderer source is committed on this candidate branch rather than
+		## claiming it was already on the integration branch at capture time.
+		"source_ref": CAPTURE_SOURCE_REF,
 		"source_commit_sha": source_sha,
 		"source_tree_sha": source_tree,
 		"controlled_seed": Spec.CAPTURE_SEED,
@@ -80,7 +102,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback disabled while the shipped Engineer UltimateVictimImpactPlayer remains active; authored AnimatedSprite2D frame progress and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; authored AnimatedSprite2D frame progress and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -134,16 +156,15 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		"path": output,
 		"layout": "isolated_native_frame",
 		"sha256": digest,
-		## The second renderer pass is compared externally against this exact
-		## field; once it matches, writing the same value makes the committed
-		## manifest a stable per-frame repeatability witness.
-		"repeat_sha256": digest,
+		## Filled only by the second fresh capture pass after its hash is compared
+		## to this first-pass digest in `_initialize()`.
+		"repeat_sha256": "",
 		"runtime_context": {
 			"player": "scenes/Player.tscn",
 			"victims": _mode_victim_count(str(capture["mode_id"])),
 			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
 			"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
-			"victim_impact": "scene-owned UltimateVictimImpactPlayer retained; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
+			"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 		},
 	}
 
@@ -231,8 +252,11 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	if str(pack["weapon_id"]) == "engineer_pressure_mines":
 		if not _advance_pressure_mines_capture(activation, execution_seconds):
 			return _failed_viewport(viewport, "Pressure Mines deterministic scheduler could not reach its shipped callback state")
+		_hide_queued_pressure_mine_devices(activation)
 	else:
 		_advance_activation(activation, execution_seconds)
+	if not _has_real_enemy_damage(enemies):
+		return _failed_viewport(viewport, "%s did not apply real capture damage" % str(pack["weapon_id"]))
 	if runtime != null:
 		runtime.call("advance", sample_seconds)
 	## Preserve the real release/damage/victim-impact work, then stop the host
@@ -245,6 +269,8 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	_hold_victim_impacts(scene)
 	if not _has_scene_victim_impact(scene):
 		return _failed_viewport(viewport, "%s did not retain a shipped Engineer victim-impact event" % str(pack["weapon_id"]))
+	if not _has_visible_scene_victim_impact(scene):
+		return _failed_viewport(viewport, "%s did not retain a visible shipped Engineer victim-impact frame" % str(pack["weapon_id"]))
 	_freeze_actor(player)
 	_freeze_runtime_siblings(world, player, scene, enemies)
 	player.z_index = 50
@@ -347,8 +373,9 @@ func _advance_activation(activation, seconds: float) -> void:
 
 ## `Tween.custom_step()` can defer an exact callback behind a windowed render.
 ## Pressure Mines' combat path is a public static callback sequence, so drive
-## the same production functions from its real activation at the declared
-## timestamps rather than allowing a renderer frame to choose the callback.
+## the same production functions from its real activation into the requested
+## deterministic callback state rather than allowing a renderer frame to
+## choose a callback boundary.
 func _advance_pressure_mines_capture(activation, seconds: float) -> bool:
 	var state := activation.call("primitive_value", "engineer_mine_state") as Dictionary
 	if state.is_empty():
@@ -370,6 +397,18 @@ func _advance_pressure_mines_capture(activation, seconds: float) -> bool:
 			activation, state, int(order[final_index]), damage, blast_radius, "finale", false
 		)
 	return true
+
+
+## `queue_free()` is intentionally deferred in the shipped executor. Hiding
+## only nodes already marked for deletion gives the capture the same completed
+## detonation result without asking its renderer frame to choose when deferred
+## device sprites disappear. It never alters active, undetonated mine devices.
+func _hide_queued_pressure_mine_devices(activation) -> void:
+	var state := activation.call("primitive_value", "engineer_mine_state") as Dictionary
+	for raw_node in state.get("nodes", []) as Array:
+		var device := raw_node as CanvasItem
+		if device != null and is_instance_valid(device) and device.is_queued_for_deletion():
+			device.hide()
 
 
 func _seek_normal_scene(scene: Node2D, seconds: float) -> void:
@@ -403,7 +442,9 @@ func _hold_victim_impacts(scene: Node2D) -> void:
 	for raw_child in scene.get_children():
 		if raw_child is ImpactPlayer:
 			var impacts := raw_child as Node2D
-			impacts.call("advance", 0.12)
+			## Materialize the first real ripple wave without advancing its burst
+			## lifetime, then hold a readable first frame for deterministic evidence.
+			impacts.call("advance", 0.0)
 			## The real hit has already populated the scene-owned impact service.
 			## AnimatedSprite2D advances on the renderer clock independently of the
 			## service's queue, so choose its first visible frame explicitly before
@@ -424,6 +465,24 @@ func _has_scene_victim_impact(scene: Node2D) -> bool:
 			var snapshot := raw_child.call("snapshot") as Dictionary
 			if int(snapshot.get("victims", 0)) > 0:
 				return true
+	return false
+
+
+func _has_visible_scene_victim_impact(scene: Node2D) -> bool:
+	for raw_child in scene.get_children():
+		if raw_child is ImpactPlayer:
+			var impacts := raw_child as Node2D
+			for raw_sprite in impacts.find_children("*", "AnimatedSprite2D", true, false):
+				var sprite := raw_sprite as AnimatedSprite2D
+				if sprite != null and sprite.visible:
+					return true
+	return false
+
+
+func _has_real_enemy_damage(enemies: Array[Node2D]) -> bool:
+	for enemy in enemies:
+		if is_instance_valid(enemy) and float(enemy.get("health")) < Spec.ENEMY_CAPTURE_HEALTH:
+			return true
 	return false
 
 
