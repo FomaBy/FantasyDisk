@@ -1,0 +1,10 @@
+command=python3 tools/godot_gate.py --headless --path . --script res://tests/p3_executor_residency_test.gd
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot'}
+observed_utc=2026-09-09T19:45:52Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+89000  92.8   0:01.52 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/ultimates/mechanics/robot_ultimate_live_test.gd
+--- during sampled_utc=2026-09-09T19:45:52Z
+89000  92.8   0:01.54 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/ultimates/mechanics/robot_ultimate_live_test.gd
+observed_utc=2026-09-09T19:45:57Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
