@@ -229,7 +229,19 @@
       "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_648p.png",
       "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_720p.png",
       "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_1080p.png",
-      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k.png"
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_648p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_648p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_648p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_720p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_720p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_720p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_1080p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_1080p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_1080p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k_recovery.png"
     ],
     "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
     "focused_test": "tests/ultimates/presentation/assassin_certification_capture_test.gd",
@@ -243,9 +255,9 @@
     "authored_focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "agent/codex-dev-sol-5-6/4d7a94c42825",
-      "source_commit_sha": "b9911a7a908c1da23129303f9794cedef8320bc5",
-      "source_tree_sha": "dc28f372db1c6d822da2eb4b05c4fc972ed7e756",
+      "source_ref": "agent/codex-dev-sol-5-6/fan-3942-rework-1",
+      "source_commit_sha": "7f01e8a5c44c46b39e513de4cf9910fe228c9df0",
+      "source_tree_sha": "65f4a6d6f155a0424a62208ccf5ef0db55139d62",
       "capture_manifest": "docs/design/references/weapon_ultimates/assassin/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/assassin/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
@@ -273,13 +285,21 @@
         "2k": "2560x1440"
       },
       "sheet_sha256": {
-        "648p": "0caf58390cb3cc5de15bf06e6b67946cd58c4d9345a13838e147f97f93c276ae",
-        "720p": "037cb041241e46e59052ea55ce6a3f90257293eb102abf515484b62569b15f0c",
-        "1080p": "bf438d69ecf899d7b436c02284389c7da2c6d9841761129804b6233fa333b48c",
-        "2k": "3830a141067f494e9b8e8e68a67b38022ef20536ed824228e4d03586d1223aae"
+        "648p_release": "daed9495a2f4f19027701ec54b7948122b9cb99e85a430503bce08277ed43cd7",
+        "648p_active": "09451fe412d8cb1b77574212e4571d8d7630a2b7f8a2b73282306cd4c7f29cf4",
+        "648p_recovery": "c87d262cec5e4136c0bc9b0c4d77656d8fd8b76e2674c369c636edad59bc5183",
+        "720p_release": "4252b4c53bb85a00fabe016f0e7fe844c3ee930aa98bf03c4f67fcd630b1f40b",
+        "720p_active": "e387678e7b7605e1173408219261aa8294a6f19a592f5fff8f5fbcfc19f8ae19",
+        "720p_recovery": "db5dc030afcb472791ad387030a82789d2bbe3a861cdefd71a3f2f91e9e557bc",
+        "1080p_release": "b3ca03d2fd106adddbc7792ccbda5272b2e7feae675752e2b2f52edac15fe935",
+        "1080p_active": "cf60b139c536dd78593ad6b91be4d392c7ef192781cf1c5d73e69011708c80df",
+        "1080p_recovery": "f1e734a073580d4c1407d4ce625a05712165e37566cdb70963e95cfae81e04fe",
+        "2k_release": "726aeadd0c194f0617eb7af252c4e7863a3c233e3b6f51571685f6b3cbe16a9d",
+        "2k_active": "c9cd8a3bb5ecf647b9a1cd672a245c66de9b79c3a6f5c8455f3e7c7f14fb7e35",
+        "2k_recovery": "4a3f435ef7772f86f7ae8b84246194ce9e9014afa16c42b8fb9074899d3ad34b"
       },
       "live_samples": 144,
-      "note": "Four native-size mode matrices index 144 fresh measurements from real Main.tscn combat runs with the shipped Player, HUD and Enemy hazards. The dedicated persisted accessibility flags drive the reduced-motion and photosensitivity-safe variants independently."
+      "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
     }
   }
 }
