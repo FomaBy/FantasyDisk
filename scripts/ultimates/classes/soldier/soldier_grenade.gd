@@ -144,11 +144,15 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 			false
 		)
 		victims.append(target)
+	# Presentation-only metadata (FAN-3941): the blast position, radius and
+	# grenade index ride on the existing beat so the authored scene can draw the
+	# payoff exactly where and when the mechanic lands. Damage above is unchanged.
 	activation.present(EXECUTOR_ID + ".detonate", {
 		"position": points[index],
 		"radius": activation.param_float("blast_radius", 155.0),
 		"shape": "orb_burst",
 		"victims": victims,
+		"grenade_index": index,
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():
@@ -175,6 +179,17 @@ static func crater_tick(activation, tick: int) -> void:
 				"soldier_grenade_crater:%d" % tick,
 				false
 			)
+	# Presentation-only metadata (FAN-3941): the crater callback had no beat, so
+	# the burning crater could never be drawn. The actual centre, radius, tick
+	# and tick count go to the live presentation; nothing about the damage loop
+	# above, its targets, ordering or timing changes.
+	activation.present(EXECUTOR_ID + ".crater", {
+		"position": center as Vector2,
+		"radius": activation.param_float("crater_radius", 190.0),
+		"tick": tick,
+		"ticks": activation.param_int("crater_ticks", 3),
+		"shape": "ring_pulse",
+	})
 
 
 static func _last_spawns(activation, count: int) -> Array[Node]:

@@ -56,6 +56,13 @@ const CLASS_PALETTE := {
 
 ## Authored node names the scenes bind their v2 presence to.
 const BACKDROP_NODE := "BackdropVeil"
+## Readability layering (FAN-3941): the arena-wide backdrop draws above the
+## arena floor (z -100) and the actors (z 0) but below every enemy hazard
+## telegraph (z 6-9) and enemy projectile (z 12), and the scene's own art
+## draws above the backdrop, so telegraphs and bolts keep their native
+## contrast under the ultimate.
+const BACKDROP_Z_MIN := 1
+const ENEMY_HAZARD_Z_MIN := 6
 const HERO_POSE_NODE := "HeroPose"
 ## The backdrop must actually reach its declared weight, not merely exist.
 const MIN_BACKDROP_PEAK_ALPHA := 0.15
@@ -390,6 +397,8 @@ static func scene_violations(scene: Node, weapon_id: String) -> Array[String]:
 		violations.append("ranger.v2.backdrop_node: %s must author %s" % [key, BACKDROP_NODE])
 	elif not bool(veil.get_meta("fullscreen_layer", false)):
 		violations.append("ranger.v2.fullscreen_footprint: %s veil is not an arena-wide layer" % key)
+	elif veil.z_as_relative or veil.z_index < BACKDROP_Z_MIN or veil.z_index >= ENEMY_HAZARD_Z_MIN or scene is not Node2D or (scene as Node2D).z_index <= veil.z_index or (scene as Node2D).z_index >= ENEMY_HAZARD_Z_MIN:
+		violations.append("ranger.v2.backdrop_layering: %s veil must sit at absolute z %d-%d below enemy hazards and projectiles, under the scene's own art" % [key, BACKDROP_Z_MIN, ENEMY_HAZARD_Z_MIN - 1])
 
 	var pose := scene.get_node_or_null(HERO_POSE_NODE) as Sprite2D
 	if pose == null or pose.texture == null:

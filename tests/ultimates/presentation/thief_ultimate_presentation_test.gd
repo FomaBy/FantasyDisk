@@ -7,6 +7,7 @@ const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_pr
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const Pack := preload("res://scenes/vfx/ultimates/thief/thief_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/thief/thief_ultimate_timeline_scene.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/thief.json"
 const SCENE_PATHS := {
@@ -37,12 +38,15 @@ func _initialize() -> void:
 	_test_budgets(errors)
 	for weapon_id in Pack.WEAPON_IDS:
 		_test_lifecycle(registry, weapon_id, errors)
+		_test_v2_scene_bindings(registry, weapon_id, errors)
+		_test_accessibility_policy(registry, weapon_id, errors)
+		await _test_scheduled_hitstop(registry, weapon_id, errors)
 	if not errors.is_empty():
 		for error in errors:
 			push_error("Thief ultimate presentation: %s" % error)
 		quit(1)
 		return
-	print("Thief ultimate presentation pack passed (3 distinct timelines, schema, lifecycle, budgets).")
+	print("Thief ultimate presentation pack passed (3 distinct timelines, schema, lifecycle, budgets, v2 presence devices, accessibility policy, scheduled hitstop within 80-150 ms under the live time-scale dip).")
 	quit(0)
 
 
@@ -159,6 +163,208 @@ func _test_lifecycle(registry, weapon_id: String, errors: Array[String]) -> void
 	teardown.free()
 	for channel in teardown_probes:
 		_expect((teardown_probes[channel] as HandleProbe).released == 1, "%s node teardown releases %s once" % [weapon_id, channel], errors)
+
+
+## FAN-3941: every v2 weight device the shipped scene actually drives — the
+## authored arena-wide veil, the hero cast pose, the first-impact hitstop —
+## positively and then with one binding removed at a time.
+func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	_expect(Pack.curve_violations(weapon_id).is_empty(), "%s presence curves must hold: %s" % [weapon_id, ", ".join(Pack.curve_violations(weapon_id))], errors)
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	scene.begin(registry, _probes(), 0)
+	var violations := Pack.scene_violations(scene, weapon_id)
+	_expect(violations.is_empty(), "%s scene must bind every v2 gate: %s" % [weapon_id, ", ".join(violations)], errors)
+	var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
+	var active := float(timing.get("active", 0.0))
+	scene.step(active * 0.5)
+	var veil := scene.get_node_or_null(Pack.BACKDROP_NODE) as Sprite2D
+	var pose := scene.get_node_or_null(Pack.HERO_POSE_NODE) as Sprite2D
+	_expect(pose != null and pose.self_modulate.a > 0.0, "%s must show its hero cast pose during the ceremony" % weapon_id, errors)
+	scene.step(active - active * 0.5 + 0.01)
+	var frozen := _scene_pose(scene)
+	var hitstop_seconds := float(Pack.presence_for(weapon_id).get("hitstop_ms", 0.0)) / 1000.0
+	_expect(hitstop_seconds >= 0.08 and hitstop_seconds <= 0.15, "%s hitstop must stay inside 80-150 ms" % weapon_id, errors)
+	# Direct steps mimic the engine: the delta a scheduled scene receives is
+	# already multiplied by the live time scale (the impact just dipped it).
+	scene.step(hitstop_seconds * 0.5 * Engine.time_scale)
+	_expect(_scene_pose(scene) == frozen, "%s first impact must hold the drawn pose for its hitstop" % weapon_id, errors)
+	scene.step(hitstop_seconds * Engine.time_scale)
+	_expect(_scene_pose(scene) != frozen, "%s must resume drawing after the hitstop" % weapon_id, errors)
+	_expect(veil != null and veil.self_modulate.a > 0.0, "%s backdrop must be lit across the active window" % weapon_id, errors)
+	var drawn := 0
+	for child in scene.get_children():
+		if child is Sprite2D or child is Polygon2D or child is Line2D:
+			drawn += 1
+	_expect(drawn <= int(scene.get_meta("max_visual_nodes", 0)), "%s draws %d nodes over its declared budget %d" % [weapon_id, drawn, int(scene.get_meta("max_visual_nodes", 0))], errors)
+	scene.finish("cancel")
+	_expect(veil != null and is_zero_approx(veil.self_modulate.a), "%s cleanup must clear the arena-wide backdrop" % weapon_id, errors)
+	_expect(pose != null and is_zero_approx(pose.self_modulate.a), "%s cleanup must clear the hero cast pose" % weapon_id, errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s cleanup must restore Engine.time_scale" % weapon_id, errors)
+	scene.free()
+
+	for mutation in [
+		{"code": "thief.v2.backdrop_node", "node": Pack.BACKDROP_NODE},
+		{"code": "thief.v2.hero_pose_node", "node": Pack.HERO_POSE_NODE},
+	]:
+		var stripped := packed.instantiate() as Node2D
+		root.add_child(stripped)
+		stripped.begin(registry, _probes(), 1)
+		var target := stripped.get_node_or_null(str(mutation["node"]))
+		if target != null:
+			stripped.remove_child(target)
+			target.free()
+		_expect_code(Pack.scene_violations(stripped, weapon_id), str(mutation["code"]), "%s without %s must report %s" % [weapon_id, mutation["node"], mutation["code"]], errors)
+		stripped.free()
+	var floated := packed.instantiate() as Node2D
+	root.add_child(floated)
+	floated.begin(registry, _probes(), 1)
+	(floated.get_node(Pack.BACKDROP_NODE) as Sprite2D).z_index = 30
+	_expect_code(Pack.scene_violations(floated, weapon_id), "thief.v2.backdrop_layering", "%s with its veil above enemy hazards must report thief.v2.backdrop_layering" % weapon_id, errors)
+	floated.free()
+	for mutation in [
+		{"code": "thief.v2.fullscreen_footprint", "meta": "", "node": Pack.BACKDROP_NODE},
+		{"code": "thief.v2.max_visual_nodes", "meta": "max_visual_nodes"},
+		{"code": "thief.v2.ultimate_id", "meta": "ultimate_id"},
+	]:
+		var mutated := packed.instantiate() as Node2D
+		root.add_child(mutated)
+		mutated.begin(registry, _probes(), 1)
+		if str(mutation["meta"]).is_empty():
+			(mutated.get_node(str(mutation["node"])) as Node).set_meta("fullscreen_layer", false)
+		else:
+			mutated.set_meta(str(mutation["meta"]), 0)
+		_expect_code(Pack.scene_violations(mutated, weapon_id), str(mutation["code"]), "%s with a broken %s declaration must report %s" % [weapon_id, mutation.get("meta", "fullscreen_layer"), mutation["code"]], errors)
+		mutated.free()
+
+
+## FAN-3941 (second review): the first-impact hitstop measured through the
+## engine's own scheduling, with the declared time-scale dip actually live.
+## Direct `step()` calls cannot see this: the engine hands the scene a delta
+## already multiplied by Engine.time_scale while the dip timer runs on the
+## wall clock, so a countdown fed scaled deltas outlives the dip and the real
+## hold stretches to about H x (2 - dip). The drawn pose (the formation
+## sprites) is sampled every scheduled frame; the hold is the run of frames
+## it stays frozen after the first impact, summed in wall-clock seconds, and
+## must sit inside the v2 envelope of 80-150 ms within half a frame.
+func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
+	var presence := Pack.presence_for(weapon_id)
+	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
+	var declared_dip := float(presence.get("time_scale_dip", 1.0))
+	var active := float(timing.get("active", 0.0))
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	await process_frame
+	scene.begin(registry, _probes(), 0)
+	var wall := 0.0
+	var frame_seconds := 1.0 / 60.0
+	var hold_seconds := 0.0
+	var hold_frames := 0
+	var hold_open := false
+	var hold_closed := false
+	var hold_pose := ""
+	var pose_frozen := true
+	var pose_after := ""
+	var dip_seconds := 0.0
+	var lowest_scale := Engine.time_scale
+	var restored_after := -1.0
+	while wall < active + 1.0 and not hold_closed:
+		await process_frame
+		var delta := _wall_delta()
+		frame_seconds = delta
+		wall += delta
+		lowest_scale = minf(lowest_scale, Engine.time_scale)
+		if Engine.time_scale < 0.99:
+			dip_seconds += delta
+		# The hold is the run of scheduled frames the driver reports its
+		# first-impact hitstop live after processing; the drawn pose must be
+		# identical across all of them and move again on the frame after.
+		var holding := float(scene.get("_hitstop_remaining")) > 0.0
+		var pose := _scene_pose(scene)
+		if not hold_open:
+			if holding:
+				hold_open = true
+				hold_frames = 1
+				hold_seconds = delta
+				hold_pose = pose
+		elif holding:
+			hold_frames += 1
+			hold_seconds += delta
+			pose_frozen = pose_frozen and pose == hold_pose
+		else:
+			hold_closed = true
+			pose_after = pose
+			if is_equal_approx(Engine.time_scale, 1.0):
+				restored_after = wall
+	var half_frame := frame_seconds * 0.5
+	_expect(hold_closed, "%s scheduled: the drawn pose must freeze on the first impact and resume (hold never closed by %.2f s)" % [weapon_id, wall], errors)
+	_expect(pose_frozen and hold_frames > 0 and pose_after != hold_pose, "%s scheduled: the drawn pose must stay identical across the %d held frames and move on the frame after" % [weapon_id, hold_frames], errors)
+	_expect(hold_seconds >= 0.08 - half_frame and hold_seconds <= 0.15 + half_frame, "%s scheduled: the actual pose hold must stay inside 80-150 ms, held %.1f ms (%d frames) for a declared %.0f ms at dip %.2f" % [weapon_id, hold_seconds * 1000.0, hold_frames, declared_seconds * 1000.0, declared_dip], errors)
+	_expect(absf(hold_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0], errors)
+	if declared_dip < 1.0:
+		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
+		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
+	_expect(restored_after >= 0.0 and is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	scene.finish("cancel")
+	scene.free()
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
+
+
+## Wall-clock seconds of one scheduled frame: the engine hands nodes a delta
+## already multiplied by Engine.time_scale, so dividing it back out gives the
+## real time the frame took whatever dip is live.
+func _wall_delta() -> float:
+	return root.get_process_delta_time() / maxf(Engine.time_scale, 0.0001)
+
+
+## FAN-3941: the production accessibility policy read by the live driver —
+## ultimate_photosensitivity_safe keeps the arena-wide veil dark for the whole
+## cast, ultimate_reduced_motion keeps every formation beat on its timing.
+func _test_accessibility_policy(registry, weapon_id: String, errors: Array[String]) -> void:
+	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
+	if packed == null:
+		return
+	var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
+	var active := float(timing.get("active", 0.0))
+	var normal := _policy_run(registry, packed, {}, active)
+	var safe := _policy_run(registry, packed, {Accessibility.PHOTOSENSITIVITY_SAFE_KEY: true}, active)
+	var still := _policy_run(registry, packed, {Accessibility.REDUCED_MOTION_KEY: true}, active)
+	_expect(float(normal["veil"]) > 0.0, "%s normal cast must light its veil at the active edge" % weapon_id, errors)
+	_expect(is_zero_approx(float(safe["veil"])), "%s must keep its veil dark under ultimate_photosensitivity_safe (alpha %.3f)" % [weapon_id, float(safe["veil"])], errors)
+	_expect(str(safe["pose"]) == str(normal["pose"]), "%s photosensitivity-safe must not change the formation" % weapon_id, errors)
+	_expect(str(still["pose"]) == str(normal["pose"]), "%s reduced motion must preserve the formation and timing" % weapon_id, errors)
+	_expect(float(still["veil"]) == float(normal["veil"]), "%s reduced motion must keep the veil" % weapon_id, errors)
+	Accessibility.apply_snapshot(root, {Accessibility.REDUCED_MOTION_KEY: false, Accessibility.PHOTOSENSITIVITY_SAFE_KEY: false})
+
+
+func _policy_run(registry, packed: PackedScene, snapshot: Dictionary, active: float) -> Dictionary:
+	Accessibility.apply_snapshot(root, {
+		Accessibility.REDUCED_MOTION_KEY: bool(snapshot.get(Accessibility.REDUCED_MOTION_KEY, false)),
+		Accessibility.PHOTOSENSITIVITY_SAFE_KEY: bool(snapshot.get(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, false)),
+	})
+	var scene := packed.instantiate() as Node2D
+	root.add_child(scene)
+	scene.begin(registry, _probes(), 0)
+	scene.step(active + 0.02)
+	var veil := scene.get_node_or_null(Pack.BACKDROP_NODE) as Sprite2D
+	var result := {"veil": veil.self_modulate.a if veil != null and veil.visible else 0.0, "pose": _scene_pose(scene)}
+	scene.finish("cancel")
+	scene.free()
+	return result
+
+
+func _expect_code(reported: Array, code: String, message: String, errors: Array[String]) -> void:
+	for entry in reported:
+		if str(entry).begins_with("%s:" % code):
+			return
+	errors.append("%s (got %s)" % [message, reported])
 
 
 func _motion_signature(weapon_id: String, phase_name: String, progress: float) -> String:
