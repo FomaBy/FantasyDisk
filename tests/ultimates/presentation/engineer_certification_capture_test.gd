@@ -687,7 +687,7 @@ static func fixed_step_witness_is_valid(witness: Dictionary) -> bool:
 
 
 static func canonical_capture_command(source: Dictionary) -> String:
-	return "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FSD_GODOT_RUN_TIMEOUT=300 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script %s" % [
+	return "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FSD_GODOT_RUN_TIMEOUT=300 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script res://%s" % [
 		str(source.get("source_commit_sha", "")), str(source.get("source_tree_sha", "")), CAPTURE_FIXED_FPS, LIVE_CAPTURE_SCRIPT,
 	]
 

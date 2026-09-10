@@ -6,14 +6,32 @@
 	],
 	"capture_script": "tests/ultimates/presentation/engineer_certification_live_capture.gd",
 	"capture_source": {
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
-		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=999d142f16f5bc5ca6a7205ab3bea7f4ab29e003 FAN3939_CAPTURE_SOURCE_TREE=f2a33234cd2101399a94f0bd923f9d9d7be45f55 GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
+		"backend_warmup": "one discarded complete first context before the certified matrix",
+		"capture_method": "windowed SubViewport render at a required fixed 60 FPS, proven by eight same-process 1/60 process-delta observations after the frozen matrix matches its fresh repeat and before manifest write; one complete first context is read and discarded to warm the new backend before the certified matrix; deterministic main-thread SceneTree process-frame plus RenderingServer.force_draw(false) readback avoids macOS frame_post_draw presentation-idle waits while retaining real SubViewport output; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FSD_GODOT_RUN_TIMEOUT=300 FAN3939_CAPTURE_SOURCE_SHA=6182fe4f8e9d4fc234e556b20b6a48852f477548 FAN3939_CAPTURE_SOURCE_TREE=41268329f6bf019d1d933372603ee7f9994527f6 GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd",
 		"controlled_seed": 3939,
+		"fixed_fps": 60,
+		"fixed_step_witness": {
+			"expected_delta_seconds": 0.0166666666666667,
+			"observed_deltas_seconds": [
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667,
+				0.0166666666666667
+			],
+			"process_fps": 60,
+			"sample_count": 8,
+			"tolerance_seconds": 0.000000001
+		},
 		"godot_version": "4.7-stable (official)",
 		"renderer": "display=macOS; rendering_method=gl_compatibility",
-		"source_commit_sha": "999d142f16f5bc5ca6a7205ab3bea7f4ab29e003",
+		"source_commit_sha": "6182fe4f8e9d4fc234e556b20b6a48852f477548",
 		"source_ref": "agent/codex-dev-terra-b/b00766a9083d",
-		"source_tree_sha": "f2a33234cd2101399a94f0bd923f9d9d7be45f55",
+		"source_tree_sha": "41268329f6bf019d1d933372603ee7f9994527f6",
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified"
 	},
 	"class_id": "engineer",
@@ -243,7 +261,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "fb5a5d92861152e006f198ceae0c0f2015656d47b4e181b0b131919e44d89332",
+			"repeat_sha256": "b9c43a767fd06021837d5fc4337150e797870da47933ff854fcea5181c8c9177",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -252,7 +270,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "fb5a5d92861152e006f198ceae0c0f2015656d47b4e181b0b131919e44d89332",
+			"sha256": "b9c43a767fd06021837d5fc4337150e797870da47933ff854fcea5181c8c9177",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
@@ -274,7 +292,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "3234b715b6aea8fb59474f30c1a4f3173bfaf6d5c62490d977be498cc3d939e8",
+			"repeat_sha256": "fa85e6b159f4e8e7cd7cf1d27de01a3165e2de1ff761eb27c5bce5e1b1e38900",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -283,7 +301,7 @@
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "3234b715b6aea8fb59474f30c1a4f3173bfaf6d5c62490d977be498cc3d939e8",
+			"sha256": "fa85e6b159f4e8e7cd7cf1d27de01a3165e2de1ff761eb27c5bce5e1b1e38900",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
@@ -305,7 +323,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "38bcbee109251a9cd1b84b34088db6e551bc3550e20ae5cdd5af472f983adb02",
+			"repeat_sha256": "0e68269841cbb0d3cf64aad32eb5cebbab47a04bd255ee6dcd4ba6f6931c4b84",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -314,7 +332,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "38bcbee109251a9cd1b84b34088db6e551bc3550e20ae5cdd5af472f983adb02",
+			"sha256": "0e68269841cbb0d3cf64aad32eb5cebbab47a04bd255ee6dcd4ba6f6931c4b84",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
@@ -336,7 +354,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "ec848bdac4185c7d60074b296681cb0fad8cec72256cc5fd8947ffcee459ecc1",
+			"repeat_sha256": "b5700a808e14d7c58e8096cbb24929fb067a01e6ceb262fcafe81cdeb421269d",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -345,7 +363,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "ec848bdac4185c7d60074b296681cb0fad8cec72256cc5fd8947ffcee459ecc1",
+			"sha256": "b5700a808e14d7c58e8096cbb24929fb067a01e6ceb262fcafe81cdeb421269d",
 			"viewport_id": "648p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1152
@@ -615,7 +633,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "3309766956b3021879d0f003905a0bbed22ab9d945178a29d58ce3ab32bd6f41",
+			"repeat_sha256": "ff621e82de1ecd0c38a6496afd63cfee87b0e6d91f612c866bda3bdae7f1d39e",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -624,7 +642,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "3309766956b3021879d0f003905a0bbed22ab9d945178a29d58ce3ab32bd6f41",
+			"sha256": "ff621e82de1ecd0c38a6496afd63cfee87b0e6d91f612c866bda3bdae7f1d39e",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
@@ -646,7 +664,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "165f4be4aa36d0f516c171b58e09ee050bf0f297e1b087ff9796b153c40e803b",
+			"repeat_sha256": "98a6694924b585cc9b9672e2417e2ea8b9b649a202967b57933180bdef1b039e",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -655,7 +673,7 @@
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "165f4be4aa36d0f516c171b58e09ee050bf0f297e1b087ff9796b153c40e803b",
+			"sha256": "98a6694924b585cc9b9672e2417e2ea8b9b649a202967b57933180bdef1b039e",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
@@ -677,7 +695,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "09b96306feafd5e1aec4a4a72595ea5ba85d3da011d605b26f09703223a29966",
+			"repeat_sha256": "6d60c434d19c5026c6972b5a5c80c7682b13814ebc5a9ab2b293f529bc79ee06",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -686,7 +704,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "09b96306feafd5e1aec4a4a72595ea5ba85d3da011d605b26f09703223a29966",
+			"sha256": "6d60c434d19c5026c6972b5a5c80c7682b13814ebc5a9ab2b293f529bc79ee06",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
@@ -708,7 +726,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "156f32faae4175f9df46b65ab90d95cba6242997e8e06eae29f058924e605d37",
+			"repeat_sha256": "9ab64859aa9452b600bc0f7be69a7c73d5f3e1372f6e08cd2f29356fb759a20f",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -717,7 +735,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "156f32faae4175f9df46b65ab90d95cba6242997e8e06eae29f058924e605d37",
+			"sha256": "9ab64859aa9452b600bc0f7be69a7c73d5f3e1372f6e08cd2f29356fb759a20f",
 			"viewport_id": "720p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1280
@@ -987,7 +1005,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "708d1116a408851b743eae261ac3e92bfd833fe20e59bd4a96b924a19dcde651",
+			"repeat_sha256": "8ffa9a2bcfe952809353b8180911002096e56f8c61fc0e88c81ac1c3a9ba272d",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -996,7 +1014,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "708d1116a408851b743eae261ac3e92bfd833fe20e59bd4a96b924a19dcde651",
+			"sha256": "8ffa9a2bcfe952809353b8180911002096e56f8c61fc0e88c81ac1c3a9ba272d",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
@@ -1018,7 +1036,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "71550a5691558b003a68a586571a410efb59a567762f4a340d02aaea221eb367",
+			"repeat_sha256": "e72f8021d84e6c0ae3971a6cb3f3a9c668381050989edb1c3a7c27d002f53264",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1027,7 +1045,7 @@
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "71550a5691558b003a68a586571a410efb59a567762f4a340d02aaea221eb367",
+			"sha256": "e72f8021d84e6c0ae3971a6cb3f3a9c668381050989edb1c3a7c27d002f53264",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
@@ -1049,7 +1067,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "2efd45ab57263ff9d67c0379a740b98a30ef7221714aa52b92dff72ab3c78c7c",
+			"repeat_sha256": "31e2700d12784a1a12c7d0ebd17e67a7a67f7d186961ea0ea98ae6ed2cb0d429",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1058,7 +1076,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "2efd45ab57263ff9d67c0379a740b98a30ef7221714aa52b92dff72ab3c78c7c",
+			"sha256": "31e2700d12784a1a12c7d0ebd17e67a7a67f7d186961ea0ea98ae6ed2cb0d429",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
@@ -1080,7 +1098,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "fa663bd8f000ff206bc9912ec22a7a615569d3f608c3bfa4a771d48ab1acfcc1",
+			"repeat_sha256": "c9a1ecc85a9cf334dcfd0ae1c5ec1e9d244d31dece1cac01b3eb0740507092de",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1089,7 +1107,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "fa663bd8f000ff206bc9912ec22a7a615569d3f608c3bfa4a771d48ab1acfcc1",
+			"sha256": "c9a1ecc85a9cf334dcfd0ae1c5ec1e9d244d31dece1cac01b3eb0740507092de",
 			"viewport_id": "1080p",
 			"weapon_id": "engineer_repair_drone",
 			"width": 1920
@@ -1359,7 +1377,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "normal",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__normal__active.png",
-			"repeat_sha256": "51b6ea7062f236d6f244252aba2c15f586f1e257cdc0f64b28f1112f751100d5",
+			"repeat_sha256": "1b568b774554d31c381298673851aec1475b00a6547980beecefa4afe0d1b409",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1368,7 +1386,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "51b6ea7062f236d6f244252aba2c15f586f1e257cdc0f64b28f1112f751100d5",
+			"sha256": "1b568b774554d31c381298673851aec1475b00a6547980beecefa4afe0d1b409",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
@@ -1390,7 +1408,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "crowded",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__crowded__release.png",
-			"repeat_sha256": "f267caedea96fd0217b569bc456395a7722aa2003340462e853b525a8a50cf2c",
+			"repeat_sha256": "1ef1d1f4da9c150c5464a38264a2c2f550f279cf4e5bb01a7a827b7687cecbf1",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1399,7 +1417,7 @@
 				"victims": 39
 			},
 			"sample_time_seconds": 0.771,
-			"sha256": "f267caedea96fd0217b569bc456395a7722aa2003340462e853b525a8a50cf2c",
+			"sha256": "1ef1d1f4da9c150c5464a38264a2c2f550f279cf4e5bb01a7a827b7687cecbf1",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
@@ -1421,7 +1439,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "reduced_motion",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__reduced_motion__active.png",
-			"repeat_sha256": "2054d1bbe9b922dc104ab57940854e0f2a0e8fab34d2209d923dfc8202a2c196",
+			"repeat_sha256": "918f9d1d75b5c5b502446b66c6ab5b0c2eadf8eeee3e6d3ff5e1207c2c8e0ac7",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1430,7 +1448,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 1.271,
-			"sha256": "2054d1bbe9b922dc104ab57940854e0f2a0e8fab34d2209d923dfc8202a2c196",
+			"sha256": "918f9d1d75b5c5b502446b66c6ab5b0c2eadf8eeee3e6d3ff5e1207c2c8e0ac7",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
@@ -1452,7 +1470,7 @@
 			"layout": "isolated_native_frame",
 			"mode_id": "photosensitivity_safe",
 			"path": "res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__photosensitivity_safe__recovery.png",
-			"repeat_sha256": "f94fdf6fb66e3efe3265a1a35a277a9d41c04e92e4a3203062140463148e3888",
+			"repeat_sha256": "300601bc844c0d7e18dc5a9f3d141aa8235d3baacbcbf7b01c0514227716f855",
 			"runtime_context": {
 				"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 				"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
@@ -1461,7 +1479,7 @@
 				"victims": 3
 			},
 			"sample_time_seconds": 3.421,
-			"sha256": "f94fdf6fb66e3efe3265a1a35a277a9d41c04e92e4a3203062140463148e3888",
+			"sha256": "300601bc844c0d7e18dc5a9f3d141aa8235d3baacbcbf7b01c0514227716f855",
 			"viewport_id": "2k",
 			"weapon_id": "engineer_repair_drone",
 			"width": 2560
