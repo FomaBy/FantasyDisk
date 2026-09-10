@@ -29,9 +29,15 @@ const DOCUMENT_FIELDS := [
 const BINDING_FIELDS := ["strategy_id", "params"]
 const BINDING_NAMES := ["targeting", "charge", "executor", "cleanup_policy"]
 ## Class-owned data files that live beside the weapon overlays but are not
-## packages. Only these exact names are skipped; any other JSON without an
-## executor is still an orphan (FAN-3910).
-const RESERVED_DATA_FILES: Array[String] = ["presentation_adoption.json"]
+## packages: the presentation adoption shard (FAN-3910) and the presentation-v2
+## migration shard (FAN-3933). Only these exact names are skipped; any other
+## JSON without an executor is still an orphan.
+## FAN-3934 composition rework: dev's exclusion composed with the approved
+## lazy executor-residency behavior below.
+const RESERVED_DATA_FILES: Array[String] = [
+	"presentation_adoption.json",
+	"presentation_v2_migration.json",
+]
 
 var _data_root: String
 var _executor_root: String
