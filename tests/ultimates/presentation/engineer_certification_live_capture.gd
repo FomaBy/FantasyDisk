@@ -183,7 +183,7 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	player.call("configure_character", Spec.CLASS_ID, str(pack["weapon_id"]))
 	await process_frame
 
-	var enemies := _spawn_real_enemies(world, size, int(mode["victims"]))
+	var enemies := _spawn_real_enemies(world, player.position, int(mode["victims"]))
 	if enemies.size() != int(mode["victims"]):
 		return _failed_viewport(viewport, "EnemySpitter.tscn did not instantiate every real capture target")
 	var hazard := _spawn_real_hazard(viewport, enemies[0], Vector2(float(size.x) * 0.84, float(size.y) * 0.69))
@@ -265,20 +265,13 @@ func _apply_persisted_options(mode: Dictionary) -> void:
 	root.set_meta("aim_mode", "nearest")
 
 
-func _spawn_real_enemies(world: Node2D, size: Vector2i, count: int) -> Array[Node2D]:
+func _spawn_real_enemies(world: Node2D, origin: Vector2, count: int) -> Array[Node2D]:
 	var enemies: Array[Node2D] = []
-	var columns := mini(7, maxi(1, count))
-	var rows := ceili(float(count) / float(columns))
 	for index in count:
 		var enemy := EnemySpitterScene.instantiate() as Node2D
 		if enemy == null:
 			continue
-		var column := index % columns
-		var row := index / columns
-		enemy.position = Vector2(
-			lerpf(float(size.x) * 0.43, float(size.x) * 0.74, (float(column) + 0.5) / float(columns)),
-			lerpf(float(size.y) * 0.28, float(size.y) * 0.72, (float(row) + 0.5) / float(rows))
-		)
+		enemy.position = origin + Spec.capture_enemy_offset(index, count)
 		enemy.set("max_health", Spec.ENEMY_CAPTURE_HEALTH)
 		enemy.set("health", Spec.ENEMY_CAPTURE_HEALTH)
 		world.add_child(enemy)

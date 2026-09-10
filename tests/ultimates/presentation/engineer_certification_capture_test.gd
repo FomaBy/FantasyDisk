@@ -32,6 +32,10 @@ const CAPTURE_STEP := 0.01
 const CAPTURE_PHASE_INTERIOR_OFFSET_SECONDS := 0.071
 const ENEMY_CAPTURE_HEALTH := 100000.0
 const CAPTURE_COUNT := 48
+## This is one of Pressure Mines' declared seeded-annulus coordinates. The
+## first real target stands on it so every viewport exercises the real smart
+## trigger instead of relying on a resolution-dependent distant target.
+const PRESSURE_MINE_TRIGGER_OFFSET := Vector2(125.21, 103.19)
 
 const WEAPON_IDS: Array[String] = [
 	"engineer_sentry_wrench",
@@ -221,7 +225,7 @@ func _check_real_runtime_cell(pack: Dictionary, mode: Dictionary, errors: Array[
 	_disable_player_camera(player)
 	player.call("configure_character", CLASS_ID, str(pack["weapon_id"]))
 	await process_frame
-	var enemies := _spawn_real_enemies(world, int(mode["victims"]))
+	var enemies := _spawn_real_enemies(world, player.position, int(mode["victims"]))
 	_expect(enemies.size() == int(mode["victims"]), "%s must retain every real capture target" % context, errors)
 	var hazard := _spawn_real_hazard(world, enemies[0] if not enemies.is_empty() else null, Vector2(520.0, 300.0))
 	_expect(hazard != null and hazard.is_in_group("enemy_hazards"), "%s must create a real ElitePoisonZone" % context, errors)
@@ -257,6 +261,7 @@ func _check_real_runtime_cell(pack: Dictionary, mode: Dictionary, errors: Array[
 			_advance_activation(activation, runtime_execution_seconds(pack, str(mode["beat"])))
 		if runtime != null:
 			runtime.call("advance", float((pack["beats"] as Dictionary)[str(mode["beat"])]))
+		_expect(_scene_victim_count(scene) > 0, "%s must route real victims through the shipped Engineer impact player" % context, errors)
 		_check_shipped_hud(world, player, str(pack["weapon_id"]), context, errors)
 		_freeze_scene_clocks(scene)
 		state = scene.call("accessibility_state_for_tests") as Dictionary
@@ -281,14 +286,13 @@ func _apply_persisted_options(mode: Dictionary) -> void:
 	root.set_meta("aim_mode", "nearest")
 
 
-func _spawn_real_enemies(world: Node2D, count: int) -> Array[Node2D]:
+func _spawn_real_enemies(world: Node2D, origin: Vector2, count: int) -> Array[Node2D]:
 	var enemies: Array[Node2D] = []
-	var columns := mini(7, maxi(1, count))
 	for index in count:
 		var enemy := EnemySpitterScene.instantiate() as Node2D
 		if enemy == null:
 			continue
-		enemy.position = Vector2(440.0 + float(index % columns) * 54.0, 130.0 + float(index / columns) * 60.0)
+		enemy.position = origin + capture_enemy_offset(index, count)
 		enemy.set("max_health", ENEMY_CAPTURE_HEALTH)
 		enemy.set("health", ENEMY_CAPTURE_HEALTH)
 		world.add_child(enemy)
@@ -296,6 +300,15 @@ func _spawn_real_enemies(world: Node2D, count: int) -> Array[Node2D]:
 		enemy.set("health", ENEMY_CAPTURE_HEALTH)
 		enemies.append(enemy)
 	return enemies
+
+
+func _scene_victim_count(scene: Node2D) -> int:
+	for raw_child in scene.get_children():
+		if raw_child is Node:
+			var snapshot = raw_child.call("snapshot") if raw_child.has_method("snapshot") else null
+			if snapshot is Dictionary and int((snapshot as Dictionary).get("victims", 0)) > 0:
+				return int((snapshot as Dictionary).get("victims", 0))
+	return 0
 
 
 func _spawn_real_hazard(world: Node, source_enemy: Node2D, position: Vector2) -> Node2D:
@@ -584,6 +597,19 @@ static func runtime_execution_seconds(pack: Dictionary, beat: String) -> float:
 	var beats := pack.get("beats", {}) as Dictionary
 	var requested := float(beats.get(beat, 0.0))
 	return minf(requested, float(beats.get("active", requested))) if beat == "recovery" else requested
+
+
+static func capture_enemy_offset(index: int, count: int) -> Vector2:
+	if index == 0:
+		return PRESSURE_MINE_TRIGGER_OFFSET
+	var columns := mini(7, maxi(1, count))
+	var rows := ceili(float(count) / float(columns))
+	var column := index % columns
+	var row := index / columns
+	return Vector2(
+		lerpf(82.0, 258.0, (float(column) + 0.5) / float(columns)),
+		lerpf(-118.0, 118.0, (float(row) + 0.5) / float(rows))
+	)
 
 
 static func capture_sample_seconds(pack: Dictionary, beat: String) -> float:
