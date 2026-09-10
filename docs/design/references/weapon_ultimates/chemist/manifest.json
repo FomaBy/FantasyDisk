@@ -282,6 +282,14 @@
       "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/chemist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/chemist_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/chemist_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/chemist/certification_capture_manifest.json",
+      "capture_script": "tests/ultimates/presentation/chemist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/chemist_certification_capture_test.gd",
+      "readability_report": "docs/design/references/weapon_ultimates/chemist/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/chemist",
+      "note": "FAN-3937 is the four-mode certification matrix. The older contact sheets above are legacy phase evidence and must not be read as normal/crowded/reduced-motion/photosensitivity-safe certification."
+    }
   }
 }

@@ -4,10 +4,38 @@ extends Node2D
 ## Runtime presence for the Dark Mage's V2 ultimate trio. The authored scene
 ## retains its weapon-specific animation; this driver owns only the shared
 ## screen-scale backdrop, hero pose, silhouette and first-impact feedback.
+##
+## Accessibility (FAN-3946) is read from the production snapshot Main publishes
+## on the scene-tree root (`scripts/settings/ultimate_accessibility_settings.gd`):
+##
+## - reduced motion selects the scene's authored `ultimate_reduced_motion`
+##   variant (same length, same phase beats, no travel), never moves the camera,
+##   never dips Engine.time_scale, holds the hero pose/silhouette static and eases
+##   every backdrop beat instead of stepping it;
+## - photosensitivity-safe replaces the per-phase backdrop steps (and the skull's
+##   violet flash tint) with one low, slowly ramped darken veil and caps the
+##   flipbook luminance through `self_modulate`, which the authored alpha tracks
+##   never touch;
+## - both together apply the union: the reduced-motion variant with the
+##   photosensitivity-safe backdrop and luminance caps. Gameplay, phase timing
+##   and SFX ducking are identical in every mode.
 
+const ACCESSIBILITY := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/dark_mage/manifest.json"
 const BACKDROP_OVERSCAN := 1.08
 const SFX_DUCK_DB := -8.0
+const TIMELINE_NODE := "Timeline"
+const NORMAL_ANIMATION := &"ultimate"
+const REDUCED_MOTION_ANIMATION := &"ultimate_reduced_motion"
+## Reduced motion eases a backdrop beat at this alpha-per-second rate instead
+## of stepping it, so the calm variant fades where the ordinary one pops.
+const REDUCED_MOTION_BACKDROP_RATE := 0.6
+## Photosensitivity-safe backdrop: one constant darken veil, ramped at a bounded
+## rate. 0.24/s reaches the veil in half a second and never approaches a flash.
+const PHOTOSAFE_BACKDROP_ALPHA := 0.12
+const PHOTOSAFE_BACKDROP_RATE := 0.24
+const PHOTOSAFE_FLIPBOOK_ALPHA := 0.6
+const PHOTOSAFE_IDENTITY_ALPHA := 0.75
 
 @export var weapon_id := ""
 
@@ -20,7 +48,13 @@ var _elapsed := 0.0
 var _paused := false
 var _release_applied := false
 var _visible_phase := ""
+var _reduced_motion := false
+var _photosensitivity_safe := false
+var _timeline_animation := ""
 var _backdrop: Sprite2D = null
+var _backdrop_alpha := 0.0
+var _backdrop_target_alpha := 0.0
+var _backdrop_max_alpha_step := 0.0
 var _cast_pose: Sprite2D = null
 var _silhouette: Sprite2D = null
 var _camera: Camera2D = null
@@ -29,17 +63,15 @@ var _ducked_bus_index := -1
 var _ducked_previous_db := 0.0
 var _hitstop_previous_scale := 1.0
 var _hitstop_active := false
-var _presence_state := {
-	"backdrop_visible": false,
-	"camera_shake_triggered": false,
-	"hitstop_ms": 0.0,
-	"sfx_ducked": false,
-	"cast_pose_id": "",
-	"cast_pose_asset": "",
-	"cast_pose_bound": false,
-	"silhouette_asset": "",
-	"silhouette_bound": false,
-}
+var _presence_state := {}
+
+
+## The authored Timeline autoplays on its own clock from the scene's _ready,
+## before the runtime ever calls begin(), so the variant is selected here and
+## re-asserted in begin() with a fresh snapshot read.
+func _ready() -> void:
+	_read_accessibility_modes()
+	_apply_modes_to_timeline()
 
 
 func begin(_handles: Dictionary, headless_mode := -1) -> Dictionary:
@@ -51,6 +83,8 @@ func begin(_handles: Dictionary, headless_mode := -1) -> Dictionary:
 	_elapsed = 0.0
 	_paused = false
 	_release_applied = false
+	_read_accessibility_modes()
+	_apply_modes_to_timeline()
 	_clear_presence()
 	_build_presence_nodes()
 	_show_phase("windup")
@@ -68,6 +102,7 @@ func advance(delta_seconds: float) -> Array[Dictionary]:
 	if not _release_applied and _elapsed >= float(_timing.get("release", INF)):
 		_release_applied = true
 		_apply_release_presence()
+	_step_backdrop(maxf(delta_seconds, 0.0))
 	return []
 
 
@@ -87,9 +122,36 @@ func visible_phase_name() -> String:
 
 
 ## Focused runtime tests read the state while platform-facing devices remain
-## guarded in headless mode.
+## guarded in headless mode. The mode keys, the bound timeline animation and
+## the backdrop alpha history report what actually happened, not the request.
 func presence_state_for_tests() -> Dictionary:
 	return _presence_state.duplicate(true)
+
+
+func _read_accessibility_modes() -> void:
+	var snapshot := ACCESSIBILITY.read_snapshot(get_tree().root if is_inside_tree() else null)
+	_reduced_motion = bool(snapshot[ACCESSIBILITY.REDUCED_MOTION_KEY])
+	_photosensitivity_safe = bool(snapshot[ACCESSIBILITY.PHOTOSENSITIVITY_SAFE_KEY])
+
+
+## Reduced motion plays the scene's authored substitute at the same position
+## the ordinary timeline reached; photosensitivity-safe caps every flipbook
+## through self_modulate, which the animation's modulate tracks never touch.
+func _apply_modes_to_timeline() -> void:
+	var timeline := get_node_or_null(TIMELINE_NODE) as AnimationPlayer
+	if timeline != null:
+		var wanted := NORMAL_ANIMATION
+		if _reduced_motion and timeline.has_animation(REDUCED_MOTION_ANIMATION):
+			wanted = REDUCED_MOTION_ANIMATION
+		if timeline.current_animation != String(wanted) or not timeline.is_playing():
+			var position := timeline.current_animation_position if timeline.is_playing() else 0.0
+			timeline.play(wanted)
+			timeline.seek(position, true)
+		_timeline_animation = String(wanted)
+	var flipbook_alpha := PHOTOSAFE_FLIPBOOK_ALPHA if _photosensitivity_safe else 1.0
+	for child in get_children():
+		if child is AnimatedSprite2D:
+			(child as AnimatedSprite2D).self_modulate.a = flipbook_alpha
 
 
 func _manifest_for_weapon() -> Dictionary:
@@ -124,6 +186,8 @@ func _show_phase(phase_name: String) -> void:
 func _build_presence_nodes() -> void:
 	_presence_state = {
 		"backdrop_visible": false,
+		"backdrop_alpha": 0.0,
+		"backdrop_max_alpha_step": 0.0,
 		"camera_shake_triggered": false,
 		"hitstop_ms": 0.0,
 		"sfx_ducked": false,
@@ -132,6 +196,10 @@ func _build_presence_nodes() -> void:
 		"cast_pose_bound": false,
 		"silhouette_asset": str(_identity.get("weapon_silhouette_asset", "")),
 		"silhouette_bound": false,
+		"reduced_motion": _reduced_motion,
+		"photosensitivity_safe": _photosensitivity_safe,
+		"timeline_animation": _timeline_animation,
+		"flipbook_alpha_cap": PHOTOSAFE_FLIPBOOK_ALPHA if _photosensitivity_safe else 1.0,
 	}
 	if _presence.is_empty() or _identity.is_empty():
 		return
@@ -153,6 +221,7 @@ func _build_presence_nodes() -> void:
 	add_child(_backdrop)
 	_fit_backdrop_to_viewport()
 
+	var identity_alpha := PHOTOSAFE_IDENTITY_ALPHA if _photosensitivity_safe else 1.0
 	var pose_texture := load(str(_identity.get("cast_pose_asset", ""))) as Texture2D
 	if pose_texture != null:
 		_cast_pose = Sprite2D.new()
@@ -160,6 +229,7 @@ func _build_presence_nodes() -> void:
 		_cast_pose.texture = pose_texture
 		_cast_pose.scale = Vector2.ONE * 0.30
 		_cast_pose.modulate = _palette_color(0.0)
+		_cast_pose.self_modulate.a = identity_alpha
 		_cast_pose.z_index = 1
 		add_child(_cast_pose)
 		_presence_state["cast_pose_bound"] = true
@@ -171,6 +241,7 @@ func _build_presence_nodes() -> void:
 		_silhouette.texture = silhouette_texture
 		_silhouette.scale = Vector2.ONE * 0.54
 		_silhouette.modulate = _palette_color(0.0)
+		_silhouette.self_modulate.a = identity_alpha
 		_silhouette.z_index = 2
 		add_child(_silhouette)
 		_presence_state["silhouette_bound"] = true
@@ -179,27 +250,56 @@ func _build_presence_nodes() -> void:
 func _apply_presence_pose(phase_name: String) -> void:
 	if _backdrop == null:
 		return
-	var alpha := 0.0
-	match phase_name:
-		"windup":
-			alpha = 0.14
-		"release":
-			alpha = 0.30 if str(_presence.get("backdrop", "")) == "flash" else 0.35
-		"active":
-			alpha = 0.22
-		"recovery":
-			alpha = 0.08
-	_backdrop.modulate = _backdrop_color(alpha)
-	_backdrop.visible = alpha > 0.0
-	_presence_state["backdrop_visible"] = _backdrop.visible
+	_backdrop_target_alpha = _phase_backdrop_alpha(phase_name)
+	if not _reduced_motion and not _photosensitivity_safe:
+		_set_backdrop_alpha(_backdrop_target_alpha)
+	# Reduced motion holds the hero read at its released size from the first
+	# frame: the windup-to-release scale pop is a motion beat, not a timing one.
+	var settled := _reduced_motion or phase_name != "windup"
 	if _cast_pose != null:
 		_cast_pose.visible = phase_name != "cancel"
 		_cast_pose.modulate = _palette_color(0.9 if _cast_pose.visible else 0.0)
-		_cast_pose.scale = Vector2.ONE * (0.30 if phase_name == "windup" else 0.40)
+		_cast_pose.scale = Vector2.ONE * (0.40 if settled else 0.30)
 	if _silhouette != null:
 		_silhouette.visible = phase_name != "cancel"
 		_silhouette.modulate = _palette_color(0.92 if _silhouette.visible else 0.0)
-		_silhouette.scale = Vector2.ONE * (0.54 if phase_name == "windup" else 0.72)
+		_silhouette.scale = Vector2.ONE * (0.72 if settled else 0.54)
+
+
+## Photosensitivity-safe keeps one low veil through every drawn phase, so the
+## screen never steps between darken levels or into the skull's flash tint.
+func _phase_backdrop_alpha(phase_name: String) -> float:
+	if _photosensitivity_safe:
+		return 0.0 if phase_name == "cancel" else PHOTOSAFE_BACKDROP_ALPHA
+	match phase_name:
+		"windup":
+			return 0.14
+		"release":
+			return 0.30 if str(_presence.get("backdrop", "")) == "flash" else 0.35
+		"active":
+			return 0.22
+		"recovery":
+			return 0.08
+	return 0.0
+
+
+## Only the accessibility variants ramp; the ordinary presentation keeps its
+## authored per-phase steps.
+func _step_backdrop(delta_seconds: float) -> void:
+	if _backdrop == null or (not _reduced_motion and not _photosensitivity_safe):
+		return
+	var rate := PHOTOSAFE_BACKDROP_RATE if _photosensitivity_safe else REDUCED_MOTION_BACKDROP_RATE
+	_set_backdrop_alpha(move_toward(_backdrop_alpha, _backdrop_target_alpha, rate * delta_seconds))
+
+
+func _set_backdrop_alpha(alpha: float) -> void:
+	_backdrop_max_alpha_step = maxf(_backdrop_max_alpha_step, absf(alpha - _backdrop_alpha))
+	_backdrop_alpha = alpha
+	_backdrop.modulate = _backdrop_color(alpha)
+	_backdrop.visible = alpha > 0.0
+	_presence_state["backdrop_visible"] = _backdrop.visible
+	_presence_state["backdrop_alpha"] = alpha
+	_presence_state["backdrop_max_alpha_step"] = _backdrop_max_alpha_step
 
 
 func _fit_backdrop_to_viewport() -> void:
@@ -217,12 +317,14 @@ func _fit_backdrop_to_viewport() -> void:
 	_backdrop.scale = size / _backdrop.texture.get_size()
 
 
+## Reduced motion suppresses the two motion devices outright; the SFX duck is
+## not motion and plays in every mode.
 func _apply_release_presence() -> void:
-	if _presence.get("camera_shake") == true:
+	if _presence.get("camera_shake") == true and not _reduced_motion:
 		_presence_state["camera_shake_triggered"] = true
 		_shake_camera()
 	var hitstop_ms := float(_presence.get("hitstop_ms", 0.0))
-	if hitstop_ms > 0.0:
+	if hitstop_ms > 0.0 and not _reduced_motion:
 		_presence_state["hitstop_ms"] = hitstop_ms
 		_start_hitstop(hitstop_ms)
 	if _presence.get("sfx_ducking") == true:
@@ -231,7 +333,7 @@ func _apply_release_presence() -> void:
 
 
 func _backdrop_color(alpha: float) -> Color:
-	if str(_presence.get("backdrop", "")) == "flash":
+	if str(_presence.get("backdrop", "")) == "flash" and not _photosensitivity_safe:
 		return Color(0.42, 0.14, 0.56, alpha)
 	return Color(0.025, 0.006, 0.065, alpha)
 
@@ -305,6 +407,9 @@ func _clear_presence() -> void:
 		if node != null and is_instance_valid(node):
 			node.queue_free()
 	_backdrop = null
+	_backdrop_alpha = 0.0
+	_backdrop_target_alpha = 0.0
+	_backdrop_max_alpha_step = 0.0
 	_cast_pose = null
 	_silhouette = null
 

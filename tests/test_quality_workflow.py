@@ -138,6 +138,38 @@ class QualityWorkflowContractTests(unittest.TestCase):
             history_step,
         )
 
+    def test_shallow_candidate_events_deepen_history_for_capture_sources(self) -> None:
+        # FAN-3941: the certification gates prove each capture manifest's
+        # recorded source commit is an ancestor of the candidate; the depth-2
+        # checkout cannot, so CI deepens from the candidate tip in bounded
+        # steps for exactly the manifest-declared sources, and fails closed.
+        start = self.candidate_job.index(
+            "- name: Fetch manifest-declared capture sources for shallow candidates"
+        )
+        end = self.candidate_job.index(
+            "- name: Materialize manifest-declared LFS evidence", start
+        )
+        history_step = self.candidate_job[start:end]
+        self.assertIn("if: github.event_name != 'push'", history_step)
+        self.assertIn(
+            "python3 tools/quality_gate.py --list-manifest-capture-sources", history_step
+        )
+        self.assertIn('test -s "$sources_file"', history_step)
+        self.assertIn('git rev-parse --verify --quiet "${commit}^{commit}"', history_step)
+        self.assertIn('until git merge-base --is-ancestor "$commit" "$head_sha"; do', history_step)
+        self.assertIn('if [ "$depth" -ge 512 ]; then', history_step)
+        self.assertIn("exit 1", history_step)
+        self.assertIn(
+            'git fetch --no-tags --filter=blob:none --depth="$depth" origin "$head_sha"',
+            history_step,
+        )
+        self.assertNotIn("--unshallow", history_step)
+        self.assertNotIn("git lfs", history_step)
+        pinned = self.candidate_job.index(
+            "- name: Fetch pinned legacy commits for shallow candidates"
+        )
+        self.assertLess(pinned, start)
+
     def test_machine_readable_evidence_is_hashed_and_uploaded(self) -> None:
         self.assertIn("build/quality_gate_report.json", self.source)
         self.assertIn("build/quality_gate_report.sha256", self.source)

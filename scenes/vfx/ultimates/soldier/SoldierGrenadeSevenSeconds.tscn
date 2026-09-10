@@ -1,8 +1,19 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_grenade.png" id="1_grenade"]
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/soldier/soldier_victim_impact.gd" id="2_impact"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/soldier/grenade/grenade_spriteframes.tres" id="3_impact_frames"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png" id="4_hero_pose"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.85, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -184,17 +195,35 @@ tracks/13/keys = {
 _data = {"ultimate": SubResource("Animation_seven_seconds")}
 
 [node name="SoldierGrenadeSevenSeconds" type="Node2D"]
+z_index = 3
 script = ExtResource("2_impact")
 victim_frames = ExtResource("3_impact_frames")
 metadata/ultimate_id = "soldier/soldier_grenade"
 metadata/silhouette = "seven_oversized_grenades_seeded_around_one_aim_point"
 metadata/motion_path = "high_lob_then_shared_shrinking_fuse_countdown_over_a_static_seeded_formation"
 metadata/impact_language = "outside_in_chain_detonation_closing_on_a_central_fire_column"
-metadata/max_visual_nodes = 11
+metadata/max_visual_nodes = 13
 metadata/crowd_cap = 26
 metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
-metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved grenade art."
+metadata/visual_node_budget_decision = "Intentional exact drawn-node budget including the FAN-3941 backdrop veil and hero cast pose; crowd_cap retains expansion headroom for approved grenade art."
+
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+visible = false
+z_as_relative = false
+z_index = 2
+self_modulate = Color(1, 1, 1, 0)
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+metadata/fullscreen_layer = true
+
+[node name="HeroPose" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(-24, -18)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_hero_pose")
 
 [node name="LobArc" type="Line2D" parent="."]
 points = PackedVector2Array(-206, 150, -164, 42, -108, -22, -48, -34, 0, -30)

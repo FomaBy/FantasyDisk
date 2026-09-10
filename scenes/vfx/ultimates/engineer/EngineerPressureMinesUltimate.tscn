@@ -47,6 +47,9 @@ metadata/max_visual_nodes = 16
 metadata/crowd_cap = 16
 metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
+metadata/accessibility_sprite = NodePath("MineField")
+metadata/accessibility_hold_frame = 4
+metadata/accessibility_steady_scale = Vector2(1.04, 1.04)
 
 [node name="MineField" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_flipbook")

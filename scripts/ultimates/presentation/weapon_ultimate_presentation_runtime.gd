@@ -27,6 +27,9 @@ var _scene: Node = null
 var _timeline: Timeline = null
 var _headless_mode := -1
 var _last_budget_diagnostic := ""
+## Declared end of the presentation (`timing.cancel`), the bound of a drain.
+var _cancel_seconds := INF
+var _draining := false
 
 
 func _init(headless_mode := -1) -> void:
@@ -42,6 +45,9 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	var runtime = manifest.get("runtime", {})
 	if not runtime is Dictionary:
 		return false
+	var timing = manifest.get("timing", {})
+	_cancel_seconds = float((timing as Dictionary).get("cancel", INF)) if timing is Dictionary else INF
+	_draining = false
 	var scene_path := str((runtime as Dictionary).get("scene_path", ""))
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return false
@@ -113,10 +119,35 @@ func finish(reason: String) -> void:
 		_timeline.finish(reason)
 	_timeline = null
 	_scene = null
+	_draining = false
 
 
 func is_active() -> bool:
 	return _timeline != null
+
+
+## FAN-3941: natural gameplay completion may leave the presentation draining
+## to its declared cancel instead of releasing it at once. Returns false when
+## there is nothing to drain — no live timeline, a headless no-op timeline, no
+## finite declared cancel, or a cancel already passed (a long-lived executor
+## that outlived its presentation) — so the caller finishes immediately, as
+## before. Drain end is detected from the timeline's own clock, because
+## `advance` never self-finishes and `is_active` only tests presence.
+func begin_drain() -> bool:
+	if _timeline == null or str(_timeline.snapshot().get("state", "")) != Timeline.ACTIVE_STATE:
+		return false
+	if not is_finite(_cancel_seconds) or _timeline.elapsed_seconds() >= _cancel_seconds:
+		return false
+	_draining = true
+	return true
+
+
+func is_draining() -> bool:
+	return _draining and _timeline != null
+
+
+func drain_complete() -> bool:
+	return is_draining() and _timeline.elapsed_seconds() >= _cancel_seconds
 
 
 ## Last fail-closed visual-budget decision, suitable for activation diagnostics.

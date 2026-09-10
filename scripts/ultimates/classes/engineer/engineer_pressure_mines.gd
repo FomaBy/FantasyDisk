@@ -1,4 +1,4 @@
-extends Node2D
+extends "res://scenes/vfx/ultimates/engineer/engineer_ultimate_accessibility_driver.gd"
 
 ## Инженер / Прессующие мины — «Умное минное поле».
 ##
@@ -19,21 +19,13 @@ extends Node2D
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_pressure_mines"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_pressure_mines"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_smart_mine.png"
 )
-const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
-const VICTIM_FRAMES := preload(
-	"res://assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres"
-)
-
-var _impacts: Node2D = null
-var _impacts_started := false
-
-
 static func parameter_contract() -> Dictionary:
 	return {
 		"mine_count": {"type": "integer", "minimum": 1, "maximum": 16},
@@ -55,6 +47,10 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+static func new_victim_impact_player() -> Node2D:
+	return ImpactPlayer.new()
+
+
 static func execute(activation) -> float:
 	var count: int = activation.param_int("mine_count", 16)
 	var inner: float = activation.param_float("inner_radius", 80.0)
@@ -72,7 +68,7 @@ static func execute(activation) -> float:
 	var devices: Array[Node] = activation.deploy_temporary(DEVICE_SCENE, {}, count)
 	if points.size() != count or devices.size() != count:
 		return 0.0
-	decorate_and_place(devices, points)
+	decorate_and_place(activation, devices, points)
 	if not activation.set_per_target_damage_cap(
 		activation.param_float("target_cap_fraction", 0.65),
 		activation.param_float("target_cap_flat", 0.0)
@@ -187,7 +183,8 @@ static func detonate_mine(
 	for raw_target in activation.select_targets(points[index], INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
-			activation.deal_damage(
+			deal_damage_with_accessibility(
+				activation,
 				target,
 				damage,
 				{"source": "engineer_smart_mine", "phase": phase},
@@ -219,7 +216,7 @@ static func outer_to_inner_order(points: PackedVector2Array, center: Vector2) ->
 	return order
 
 
-static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:
+static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
 		var device := devices[index] as Node2D
 		if device == null or not is_instance_valid(device):
@@ -232,31 +229,4 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.34
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
-
-
-func present(_event_id: String, payload: Dictionary) -> void:
-	_play_impacts(payload.get("victims"))
-
-
-func finish(_reason: String) -> void:
-	if _impacts != null and is_instance_valid(_impacts):
-		_impacts.finish()
-
-
-func _play_impacts(raw_victims: Variant) -> void:
-	if not raw_victims is Array or (raw_victims as Array).is_empty():
-		return
-	if _impacts == null or not is_instance_valid(_impacts):
-		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
-		_impacts_started = false
-	if _impacts_started:
-		_impacts.enqueue(raw_victims as Array, global_position)
-	else:
-		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
-		_impacts_started = true
-
-
-func _exit_tree() -> void:
-	_impacts = null
-	_impacts_started = false
+		configure_device_visual(activation, device, sprite)

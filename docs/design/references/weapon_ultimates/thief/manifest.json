@@ -13,33 +13,193 @@
     "new_pixellab_assets": "none; no source or runtime PNG was created or modified by FAN-1470",
     "rationale": "The three accepted plates already provide distinct coin, cloak, and smoke silhouettes. This pack adds only class-local timelines, scenes, tests, and evidence; reusing them avoids redundant art generation."
   },
+  "generator_provenance": {
+    "route": "reused_accepted_pixellab_weapon_vfx_no_new_raster_generation",
+    "pixellab_usage": "not_required_no_new_source_frames",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "thief_coin_pouch": {
+        "source_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+        "runtime_scene": "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+        "sha256": "7aaffe24ea62115f55c12267d113621d26505681e36bb235c2ae8fee6fea11be",
+        "pixellab_object_id": "cb77b5fe-3669-4fdf-a269-42f2d999f9d5",
+        "source_manifest": "docs/design/references/attack_vfx/thief_coin_pouch/manifest.json",
+        "note": "Accepted PixelLab weapon-signature plate reused as the timeline element; FAN-1470 and FAN-3941 create no new raster asset."
+      },
+      "thief_shadow_cloak": {
+        "source_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+        "runtime_scene": "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+        "sha256": "41bc98ce172dce7d90d70eb329156213cd355319e9656a0009d8fe1b887c74ed",
+        "pixellab_object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9",
+        "source_manifest": "docs/design/references/attack_vfx/thief_shadow_cloak/manifest.json",
+        "note": "Accepted PixelLab weapon-signature plate reused as the timeline element; FAN-1470 and FAN-3941 create no new raster asset."
+      },
+      "thief_smoke_bomb": {
+        "source_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+        "runtime_scene": "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+        "sha256": "e43fa540e85364ef421fd3082343cba1d6ac66c16e460466692c8ee525646f8d",
+        "pixellab_object_id": "08edb666-7ad1-4675-a39a-d2190b042900",
+        "source_manifest": "docs/design/references/attack_vfx/thief_smoke_bomb/manifest.json",
+        "note": "Accepted PixelLab weapon-signature plate reused as the timeline element; FAN-1470 and FAN-3941 create no new raster asset."
+      }
+    }
+  },
   "weapons": [
     {
       "weapon_id": "thief_coin_pouch",
       "title": "Джекпот Короля",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.70, "active": 1.10, "recovery": 2.30, "cancel": 3.05},
-      "performance": {"max_visual_nodes": 13, "crowd_cap": 13, "max_unique_materials": 1, "max_fullscreen_materials": 1},
-      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100.0, "time_scale_dip": 0.4, "sfx_ducking": true},
-      "identity": {"cast_pose_id": "thief_ultimate_crouched_toss", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_coin_pouch.png", "class_palette_id": "thief_gold_violet_smoke"}
+      "silhouette": "gold coin burst with a small leather pouch",
+      "motion_path": "thirteen staggered coins zig-zag across unique target glints, then return in a crown burst",
+      "impact_language": "bright gold ricochet glints with a final inward jackpot",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.1,
+        "recovery": 2.3,
+        "cancel": 3.05
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.thief.thief_coin_pouch.windup",
+        "release": "weapon_ultimate.phase.thief.thief_coin_pouch.execute",
+        "active": "weapon_ultimate.phase.thief.thief_coin_pouch.active",
+        "recovery": "weapon_ultimate.phase.thief.thief_coin_pouch.recover",
+        "cancel": "weapon_ultimate.phase.thief.thief_coin_pouch.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 15,
+        "crowd_cap": 15,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the staggered thirteen-coin ricochet hops and the crown-burst return carry the beat as position and scale steps on the unchanged timing; the backdrop veil still swells to 0.30 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0044 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      }
     },
     {
       "weapon_id": "thief_shadow_cloak",
       "title": "Безмолвный Приговор",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.82, "active": 1.22, "recovery": 2.57, "cancel": 3.20},
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 13, "max_unique_materials": 1, "max_fullscreen_materials": 1},
-      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100.0, "time_scale_dip": 0.4, "sfx_ducking": true},
-      "identity": {"cast_pose_id": "thief_ultimate_crouched_toss", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png", "class_palette_id": "thief_gold_violet_smoke"}
+      "silhouette": "violet cloak crescent with a dagger-eye sweep",
+      "motion_path": "eight marked targets receive sequential phantom backstabs along a tightening ellipse",
+      "impact_language": "staggered violet slash arrivals followed by one red-line collapse",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.82,
+        "active": 1.22,
+        "recovery": 2.57,
+        "cancel": 3.2
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.thief.thief_shadow_cloak.windup",
+        "release": "weapon_ultimate.phase.thief.thief_shadow_cloak.execute",
+        "active": "weapon_ultimate.phase.thief.thief_shadow_cloak.active",
+        "recovery": "weapon_ultimate.phase.thief.thief_shadow_cloak.recover",
+        "cancel": "weapon_ultimate.phase.thief.thief_shadow_cloak.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 13,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so each sequential phantom-stab arrival is a scale-and-alpha pulse on its mark and the red-line collapse a positional close on the unchanged timing; the backdrop veil still swells to 0.32 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.32 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      }
     },
     {
       "weapon_id": "thief_smoke_bomb",
       "title": "Идеальное Ограбление",
       "scene_path": "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.94, "active": 1.34, "recovery": 2.84, "cancel": 3.42},
-      "performance": {"max_visual_nodes": 7, "crowd_cap": 13, "max_unique_materials": 1, "max_fullscreen_materials": 1},
-      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100.0, "time_scale_dip": 0.4, "sfx_ducking": true},
-      "identity": {"cast_pose_id": "thief_ultimate_crouched_toss", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png", "class_palette_id": "thief_gold_violet_smoke"}
+      "silhouette": "blue-grey smoke dome with violet pressure motes",
+      "motion_path": "a central dome expands around the hero while six outlined pressure marks drift at its edge",
+      "impact_language": "the full dome snap-collapses into an outward pressure burst",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.94,
+        "active": 1.34,
+        "recovery": 2.84,
+        "cancel": 3.42
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.thief.thief_smoke_bomb.windup",
+        "release": "weapon_ultimate.phase.thief.thief_smoke_bomb.execute",
+        "active": "weapon_ultimate.phase.thief.thief_smoke_bomb.active",
+        "recovery": "weapon_ultimate.phase.thief.thief_smoke_bomb.recover",
+        "cancel": "weapon_ultimate.phase.thief.thief_smoke_bomb.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 13,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the smoke dome's growth and its snap collapse carry the beat as scale steps of a translucent silhouette on the unchanged timing; the backdrop veil still swells to 0.28 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0074 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.28 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      }
     }
   ],
   "assets": [
@@ -47,28 +207,48 @@
       "weapon_id": "thief_coin_pouch",
       "source_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
       "runtime_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
-      "canvas": [256, 256],
+      "canvas": [
+        256,
+        256
+      ],
       "sha256": "7aaffe24ea62115f55c12267d113621d26505681e36bb235c2ae8fee6fea11be",
-      "pixellab": {"object_id": "cb77b5fe-3669-4fdf-a269-42f2d999f9d5", "source_manifest": "docs/design/references/attack_vfx/thief_coin_pouch/manifest.json"}
+      "pixellab": {
+        "object_id": "cb77b5fe-3669-4fdf-a269-42f2d999f9d5",
+        "source_manifest": "docs/design/references/attack_vfx/thief_coin_pouch/manifest.json"
+      }
     },
     {
       "weapon_id": "thief_shadow_cloak",
       "source_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
       "runtime_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
-      "canvas": [256, 256],
+      "canvas": [
+        256,
+        256
+      ],
       "sha256": "41bc98ce172dce7d90d70eb329156213cd355319e9656a0009d8fe1b887c74ed",
-      "pixellab": {"object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9", "source_manifest": "docs/design/references/attack_vfx/thief_shadow_cloak/manifest.json"}
+      "pixellab": {
+        "object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9",
+        "source_manifest": "docs/design/references/attack_vfx/thief_shadow_cloak/manifest.json"
+      }
     },
     {
       "weapon_id": "thief_smoke_bomb",
       "source_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
       "runtime_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
-      "canvas": [256, 256],
+      "canvas": [
+        256,
+        256
+      ],
       "sha256": "e43fa540e85364ef421fd3082343cba1d6ac66c16e460466692c8ee525646f8d",
-      "pixellab": {"object_id": "08edb666-7ad1-4675-a39a-d2190b042900", "source_manifest": "docs/design/references/attack_vfx/thief_smoke_bomb/manifest.json"}
+      "pixellab": {
+        "object_id": "08edb666-7ad1-4675-a39a-d2190b042900",
+        "source_manifest": "docs/design/references/attack_vfx/thief_smoke_bomb/manifest.json"
+      }
     }
   ],
   "evidence": {
+    "capture_script": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture.gd",
+    "focused_test": "tests/ultimates/presentation/thief_ultimate_four_viewport_capture_test.gd",
     "contact_sheets": [
       "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_648p.png",
       "docs/design/reference-assets-lfs/thief-ultimate-timelines-fan3890/thief_ultimate_timelines_720p.png",
@@ -83,19 +263,73 @@
     },
     "frame_local_beats": {
       "thief_coin_pouch": [
-        {"phase": "release", "time": 0.70, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 1.10, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.30, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.7,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 1.1,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.3,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ],
       "thief_shadow_cloak": [
-        {"phase": "release", "time": 0.82, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 1.22, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.57, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.82,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 1.22,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.57,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ],
       "thief_smoke_bomb": [
-        {"phase": "release", "time": 0.94, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 1.34, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.84, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.94,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 1.34,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.84,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ]
     },
     "live_capture": {
@@ -138,6 +372,44 @@
     "focused_gate": {
       "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_ultimate_presentation_test.gd",
       "exit_code": 0
+    },
+    "certification": {
+      "issue": "FAN-3941",
+      "capture_manifest": "docs/design/references/weapon_ultimates/thief/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/thief/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/thief",
+      "capture_script": "tests/ultimates/presentation/thief_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/thief_certification_capture_test.gd",
+      "source_ref": "agent/fable/e50731ad6088",
+      "source_commit_sha": "fdae4dd5ecc14f98b60f5821a1a56e69774dfae3",
+      "source_tree_sha": "66bf3389dd94e98a5b8a87a6ac758ee9f44b8d3a",
+      "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
+      "exclusive_gate": true,
+      "weapon_ids": [
+        "thief_coin_pouch",
+        "thief_shadow_cloak",
+        "thief_smoke_bomb"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "impact",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "frames": 84,
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock and the exclusive process admission, with the reduced-motion and photosensitivity-safe modes published through the production ultimate_accessibility_settings snapshot; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
     }
   },
   "runtime_boundary": {
