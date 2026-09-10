@@ -273,7 +273,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			elapsed += simulated_step
 		paused = true
 		RenderingServer.render_loop_enabled = true
-		await RenderingServer.frame_post_draw
+		RenderingServer.force_draw()
 		var frame := root.get_texture().get_image()
 		if frame == null or frame.get_size() != size:
 			main.queue_free()
