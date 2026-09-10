@@ -51,6 +51,10 @@ const HAZARD_MIN_DELTA_BOUNDS := Vector2i(80, 80)
 const HAZARD_CAPTURE_X_RATIO := 0.84
 const HAZARD_CAPTURE_Y_RATIO := 0.69
 const HAZARD_PROBE_HALF_EXTENT := 110
+const CAPTURE_FIXED_FPS := 60
+const CAPTURE_FIXED_DELTA_SECONDS := 1.0 / 60.0
+const CAPTURE_FIXED_STEP_SAMPLE_COUNT := 8
+const CAPTURE_FIXED_STEP_TOLERANCE := 1.0e-9
 
 const WEAPON_IDS: Array[String] = [
 	"engineer_sentry_wrench",
@@ -164,6 +168,8 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"is_queued_for_deletion()",
 		"repeat_sha256",
 		"CAPTURE_FIXED_FPS",
+		"_measure_fixed_step_witness",
+		"get_process_delta_time()",
 		"CAPTURE_BACKEND_WARMUP",
 		"_capture_one(0, first_capture, false)",
 	]:
@@ -200,10 +206,23 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, errors: A
 	var realtime_source := realtime_command.get("capture_source", {}) as Dictionary
 	realtime_source["command"] = str(realtime_source.get("command", "")).replace("--fixed-fps 60 ", "")
 	_expect(not manifest_violations(realtime_command, profile).is_empty(), "a capture command without fixed 60 FPS must fail closed", errors)
+	var user_arg_fixed_fps := manifest.duplicate(true)
+	var user_arg_source := user_arg_fixed_fps.get("capture_source", {}) as Dictionary
+	user_arg_source["command"] = str(user_arg_source.get("command", "")) + " -- --fixed-fps 60"
+	_expect(not manifest_violations(user_arg_fixed_fps, profile).is_empty(), "a fixed-FPS token after the user-argument separator must fail closed", errors)
 	var unpinned_command := manifest.duplicate(true)
 	var unpinned_source := unpinned_command.get("capture_source", {}) as Dictionary
 	unpinned_source["command"] = str(unpinned_source.get("command", "")).replace("FAN3939_CAPTURE_SOURCE_TREE=%s" % str(unpinned_source.get("source_tree_sha", "")), "")
 	_expect(not manifest_violations(unpinned_command, profile).is_empty(), "a capture command without its recorded source-tree assignment must fail closed", errors)
+	var bad_fixed_delta := manifest.duplicate(true)
+	var bad_delta_source := bad_fixed_delta.get("capture_source", {}) as Dictionary
+	var bad_delta_witness := bad_delta_source.get("fixed_step_witness", {}) as Dictionary
+	var bad_observed_deltas := bad_delta_witness.get("observed_deltas_seconds", []) as Array
+	if bad_observed_deltas.is_empty():
+		errors.append("a valid manifest must include a fixed-step witness for the delta negative probe")
+	else:
+		bad_observed_deltas[0] = 0.02
+		_expect(not manifest_violations(bad_fixed_delta, profile).is_empty(), "a non-60-FPS process-delta witness must fail closed", errors)
 	if (manifest.get("samples", []) as Array).is_empty():
 		errors.append("a valid manifest must provide a sample for artifact negative probes")
 		return
@@ -561,18 +580,15 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 		violations.append("capture_source.pin")
 	if int(source.get("controlled_seed", -1)) != CAPTURE_SEED:
 		violations.append("capture_source.controlled_seed")
-	if int(source.get("fixed_fps", -1)) != 60:
+	if int(source.get("fixed_fps", -1)) != CAPTURE_FIXED_FPS:
 		violations.append("capture_source.fixed_fps")
+	if not fixed_step_witness_is_valid(source.get("fixed_step_witness", {}) as Dictionary):
+		violations.append("capture_source.fixed_step_witness")
 	if not str(source.get("backend_warmup", "")).contains("discarded complete first context"):
 		violations.append("capture_source.backend_warmup")
 	var command := str(source.get("command", ""))
-	if not command.contains("--windowed") or not command.contains("FSD_GODOT_EXCLUSIVE=1"):
-		violations.append("capture_source.windowed_command")
-	if not command_has_flag_value(command, "--fixed-fps", "60"):
-		violations.append("capture_source.fixed_fps_command")
-	if not command_has_assignment(command, "FAN3939_CAPTURE_SOURCE_SHA", str(source.get("source_commit_sha", ""))) \
-			or not command_has_assignment(command, "FAN3939_CAPTURE_SOURCE_TREE", str(source.get("source_tree_sha", ""))):
-		violations.append("capture_source.command_pin")
+	if command != canonical_capture_command(source):
+		violations.append("capture_source.command_shape")
 	if not str(source.get("capture_method", "")).contains("Player.activate_ultimate") or not str(source.get("capture_method", "")).contains("apply_settings"):
 		violations.append("capture_source.runtime_path")
 	var expected_weapons := WEAPON_IDS.duplicate()
@@ -637,19 +653,26 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 	return violations
 
 
-static func command_has_flag_value(command: String, flag: String, expected_value: String) -> bool:
-	var tokens := command.split(" ", false)
-	for index in tokens.size():
-		if str(tokens[index]) == flag and index + 1 < tokens.size() \
-				and str(tokens[index + 1]) == expected_value:
-			return true
-	return false
-
-
-static func command_has_assignment(command: String, key: String, expected_value: String) -> bool:
-	if expected_value.is_empty():
+static func fixed_step_witness_is_valid(witness: Dictionary) -> bool:
+	if int(witness.get("sample_count", -1)) != CAPTURE_FIXED_STEP_SAMPLE_COUNT \
+			or not is_equal_approx(float(witness.get("expected_delta_seconds", -1.0)), CAPTURE_FIXED_DELTA_SECONDS) \
+			or int(witness.get("process_fps", -1)) != CAPTURE_FIXED_FPS \
+			or not is_equal_approx(float(witness.get("tolerance_seconds", -1.0)), CAPTURE_FIXED_STEP_TOLERANCE):
 		return false
-	return command.split(" ", false).has("%s=%s" % [key, expected_value])
+	var observed_deltas: Variant = witness.get("observed_deltas_seconds", [])
+	if not observed_deltas is Array or (observed_deltas as Array).size() != CAPTURE_FIXED_STEP_SAMPLE_COUNT:
+		return false
+	for raw_delta in observed_deltas as Array:
+		if not (raw_delta is float or raw_delta is int) \
+				or absf(float(raw_delta) - CAPTURE_FIXED_DELTA_SECONDS) > CAPTURE_FIXED_STEP_TOLERANCE:
+			return false
+	return true
+
+
+static func canonical_capture_command(source: Dictionary) -> String:
+	return "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script %s" % [
+		str(source.get("source_commit_sha", "")), str(source.get("source_tree_sha", "")), CAPTURE_FIXED_FPS, LIVE_CAPTURE_SCRIPT,
+	]
 
 
 ## The renderer preloads this script, keeping the capture-only materialization

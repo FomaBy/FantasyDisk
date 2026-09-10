@@ -23,12 +23,16 @@ const CAPTURE_SETTLE_FRAMES := 3
 ## `--fixed-fps` is command-line owned, so retain its required value beside the
 ## source command rather than attempting to read consumed engine arguments.
 const CAPTURE_FIXED_FPS := 60
+const CAPTURE_FIXED_DELTA_SECONDS := 1.0 / 60.0
+const CAPTURE_FIXED_STEP_SAMPLE_COUNT := 8
+const CAPTURE_FIXED_STEP_TOLERANCE := 1.0e-9
 const CAPTURE_BACKEND_WARMUP := "one discarded complete first context before the certified matrix"
 const CAPTURE_SOURCE_REF := "agent/codex-dev-terra-b/b00766a9083d"
 
 var _capture_source: Dictionary = {}
 var _samples: Array[Dictionary] = []
 var _time_scale_before_capture := 1.0
+var _fixed_step_witness: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -36,14 +40,22 @@ func _initialize() -> void:
 		print("FAN-3939 Engineer certification capture skipped: headless runs never create certification PNG evidence.")
 		quit(0)
 		return
+	if PlayerScene == null or EnemySpitterScene == null or HudAdapter == null:
+		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
+		quit(1)
+		return
+	## Measure before Engine.time_scale is frozen: this proves that the consumed
+	## engine flag, rather than the recorded command text alone, produced exactly
+	## the required 1/60 process cadence. A bad cadence exits before any warmup,
+	## artifact write, or manifest write.
+	_fixed_step_witness = await _measure_fixed_step_witness()
+	if _fixed_step_witness.is_empty():
+		quit(1)
+		return
 	_capture_source = _read_capture_source()
 	if not Spec.is_git_sha(str(_capture_source.get("source_commit_sha", ""))) \
 			or not Spec.is_git_sha(str(_capture_source.get("source_tree_sha", ""))):
 		push_error("FAN-3939 Engineer certification capture requires FAN3939_CAPTURE_SOURCE_SHA and FAN3939_CAPTURE_SOURCE_TREE from the committed renderer source.")
-		quit(1)
-		return
-	if PlayerScene == null or EnemySpitterScene == null or HudAdapter == null:
-		push_error("FAN-3939 Engineer certification capture cannot load the shipped Player, EnemySpitter, or UltimateHudRuntimeAdapter runtime resources.")
 		quit(1)
 		return
 	## Renderer frame deltas are deliberately excluded from the evidence state.
@@ -119,15 +131,34 @@ func _read_capture_source() -> Dictionary:
 		"source_tree_sha": source_tree,
 		"controlled_seed": Spec.CAPTURE_SEED,
 		"fixed_fps": CAPTURE_FIXED_FPS,
+		"fixed_step_witness": _fixed_step_witness.duplicate(true),
 		"backend_warmup": CAPTURE_BACKEND_WARMUP,
 		"godot_version": str(version.get("string", "unknown")),
 		"renderer": "display=%s; rendering_method=%s" % [
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render at a required fixed 60 FPS; one complete first context is read and discarded to warm the new backend before the certified matrix; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"capture_method": "windowed SubViewport render at a required fixed 60 FPS, proven by eight pre-freeze 1/60 process-delta observations; one complete first context is read and discarded to warm the new backend before the certified matrix; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --fixed-fps %d --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree, CAPTURE_FIXED_FPS],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
+	}
+
+
+func _measure_fixed_step_witness() -> Dictionary:
+	var observed_deltas: Array[float] = []
+	for _sample in CAPTURE_FIXED_STEP_SAMPLE_COUNT:
+		await process_frame
+		var observed := root.get_process_delta_time()
+		observed_deltas.append(observed)
+		if absf(observed - CAPTURE_FIXED_DELTA_SECONDS) > CAPTURE_FIXED_STEP_TOLERANCE:
+			push_error("FAN-3939 Engineer certification requires --fixed-fps %d before capture; observed process delta %.12f instead of %.12f." % [CAPTURE_FIXED_FPS, observed, CAPTURE_FIXED_DELTA_SECONDS])
+			return {}
+	return {
+		"sample_count": CAPTURE_FIXED_STEP_SAMPLE_COUNT,
+		"expected_delta_seconds": CAPTURE_FIXED_DELTA_SECONDS,
+		"observed_deltas_seconds": observed_deltas,
+		"process_fps": CAPTURE_FIXED_FPS,
+		"tolerance_seconds": CAPTURE_FIXED_STEP_TOLERANCE,
 	}
 
 

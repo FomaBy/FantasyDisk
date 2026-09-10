@@ -56,10 +56,13 @@ persisted setting.
 
 Before readback, the documented windowed command requires `--fixed-fps 60`, so
 the renderer keeps advancing at a bounded rate instead of depending on host
-real-time synchronization. Before the certification matrix, it builds, reads,
-and discards one complete real first context to warm the new windowed backend;
-that preflight never persists a PNG or manifest sample. The renderer then
-advances the real activation and presentation only with fixed
+real-time synchronization. Before freezing `Engine.time_scale`, the renderer
+observes eight process deltas and refuses to write any evidence unless each is
+the required 1/60 second step; the measured witness is retained in the manifest.
+Before the certification matrix, it builds, reads, and discards one complete
+real first context to warm the new windowed backend; that preflight never
+persists a PNG or manifest sample. The renderer then advances the real
+activation and presentation only with fixed
 interior-of-phase tween/runtime steps. Pressure Mines invokes
 the shipped smart-chain and outer-to-inner finale callbacks on that real
 activation into the callback state for the requested sample, so a renderer
