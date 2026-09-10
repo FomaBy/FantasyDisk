@@ -17,11 +17,19 @@ extends SceneTree
 ##     python3 tools/godot_gate.py --headless --path . --fixed-fps 60 \
 ##       --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd
 ## Windowed (adds real time-scale, camera and framebuffer luminance evidence):
-##     FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed \
+##     FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 \
+##       python3 tools/godot_gate.py --path . --windowed \
 ##       --fixed-fps 60 \
 ##       --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd
 ## `DARK_MAGE_ACCESSIBILITY_REPORT=<path>` writes every cell's sampled metrics
 ## as JSON for the class runtime report.
+##
+## Each windowed `frame_post_draw` wait has an independent, time-scale-proof
+## deadline. A missed draw therefore reports its cell/stage/renderer and runs
+## ordinary cleanup instead of leaving the test suspended until the gate's
+## process watchdog. The documented 180-second gate bound is a second,
+## process-level diagnostic only; it is lower than the default and never
+## substitutes for the in-test cleanup-capable deadline.
 ##
 ## One test-side write exists: headless Godot owns no display, so the shared
 ## presentation runtime would fall back to its no-scene mode; the host's
@@ -75,15 +83,77 @@ const PHOTOSAFE_MAX_BACKDROP_ALPHA := 0.125
 const PHOTOSAFE_FLIPBOOK_ALPHA := 0.6
 const PHOTOSAFE_IMPACT_ALPHA := 0.6
 const LUMINANCE_STRIDE := 8
+const FRAMEBUFFER_WAIT_DEADLINE_SECONDS := 2.0
+const WINDOWED_GATE_COMMAND := "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd"
+
+
+## `--fixed-fps` advances simulation time without wall-clock synchronization,
+## so a SceneTreeTimer cannot provide a real deadline. This test-only node
+## stays process-always and checks `Time`. It arms `frame_post_draw` before
+## explicitly drawing the live viewport, so every successful luminance sample
+## still follows a real completed draw; the caller can recover and clean up if
+## either the explicit draw or automatic render loop makes no progress.
+class FramePostDrawDeadline extends Node:
+	signal settled
+
+	var _settled := false
+	var _drew_frame := false
+	var _settled_by := ""
+	var _started_msec := 0
+	var _deadline_msec := 0
+	var _process_ticks := 0
+
+	func await_frame(tree: SceneTree, timeout_seconds: float) -> bool:
+		_started_msec = Time.get_ticks_msec()
+		_deadline_msec = _started_msec + ceili(timeout_seconds * 1000.0)
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		RenderingServer.frame_post_draw.connect(_on_frame_post_draw, CONNECT_ONE_SHOT)
+		tree.root.add_child(self)
+		set_process(true)
+		RenderingServer.force_draw(false)
+		if not _settled:
+			await settled
+		if RenderingServer.frame_post_draw.is_connected(_on_frame_post_draw):
+			RenderingServer.frame_post_draw.disconnect(_on_frame_post_draw)
+		queue_free()
+		return _drew_frame
+
+	func _on_frame_post_draw() -> void:
+		_finish(true)
+
+	func _process(_delta: float) -> void:
+		_process_ticks += 1
+		if Time.get_ticks_msec() >= _deadline_msec:
+			_finish(false)
+
+	func _finish(drew_frame: bool) -> void:
+		if _settled:
+			return
+		_settled = true
+		_drew_frame = drew_frame
+		_settled_by = "frame_post_draw" if drew_frame else "wall_clock_watchdog"
+		set_process(false)
+		settled.emit()
+
+	func settled_by() -> String:
+		return _settled_by
+
+	func process_ticks() -> int:
+		return _process_ticks
 
 var _errors: Array[String] = []
 var _records: Array = []
 var _manifest_timing := {}
 var _headless := false
+var _progress_events: Array[Dictionary] = []
+var _diagnostics: Array[Dictionary] = []
+var _run_started_msec := 0
 
 
 func _initialize() -> void:
 	_headless = DisplayServer.get_name() == "headless"
+	_run_started_msec = Time.get_ticks_msec()
+	_progress("run", "started", {"command": WINDOWED_GATE_COMMAND})
 	seed(RUN_SEED)
 	var manifest := _load_json(MANIFEST_PATH)
 	for raw_weapon in manifest.get("weapons", []) as Array:
@@ -94,6 +164,7 @@ func _initialize() -> void:
 		for weapon_id in WEAPON_IDS:
 			await _run_cell(str(weapon_id), raw_mode as Dictionary)
 	_restore_settings(backup)
+	_progress("run", "settings_restored", {"completed_cells": _records.size(), "errors": _errors.size()})
 	_write_report()
 	if _errors.is_empty():
 		print("dark_mage_accessibility_modes_test: PASS (%d cells, %s)" % [_records.size(), "headless" if _headless else "windowed"])
@@ -108,6 +179,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 	var context := "%s/%s" % [weapon_id, str(mode["id"])]
 	var reduced := bool(mode["reduced_motion"])
 	var photosafe := bool(mode["photosensitivity_safe"])
+	_progress(context, "cell_started", {"reduced_motion": reduced, "photosensitivity_safe": photosafe})
 	_persist(reduced, photosafe)
 
 	var main := (load(MAIN_SCENE_PATH) as PackedScene).instantiate()
@@ -116,6 +188,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 	await process_frame
 	await process_frame
 	var published := ACCESSIBILITY.read_snapshot(root)
+	_progress(context, "main_snapshot_published")
 	_check(bool(published[ACCESSIBILITY.REDUCED_MOTION_KEY]) == reduced
 		and bool(published[ACCESSIBILITY.PHOTOSENSITIVITY_SAFE_KEY]) == photosafe,
 		"%s: Main must publish the persisted settings.cfg snapshot on the root" % context)
@@ -135,6 +208,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 		await process_frame
 	_freeze_player_attacks(player)
 	var hazards := await _prepare_hazards(main, player, HAZARD_COUNT)
+	_progress(context, "hazards_prepared", {"hazards": hazards.size()})
 	_check(hazards.size() == HAZARD_COUNT, "%s: placed %d of %d shipped Enemy hazards" % [context, hazards.size(), HAZARD_COUNT])
 	var host := PlayerHost.for_player(player)
 	if _headless:
@@ -147,6 +221,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(bool(player.call("activate_ultimate")), "%s: Player.activate_ultimate() must start the cast" % context)
+	_progress(context, "ultimate_activated")
 	var controller = host.controller()
 	if not controller.is_active():
 		_check(false, "%s: the generic controller must own a live activation" % context)
@@ -160,6 +235,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 		await _teardown(main)
 		return
 
+	_progress(context, "cast_sampling_started")
 	var observed := await _sample_cast(context, main, player, scene, effect, hazards, camera, camera_offset_before, controller)
 	observed["weapon_id"] = weapon_id
 	observed["mode"] = str(mode["id"])
@@ -168,7 +244,11 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 	observed["display"] = "headless" if _headless else "windowed"
 	observed["hazards"] = hazards.size()
 	_records.append(observed)
-	_assert_cell(context, weapon_id, reduced, photosafe, hazards.size(), observed)
+	if bool(observed.get("framebuffer_wait_timed_out", false)):
+		_progress(context, "cell_failed_closed_after_framebuffer_timeout", observed.get("framebuffer_wait_diagnostic", {}) as Dictionary)
+	else:
+		_assert_cell(context, weapon_id, reduced, photosafe, hazards.size(), observed)
+		_progress(context, "cell_assertions_complete")
 
 	if controller.is_active():
 		PlayerHost.reset(player)
@@ -183,6 +263,7 @@ func _run_cell(weapon_id: String, mode: Dictionary) -> void:
 	if camera != null and is_instance_valid(camera):
 		_check(camera.offset.is_equal_approx(camera_offset_before), "%s: the camera offset must be restored" % context)
 	await _teardown(main)
+	_progress(context, "cell_cleanup_complete", {"framebuffer_wait_timed_out": bool(observed.get("framebuffer_wait_timed_out", false))})
 
 
 func _sample_cast(context: String, main: Node, player: Node2D, scene: Node2D, effect: Node,
@@ -214,6 +295,9 @@ func _sample_cast(context: String, main: Node, player: Node2D, scene: Node2D, ef
 	var elapsed := 0.0
 	var frame := 0
 	var viewport := player.get_viewport()
+	var framebuffer_wait_count := 0
+	var max_framebuffer_wait_msec := 0
+	var framebuffer_wait_diagnostic: Dictionary = {}
 	while elapsed < CAST_CAP_SECONDS and controller.is_active():
 		await process_frame
 		## The process delta is scaled by the hitstop dip; the host feeds the
@@ -258,7 +342,12 @@ func _sample_cast(context: String, main: Node, player: Node2D, scene: Node2D, ef
 			event["time"] = snappedf(elapsed, 0.001)
 			flash_events.append(event)
 		if not _headless and frame % 2 == 0:
-			await RenderingServer.frame_post_draw
+			var framebuffer_wait := await _await_framebuffer_draw(context, frame, elapsed)
+			framebuffer_wait_count += 1
+			max_framebuffer_wait_msec = maxi(max_framebuffer_wait_msec, int(framebuffer_wait["waited_wall_msec"]))
+			if not bool(framebuffer_wait["drew_frame"]):
+				framebuffer_wait_diagnostic = framebuffer_wait
+				break
 			var luminance := _sample_luminance(viewport)
 			var changed := _changed_ratio(previous_luminance, luminance)
 			max_changed_ratio = maxf(max_changed_ratio, changed)
@@ -310,7 +399,65 @@ func _sample_cast(context: String, main: Node, player: Node2D, scene: Node2D, ef
 		"max_luminance_step": snappedf(max_luminance_step, 0.0001),
 		"max_changed_pixel_ratio": snappedf(max_changed_ratio, 0.0001),
 		"luminance_series": luminance_samples,
+		"framebuffer_wait_count": framebuffer_wait_count,
+		"max_framebuffer_wait_msec": max_framebuffer_wait_msec,
+		"framebuffer_wait_timed_out": not framebuffer_wait_diagnostic.is_empty(),
+		"framebuffer_wait_diagnostic": framebuffer_wait_diagnostic,
 	}
+
+
+func _await_framebuffer_draw(context: String, frame: int, cast_elapsed: float) -> Dictionary:
+	var started_msec := Time.get_ticks_msec()
+	_progress(context, "framebuffer_wait_begin", {
+		"frame": frame,
+		"cast_elapsed_seconds": snappedf(cast_elapsed, 0.001),
+		"deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+	})
+	var deadline := FramePostDrawDeadline.new()
+	var drew_frame: bool = await deadline.await_frame(self, FRAMEBUFFER_WAIT_DEADLINE_SECONDS)
+	var waited_msec := Time.get_ticks_msec() - started_msec
+	var result := _runtime_metadata()
+	result.merge({
+		"context": context,
+		"stage": "framebuffer_wait",
+		"frame": frame,
+		"cast_elapsed_seconds": snappedf(cast_elapsed, 0.001),
+		"deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
+		"waited_wall_msec": waited_msec,
+		"drew_frame": drew_frame,
+		"settled_by": deadline.settled_by(),
+		"watchdog_process_ticks": deadline.process_ticks(),
+		"command": WINDOWED_GATE_COMMAND,
+	}, true)
+	if drew_frame:
+		return result
+	result["kind"] = "framebuffer_wait_timeout"
+	_diagnostics.append(result.duplicate(true))
+	_progress(context, "framebuffer_wait_timeout", result)
+	_check(false, "%s: framebuffer wait timed out after %dms at frame %d (display=%s renderer=%s; command: %s)" % [
+		context, waited_msec, frame, str(result["display_server"]), str(result["renderer"]), WINDOWED_GATE_COMMAND,
+	])
+	return result
+
+
+func _runtime_metadata() -> Dictionary:
+	return {
+		"display_server": DisplayServer.get_name(),
+		"renderer": RenderingServer.get_current_rendering_method(),
+		"render_loop_enabled": RenderingServer.render_loop_enabled,
+		"godot": str(Engine.get_version_info().get("string", "")),
+		"wall_elapsed_msec": Time.get_ticks_msec() - _run_started_msec,
+	}
+
+
+func _progress(context: String, stage: String, details: Dictionary = {}) -> void:
+	var event := _runtime_metadata()
+	event["context"] = context
+	event["stage"] = stage
+	for key in details:
+		event[key] = details[key]
+	_progress_events.append(event)
+	print("dark_mage_accessibility_modes_test: progress %s" % JSON.stringify(event))
 
 
 func _assert_cell(context: String, weapon_id: String, reduced: bool, photosafe: bool, hazards: int, observed: Dictionary) -> void:
@@ -568,7 +715,12 @@ func _write_report() -> void:
 		"display": "headless" if _headless else "windowed",
 		"godot": Engine.get_version_info().get("string", ""),
 		"renderer": RenderingServer.get_current_rendering_method(),
+		"render_loop_enabled": RenderingServer.render_loop_enabled,
+		"windowed_gate_command": WINDOWED_GATE_COMMAND,
+		"framebuffer_wait_deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
 		"hazards": HAZARD_COUNT,
+		"progress": _progress_events,
+		"diagnostics": _diagnostics,
 		"cells": _records,
 	}, "  "))
 	file.close()
