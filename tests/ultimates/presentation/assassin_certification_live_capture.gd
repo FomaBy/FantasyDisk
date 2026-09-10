@@ -203,6 +203,10 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		main.queue_free()
 		await process_frame
 		return "%s/%s/%s produced no live player" % [weapon_id, mode_id, viewport["id"]]
+	## The arena and enemies remain live, but certification must not race a
+	## random pre-cast death while it lays out the declared crowd sample.
+	player.set("max_health", HAZARD_HEALTH)
+	player.set("health", HAZARD_HEALTH)
 	var hud_layer := main.get("hud_layer") as CanvasLayer
 	var hud_root: Control = null
 	if hud_layer != null:
