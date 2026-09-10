@@ -102,7 +102,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback and unrelated root class-weapon residue disabled while real damage and the shipped Engineer UltimateVictimImpactPlayer remain active; real ElitePoisonZone/HazardTelegraph zone/rim layers are pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before capture clocks freeze; each saved native frame is the visible half of a frozen visible-versus-hidden probe that hides only that real telegraph and records required pixel-delta metrics; Player readback pose, authored AnimatedSprite2D frame progress, and visible victim-impact flipbooks pinned before UPDATE_ONCE then UPDATE_DISABLED readback; a second fresh 48-context recapture must match every first-pass SHA-256 before manifest write",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -131,7 +131,15 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		push_error("FAN-3939 Engineer certification live frame failed: %s" % reason)
 		return {}
 	await _finalize_viewport_for_readback(viewport)
-	var image := viewport.get_texture().get_image()
+	var telegraph := viewport.get_node_or_null("ElitePoisonZone/HazardTelegraph") as CanvasItem
+	var rendered_probe := await _render_hazard_visibility_probe(viewport, telegraph, size)
+	var image := rendered_probe.get("visible_image") as Image
+	var hazard_visibility := rendered_probe.duplicate(false)
+	hazard_visibility.erase("visible_image")
+	if not Spec.hazard_visibility_probe_is_readable(hazard_visibility):
+		_cleanup_viewport(viewport)
+		push_error("FAN-3939 Engineer certification rejected an unreadable real HazardTelegraph probe: %s" % JSON.stringify(hazard_visibility))
+		return {}
 	if image == null or image.is_empty() or image.get_size() != size:
 		_cleanup_viewport(viewport)
 		push_error("FAN-3939 Engineer certification readback was empty or wrong-sized: %s" % str(capture["id"]))
@@ -156,13 +164,14 @@ func _capture_one(capture_index: int, capture: Dictionary) -> Dictionary:
 		"path": output,
 		"layout": "isolated_native_frame",
 		"sha256": digest,
+		"hazard_visibility": hazard_visibility,
 		## Filled only by the second fresh capture pass after its hash is compared
 		## to this first-pass digest in `_initialize()`.
 		"repeat_sha256": "",
 		"runtime_context": {
 			"player": "scenes/Player.tscn",
 			"victims": _mode_victim_count(str(capture["mode_id"])),
-			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph",
+			"hazard": "EnemySpitter._spawn_elite_hazard -> ElitePoisonZone/HazardTelegraph; real zone/rim pinned to HazardVfx authored post-fade scale and alpha 0.62/0.90 before frozen visible-vs-hidden native-frame pixel proof",
 			"hud": "UltimateHudRuntimeAdapter -> UltimateHudWidget",
 			"victim_impact": "real damage asserted; scene-owned UltimateVictimImpactPlayer retained visibly at its first readable frame; generic Enemy combat-feedback labels/ticks suppressed only for deterministic capture",
 		},
@@ -218,6 +227,8 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	var hazard := _spawn_real_hazard(viewport, enemies[0], Vector2(float(size.x) * 0.84, float(size.y) * 0.69))
 	if hazard == null or hazard.get_node_or_null("HazardTelegraph") == null:
 		return _failed_viewport(viewport, "real ElitePoisonZone/HazardTelegraph did not spawn")
+	if not Spec.materialize_hazard_telegraph(hazard):
+		return _failed_viewport(viewport, "real ElitePoisonZone/HazardTelegraph could not materialize its authored visible layers")
 	for enemy in enemies:
 		_freeze_actor(enemy)
 	_freeze_hazard(hazard)
@@ -592,6 +603,36 @@ func _finalize_viewport_for_readback(viewport: SubViewport) -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+
+
+## The saved image comes from the visible half of this frozen observation
+## probe. Hiding only the actual production `HazardTelegraph` for the baseline
+## proves composited pixels without replacing or synthesizing the hazard.
+func _render_hazard_visibility_probe(viewport: SubViewport, telegraph: CanvasItem, size: Vector2i) -> Dictionary:
+	if viewport == null or telegraph == null:
+		return {}
+	var was_paused := paused
+	var previous_update_mode := viewport.render_target_update_mode
+	paused = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var visible_image := viewport.get_texture().get_image()
+	var was_visible := telegraph.visible
+	telegraph.visible = false
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var hidden_image := viewport.get_texture().get_image()
+	telegraph.visible = was_visible
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	viewport.render_target_update_mode = previous_update_mode
+	paused = was_paused
+	if visible_image == null or hidden_image == null:
+		return {}
+	var metrics := Spec.hazard_visibility_metrics(visible_image, hidden_image, size)
+	metrics["visible_image"] = visible_image
+	return metrics
 
 
 func _cleanup_viewport(viewport: SubViewport) -> void:

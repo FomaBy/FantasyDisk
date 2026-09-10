@@ -36,6 +36,21 @@ const CAPTURE_COUNT := 48
 ## first real target stands on it so every viewport exercises the real smart
 ## trigger instead of relying on a resolution-dependent distant target.
 const PRESSURE_MINE_TRIGGER_OFFSET := Vector2(125.21, 103.19)
+## The real poison telegraph begins fully transparent. The capture freezes
+## renderer clocks, so it pins the already-spawned production layers to these
+## authored post-fade values before readback instead of stepping the hazard's
+## unrelated lifetime/detonation tweens.
+const HAZARD_TELEGRAPH_INITIAL_SCALE := 0.70
+const HAZARD_TELEGRAPH_ZONE_ALPHA := 0.62
+const HAZARD_TELEGRAPH_RIM_ALPHA := 0.90
+const HAZARD_VISIBILITY_PROBE_METHOD := "frozen visible-vs-hidden native-frame pixel delta"
+const HAZARD_DELTA_SAMPLE_STRIDE := 2
+const HAZARD_DELTA_CHANNEL_THRESHOLD := 0.10
+const HAZARD_MIN_DELTA_SAMPLE_COUNT := 120
+const HAZARD_MIN_DELTA_BOUNDS := Vector2i(80, 80)
+const HAZARD_CAPTURE_X_RATIO := 0.84
+const HAZARD_CAPTURE_Y_RATIO := 0.69
+const HAZARD_PROBE_HALF_EXTENT := 110
 
 const WEAPON_IDS: Array[String] = [
 	"engineer_sentry_wrench",
@@ -142,6 +157,10 @@ func _check_renderer_source(errors: Array[String]) -> void:
 		"_hide_queued_pressure_mine_devices",
 		"_hold_player_capture_pose",
 		"_hide_nonultimate_root_visuals",
+		"materialize_hazard_telegraph",
+		"_render_hazard_visibility_probe",
+		"hazard_visibility_probe_is_readable",
+		"hazard_visibility",
 		"is_queued_for_deletion()",
 		"repeat_sha256",
 	]:
@@ -177,6 +196,17 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, errors: A
 	if (manifest.get("samples", []) as Array).is_empty():
 		errors.append("a valid manifest must provide a sample for artifact negative probes")
 		return
+	var missing_hazard_visibility := manifest.duplicate(true)
+	((missing_hazard_visibility.get("samples", []) as Array)[0] as Dictionary).erase("hazard_visibility")
+	_expect(not manifest_violations(missing_hazard_visibility, profile).is_empty(), "missing hazard visibility evidence must fail closed", errors)
+	var invisible_hazard := manifest.duplicate(true)
+	var invisible_probe := ((invisible_hazard.get("samples", []) as Array)[0] as Dictionary).get("hazard_visibility", {}) as Dictionary
+	invisible_probe["delta_sample_count"] = 0
+	_expect(not manifest_violations(invisible_hazard, profile).is_empty(), "an invisible hazard probe must fail closed", errors)
+	var undersized_hazard_delta := manifest.duplicate(true)
+	var undersized_probe := ((undersized_hazard_delta.get("samples", []) as Array)[0] as Dictionary).get("hazard_visibility", {}) as Dictionary
+	undersized_probe["delta_bounds"] = {"width": HAZARD_MIN_DELTA_BOUNDS.x - 1, "height": HAZARD_MIN_DELTA_BOUNDS.y}
+	_expect(not manifest_violations(undersized_hazard_delta, profile).is_empty(), "a hazard probe with insufficient bounds must fail closed", errors)
 	var missing_file := manifest.duplicate(true)
 	((missing_file.get("samples", []) as Array)[0] as Dictionary)["path"] = CAPTURE_ROOT + "/missing.png"
 	_expect(not capture_file_violations(missing_file.get("samples", []) as Array).is_empty(), "a missing PNG must fail closed", errors)
@@ -242,6 +272,20 @@ func _check_real_runtime_cell(pack: Dictionary, mode: Dictionary, errors: Array[
 		world.queue_free()
 		await process_frame
 		return
+	_expect(not hazard_telegraph_is_visible(null), "%s must reject a missing hazard telegraph" % context, errors)
+	_expect(materialize_hazard_telegraph(hazard), "%s must materialize the real telegraph before freeze" % context, errors)
+	_expect(hazard_telegraph_is_visible(hazard), "%s must retain visible real telegraph layers" % context, errors)
+	var telegraph := hazard.get_node_or_null("HazardTelegraph") as CanvasItem
+	if telegraph != null:
+		telegraph.hide()
+		_expect(not hazard_telegraph_is_visible(hazard), "%s must reject a hidden real telegraph" % context, errors)
+		telegraph.show()
+		for layer in hazard_telegraph_layers(hazard):
+			var transparent := layer.modulate
+			transparent.a = 0.0
+			layer.modulate = transparent
+		_expect(not hazard_telegraph_is_visible(hazard), "%s must reject zero-alpha real telegraph layers" % context, errors)
+		_expect(materialize_hazard_telegraph(hazard), "%s must restore the real telegraph after negative probes" % context, errors)
 	for enemy in enemies:
 		_freeze_actor(enemy)
 	_freeze_hazard(hazard)
@@ -566,9 +610,124 @@ static func manifest_violations(manifest: Dictionary, profile: Dictionary) -> Ar
 				or int(record.get("width", 0)) != size.x or int(record.get("height", 0)) != size.y \
 				or str(record.get("layout", "")) != "isolated_native_frame" \
 				or not is_sha256(str(record.get("sha256", ""))) \
-				or str(record.get("repeat_sha256", "")) != str(record.get("sha256", "")):
+				or str(record.get("repeat_sha256", "")) != str(record.get("sha256", "")) \
+				or not hazard_visibility_probe_is_readable(record.get("hazard_visibility", {}) as Dictionary):
 			violations.append("sample:%s" % str(capture["id"]))
 	return violations
+
+
+## The renderer preloads this script, keeping the capture-only materialization
+## contract and its headless gate in one class-owned place. The two direct
+## Sprite2D children are the exact zone/rim order created by HazardVfx.telegraph.
+static func materialize_hazard_telegraph(hazard: Node2D) -> bool:
+	if hazard == null:
+		return false
+	var telegraph := hazard.get_node_or_null("HazardTelegraph") as CanvasItem
+	var layers := hazard_telegraph_layers(hazard)
+	if telegraph == null or layers.size() != 2:
+		return false
+	var zone := layers[0] as Sprite2D
+	var rim := layers[1] as Sprite2D
+	if zone == null or rim == null:
+		return false
+	telegraph.show()
+	zone.show()
+	rim.show()
+	var target_scale := zone.get_meta("fan3939_hazard_telegraph_target_scale", Vector2.ZERO) as Vector2
+	if target_scale == Vector2.ZERO:
+		target_scale = zone.scale / HAZARD_TELEGRAPH_INITIAL_SCALE
+		zone.set_meta("fan3939_hazard_telegraph_target_scale", target_scale)
+	zone.scale = target_scale
+	var zone_color := zone.modulate
+	zone_color.a = HAZARD_TELEGRAPH_ZONE_ALPHA
+	zone.modulate = zone_color
+	var rim_color := rim.modulate
+	rim_color.a = HAZARD_TELEGRAPH_RIM_ALPHA
+	rim.modulate = rim_color
+	return hazard_telegraph_is_visible(hazard)
+
+
+static func hazard_telegraph_layers(hazard: Node2D) -> Array[CanvasItem]:
+	var layers: Array[CanvasItem] = []
+	if hazard == null:
+		return layers
+	var telegraph := hazard.get_node_or_null("HazardTelegraph") as Node
+	if telegraph == null:
+		return layers
+	for raw_child in telegraph.get_children():
+		var layer := raw_child as CanvasItem
+		if layer != null:
+			layers.append(layer)
+	return layers
+
+
+static func hazard_telegraph_is_visible(hazard: Node2D) -> bool:
+	if hazard == null:
+		return false
+	var telegraph := hazard.get_node_or_null("HazardTelegraph") as CanvasItem
+	var layers := hazard_telegraph_layers(hazard)
+	if telegraph == null or not telegraph.visible or telegraph.modulate.a <= 0.05 or layers.size() != 2:
+		return false
+	return layers[0].visible and layers[0].modulate.a >= HAZARD_TELEGRAPH_ZONE_ALPHA \
+		and layers[1].visible and layers[1].modulate.a >= HAZARD_TELEGRAPH_RIM_ALPHA
+
+
+static func hazard_visibility_metrics(visible_image: Image, hidden_image: Image, size: Vector2i) -> Dictionary:
+	if visible_image == null or hidden_image == null or visible_image.is_empty() or hidden_image.is_empty() \
+			or visible_image.get_size() != size or hidden_image.get_size() != size:
+		return {}
+	var anchor := hazard_capture_position(size)
+	var min_x := clampi(floori(anchor.x) - HAZARD_PROBE_HALF_EXTENT, 0, size.x - 1)
+	var max_x := clampi(ceili(anchor.x) + HAZARD_PROBE_HALF_EXTENT, 0, size.x - 1)
+	var min_y := clampi(floori(anchor.y) - HAZARD_PROBE_HALF_EXTENT, 0, size.y - 1)
+	var max_y := clampi(ceili(anchor.y) + HAZARD_PROBE_HALF_EXTENT, 0, size.y - 1)
+	var changed_samples := 0
+	var changed_min_x := size.x
+	var changed_min_y := size.y
+	var changed_max_x := -1
+	var changed_max_y := -1
+	for y in range(min_y, max_y + 1, HAZARD_DELTA_SAMPLE_STRIDE):
+		for x in range(min_x, max_x + 1, HAZARD_DELTA_SAMPLE_STRIDE):
+			var visible_pixel := visible_image.get_pixel(x, y)
+			var hidden_pixel := hidden_image.get_pixel(x, y)
+			var channel_delta := maxf(
+				absf(visible_pixel.r - hidden_pixel.r),
+				maxf(absf(visible_pixel.g - hidden_pixel.g), absf(visible_pixel.b - hidden_pixel.b))
+			)
+			if channel_delta < HAZARD_DELTA_CHANNEL_THRESHOLD:
+				continue
+			changed_samples += 1
+			changed_min_x = mini(changed_min_x, x)
+			changed_min_y = mini(changed_min_y, y)
+			changed_max_x = maxi(changed_max_x, x)
+			changed_max_y = maxi(changed_max_y, y)
+	var bounds := {"width": 0, "height": 0}
+	if changed_samples > 0:
+		bounds = {
+			"width": changed_max_x - changed_min_x + HAZARD_DELTA_SAMPLE_STRIDE,
+			"height": changed_max_y - changed_min_y + HAZARD_DELTA_SAMPLE_STRIDE,
+		}
+	return {
+		"method": HAZARD_VISIBILITY_PROBE_METHOD,
+		"delta_sample_count": changed_samples,
+		"delta_bounds": bounds,
+		"sample_stride": HAZARD_DELTA_SAMPLE_STRIDE,
+		"channel_threshold": HAZARD_DELTA_CHANNEL_THRESHOLD,
+	}
+
+
+static func hazard_visibility_probe_is_readable(probe: Dictionary) -> bool:
+	var bounds := probe.get("delta_bounds", {}) as Dictionary
+	return str(probe.get("method", "")) == HAZARD_VISIBILITY_PROBE_METHOD \
+		and int(probe.get("delta_sample_count", 0)) >= HAZARD_MIN_DELTA_SAMPLE_COUNT \
+		and int(bounds.get("width", 0)) >= HAZARD_MIN_DELTA_BOUNDS.x \
+		and int(bounds.get("height", 0)) >= HAZARD_MIN_DELTA_BOUNDS.y \
+		and int(probe.get("sample_stride", 0)) == HAZARD_DELTA_SAMPLE_STRIDE \
+		and is_equal_approx(float(probe.get("channel_threshold", -1.0)), HAZARD_DELTA_CHANNEL_THRESHOLD)
+
+
+static func hazard_capture_position(size: Vector2i) -> Vector2:
+	return Vector2(float(size.x) * HAZARD_CAPTURE_X_RATIO, float(size.y) * HAZARD_CAPTURE_Y_RATIO)
 
 
 static func capture_file_violations(samples: Array) -> Array[String]:
