@@ -384,6 +384,7 @@ func _seek_normal_scene(scene: Node2D, seconds: float) -> void:
 		var sprite := raw_sprite as AnimatedSprite2D
 		if sprite != null:
 			sprite.pause()
+			sprite.frame_progress = 0.0
 
 
 func _freeze_scene_clocks(scene: Node2D) -> void:
@@ -394,6 +395,7 @@ func _freeze_scene_clocks(scene: Node2D) -> void:
 		var sprite := raw_sprite as AnimatedSprite2D
 		if sprite != null:
 			sprite.pause()
+			sprite.frame_progress = 0.0
 	scene.set_process(false)
 
 
