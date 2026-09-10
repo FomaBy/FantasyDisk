@@ -16,6 +16,7 @@ const EnemySpitterScene := preload("res://scenes/EnemySpitter.tscn")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const HudAdapter := preload("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const PressureMines := preload("res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd")
 
 const CAPTURE_SETTLE_FRAMES := 3
 
@@ -79,7 +80,7 @@ func _read_capture_source() -> Dictionary:
 			DisplayServer.get_name(),
 			str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown")),
 		],
-		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; capture-only generic Enemy combat feedback disabled while the shipped Engineer UltimateVictimImpactPlayer remains active; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
+		"capture_method": "windowed SubViewport render; GameSettings.DEFAULTS -> UltimateAccessibilitySettings.apply_settings before Player.activate_ultimate; fixed interior-of-phase Player activation/runtime tween stepping; Pressure Mines uses its shipped smart-chain/finale callbacks through a deterministic capture scheduler; capture-only generic Enemy combat feedback disabled while the shipped Engineer UltimateVictimImpactPlayer remains active; explicit AnimationPlayer and AnimatedSprite2D freeze; UPDATE_ONCE then UPDATE_DISABLED readback",
 		"command": "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_MAXWAIT=5400 FAN3939_CAPTURE_SOURCE_SHA=%s FAN3939_CAPTURE_SOURCE_TREE=%s GODOT_BIN=/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --windowed --script res://tests/ultimates/presentation/engineer_certification_live_capture.gd" % [source_sha, source_tree],
 		"workload_exclusion": "capture-only Engineer certification evidence; no production gameplay, VFX, shared registry, HUD, settings, or balance files are modified",
 	}
@@ -226,7 +227,12 @@ func _build_live_viewport(capture: Dictionary, capture_seed: int, sample_seconds
 	## perturb the real Enemy combat-feedback positions created by the next beat.
 	seed(capture_seed)
 	var beat := str(capture["beat"])
-	_advance_activation(activation, Spec.runtime_capture_seconds(pack, beat))
+	var execution_seconds := Spec.runtime_capture_seconds(pack, beat)
+	if str(pack["weapon_id"]) == "engineer_pressure_mines":
+		if not _advance_pressure_mines_capture(activation, execution_seconds):
+			return _failed_viewport(viewport, "Pressure Mines deterministic scheduler could not reach its shipped callback state")
+	else:
+		_advance_activation(activation, execution_seconds)
 	if runtime != null:
 		runtime.call("advance", sample_seconds)
 	## Preserve the real release/damage/victim-impact work, then stop the host
@@ -336,7 +342,34 @@ func _advance_activation(activation, seconds: float) -> void:
 			if tween != null and tween.is_valid():
 				tween.custom_step(step)
 		elapsed += step
-	_pause_activation(activation)
+		_pause_activation(activation)
+
+
+## `Tween.custom_step()` can defer an exact callback behind a windowed render.
+## Pressure Mines' combat path is a public static callback sequence, so drive
+## the same production functions from its real activation at the declared
+## timestamps rather than allowing a renderer frame to choose the callback.
+func _advance_pressure_mines_capture(activation, seconds: float) -> bool:
+	var state := activation.call("primitive_value", "engineer_mine_state") as Dictionary
+	if state.is_empty():
+		return false
+	PressureMines.smart_chain(activation, state)
+	var finale_delay := float(activation.call("param_float", "finale_delay", 1.7))
+	if seconds < finale_delay:
+		return true
+	var interval := float(activation.call("param_float", "finale_interval", 0.10))
+	if interval <= 0.0:
+		return false
+	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
+	var order := PressureMines.outer_to_inner_order(points, activation.call("origin"))
+	var final_count := mini(order.size(), floori((seconds - finale_delay) / interval) + 1)
+	var damage := float(activation.call("scaled_damage", "damage", 1.20))
+	var blast_radius := float(activation.call("param_float", "blast_radius", 135.0))
+	for final_index in final_count:
+		PressureMines.detonate_mine(
+			activation, state, int(order[final_index]), damage, blast_radius, "finale", false
+		)
+	return true
 
 
 func _seek_normal_scene(scene: Node2D, seconds: float) -> void:
