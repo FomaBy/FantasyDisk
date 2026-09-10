@@ -262,7 +262,19 @@
       "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p.png",
       "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p.png",
       "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p.png",
-      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k.png"
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p_recovery.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k_release.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k_active.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k_recovery.png"
     ],
     "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
     "focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
@@ -276,9 +288,9 @@
     "authored_focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "agent/codex-dev-sol-5-6/4d7a94c42825",
-      "source_commit_sha": "450f4a50bef2e9c355bd7bb63057f5e12e5585de",
-      "source_tree_sha": "579e55b71f91c87f6ab4d825590aa3b134fa3b01",
+      "source_ref": "agent/codex-dev-sol-5-6/fan-3942-rework-1",
+      "source_commit_sha": "8856293744124dd022a9c4a2f52df80210288418",
+      "source_tree_sha": "4411987db561ea857787a1381e354eac20a22e06",
       "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
@@ -306,13 +318,21 @@
         "2k": "2560x1440"
       },
       "sheet_sha256": {
-        "648p": "c452b6d27b2b250108982af34dbe6ca478667e31eac24e5107c74e61cc461ecb",
-        "720p": "15397570dcdaa87fe6bc14dee475dae93b7baaab218c8745e1858ae9158c00f9",
-        "1080p": "96f505816e1665c3891e9e421337ae618ecfaff6f4a29c4f5c0236c32bc36221",
-        "2k": "02f279ceeb75debe11060d0cd0981b877fbba6b6f76b2dff6da9752da566d8fd"
+        "648p_release": "b8b2b9c3d59da1c3706c2a0b7a12421a88f603897fef80115b3148fb23cfae0a",
+        "648p_active": "b1998c1f755f4cdffa5f12f4ad3bc635f6b47a55f912478e787bf50f47f9546e",
+        "648p_recovery": "a7e733e5222b2d4dff78f88b8abcb418e80c0d68192032ccaf7eaa86ea530563",
+        "720p_release": "e33d1a9838d89affb49281a537da2846e62da913a1fa02f3b8cb0984dfdb4a49",
+        "720p_active": "5dcab2682b2b25536f09f5a8b7ca40e821d5493fc1902fb1c9c846d43c0c3440",
+        "720p_recovery": "0a30340b783040b041b900bcf61b82129b2c5b3fb0ea12c2fe1f1ef72f4c3b78",
+        "1080p_release": "e8edc045709f778fffc915fe7b118fbd5e6814bdfbd0f4b0d5852890370844f6",
+        "1080p_active": "83762dc5d37642187c6f0f0347271056874c71b95d97377287dddb47332c20b1",
+        "1080p_recovery": "a4823a315bada009a519c1371b238427d7c37db610d58c3830d50ddc44aa4423",
+        "2k_release": "defafe087a3a87e98318c92d13cb89794e51e162abd76b0c501fe552ff05172a",
+        "2k_active": "d07189c6cdb5cbb1646fb71a47681052a508ed639ee9aa66ec5b4ba032987c6d",
+        "2k_recovery": "d5956208af3af7fcf12d451a3e54481788219eedf8f321d193ac12c7e27750a2"
       },
       "live_samples": 144,
-      "note": "Four native-size mode matrices index 144 fresh measurements from real Main.tscn combat runs with the shipped Player, HUD and Enemy hazards. The dedicated persisted accessibility flags drive the reduced-motion and photosensitivity-safe variants independently."
+      "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
     }
   }
 }
