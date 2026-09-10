@@ -87,38 +87,59 @@ const FRAMEBUFFER_WAIT_DEADLINE_SECONDS := 2.0
 const WINDOWED_GATE_COMMAND := "FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=180 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/dark_mage_accessibility_modes_test.gd"
 
 
-## `frame_post_draw` can stop arriving while SceneTree keeps processing. Race
-## it with a process-always, ignore-time-scale timer so the caller regains
-## control, records a diagnostic, and performs ordinary cleanup.
-class FramePostDrawDeadline extends RefCounted:
-	signal settled(drew_frame: bool)
+## `--fixed-fps` advances simulation time without wall-clock synchronization,
+## so a SceneTreeTimer cannot provide a real deadline. This test-only node
+## stays process-always and checks `Time`. It arms `frame_post_draw` before
+## explicitly drawing the live viewport, so every successful luminance sample
+## still follows a real completed draw; the caller can recover and clean up if
+## either the explicit draw or automatic render loop makes no progress.
+class FramePostDrawDeadline extends Node:
+	signal settled
 
 	var _settled := false
 	var _drew_frame := false
+	var _settled_by := ""
+	var _started_msec := 0
+	var _deadline_msec := 0
+	var _process_ticks := 0
 
 	func await_frame(tree: SceneTree, timeout_seconds: float) -> bool:
-		var timeout: SceneTreeTimer = tree.create_timer(timeout_seconds, true, false, true)
+		_started_msec = Time.get_ticks_msec()
+		_deadline_msec = _started_msec + ceili(timeout_seconds * 1000.0)
+		process_mode = Node.PROCESS_MODE_ALWAYS
 		RenderingServer.frame_post_draw.connect(_on_frame_post_draw, CONNECT_ONE_SHOT)
-		timeout.timeout.connect(_on_timeout, CONNECT_ONE_SHOT)
-		await settled
+		tree.root.add_child(self)
+		set_process(true)
+		RenderingServer.force_draw(false)
+		if not _settled:
+			await settled
 		if RenderingServer.frame_post_draw.is_connected(_on_frame_post_draw):
 			RenderingServer.frame_post_draw.disconnect(_on_frame_post_draw)
-		if timeout.timeout.is_connected(_on_timeout):
-			timeout.timeout.disconnect(_on_timeout)
+		queue_free()
 		return _drew_frame
 
 	func _on_frame_post_draw() -> void:
 		_finish(true)
 
-	func _on_timeout() -> void:
-		_finish(false)
+	func _process(_delta: float) -> void:
+		_process_ticks += 1
+		if Time.get_ticks_msec() >= _deadline_msec:
+			_finish(false)
 
 	func _finish(drew_frame: bool) -> void:
 		if _settled:
 			return
 		_settled = true
 		_drew_frame = drew_frame
-		settled.emit(drew_frame)
+		_settled_by = "frame_post_draw" if drew_frame else "wall_clock_watchdog"
+		set_process(false)
+		settled.emit()
+
+	func settled_by() -> String:
+		return _settled_by
+
+	func process_ticks() -> int:
+		return _process_ticks
 
 var _errors: Array[String] = []
 var _records: Array = []
@@ -404,6 +425,8 @@ func _await_framebuffer_draw(context: String, frame: int, cast_elapsed: float) -
 		"deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
 		"waited_wall_msec": waited_msec,
 		"drew_frame": drew_frame,
+		"settled_by": deadline.settled_by(),
+		"watchdog_process_ticks": deadline.process_ticks(),
 		"command": WINDOWED_GATE_COMMAND,
 	}, true)
 	if drew_frame:
@@ -421,6 +444,7 @@ func _runtime_metadata() -> Dictionary:
 	return {
 		"display_server": DisplayServer.get_name(),
 		"renderer": RenderingServer.get_current_rendering_method(),
+		"render_loop_enabled": RenderingServer.render_loop_enabled,
 		"godot": str(Engine.get_version_info().get("string", "")),
 		"wall_elapsed_msec": Time.get_ticks_msec() - _run_started_msec,
 	}
@@ -691,6 +715,7 @@ func _write_report() -> void:
 		"display": "headless" if _headless else "windowed",
 		"godot": Engine.get_version_info().get("string", ""),
 		"renderer": RenderingServer.get_current_rendering_method(),
+		"render_loop_enabled": RenderingServer.render_loop_enabled,
 		"windowed_gate_command": WINDOWED_GATE_COMMAND,
 		"framebuffer_wait_deadline_seconds": FRAMEBUFFER_WAIT_DEADLINE_SECONDS,
 		"hazards": HAZARD_COUNT,
