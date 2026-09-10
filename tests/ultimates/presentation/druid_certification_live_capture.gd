@@ -273,7 +273,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 				presentation.call("advance", simulated_step - automatic_step)
 			elapsed += simulated_step
 		paused = true
-		RenderingServer.render_loop_enabled = true
 		RenderingServer.force_draw()
 		var frame := root.get_texture().get_image()
 		if frame == null or frame.get_size() != size:
@@ -307,7 +306,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 			frame.save_png("%s/druid_%s_%s_%s_%s.png" % [
 				_frame_dir, weapon_id, mode_id, str(viewport["id"]), str(beat["phase"]),
 			])
-		RenderingServer.render_loop_enabled = false
 		paused = false
 
 	RenderingServer.render_loop_enabled = true
