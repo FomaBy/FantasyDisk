@@ -442,9 +442,10 @@ func _hold_victim_impacts(scene: Node2D) -> void:
 	for raw_child in scene.get_children():
 		if raw_child is ImpactPlayer:
 			var impacts := raw_child as Node2D
-			## Materialize the first real ripple wave without advancing its burst
-			## lifetime, then hold a readable first frame for deterministic evidence.
-			impacts.call("advance", 0.0)
+			## Materialize the first real ripple wave before freezing it. The initial
+			## queued wave can have a positive stagger delay, so a zero-duration
+			## advance proves that damage happened but cannot make a visible event.
+			impacts.call("advance", 0.12)
 			## The real hit has already populated the scene-owned impact service.
 			## AnimatedSprite2D advances on the renderer clock independently of the
 			## service's queue, so choose its first visible frame explicitly before
