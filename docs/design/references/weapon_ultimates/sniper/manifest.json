@@ -18,15 +18,57 @@
     }
   },
   "evidence": {
-    "capture_script": "tests/ultimates/presentation/sniper_contact_sheet.gd",
-    "capture_mode": "windowed Godot render; do not use --headless because contact pixels require renderer readback",
+    "capture_script": "tests/ultimates/presentation/sniper_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/sniper_certification_capture_test.gd",
+    "capture_mode": "windowed live run of scenes/Main.tscn; do not use --headless because a headless display server owns no framebuffer to read back",
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/sniper/sniper_certification_2k.png"
+    ],
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_648p.png",
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_720p.png",
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_1080p.png",
       "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_2k.png"
     ],
-    "focused_test": "tests/ultimates/presentation/sniper_runtime_presentation_test.gd"
+    "authored_capture_script": "tests/ultimates/presentation/sniper_contact_sheet.gd",
+    "authored_focused_test": "tests/ultimates/presentation/sniper_runtime_presentation_test.gd",
+    "live_capture": {
+      "issue": "FAN-3940",
+      "source_ref": "agent/claude-opus-5/382672c5cdf7",
+      "source_commit_sha": "68c1d74aa749b00a4c55827af27c06455ee3e658",
+      "source_tree_sha": "740683f960a1d9f8da454240b68e55aca994eed9",
+      "capture_manifest": "docs/design/references/weapon_ultimates/sniper/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/sniper/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/sniper_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/sniper_certification_capture_test.gd",
+      "weapon_ids": [
+        "sniper_deadeye_rifle",
+        "sniper_spotter_scope",
+        "sniper_shatter_rounds"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "live_samples": 144,
+      "note": "Each committed sheet is one viewport at its native size and carries all twelve weapon x mode cells at the active beat. Every cell is a frame of a real run: scenes/Main.tscn with the shipped combat HUD, a real Player configured for sniper/<weapon>, and shipped Enemy instances as hazards, with the ultimate cast through UltimatePlayerHost.activate(). The modes use only switches the game already publishes on the scene-tree root - screen_shake for reduced motion and combat_feedback for flash reduction - plus the weapon's own declared crowd cap for crowded. Release, active and recovery are measured for all 48 weapon/mode/viewport combinations: 144 samples in the capture manifest, reproducible at full size through SNIPER_CERT_FRAME_DIR. The four authored timeline sheets stay under authored_timeline_sheets; they are one presentation at four sizes and never established four-mode coverage (FAN-3877). No production scene, VFX, gameplay or balance value is changed."
+    }
   },
   "weapons": [
     {
