@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3944",
+  "class_id": "priest",
+  "capture_script": "tests/ultimates/presentation/priest_certification_live_capture.gd",
+  "focused_test": "tests/ultimates/presentation/priest_certification_capture_test.gd",
+  "readability_report": "docs/design/references/weapon_ultimates/priest/certification_readability_report.md",
+  "capture_source": {
+    "source_ref": "agent/codex-dev-sol-5-6/3fbc2f531de0",
+    "source_commit_sha": "fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2",
+    "source_tree_sha": "61e18a3744066df4ef34fd5611b3e3dcaddb3c8c",
+    "controlled_seed": 394401,
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "renderer": "gl_compatibility (OpenGL API 4.1 Metal compatibility, Apple M4 Pro)",
+    "capture_method": "macOS windowed SubViewport render; Player.activate_ultimate -> UltimateHost -> shipped Priest V2 scene, actual EnemySpitter targets and ElitePoisonZone hazard; fixed executor advancement and named release/active/recovery seek; three frozen UPDATE_ONCE readback frames",
+    "workload_exclusion": "FSD_GODOT_EXCLUSIVE=1 acquires the machine-wide Godot lease before final PNG generation",
+    "headless_policy": "The renderer exits 0 without creating PNGs when headless. That structural skip is not image evidence; hydrated windowed verification remains fail-closed.",
+    "command": "env FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=1800 python3 tools/godot_gate.py --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/priest_certification_live_capture.gd"
+  },
+  "canonical_weapon_ids": [
+    "priest_reliquary",
+    "priest_censer",
+    "priest_chime"
+  ],
+  "presentation_modes": [
+    {
+      "id": "normal",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "3 representative real EnemySpitter targets"
+    },
+    {
+      "id": "crowded",
+      "screen_shake": true,
+      "photosafe": false,
+      "crowd": "the per-weapon declared crowd cap (22 / 20 / 18) using real EnemySpitter targets"
+    },
+    {
+      "id": "reduced_motion",
+      "screen_shake": false,
+      "photosafe": false,
+      "crowd": "3 representative real EnemySpitter targets"
+    },
+    {
+      "id": "photosensitivity_safe",
+      "screen_shake": false,
+      "photosafe": true,
+      "crowd": "3 representative real EnemySpitter targets with the shipped backdrop veil suppressed"
+    }
+  ],
+  "coverage_matrix": {
+    "rows": [
+      "priest_reliquary",
+      "priest_censer",
+      "priest_chime"
+    ],
+    "columns": [
+      "normal",
+      "crowded",
+      "reduced_motion",
+      "photosensitivity_safe"
+    ],
+    "phases": [
+      "release",
+      "active",
+      "recovery"
+    ],
+    "cells_per_viewport": 12,
+    "captures_per_viewport": 3,
+    "readability_beats": {
+      "priest_reliquary": {
+        "release": 0.9,
+        "active": 1.35,
+        "recovery": 3.45
+      },
+      "priest_censer": {
+        "release": 0.8,
+        "active": 1.4,
+        "recovery": 3.15
+      },
+      "priest_chime": {
+        "release": 0.75,
+        "active": 1.5,
+        "recovery": 2.85
+      }
+    }
+  },
+  "runtime_configuration": {
+    "scene_paths": [
+      "scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+      "scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn"
+    ],
+    "player_scene": "res://scenes/Player.tscn",
+    "enemy_scene": "res://scenes/EnemySpitter.tscn",
+    "hazard_runtime": "EnemySpitter._spawn_elite_hazard",
+    "hud_adapter": "res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd",
+    "hud_scene": "scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+    "fixture_note": "Each isolated cell runs the real Player activation and Player-owned controller, real EnemySpitter group targets, an actual Enemy elite poison hazard, and the shipped HUD through UltimateHudRuntimeAdapter. Capture-only placement/freezing never changes production mechanics."
+  },
+  "viewports": [
+    {
+      "id": "648p-release",
+      "viewport_id": "648p",
+      "phase": "release",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_648p_release.png",
+      "sha256": "3ef0a3f6469204b0b0da5fca6294ebe6f7b1a8d228206edb4eec491fbc24da64"
+    },
+    {
+      "id": "648p-active",
+      "viewport_id": "648p",
+      "phase": "active",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_648p.png",
+      "sha256": "84f690aa53d82fb7aa9bc4cedadcd023db3b3776c292ee918c969f701e4ca08c"
+    },
+    {
+      "id": "648p-recovery",
+      "viewport_id": "648p",
+      "phase": "recovery",
+      "width": 1152,
+      "height": 648,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_648p_recovery.png",
+      "sha256": "ceffdf027b5d91e568dd2cbc5d74193af4738bf76b7fa639cc4bc46dcf74a788"
+    },
+    {
+      "id": "720p-release",
+      "viewport_id": "720p",
+      "phase": "release",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_720p_release.png",
+      "sha256": "75002c6db843a1ccfe1586ae88cff92d496c698ff2d748179b65b445633ea858"
+    },
+    {
+      "id": "720p-active",
+      "viewport_id": "720p",
+      "phase": "active",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_720p.png",
+      "sha256": "8b8bdab63386b611929f06990769a4d69d8d0d9b1c337d4ed0477e95c278338d"
+    },
+    {
+      "id": "720p-recovery",
+      "viewport_id": "720p",
+      "phase": "recovery",
+      "width": 1280,
+      "height": 720,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_720p_recovery.png",
+      "sha256": "e58d45bf1f893563367711b4572f8c651c2f4b4b9473fd1f8b09c525cabe064a"
+    },
+    {
+      "id": "1080p-release",
+      "viewport_id": "1080p",
+      "phase": "release",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_1080p_release.png",
+      "sha256": "64accba737bd9fd5e8c874a2d4f84aee323c0786247c2eeab9f580f130d2b8e2"
+    },
+    {
+      "id": "1080p-active",
+      "viewport_id": "1080p",
+      "phase": "active",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_1080p.png",
+      "sha256": "968299651856eda9f836a482c503d7ca01f60d25c8a4da8d3aaf7e67b9e25355"
+    },
+    {
+      "id": "1080p-recovery",
+      "viewport_id": "1080p",
+      "phase": "recovery",
+      "width": 1920,
+      "height": 1080,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_1080p_recovery.png",
+      "sha256": "8af35ce09d07f019946e14c045ba90c546ce3a5c2217f43e35927bc14ca493b3"
+    },
+    {
+      "id": "2k-release",
+      "viewport_id": "2k",
+      "phase": "release",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k_release.png",
+      "sha256": "84b608f67681d8109a11ecfecbe6d6c0f4c1c2ad2d160d289ca5928b848d690f"
+    },
+    {
+      "id": "2k-active",
+      "viewport_id": "2k",
+      "phase": "active",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k.png",
+      "sha256": "a788847599031462e361887b9930077439d14bcedaea920ed60967e95eacfd58"
+    },
+    {
+      "id": "2k-recovery",
+      "viewport_id": "2k",
+      "phase": "recovery",
+      "width": 2560,
+      "height": 1440,
+      "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k_recovery.png",
+      "sha256": "2d660cbe51c0d33975b19a2d600194372b4a295c60349051209cad724048339d"
+    }
+  ],
+  "scope_boundary": "FAN-3944 adopts the existing Priest presentation into the full V2 timing/presence/identity/accessibility contract and adds class-owned live evidence; damage, cooldown, charge, targeting, saves, and canonical IDs remain unchanged."
+}

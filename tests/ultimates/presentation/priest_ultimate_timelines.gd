@@ -223,7 +223,8 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
 	_expect(timeline != null and timeline.has_animation(&"ultimate"), "%s must expose an ultimate animation" % weapon_id, errors)
 	if timeline != null and timeline.has_animation(&"ultimate"):
-		_expect(is_equal_approx(timeline.get_animation(&"ultimate").length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation length must end on its cancel phase" % weapon_id, errors)
+		var effective_length := timeline.get_animation(&"ultimate").length / timeline.speed_scale
+		_expect(is_equal_approx(effective_length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation playback must end on its cancel phase" % weapon_id, errors)
 	_expect(str(instance.get_meta("ultimate_id", "")) == "priest/%s" % weapon_id, "%s scene must retain its exact profile key" % weapon_id, errors)
 	_expect(not str(instance.get_meta("silhouette", "")).is_empty(), "%s silhouette declaration missing" % weapon_id, errors)
 	_expect(not str(instance.get_meta("motion_path", "")).is_empty(), "%s motion path declaration missing" % weapon_id, errors)

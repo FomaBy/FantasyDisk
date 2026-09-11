@@ -1,6 +1,15 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_priest_chime.png" id="1_bell"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="2_v2_driver"]
+
+[sub_resource type="Gradient" id="Gradient_backdrop"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_backdrop"]
+gradient = SubResource("Gradient_backdrop")
+width = 2
+height = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -146,12 +155,32 @@ tracks/10/keys = {
 _data = {"ultimate": SubResource("Animation_three_bells")}
 
 [node name="PriestChimeThreeBellsOfDawn" type="Node2D"]
+script = ExtResource("2_v2_driver")
+release_at = 0.75
+impact_at = 1.4
+recovery_at = 2.7
+cancel_at = 3.5
+hitstop_ms = 100.0
+shake_seconds = 0.45
+shake_amplitude = 6.0
 metadata/ultimate_id = "priest/priest_chime"
 metadata/silhouette = "hand_chime_over_three_layered_dawn_arcs"
 metadata/motion_path = "three_sequential_toll_arcs_then_mote_dissolve"
 metadata/impact_language = "silver_interrupt_gold_chain_smite_white_dawn_lethal_guard"
 metadata/max_visual_nodes = 9
 metadata/crowd_cap = 18
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+metadata/presence = {"backdrop": "darken", "camera_shake": true, "fullscreen_footprint": true, "hitstop_ms": 100.0, "sfx_ducking": true, "time_scale_dip": 0.4}
+metadata/identity = {"cast_pose_id": "cast_pose.priest.triple_toll", "class_palette_id": "palette.priest.silver_dawn", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_chime.png"}
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = -100
+texture = SubResource("GradientTexture2D_backdrop")
+centered = false
+modulate = Color(0.055, 0.07, 0.11, 1)
+self_modulate = Color(1, 1, 1, 0.58)
+metadata/fullscreen_layer = true
 
 [node name="Bell" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
@@ -218,3 +247,4 @@ position = Vector2(65, -30)
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_three_bells")}
 autoplay = "ultimate"
+speed_scale = 1.8285714
