@@ -152,7 +152,13 @@ def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False
         # The import pre-pass is intentionally diagnostic-tolerant: existing green
         # suites can emit unrelated import/resource warnings while warming the
         # cache. The Player probe below is the certifying call site.
-        code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+        import_command = [godot, "--headless", "--path", project_path, "--import", "--quit"]
+        # Godot 4.7 macOS cold imports can dispatch a scene notification from a
+        # worker thread. Limit the mitigation to this pre-pass so requested
+        # Godot arguments and the separate Player probe keep their contracts.
+        if sys.platform == "darwin":
+            import_command.insert(1, "--single-threaded-scene")
+        code = _run_godot(import_command)
         if code != 0 or _needs_import_cache(args, require_script=False):
             return code or 1
     probe_path = os.path.join(project_path, PLAYER_IMPORT_PROBE.removeprefix("res://"))
