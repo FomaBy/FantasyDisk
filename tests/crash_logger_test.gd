@@ -1,0 +1,858 @@
+extends SceneTree
+
+const CrashLoggerScript := preload("res://scripts/crash_logger.gd")
+const TEST_ROOT := "user://logs/fan3905-unit"
+const CONCURRENT_RECORDS := 16
+
+
+class CaptureWorker:
+	var service: Node
+
+
+	func _init(target: Node) -> void:
+		service = target
+
+
+	func run(index: int) -> void:
+		var frames: Array[Dictionary] = [{
+			"file": "res://tests/crash_logger_test.gd",
+			"function": "CaptureWorker.run",
+			"line": index + 1,
+		}]
+		service.call(
+			"capture_error_for_tests",
+			"concurrent-%02d" % index,
+			frames,
+		)
+
+
+class SignalPlayer:
+	extends Node
+
+	signal weapon_cast_observed(event: Dictionary)
+	signal weapon_animation_event(event: Dictionary)
+
+	var character_id := "signal_class"
+	var weapon_id := "signal_weapon"
+
+
+var _errors: Array[String] = []
+
+
+func _init() -> void:
+	_clean_directory(TEST_ROOT)
+	call_deferred("_start_tests")
+
+
+func _start_tests() -> void:
+	var service: Node = root.get_node_or_null("CrashLogger")
+	if service == null:
+		service = CrashLoggerScript.new()
+		root.add_child(service)
+	_run_tests(service)
+
+
+func _run_tests(service: Node) -> void:
+	_check(service.configure_output_directory_for_tests(TEST_ROOT), "test output directory was not accepted")
+
+	_check(service.incident_paths_for_tests().is_empty(), "a clean session created an incident file")
+	_test_short_breadcrumb_ring(service)
+	_test_full_breadcrumb_ring(service)
+	_test_real_player_signal_path(service)
+	_check(service.incident_paths_for_tests().is_empty(), "breadcrumb-only activity created an incident file")
+	_test_unavailable_stack_and_redaction(service)
+	_test_credential_field_families(service)
+	_test_quoted_authorization_batches(service)
+	_test_bare_scheme_batches(service)
+	_test_bare_scheme_case_matrix(service)
+	_test_bare_scheme_prose_matrix(service)
+	_test_header_tails_and_separator_shapes(service)
+	_test_concurrent_records_and_rotation(service)
+
+	_clean_directory(TEST_ROOT)
+	if _errors.is_empty():
+		print("crash_logger_test: PASS (clean session, signal breadcrumbs, ordered 50-ring, bounds, redaction, credential families, quoted authorization batches, bare scheme batches, bare scheme case matrix, bare scheme prose matrix, header tails and separator shapes, concurrency, rotation)")
+		quit(0)
+		return
+	for error in _errors:
+		push_error("crash_logger_test: %s" % error)
+	print("crash_logger_test: FAIL (%d)" % _errors.size())
+	quit(1)
+
+
+func _test_short_breadcrumb_ring(service: Node) -> void:
+	service.clear_breadcrumbs_for_tests()
+	for index in range(3):
+		service.record_breadcrumb_for_tests("class_%d" % index, "weapon_%d" % index, "event_%d" % index, 10 + index)
+	var snapshot: Array = service.breadcrumb_snapshot_for_tests()
+	_check(snapshot.size() == 3, "short session did not preserve every breadcrumb")
+	for index in range(snapshot.size()):
+		var entry: Dictionary = snapshot[index]
+		_check(int(entry.get("frame", -1)) == 10 + index, "short-session frame order changed at %d" % index)
+
+
+func _test_full_breadcrumb_ring(service: Node) -> void:
+	service.clear_breadcrumbs_for_tests()
+	for index in range(55):
+		service.record_breadcrumb_for_tests("berserk", "weapon_%02d" % index, "event_%02d" % index, index)
+	var snapshot: Array = service.breadcrumb_snapshot_for_tests()
+	_check(snapshot.size() == 50, "55 events retained %d entries instead of exactly 50" % snapshot.size())
+	for index in range(snapshot.size()):
+		var expected := index + 5
+		var entry: Dictionary = snapshot[index]
+		_check(int(entry.get("frame", -1)) == expected, "ring frame %d is not ordered newest-50 value %d" % [index, expected])
+		_check(str(entry.get("event", "")) == "event_%02d" % expected, "ring event %d changed identity" % index)
+
+
+func _test_real_player_signal_path(service: Node) -> void:
+	service.clear_breadcrumbs_for_tests()
+	var player := SignalPlayer.new()
+	root.add_child(player)
+	player.weapon_cast_observed.emit({"weapon_id": "signal_cast_weapon", "phase": "windup"})
+	player.weapon_animation_event.emit({
+		"character_id": "signal_animation_class",
+		"weapon_id": "signal_animation_weapon",
+		"phase": "release",
+	})
+	var snapshot: Array = service.breadcrumb_snapshot_for_tests()
+	_check(snapshot.size() == 2, "real player signals produced %d breadcrumbs instead of 2" % snapshot.size())
+	if snapshot.size() == 2:
+		var activation: Dictionary = snapshot[0]
+		var finish: Dictionary = snapshot[1]
+		_check(str(activation.get("class", "")) == "signal_class", "cast signal lost the player class")
+		_check(str(activation.get("weapon", "")) == "signal_cast_weapon", "cast signal lost the event weapon")
+		_check(str(activation.get("event", "")) == "activation:windup", "cast signal did not record activation")
+		_check(str(finish.get("class", "")) == "signal_animation_class", "animation signal lost the event class")
+		_check(str(finish.get("weapon", "")) == "signal_animation_weapon", "animation signal lost the event weapon")
+		_check(str(finish.get("event", "")) == "finish:release", "release signal did not record finish")
+	root.remove_child(player)
+	player.free()
+
+
+func _test_unavailable_stack_and_redaction(service: Node) -> void:
+	var no_frames: Array[Dictionary] = []
+	service.clear_breadcrumbs_for_tests()
+	service.record_breadcrumb_for_tests(
+		"\"access_token\":\"TEST_ACCESS_TOKEN_CREDENTIAL\" token=TEST_CLASS_CREDENTIAL class=berserk",
+		"Authorization: Basic TEST_BASIC_CREDENTIAL Bearer TEST_WEAPON_CREDENTIAL weapon=axe",
+		"X-Api-Key: TEST_X_API_KEY_CREDENTIAL secret=TEST_EVENT_CREDENTIAL event=activation",
+		77,
+	)
+	service.capture_error_for_tests(
+		"{\"Authorization\": \"Basic TEST_JSON_AUTHORIZATION_CREDENTIAL\"} context=json-visible Bearer TEST_TEXT_CREDENTIAL refresh_token=TEST_REFRESH_TOKEN_CREDENTIAL context=visible Failed res://scenes/Main.tscn, user://saves/slot1.save and https://example.invalid/help; /Users/example/private/file,",
+		no_frames,
+		"\"token\": \"TEST_CODE_CREDENTIAL\", operation=cast resource='res://assets/test.png' save=\"user://logs/godot.log\" drive=\"C:\\Users\\Example\\WindowsProfileSecret.txt\"",
+		"{\"authorization\":\"Bearer TEST_JSON_COMPACT_CREDENTIAL\"} reason=json-compact-visible Authorization: Bearer TEST_RATIONALE_CREDENTIAL reason=timeout drive=(D:/private/DriveProfileSecret.bin) home=/home/example/HomeProfileSecret.cfg;",
+	)
+	service.flush_pending_for_tests()
+	var paths: PackedStringArray = service.incident_paths_for_tests()
+	_check(paths.size() == 1, "one captured error produced %d files" % paths.size())
+	if paths.is_empty():
+		return
+	var path := str(paths[0])
+	var payload := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(payload)
+	_check(parsed is Dictionary, "incident is not complete JSON")
+	if not parsed is Dictionary:
+		return
+	var record: Dictionary = parsed
+	var error: Dictionary = record.get("error", {})
+	var redacted_fields := " ".join([
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	])
+	var backtrace: Dictionary = record.get("script_backtrace", {})
+	_check(not bool(backtrace.get("available", true)), "missing engine stack was presented as available")
+	_check("unavailable" in str(backtrace.get("status", "")), "missing stack has no honest unavailable status")
+	_check(str(record.get("timestamp_utc", "")).ends_with("Z"), "incident lacks a UTC timestamp")
+	_check(str(record.get("build_version", "")) == str(ProjectSettings.get_setting("application/config/version")), "incident build version differs from project version")
+	_check(str(record.get("build_sha256", "")).length() == 64, "incident lacks a 64-character immutable SHA-256")
+	for credential in [
+		"TEST_ACCESS_TOKEN_CREDENTIAL",
+		"TEST_BASIC_CREDENTIAL",
+		"TEST_X_API_KEY_CREDENTIAL",
+		"TEST_REFRESH_TOKEN_CREDENTIAL",
+		"TEST_CLASS_CREDENTIAL",
+		"TEST_WEAPON_CREDENTIAL",
+		"TEST_EVENT_CREDENTIAL",
+		"TEST_TEXT_CREDENTIAL",
+		"TEST_CODE_CREDENTIAL",
+		"TEST_RATIONALE_CREDENTIAL",
+		"TEST_JSON_AUTHORIZATION_CREDENTIAL",
+		"TEST_JSON_COMPACT_CREDENTIAL",
+	]:
+		_check(payload.find(credential) == -1, "credential remainder persisted from %s" % credential)
+	for benign_context in [
+		"class=berserk",
+		"weapon=axe",
+		"event=activation",
+		"context=visible",
+		"operation=cast",
+		"reason=timeout",
+		"context=json-visible",
+		"reason=json-compact-visible",
+	]:
+		_check(payload.find(benign_context) >= 0, "benign context was removed: %s" % benign_context)
+	_check(payload.find("/Users/example") == -1, "personal home path was not redacted")
+	for preserved_path in [
+		"res://scenes/Main.tscn",
+		"user://saves/slot1.save",
+		"https://example.invalid/help",
+		"res://assets/test.png",
+		"user://logs/godot.log",
+	]:
+		_check(redacted_fields.find(preserved_path) >= 0, "diagnostic path was over-redacted: %s" % preserved_path)
+	for hidden_path_marker in [
+		"/Users/example/private/file",
+		"WindowsProfileSecret",
+		"DriveProfileSecret",
+		"HomeProfileSecret",
+	]:
+		_check(redacted_fields.find(hidden_path_marker) == -1, "private path persisted: %s" % hidden_path_marker)
+	for preserved_delimiter in [
+		"<redacted-path>,",
+		"\"<redacted-path>\"",
+		"(<redacted-path>)",
+		"<redacted-path>;",
+	]:
+		_check(redacted_fields.find(preserved_delimiter) >= 0, "path redaction removed punctuation: %s" % preserved_delimiter)
+	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "incident exceeded the record byte limit")
+	_clean_incident_files(TEST_ROOT)
+
+
+const CREDENTIAL_FAMILY_TEXT := "client_secret=TEST_CLIENT_SECRET_CREDENTIAL context=text-visible " \
+	+ "Client-Secret: TEST_CLIENT_SECRET_HEADER_CREDENTIAL clientSecret='TEST_CAMEL_SECRET_CREDENTIAL' " \
+	+ "CLIENT.SECRET=\"TEST_DOTTED_SECRET_CREDENTIAL\" {\"CLIENT_SECRET\": \"TEST_JSON_UPPER_SECRET_CREDENTIAL\", \"scene\": \"res://scenes/Main.tscn\"} " \
+	+ "reroll_tokens=3 author=studio key=ui_accept secret_boss_active=true token_count=2 " \
+	+ "password: TEST_PASSWORD_CREDENTIAL passwd=TEST_PASSWD_CREDENTIAL api_key=TEST_API_KEY_CREDENTIAL " \
+	+ "X-API-KEY: TEST_X_API_KEY_HEADER_CREDENTIAL private_key=TEST_PRIVATE_KEY_CREDENTIAL " \
+	+ "-----BEGIN RSA PRIVATE KEY-----\nTEST_PEM_PRIVATE_KEY_CREDENTIAL\n-----END RSA PRIVATE KEY-----\n" \
+	+ "Failed to load res://assets/test.png after user://saves/slot1.save"
+const CREDENTIAL_FAMILY_CODE := "Cookie: session=TEST_COOKIE_SESSION_CREDENTIAL; theme=TEST_COOKIE_THEME_CREDENTIAL context=cookie-visible " \
+	+ "cookie=TEST_COOKIE_BARE_CREDENTIAL operation=cast Set-Cookie: sid=TEST_SET_COOKIE_CREDENTIAL; Path=/; HttpOnly " \
+	+ "{\"cookies\": {\"session\": \"TEST_NESTED_COOKIE_CREDENTIAL\"}, \"scene\": \"res://scenes/Main.tscn\"} " \
+	+ "{\\\"cookie\\\": \\\"TEST_ESCAPED_COOKIE_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"} " \
+	+ "COOKIES=\"TEST_UPPER_COOKIE_CREDENTIAL\" session=3 relay_session=alpha"
+const CREDENTIAL_FAMILY_RATIONALE := "auth-token=TEST_AUTH_TOKEN_CREDENTIAL X-Auth-Token: TEST_X_AUTH_TOKEN_CREDENTIAL " \
+	+ "authToken: 'TEST_CAMEL_AUTH_TOKEN_CREDENTIAL' AUTH_TOKEN=TEST_UPPER_AUTH_TOKEN_CREDENTIAL " \
+	+ "{\"auth_token\":\"TEST_JSON_AUTH_TOKEN_CREDENTIAL\",\"reason\":\"json-auth-visible\"} " \
+	+ "{\"auth\": {\"client_secret\": \"TEST_NESTED_SECRET_CREDENTIAL\", \"nested\": [{\"cookie\": \"TEST_DEEP_COOKIE_CREDENTIAL\"}]}, " \
+	+ "\"level\": 3, \"config\": {\"inner\": {\"private_key\": \"TEST_INNER_PRIVATE_KEY_CREDENTIAL\"}, \"seed\": 42}} " \
+	+ "auth=TEST_BARE_AUTH_CREDENTIAL credentials: [\"TEST_LIST_CREDENTIAL_A\", \"TEST_LIST_CREDENTIAL_B\"] session_id=TEST_SESSION_ID_CREDENTIAL " \
+	+ "Authorization: Digest username=\"tester\", response=\"TEST_DIGEST_CREDENTIAL\"\n" \
+	+ "https://tester:TEST_URL_PASSWORD_CREDENTIAL@example.invalid/help reason=timeout token_expires=3600"
+const AUTHORIZATION_SCHEME_TEXT := "Authorization: DPoP TEST_DPOP_CREDENTIAL context=dpop-visible " \
+	+ "Proxy-Authorization: Signature keyId=\"tester\", algorithm=\"hs2019\", signature=\"TEST_SIGNATURE_CREDENTIAL\" context=signature-visible " \
+	+ "Authorization: X-Custom-Scheme TEST_EXTENSION_CREDENTIAL context=extension-visible " \
+	+ "Authorization: Mutual user=\"tester\", realm=\"game\", proof=TEST_MUTUAL_CREDENTIAL context=mutual-visible " \
+	+ "Authorization: TEST_SCHEMELESS_CREDENTIAL context=schemeless-visible " \
+	+ "PROXY-AUTHORIZATION: SCRAM-SHA-256 TEST_SCRAM_CREDENTIAL== context=scram-visible " \
+	+ "proxy_authorization=Concealed TEST_CONCEALED_CREDENTIAL operation=cast " \
+	+ "proxyAuthorization: 'HOBA TEST_HOBA_CREDENTIAL' reason=hoba-visible " \
+	+ "Authorization: Negotiate TEST_NEGOTIATE_CREDENTIAL, extra=TEST_NEGOTIATE_PARAM_CREDENTIAL Failed to load res://scenes/Main.tscn"
+const AUTHORIZATION_SCHEME_CODE := "{\"Authorization\": \"DPoP TEST_JSON_DPOP_CREDENTIAL\", \"reason\": \"json-dpop-visible\"} " \
+	+ "{\"headers\": {\"Proxy-Authorization\": \"Signature keyId=\\\"k\\\", signature=\\\"TEST_NESTED_SIGNATURE_CREDENTIAL\\\"\", \"Accept\": \"application/json\"}, \"level\": 7} " \
+	+ "{\\\"Proxy-Authorization\\\": \\\"Negotiate TEST_ESCAPED_NEGOTIATE_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-auth-visible\\\"} " \
+	+ "Authorization: Bearer TEST_KNOWN_BEARER_CREDENTIAL weapon=axe Authorization: Basic TEST_KNOWN_BASIC_CREDENTIAL event=activation"
+const CREDENTIAL_FAMILY_MARKERS: Array[String] = [
+	"TEST_CLIENT_SECRET_CREDENTIAL",
+	"TEST_CLIENT_SECRET_HEADER_CREDENTIAL",
+	"TEST_CAMEL_SECRET_CREDENTIAL",
+	"TEST_DOTTED_SECRET_CREDENTIAL",
+	"TEST_JSON_UPPER_SECRET_CREDENTIAL",
+	"TEST_PASSWORD_CREDENTIAL",
+	"TEST_PASSWD_CREDENTIAL",
+	"TEST_API_KEY_CREDENTIAL",
+	"TEST_X_API_KEY_HEADER_CREDENTIAL",
+	"TEST_PRIVATE_KEY_CREDENTIAL",
+	"TEST_PEM_PRIVATE_KEY_CREDENTIAL",
+	"TEST_COOKIE_SESSION_CREDENTIAL",
+	"TEST_COOKIE_THEME_CREDENTIAL",
+	"TEST_COOKIE_BARE_CREDENTIAL",
+	"TEST_SET_COOKIE_CREDENTIAL",
+	"TEST_NESTED_COOKIE_CREDENTIAL",
+	"TEST_ESCAPED_COOKIE_CREDENTIAL",
+	"TEST_UPPER_COOKIE_CREDENTIAL",
+	"TEST_AUTH_TOKEN_CREDENTIAL",
+	"TEST_X_AUTH_TOKEN_CREDENTIAL",
+	"TEST_CAMEL_AUTH_TOKEN_CREDENTIAL",
+	"TEST_UPPER_AUTH_TOKEN_CREDENTIAL",
+	"TEST_JSON_AUTH_TOKEN_CREDENTIAL",
+	"TEST_NESTED_SECRET_CREDENTIAL",
+	"TEST_DEEP_COOKIE_CREDENTIAL",
+	"TEST_INNER_PRIVATE_KEY_CREDENTIAL",
+	"TEST_BARE_AUTH_CREDENTIAL",
+	"TEST_LIST_CREDENTIAL_A",
+	"TEST_LIST_CREDENTIAL_B",
+	"TEST_SESSION_ID_CREDENTIAL",
+	"TEST_DIGEST_CREDENTIAL",
+	"TEST_URL_PASSWORD_CREDENTIAL",
+	"TEST_BREADCRUMB_SECRET_CREDENTIAL",
+	"TEST_BREADCRUMB_COOKIE_CREDENTIAL",
+	"TEST_BREADCRUMB_TOKEN_CREDENTIAL",
+	"TEST_DPOP_CREDENTIAL",
+	"TEST_SIGNATURE_CREDENTIAL",
+	"TEST_EXTENSION_CREDENTIAL",
+	"TEST_MUTUAL_CREDENTIAL",
+	"TEST_SCHEMELESS_CREDENTIAL",
+	"TEST_SCRAM_CREDENTIAL",
+	"TEST_CONCEALED_CREDENTIAL",
+	"TEST_HOBA_CREDENTIAL",
+	"TEST_NEGOTIATE_CREDENTIAL",
+	"TEST_NEGOTIATE_PARAM_CREDENTIAL",
+	"TEST_JSON_DPOP_CREDENTIAL",
+	"TEST_NESTED_SIGNATURE_CREDENTIAL",
+	"TEST_ESCAPED_NEGOTIATE_CREDENTIAL",
+	"TEST_KNOWN_BEARER_CREDENTIAL",
+	"TEST_KNOWN_BASIC_CREDENTIAL",
+	"TEST_BREADCRUMB_DPOP_CREDENTIAL",
+]
+const CREDENTIAL_FAMILY_BENIGN: Array[String] = [
+	"context=dpop-visible",
+	"context=signature-visible",
+	"context=extension-visible",
+	"context=mutual-visible",
+	"context=schemeless-visible",
+	"context=scram-visible",
+	"proxy_authorization=<redacted> operation=cast",
+	"proxyAuthorization: '<redacted>' reason=hoba-visible",
+	"Failed to load res://scenes/Main.tscn",
+	"\"reason\": \"json-dpop-visible\"",
+	"\"Accept\": \"application/json\"",
+	"\"level\": 7",
+	"\\\"context\\\": \\\"escaped-auth-visible\\\"",
+	"weapon=axe",
+	"event=activation",
+	"context=text-visible",
+	"\"scene\": \"res://scenes/Main.tscn\"",
+	"reroll_tokens=3",
+	"author=studio",
+	"key=ui_accept",
+	"secret_boss_active=true",
+	"token_count=2",
+	"Failed to load res://assets/test.png after user://saves/slot1.save",
+	"context=cookie-visible",
+	"operation=cast",
+	"HttpOnly",
+	"\\\"context\\\": \\\"escaped-visible\\\"",
+	"session=3",
+	"relay_session=alpha",
+	"\"reason\":\"json-auth-visible\"",
+	"\"level\": 3",
+	"\"seed\": 42",
+	"https://tester:<redacted>@example.invalid/help",
+	"reason=timeout",
+	"token_expires=3600",
+	"<redacted-private-key>",
+	"clientSecret='<redacted>'",
+	"CLIENT.SECRET=\"<redacted>\"",
+]
+
+
+func _test_credential_field_families(service: Node) -> void:
+	var no_frames: Array[Dictionary] = []
+	service.clear_breadcrumbs_for_tests()
+	service.record_breadcrumb_for_tests(
+		"client_secret=TEST_BREADCRUMB_SECRET_CREDENTIAL class=berserk",
+		"Cookie: token=TEST_BREADCRUMB_COOKIE_CREDENTIAL weapon=axe",
+		"x_auth_token=TEST_BREADCRUMB_TOKEN_CREDENTIAL event=activation",
+		78,
+	)
+	service.record_breadcrumb_for_tests(
+		"Authorization: DPoP TEST_BREADCRUMB_DPOP_CREDENTIAL class=berserk",
+		"weapon=axe",
+		"event=activation",
+		79,
+	)
+	service.capture_error_for_tests(
+		CREDENTIAL_FAMILY_TEXT + "\n" + AUTHORIZATION_SCHEME_TEXT,
+		no_frames,
+		CREDENTIAL_FAMILY_CODE + "\n" + AUTHORIZATION_SCHEME_CODE,
+		CREDENTIAL_FAMILY_RATIONALE,
+	)
+	service.flush_pending_for_tests()
+	var paths: PackedStringArray = service.incident_paths_for_tests()
+	_check(paths.size() == 1, "credential-family capture produced %d files" % paths.size())
+	if paths.is_empty():
+		return
+	var payload := FileAccess.get_file_as_string(str(paths[0]))
+	var parsed = JSON.parse_string(payload)
+	_check(parsed is Dictionary, "credential-family incident is not complete JSON")
+	if not parsed is Dictionary:
+		return
+	for marker in CREDENTIAL_FAMILY_MARKERS:
+		_check(payload.find(marker) == -1, "credential marker reached the incident: %s" % marker)
+	var record: Dictionary = parsed
+	var error: Dictionary = record.get("error", {})
+	var fields := "\n".join([
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	])
+	for benign in CREDENTIAL_FAMILY_BENIGN:
+		_check(fields.find(benign) >= 0, "benign diagnostic context was removed: %s" % benign)
+	var breadcrumbs: Array = record.get("breadcrumbs", [])
+	_check(breadcrumbs.size() == 2, "credential-family record carried %d breadcrumbs instead of 2" % breadcrumbs.size())
+	for breadcrumb_value in breadcrumbs:
+		var breadcrumb: Dictionary = breadcrumb_value
+		_check(str(breadcrumb.get("class", "")).ends_with("class=berserk"), "breadcrumb class context was removed")
+		_check(str(breadcrumb.get("weapon", "")).ends_with("weapon=axe"), "breadcrumb weapon context was removed")
+		_check(str(breadcrumb.get("event", "")).ends_with("event=activation"), "breadcrumb event context was removed")
+	_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "credential-family incident exceeded the record byte limit")
+	_clean_incident_files(TEST_ROOT)
+
+
+# Each case is captured as its own isolated incident (one file, checked, then
+# removed) so normal rotation can never hide a leak. `field` selects which
+# _redact path carries the input: error text/code/rationale, a backtrace frame
+# function name, or a breadcrumb class/weapon/event field.
+const QUOTED_AUTHORIZATION_CASES: Array[Dictionary] = [
+	{"field": "text", "input": "Authorization: Bearer \"TEST_QB_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QB_DQ_CREDENTIAL"], "benign": ["Authorization: <redacted> context=visible"]},
+	{"field": "text", "input": "Authorization: Basic \"TEST_QBASIC_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QBASIC_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \"TEST_QEXT_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QEXT_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: HOBA \"TEST_QHOBA_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QHOBA_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: DPoP \"TEST_QDPOP_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_QDPOP_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: Bearer \"TEST_QB_PROXY_CREDENTIAL\" context=visible", "markers": ["TEST_QB_PROXY_CREDENTIAL"], "benign": ["Proxy-Authorization: <redacted> context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: Basic 'TEST_QBASIC_PROXY_SQ_CREDENTIAL' context=visible", "markers": ["TEST_QBASIC_PROXY_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: X-Ext-Scheme \"TEST_QEXT_PROXY_CREDENTIAL\" context=visible", "markers": ["TEST_QEXT_PROXY_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer 'TEST_QB_SQ_CREDENTIAL' context=visible", "markers": ["TEST_QB_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Basic \\\"TEST_QBASIC_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_QBASIC_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \\\"TEST_QEXT_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_QEXT_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: \"Bearer TEST_WHOLE_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_WHOLE_DQ_CREDENTIAL"], "benign": ["Authorization: \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "Proxy-Authorization: 'Basic TEST_WHOLE_SQ_CREDENTIAL' context=visible", "markers": ["TEST_WHOLE_SQ_CREDENTIAL"], "benign": ["Proxy-Authorization: '<redacted>' context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer TEST_T68_CREDENTIAL== context=visible", "markers": ["TEST_T68_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme keyId=\"k\", proof=\"TEST_PARAM_DQ_CREDENTIAL\", nonce=TEST_PARAM_BARE_CREDENTIAL context=visible", "markers": ["TEST_PARAM_DQ_CREDENTIAL", "TEST_PARAM_BARE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: X-Ext-Scheme \"TEST_LIST_Q1_CREDENTIAL\", \"TEST_LIST_Q2_CREDENTIAL\" context=visible", "markers": ["TEST_LIST_Q1_CREDENTIAL", "TEST_LIST_Q2_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_LINE_CREDENTIAL\"\nnext_line=visible res://scenes/Main.tscn", "markers": ["TEST_LINE_CREDENTIAL"], "benign": ["next_line=visible res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Failed to load user://saves/slot1.save Authorization: Basic \"TEST_END_CREDENTIAL\"", "markers": ["TEST_END_CREDENTIAL"], "benign": ["Failed to load user://saves/slot1.save Authorization: <redacted>"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_UNTERMINATED_CREDENTIAL context=lost", "markers": ["TEST_UNTERMINATED_CREDENTIAL"], "benign": ["Authorization: <redacted>"]},
+	{"field": "text", "input": "Authorization: Bearer \"TEST_SPACED_QUOTE_CREDENTIAL with space\" context=visible", "markers": ["TEST_SPACED_QUOTE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "{\"headers\": {\"Authorization\": \"Bearer \\\"TEST_NESTED_Q_CREDENTIAL\\\"\", \"Accept\": \"text/plain\"}, \"level\": 5}", "markers": ["TEST_NESTED_Q_CREDENTIAL"], "benign": ["\"Accept\": \"text/plain\"", "\"level\": 5"]},
+	{"field": "text", "input": "{\\\"Authorization\\\": \\\"Bearer TEST_ESCJSON_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"}", "markers": ["TEST_ESCJSON_CREDENTIAL"], "benign": ["\\\"context\\\": \\\"escaped-visible\\\""]},
+	{"field": "text", "input": "auth: Bearer \"TEST_AUTHKEY_Q_CREDENTIAL\" context=visible https://example.invalid/help", "markers": ["TEST_AUTHKEY_Q_CREDENTIAL"], "benign": ["context=visible https://example.invalid/help"]},
+	{"field": "text", "input": "proxy_authorization=Basic \"TEST_SNAKE_Q_CREDENTIAL\" operation=cast", "markers": ["TEST_SNAKE_Q_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "code", "input": "Authorization: Bearer \"TEST_CODE_Q_CREDENTIAL\" operation=cast", "markers": ["TEST_CODE_Q_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "rationale", "input": "Proxy-Authorization: Basic 'TEST_RATIONALE_Q_CREDENTIAL' reason=timeout", "markers": ["TEST_RATIONALE_Q_CREDENTIAL"], "benign": ["reason=timeout"]},
+	{"field": "function", "input": "Authorization: Bearer \"TEST_FRAME_Q_CREDENTIAL\" fn=visible", "markers": ["TEST_FRAME_Q_CREDENTIAL"], "benign": ["fn=visible"]},
+	{"field": "class", "input": "Authorization: Basic \"TEST_CLASS_Q_CREDENTIAL\" class=berserk", "markers": ["TEST_CLASS_Q_CREDENTIAL"], "benign": ["class=berserk"]},
+	{"field": "weapon", "input": "Proxy-Authorization: X-Ext-Scheme 'TEST_WEAPON_Q_CREDENTIAL' weapon=axe", "markers": ["TEST_WEAPON_Q_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "event", "input": "Authorization: Bearer \\\"TEST_EVENT_Q_CREDENTIAL\\\" event=activation", "markers": ["TEST_EVENT_Q_CREDENTIAL"], "benign": ["event=activation"]},
+]
+
+
+# Bare `<scheme> <credential>` forms with no header name or credential key,
+# plus the benign matrix that must survive: ordinary capitalised words, plain
+# lowercase words after a scheme name, header-like keys that are not schemes,
+# and diagnostic URIs. Same isolated-incident discipline as the quoted table.
+const BARE_SCHEME_CASES: Array[Dictionary] = [
+	{"field": "text", "input": "Basic TEST_BARE_BASIC_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_BASIC_PLAIN_CREDENTIAL"], "benign": ["Basic <redacted> context=visible"]},
+	{"field": "text", "input": "Basic \"TEST_BARE_BASIC_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_BASIC_DQ_CREDENTIAL"], "benign": ["Basic \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "Basic 'TEST_BARE_BASIC_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_BASIC_SQ_CREDENTIAL"], "benign": ["Basic '<redacted>' context=visible"]},
+	{"field": "text", "input": "Basic \\\"TEST_BARE_BASIC_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_BASIC_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP TEST_BARE_DPOP_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_DPOP_PLAIN_CREDENTIAL"], "benign": ["DPoP <redacted> context=visible"]},
+	{"field": "text", "input": "DPoP \"TEST_BARE_DPOP_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_DPOP_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP 'TEST_BARE_DPOP_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_DPOP_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "DPoP \\\"TEST_BARE_DPOP_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_DPOP_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Ext TEST_BARE_EXT_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_EXT_PLAIN_CREDENTIAL"], "benign": ["X-Ext <redacted> context=visible"]},
+	{"field": "text", "input": "X-Ext \"TEST_BARE_EXT_DQ_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_EXT_DQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Ext 'TEST_BARE_EXT_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_EXT_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "X-Custom-Scheme \\\"TEST_BARE_EXT_ESC_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_EXT_ESC_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Bearer TEST_BARE_BEARER_PLAIN_CREDENTIAL context=visible", "markers": ["TEST_BARE_BEARER_PLAIN_CREDENTIAL"], "benign": ["Bearer <redacted> context=visible"]},
+	{"field": "text", "input": "Bearer 'TEST_BARE_BEARER_SQ_CREDENTIAL' context=visible", "markers": ["TEST_BARE_BEARER_SQ_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Digest username=\"tester\", response=\"TEST_BARE_DIGEST_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_DIGEST_CREDENTIAL"], "benign": ["Digest <redacted> context=visible"]},
+	{"field": "text", "input": "SCRAM-SHA-256 TEST_BARE_SCRAM_CREDENTIAL== context=visible", "markers": ["TEST_BARE_SCRAM_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Signature keyId=\"k\", signature=\"TEST_BARE_SIGNATURE_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_SIGNATURE_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Basic \"TEST_BARE_UNTERMINATED_CREDENTIAL context=lost", "markers": ["TEST_BARE_UNTERMINATED_CREDENTIAL"], "benign": ["Basic <redacted>"]},
+	{"field": "text", "input": "Basic\tTEST_BARE_TAB_CREDENTIAL context=visible", "markers": ["TEST_BARE_TAB_CREDENTIAL"], "benign": ["context=visible"]},
+	{"field": "text", "input": "Basic TEST_BARE_LINE_CREDENTIAL\nFailed to load res://scenes/Main.tscn", "markers": ["TEST_BARE_LINE_CREDENTIAL"], "benign": ["Failed to load res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Cannot open user://saves/slot1.save after uid://c8ab12xyz with Basic TEST_BARE_AFTER_URI_CREDENTIAL", "markers": ["TEST_BARE_AFTER_URI_CREDENTIAL"], "benign": ["Cannot open user://saves/slot1.save after uid://c8ab12xyz with Basic <redacted>"]},
+	{"field": "text", "input": "{\"h\": \"Basic TEST_BARE_JSON_CREDENTIAL\", \"scene\": \"res://scenes/Main.tscn\"}", "markers": ["TEST_BARE_JSON_CREDENTIAL"], "benign": ["\"scene\": \"res://scenes/Main.tscn\""]},
+	{"field": "text", "input": "{\\\"h\\\": \\\"DPoP TEST_BARE_ESCJSON_CREDENTIAL\\\", \\\"context\\\": \\\"escaped-visible\\\"}", "markers": ["TEST_BARE_ESCJSON_CREDENTIAL"], "benign": ["\\\"context\\\": \\\"escaped-visible\\\""]},
+	{"field": "code", "input": "Basic 'TEST_BARE_CODE_CREDENTIAL' operation=cast", "markers": ["TEST_BARE_CODE_CREDENTIAL"], "benign": ["operation=cast"]},
+	{"field": "rationale", "input": "DPoP \"TEST_BARE_RATIONALE_CREDENTIAL\" reason=timeout", "markers": ["TEST_BARE_RATIONALE_CREDENTIAL"], "benign": ["reason=timeout"]},
+	{"field": "function", "input": "X-Ext \"TEST_BARE_FRAME_CREDENTIAL\" fn=visible", "markers": ["TEST_BARE_FRAME_CREDENTIAL"], "benign": ["fn=visible"]},
+	{"field": "class", "input": "Basic TEST_BARE_CLASS_CREDENTIAL class=berserk", "markers": ["TEST_BARE_CLASS_CREDENTIAL"], "benign": ["class=berserk"]},
+	{"field": "weapon", "input": "Basic 'TEST_BARE_WEAPON_CREDENTIAL' weapon=axe", "markers": ["TEST_BARE_WEAPON_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "event", "input": "X-Ext \"TEST_BARE_EVENT_CREDENTIAL\" event=activation", "markers": ["TEST_BARE_EVENT_CREDENTIAL"], "benign": ["event=activation"]},
+	{"field": "weapon", "input": "DPoP \\\"TEST_BARE_WEAPON_ESC_CREDENTIAL\\\" weapon=axe", "markers": ["TEST_BARE_WEAPON_ESC_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "text", "input": "Basic attack missed the Stone Bruiser near res://scenes/Main.tscn", "markers": [], "benign": ["Basic attack missed the Stone Bruiser near res://scenes/Main.tscn"]},
+	{"field": "text", "input": "Invalid signature for user://saves/slot1.save: Signature mismatch", "markers": [], "benign": ["Invalid signature for user://saves/slot1.save: Signature mismatch"]},
+	{"field": "text", "input": "Node not found: /root/Main/HUD/HealthBar Digest ready", "markers": [], "benign": ["Node not found: /root/Main/HUD/HealthBar Digest ready"]},
+	{"field": "text", "input": "Failed to load res://assets/test.png dependency Basic material", "markers": [], "benign": ["Failed to load res://assets/test.png dependency Basic material"]},
+	{"field": "text", "input": "Manifest fetch failed for https://github.com/FomaBy/FantasyDisk X-Request-Id: req-visible-1", "markers": [], "benign": ["https://github.com/FomaBy/FantasyDisk X-Request-Id: req-visible-1"]},
+	{"field": "text", "input": "basic attack visible bearer of news visible mutual visible", "markers": [], "benign": ["basic attack visible bearer of news visible mutual visible"]},
+	{"field": "text", "input": "Parameter \"t\" is null. Basic", "markers": [], "benign": ["Parameter \"t\" is null. Basic"]},
+	{"field": "weapon", "input": "Basic sword", "markers": [], "benign": ["Basic sword"]},
+	{"field": "text", "input": "basic TEST_BARE_LOWER_BASIC_CREDENTIAL context=visible", "markers": ["TEST_BARE_LOWER_BASIC_CREDENTIAL"], "benign": ["basic <redacted> context=visible"]},
+	{"field": "text", "input": "BEARER \"TEST_BARE_UPPER_BEARER_CREDENTIAL\" context=visible", "markers": ["TEST_BARE_UPPER_BEARER_CREDENTIAL"], "benign": ["BEARER \"<redacted>\" context=visible"]},
+	{"field": "text", "input": "dPoP 'TEST_BARE_MIXED_DPOP_CREDENTIAL' context=visible", "markers": ["TEST_BARE_MIXED_DPOP_CREDENTIAL"], "benign": ["dPoP '<redacted>' context=visible"]},
+	{"field": "text", "input": "x-ext \\\"TEST_BARE_LOWER_EXT_CREDENTIAL\\\" context=visible", "markers": ["TEST_BARE_LOWER_EXT_CREDENTIAL"], "benign": ["x-ext \\\"<redacted>\\\" context=visible"]},
+	{"field": "weapon", "input": "basic 'TEST_BARE_LOWER_WEAPON_CREDENTIAL' weapon=axe", "markers": ["TEST_BARE_LOWER_WEAPON_CREDENTIAL"], "benign": ["weapon=axe"]},
+	{"field": "text", "input": "Digest Zm9vOmJhcg== context=visible", "markers": ["Zm9vOmJhcg=="], "benign": ["Digest <redacted> context=visible"]},
+	{"field": "text", "input": "The basic idea: negotiate a mutual digest of the Signature Stone near res://scenes/Main.tscn", "markers": [], "benign": ["The basic idea: negotiate a mutual digest of the Signature Stone near res://scenes/Main.tscn"]},
+	{"field": "text", "input": "basic Attack missed; BASIC damage 12; Digest 3 entries; x-axis offset", "markers": [], "benign": ["basic Attack missed; BASIC damage 12; Digest 3 entries; x-axis offset"]},
+	{"field": "text", "input": "bearer of news visible NTLM handshake visible oauth flow visible", "markers": [], "benign": ["bearer of news visible NTLM handshake visible oauth flow visible"]},
+	{"field": "event", "input": "negotiate phase:release", "markers": [], "benign": ["negotiate phase:release"]},
+]
+
+
+# Table-driven matrix: scheme families x letter-case variants x credential
+# forms, each as an isolated incident, rotating through every _redact field.
+# Every positive cell is paired with benign prose and diagnostic URIs after
+# the same case variant of the scheme word, which must survive untouched.
+const MATRIX_SCHEMES: Array[String] = ["Basic", "Bearer", "Digest", "DPoP", "Negotiate", "SCRAM-SHA-256", "X-Ext"]
+const MATRIX_FIELDS: Array[String] = ["text", "code", "rationale", "function", "class", "weapon", "event"]
+const MATRIX_BENIGN_TAIL := " attack near res://scenes/Main.tscn and user://saves/slot1.save uid://c8ab12xyz https://example.invalid/help"
+
+
+static func _case_variants(scheme: String) -> Array[String]:
+	var mixed := ""
+	for index in range(scheme.length()):
+		var character := scheme[index]
+		mixed += character.to_upper() if index % 2 == 1 else character.to_lower()
+	return [scheme, scheme.to_lower(), scheme.to_upper(), mixed]
+
+
+static func _credential_forms(marker: String) -> Array[Array]:
+	return [
+		["plain", marker],
+		["single", "'" + marker + "'"],
+		["double", "\"" + marker + "\""],
+		["escaped", "\\\"" + marker + "\\\""],
+	]
+
+
+static func _build_bare_scheme_matrix() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for scheme in MATRIX_SCHEMES:
+		var family := scheme.to_upper().replace("-", "")
+		for variant in _case_variants(scheme):
+			for form_index in range(4):
+				var marker := "TEST_MX_%s_%02d_CREDENTIAL" % [family, counter]
+				var form: Array = _credential_forms(marker)[form_index]
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var tail := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+				cases.append({
+					"field": field,
+					"input": "%s %s%s" % [variant, form[1], tail],
+					"markers": [marker],
+					"benign": ["context=visible"] if not tail.is_empty() else [],
+				})
+				counter += 1
+			cases.append({
+				"field": "text",
+				"input": variant + MATRIX_BENIGN_TAIL,
+				"markers": [],
+				"benign": [variant + MATRIX_BENIGN_TAIL],
+			})
+			cases.append({
+				"field": "text",
+				"input": "%s Stone visible %s 42 visible" % [variant, variant],
+				"markers": [],
+				"benign": ["%s Stone visible %s 42 visible" % [variant, variant]],
+			})
+	return cases
+
+
+# Prose-versus-credential boundary matrix: for every scheme family and case
+# variant, ordinary phrases with terminal punctuation and `-`/`/` separators
+# must survive byte-for-byte in every _redact field, while credential-positive
+# elements carrying the same separators and punctuation stay redacted.
+const PROSE_PHRASES: Array[String] = [
+	"attack.",
+	"attack...",
+	"ready.",
+	"mismatch.",
+	"flow.",
+	"respect.",
+	"phase-change.",
+	"attack/heavy.",
+	"attack, then heavy!",
+	"Stone-Bruiser/elite; retry: 3.",
+]
+const EXACT_PROSE_CONTROLS: Array[String] = [
+	"Basic attack.",
+	"basic attack...",
+	"Digest ready.",
+	"SIGNATURE mismatch.",
+	"OAuth flow.",
+	"Mutual respect.",
+	"Negotiate phase-change.",
+	"Basic attack/heavy.",
+	"Basic attack, heavy!",
+	"Bearer of news, visible.",
+]
+
+
+static func _build_bare_scheme_prose_matrix() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for scheme in MATRIX_SCHEMES:
+		var family := scheme.to_upper().replace("-", "")
+		for variant in _case_variants(scheme):
+			for phrase in PROSE_PHRASES:
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var sentence := "%s %s Failed to load res://scenes/Main.tscn from user://saves/slot1.save uid://c8ab12xyz https://example.invalid/help" % [variant, phrase]
+				if field != "text" and field != "code" and field != "rationale":
+					sentence = "%s %s" % [variant, phrase]
+				cases.append({"field": field, "input": sentence, "markers": [], "benign": [sentence]})
+				counter += 1
+			for form_index in range(6):
+				var marker := "TEST_PX_%s_%02d_CREDENTIAL" % [family, counter]
+				var field := MATRIX_FIELDS[counter % MATRIX_FIELDS.size()]
+				var element := ""
+				match form_index:
+					0:
+						element = marker + "."
+					1:
+						element = marker + "..."
+					2:
+						element = marker.replace("_", "-") + "/part."
+					3:
+						element = "'" + marker + "'."
+					4:
+						element = "\\\"" + marker + "\\\"..."
+					5:
+						element = "keyId=\"k\", proof=" + marker + "."
+				var tail := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+				cases.append({
+					"field": field,
+					"input": "%s %s%s" % [variant, element, tail],
+					"markers": [marker.replace("_", "-") if form_index == 2 else marker],
+					"benign": ["context=visible"] if not tail.is_empty() else [],
+				})
+				counter += 1
+	return cases
+
+
+# Two parser contexts, both across every _redact field, recognized and
+# X-extension schemes and case variants:
+# 1. sensitive header/key values remove every comma-separated element, so an
+#    unquoted credential after a comma never survives;
+# 2. bare `<scheme> ...` prose keeps `word, word` but a leading, trailing,
+#    repeated or word-less separator is outside the prose grammar and stays a
+#    credential element (exact expected output asserted byte for byte).
+const SENSITIVE_HEADER_PREFIXES: Array[String] = [
+	"Authorization: Basic",
+	"Proxy-Authorization: Bearer",
+	"auth=DPoP",
+	"authorization=Negotiate",
+	"proxy_authorization=X-Probe",
+	"proxyAuthorization: Mutual",
+	"AUTHORIZATION: SCRAM-SHA-256",
+	"Authorization: bAsIc",
+	"PROXY-AUTHORIZATION: x-probe",
+]
+const SEPARATOR_SHAPE_CASES: Array[Dictionary] = [
+	{"input": "Bearer /Secret context=visible", "expected": "Bearer <redacted> context=visible", "marker": "Secret"},
+	{"input": "Basic -secret context=visible", "expected": "Basic <redacted> context=visible", "marker": "secret"},
+	{"input": "DPoP secret//value. context=visible", "expected": "DPoP <redacted>. context=visible", "marker": "secret//value"},
+	{"input": "X-Ext secret-/value. context=visible", "expected": "X-Ext <redacted>. context=visible", "marker": "secret-/value"},
+	{"input": "Basic //// context=visible", "expected": "Basic <redacted> context=visible", "marker": "////"},
+	{"input": "basic TEST_SEP_LEAD_CREDENTIAL- context=visible", "expected": "basic <redacted> context=visible", "marker": "TEST_SEP_LEAD_CREDENTIAL"},
+	{"input": "bEaReR -TEST_SEP_DASH_CREDENTIAL/part. context=visible", "expected": "bEaReR <redacted>. context=visible", "marker": "TEST_SEP_DASH_CREDENTIAL"},
+	{"input": "x-ext attack--heavy. context=visible", "expected": "x-ext <redacted>. context=visible", "marker": "attack--heavy"},
+	{"input": "sCrAm-ShA-256 attack/-heavy! context=visible", "expected": "sCrAm-ShA-256 <redacted>! context=visible", "marker": "attack/-heavy"},
+	{"input": "Digest -- context=visible", "expected": "Digest <redacted> context=visible", "marker": "--"},
+	{"input": "Basic ... context=visible", "expected": "Basic ... context=visible", "marker": ""},
+	{"input": "Basic attack. context=visible", "expected": "Basic attack. context=visible", "marker": ""},
+	{"input": "Basic attack, then heavy! context=visible", "expected": "Basic attack, then heavy! context=visible", "marker": ""},
+	{"input": "Negotiate phase-change/retry... context=visible", "expected": "Negotiate phase-change/retry... context=visible", "marker": ""},
+	{"input": "Digest 3.14. context=visible", "expected": "Digest 3.14. context=visible", "marker": ""},
+]
+
+
+static func _build_header_tail_cases() -> Array[Dictionary]:
+	var cases: Array[Dictionary] = []
+	var counter := 0
+	for prefix in SENSITIVE_HEADER_PREFIXES:
+		for field in MATRIX_FIELDS:
+			var first := "TEST_HT_FIRST_%02d_CREDENTIAL" % counter
+			var tail := "TEST_HT_TAIL_%02d_CREDENTIAL" % counter
+			var quoted_tail := "TEST_HT_QTAIL_%02d_CREDENTIAL" % counter
+			var suffix := " context=visible" if field == "text" or field == "code" or field == "rationale" else ""
+			cases.append({
+				"field": field,
+				"input": "%s %s, %s%s" % [prefix, first, tail, suffix],
+				"markers": [first, tail],
+				"benign": ["context=visible"] if not suffix.is_empty() else [],
+			})
+			cases.append({
+				"field": field,
+				"input": "%s %s, \"%s\", extra=%s%s" % [prefix, first, quoted_tail, tail, suffix],
+				"markers": [first, quoted_tail, tail],
+				"benign": ["context=visible"] if not suffix.is_empty() else [],
+			})
+			counter += 1
+	return cases
+
+
+func _test_header_tails_and_separator_shapes(service: Node) -> void:
+	var cases := _build_header_tail_cases()
+	_check(cases.size() == SENSITIVE_HEADER_PREFIXES.size() * MATRIX_FIELDS.size() * 2, "header tail cases built %d" % cases.size())
+	for shape_value in SEPARATOR_SHAPE_CASES:
+		var shape: Dictionary = shape_value
+		var marker := str(shape.get("marker", ""))
+		for field in MATRIX_FIELDS:
+			cases.append({
+				"field": field,
+				"input": str(shape["input"]),
+				"markers": [marker] if not marker.is_empty() else [],
+				"benign": [str(shape["expected"])],
+			})
+	_run_isolated_cases(service, cases, "header tails and separator shapes")
+
+
+func _test_bare_scheme_prose_matrix(service: Node) -> void:
+	var cases := _build_bare_scheme_prose_matrix()
+	_check(cases.size() == MATRIX_SCHEMES.size() * 4 * (PROSE_PHRASES.size() + 6), "bare scheme prose matrix built %d cases" % cases.size())
+	var exact: Array[Dictionary] = []
+	for control in EXACT_PROSE_CONTROLS:
+		for field in MATRIX_FIELDS:
+			exact.append({"field": field, "input": control, "markers": [], "benign": [control]})
+	exact.append({"field": "text", "input": "Authorization: Basic TEST_PX_HEADER_CREDENTIAL. context=visible", "markers": ["TEST_PX_HEADER_CREDENTIAL"], "benign": ["context=visible"]})
+	exact.append({"field": "text", "input": "auth=Basic TEST_PX_KEY_CREDENTIAL... context=visible", "markers": ["TEST_PX_KEY_CREDENTIAL"], "benign": ["context=visible"]})
+	exact.append({"field": "text", "input": "Basic Zm9vOmJhcg==. context=visible", "markers": ["Zm9vOmJhcg=="], "benign": ["Basic <redacted>. context=visible"]})
+	exact.append({"field": "text", "input": "DPoP eyJhbGciOi.eyJzdWIi.SflKxw. context=visible", "markers": ["eyJhbGciOi"], "benign": ["DPoP <redacted>. context=visible"]})
+	exact.append({"field": "text", "input": "Basic TEST_PX_TRAIL_CREDENTIAL... context=visible", "markers": ["TEST_PX_TRAIL_CREDENTIAL"], "benign": ["Basic <redacted>... context=visible"]})
+	_run_isolated_cases(service, cases + exact, "bare scheme prose")
+
+
+func _test_bare_scheme_case_matrix(service: Node) -> void:
+	var cases := _build_bare_scheme_matrix()
+	_check(cases.size() == MATRIX_SCHEMES.size() * 4 * 6, "bare scheme matrix built %d cases" % cases.size())
+	_run_isolated_cases(service, cases, "bare scheme matrix")
+
+
+func _test_bare_scheme_batches(service: Node) -> void:
+	_run_isolated_cases(service, BARE_SCHEME_CASES, "bare scheme")
+
+
+func _test_quoted_authorization_batches(service: Node) -> void:
+	_run_isolated_cases(service, QUOTED_AUTHORIZATION_CASES, "quoted authorization")
+
+
+func _run_isolated_cases(service: Node, cases: Array[Dictionary], suite: String) -> void:
+	for entry_value in cases:
+		var entry: Dictionary = entry_value
+		var field := str(entry.get("field", "text"))
+		var sample := str(entry.get("input", ""))
+		var markers: Array = entry.get("markers", [])
+		var label := "%s: %s" % [suite, str(markers[0]) if not markers.is_empty() else sample.substr(0, 40)]
+		service.clear_breadcrumbs_for_tests()
+		_clean_incident_files(TEST_ROOT)
+		var frames: Array[Dictionary] = []
+		if field == "function":
+			frames.append({"file": "res://tests/crash_logger_test.gd", "function": sample, "line": 1})
+		if field == "class" or field == "weapon" or field == "event":
+			service.record_breadcrumb_for_tests(
+				sample if field == "class" else "class=berserk",
+				sample if field == "weapon" else "weapon=axe",
+				sample if field == "event" else "event=activation",
+				80,
+			)
+		service.capture_error_for_tests(
+			sample if field == "text" else "isolated %s case" % suite,
+			frames,
+			sample if field == "code" else "",
+			sample if field == "rationale" else "",
+		)
+		service.flush_pending_for_tests()
+		var paths: PackedStringArray = service.incident_paths_for_tests()
+		_check(paths.size() == 1, "%s: isolated case produced %d files" % [label, paths.size()])
+		if paths.size() != 1:
+			continue
+		var payload := FileAccess.get_file_as_string(str(paths[0]))
+		var parsed = JSON.parse_string(payload)
+		_check(parsed is Dictionary, "%s: incident is not complete JSON" % label)
+		for marker in markers:
+			_check(payload.find(str(marker)) == -1, "%s: credential marker reached the incident" % str(marker))
+		if parsed is Dictionary:
+			var redacted := _redacted_fields_text(parsed)
+			for benign in entry.get("benign", []):
+				_check(redacted.find(str(benign)) >= 0, "%s: benign context was removed: %s" % [label, str(benign)])
+	_clean_incident_files(TEST_ROOT)
+
+
+func _redacted_fields_text(record: Dictionary) -> String:
+	var error: Dictionary = record.get("error", {})
+	var parts: Array[String] = [
+		str(error.get("text", "")),
+		str(error.get("code", "")),
+		str(error.get("rationale", "")),
+	]
+	var backtrace: Dictionary = record.get("script_backtrace", {})
+	for trace_value in backtrace.get("traces", []):
+		var trace: Dictionary = trace_value
+		for frame_value in trace.get("frames", []):
+			var frame: Dictionary = frame_value
+			parts.append(str(frame.get("function", "")))
+	for breadcrumb_value in record.get("breadcrumbs", []):
+		var breadcrumb: Dictionary = breadcrumb_value
+		parts.append(str(breadcrumb.get("class", "")))
+		parts.append(str(breadcrumb.get("weapon", "")))
+		parts.append(str(breadcrumb.get("event", "")))
+	return "\n".join(parts)
+
+
+func _test_concurrent_records_and_rotation(service: Node) -> void:
+	var threads: Array[Thread] = []
+	var workers: Array[CaptureWorker] = []
+	for index in range(CONCURRENT_RECORDS):
+		var worker := CaptureWorker.new(service)
+		var thread := Thread.new()
+		workers.append(worker)
+		threads.append(thread)
+		_check(thread.start(worker.run.bind(index)) == OK, "thread %d did not start" % index)
+	for thread in threads:
+		thread.wait_to_finish()
+	service.flush_pending_for_tests()
+
+	var paths: PackedStringArray = service.incident_paths_for_tests()
+	_check(paths.size() == CONCURRENT_RECORDS, "concurrent callbacks produced %d/%d complete records" % [paths.size(), CONCURRENT_RECORDS])
+	var seen := {}
+	for path_value in paths:
+		var path := str(path_value)
+		var payload := FileAccess.get_file_as_string(path)
+		var parsed = JSON.parse_string(payload)
+		_check(parsed is Dictionary, "concurrent record %s is interleaved or incomplete" % path.get_file())
+		_check(payload.to_utf8_buffer().size() <= CrashLoggerScript.MAX_RECORD_BYTES, "concurrent record exceeded byte limit")
+		if parsed is Dictionary:
+			seen[str((parsed as Dictionary).get("error", {}).get("text", ""))] = true
+	for index in range(CONCURRENT_RECORDS):
+		_check(seen.has("concurrent-%02d" % index), "concurrent record %d was lost" % index)
+
+	for index in range(10):
+		service.capture_error_for_tests("rotation-%02d" % index)
+	service.flush_pending_for_tests()
+	paths = service.incident_paths_for_tests()
+	_check(paths.size() == CrashLoggerScript.MAX_INCIDENTS, "rotation retained %d files instead of %d" % [paths.size(), CrashLoggerScript.MAX_INCIDENTS])
+	var retained_bytes := 0
+	for path_value in paths:
+		var file := FileAccess.open(str(path_value), FileAccess.READ)
+		if file != null:
+			retained_bytes += file.get_length()
+			file.close()
+	_check(retained_bytes <= CrashLoggerScript.MAX_RETAINED_BYTES, "rotation retained %d bytes above the limit" % retained_bytes)
+
+
+func _clean_incident_files(directory: String) -> void:
+	if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(directory)):
+		return
+	for filename in DirAccess.get_files_at(directory):
+		if filename.begins_with(CrashLoggerScript.INCIDENT_PREFIX):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(directory.path_join(filename)))
+
+
+func _clean_directory(directory: String) -> void:
+	_clean_incident_files(directory)
+	var absolute := ProjectSettings.globalize_path(directory)
+	if DirAccess.dir_exists_absolute(absolute):
+		DirAccess.remove_absolute(absolute)
+
+
+func _check(condition: bool, message: String) -> void:
+	if not condition:
+		_errors.append(message)
