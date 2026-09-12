@@ -212,13 +212,14 @@ class QualityWorkflowContractTests(unittest.TestCase):
             )
 
     def test_job_has_bounded_runtime(self) -> None:
-        # FAN-3934: the budget is evidence-based — run 34429832208 measured
-        # 14m52s import warm-up + 212/537 suites in 60 minutes (~8.5s/suite),
-        # so 537 suites need ~91 minutes before static stages. The contract
-        # pins the measured 180-minute bound and requires its justification
-        # comment to stay attached, so a silent bump cannot pass review.
+        # FAN-3934: the budget is evidence-based — run 34429832208's
+        # timestamps show 34m45s for 210 of 537 suites (~9.9 s/suite, so 537
+        # need ~89 minutes) plus ~23 minutes of import/cache stages. The
+        # contract pins the 180-minute bound and requires the measured
+        # justification to stay attached, so a silent bump cannot pass review.
         self.assertIn("timeout-minutes: 180", self.candidate_job)
         self.assertIn("34429832208", self.candidate_job)
+        self.assertIn("~9.9 s/suite", self.candidate_job)
         # A budget without a bound, or a bound without evidence, must fail.
         self.assertNotIn("timeout-minutes: 60", self.candidate_job)
 
