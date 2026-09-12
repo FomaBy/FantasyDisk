@@ -212,14 +212,22 @@ class QualityWorkflowContractTests(unittest.TestCase):
             )
 
     def test_job_has_bounded_runtime(self) -> None:
-        # FAN-3934: the budget is evidence-based — run 34429832208's
-        # timestamps show 34m45s for 210 of 537 suites (~9.9 s/suite, so 537
-        # need ~89 minutes) plus ~23 minutes of import/cache stages. The
-        # contract pins the 180-minute bound and requires the measured
-        # justification to stay attached, so a silent bump cannot pass review.
+        # FAN-3934: the budget explanation must separate observed from
+        # extrapolated numbers (job 102722773634, run 34429832208). OBSERVED:
+        # 14m52s import warmup (02:33:59-02:48:51), cancelled ~60-minute job,
+        # suites 02:57:17-03:32:02 completing 210 of 537. EXTRAPOLATED at the
+        # observed ~9.9 s/suite: 537 suites ~89 min, full run ~110 min
+        # estimated. The contract pins the 180-minute bound, the observed/
+        # estimated distinction, and the job id, so a silent bump or a
+        # relabelled estimate cannot pass review.
         self.assertIn("timeout-minutes: 180", self.candidate_job)
         self.assertIn("34429832208", self.candidate_job)
-        self.assertIn("~9.9 s/suite", self.candidate_job)
+        self.assertIn("102722773634", self.candidate_job)
+        self.assertIn("OBSERVED", self.candidate_job)
+        self.assertIn("EXTRAPOLATED", self.candidate_job)
+        self.assertIn("estimated ~110 min", self.candidate_job)
+        # A "measured total" claim for a run that was cancelled is forbidden.
+        self.assertNotIn("measured total", self.candidate_job)
         # A budget without a bound, or a bound without evidence, must fail.
         self.assertNotIn("timeout-minutes: 60", self.candidate_job)
 

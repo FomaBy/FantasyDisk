@@ -32,11 +32,14 @@ jobs:
     # merge_group), so the required check's behavior on them is unchanged.
     if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
-    # FAN-3934 evidence-based budget, from run 34429832208's own timestamps:
-    # import/cache stages 02:33:59-02:57:17 (~23 min), suites 02:57:17-03:32:02
-    # = 34m45s for 210 of 537 suites (~9.9 s/suite), so 537 suites need ~89
-    # minutes; measured total ~116 minutes with static stages and hashing.
-    # 180 minutes bounds that workload with ~1.55x slack without masking a hang.
+    # FAN-3934 budget — observed vs extrapolated, from job 102722773634
+    # (run 34429832208, cancelled at the 60-minute limit; GitHub job record
+    # and retained job log). OBSERVED: job 02:32:15-03:32:31; import-warmup
+    # step 02:33:59-02:48:51 (14m52s); combined gate 02:48:51-03:32:28,
+    # cancelled; inside the gate, suites ran 02:57:17-03:32:02 and completed
+    # 210 of 537. EXTRAPOLATED at that observed rate (~9.9 s/suite, job log):
+    # 537 suites ~89 min, full run estimated ~110 min. 180 min bounds the
+    # ESTIMATE with slack and does not mask a hang.
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v6
