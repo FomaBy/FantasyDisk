@@ -66,8 +66,10 @@ class QualityWorkflowContractTests(unittest.TestCase):
         checkout = self.candidate_job[:checkout_end]
         required_paths = (
             "docs/design/reports/fan1455_seeded_combat_variety_slice_metrics.json",
-            "docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json",
-            "docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json",
+            # FAN-3934 CI repair: the whole fragments subtree materializes
+            # the convergence fixtures together with the atlas/offensive
+            # fragment inputs the A5 suites read.
+            "docs/design/reports/fan1438_a5_balance/fragments",
             "docs/design/references/unified_master_frame/unified_master_frame_metadata.json",
             "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json",
             "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json",
@@ -78,7 +80,9 @@ class QualityWorkflowContractTests(unittest.TestCase):
 
         for required_path in required_paths:
             with self.subTest(required_path=required_path):
-                self.assertTrue((ROOT / required_path).is_file())
+                # Cone entries may be directories (the fragments subtree) or
+                # files; every entry must resolve to tracked content.
+                self.assertTrue((ROOT / required_path).exists())
                 self.assertIn(f"          {required_path}\n", checkout)
 
     def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
@@ -230,6 +234,39 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("measured total", self.candidate_job)
         # A budget without a bound, or a bound without evidence, must fail.
         self.assertNotIn("timeout-minutes: 60", self.candidate_job)
+
+    def test_sparse_cone_materializes_a5_fragment_inputs(self) -> None:
+        # FAN-3934 CI repair (run 34715975730): the atlas attribution suite
+        # reads a tracked fragment that the old cone never materialized; the
+        # offensive fragments had the same latent gap. The cone must include
+        # the whole fragments subtree so both required inputs exist on the
+        # runner without relying on a full checkout.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            checkout,
+        )
+        # Failure case: the pre-repair cone (explicit conditional/defensive
+        # files only) must be recognized as missing the required inputs.
+        repaired = checkout.replace(
+            "            # FAN-3934 CI repair: the whole fragments subtree must be\n"
+            "            # materialized — the atlas attribution suite reads\n"
+            "            # fragments/ultimate_atlas/… and the offensive fragments are the\n"
+            "            # same latent gap (run 34715975730, job 103613162708).\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments\n",
+            "            docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json\n",
+        )
+        self.assertNotEqual(repaired, checkout, "pre-repair cone reconstruction failed")
+        self.assertNotIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            repaired,
+        )
+        # Both required fragment-backed inputs live under the included subtree.
+        fragments = ROOT / "docs/design/reports/fan1438_a5_balance/fragments"
+        self.assertTrue((fragments / "ultimate_atlas/ultimate_atlas_attribution.json").is_file())
+        self.assertTrue((fragments / "offensive/offensive_family_ab.json").is_file())
 
     def test_shallow_candidates_fetch_a5_integrity_provenance_commits(self) -> None:
         # The A5 balance integrity suite resolves the shipped dataset's
