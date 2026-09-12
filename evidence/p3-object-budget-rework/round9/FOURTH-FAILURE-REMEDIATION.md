@@ -37,7 +37,13 @@ Before = failed candidate `b7e3c4415b6a19934c3368c7021388fc2c10b9ff` unless note
    → QUALITY PASSED: 16 static, 0 Godot; `git diff --check origin/dev...HEAD`
    → clean; `python3 -m unittest tests.test_quality_workflow
    tests.test_quality_static_guard` → OK.
-8. **Source-applicability**: the successor's only changes vs the QA-verified
+8. **Control provenance** (18:41 correction): `round9/dev-control-p3.log` is a
+   FAILED AUTHOR CONTROL (probe aborted at the evidence-write step before
+   sampling); the completed matched control for the leak diagnosis is the
+   independent reviewer's clean-dev reproduction in QA report
+   `01a09657-2503-7815-9d10-b770df0d7b22`. The completed author `--verbose`
+   control (`dev-control-verbose.log`) supplies the owner identification.
+9. **Source-applicability**: the successor's only changes vs the QA-verified
    `b7e3c4415b6a19934c3368c7021388fc2c10b9ff` are evidence storage, manifest, budget wording and its contract
    assertion — production, gameplay, workflow-executable and CI-guard bytes are
    identical, so the reviewer's own matrix (P3 3,806/3,830 of 4,000; P1 2,246;

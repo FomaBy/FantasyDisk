@@ -25,15 +25,18 @@ bases. Expected values use the closed form alpha(t) = base·(1 − t/0.16)².
 
 Round-8 logs (all four runs, including menu-only P1) end with
 `32 ObjectDB instances were leaked at exit` and `10 resources still in use`;
-round-7 logs do not. Controls on a clean `origin/dev` worktree
-(`round9/…` + `/tmp/devctl` runs recorded in this report):
-
-- Clean-dev P3 run: same warnings (`34 ObjectDB…`/`12 resources…` in one run,
-  `32/10` in another — run-to-run variance).
-- Clean-dev `--verbose` run identifies the owners: leaked instances are
-  `AudioStreamOggVorbis` and `OggPacketSequence` objects — dev's audio
-  subsystem retains Ogg streams at exit. None of the leaked classes belong to
-  FAN-3934 paths (no feedback/timeline/registry objects).
+round-7 logs do not. PROVENANCE CORRECTION (18:41 decision): the retained
+`round9/dev-control-p3.log` is a FAILED AUTHOR CONTROL — the probe aborted at
+`FAN3877_PERF_PROBE_ERROR: cannot write …` before completing its workload; it
+never executed the sampled run. It still shows the same shutdown warnings at
+engine exit, but it must not be read as a completed control. The completed
+matched control evidence for this diagnosis is the INDEPENDENT REVIEWER's run
+in QA report `01a09657-2503-7815-9d10-b770df0d7b22` (fourth verdict), which
+reproduced the warnings on clean dev with a stronger control and upheld the
+diagnosis. My `--verbose` author run (`round9/dev-control-verbose.log`) did
+complete and identifies the owners: leaked instances are `AudioStreamOggVorbis`
+and `OggPacketSequence` objects — dev's audio subsystem retains Ogg streams at
+exit. None of the leaked classes belong to FAN-3934 paths.
 - The warnings therefore pre-exist in the tested composition's dev base and are
   NOT introduced by this repair. Fixing them means editing dev's audio-resource
   ownership (outside every granted path) — no fix attempted; original round-8
