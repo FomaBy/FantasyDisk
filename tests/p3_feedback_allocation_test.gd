@@ -509,6 +509,51 @@ func _run() -> void:
 	endpoint_root.queue_free()
 	await process_frame
 
+	# J (15:03 grant): first-step alpha capture — external same-frame adapters
+	# (engineer photosafety) own the fade start; without an adapter the spawn
+	# alpha owns it; pooled reuse must not inherit an adapted base; independent
+	# simultaneous ticks keep separate bases.
+	var capture_root := Node2D.new()
+	root.add_child(capture_root)
+	await process_frame
+	var capture_timeline: Node = CombatFeedbackTimeline.for_scene(capture_root)
+	var capture_ticks: Array[Sprite2D] = []
+	for i in range(2):
+		capture_timeline.spawn_tick(Vector2(50.0 + i * 40.0, 60.0), Vector2.ONE, Color(1.0, 0.46, 0.36, 0.40), "combat_feedback_flashes")
+	for child in capture_timeline.get_children():
+		if child is Sprite2D and child.visible:
+			capture_ticks.append(child)
+	if capture_ticks.size() != 2:
+		failures.append("capture case: expected 2 live ticks, got %d" % capture_ticks.size())
+	else:
+		# Adapter binds tick 0 to 0.08 BEFORE the first animation step.
+		capture_ticks[0].modulate.a = 0.08
+		await create_timer(0.08).timeout
+		# alpha(t) = base * (1 - t/0.16)^2 (quad ease-out fade). At ~0.08 s of
+		# 0.16 s the unadapted tick reads 0.40 * 0.25 = 0.10.
+		if absf(capture_ticks[1].modulate.a - 0.10) > 0.06:
+			failures.append("unadapted tick did not fade from its spawn alpha (%.3f)" % capture_ticks[1].modulate.a)
+		# Adapted tick 0 fades from 0.08: 0.08 * 0.25 = 0.02.
+		if absf(capture_ticks[0].modulate.a - 0.02) > 0.03:
+			failures.append("adapter bound alpha was overwritten (got %.3f, expected the 0.08 start)" % capture_ticks[0].modulate.a)
+		await create_timer(0.2).timeout
+		# Pooled reuse: the next tick after both expired must start from its own
+		# spawn alpha, not from either expired tick's adapted value.
+		capture_timeline.spawn_tick(Vector2(10.0, 10.0), Vector2.ONE, Color(1.0, 0.46, 0.36, 0.40), "combat_feedback_flashes")
+		var reused: Sprite2D = null
+		for child in capture_timeline.get_children():
+			if child is Sprite2D and child.visible:
+				reused = child
+		if reused == null:
+			failures.append("capture case: reuse tick missing")
+		else:
+			reused.modulate.a = 0.05
+			await create_timer(0.08).timeout
+			if absf(reused.modulate.a - 0.0125) > 0.03:
+				failures.append("reused tick did not capture its own adapter alpha (got %.3f)" % reused.modulate.a)
+	capture_root.queue_free()
+	await process_frame
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

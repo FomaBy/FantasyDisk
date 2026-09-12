@@ -1,7 +1,7 @@
 # FAN-3934 round-8 immutable measurement manifest (CI-recovery candidate)
 
 - measured source = candidate `53afca416d83aaf2101a0435440a15c896ab0ca4` tree `d189660756b8c52cd99848b7abd4949b4df45163`; probe sha256 `57d817d2effc2627f5d5b115b8094ebdb6bda541e5a3640fab2a9f7f03eaa6f5`
-- note: this branch composes current dev (b0ebba8f3), whose renderer settings yield much higher raw FPS than the d192be10b-era baselines; all thresholds still pass with margin
+- note (corrected per the 15:03 decision): the raw FPS difference vs earlier rounds is NOT attributable to renderer settings — project.godot is byte-identical and measured runtime vsync/max-fps/display are identical between bases (ROUND9-EVIDENCE.md); cause unknown, all thresholds pass with margin
 
 ## matrix p3-run1
 - command: `FSD_GODOT_EXCLUSIVE=1 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3`

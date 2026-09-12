@@ -43,8 +43,11 @@ precedent was, and fresh QA judges the exact content either way.
 Observed matrix (exclusive gate, strict foreign-overlap check: NONE; all exits 0;
 raw FPS is high because this branch carries dev's current renderer settings):
 P3 3,820 and 3,839 of 4,000; P1 2,246; P2 exactly 48 enemies at 4,001/5,000 —
-every in-JSON check true. Six focused suites exit 0; engineer accessibility suite
-passes headless AND the guard contract passes; `quality_static_guard.py` exit 0;
+every in-JSON check true (FPS correction, 15:03 decision: the earlier "dev
+renderer settings" explanation was unsupported and is withdrawn — see
+ROUND9-EVIDENCE.md; measured conditions are identical between bases and the raw
+FPS difference's runtime cause is recorded as unknown). Six focused suites exit
+0; engineer accessibility suite passes headless AND the guard contract passes; `quality_static_guard.py` exit 0;
 `test_quality_workflow.py` + `test_headless_capture_guard_contract.py` (27 tests) OK.
 Immutable SHA-256 mapping: `round8/MANIFEST.md`. Prior branches, verdicts and raws
 preserved.
