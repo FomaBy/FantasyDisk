@@ -1,0 +1,8 @@
+Wed Sep  9 03:33:05 UTC 2026
+ProductName:		macOS
+ProductVersion:		26.5.1
+BuildVersion:		25F80
+Apple M4 Pro
+4.7.stable.official.5b4e0cb0f
+competing godot processes:
+       0

@@ -1,0 +1,6 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Hazard VFX smoke test passed.
+
+exit_status=0
+start/end recorded by driver; end_utc=2026-09-12T14:51:17Z

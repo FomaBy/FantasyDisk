@@ -32,7 +32,15 @@ jobs:
     # merge_group), so the required check's behavior on them is unchanged.
     if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # FAN-3934 budget — observed vs extrapolated, from job 102722773634
+    # (run 34429832208, cancelled at the 60-minute limit; GitHub job record
+    # and retained job log). OBSERVED: job 02:32:15-03:32:31; import-warmup
+    # step 02:33:59-02:48:51 (14m52s); combined gate 02:48:51-03:32:28,
+    # cancelled; inside the gate, suites ran 02:57:17-03:32:02 and completed
+    # 210 of 537. EXTRAPOLATED at that observed rate (~9.9 s/suite, job log):
+    # 537 suites ~89 min, full run estimated ~110 min. 180 min bounds the
+    # ESTIMATE with slack and does not mask a hang.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v6
         with:
@@ -84,7 +92,9 @@ jobs:
             "+refs/heads/dev:refs/remotes/origin/dev"
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
-            5d23555117c11620ee0f0834e6c30877fd1dafb8
+            5d23555117c11620ee0f0834e6c30877fd1dafb8 \
+            be90b38df38788fc53190c862a873f4aab80ea28 \
+            055aad7cc6fce8dfc1210ae3ea63b91de1401142
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -102,6 +112,14 @@ jobs:
           sources_file="$RUNNER_TEMP/manifest-capture-sources"
           python3 tools/quality_gate.py --list-manifest-capture-sources > "$sources_file"
           test -s "$sources_file"
+          # FAN-3934: the A5 balance integrity suite resolves the shipped
+          # dataset's raw/legacy and supplemental provenance commits as exact
+          # ancestors; a depth-2 candidate checkout cannot, so they join the
+          # same bounded deepening loop below.
+          grep -qxF be90b38df38788fc53190c862a873f4aab80ea28 "$sources_file" \
+            || echo be90b38df38788fc53190c862a873f4aab80ea28 >> "$sources_file"
+          grep -qxF 055aad7cc6fce8dfc1210ae3ea63b91de1401142 "$sources_file" \
+            || echo 055aad7cc6fce8dfc1210ae3ea63b91de1401142 >> "$sources_file"
           head_sha="$(git rev-parse HEAD)"
           depth=2
           while IFS= read -r commit; do
@@ -395,7 +413,9 @@ jobs:
           git fetch --no-tags --depth=8 origin dev:refs/remotes/origin/dev
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
-            5d23555117c11620ee0f0834e6c30877fd1dafb8
+            5d23555117c11620ee0f0834e6c30877fd1dafb8 \
+            be90b38df38788fc53190c862a873f4aab80ea28 \
+            055aad7cc6fce8dfc1210ae3ea63b91de1401142
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"

@@ -367,6 +367,14 @@ func _measure_windowed_temporal_bounds() -> void:
 
 
 func _capture_frame() -> Image:
+	# FAN-3934: the viewport readback is structurally unavailable under the
+	# headless display server (dummy rasterizer returns an empty image), so the
+	# helper itself refuses instead of relying only on the caller's windowed
+	# branch. The temporal-envelope measurement that consumes this helper is
+	# documented to run in the windowed invocation only.
+	if DisplayServer.get_name() == "headless":
+		_check(false, "viewport image readback must not execute under the headless display server")
+		return null
 	await process_frame
 	return root.get_texture().get_image()
 

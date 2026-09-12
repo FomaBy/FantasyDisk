@@ -212,7 +212,41 @@ class QualityWorkflowContractTests(unittest.TestCase):
             )
 
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 60", self.candidate_job)
+        # FAN-3934: the budget explanation must separate observed from
+        # extrapolated numbers (job 102722773634, run 34429832208). OBSERVED:
+        # 14m52s import warmup (02:33:59-02:48:51), cancelled ~60-minute job,
+        # suites 02:57:17-03:32:02 completing 210 of 537. EXTRAPOLATED at the
+        # observed ~9.9 s/suite: 537 suites ~89 min, full run ~110 min
+        # estimated. The contract pins the 180-minute bound, the observed/
+        # estimated distinction, and the job id, so a silent bump or a
+        # relabelled estimate cannot pass review.
+        self.assertIn("timeout-minutes: 180", self.candidate_job)
+        self.assertIn("34429832208", self.candidate_job)
+        self.assertIn("102722773634", self.candidate_job)
+        self.assertIn("OBSERVED", self.candidate_job)
+        self.assertIn("EXTRAPOLATED", self.candidate_job)
+        self.assertIn("estimated ~110 min", self.candidate_job)
+        # A "measured total" claim for a run that was cancelled is forbidden.
+        self.assertNotIn("measured total", self.candidate_job)
+        # A budget without a bound, or a bound without evidence, must fail.
+        self.assertNotIn("timeout-minutes: 60", self.candidate_job)
+
+    def test_shallow_candidates_fetch_a5_integrity_provenance_commits(self) -> None:
+        # The A5 balance integrity suite resolves the shipped dataset's
+        # raw/legacy and supplemental provenance commits as exact ancestors
+        # (run 34429832208 failed all four provenance checks on the depth-2
+        # checkout). Both commits must be pinned AND fed into the bounded
+        # ancestor-deepening loop.
+        for commit in (
+            "be90b38df38788fc53190c862a873f4aab80ea28",
+            "055aad7cc6fce8dfc1210ae3ea63b91de1401142",
+        ):
+            self.assertIn(commit, self.candidate_job)
+            self.assertIn(f'grep -qxF {commit} "$sources_file"', self.candidate_job)
+        # Failure case: a workflow pinning the commits but skipping the
+        # deepening feed would still fail ancestor resolution in CI.
+        without_feed = self.candidate_job.replace('grep -qxF be90b38df38788fc53190c862a873f4aab80ea28 "$sources_file"', "")
+        self.assertNotEqual(without_feed, self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [
