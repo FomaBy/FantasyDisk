@@ -1,0 +1,218 @@
+{
+  "selected_godot_tests": 5,
+  "executed_python_tests": 771,
+  "git_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+  "changed_ref": "origin/dev",
+  "changed_base_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+  "static_checks": [
+    {
+      "name": "repository-invariants",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 1.791
+    },
+    {
+      "name": "repository-storage-policy",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.181
+    },
+    {
+      "name": "python-unit",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 326.775,
+      "executed_tests": 764
+    },
+    {
+      "name": "python-unit:tests/tools",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.441,
+      "executed_tests": 7
+    },
+    {
+      "name": "python-syntax",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.446
+    },
+    {
+      "name": "asset-audit",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 109.06
+    },
+    {
+      "name": "constellation-validator",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.202
+    },
+    {
+      "name": "runtime-manifest-validator",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 1.272
+    },
+    {
+      "name": "git-diff-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.152
+    },
+    {
+      "name": "git-index-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.02
+    },
+    {
+      "name": "git-head-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.02
+    },
+    {
+      "name": "git-range-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.012
+    },
+    {
+      "name": "shell-syntax",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.005
+    },
+    {
+      "name": "client-secret-scan",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": []
+    },
+    {
+      "name": "windows-export-config",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": []
+    },
+    {
+      "name": "test-discovery",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": [],
+      "discovered_godot_tests": 528,
+      "selected_godot_tests": 5,
+      "selected_godot_test_scripts": [
+        "res://tests/combat_target_query_cache_test.gd",
+        "res://tests/runtime_smoke_combat_test.gd",
+        "res://tests/runtime_smoke_ui_test.gd",
+        "res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd",
+        "res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"
+      ],
+      "discovered_python_tests": 43
+    }
+  ],
+  "godot_tests": [
+    {
+      "name": "combat_target_query_cache_test",
+      "script": "res://tests/combat_target_query_cache_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.418
+    },
+    {
+      "name": "runtime_smoke_combat_test",
+      "script": "res://tests/runtime_smoke_combat_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 9.338
+    },
+    {
+      "name": "runtime_smoke_ui_test",
+      "script": "res://tests/runtime_smoke_ui_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 10.858
+    },
+    {
+      "name": "weapon_ultimate_contact_sheet_beats_test",
+      "script": "res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 1.161
+    },
+    {
+      "name": "weapon_ultimate_timing_distinctness_test",
+      "script": "res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.408
+    }
+  ],
+  "profile": "changed",
+  "certifying": true,
+  "filters": [],
+  "skip_static": false,
+  "skip_godot": false,
+  "skip_umbrella": false,
+  "godot_test_timeout_seconds": 900.0,
+  "godot_import_timeout_seconds": 1200.0,
+  "static_timeout_seconds": 1200.0,
+  "python_unit_idle_timeout_seconds": 60.0,
+  "worktree_clean": true,
+  "worktree_status": [],
+  "discovered_godot_tests": 528,
+  "selected_godot_test_scripts": [
+    "res://tests/combat_target_query_cache_test.gd",
+    "res://tests/runtime_smoke_combat_test.gd",
+    "res://tests/runtime_smoke_ui_test.gd",
+    "res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd",
+    "res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"
+  ],
+  "discovered_python_tests": 43,
+  "platform": "darwin",
+  "status": "passed",
+  "duration_seconds": 468.624,
+  "godot_import_prepass": {
+    "name": "godot-import-cache",
+    "status": "passed",
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_seconds": 5.723
+  },
+  "ultimate_feature_list_selected": false,
+  "ultimate_feature_list": null,
+  "generated_import_sidecars_removed": [],
+  "shard": {
+    "index": 0,
+    "count": 1
+  }
+}

@@ -1,0 +1,5 @@
+Wed Sep  9 15:50:10 UTC 2026
+godot: 4.7.stable.official.5b4e0cb0f
+probe_sha256: 57d817d2effc2627f5d5b115b8094ebdb6bda541e5a3640fab2a9f7f03eaa6f5
+command: FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- <SCENARIO>
+git: 1b548ee4c25458d804c1812697bbf0aa3433615f

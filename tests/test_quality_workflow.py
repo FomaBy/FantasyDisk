@@ -212,7 +212,32 @@ class QualityWorkflowContractTests(unittest.TestCase):
             )
 
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 60", self.candidate_job)
+        # FAN-3934: the budget is evidence-based — run 34429832208 measured
+        # 14m52s import warm-up + 212/537 suites in 60 minutes (~8.5s/suite),
+        # so 537 suites need ~91 minutes before static stages. The contract
+        # pins the measured 180-minute bound and requires its justification
+        # comment to stay attached, so a silent bump cannot pass review.
+        self.assertIn("timeout-minutes: 180", self.candidate_job)
+        self.assertIn("34429832208", self.candidate_job)
+        # A budget without a bound, or a bound without evidence, must fail.
+        self.assertNotIn("timeout-minutes: 60", self.candidate_job)
+
+    def test_shallow_candidates_fetch_a5_integrity_provenance_commits(self) -> None:
+        # The A5 balance integrity suite resolves the shipped dataset's
+        # raw/legacy and supplemental provenance commits as exact ancestors
+        # (run 34429832208 failed all four provenance checks on the depth-2
+        # checkout). Both commits must be pinned AND fed into the bounded
+        # ancestor-deepening loop.
+        for commit in (
+            "be90b38df38788fc53190c862a873f4aab80ea28",
+            "055aad7cc6fce8dfc1210ae3ea63b91de1401142",
+        ):
+            self.assertIn(commit, self.candidate_job)
+            self.assertIn(f'grep -qxF {commit} "$sources_file"', self.candidate_job)
+        # Failure case: a workflow pinning the commits but skipping the
+        # deepening feed would still fail ancestor resolution in CI.
+        without_feed = self.candidate_job.replace('grep -qxF be90b38df38788fc53190c862a873f4aab80ea28 "$sources_file"', "")
+        self.assertNotEqual(without_feed, self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [

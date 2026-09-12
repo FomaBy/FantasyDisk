@@ -1,0 +1,9 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+  sword solo_effect=1624.14 (damage=1620.14 floor=1135.28 control=3.00 displacement=0.0 passes=7) cast=3.10s
+  axe solo_effect=1431.87 (damage=1427.67 floor=535.38 control=3.20 displacement=0.0 passes=2) cast=2.50s
+  hammer solo_effect=1664.92 (damage=1202.52 floor=1202.52 control=1.40 displacement=460.0 passes=3) cast=2.30s
+berserk_balance_test: PASS
+
+exit_status=0
+start/end recorded by driver; end_utc=2026-09-12T14:43:41Z

@@ -1,0 +1,78 @@
+command=python3 tools/godot_gate.py --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot', 'FSD_GODOT_EXCLUSIVE': '1'}
+observed_utc=2026-09-09T19:39:53Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+86439  90.8   0:01.11 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:39:53Z
+86439  90.8   0:01.14 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:39:58Z
+86439  98.8   0:05.66 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:03Z
+86439 100.0   0:10.64 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:08Z
+86439  98.8   0:15.55 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:13Z
+86439  97.5   0:20.44 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:18Z
+86439  97.6   0:25.35 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:23Z
+86439  97.3   0:30.25 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:28Z
+86439  97.7   0:35.15 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:33Z
+86439 916.5   0:59.39 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:38Z
+86439 900.1   1:42.77 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:43Z
+86439 883.9   2:27.43 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:48Z
+86439 902.4   3:11.74 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:54Z
+86439 1023.2   3:59.45 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:40:59Z
+86439 863.9   4:44.79 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:41:04Z
+86439 946.1   5:29.11 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:41:09Z
+86439 990.5   6:16.22 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --import --quit
+--- during sampled_utc=2026-09-09T19:41:14Z
+86896  51.6   0:00.23 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --script res://tests/import_cache_player_load_test.gd
+--- during sampled_utc=2026-09-09T19:41:19Z
+86919  70.8   0:00.43 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /tmp/fan3944_base --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd
+--- during sampled_utc=2026-09-09T19:41:24Z
+86938  74.9   0:02.11 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:29Z
+86938  71.4   0:05.86 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:34Z
+86938  33.0   0:08.29 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:39Z
+86938  39.4   0:10.28 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:44Z
+86938  37.2   0:12.16 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:49Z
+86938  38.4   0:14.41 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:54Z
+86938  46.7   0:16.66 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:41:59Z
+86938  41.9   0:18.86 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:04Z
+86938  43.6   0:21.05 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:09Z
+86938  43.1   0:23.17 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:14Z
+86938  45.6   0:25.34 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:19Z
+86938  39.1   0:27.45 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:24Z
+86938  41.1   0:29.47 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:29Z
+86938  40.8   0:31.76 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:35Z
+86938  47.1   0:34.01 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+--- during sampled_utc=2026-09-09T19:42:40Z
+86938  43.2   0:36.21 /Applications/Godot.app/Contents/MacOS/Godot --path . --script res://evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd -- P3
+observed_utc=2026-09-09T19:42:45Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
+raw_staging_name=perf_p3.json / perf_p3.csv (shared staging; disambiguated by manifest)
+matrix_exit_status=0
