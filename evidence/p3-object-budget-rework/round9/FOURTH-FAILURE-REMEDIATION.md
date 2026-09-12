@@ -13,7 +13,7 @@ Before = failed candidate `b7e3c4415b6a19934c3368c7021388fc2c10b9ff` unless note
    → 1. Re-declared in the successor commit.
 3. **Range whitespace — round8/MANIFEST.md:43**: trailing blank line removed in
    `8ce23e22`. Before hash (as committed in `b7e3c4415b6a19934c3368c7021388fc2c10b9ff`):
-   `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+   `a699286ca79330e7d365ca67179ffa1b6ef7d40858346fcc1aef7ebd4b4c0f1c`;
    After: `6bf1101ae069e178b9dcb7456a8fab60bed6df2d9ccec7ac1bf4faad4e62c699`.
 4. **Range whitespace — candidate-identity.txt.orig:13 (immutable original)**: the
    text copy was replaced by a gzip container in `8ce23e22` — binary content is
