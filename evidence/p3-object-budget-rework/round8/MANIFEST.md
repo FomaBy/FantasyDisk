@@ -40,4 +40,3 @@
 
 ## suite berserk
 - records: log-suite-berserk.txt `5c231cd1438a0f22668e55748e072426713ac3712fe35a35f095699f7c08551d`, env-suite-berserk.txt `a3c99ed0814e5af263535b3a50b7787e3f355aefe73ce6c26e0902d7979caa52`, exit=0
-
