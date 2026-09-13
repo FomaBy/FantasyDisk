@@ -27,23 +27,23 @@ test-dependent result below names its executed source.
 | full_frame_eight_direction_contract_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91, same matrix | applicable as above |
 | full_frame_row_scale_invariant_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91, same matrix | applicable as above |
 | smoke_bootstrap / death_flow / hud_layout / projectile / wave_cap | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91: all five combat suites exit 0, 2/2 runs each | applicable as above |
-| smoke_contact_feedback | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (report 01a09a91-87da-7946-a72b-01679aa39a71, 2/2 runs); retained log source: d716cb90c569f027e26b0b1cd4ae5a0e2923ce38 | product bytes identical at the successor ⇒ applicable |
-| runtime_smoke_combat | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (same report); retained log source: 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
-| take_damage_contract_routing | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (same report); retained log source: 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
-| p3_feedback_allocation | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (same report); retained log source: 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
+| smoke_contact_feedback | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (report 01a09a91-87da-7946-a72b-01679aa39a71, 2/2 runs); retained log: regression-smoke_contact_feedback.log, source d716cb90c569f027e26b0b1cd4ae5a0e2923ce38 | product bytes identical at the successor ⇒ applicable |
+| runtime_smoke_combat | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (report 01a09a91-87da-7946-a72b-01679aa39a71); retained log: regression-runtime_combat.log, source 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
+| take_damage_contract_routing | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (report 01a09a91-87da-7946-a72b-01679aa39a71); retained log: regression-take_damage.log, source 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
+| p3_feedback_allocation | QA: 68afccda72d7fc31a24cc34238a2e040bb687b14 (report 01a09a91-87da-7946-a72b-01679aa39a71); retained log: regression-feedback_alloc.log, source 686a78ba625512142fdc21a1c87ca42fc9905ea4 | applicable as above |
 | ultimates/presentation_contract + presentation_failure_contract | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91 (both presentation suites exit 0) | applicable as above |
 | engineer_accessibility_modes (headless) | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91 (within the 22-suite matrix) | applicable as above |
 | atlas parity headless | 686a78ba (checker-headless.log, retained) — NO retained later headless file exists | limitation recorded honestly: later headless passes were console-only and are not claimed as evidence; the retained windowed run is authoritative |
-| atlas parity windowed + export | current successor (instrumented, committed BEFORE execution) | checker-windowed-render-exported.log: complete argv, source/tree/base, exit 0 |
-| spatial cases | current successor | exported-windowed-captures/: 120 reference results, 120 case records across 40 animation rows x 3 cases — 120/120 match |
-| simultaneous consumers | current successor | simultaneous-consumers.json: frame/texture/flip/position/scale identities + matched alone-render references for BOTH consumers |
-| captured negatives (displacement, mirroring) | current successor | negative-render-detectors.json: executed on an asymmetric frame, both detected; PNGs retained |
-| negatives (duration, shifted region) | current successor | negative-corrupted-duration.json / negative-shifted-region.json (fixture identities + outcomes) |
+| atlas parity windowed + export | 33179647c09b9b2c14548bf607764b07256604ec (instrumentation committed BEFORE execution; logged in-file with tree 9832ff6fbb7f3d4a9f7dbc27f238424166d586ff) | checker-windowed-render-exported.log: complete argv, source/tree/base, exit 0 |
+| spatial cases | 33179647c09b9b2c14548bf607764b07256604ec (the committed instrumented export execution; artifacts retained verbatim) | exported-windowed-captures/: 120 reference results, 120 case records across 40 animation rows x 3 cases — 120/120 match |
+| simultaneous consumers | 33179647c09b9b2c14548bf607764b07256604ec (the committed instrumented export execution; artifacts retained verbatim) | simultaneous-consumers.json: frame/texture/flip/position/scale identities + matched alone-render references for BOTH consumers |
+| captured negatives (displacement, mirroring) | 33179647c09b9b2c14548bf607764b07256604ec (the committed instrumented export execution; artifacts retained verbatim) | negative-render-detectors.json: executed on an asymmetric frame, both detected; PNGs retained |
+| negatives (duration, shifted region) | 33179647c09b9b2c14548bf607764b07256604ec (the committed instrumented export execution; artifacts retained verbatim) | negative-corrupted-duration.json / negative-shifted-region.json (fixture identities + outcomes) |
 | old/new control | producer raw re-executed (old-vs-new-control-raw.log, unedited, exit 1, source in its header); processor runs at c5b5a487114a2c8d2c141736b1b9b280c19bb764: capture-processor-run.log (flip pair) + capture-processor-run-matched.log (matched pair) | EXECUTED old-checker miss = duration mutant ONLY; NO render-level spatial miss claimed (withdrawn — see derived JSON _transformation/_strict_limitation); QA report 01a09a91-87da-7946-a72b-01679aa39a71 is the authority on the histogram's principled blindness |
-| decisive P1/P2/two-P3 matrix | 5b3ff607 (product bytes identical) + QA re-measure at 68afccda | QA report 01a09a91: P3 3,832/3,859 of 4,000; P1 2,246 @ 125.5 MiB; P2 4,028 @ exactly 48 — NOT rerun (no product change; bounded-matrix rule) |
+| decisive P1/P2/two-P3 matrix | author runs at 5b3ff607387c8a5d852f9863f402c15d17c2c454 (product bytes identical to successor); QA re-measure at 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91-87da-7946-a72b-01679aa39a71 'Everything else — green' section: P3 3,832/3,859 of 4,000; P1 2,246 @ 125.5 MiB; P2 4,028 @ exactly 48 — NOT rerun (no product change; bounded-matrix rule) |
 | static gate (clean) | accepted retained clean log names source c5b5a487114a2c8d2c141736b1b9b280c19bb764, tree 21deb4889a3c27b361320ec6cca3ee8e59b80aa5 (static-gate-final.log: 16 static / 0 Godot, exit 0); prior history at a1a1eb3a and the superseded 33179647-era runs preserved at their original identities | source-to-successor delta: only MANIFEST/REPORT/coverage-accounting/derived-JSON/processor-logs (all excluded-from or irrelevant-to the gate's static selection) changed since c5b5a487; reuse applies while those inputs remain unchanged. Static-only PASS ≠ Godot/CI PASS. |
 | workflow/static-guard contracts | a1a1eb3a-era (contracts.log names its date; source not recorded in-file) | limitation honestly recorded: contracts.log lacks an in-file source binding; these contracts were re-run inside every static gate above (including the current certifying run's python-unit check), so current coverage exists via static-gate-final.log's 16/16 |
-| range check | a1a1eb3a (recorded in range-check-resolved.log) | superseded by the final-successor range check re-run at each publication commit (exit 0, console) and again below at the final successor |
+| range check | retained log: a1a1eb3a (range-check-resolved.log, exit 0) | limitation: later range checks ran at each publication commit with exit 0 (console, not retained as files); the successor's clean state is additionally evidenced by the manifest audit's full-range blob verification at each publication |
 
 ## Count corrections (prior table inaccuracies)
 
@@ -52,20 +52,26 @@ test-dependent result below names its executed source.
 ## Limitations (retained)
 
 GPU/VRAM telemetry unavailable; P2 1%-low load sensitivity; elevated-FPS regime
-unexplained; the control's strict in-probe mirror histogram is NOT claimed as
-an old-checker miss (only the executed render-level acceptance is). Static-only
-PASS is not a Godot/CI PASS.
+unexplained. The sole retained EXECUTED old-checker miss is the duration mutant;
+no render-level or mirror-based spatial miss is claimed (withdrawn; the
+spatial-blindness observation is QA report 01a09a91-87da-7946-a72b-01679aa39a71's
+inspection finding). Static-only PASS is not a Godot/CI PASS.
 
 
 ## Exact-source anchors and dirty-input accounting (17:29 decision)
 
 - `checker-headless.log` names source 686a78ba; `range-check-resolved.log`
   names a1a1eb3a; `static-gate-clean.log` names a1a1eb3a. None is relabeled
-  as a current-successor result. The current-successor executed results are:
-  `checker-windowed-render-exported.log` (source 33179647c09b9b2c14548bf607764b07256604ec, complete argv, exit 0)
-  and `old-vs-new-control-raw.log` (source named in its own header, exit 1 disclosed); the
-  final static gate and range check are re-executed at the exact successor in
-  this round's publication step (see static-gate-final.log appended record).
+  as a current-successor result. The successor-applicable executed results are:
+  `checker-windowed-render-exported.log` and `old-vs-new-control-raw.log`,
+  both naming source 33179647c09b9b2c14548bf607764b07256604ec (tree
+  9832ff6fbb7f3d4a9f7dbc27f238424166d586ff) in their own headers — applicable
+  to every later successor because only evidence/derived files changed since
+  (byte-identical product, test-unchanged for the exported behaviors; the
+  matched-reference instrumentation added later is covered by the processor
+  runs at c5b5a487). The accepted clean static result remains bound to its
+  recorded source c5b5a487/tree 21deb488 with its stated delta; no newer
+  static rerun is claimed.
 - **Dirty-input disclosure (corrected):** the prior round's export log
   recorded 486 dirty files (that round's staged capture copies, untracked);
   the RETAINED path/hash record for those 486 was not preserved and is NOT
