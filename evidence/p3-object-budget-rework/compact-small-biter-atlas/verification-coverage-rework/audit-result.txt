@@ -1,3 +1,1 @@
-audit of evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/../MANIFEST.md at a49ec7d6cbffba179ae67cb424792df430b75ed8: 509/509 match, 0 mismatched, 0 absent
-audit of evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/../MANIFEST.md at a49ec7d6cbffba179ae67cb424792df430b75ed8: 509/509 match, 0 mismatched, 0 absent
-self-test: mismatch-detected=True absent-detected=True
+audit of evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/../MANIFEST.md at 8a14132ee481281815b30fb0c382afccc505bc21: 508/509 match, 1 mismatched, 0 absent
