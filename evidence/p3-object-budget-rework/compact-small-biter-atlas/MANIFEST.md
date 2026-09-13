@@ -1,19 +1,22 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
-- Canonical inventory of the successor's changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`.
-- Hashes are SHA-256 of blobs READ FROM GIT at inventory commit `00bdea5f337192fb8b247460da13cb1551669781`
--  (audit: publication-correction/audit_manifest.py; self-test demonstrates
+- Canonical inventory of changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`.
+- Hashes are SHA-256 of blobs READ FROM GIT at inventory commit `e35586d8daebefb1a680bc9b33a50c3e7334acce`.
+- Audit tool: publication-correction/audit_manifest.py (self-test shows
 -  HASH-MISMATCH and ABSENT detections).
-- Self-exclusion convention (explicit, nonrecursive): exactly this MANIFEST.md
--  and REPORT.md are excluded — same final commit, cannot self-hash; EVERY
--  other changed path is listed exactly once.
+- Self-exclusion convention (explicit, nonrecursive): this MANIFEST.md and
+-  REPORT.md are excluded — same final commit, cannot self-hash. Every other
+-  changed path is listed exactly once, including verification-coverage-rework/
+-  audit-result.txt, whose content is a POINT-IN-TIME record of the audit run
+-  against its named commit; re-run the tool at the final successor to
+-  reproduce live (no tracked file changes).
 
 ## excluded generated outputs
 
-- Engine-generated import/translation cache outputs (48 `*.translation`,
--  4 `*.csv.import`) are derived reproducible artifacts, excluded by design
+- 48 `*.translation` + 4 `*.csv.import` engine-generated cache outputs are
+-  derived reproducible artifacts, excluded by design.
 
-## canonical changed-path inventory (hashes from commit 00bdea5f337192fb8b247460da13cb1551669781)
+## canonical changed-path inventory (hashes from commit e35586d8daebefb1a680bc9b33a50c3e7334acce)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -153,7 +156,7 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/sixth-failure-test-rework.md` `2af460d26d3d0a53c6e16fa697521d4348d335b14692522c014d28d6928e427a`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/run_observed.py` `f85358336b62d5f4c71ecca5969de06b3d8da717164544d56398effcd92b52e1`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/EVIDENCE.md` `9607bb9d911b6f1657512488f866413bf8c0c7af812f3f617b6770efdc1c2ef3`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/audit-result.txt` `28222f248a4c59fd48db76f81c32076ccb8dbb5fc1583ef3bbf8fd17e06ad585`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/audit-result.txt` `e6a42c1327f3065b52a0f840e36869267431d6200e11d2afc18f90f75836965f`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless-v1.log` `a735fa436bc82bbf0883b133d0e605722a241ffb52c3d7e7960f3c33903ae657`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless.log` `b8240691eb3cde5b037f5754574bb0ed1c10ae39653ca8ed1adbe50bbed5dfa2`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render-INVALID-argsmangled.log` `f34157a47b662d462bb2d69056cd8d185a9771e1fd8ae17974aafa6828f48461`
