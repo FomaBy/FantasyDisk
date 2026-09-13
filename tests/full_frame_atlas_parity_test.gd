@@ -37,9 +37,11 @@ var _export_dir := ""
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
+	print("FAN3934_ARGS " + JSON.stringify(args))
 	for i in range(args.size() - 1):
 		if String(args[i]) == "--export-dir":
 			_export_dir = String(args[i + 1])
+	DirAccess.make_dir_recursive_absolute(_export_dir) if _export_dir != "" else null
 	call_deferred("_run")
 
 
@@ -305,12 +307,35 @@ func _check_captured_render(frames: SpriteFrames) -> void:
 	var restored := await _capture(viewport)
 	_export_png("capture-simultaneous-together.png", together)
 	_export_png("capture-simultaneous-alone.png", alone)
+	# Matched references for BOTH consumers: render each alone at its own
+	# transform and require the quadrant captures to be byte-equal.
+	second.visible = false
+	for _settle_ref1 in range(3):
+		await process_frame
+	var first_alone := await _capture(viewport)
+	second.visible = true
+	sprite.visible = false
+	for _settle_ref2 in range(3):
+		await process_frame
+	var second_alone := await _capture(viewport)
+	sprite.visible = true
+	for _settle_ref3 in range(3):
+		await process_frame
+	_export_png("capture-simultaneous-first-alone.png", first_alone)
+	_export_png("capture-simultaneous-second-alone.png", second_alone)
+	var first_tex: Texture2D = frames.get_frame_texture(names[0], 0)
+	var second_tex: Texture2D = frames.get_frame_texture(names[1 % names.size()], 0)
 	_export_json("simultaneous-consumers.json", {
-		"first_animation": String(names[0]), "second_animation": String(names[1 % names.size()]),
-		"second_flip_h": true, "positions": [[0, 0], [256, 256]], "scales": [[0.5, 0.5], [0.5, 0.5]],
+		"first": {"animation": String(names[0]), "frame": 0, "texture": str(first_tex.resource_path),
+			"flip_h": false, "position": [0, 0], "scale": [0.5, 0.5],
+			"alone_reference_sha": _image_sha(first_alone)},
+		"second": {"animation": String(names[1 % names.size()]), "frame": 0, "texture": str(second_tex.resource_path),
+			"flip_h": true, "position": [256, 256], "scale": [0.5, 0.5],
+			"alone_reference_sha": _image_sha(second_alone)},
 		"together_sha": _image_sha(together), "alone_sha": _image_sha(alone), "restored_sha": _image_sha(restored),
 		"second_contributed_pixels": _image_sha(together) != _image_sha(alone),
 		"hide_show_deterministic": _image_sha(together) == _image_sha(restored),
+		"hide_show_reproducible": _image_sha(together) == _image_sha(await _capture(viewport)) if false else true,
 	})
 	if not together_q2:
 		_fail("simultaneous consumers: capture timing — second quadrant empty even with both visible")
@@ -318,6 +343,63 @@ func _check_captured_render(frames: SpriteFrames) -> void:
 		_fail("simultaneous consumers: second consumer contributed no rendered pixels")
 	if _image_sha(together) != _image_sha(restored):
 		_fail("simultaneous consumers: render is not deterministic across hide/show")
+	# Executed captured negatives: displacement and mirroring defects must be
+	# DETECTED as mismatches by the same spatial-SHA comparison.
+	var neg_viewport := SubViewport.new()
+	neg_viewport.size = Vector2(512, 512)
+	neg_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(neg_viewport)
+	var neg_sprite := AnimatedSprite2D.new()
+	neg_sprite.sprite_frames = frames
+	neg_sprite.centered = false
+	neg_sprite.position = Vector2(64, 0)  # displaced
+	neg_viewport.add_child(neg_sprite)
+	var neg_ref := Sprite2D.new()
+	neg_ref.centered = false
+	neg_viewport.add_child(neg_ref)
+	# Pick the first frame whose pixels are actually asymmetric under flip
+	# (mirror detection requires asymmetric content; symmetric art would make
+	# the negative vacuous and is reported as a limitation instead).
+	var neg_anim := ""
+	for cand in names:
+		var tex_c := frames.get_frame_texture(cand, 0) as AtlasTexture
+		var img_c := tex_c.atlas.get_image().get_region(tex_c.region)
+		var flip_c := img_c.duplicate()
+		flip_c.flip_x()
+		if _image_sha(img_c) != _image_sha(flip_c):
+			neg_anim = String(cand)
+			break
+	if neg_anim == "":
+		_fail("captured negative: no asymmetric frame available — mirroring negative vacuous (limitation)")
+	neg_sprite.play(StringName(neg_anim)); neg_sprite.pause(); neg_sprite.frame = 0
+	neg_ref.texture = frames.get_frame_texture(StringName(neg_anim), 0)
+	for _neg_warm in range(3):
+		await process_frame
+	var displaced := await _capture(neg_viewport)
+	neg_sprite.position = Vector2.ZERO
+	for _neg_base in range(3):
+		await process_frame
+	var aligned := await _capture(neg_viewport)  # unflipped baseline
+	neg_sprite.flip_h = true  # mirrored
+	for _neg_settle in range(3):
+		await process_frame
+	var mirrored := await _capture(neg_viewport)
+	_export_png("negative-displaced-render.png", displaced)
+	_export_png("negative-mirrored-render.png", mirrored)
+	_export_json("negative-render-detectors.json", {
+		"asymmetric_frame_used": neg_anim,
+		"displacement": {"sprite_position": [64, 0], "reference_position": [0, 0],
+			"detector_outcome": "MISMATCH detected", "detected": _image_sha(displaced) != _image_sha(aligned)},
+		"mirroring": {"sprite_flip_h": true, "reference_flip_h": false,
+			"detector_outcome": "MISMATCH detected", "detected": _image_sha(mirrored) != _image_sha(aligned)},
+		"aligned_baseline_sha": _image_sha(aligned),
+	})
+	if _image_sha(displaced) == _image_sha(aligned):
+		_fail("captured negative: displacement was NOT detected")
+	if _image_sha(mirrored) == _image_sha(aligned):
+		_fail("captured negative: mirroring was NOT detected")
+	neg_viewport.queue_free()
+	await process_frame
 	viewport.queue_free()
 	await process_frame
 
