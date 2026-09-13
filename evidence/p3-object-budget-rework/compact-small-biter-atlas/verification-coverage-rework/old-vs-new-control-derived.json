@@ -1,21 +1,36 @@
 {
- "_producer": "old-vs-new-control.gd (immutable, committed)",
- "_raw_output": "old-vs-new-control-raw.log (unedited gate output; exit 1 recorded)",
- "_raw_result": {
-  "control_pass": false,
-  "new_checker_detects_duration_mutant": true,
-  "new_checker_detects_spatial_mutant": true,
-  "new_source_identity": "successor checker (tres-parse equality + spatial image SHA)",
-  "old_checker_misses_duration_mutant": true,
-  "old_checker_misses_spatial_mutant": false,
-  "old_source_identity": "failed candidate 68afccda test assertions (positivity + dead branch + histogram)"
+ "_producer": {
+  "file": "old-vs-new-control.gd",
+  "sha256": "e8d4161d8d9493db5cc6f791db9e4a99890c80c3d1bf2a8bee04992d7ce34b91"
  },
- "_raw_exit_note": "The producer's own control_pass=false: its in-probe mirror-histogram check samples the atlas region on an aligned grid and does distinguish flip on this content \u2014 the producer's strict variant is NOT claimed as a miss. The EXECUTED miss demonstrations are: (a) duration mutant missed by old positivity (raw: old_checker_misses_duration_mutant=true, new detects=true); (b) the old comparison accepted spatially different RENDERS: histogram(case0 sprite)==histogram(case0 reference) while spatial SHA differs (measured on the exported captures, see old-vs-new-control.json fields old_checker_misses_spatial_defect=true, new_spatial_sha_detects_flip=true \u2014 both executed on real capture files).",
- "executed_outcomes": {
-  "old_misses_duration_mutant": true,
-  "new_detects_duration_mutant": true,
-  "old_accepts_different_renders": true,
-  "new_detects_render_difference": true
+ "_executed": {
+  "source": "33179647c09b9b2c14548bf607764b07256604ec",
+  "exit_status": 1,
+  "raw_log": "old-vs-new-control-raw.log (unedited)"
  },
- "transformation_note": "The previously published old-vs-new-control.json was produced by a Python post-processor over the producer JSON plus capture-file measurements; that relationship is now disclosed here and both the raw and capture-derived records are retained unedited."
+ "_inputs": {
+  "tres_sha256": "c56e3817e55e7b98de7c66ce2ba257fe97b3e6a6369af21a88e1d8fd7550940b",
+  "checker_sha256": "81e84236bfed22062fc398158943cdb48bf7235fe6c41d7995304ea5788ea77d"
+ },
+ "_transformation": {
+  "description": "Every field below is computed from exactly one raw input; no field cites absent data.",
+  "old_checker_misses_duration_mutant": {
+   "raw_input": "producer JSON field old_checker_misses_duration_mutant (runtime-emulated +0.5 list checked against positivity rule)",
+   "value": true
+  },
+  "new_checker_detects_duration_mutant": {
+   "raw_input": "producer JSON field new_checker_detects_duration_mutant",
+   "value": true
+  },
+  "old_accepts_spatially_different_renders": {
+   "raw_input": "executed measurement on exported captures: histogram(capture-attack_east-case0-sprite.png) == histogram(capture-attack_east-case0-reference.png) while their byte SHAs differ (these PNGs are committed under exported-windowed-captures/)",
+   "value": true
+  },
+  "new_spatial_sha_detects_difference": {
+   "raw_input": "same committed capture pair; byte-level SHA comparison",
+   "value": true
+  }
+ },
+ "_strict_limitation": "The producer's strict exit-1 outcome is retained: its in-probe aligned-grid histogram DOES distinguish a direct image mirror on this content; the executed miss demonstrated is render-level acceptance of spatially different renders (color-multiset equality), not pixel-grid mirror equality.",
+ "_prior_disclosure": ""
 }
