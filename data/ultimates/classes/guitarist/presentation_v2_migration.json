@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "class_id": "guitarist",
+  "migration_exemptions": {
+    "guitarist/electric_guitar": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "guitarist/bass_guitar": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "guitarist/sound_amp": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
+  }
+}

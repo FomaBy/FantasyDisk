@@ -52,8 +52,10 @@ const CROWD_CAP_CEILING := 32
 ## The material half of the same budget: distinct materials/shaders one
 ## activation may carry, and how many of those may cover the full viewport (the
 ## backdrop darken/flash layers). Enforced only for a pair that has left
-## Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, so a v1 package is never forced
-## to declare materials and the rule arrives exactly when a package goes v2.
+## Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST (aggregated from the class-owned
+## `presentation_v2_migration.json` shards since FAN-3933), so a v1 package is
+## never forced to declare materials and the rule arrives exactly when a
+## package goes v2.
 const MAX_UNIQUE_MATERIALS_CEILING := 16
 const MAX_FULLSCREEN_MATERIALS_CEILING := 2
 

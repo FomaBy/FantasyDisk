@@ -3,8 +3,10 @@ extends SceneTree
 ## Focused gate for the class-owned presentation adoption shards (FAN-3910).
 ##
 ## It proves four things: the live shards aggregate to exactly the adoption
-## map the shared contract carried before the split, the public ADOPTION_GAPS
-## the roster gate and the per-class suites read is that aggregate, every live
+## map the shared contract carried before the split, less the pairs classes
+## have since adopted (FAN-3941: Thief phases/direction/capture/provenance and
+## quality, Ranger quality, Soldier quality), the public ADOPTION_GAPS the
+## roster gate and the per-class suites read is that aggregate, every live
 ## exemption is still needed and every live failure is still exempted, and the
 ## loader rejects what class data must never be able to do: go missing, claim
 ## another class, name an unknown gate, leave a reason empty, restate a shared
@@ -16,20 +18,14 @@ const REFERENCE_CLASS := "doctor"
 const FIXTURE_ROOT := "user://fan3910_adoption_shards"
 
 ## The shared map exactly as the contract carried it at the integrated Ranger
-## update (cffc4e486bb6455b6e0f2bca63ff9ae3fc9a9047), before the shards.
+## update (cffc4e486bb6455b6e0f2bca63ff9ae3fc9a9047), before the shards, minus
+## the pairs adopted since: FAN-3941 retired Thief's phases, direction, capture
+## and provenance gaps and the Ranger, Soldier and Thief quality gaps.
 const LEGACY_ADOPTION_GAPS := {
-	"phases": {
-		"thief": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
-	},
-	"direction": {
-		"thief": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
-	},
-	"capture": {
-		"thief": "single 3600x552 strip instead of the four live-capture viewports",
-	},
-	"provenance": {
-		"thief": "legacy asset-pipeline manifest: no generator_provenance block",
-	},
+	"phases": {},
+	"direction": {},
+	"capture": {},
+	"provenance": {},
 	"quality": {
 		"assassin": "awaiting the readability/accessibility declaration",
 		"druid": "awaiting the readability/accessibility declaration",
@@ -37,10 +33,7 @@ const LEGACY_ADOPTION_GAPS := {
 		"guitarist": "awaiting the readability/accessibility declaration",
 		"knight": "awaiting the readability/accessibility declaration",
 		"priest": "awaiting the readability/accessibility declaration",
-		"ranger": "awaiting the readability/accessibility declaration",
 		"robot": "awaiting the readability/accessibility declaration",
-		"soldier": "awaiting the readability/accessibility declaration",
-		"thief": "awaiting the readability/accessibility declaration",
 	},
 	"victim_impact": {},
 }

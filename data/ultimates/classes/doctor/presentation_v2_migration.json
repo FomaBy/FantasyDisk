@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "class_id": "doctor",
+  "migration_exemptions": {
+    "doctor/restore_potion": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "doctor/plague_syringe": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card",
+    "doctor/bone_saw": "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
+  }
+}

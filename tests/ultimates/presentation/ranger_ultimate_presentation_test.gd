@@ -470,6 +470,10 @@ func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String])
 		)
 		stripped.free()
 
+	var floated := _declared_scene(registry, packed)
+	(floated.get_node(Pack.BACKDROP_NODE) as Sprite2D).z_index = 30
+	_expect_code(Pack.scene_violations(floated, weapon_id), "ranger.v2.backdrop_layering", "%s with its veil above enemy hazards must report ranger.v2.backdrop_layering" % weapon_id, errors)
+	floated.free()
 	for mutation in [
 		{"code": "ranger.v2.fullscreen_footprint", "meta": "", "node": Pack.BACKDROP_NODE},
 		{"code": "ranger.v2.presence_meta", "meta": "presence"},

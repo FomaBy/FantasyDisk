@@ -1,11 +1,5 @@
 {
   "schema_version": 1,
   "class_id": "thief",
-  "adoption_gaps": {
-    "phases": "legacy asset-pipeline manifest: declares no per-weapon phase_ids",
-    "direction": "legacy asset-pipeline manifest: no silhouette/motion/impact language",
-    "capture": "single 3600x552 strip instead of the four live-capture viewports",
-    "provenance": "legacy asset-pipeline manifest: no generator_provenance block",
-    "quality": "awaiting the readability/accessibility declaration"
-  }
+  "adoption_gaps": {}
 }

@@ -1,4 +1,4 @@
-extends Node2D
+extends "res://scenes/vfx/ultimates/engineer/engineer_ultimate_accessibility_driver.gd"
 
 ## Инженер / Разводной ключ — «Гексагональный перекрёстный огонь».
 ##
@@ -17,21 +17,13 @@ extends Node2D
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_sentry_wrench"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_sentry_wrench"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_sentry_wrench.gd"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon.png"
 )
-const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
-const VICTIM_FRAMES := preload(
-	"res://assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres"
-)
-
-var _impacts: Node2D = null
-var _impacts_started := false
-
-
 static func parameter_contract() -> Dictionary:
 	return {
 		"formation_radius": {"type": "number", "minimum": 1.0},
@@ -41,6 +33,10 @@ static func parameter_contract() -> Dictionary:
 		"corridor_half_width": {"type": "number", "minimum": 1.0},
 		"damage": {"type": "number", "minimum": 0.0},
 	}
+
+
+static func new_victim_impact_player() -> Node2D:
+	return ImpactPlayer.new()
 
 
 static func execute(activation) -> float:
@@ -53,7 +49,7 @@ static func execute(activation) -> float:
 		"rotation_degrees": 0.0,
 		"arc_degrees": 360.0,
 	})
-	decorate_and_place(devices, points)
+	decorate_and_place(activation, devices, points)
 	activation.present(EXECUTOR_ID + ".deploy", {
 		"position": activation.origin(),
 		"radius": activation.param_float("formation_radius", 210.0),
@@ -115,7 +111,8 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 		var target := crossed["target"] as Node
 		if target == null or not is_instance_valid(target):
 			continue
-		activation.deal_damage(
+		deal_damage_with_accessibility(
+			activation,
 			target,
 			damage * float(maxi(int(crossed["hits"]), 1)),
 			{"source": "engineer_hex_crossfire"},
@@ -130,7 +127,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 	})
 
 
-static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:
+static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
 		var device := devices[index] as Node2D
 		if device == null or not is_instance_valid(device):
@@ -143,31 +140,4 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.34
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
-
-
-func present(_event_id: String, payload: Dictionary) -> void:
-	_play_impacts(payload.get("victims"))
-
-
-func finish(_reason: String) -> void:
-	if _impacts != null and is_instance_valid(_impacts):
-		_impacts.finish()
-
-
-func _play_impacts(raw_victims: Variant) -> void:
-	if not raw_victims is Array or (raw_victims as Array).is_empty():
-		return
-	if _impacts == null or not is_instance_valid(_impacts):
-		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
-		_impacts_started = false
-	if _impacts_started:
-		_impacts.enqueue(raw_victims as Array, global_position)
-	else:
-		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
-		_impacts_started = true
-
-
-func _exit_tree() -> void:
-	_impacts = null
-	_impacts_started = false
+		configure_device_visual(activation, device, sprite)

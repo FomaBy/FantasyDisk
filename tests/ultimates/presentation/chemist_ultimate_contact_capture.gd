@@ -1,5 +1,11 @@
 extends SceneTree
 
+## Legacy phase contact-sheet renderer. These three-panel sheets predate
+## FAN-3937 and do not prove the four presentation modes. Review the separate
+## Chemist certification matrix instead:
+## `chemist_certification_live_capture.gd` +
+## `chemist_certification_capture_test.gd`.
+
 const CAPTURE_SPEC := preload("res://tests/ultimates/presentation/chemist_ultimate_timelines.gd")
 
 

@@ -486,6 +486,7 @@ const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
+const ULTIMATE_ACCESSIBILITY_SETTINGS := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const ENCOUNTER_CONFIG := preload("res://scripts/encounters/encounter_config.gd")
@@ -607,6 +608,7 @@ func _load_game_settings() -> void:
 	gamepad_deadzone = clampf(float(settings.get("gamepad_deadzone", 0.25)), 0.05, 0.5)
 	gamepad_vibration = bool(settings.get("gamepad_vibration", true))
 	sandbox_settings = GAMEPLAY_SANDBOX.snapshot_from_settings(settings)
+	ULTIMATE_ACCESSIBILITY_SETTINGS.apply_settings(get_tree().root, settings)
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
@@ -650,6 +652,7 @@ func save_game_settings() -> void:
 	settings["gamepad_deadzone"] = gamepad_deadzone
 	settings["gamepad_vibration"] = gamepad_vibration
 	GAMEPLAY_SANDBOX.write_snapshot_to_settings(settings, sandbox_settings)
+	ULTIMATE_ACCESSIBILITY_SETTINGS.write_applied_snapshot_to_settings(settings, get_tree().root)
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)

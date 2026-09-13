@@ -9,8 +9,9 @@ extends SceneTree
 ##
 ## The material budget rides the existing PRESENTATION_V2_MIGRATION_ALLOWLIST,
 ## so it binds a pair the moment its rework card takes it out of the ratchet.
-## The Soldier packs are still v1, so the migrated behaviour is proven by
-## reading the same packs against an empty allowlist.
+## The legacy (v1) path is proven on an isolated fixture pair placed on a
+## fixture allowlist (FAN-3933), never on a real class staying v1, so a class
+## migration never has to edit this suite or delete its negative coverage.
 
 const Runtime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const Contract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
@@ -19,6 +20,11 @@ const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const ImpactFrames := preload("res://tests/ultimates/presentation/victim_impact_frames_fixture.gd")
 const REFERENCE_CLASS := "soldier"
+
+## An isolated legacy pair: it exists in no registry and no shard, and is put
+## on the migration allowlist only for the duration of its control.
+const LEGACY_FIXTURE_KEY := "fixture/legacy_pair"
+const LEGACY_FIXTURE_ALLOWLIST := {LEGACY_FIXTURE_KEY: "isolated v1 fixture for the budget suite"}
 
 ## The largest crowd a scenario can put on the map: main.gd
 ## WAVE_SETTINGS.max_active_cap. The impact budget is proven at exactly it.
@@ -284,23 +290,61 @@ func _test_material_cap_resolution(errors: Array[String]) -> void:
 	_expect(not bool(result.get("accepted", true)), "a declared invalid manifest cap must fail closed, never fall back to scene metadata", errors)
 	scene.free()
 
+	# The legacy (v1) path on an isolated fixture: the runtime reads the live
+	# allowlist at call time, so the fixture pair is exempt exactly while the
+	# fixture allowlist is installed and fails closed again once it is gone.
 	scene = _material_probe_scene()
-	var allowlisted_key := "doctor/bone_saw"
-	_expect(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(allowlisted_key), "%s must still be on the migration allowlist" % allowlisted_key, errors)
-	result = probe.evaluate(scene, node_budget, allowlisted_key)
+	Schema.use_migration_allowlist_for_tests(LEGACY_FIXTURE_ALLOWLIST)
+	_expect(Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(LEGACY_FIXTURE_KEY), "%s must be on the fixture migration allowlist" % LEGACY_FIXTURE_KEY, errors)
+	result = probe.evaluate(scene, node_budget, LEGACY_FIXTURE_KEY)
 	_expect(bool(result.get("accepted", false)), "an allowlisted legacy pair must activate without a material declaration", errors)
 
 	result = probe.evaluate(scene, node_budget, "probe/missing")
 	_expect(not bool(result.get("accepted", true)), "a migrated pair without any material declaration must fail closed", errors)
 	_expect(str(result.get("diagnostic", "")).contains("max_unique_materials"), "the missing-declaration rejection must name the cap", errors)
+
+	Schema.reload_migration_allowlist_for_tests()
+	_expect(not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(LEGACY_FIXTURE_KEY), "the fixture pair must leave the live allowlist after its control", errors)
+	result = probe.evaluate(scene, node_budget, LEGACY_FIXTURE_KEY)
+	_expect(not bool(result.get("accepted", true)), "the fixture pair must fail closed once it is off the allowlist", errors)
 	scene.free()
 
-	var legacy_record := Manifest.class_weapon_record("doctor", "bone_saw")
-	_expect(not legacy_record.is_empty() and legacy_record.get("max_unique_materials") == null,
-		"an undeclared manifest material cap must stay null, not coerce to 0", errors)
+	_test_manifest_material_caps_pass_through(errors)
 	var sniper_record := Manifest.class_weapon_record("sniper", "sniper_deadeye_rifle")
 	_expect(int(sniper_record.get("max_unique_materials", 0)) == 2 and int(sniper_record.get("max_fullscreen_materials", 0)) == 1,
 		"a declared manifest material cap must pass through to the runtime block", errors)
+
+
+## The record side of the cap resolution, characterized over the whole roster
+## instead of one class staying legacy: a material cap a class reference
+## manifest leaves undeclared stays null in its weapon record (so the runtime
+## falls back to scene metadata), and a declared one passes through unchanged.
+func _test_manifest_material_caps_pass_through(errors: Array[String]) -> void:
+	var checked := 0
+	for class_id in Contract.class_ids():
+		var manifest := Contract.load_manifest(class_id)
+		for raw_weapon in manifest.get("weapons", []) as Array:
+			if not raw_weapon is Dictionary:
+				continue
+			var weapon := raw_weapon as Dictionary
+			var weapon_id := str(weapon.get("weapon_id", ""))
+			var record := Manifest.class_weapon_record(class_id, weapon_id)
+			if record.is_empty():
+				continue
+			var performance: Variant = weapon.get("performance", {})
+			if not performance is Dictionary:
+				performance = {}
+			for cap in ["max_unique_materials", "max_fullscreen_materials"]:
+				var declared: Variant = (performance as Dictionary).get(cap)
+				var resolved: Variant = record.get(cap)
+				checked += 1
+				if declared == null:
+					_expect(resolved == null,
+						"%s/%s: an undeclared manifest %s must stay null, not coerce to %s" % [class_id, weapon_id, cap, str(resolved)], errors)
+				else:
+					_expect(resolved != null and int(resolved) == int(declared),
+						"%s/%s: a declared manifest %s must pass through as %s, got %s" % [class_id, weapon_id, cap, str(declared), str(resolved)], errors)
+	_expect(checked > 0, "the roster must expose weapon records for the cap pass-through control", errors)
 
 
 func _material_probe_scene() -> Node2D:

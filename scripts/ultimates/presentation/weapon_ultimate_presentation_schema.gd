@@ -22,39 +22,22 @@ const V2_TIME_SCALE_DIP_RANGE := [0.3, 0.5]
 const V2_BACKDROP_TREATMENTS: Array[String] = ["darken", "flash"]
 const V2_EPSILON := 0.000001
 
-const V2_SEED_REASON := "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
+const MigrationShards := preload("res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd")
 
 ## Ratchet with the same rules as ContactSheetBeatsContract.MIGRATION_ALLOWLIST
 ## and the timing test's PARITY_EXEMPTIONS: it only shrinks, its target state is
 ## empty, an entry for a pair that already satisfies the v2 contract fails as
 ## stale, an entry naming no registry pair or stating no reason fails, and a
-## pair outside it is asserted against the full v2 contract fail-closed. Each
-## class rework card removes its own entries.
-const PRESENTATION_V2_MIGRATION_ALLOWLIST := {
-	"assassin/shadow_daggers": V2_SEED_REASON,
-	"assassin/venom_wire": V2_SEED_REASON,
-	"doctor/restore_potion": V2_SEED_REASON,
-	"doctor/plague_syringe": V2_SEED_REASON,
-	"doctor/bone_saw": V2_SEED_REASON,
-	"druid/summon_amulet": V2_SEED_REASON,
-	"druid/briar_staff": V2_SEED_REASON,
-	"druid/raven_totem": V2_SEED_REASON,
-	"elementalist/elementalist_orb_ring": V2_SEED_REASON,
-	"elementalist/elementalist_prism_focus": V2_SEED_REASON,
-	"elementalist/elementalist_meteor_core": V2_SEED_REASON,
-	"guitarist/electric_guitar": V2_SEED_REASON,
-	"guitarist/bass_guitar": V2_SEED_REASON,
-	"guitarist/sound_amp": V2_SEED_REASON,
-	"knight/long_spear": V2_SEED_REASON,
-	"knight/tower_shield": V2_SEED_REASON,
-	"knight/holy_flail": V2_SEED_REASON,
-	"priest/priest_reliquary": V2_SEED_REASON,
-	"priest/priest_censer": V2_SEED_REASON,
-	"priest/priest_chime": V2_SEED_REASON,
-	"robot/robot_magnetic_anchor": V2_SEED_REASON,
-	"robot/robot_hydraulic_press": V2_SEED_REASON,
-	"robot/robot_reactor_core": V2_SEED_REASON,
-}
+## pair outside it is asserted against the full v2 contract fail-closed.
+##
+## Since FAN-3933 the entries are class-owned data: each class commits its own
+## pairs in `data/ultimates/classes/<class_id>/presentation_v2_migration.json`
+## and PresentationV2MigrationShards aggregates them, fail-closed, under the
+## frozen ceiling PresentationV2MigrationShards.ADMITTED_EXEMPTIONS. Each class
+## rework card removes its own entries from its own shard; this schema is not
+## edited for that. The aggregate is read-only and read at call time by every
+## default argument below, so an explicit allowlist override keeps its meaning.
+static var PRESENTATION_V2_MIGRATION_ALLOWLIST: Dictionary = MigrationShards.load_allowlist()
 
 static var _schema_cache: Dictionary = {}
 
@@ -73,6 +56,20 @@ static func schema_document() -> Dictionary:
 
 static func clear_cache_for_tests() -> void:
 	_schema_cache.clear()
+
+
+## Swaps the live migration allowlist for an isolated fixture so a suite can
+## prove the legacy (v1) path without depending on any real class still being
+## on the v1 envelope. Pair with reload_migration_allowlist_for_tests().
+static func use_migration_allowlist_for_tests(allowlist: Dictionary) -> void:
+	var fixture := allowlist.duplicate(true)
+	fixture.make_read_only()
+	PRESENTATION_V2_MIGRATION_ALLOWLIST = fixture
+
+
+## Restores the class-owned shards as the live migration allowlist.
+static func reload_migration_allowlist_for_tests() -> void:
+	PRESENTATION_V2_MIGRATION_ALLOWLIST = MigrationShards.load_allowlist()
 
 
 static func profile_key(class_id: String, weapon_id: String) -> String:

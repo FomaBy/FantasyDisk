@@ -14,6 +14,7 @@ extends Node2D
 
 const Pack := preload("res://scenes/vfx/ultimates/ranger/ranger_ultimate_presentation_pack.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
@@ -171,7 +172,10 @@ func _apply_presence(elapsed: float) -> void:
 	var config := Pack.weapon_config(weapon_id)
 	var veil := _backdrop()
 	if veil != null:
-		var alpha := Pack.backdrop_alpha(weapon_id, elapsed)
+		# Production photosensitivity-safe policy (FAN-3941): the arena-wide
+		# surface is the only full-screen element this cast draws, so the
+		# preference removes it entirely.
+		var alpha := Pack.backdrop_alpha(weapon_id, elapsed) if _fullscreen_allowed() else 0.0
 		var tint: Color = config.get("backdrop_tint", Color.BLACK)
 		veil.self_modulate = Color(tint.r, tint.g, tint.b, alpha)
 		veil.visible = alpha > 0.0
@@ -229,12 +233,34 @@ func _advance_weight_devices(delta: float, elapsed: float) -> void:
 
 
 ## Motion toggle, read exactly like berserk's v2 driver: main mirrors
-## GameSettings.screen_shake onto the tree root for scripts without a game ref.
+## GameSettings.screen_shake onto the tree root for scripts without a game ref,
+## and (FAN-3941) the ultimate reduced-motion preference published by
+## scripts/settings/ultimate_accessibility_settings.gd also holds the camera.
+## The node the production policy is published on: the tree root in the game,
+## the topmost ancestor in a headless contract tree that never runs the node
+## lifecycle (get_tree() is null there while root already parents the scene).
+func _policy_root() -> Node:
+	var node: Node = self
+	while node.get_parent() != null:
+		node = node.get_parent()
+	return node
+
+
 func _screen_shake_enabled() -> bool:
-	if not is_inside_tree():
+	var policy_root := _policy_root()
+	if policy_root == self:
 		return true
-	var tree := get_tree()
-	return tree == null or bool(tree.root.get_meta("screen_shake", true))
+	if not bool(policy_root.get_meta("screen_shake", true)):
+		return false
+	return not bool(Accessibility.read_snapshot(policy_root).get(Accessibility.REDUCED_MOTION_KEY, false))
+
+
+## Photosensitivity-safe preference: the arena-wide surface is not drawn.
+func _fullscreen_allowed() -> bool:
+	var policy_root := _policy_root()
+	if policy_root == self:
+		return true
+	return not bool(Accessibility.read_snapshot(policy_root).get(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, false))
 
 
 func _apply_camera_shake(remaining: float, window: float, amplitude: float) -> void:

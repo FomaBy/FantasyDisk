@@ -311,6 +311,14 @@
       "docs/design/references/weapon_ultimates/biologist/biologist_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/biologist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/biologist_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/biologist_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/biologist/certification_capture_manifest.json",
+      "report": "docs/design/references/weapon_ultimates/biologist/certification_readability_report.md",
+      "runner": "tests/ultimates/presentation/biologist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/biologist_certification_capture_test.gd",
+      "asset_directory": "docs/design/reference-assets-lfs/ultimate-certification/biologist",
+      "scope": "FAN-3936 certification evidence only; no production presentation, gameplay, balance, registry, or shared UI behavior is changed."
+    }
   }
 }

@@ -375,49 +375,71 @@ class CardinalityAndKeyTests(FixtureCase):
 
 
 class ReservedOverlayFileTests(FixtureCase):
-    """FAN-3910: the class-owned presentation adoption shard is not an overlay."""
+    """FAN-3910 / FAN-3933: the class-owned presentation shards are not overlays."""
 
-    RESERVED = "presentation_adoption.json"
+    RESERVED = ("presentation_adoption.json", "presentation_v2_migration.json")
 
     def overlay_dir(self, index: int) -> Path:
         return self.root / "data" / "ultimates" / "classes" / class_id(index)
 
-    def write_shard(self, index: int) -> None:
-        (self.overlay_dir(index) / self.RESERVED).write_text(
+    def write_shards(self, index: int) -> None:
+        (self.overlay_dir(index) / "presentation_adoption.json").write_text(
             json.dumps({"schema_version": 1, "class_id": class_id(index), "adoption_gaps": {}}),
             encoding="utf-8",
         )
+        (self.overlay_dir(index) / "presentation_v2_migration.json").write_text(
+            json.dumps({"schema_version": 1, "class_id": class_id(index), "migration_exemptions": {}}),
+            encoding="utf-8",
+        )
 
-    def test_reserved_shard_beside_every_overlay_passes(self) -> None:
+    def assert_no_reserved_stem_reported(self, completed: subprocess.CompletedProcess) -> None:
+        for reserved in self.RESERVED:
+            self.assertNotIn(reserved.removesuffix(".json"), completed.stderr)
+
+    def test_reserved_names_are_exactly_the_two_shards(self) -> None:
+        spec = importlib.util.spec_from_file_location("ultimate_feature_list_check", CHECKER)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+        self.assertEqual(module.RESERVED_OVERLAY_FILES, frozenset(self.RESERVED))
+
+    def test_reserved_shards_beside_every_overlay_pass(self) -> None:
         for index in range(CLASS_COUNT):
-            self.write_shard(index)
+            self.write_shards(index)
         completed = run_checker(self.root, "--validate-only")
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("17 classes / 51 weapons validated", completed.stdout)
 
-    def test_reserved_shard_does_not_hide_a_missing_overlay(self) -> None:
-        self.write_shard(5)
+    def test_reserved_shards_do_not_hide_a_missing_overlay(self) -> None:
+        self.write_shards(5)
         (self.overlay_dir(5) / f"{weapon_id(5, 1)}.json").unlink()
         completed = run_checker(self.root, "--validate-only")
         self.assert_three_part_failure(completed, "disagree", f"overlay missing ['{class_id(5)}/{weapon_id(5, 1)}']")
-        self.assertNotIn(self.RESERVED.removesuffix(".json"), completed.stderr)
+        self.assert_no_reserved_stem_reported(completed)
 
-    def test_reserved_shard_does_not_admit_other_extra_overlays(self) -> None:
-        self.write_shard(5)
+    def test_reserved_shards_do_not_admit_other_extra_overlays(self) -> None:
+        self.write_shards(5)
         (self.overlay_dir(5) / "ghost.json").write_text(
             json.dumps({"class_id": class_id(5), "weapon_id": "ghost"}), encoding="utf-8"
         )
         completed = run_checker(self.root, "--validate-only")
         self.assert_three_part_failure(completed, "disagree", f"overlay extra ['{class_id(5)}/ghost']")
-        self.assertNotIn(self.RESERVED.removesuffix(".json"), completed.stderr)
+        self.assert_no_reserved_stem_reported(completed)
 
-    def test_reserved_name_is_only_skipped_by_exact_file_name(self) -> None:
-        self.write_shard(5)
-        (self.overlay_dir(5) / "presentation_adoption_v2.json").write_text("{}", encoding="utf-8")
-        completed = run_checker(self.root, "--validate-only")
-        self.assert_three_part_failure(
-            completed, "disagree", f"overlay extra ['{class_id(5)}/presentation_adoption_v2']"
-        )
+    def test_reserved_names_are_only_skipped_by_exact_file_name(self) -> None:
+        for reserved in self.RESERVED:
+            with self.subTest(reserved=reserved):
+                self.write_shards(5)
+                near_miss = reserved.removesuffix(".json") + "_v2"
+                stray = self.overlay_dir(5) / f"{near_miss}.json"
+                stray.write_text("{}", encoding="utf-8")
+                try:
+                    completed = run_checker(self.root, "--validate-only")
+                finally:
+                    stray.unlink()
+                self.assert_three_part_failure(
+                    completed, "disagree", f"overlay extra ['{class_id(5)}/{near_miss}']"
+                )
 
 
 class FabricatedEvidenceTests(FixtureCase):

@@ -7,6 +7,7 @@ const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_regi
 const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const MigrationShards := preload("res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd")
 
 
 class HandleProbe extends RefCounted:
@@ -51,6 +52,12 @@ func _initialize() -> void:
 		_expect(_phase_names(manifest) == ["windup", "release", "active", "recovery", "cancel"], "%s phase order must be complete" % key, errors)
 	_expect(presentation_ids.size() == 51, "all 51 presentation IDs must be distinct", errors)
 
+	var shard_errors := MigrationShards.shard_violations()
+	_expect(
+		shard_errors.is_empty(),
+		"class-owned v2 migration shards must validate; got %s" % [shard_errors],
+		errors
+	)
 	var allowlist_errors := Schema.allowlist_integrity_errors(expected_profiles)
 	_expect(
 		allowlist_errors.is_empty(),
