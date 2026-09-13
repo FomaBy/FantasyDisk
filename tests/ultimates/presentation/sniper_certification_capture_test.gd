@@ -6,7 +6,9 @@ extends SceneTree
 ## complete and whether it actually reads. It checks the declared coverage
 ## against the canonical class profile, the measured per-beat readability against
 ## the caps the class manifest already declares, that each mode really took the
-## shipped switch it claims, and the committed sheets as real PNG bytes —
+## shipped switch it claims, that the reduced-motion casts really performed the
+## static substitute and dropped the hitstop the class manifest promises to
+## reduce, and the committed sheets as real PNG bytes —
 ## signature, IHDR geometry, decode and content hash. Every validator is shown to
 ## go red on a mutated copy, so a missing mode, a missing canonical key, a
 ## missing file, an unsmudged LFS pointer or a wrong dimension cannot pass as
@@ -33,6 +35,14 @@ const MIN_HUD_BAND_CONTRAST := 0.35
 const MIN_HUD_BANDS := 3
 const MIN_EFFECT_NODES_DRAWN := 1
 
+## The declared static substitute, read from the shipped runner rather than
+## copied: a package that changed the production constant and not the evidence
+## has to go red here.
+const Presentation := preload("res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd")
+const SUBSTITUTE_BACKDROP_ALPHA := Presentation.REDUCED_MOTION_BACKDROP_ALPHA
+const SUBSTITUTE_POSE_SCALE := Presentation.REDUCED_MOTION_POSE_SCALE
+const SUBSTITUTE_SILHOUETTE_SCALE := Presentation.REDUCED_MOTION_SILHOUETTE_SCALE
+
 const PNG_SIGNATURE := [137, 80, 78, 71, 13, 10, 26, 10]
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const SHA1_LENGTH := 40
@@ -52,6 +62,7 @@ func _initialize() -> void:
 	errors.append_array(coverage_violations(manifest, class_manifest))
 	errors.append_array(readability_violations(manifest, class_manifest))
 	errors.append_array(mode_violations(manifest))
+	errors.append_array(accessibility_violations(manifest, class_manifest))
 	errors.append_array(sheet_violations(manifest))
 	_check_beat_source(errors)
 	_check_class_manifest_registration(class_manifest, manifest, errors)
@@ -239,7 +250,7 @@ func mode_violations(manifest: Dictionary) -> Array[String]:
 		if recorded.is_empty():
 			violations.append("mode %s is not declared" % str(expected["id"]))
 			continue
-		for field in ["screen_shake", "combat_feedback", "crowd_cap"]:
+		for field in ["screen_shake", "combat_feedback", "reduced_motion", "photosensitivity_safe", "crowd_cap"]:
 			if bool(recorded.get(field, not bool(expected[field]))) != bool(expected[field]):
 				violations.append("mode %s declares %s as %s" % [str(expected["id"]), field, str(recorded.get(field, ""))])
 	for raw_sample in manifest.get("samples", []) as Array:
@@ -251,12 +262,87 @@ func mode_violations(manifest: Dictionary) -> Array[String]:
 			continue
 		if bool(sample.get("screen_shake_setting", false)) != bool(mode.get("screen_shake", false)):
 			violations.append("%s: sample was taken with a different screen_shake setting than its mode" % key)
-		if bool(sample.get("combat_feedback_setting", false)) != bool(mode.get("combat_feedback", false)):
-			violations.append("%s: sample was taken with a different combat_feedback setting than its mode" % key)
-		## `camera_shake_applied` is the runtime answer: the presentation only
-		## binds a camera after its own `screen_shake` check passes.
-		if not bool(mode.get("screen_shake", false)) and bool(sample.get("camera_shake_applied", false)):
-			violations.append("%s: reduced-motion sample still bound a shake camera" % key)
+		for field in ["combat_feedback", "reduced_motion", "photosensitivity_safe"]:
+			if bool(sample.get("%s_setting" % field, false)) != bool(mode.get(field, false)):
+				violations.append("%s: sample was taken with a different %s setting than its mode" % [key, field])
+	return violations
+
+
+## The heart of the accessibility acceptance: what the shipped presentation
+## actually did with the two runtime flags, judged against what the class
+## manifest promises for reduced motion. A mode label, a manifest sentence and
+## an absent camera shake are all things a package can claim without performing;
+## every rule below reads a value the runner writes where it applies the effect.
+func accessibility_violations(manifest: Dictionary, class_manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var weapons := _weapons_by_id(class_manifest)
+	var envelopes := {}
+	for raw_sample in manifest.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		var key := _sample_key(sample)
+		var weapon := weapons.get(str(sample.get("weapon_id", "")), {}) as Dictionary
+		if weapon.is_empty():
+			continue
+		var quality := weapon.get("quality", {}) as Dictionary
+		var presence := weapon.get("presence", {}) as Dictionary
+		if str(quality.get("reduced_motion_substitute", "")).is_empty():
+			violations.append("%s: the class manifest no longer declares a reduced-motion substitute" % key)
+
+		## Either shipped switch selects the substitute; the photosensitivity-safe
+		## preference on its own never may.
+		var reduced := bool(sample.get("reduced_motion_setting", false)) \
+			or not bool(sample.get("screen_shake_setting", true))
+		if bool(sample.get("presentation_reduced_motion", false)) != reduced:
+			violations.append("%s: the presentation read reduced motion as %s, not %s" % [
+				key, str(sample.get("presentation_reduced_motion", "")), str(reduced)])
+		if bool(sample.get("presentation_photosensitivity_safe", false)) != bool(sample.get("photosensitivity_safe_setting", false)):
+			violations.append("%s: the presentation did not observe the photosensitivity-safe preference" % key)
+		if bool(sample.get("reduced_motion_substitute_applied", false)) != reduced:
+			violations.append("%s: the declared static substitute was %sapplied" % [key, "not " if reduced else ""])
+
+		var declared_hitstop := float(presence.get("hitstop_ms", 0.0))
+		var expected_hitstop := 0.0 if reduced else declared_hitstop
+		if not is_equal_approx(float(sample.get("presentation_hitstop_ms", -1.0)), expected_hitstop):
+			violations.append("%s: the release applied %.1f ms of hitstop, expected %.1f ms" % [
+				key, float(sample.get("presentation_hitstop_ms", -1.0)), expected_hitstop])
+		if reduced and bool(sample.get("camera_shake_applied", false)):
+			violations.append("%s: a reduced-motion cast still bound a shake camera" % key)
+		if reduced and float(sample.get("engine_time_scale", 0.0)) < 0.99:
+			violations.append("%s: a reduced-motion cast froze the arena at time scale %.3f" % [
+				key, float(sample.get("engine_time_scale", 0.0))])
+		if not bool(sample.get("sfx_ducked", false)) and bool(presence.get("sfx_ducking", false)):
+			violations.append("%s: the declared SFX duck was dropped" % key)
+
+		if reduced:
+			for pair in [
+				["backdrop_alpha", SUBSTITUTE_BACKDROP_ALPHA],
+				["cast_pose_scale", SUBSTITUTE_POSE_SCALE],
+				["silhouette_scale", SUBSTITUTE_SILHOUETTE_SCALE],
+			]:
+				if not is_equal_approx(float(sample.get(str(pair[0]), -1.0)), float(pair[1])):
+					violations.append("%s: %s is %.3f, expected the held %.3f" % [
+						key, str(pair[0]), float(sample.get(str(pair[0]), -1.0)), float(pair[1])])
+		var envelope_key := "%s/%s/%s" % [
+			str(sample.get("weapon_id", "")), str(sample.get("mode", "")), str(sample.get("viewport", ""))]
+		if not envelopes.has(envelope_key):
+			envelopes[envelope_key] = {"reduced": reduced, "alphas": []}
+		(envelopes[envelope_key]["alphas"] as Array).append(float(sample.get("backdrop_alpha", -1.0)))
+
+	## A *static* substitute holds one dim across the sampled beats, and the
+	## ordinary presentation does not. Without this pair, a runner that simply
+	## stopped drawing would read as a substitute.
+	for envelope_key in envelopes:
+		var envelope := envelopes[envelope_key] as Dictionary
+		var alphas := envelope["alphas"] as Array
+		if alphas.size() < 2:
+			continue
+		var steady := true
+		for alpha in alphas:
+			steady = steady and is_equal_approx(float(alpha), float(alphas[0]))
+		if bool(envelope["reduced"]) and not steady:
+			violations.append("%s: the substitute stepped its backdrop %s instead of holding one dim" % [envelope_key, str(alphas)])
+		if not bool(envelope["reduced"]) and steady:
+			violations.append("%s: the ordinary presentation stopped stepping its backdrop %s" % [envelope_key, str(alphas)])
 	return violations
 
 
@@ -488,17 +574,65 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	((retimed.get("samples", []) as Array)[0] as Dictionary)["beat_seconds"] = 9.0
 	_expect(not readability_violations(retimed, class_manifest).is_empty(), "a sample taken past its declared beat must fail closed", errors)
 
-	var faked_reduced_motion := manifest.duplicate(true)
-	for raw_sample in faked_reduced_motion.get("samples", []) as Array:
-		var sample := raw_sample as Dictionary
-		if str(sample.get("mode", "")) == "reduced_motion":
-			sample["camera_shake_applied"] = true
-			break
-	_expect(not mode_violations(faked_reduced_motion).is_empty(), "a reduced-motion sample that still shook must fail closed", errors)
-
 	var relabelled := manifest.duplicate(true)
 	((relabelled.get("presentation_modes", []) as Array)[3] as Dictionary)["combat_feedback"] = true
 	_expect(not mode_violations(relabelled).is_empty(), "a mode that drops its shipped switch must fail closed", errors)
+
+	var mislabelled_preference := manifest.duplicate(true)
+	((mislabelled_preference.get("presentation_modes", []) as Array)[2] as Dictionary)["reduced_motion"] = false
+	_expect(not mode_violations(mislabelled_preference).is_empty(),
+		"a reduced-motion mode that drops its accessibility preference must fail closed", errors)
+
+	## The accessibility rules, each shown red on the package's own evidence.
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "reduced_motion_substitute_applied", false), class_manifest).is_empty(),
+		"a reduced-motion sample whose declared substitute was never applied must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "presentation_hitstop_ms", 90.0), class_manifest).is_empty(),
+		"a reduced-motion release that kept a normal hitstop must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "camera_shake_applied", true), class_manifest).is_empty(),
+		"a reduced-motion sample that still shook must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "engine_time_scale", 0.4), class_manifest).is_empty(),
+		"a reduced-motion cast that froze the arena must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "presentation_reduced_motion", false), class_manifest).is_empty(),
+		"a reduced-motion cast the presentation never observed must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "sfx_ducked", false), class_manifest).is_empty(),
+		"a substitute that also dropped the declared SFX duck must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "backdrop_alpha", SUBSTITUTE_BACKDROP_ALPHA + 0.1), class_manifest).is_empty(),
+		"a substitute that did not hold the declared steady dim must fail closed", errors)
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "cast_pose_scale", 0.4), class_manifest).is_empty(),
+		"a substitute that kept the growing hero pose must fail closed", errors)
+
+	## The same rule from the other side: an ordinary cast that claims the
+	## substitute, and an ordinary envelope that stopped stepping.
+	var pretended := manifest.duplicate(true)
+	for raw_sample in pretended.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "normal":
+			sample["reduced_motion_substitute_applied"] = true
+	_expect(not accessibility_violations(pretended, class_manifest).is_empty(),
+		"an ordinary cast that claims the substitute must fail closed", errors)
+
+	var flattened := manifest.duplicate(true)
+	for raw_sample in flattened.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "normal":
+			sample["backdrop_alpha"] = SUBSTITUTE_BACKDROP_ALPHA
+	_expect(not accessibility_violations(flattened, class_manifest).is_empty(),
+		"an ordinary presentation that stopped stepping its backdrop must fail closed", errors)
+
+	var undeclared := manifest.duplicate(true)
+	var stripped := class_manifest.duplicate(true)
+	for raw_weapon in stripped.get("weapons", []) as Array:
+		((raw_weapon as Dictionary).get("quality", {}) as Dictionary)["reduced_motion_substitute"] = ""
+	_expect(not accessibility_violations(undeclared, stripped).is_empty(),
+		"a class manifest that withdrew its reduced-motion promise must fail closed", errors)
 
 	var first_sheet := (manifest.get("sheets", []) as Array)[0] as Dictionary
 	var real_path := "res://%s" % str(first_sheet.get("path", ""))
@@ -521,6 +655,18 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 		errors
 	)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(POINTER_FIXTURE_PATH))
+
+
+## One mutated copy of the package, with a single reduced-motion reading
+## replaced. Every accessibility rule is proved against the real evidence rather
+## than a hand-built fixture.
+func _mutate_reduced_motion_samples(manifest: Dictionary, field: String, value: Variant) -> Dictionary:
+	var mutated := manifest.duplicate(true)
+	for raw_sample in mutated.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "reduced_motion":
+			sample[field] = value
+	return mutated
 
 
 func _sample_key(sample: Dictionary) -> String:

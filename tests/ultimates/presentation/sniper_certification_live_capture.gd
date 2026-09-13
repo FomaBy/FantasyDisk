@@ -8,8 +8,8 @@ extends SceneTree
 ## real `Player` configured for `sniper/<weapon>`, shipped `Enemy` instances
 ## stand in the frame as hazards, and the ultimate is cast through
 ## `UltimatePlayerHost.activate()`. Nothing about the presentation is redrawn
-## here — the script only sizes the window, sets the shipped accessibility
-## metadata for the mode, and reads the framebuffer back.
+## here — the script only persists the mode's production settings before the
+## game boots, sizes the window, and reads the framebuffer back.
 ##
 ## The run is repeated for every weapon x mode x viewport combination and each
 ## repetition is sampled at the release, active and recovery beats the shipped
@@ -34,6 +34,8 @@ extends SceneTree
 
 const Beats := preload("res://scripts/ultimates/presentation/contact_sheet_beats_contract.gd")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const GameSettings := preload("res://scripts/game_settings.gd")
 ## Loaded on demand: the focused gate reads these constants headlessly and must
 ## not drag the whole game scene in to do it.
 const MAIN_SCENE_PATH := "res://scenes/Main.tscn"
@@ -48,6 +50,7 @@ const CAPTURE_SCRIPT_PATH := "tests/ultimates/presentation/sniper_certification_
 const CAPTURE_TEST_PATH := "tests/ultimates/presentation/sniper_certification_capture_test.gd"
 const TIMELINE_DIR := "res://scenes/vfx/ultimates/sniper"
 const PRESENTATION_SCRIPT_PATH := "res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd"
+const SETTINGS_PATH := "user://settings.cfg"
 ## Built in code by SniperUltimatePresentationScene, top-level and fitted to the
 ## whole viewport: the declared `presence.backdrop`, not drawn effect area.
 const BACKDROP_NODE_NAME := "BackdropTreatment"
@@ -65,16 +68,22 @@ const BEAT_IDS: Array[String] = ["release", "active", "recovery"]
 ## and carries the per-beat record as measurements instead of more PNGs.
 const SHEET_BEAT := "active"
 
-## The four presentation modes are driven only through metadata the shipped game
-## already publishes on the scene-tree root: `screen_shake` is the reduced-motion
-## switch `SniperUltimatePresentationScene` reads before it binds a camera, and
-## `combat_feedback` is the flash switch the shipped victim-impact player and the
-## enemy hit flash read. Nothing is suppressed or redrawn for the capture.
+## Each mode is a persisted production configuration, written to
+## user://settings.cfg before `Main` boots and then read back from what `Main`
+## itself published on the scene-tree root. Nothing is suppressed or redrawn for
+## the capture.
+##
+## `reduced_motion` holds the dedicated `ultimate_reduced_motion` preference and
+## deliberately leaves `screen_shake` on: the declared static substitute has to
+## come from the accessibility preference itself, not from a disabled camera
+## shake. `photosensitivity_safe` holds both shipped photosensitivity switches —
+## the `ultimate_photosensitivity_safe` preference and the combat-feedback
+## toggle the victim-impact player and the enemy hit flash read.
 const MODES := [
-	{"id": "normal", "label": "NORMAL", "screen_shake": true, "combat_feedback": true, "hazards": 6, "crowd_cap": false},
-	{"id": "crowded", "label": "CROWDED", "screen_shake": true, "combat_feedback": true, "hazards": 6, "crowd_cap": true},
-	{"id": "reduced_motion", "label": "REDUCED MOTION", "screen_shake": false, "combat_feedback": true, "hazards": 6, "crowd_cap": false},
-	{"id": "photosensitivity_safe", "label": "PHOTOSENSITIVITY SAFE", "screen_shake": false, "combat_feedback": false, "hazards": 6, "crowd_cap": false},
+	{"id": "normal", "label": "NORMAL", "screen_shake": true, "combat_feedback": true, "reduced_motion": false, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": false},
+	{"id": "crowded", "label": "CROWDED", "screen_shake": true, "combat_feedback": true, "reduced_motion": false, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": true},
+	{"id": "reduced_motion", "label": "REDUCED MOTION", "screen_shake": true, "combat_feedback": true, "reduced_motion": true, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": false},
+	{"id": "photosensitivity_safe", "label": "PHOTOSENSITIVITY SAFE", "screen_shake": true, "combat_feedback": false, "reduced_motion": false, "photosensitivity_safe": true, "hazards": 6, "crowd_cap": false},
 ]
 
 const VIEWPORTS := [
@@ -104,6 +113,7 @@ var _sheets: Array[Dictionary] = []
 var _frame_dir := ""
 var _source := {}
 var _sheet_panels := {}
+var _settings_backup := {}
 
 
 func _initialize() -> void:
@@ -112,6 +122,7 @@ func _initialize() -> void:
 		quit(0)
 		return
 	seed(CAPTURE_SEED)
+	_settings_backup = _backup_settings()
 	_source = {
 		"ref": OS.get_environment("SNIPER_CERT_SOURCE_REF").strip_edges(),
 		"commit_sha": OS.get_environment("SNIPER_CERT_SOURCE_SHA").strip_edges().to_lower(),
@@ -120,7 +131,7 @@ func _initialize() -> void:
 	for field in ["ref", "commit_sha", "tree_sha"]:
 		if str(_source[field]).is_empty():
 			push_error("%s Sniper certification capture: SNIPER_CERT_SOURCE_%s must name the checkout the captures come from" % [ISSUE, field.to_upper()])
-			quit(1)
+			_quit(1)
 			return
 	_frame_dir = OS.get_environment("SNIPER_CERT_FRAME_DIR").strip_edges()
 	if not _frame_dir.is_empty():
@@ -128,7 +139,7 @@ func _initialize() -> void:
 	var manifest := _load_json(MANIFEST_PATH)
 	if manifest.is_empty():
 		push_error("%s Sniper certification capture: %s is missing or invalid" % [ISSUE, MANIFEST_PATH])
-		quit(1)
+		_quit(1)
 		return
 	for raw_weapon in manifest.get("weapons", []) as Array:
 		var weapon := raw_weapon as Dictionary
@@ -136,7 +147,7 @@ func _initialize() -> void:
 	var output_error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_DIR))
 	if output_error != OK and output_error != ERR_ALREADY_EXISTS:
 		push_error("%s Sniper certification capture: cannot create %s (%s)" % [ISSUE, OUTPUT_DIR, error_string(output_error)])
-		quit(1)
+		_quit(1)
 		return
 
 	for raw_viewport in VIEWPORTS:
@@ -147,23 +158,23 @@ func _initialize() -> void:
 				var failure := await _capture_combination(viewport, weapon_id, raw_mode as Dictionary)
 				if not failure.is_empty():
 					push_error("%s Sniper certification capture: %s" % [ISSUE, failure])
-					quit(1)
+					_quit(1)
 					return
 		var sheet_error := await _write_matrix_sheet(viewport)
 		if sheet_error != OK:
 			push_error("%s Sniper certification capture: sheet %s failed (%s)" % [
 				ISSUE, str(viewport["id"]), error_string(sheet_error)])
-			quit(1)
+			_quit(1)
 			return
 
 	var write_error := _write_capture_manifest()
 	if write_error != OK:
 		push_error("%s Sniper certification capture: manifest write failed (%s)" % [ISSUE, error_string(write_error)])
-		quit(1)
+		_quit(1)
 		return
 	print("%s Sniper certification capture: %d samples, %d sheets written to %s" % [
 		ISSUE, _records.size(), _sheets.size(), OUTPUT_DIR])
-	quit(0)
+	_quit(0)
 
 
 ## One live run: build the arena, hold the mode's shipped switches, cast the
@@ -176,10 +187,19 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 	if beats.is_empty():
 		return "%s declares no release/active/recovery beats" % weapon_id
 
+	## The mode is a persisted production configuration: it is written to
+	## user://settings.cfg first, and `Main` publishes it on the scene-tree root
+	## while it boots. Nothing here overrides a live switch behind the game.
+	_persist_mode(mode)
 	var main := (load(MAIN_SCENE_PATH) as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
+	var published := _published_settings()
+	for field in ["screen_shake", "combat_feedback", "reduced_motion", "photosensitivity_safe"]:
+		if bool(published[field]) != bool(mode[field]):
+			return await _abandon(main, "%s: Main published %s as %s, expected %s" % [
+				label, field, str(published[field]), str(mode[field])])
 	## `Main._ready()` randomizes its own generator; the capture pins it so two
 	## runs place the same wave.
 	var run_rng := main.get("rng") as RandomNumberGenerator
@@ -205,14 +225,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		hud_root = hud_layer.find_child("CombatHudRoot", true, false) as Control
 	if hud_root == null:
 		return await _abandon(main, "%s produced no live combat HUD" % label)
-
-	## The shipped accessibility switches are set after `Main` has published its
-	## own settings and before the ultimate spawns, because the presentation
-	## scene reads `screen_shake` while it releases.
-	root.set_meta("screen_shake", bool(mode["screen_shake"]))
-	root.set_meta("combat_feedback", bool(mode["combat_feedback"]))
-	main.set("screen_shake_enabled", bool(mode["screen_shake"]))
-	main.set("combat_feedback_enabled", bool(mode["combat_feedback"]))
 
 	var hazard_count := int(mode["hazards"])
 	if bool(mode["crowd_cap"]):
@@ -262,12 +274,32 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["visible_phase"] = str(presentation.call("visible_phase_name")) if presentation != null else ""
 		record["required_nodes"] = beat["required_nodes"]
 		record["required_nodes_present"] = _required_nodes_present(presentation, beat)
-		record["screen_shake_setting"] = bool(mode["screen_shake"])
-		record["combat_feedback_setting"] = bool(mode["combat_feedback"])
-		## `_camera` is only assigned inside `_shake_camera()` after the shipped
-		## `screen_shake` check passes, so it is the runtime answer to whether the
-		## reduced-motion path was taken.
+		## The four switches as the live run published them, not as the capture
+		## wanted them.
+		var live_settings := _published_settings()
+		record["screen_shake_setting"] = bool(live_settings["screen_shake"])
+		record["combat_feedback_setting"] = bool(live_settings["combat_feedback"])
+		record["reduced_motion_setting"] = bool(live_settings["reduced_motion"])
+		record["photosensitivity_safe_setting"] = bool(live_settings["photosensitivity_safe"])
+		## What the shipped presentation actually applied for this frame. These
+		## are written where the effect is applied, so a declared substitute the
+		## runtime never performed cannot reach the manifest.
+		var presence_state := {}
+		if presentation != null and presentation.has_method("presence_state_for_tests"):
+			presence_state = presentation.call("presence_state_for_tests") as Dictionary
+		record["presentation_reduced_motion"] = bool(presence_state.get("reduced_motion", false))
+		record["presentation_photosensitivity_safe"] = bool(presence_state.get("photosensitivity_safe", false))
+		record["reduced_motion_substitute_applied"] = bool(presence_state.get("reduced_motion_substitute_applied", false))
+		record["presentation_hitstop_ms"] = float(presence_state.get("hitstop_ms", -1.0))
+		record["backdrop_alpha"] = snappedf(float(presence_state.get("backdrop_alpha", -1.0)), 0.001)
+		record["cast_pose_scale"] = snappedf(float(presence_state.get("cast_pose_scale", -1.0)), 0.001)
+		record["silhouette_scale"] = snappedf(float(presence_state.get("silhouette_scale", -1.0)), 0.001)
+		record["sfx_ducked"] = bool(presence_state.get("sfx_ducked", false))
+		## `_camera` is only assigned inside `_shake_camera()`, which the release
+		## skips entirely under reduced motion; and the hitstop that the release
+		## does apply is visible in the live time scale.
 		record["camera_shake_applied"] = presentation != null and presentation.get("_camera") != null
+		record["engine_time_scale"] = snappedf(Engine.time_scale, 0.001)
 		record["presentation_scene"] = str(_weapon_manifest.get(weapon_id, {}).get("scene_path", ""))
 		record["hazards_placed"] = hazards.size()
 		_records.append(record)
@@ -741,7 +773,7 @@ func _write_capture_manifest() -> int:
 		"beats": BEAT_IDS.duplicate(),
 		"viewports": _viewport_declarations(),
 		"capture": {
-			"method": "windowed live run: scenes/Main.tscn + _start_combat(), shipped combat HUD, shipped Enemy hazards, ultimate cast through UltimatePlayerHost.activate()",
+			"method": "windowed live run: persisted production settings.cfg per mode, scenes/Main.tscn + _start_combat(), shipped combat HUD, shipped Enemy hazards, ultimate cast through UltimatePlayerHost.activate()",
 			"capture_script": CAPTURE_SCRIPT_PATH,
 			"focused_test": CAPTURE_TEST_PATH,
 			"readability_report": READABILITY_REPORT_PATH,
@@ -787,6 +819,8 @@ func _mode_declarations() -> Array:
 			"label": str(mode["label"]),
 			"screen_shake": bool(mode["screen_shake"]),
 			"combat_feedback": bool(mode["combat_feedback"]),
+			"reduced_motion": bool(mode["reduced_motion"]),
+			"photosensitivity_safe": bool(mode["photosensitivity_safe"]),
 			"crowd_cap": bool(mode["crowd_cap"]),
 		})
 	return declared
@@ -799,6 +833,59 @@ func _viewport_declarations() -> Array:
 		var size := viewport["size"] as Vector2i
 		declared.append({"id": str(viewport["id"]), "width": size.x, "height": size.y})
 	return declared
+
+
+## The persisted configuration for one mode. Everything else stays at the
+## shipped defaults, so the only difference between two modes is the switch the
+## mode is named after.
+func _persist_mode(mode: Dictionary) -> void:
+	var stored := GameSettings.DEFAULTS.duplicate(true)
+	stored["screen_shake"] = bool(mode["screen_shake"])
+	stored["combat_feedback"] = bool(mode["combat_feedback"])
+	stored[Accessibility.REDUCED_MOTION_KEY] = bool(mode["reduced_motion"])
+	stored[Accessibility.PHOTOSENSITIVITY_SAFE_KEY] = bool(mode["photosensitivity_safe"])
+	GameSettings.save_settings(stored)
+
+
+## The four switches as the live scene tree carries them right now.
+func _published_settings() -> Dictionary:
+	var snapshot := Accessibility.read_snapshot(root)
+	return {
+		"screen_shake": bool(root.get_meta("screen_shake", true)),
+		"combat_feedback": bool(root.get_meta("combat_feedback", true)),
+		"reduced_motion": bool(snapshot.get(Accessibility.REDUCED_MOTION_KEY, false)),
+		"photosensitivity_safe": bool(snapshot.get(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, false)),
+	}
+
+
+## The capture rewrites the operator's own settings file; it is put back byte
+## for byte however the run ends.
+func _backup_settings() -> Dictionary:
+	var backup := {"exists": FileAccess.file_exists(SETTINGS_PATH), "bytes": PackedByteArray()}
+	if bool(backup["exists"]):
+		var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+		if file != null:
+			backup["bytes"] = file.get_buffer(file.get_length())
+			file.close()
+	return backup
+
+
+func _restore_settings() -> void:
+	if _settings_backup.is_empty():
+		return
+	if bool(_settings_backup.get("exists", false)):
+		var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
+		if file != null:
+			file.store_buffer(_settings_backup.get("bytes", PackedByteArray()) as PackedByteArray)
+			file.close()
+	else:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SETTINGS_PATH))
+	_settings_backup = {}
+
+
+func _quit(code: int) -> void:
+	_restore_settings()
+	quit(code)
 
 
 func _load_json(path: String) -> Dictionary:
